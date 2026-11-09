@@ -1,3 +1,16 @@
+# CURRENT DISCUSSION — LOW-NOISE CHAT AND LIMIT PREVENTION — 2026-11-09
+
+- **Mode:** owner issued `@Pikirkan Diskusi!`. Documentation-only continuity update; no source, test, configuration, workflow, build, Actions, release, Firmware, BIN/Firebase, OTA or device operation.
+- **Question:** how to reduce chats getting stuck/full and avoid repeated usage-limit interruptions; whether visible "thinking" text can be suppressed.
+- **Decision / response policy:** use compact user-visible reporting. Do not narrate internal reasoning or every GitHub/API/file operation. Report only meaningful milestones/blockers and at completion provide the key result, changed files, validation/evidence boundary and one next action. Group related document updates; keep CHAT_TRANSFER as a concise rolling checkpoint rather than a transcript. The policy is now recorded in Section 11 of MASTER_PROMPT.md.
+- **Screenshot interpretation:** visible repeated lines such as "Memperbarui Referensi ProjectState, Handover, dan Changelog" look like activity/change narration, not proof of hidden model thinking. Origin cannot be confirmed from the screenshot alone. Such narration can be suppressed/condensed in assistant responses; hidden model reasoning itself cannot be disabled by prompt.
+- **Important distinction:** a full conversation context is per-chat; starting a new chat with LOAD + CONTINUE and the latest verified repo checkpoint can help. A rate/usage limit is account/model/tool-level; opening a new chat does not reset it. Wait for its reset or use an available plan/tool allowance. Do not use new chats to bypass quotas.
+- **Practical operating pattern:** keep one chat per bounded workstream; split Diskusi, Full implementation, and Build App/QC into their existing modes; avoid repeated full audits and repeated transcript pastes; use the repo as the continuity source; checkpoint at meaningful milestones; open a fresh chat before the current thread becomes unwieldy.
+- **Evidence:** OpenAI Help Center troubleshooting guidance recommends starting a new chat for long conversations that become slow/stuck; the Free Tier FAQ distinguishes context-window fullness from tool/message usage limits. Current public refs consulted: https://help.openai.com/en/articles/7996703-troubleshooting-chatgpt-error-messages and https://help.openai.com/en/articles/9275245-chatgpt-free-tier-faq. These support the distinction but do not establish a fixed per-chat message count.
+- **Next action:** use the compact reporting policy in future JE Cooler chats. No new engineering implementation or Build App authorization is implied.
+
+---
+
 # CURRENT CHAT STUCK RECOVERY — HOME LIGHT MODE FULL SOURCE DONE / QA BLOCKED — 2026-11-09
 
 - **Recovery mode:** owner issued `@Pikirkan Chat Stuck!`. Recovered the most recent explicitly authorized `@Pikirkan Eksekusi Full!` operation only. The scoped App source/test edits and their documentation are already committed. No remaining operation is running; the validation tail cannot proceed in this runtime. Chat Stuck does not authorize a new Build App, release, Firmware, BIN/Firebase, OTA, flash or device action.
