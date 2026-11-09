@@ -74,6 +74,7 @@ import 'app_settings.dart';
 import 'connection_scan_state.dart';
 import 'connection_scan_coordinator.dart';
 import 'floating_monitor.dart';
+import 'usage_statistics.dart';
 
 
 // Premium icon system: Phosphor Icons (Regular/Bold).
@@ -4451,6 +4452,7 @@ class _DashboardScreenState extends State<DashboardScreen>
     connectionSub?.cancel();
     notificationSub?.cancel();
     batteryTimer?.cancel();
+    unawaited(UsageStatisticsRecorder.instance.endSession(reason: 'dashboard_disposed'));
     voltageGuardTimer?.cancel();
     reconnectTimer?.cancel();
     disconnectRediscoveryTimer?.cancel();
@@ -5294,9 +5296,71 @@ class _DashboardScreenState extends State<DashboardScreen>
     );
   }
 
+  // AI-METHOD: _startUsageStatisticsSession — Start only after full P1 readiness and final SYNC.
+  void _startUsageStatisticsSession() {
+    final coolerId =
+        device?.remoteId.toString() ?? knownCoolerRemoteIdNotifier.value ?? '';
+    final normalizedVoltage = voltage.trim().toUpperCase();
+    final validVoltage = const {'5V', '9V', '12V'}.contains(normalizedVoltage)
+        ? normalizedVoltage
+        : null;
+    unawaited(UsageStatisticsRecorder.instance.startSession(
+      coolerId: coolerId,
+      batteryC: phoneBatteryValid ? double.tryParse(phoneBatteryTemp) : null,
+      hotsideC: hotsideTemp == '--' ? null : double.tryParse(hotsideTemp),
+      voltage: validVoltage,
+      adaptive: adaptiveOn ? 'ON' : 'OFF',
+      fanSpeed: fanOn ? fanSpeed : 0,
+    ));
+  }
+
+  // Record only authoritative P1 telemetry after the Dashboard has passed SYNC_READY.
+  void _recordUsageTelemetry(Map<String, String> values) {
+    if (!connected || !dashboardReady || !_bleSessionReady || !protocolValid) {
+      return;
+    }
+
+    final recorder = UsageStatisticsRecorder.instance;
+    if (values.containsKey('HOT')) {
+      unawaited(recorder.recordTemperature(
+        metric: 'hotside',
+        value: hotsideTemp == '--' ? null : double.tryParse(hotsideTemp),
+      ));
+    }
+
+    if (values.containsKey('VOLTAGE')) {
+      final normalized = voltage.trim().toUpperCase();
+      if (const {'5V', '9V', '12V'}.contains(normalized)) {
+        unawaited(recorder.recordState(
+          metric: 'voltage',
+          value: normalized,
+        ));
+      }
+    }
+
+    if (values.containsKey('ADAPTIVE')) {
+      unawaited(recorder.recordState(
+        metric: 'adaptive',
+        value: adaptiveOn ? 'ON' : 'OFF',
+      ));
+    }
+
+    // FAN is authoritative for output ON/OFF. A stored PWM setting while the
+    // physical fan is OFF must be represented as 0% in the operating timeline.
+    if (values.containsKey('FAN') || values.containsKey('FAN_SPEED')) {
+      unawaited(recorder.recordState(
+        metric: 'fan_speed',
+        value: fanOn ? fanSpeed : 0,
+      ));
+    }
+  }
+
   void _handleBleDisconnected() {
     final expectedOtaDisconnect =
         otaExpectedDisconnect || otaRecoveryActive;
+    unawaited(UsageStatisticsRecorder.instance.endSession(
+      reason: expectedOtaDisconnect ? 'ota_handoff' : 'disconnected',
+    ));
 
     unawaited(_setBackgroundService(false));
     notificationSub?.cancel();
@@ -5528,6 +5592,7 @@ class _DashboardScreenState extends State<DashboardScreen>
           : JexText.of('systemReady', appLanguageNotifier.value);
     });
     _publishFloatingTelemetry();
+    _startUsageStatisticsSession();
 
     if (wasOtaRecovery) {
       reconnectTimer?.cancel();
@@ -6037,6 +6102,8 @@ void _handleAckLine(String line) {
       }
     });
 
+    _recordUsageTelemetry(values);
+
     final hotText = values['HOT'];
     final hot = hotText == null ? null : double.tryParse(hotText);
     if (hot != null && hot.isFinite) {
@@ -6297,6 +6364,10 @@ void _handleAckLine(String line) {
         });
         _publishFloatingTelemetry();
       }
+      unawaited(UsageStatisticsRecorder.instance.recordTemperature(
+        metric: 'battery',
+        value: valid ? temp : null,
+      ));
       if (_bleReady) {
         _queuePhoneBatteryHeartbeat(
           valid ? 'PHONE:BT=' + temp.toStringAsFixed(1) : 'PHONE:BT=-1.0',
@@ -6310,6 +6381,10 @@ void _handleAckLine(String line) {
           phoneBatteryTemp = '--';
         });
       }
+      unawaited(UsageStatisticsRecorder.instance.recordTemperature(
+        metric: 'battery',
+        value: null,
+      ));
     } finally {
       batteryReadBusy = false;
     }
@@ -6782,6 +6857,8 @@ void _handleAckLine(String line) {
           compactUi: true,
           child: SettingsPage(
             currentFirmwareVersion: firmwareVersion,
+            coolerId: device?.remoteId.toString() ?? knownCoolerRemoteIdNotifier.value,
+            hotLimit: hotLimit,
             onOpenFirmwareUpdate: _openFirmwareSettings,
           ),
         ),

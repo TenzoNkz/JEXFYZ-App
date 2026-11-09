@@ -22,6 +22,7 @@ import 'package:phosphor_icons/phosphor_icons.dart';
 
 import 'app_settings.dart';
 import 'jex_animated_glyph.dart';
+import 'usage_statistics.dart';
 
 enum FloatingDisplayStyle { letters, icons }
 enum FloatingBackgroundColor { black, white }
@@ -1000,11 +1001,15 @@ class JexFixedScalePage extends StatelessWidget {
 // Hosts the Settings navigation hierarchy and delegates persisted preferences to AppSettingsStore.
 class SettingsPage extends StatelessWidget {
   final String currentFirmwareVersion;
+  final String? coolerId;
+  final int hotLimit;
   final Future<void> Function() onOpenFirmwareUpdate;
 
   const SettingsPage({
     super.key,
     required this.currentFirmwareVersion,
+    this.coolerId,
+    this.hotLimit = 45,
     required this.onOpenFirmwareUpdate,
   });
 
@@ -1087,6 +1092,37 @@ class SettingsPage extends StatelessWidget {
                   ),
                 ),
               ]),
+              _section(
+                context,
+                JexText.phrase('Statistics', 'Statistik', language),
+                [
+                  _item(
+                    context,
+                    PhosphorIconsRegular.chartLineUp,
+                    JexText.phrase(
+                      'Usage Statistics',
+                      'Statistik Penggunaan',
+                      language,
+                    ),
+                    JexText.phrase(
+                      'Temperature and operating history',
+                      'Riwayat suhu dan operasi',
+                      language,
+                    ),
+                    () => Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (_) => JexFixedScalePage(
+                          compactUi: true,
+                          child: UsageStatisticsPage(
+                            coolerId: coolerId,
+                            hotLimit: hotLimit,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
               _section(context, JexText.of('firmwareSection', language), [
                 _item(context, PhosphorIconsRegular.uploadSimple, JexText.of('firmwareUpdate', language),
                     currentFirmwareVersion, () => unawaited(onOpenFirmwareUpdate())),
