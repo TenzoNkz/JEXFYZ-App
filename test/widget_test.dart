@@ -249,14 +249,16 @@ void main() {
     expect(painterStart, isNonNegative);
     expect(painterEnd, greaterThan(painterStart));
     final painter = source.substring(painterStart, painterEnd);
+    final normalizedPainter = painter.replaceAll(RegExp(r'\s+'), ' ');
 
     for (final feature in [
       'shell.shift(Offset(s * .014, s * .018))',
-      '_cavityPaintColor(\n            const Color(0xFF09121A),\n            darkAlpha: .92,',
+      '_cavityPaintColor( const Color(0xFF09121A), darkAlpha: .92,',
+      'lightTheme ? lightSurfaceColor : darkColor.withValues(alpha: darkAlpha)',
       'if (!valueKnown)',
       'if (valueKnown && fluidHeight > 0)',
       'Path _boltInnerCore(double s)',
-      '_depthPaintColor(\n            const Color(0xFF070B12),\n            darkAlpha: .74,\n            lightAlpha: .46,',
+      '_depthPaintColor( const Color(0xFF070B12), darkAlpha: .74, lightAlpha: .46,',
       's * (.135 + .010 * wave)',
       'if (!moving || strength <= .005) return;',
       'final crystalWidth = s * (.058 + .006 * frostPower)',
@@ -264,7 +266,7 @@ void main() {
       'const tickCount = 11',
       'if (valueKnown)',
     ]) {
-      expect(painter, contains(feature), reason: 'Missing static icon finish: $feature');
+      expect(normalizedPainter, contains(feature), reason: 'Missing static icon finish: $feature');
     }
 
     final speedStart = painter.indexOf('case JexAnimatedIconKind.speed:');
