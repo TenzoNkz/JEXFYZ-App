@@ -1077,11 +1077,11 @@ void main() {
     expect(errorForeground, const Color(0xFFB42318));
 
     final successSurface = Color.alphaBlend(
-      const Color(0xFF4DE7B7).withValues(alpha: .08),
+      const Color(0xFF4DE7B7).withValues(alpha: .07),
       light.colorScheme.surface,
     );
     final warningSurface = Color.alphaBlend(
-      const Color(0xFFFFB72B).withValues(alpha: .08),
+      const Color(0xFFFFB72B).withValues(alpha: .07),
       light.colorScheme.surface,
     );
     final errorSurface = Color.alphaBlend(
