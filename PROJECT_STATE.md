@@ -2,13 +2,14 @@
 
 Last refreshed: 2026-11-09 (Asia/Jakarta). Current-state summary only; always fetch live main/source, tests, Actions and Release data before acting.
 
-## Firmware — App/cooler timer design discussion pending (2026-11-09)
+## App — Usage Statistics page requested (2026-11-09)
 
-- **Owner question:** add a Firmware timer so the App can show how long the cooler has been on while connected. Feasible; semantics are not yet confirmed.
-- **Two metrics:** (A) P1 App-session duration, starts only after `SYNC_READY` and ends/resets on BLE disconnect/OTA radio handoff; no NVS. (B) actual cooler operating duration, accumulates only while defined physical outputs are active, independent of App link; persists through BLE drops and optionally MCU reboot, requiring bounded Preferences writes rather than per-second flash writes.
-- **Source evidence:** `ServerCallbacks` distinguishes raw GATT connect/disconnect; `SYNC_READY` opens `bleCommandGateOpen` and sends a complete snapshot; existing `sendHotsideTelemetry()` runs on a one-second cooperative tick; App `_commitTelemetry()` consumes new Firmware telemetry keys. A visible timer requires both Firmware telemetry and App state/UI work.
-- **Recommendation:** if the intended measurement is 'how long the current App connection has been active', use P1 session duration. If it means actual cooler operating time, define whether Fan-only safety operation counts and whether total must survive reboot; use a separate cumulative Operating Time counter.
-- **Status:** DESIGN DISCUSSION / SEMANTICS PENDING; no source/test changes, compile, BIN, Firebase, OTA or device operation. The earlier one-way Touch Voltage cycle request remains pending. These two features may be combined under V7.2 once requirements are settled and `Eksekusi Full!` is explicitly authorized.
+- **Owner direction:** no standalone Firmware timer for now. Build an App Usage Statistics / Statistik Penggunaan page inside Settings from locally recorded telemetry.
+- **Layout:** Phone Battery Temperature trend first; Hotside Temperature trend second; Operating Profile timeline third with separate Voltage (5V/9V/12V), Adaptive ON/OFF and Fan Speed (%) lanes. Proposed periods: 1h / 24h / 7d / 30d.
+- **Capture:** phone Battery from existing Android 1Hz reader; Hotside from Firmware ~1Hz `HOT`; Voltage/Adaptive/Fan Speed only on authoritative state changes. Save only changed temperature values with timestamps; show explicit gaps when session/data is missing. Use duration-weighted averages for change-only samples.
+- **Storage:** App-local database (SQLite proposal; current `pubspec.yaml` has no DB/chart library). Do not place history in `flutter_secure_storage`, Firmware NVS or Firebase. Suggested retention: 7-day detailed records + 30-day 1-minute aggregates/state summaries.
+- **Status:** OWNER-REQUESTED DESIGN / NOT IMPLEMENTED. The feature is App-only and does not require Firmware changes. `APP_NOTES.md` and `DESIGN_NOTES.md` contain full requirements and visual/data acceptance. Requires explicit `Eksekusi Full!`; subsequent APK still requires `Eksekusi Build App!`.
+- **Timer decision:** separate Firmware session/operating timer is DEFERRED by owner in favor of this App Usage Statistics feature; see `FIRMWARE_NOTES.md`.
 
 ## Firmware — Touch single-tap Voltage one-way cycle requested (2026-11-09)
 
