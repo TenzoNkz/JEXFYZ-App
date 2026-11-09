@@ -1,3 +1,16 @@
+# CURRENT DISCUSSION — FIRMWARE APP / COOLER TIMER SEMANTICS PENDING — 2026-11-09
+
+- **Mode:** `@Thinking Diskusi!`; this is read-only for executable source/tests. Documentation-only findings recorded; no compile, BIN, Firebase, OTA, flash or device action.
+- **Owner question:** can Firmware provide a timer so the App shows how long the cooler has been on while connected? Yes, feasible using existing ESP32-C3 cooperative `millis()` timing and BLE/P1 telemetry. Exact metric semantics must be selected before implementation.
+- **Important distinction:** (A) App connection/session duration starts only after P1 `SYNC_READY` is accepted, ends/resets on disconnect/OTA radio handoff, restarts on reconnect; no NVS required. It measures time connected, not actual cooling. (B) Cooler operating duration accumulates while physical Fan/Peltier outputs are active, regardless of App link; persists across BLE drops and optionally MCU reboot, requiring bounded NVS checkpoints (never write every second). Decide if Fan-only safety operation counts.
+- **Source evidence:** `ServerCallbacks::onConnect()` marks raw GATT but keeps `bleCommandGateOpen=false`; `SYNC_READY` opens the gate and calls `sendFullSync()`. `sendHotsideTelemetry()` already uses a one-second cooperative cadence. Firmware has Preferences/NVS support with debounced settings writes. App `_commitTelemetry()` consumes Firmware delta keys; displaying a timer requires an App parser/state/UI extension as well as Firmware telemetry.
+- **Recommended:** session duration if the goal is how long the current App connection has been active; operating duration if the goal is actual cooler use. For operating duration, settle Fan-only behavior and reboot persistence first. Use clear localized labels (Connection Time / Durasi Koneksi vs Operating Time / Durasi Operasi).
+- **Pending Firmware requirement:** previous Touch one-way Voltage request remains open: physical single tap 5V→9V→12V→5V; current V7.1 still ping-pongs. This and the timer can be considered together for V7.2 only after timer semantics are decided and owner separately authorizes `Eksekusi Full!`.
+- **Docs updated:** `FIRMWARE_NOTES.md`, `PROJECT_STATE.md`, `HANDOVER.md`, and this checkpoint. Full timer design/test boundary recorded in `FIRMWARE_NOTES.md`.
+- **No implementation:** live active source remains `firmware/JEXFYZ-V7.1.ino`, `FW_VERSION="V7.1"`, blob `c44e076b2c1ee2d0b66b4fcd308d0febc69976e9`; only one active .ino. No source/test code changed. No compile/BIN/OTA/flash/device result is claimed.
+- **Next:** settle whether the requested timer is App session duration or actual cooler operating duration. No source execution was authorized by this Diskusi.
+
+---
 # CURRENT DISCUSSION — FIRMWARE TOUCH VOLTAGE ONE-WAY CYCLE REQUEST — 2026-11-09
 
 - **Mode:** owner issued `@Thinking Diskusi!`. Documentation/analysis only. No Firmware/App source, tests, configuration, workflow, compile, BIN, Firebase, OTA, flash or device operation.
