@@ -38,6 +38,7 @@ At the start of a new or recovered project chat:
 ## 4. Repository and change discipline
 
 - Before a write, fetch the current file content/blob SHA and confirm the live branch HEAD has not moved unexpectedly. For a multi-file task, write sequentially where file updates depend on new SHAs; do not perform conflicting writes to one path in parallel.
+- When constructing a commit tree to update an existing branch, always set `base_tree_sha` to the verified current full tree. Never omit the base tree unless intentionally replacing the entire repository tree under an explicit owner request. Before updating the branch ref, fetch the proposed recursive tree and compare it with the prior tree; confirm every removed/added path is explicitly intended. Abort the ref update if the tree is sparse, unexpectedly truncated or contains unapproved deletions.
 - Preserve main history. Do not force-push, rewrite commits, create a branch or PR unless explicitly requested. If a write fails or a concurrent update is detected, re-fetch and reconcile; never assume success.
 - After writes, fetch the resulting files, verify exact content and paths, fetch final main HEAD and recursive tree, and inspect the commit metadata. Report the exact commit only after this verification.
 - Scope edits narrowly. Do not modify source/config/workflow during Diskusi. Do not weaken a test or workflow gate merely to make a failure disappear. Fix the underlying cause or report a justified blocker.
