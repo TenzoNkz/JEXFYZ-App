@@ -53,6 +53,12 @@ Purpose: canonical current App/UI/BLE/telemetry contract. Current source defines
 - Peltier, Adaptive, Fan and LED switch rows follow the same neutral row/icon plus primary-toggle convention. Preserve controls' existing BLE gating and safety enablement.
 - When Bluetooth is disconnected, blur/dim the active display submenu with one centered lock overlay; keep the top-level tab strip and Home Bluetooth control usable. When connected but Adaptive is ON/transitioning, lock Voltage, Control and Temperature only; keep Adaptive and LED reachable. Underlying controls remain independently gated.
 
+### Home Light Mode visual defect — pending implementation (2026-11-09)
+
+- **Current source finding / STATIC SOURCE CHECK:** `_JexIconPainter` still paints several Home icon shadows, cavities, outlines and hubs with fixed near-black colors. `_homeMetric()` uses the raw bright accent for value text even though `lightThemeAccentText()` exists; the helper is not wired into this callsite and its present clamp does not guarantee 4.5:1. `_homeNotify()` uses the same bright mint/amber/coral for the icon and small heading in both themes, while its body copy already uses dark text.
+- **Not implemented:** no Home icon/NOTIFY Light Mode source repair or test update is present in this Discussion checkpoint. Build #131 success does not prove this specific issue was fixed.
+- **Next scoped repair:** theme-aware painter depth/surface colors for Light Mode while preserving Dark Mode paint and all existing glyph geometry/animation/state contracts; contrast-safe Home metric value text; separate Light Mode NOTIFY foreground tokens (success `#027A48`, warning `#B54708`, error `#B42318`) while preserving the existing pastel card tints, message logic and 44 dp icon-left/text-left layout. The corresponding design and test matrix is recorded in `DESIGN_NOTES.md`.
+- **Evidence boundary:** discussion/static-source analysis only. No tests, formatter, screenshots, App Build, release or physical-device validation were run for this pending repair.
 ## Floating Monitor
 
 - Exactly six metrics: B/H/V/A/P/F = Battery temperature, Hotside, Voltage, Adaptive, Peltier, Fan. F is Fan/Kipas, not FPS. Fan shows live PWM speed when running, localized OFF/MATI when off, and -- when disconnected.
