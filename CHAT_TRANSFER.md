@@ -1,3 +1,15 @@
+# CURRENT DISCUSSION — DEFAULT HYBRID THEME CONTRAST BUG DIAGNOSED — 2026-11-09
+
+- **Owner mode:** `@Thinking Diskusi!`. This is diagnosis and documentation only; no App source/test/config/workflow, Actions, APK/Release, Firmware, BIN/Firebase, OTA or device operation.
+- **Screenshot evidence:** owner supplied three matching Home screenshots: Default hybrid (dark Home header + light lower panel), explicit Light, and explicit Dark. Default is the broken one: dark metric labels/values and dark NOTIFY body text on the dark header. Lower white panel/modal in Default is intentional and must remain light. Screenshot APK SHA is unknown; do not claim device/package identity.
+- **Current source root cause (STATIC SOURCE CHECK):** `JeCoolerApp` maps `AppThemePreset.defaultTheme` to a Light `ThemeData` around `DashboardScreen` to preserve its lower white panel. `_dashboardTopColor()` still paints the Default Home header dark. `_homeMetric()` and `_homeNotify()` use inherited `Theme.of(context).brightness` to select their header palette, so Default incorrectly follows Light for metric foreground/painter and NOTIFY while the surface is dark. Header title/Bluetooth/settings colors already follow the preset and are light, creating an internally mixed header.
+- **Correct fix:** one explicit preset-based Home-header palette resolver: Default/Dark = dark treatment, Light = light treatment. Apply it consistently to metric labels/values/fills/painter selection and NOTIFY foreground/body/tint. Keep lower-content resolver separate: Default/Light = light, Dark = dark. Do not convert the entire Default Dashboard to Dark.
+- **Required regression:** test header and lower-panel brightness independently for all three presets; Default widget contract proves readable dark-header foreground and dark painter/NOTIFY while keeping the lower panel, tabs and disconnected lock dialog light. Capture actual Default/Light/Dark screenshots at same dimensions/states after the fix.
+- **Build #133 boundary:** latest published App Build #133 / run `42619673642`, packaged source `5201a3e07f36305ffe3882a1b965b9e7414cd71a`, includes the preceding Home Light Mode icon/metric/NOTIFY corrections (145 Flutter tests passed, analyzer exit 0 with 25 infos, Android Gradle gate success, signatures/certificate and asset/source parity verified). Current source still has the Default hybrid bug. Physical install and screenshots remain unverified.
+- **Docs updated:** `DESIGN_NOTES.md` contains detailed diagnosis/acceptance; `PROJECT_STATE.md` records the open defect; `HANDOVER.md` names the next safe action.
+- **Next:** owner may issue a new scoped `Eksekusi Full!` for source/test repair. That command has not been issued. A resulting APK separately requires `Eksekusi Build App!`.
+
+---
 # CURRENT APP BUILD EXECUTION — BUILD #133 SUCCESS / RELEASE VERIFIED — 2026-11-09
 
 - **Run:** [Build #133 / 42619673642](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42619673642), terminal `completed/success`; workflow ID `374946166`, event `issues`, attempt 1; job `build` / `129168258628`, hosted `ubuntu-24.04`, runner `1000002679`. All 21 main steps and cleanup succeeded.
