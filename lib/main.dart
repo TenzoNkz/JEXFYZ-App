@@ -7332,10 +7332,12 @@ void _handleAckLine(String line) {
         final indicatorColor = animatedColor ?? color;
         final lightAccentOpacity = active ? .12 : .09;
         final lightOutlineOpacity = active ? .50 : .36;
-        final lightTextAccent = lightThemeAccentText(
-          indicatorColor,
-          background: theme.colorScheme.surface,
-        );
+        final lightTextAccent = homeDark
+            ? indicatorColor
+            : lightThemeAccentText(
+                indicatorColor,
+                background: theme.colorScheme.surface,
+              );
         final indicatorFill = homeDark
             ? indicatorColor.withValues(alpha: .12)
             : indicatorColor.withValues(alpha: lightAccentOpacity);
