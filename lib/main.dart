@@ -3386,10 +3386,15 @@ class _JexIconPainter extends CustomPainter {
           Rect.fromLTWH(s * .17, s * .31, s * .60, s * .38),
           Radius.circular(s * .055),
         );
-        canvas.drawRRect(inner, _fill(_cavityPaintColor(
-            const Color(0xFF09121A),
-            darkAlpha: .92,
-          )));
+        canvas.drawRRect(
+          inner,
+          _fill(
+            _cavityPaintColor(
+              const Color(0xFF09121A),
+              darkAlpha: .92,
+            ),
+          ),
+        );
         canvas.drawRRect(inner, _stroke(s * .022, mainColor.withValues(alpha: .74)));
         canvas.save();
         canvas.clipRRect(inner);
@@ -3467,10 +3472,15 @@ class _JexIconPainter extends CustomPainter {
         );
         canvas.save();
         canvas.clipPath(shell);
-        canvas.drawRRect(tubeInner, _fill(_cavityPaintColor(
+        canvas.drawRRect(
+          tubeInner,
+          _fill(
+            _cavityPaintColor(
               const Color(0xFF09121A),
               darkAlpha: .94,
-            )));
+            ),
+          ),
+        );
         canvas.drawRRect(
           tubeInner,
           _stroke(s * .020, mainColor.withValues(alpha: .74)),
@@ -3649,15 +3659,16 @@ class _JexIconPainter extends CustomPainter {
           _drawFanAirflow(canvas, s, mainColor, opacity: airflowProgress);
         }
         canvas.drawCircle(
-          Offset(cx, cy), s * .405,
+          Offset(cx, cy),
+          s * .405,
           _stroke(
-             s * .042,
-             _depthPaintColor(
-               const Color(0xFF070B12),
-               darkAlpha: .92,
-               lightAlpha: .52,
-             ),
-           ),
+            s * .042,
+            _depthPaintColor(
+              const Color(0xFF070B12),
+              darkAlpha: .92,
+              lightAlpha: .52,
+            ),
+          ),
         );
         canvas.drawCircle(
           Offset(cx, cy), s * .392,
@@ -3668,14 +3679,17 @@ class _JexIconPainter extends CustomPainter {
           _drawGlow(canvas, rotor, mainColor, s * .075, s * .025, .18 * strength);
         }
         canvas.drawPath(rotor, _fill(mainColor.withValues(alpha: .98)));
-        canvas.drawPath(rotor, _stroke(
+        canvas.drawPath(
+          rotor,
+          _stroke(
             s * .022,
             _depthPaintColor(
               const Color(0xFF071019),
               darkAlpha: .90,
               lightAlpha: .52,
             ),
-          ));
+          ),
+        );
         canvas.drawPath(rotor, _stroke(s * .012, mainColor.withValues(alpha: .94)));
         for (var blade = 0; blade < 3; blade++) {
           canvas.drawPath(
