@@ -1,3 +1,18 @@
+# CURRENT APP BUILD EXECUTION — BUILD #133 SUCCESS / RELEASE VERIFIED — 2026-11-09
+
+- **Run:** [Build #133 / 42619673642](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42619673642), terminal `completed/success`; workflow ID `374946166`, event `issues`, attempt 1; job `build` / `129168258628`, hosted `ubuntu-24.04`, runner `1000002679`. All 21 main steps and cleanup succeeded.
+- **Exact packaged/tested source:** `5201a3e07f36305ffe3882a1b965b9e7414cd71a`. Home Light Mode icon/painter, metric and NOTIFY contrast corrections plus regression tests are included. The #132 test-contract repair is included; #132's failure remains historical in APP_BUILD_REPORT.md.
+- **QC:** analyzer exit 0 with 25 info-level diagnostics; full Flutter suite **145 passed / 0 failed**; Android Gradle gate `BUILD SUCCESSFUL in 3m 29s`. Native Android JUnit compile/process/test tasks were `NO-SOURCE`, so no native JUnit case executed.
+- **APK:** [JEXFYZ-release.apk](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-release.apk), asset `727484780`, 54,849,627 bytes, SHA-256 `8fc837b9ec946cb3bccb6a8d400dc1483a19de9eff506c22ada2d4dcef0b1146`; built with `--obfuscate --split-debug-info=build/symbols`; V1/V2/V3 and expected production certificate passed.
+- **Source ZIP:** [JEXFYZ-corresponding-source.zip](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-corresponding-source.zip), asset `727484787`, 2,890,067 bytes, SHA-256 `3a35158b16df567dbc2be1804c9bd0681d96012daffc61adddf61aa6b7be01fb`; ZIP integrity and exact source marker passed.
+- **Release/tag:** Release ID `403010611`, tag `jexfyz-latest`; both exactly target `5201a3e07f36305ffe3882a1b965b9e7414cd71a`. Exactly one APK plus one matching ZIP. Step 21 re-downloaded both assets and verified checksums, source identity, ZIP integrity, signature and certificate.
+- **Protected config:** `android/app/build.gradle:97` remains `versionName "Telegram @horizontalzzz"`. Workflow security/signing/test gates were unchanged.
+- **Warnings:** 25 Dart infos; Kotlin Gradle Plugin 2.2.20 migration advisory; deprecated Android Gradle options / Gradle 10 advisory; nonfatal Flutter watcher and ELF DWARF notices; self-signed/untimestamped certificate and auxiliary META-INF notices; cache-write denial due token scope with cleanup successful. Required V1/V2/V3/certificate checks passed; warnings were non-blocking.
+- **Physical/device boundary:** owner installation remains unconfirmed. No screenshot/OEM visual QA, physical BLE session, cooling/thermal test, Firmware compile, BIN/Firebase mutation, OTA, flashing or device operation occurred.
+- **Next:** owner installs Build #133 and provides physical visual/BLE validation evidence. No further build is needed for the same source absent a subsequent App code change.
+- **Checkpoint history:** final Build #133 success ledger committed in `cf1aa92ce51d911119e430f05481304b24db82bd`; this handover is the latest checkpoint being committed now.
+
+---
 # CURRENT APP BUILD EXECUTION — BUILD #133 SIGNING ACTIVE — 2026-11-09
 
 - **Run/job/source:** #133 / `42619673642`, job `129168258628`, runner `1000002679`, source `5201a3e07f36305ffe3882a1b965b9e7414cd71a`.
