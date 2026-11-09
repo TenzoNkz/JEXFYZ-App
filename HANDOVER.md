@@ -2,14 +2,19 @@
 
 Updated: 2026-11-09 (Asia/Jakarta).
 
-## Current Firmware design question — timer semantics pending (2026-11-09)
+## Current App feature — Usage Statistics requested, not implemented (2026-11-09)
 
-- Owner asks for a Firmware timer so the App can show how long the cooler has been on while connected. Static source inspection confirms feasibility through existing cooperative `millis()` timing and BLE/P1 telemetry.
-- Clarify the metric before source work: **App session duration** starts only after successful P1 `SYNC_READY` and resets on disconnect/reconnect; **cooler operating duration** accumulates only while physical Fan/Peltier outputs are active and can persist across app disconnects (and optionally MCU reboot). These are not the same metric.
-- Recommended: choose session time if the aim is to show how long the App has been connected; choose operating time if the aim is to measure actual cooler use. For operating time, define Fan-only safety operation and reboot persistence. Do not write NVS every second.
-- App display requires an App telemetry/UI extension as well as Firmware; no source or test was changed in Diskusi.
-- The previously requested one-way Touch Voltage cycle also remains pending. After timer semantics are clear, both may be planned as one V7.2 source/test task, but only following explicit `Eksekusi Full!`. Compilation is owner-side; BIN/Firebase/OTA/flash remain separate authorizations.
+- Owner no longer wants a standalone Firmware timer for now; instead asks for a Usage Statistics / Statistik Penggunaan page under Settings.
+- Page order: Phone Battery Temperature trend; Hotside Temperature trend; Operating Profile timeline with separate Voltage 5/9/12V, Adaptive ON/OFF and Fan Speed (%) lanes. Proposed filters 1h / 24h / 7d / 30d.
+- App-side capture: existing Android phone Battery reader ~1Hz; Firmware Hotside `HOT` ~1Hz; voltage/adaptive/fan-speed on telemetry state changes. Store timestamped changed values; compute time-weighted averages and render gaps for disconnected/invalid/missing telemetry.
+- Proposed local data architecture: SQLite, batched writes, no Firebase upload and no Firmware NVS history. Existing `flutter_secure_storage` remains settings-only. Proposed retention: 7 days detailed records + 30 days 1-minute rollups/state summaries.
+- Exact data and visual acceptance is recorded in `APP_NOTES.md` and `DESIGN_NOTES.md`. Feature requires a separate explicit App-scoped `Eksekusi Full!`; APK packaging requires separate `Eksekusi Build App!`.
+- No App source/test/dependency/database change was made in Diskusi. A new Firmware timer is deferred.
 
+## Separate pending Firmware request — Touch Voltage one-way cycle
+
+- Physical single-tap sequence remains requested: 5V→9V→12V→5V; current V7.1 still ping-pongs. The full implementation/version/test scope is in `FIRMWARE_NOTES.md` and the relevant state/checkpoint.
+- Keep this separate from the App Usage Statistics feature. No Firmware source/BIN/OTA/flash/device change is authorized by the present Diskusi.
 ## Immediate next task — implement Touch Voltage one-way cycle in Firmware (2026-11-09)
 
 - Owner-requested physical TTP223 single-tap sequence: `5V → 9V → 12V → 5V → 9V → 12V → ...`; do not reverse direction at 12V.
