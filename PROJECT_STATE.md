@@ -2,6 +2,14 @@
 
 Last refreshed: 2026-11-09 (Asia/Jakarta). Current-state summary only; always fetch live main/source, tests, Actions and Release data before acting.
 
+## Firmware — App/cooler timer design discussion pending (2026-11-09)
+
+- **Owner question:** add a Firmware timer so the App can show how long the cooler has been on while connected. Feasible; semantics are not yet confirmed.
+- **Two metrics:** (A) P1 App-session duration, starts only after `SYNC_READY` and ends/resets on BLE disconnect/OTA radio handoff; no NVS. (B) actual cooler operating duration, accumulates only while defined physical outputs are active, independent of App link; persists through BLE drops and optionally MCU reboot, requiring bounded Preferences writes rather than per-second flash writes.
+- **Source evidence:** `ServerCallbacks` distinguishes raw GATT connect/disconnect; `SYNC_READY` opens `bleCommandGateOpen` and sends a complete snapshot; existing `sendHotsideTelemetry()` runs on a one-second cooperative tick; App `_commitTelemetry()` consumes new Firmware telemetry keys. A visible timer requires both Firmware telemetry and App state/UI work.
+- **Recommendation:** if the intended measurement is 'how long the current App connection has been active', use P1 session duration. If it means actual cooler operating time, define whether Fan-only safety operation counts and whether total must survive reboot; use a separate cumulative Operating Time counter.
+- **Status:** DESIGN DISCUSSION / SEMANTICS PENDING; no source/test changes, compile, BIN, Firebase, OTA or device operation. The earlier one-way Touch Voltage cycle request remains pending. These two features may be combined under V7.2 once requirements are settled and `Eksekusi Full!` is explicitly authorized.
+
 ## Firmware — Touch single-tap Voltage one-way cycle requested (2026-11-09)
 
 - **Owner request:** physical TTP223 single tap must cycle `5V → 9V → 12V → 5V → 9V → 12V → ...`, not ping-pong `5V → 9V → 12V → 9V → 5V`.
