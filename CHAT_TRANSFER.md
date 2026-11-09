@@ -1,3 +1,15 @@
+# CURRENT APP BUILD EXECUTION — BUILD #132 TEST FIX COMMITTED / BUILD #133 PRE-TRIGGER — 2026-11-09
+
+- **Build #132:** [run 42619044436](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42619044436) terminal failure at Flutter test step 13: 144 passed / 1 failed. Android, APK, signing, ZIP and Release steps were skipped; no artifact was produced.
+- **Root cause:** one source-contract matcher in `test/widget_test.dart` retained a fixed-indentation `_cavityPaintColor` string after the same production call was nested under `_fill`. The actual color, alpha and theme helper behavior were preserved. The related `_depthPaintColor` matcher used the same brittle formatting assumption.
+- **Repair:** commit `ddd72866627375c7b793d8f7b86a0263bca56fd0`, only `test/widget_test.dart`. Assertions now normalize whitespace but still check exact helper args, Light/Dark color branch, cavity/depth fallback, unknown/known battery state geometry and Fan Speed needle/ticks. Re-read blob `e5bb1d409b580d1e27d09a5e98b4cef008a1ece6`; all static checks passed. This has not yet been executed by Dart/Flutter.
+- **Retry safety:** Build #132 is terminal; live workflow query has zero active/queued/waiting/requested runs. Issue #34 is open and its owner/title/body token still match the trigger guard.
+- **Next exact action:** after the ledger/checkpoint write is committed and re-read, close issue #34 once and reopen once; confirm exactly one Build #133 run whose `head_sha` matches the post-checkpoint `main`. Follow only that run. No duplicate events.
+- **Release:** Build #131 remains latest verified package. #132 did not replace its APK/ZIP.
+- **Checkpoint:** APP_BUILD_REPORT.md repair/pre-retry entry committed in `3ab4021b9d6101b3b3c91b1ed80110ebab55fcc8`; this checkpoint follows it. No new run exists yet.
+- **Scope:** App test contract only; keep all workflow gates and `versionName "Telegram @horizontalzzz"`; no Firmware/BIN/Firebase/OTA/flash/device activity.
+
+---
 # CURRENT APP BUILD EXECUTION — BUILD #132 FAILED / TEST CONTRACT REPAIR REQUIRED — 2026-11-09
 
 - **Run:** [Build #132 / 42619044436](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42619044436), source `2d274613a67708201139311cce55eddbc3d3f78b`, event `issues`, attempt 1; terminal `completed/failure`.
