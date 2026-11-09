@@ -1,0 +1,32 @@
+# Repository hygiene: generated build outputs, local secrets/configuration, and editor-only files stay out of Git.
+# Do not ignore project memory or canonical source/tests; they are tracked project assets.
+
+# Dart / Flutter generated files
+.dart_tool/
+.packages
+.pub/
+build/
+.flutter-plugins
+.flutter-plugins-dependencies
+
+# Android local machine configuration and generated state
+android/local.properties
+android/.gradle/
+android/captures/
+android/key.properties
+
+# IDE / editor state
+.idea/
+*.iml
+.vscode/
+
+# Private signing material and local environment files
+*.jks
+*.keystore
+*.p12
+.env
+.env.*
+
+# OS noise
+.DS_Store
+Thumbs.db

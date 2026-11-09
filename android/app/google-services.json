@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "548950426643",
+    "firebase_url": "https://je-x-fyz-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "je-x-fyz",
+    "storage_bucket": "je-x-fyz.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:548950426643:android:6b42d126d6d27dbdbe6be6",
+        "android_client_info": {
+          "package_name": "com.horizontalzzz.jexfyz"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAGMbrxEIt7v9AWKA9ibaQyDpH2zaudaaM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

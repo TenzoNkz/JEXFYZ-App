@@ -1,0 +1,544 @@
+# AI CI MEMORY:
+# JE X FYZ Eksekusi Build App — active single explicit issue-triggered release workflow.
+# Based directly on the proven Release workflow that completed workflow run #2.
+# Normal push/PR events do not trigger this workflow.
+# Firmware source is intentionally stored in this App repository under firmware/.
+# The App repository owns all editable source and memory; the dedicated firmware repository is BIN-only. This workflow builds the App only.
+# CI success proves App build validation only; it does not prove BLE/OTA/hardware runtime.
+
+name: JE X FYZ Eksekusi Build App
+
+on:
+  issues:
+    types:
+      - opened
+      - reopened
+
+permissions:
+  # APK delivery is handled by a GitHub Release asset, not an Actions artifact.
+  contents: write
+
+concurrency:
+  group: jexfyz-cooler-build
+  cancel-in-progress: true
+
+env:
+  EXPECTED_SIGNING_CERT_SHA256: "dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0"
+  EXPECTED_SIGNING_CERT_DN: "CN=JE X FYZ, OU=JE X FYZ, O=JE X FYZ, L=Indonesia, ST=Central Java, C=ID"
+
+jobs:
+  # Single App release pipeline.
+  build:
+    if: >-
+      github.event.issue.user.login == github.repository_owner
+      && github.event.issue.title == 'JE X FYZ — EKSEKUSI BUILD APP TRIGGER'
+      && contains(github.event.issue.body, 'JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+
+    steps:
+      # Fetch App source/assets only.
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      # APK delivery intentionally avoids Actions-artifact storage quota.
+
+      # Tested Android release toolchain.
+      - name: Set up Java 17
+        uses: actions/setup-java@v6
+        with:
+          distribution: zulu
+          java-version: "17"
+
+      # Tested Flutter version for the App.
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.47.2"
+          channel: stable
+          cache: true
+
+      # Tested Gradle version for the App.
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v6
+        with:
+          gradle-version: "9.3.1"
+
+      - name: Verify toolchain
+        run: |
+          flutter --version
+          dart --version
+          java -version
+          gradle --version
+
+      - name: Prepare Flutter local.properties
+        shell: bash
+        run: |
+          set -euo pipefail
+          printf 'flutter.sdk=%s\n' "$FLUTTER_ROOT" > android/local.properties
+          test -s android/local.properties
+
+      # Production signing is mandatory. The workflow never falls back to an
+      # unsigned or debug-signed release APK.
+      - name: Prepare production release signing
+        shell: bash
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          set -euo pipefail
+          for name in ANDROID_KEYSTORE_BASE64 ANDROID_KEYSTORE_PASSWORD ANDROID_KEY_ALIAS ANDROID_KEY_PASSWORD; do
+            if [ -z "${!name}" ]; then
+              echo "Missing required GitHub secret: $name"
+              exit 1
+            fi
+          done
+
+          umask 077
+          mkdir -p "$RUNNER_TEMP/signing"
+          printf '%s' "$ANDROID_KEYSTORE_BASE64" | base64 --decode > "$RUNNER_TEMP/signing/jexfyz-release.p12"
+          test -s "$RUNNER_TEMP/signing/jexfyz-release.p12"
+
+          {
+            echo "ANDROID_KEYSTORE_FILE=$RUNNER_TEMP/signing/jexfyz-release.p12"
+            echo "ANDROID_KEYSTORE_PASSWORD=$ANDROID_KEYSTORE_PASSWORD"
+            echo "ANDROID_KEY_ALIAS=$ANDROID_KEY_ALIAS"
+            echo "ANDROID_KEY_PASSWORD=$ANDROID_KEY_PASSWORD"
+          } >> "$GITHUB_ENV"
+
+      - name: Restore Gradle wrapper if missing
+        working-directory: android
+        shell: bash
+        run: |
+          set -euo pipefail
+          # The repo intentionally keeps generated Gradle wrapper files out of Git.
+          # Do not run `gradle wrapper` here because Gradle 9.3.1 validates the
+          # distribution URL and can fail the entire workflow on a transient
+          # services.gradle.org/network error before the Android build starts.
+          # Flutter only needs an executable `gradlew`; delegate it to the
+          # already-installed Gradle 9.3.1 supplied by setup-gradle.
+          if [ ! -f gradlew ] || [ ! -f gradle/wrapper/gradle-wrapper.jar ]; then
+            cat > gradlew <<'EOF2'
+          #!/usr/bin/env sh
+          exec gradle "$@"
+          EOF2
+            chmod +x gradlew
+          fi
+
+      # Static App-only architecture/security audit.
+      - name: JE X FYZ security and architecture audit
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          source = Path("lib/main.dart").read_text(encoding="utf-8")
+          pubspec = Path("pubspec.yaml").read_text(encoding="utf-8")
+          manifest = Path("android/app/src/main/AndroidManifest.xml").read_text(encoding="utf-8")
+          activity = Path("android/app/src/main/kotlin/com/horizontalzzz/jexfyz/MainActivity.kt").read_text(encoding="utf-8")
+          floating = Path("lib/floating_monitor.dart").read_text(encoding="utf-8")
+          gradle = Path("android/app/build.gradle").read_text(encoding="utf-8")
+
+          required = [
+              "6f1c0001-7f35-4d0f-9b9a-7e9b2f5c1001",
+              "6f1c0002-7f35-4d0f-9b9a-7e9b2f5c1001",
+              "6f1c0003-7f35-4d0f-9b9a-7e9b2f5c1001",
+              "PHONE:BT=",
+              "CLOUDOTA",
+              "flutter_secure_storage",
+              "assets/jexfyzcooler.png",
+              "assets/jexfyzicon.png",
+              "firebase_app_check",
+              "firmwareMetadataUrl",
+              "providerAndroid: const AndroidPlayIntegrityProvider()",
+              "TamperScreen",
+              "je_x_fyz/security",
+          ]
+          combined = source + pubspec + activity + floating
+          missing = [token for token in required if token not in combined]
+          if missing:
+              raise SystemExit("JE X FYZ audit failed; missing: " + ", ".join(missing))
+
+          if "assets/hzcooler.png" in combined or "assets/hzicon.png" in combined:
+              raise SystemExit("JE X FYZ audit failed; legacy asset reference found")
+          if "@drawable/hzicon" in manifest:
+              raise SystemExit("JE X FYZ audit failed; legacy Android icon reference found")
+          if "@drawable/jexfyzicon" not in manifest:
+              raise SystemExit("JE X FYZ audit failed; Android icon is not jexfyzicon")
+
+          for pattern in [r"\bCFG:", r"\bADAPT:", r"RGBTOGGLE", r"RGBPREV", r"RGBNEXT", r"\bBR:", r"AIM:"]:
+              if re.search(pattern, source):
+                  raise SystemExit("JE X FYZ audit failed; legacy command found: " + pattern)
+
+          if "setString('saved_pass'" in source or 'setString("saved_pass"' in source:
+              raise SystemExit("JE X FYZ audit failed; Wi-Fi password stored outside secure storage")
+
+          if "minifyEnabled true" not in gradle or "shrinkResources true" not in gradle:
+              raise SystemExit("JE X FYZ security audit failed; R8/resource shrinking is disabled")
+          if "OFFICIAL_SIGNING_CERT_B64" not in gradle:
+              raise SystemExit("JE X FYZ security audit failed; production signing identity embedding is missing")
+
+          for forbidden in [
+              "FirebaseDatabase.instanceFor",
+              "firebase_database",
+          ]:
+              if forbidden in source or forbidden in pubspec:
+                  raise SystemExit("JE X FYZ audit failed; legacy Firebase firmware metadata reference found: " + forbidden)
+
+
+          # Floating Monitor must use its dedicated MethodChannel end-to-end.
+          if "MethodChannel('je_x_fyz/floating')" not in floating:
+              raise SystemExit("JE X FYZ audit failed; Flutter Floating Monitor channel contract is missing")
+          if 'private val FLOATING_CHANNEL = "je_x_fyz/floating"' not in activity:
+              raise SystemExit("JE X FYZ audit failed; native Floating Monitor channel contract is missing")
+          if activity.count('"startFloatingMonitor"') != 1 or activity.count('"getFloatingRuntimeState"') != 1:
+              raise SystemExit("JE X FYZ audit failed; Floating methods are not isolated to the dedicated channel")
+
+          # Floating Monitor must stay independent of privileged FPS/Shizuku integrations.
+          if "rikka.shizuku.ShizukuProvider" in manifest or "dev.rikka.shizuku:" in gradle:
+              raise SystemExit("JE X FYZ audit failed; retired FPS/Shizuku integration remains")
+          retired_paths = [
+              "android/app/src/main/kotlin/com/horizontalzzz/jexfyz/FpsShizukuUserService.kt",
+              "android/app/src/main/kotlin/com/horizontalzzz/jexfyz/FpsTimeStatsParser.kt",
+              "android/app/src/main/kotlin/com/horizontalzzz/jexfyz/FpsSamplerWatchdogPolicy.kt",
+              "android/app/src/test/kotlin/com/horizontalzzz/jexfyz/FpsTimeStatsParserTest.kt",
+              "android/app/src/test/kotlin/com/horizontalzzz/jexfyz/FpsSamplerWatchdogPolicyTest.kt",
+              "android/app/src/main/aidl/com/horizontalzzz/jexfyz/IFpsShizukuUserService.aidl",
+              "android/app/src/main/assets/licenses/shizuku-api-MIT.txt",
+              "third_party/Shizuku-API-MIT.txt",
+              "third_party/THIRD_PARTY_NOTICES.md",
+              "test/shizuku_fps_contract_test.dart",
+          ]
+          leftovers = [path for path in retired_paths if Path(path).exists()]
+          if leftovers:
+              raise SystemExit("JE X FYZ audit failed; retired FPS/Shizuku files remain: " + ", ".join(leftovers))
+          if "FloatingBridge.fpsAccessStatus" in floating or "requestShizukuFpsPermission" in activity:
+              raise SystemExit("JE X FYZ audit failed; retired FPS permission bridge remains")
+          if '"F" -> "F:" + if (!data.connected) "--" else if (data.fanOn) data.speed.toString() else offText' not in Path("android/app/src/main/kotlin/com/horizontalzzz/jexfyz/FloatingMonitorService.kt").read_text(encoding="utf-8"):
+              raise SystemExit("JE X FYZ audit failed; Floating metric F must display Fan Speed")
+          if "metricSchemaVersion" not in floating or "fromStored" not in floating:
+              raise SystemExit("JE X FYZ audit failed; legacy Floating Monitor metric migration is missing")
+
+          # Firmware .ino source is intentionally stored in this App repository.
+          # It must not be referenced as a Flutter source/build dependency.
+          firmware_dir = Path("firmware")
+          if firmware_dir.exists():
+              for ino in firmware_dir.glob("*.ino"):
+                  rel = ino.as_posix()
+                  if rel in source or rel in pubspec:
+                      raise SystemExit(
+                          "JE X FYZ audit failed; App code references firmware source path: " + rel
+                      )
+
+          if re.search(r"(?m)^\\s*shared_preferences\\s*:", pubspec):
+              raise SystemExit("JE X FYZ audit failed; unused shared_preferences dependency is present")
+
+          for asset in [
+              Path("assets/jexfyzcooler.png"),
+              Path("assets/jexfyzicon.png"),
+              Path("android/app/src/main/res/drawable-nodpi/jexfyzicon.png"),
+          ]:
+              if not asset.is_file() or asset.stat().st_size == 0:
+                  raise SystemExit("JE X FYZ audit failed; missing/empty asset: " + str(asset))
+
+          # The continuity firmware source may be documented in comments and kept under firmware/.
+          # Reject only executable Dart import/export/part references to that path.
+          if re.search(r"""(?m)^\s*(?:import|export|part)\s+['"][^'"]*firmware/""", source):
+              raise SystemExit("JE X FYZ audit failed; App Dart code imports firmware source")
+
+          print("JE X FYZ App-only security, architecture and Floating Monitor audit passed.")
+          PY
+
+      # Resolve the Dart/Flutter dependency graph.
+      - name: Install dependencies
+        run: flutter pub get
+
+      # Static analysis must remain clean.
+      - name: Analyze Dart code
+        # Flutter 3.47.2 defaults fatal-infos=true; deprecations remain visible but do not block the release build.
+        run: flutter analyze --no-fatal-infos
+
+      # Source/UI tests; no physical hardware assumptions.
+      - name: Run Flutter tests
+        run: flutter test
+
+      # Keep the Android unit-test/compile gate for native source changes.
+      - name: Run Android unit-test gate
+        working-directory: android
+        run: ./gradlew --no-daemon :app:testDebugUnitTest
+
+      # Obfuscated production APK plus symbols.
+      - name: Build latest release APK
+        run: flutter build apk --release --obfuscate --split-debug-info=build/symbols
+
+      # Explicitly sign all required APK schemes with the official production key.
+      # The current AGP build output may omit JAR/v1 signing even when requested
+      # by the Gradle DSL, so enforce it directly before verification/publication.
+      - name: Enforce V1/V2/V3 APK signing
+        shell: bash
+        run: |
+          set -euo pipefail
+          APK="build/app/outputs/flutter-apk/app-release.apk"
+          SIGNED_APK="$RUNNER_TEMP/jexfyz-release-signed.apk"
+          APK_SIGNER="$(find "$ANDROID_SDK_ROOT/build-tools" -type f -name apksigner 2>/dev/null | sort -V | tail -n 1)"
+
+          test -s "$APK"
+          test -n "$APK_SIGNER"
+
+          "$APK_SIGNER" sign \
+            --ks "$ANDROID_KEYSTORE_FILE" \
+            --ks-type PKCS12 \
+            --ks-key-alias "$ANDROID_KEY_ALIAS" \
+            --ks-pass env:ANDROID_KEYSTORE_PASSWORD \
+            --key-pass env:ANDROID_KEY_PASSWORD \
+            --min-sdk-version 23 \
+            --v1-signing-enabled true \
+            --v2-signing-enabled true \
+            --v3-signing-enabled true \
+            --v4-signing-enabled false \
+            --out "$SIGNED_APK" \
+            "$APK"
+
+          test -s "$SIGNED_APK"
+          mv "$SIGNED_APK" "$APK"
+
+          # Validate JAR/v1 independently; apksigner's Android-platform check follows minSdk=24.
+          set +e
+          JAR_SIGNATURE_OUTPUT="$(jarsigner -verify -verbose -certs "$APK" 2>&1)"
+          JAR_SIGNATURE_STATUS=$?
+          set -e
+          printf '%s\n' "$JAR_SIGNATURE_OUTPUT"
+          if [ "$JAR_SIGNATURE_STATUS" -ne 0 ] || ! grep -Eiq 'jar verified\.' <<< "$JAR_SIGNATURE_OUTPUT"; then
+            echo "JAR/v1 signature validation failed."
+            exit 1
+          fi
+
+          # Verify V1 compatibility below API 24 plus modern V2/V3; manifest minSdk remains API 24.
+          SIGNATURE_OUTPUT="$("$APK_SIGNER" verify --min-sdk-version 23 --verbose --print-certs "$APK" 2>&1)"
+          printf '%s\n' "$SIGNATURE_OUTPUT"
+          grep -Fq "Verified using v1 scheme (JAR signing): true" <<< "$SIGNATURE_OUTPUT"
+          grep -Fq "Verified using v2 scheme (APK Signature Scheme v2): true" <<< "$SIGNATURE_OUTPUT"
+          grep -Fq "Verified using v3 scheme (APK Signature Scheme v3): true" <<< "$SIGNATURE_OUTPUT"
+
+      # Verify the official JE X FYZ production certificate.
+      - name: Verify APK signature
+        shell: bash
+        run: |
+          set -euo pipefail
+          APK="build/app/outputs/flutter-apk/app-release.apk"
+          test -s "$APK"
+
+          APK_SIGNER="$(find "$ANDROID_SDK_ROOT/build-tools" -type f -name apksigner 2>/dev/null | sort -V | tail -n 1)"
+          test -n "$APK_SIGNER"
+
+          # Verify the JAR/v1 signature separately from Android platform schemes.
+          set +e
+          JAR_SIGNATURE_OUTPUT="$(jarsigner -verify -certs "$APK" 2>&1)"
+          JAR_SIGNATURE_STATUS=$?
+          set -e
+          printf '%s\n' "$JAR_SIGNATURE_OUTPUT"
+          if [ "$JAR_SIGNATURE_STATUS" -ne 0 ] || ! grep -Eiq 'jar verified\.' <<< "$JAR_SIGNATURE_OUTPUT"; then
+            echo "JAR/v1 signature validation failed."
+            exit 1
+          fi
+
+          # Verify V1 compatibility below API 24 plus modern V2/V3; manifest minSdk remains API 24.
+          SIGNATURE_OUTPUT="$("$APK_SIGNER" verify --min-sdk-version 23 --verbose --print-certs "$APK" 2>&1)"
+          printf '%s\n' "$SIGNATURE_OUTPUT"
+
+          # Android platform verification covers the APK's declared minSdk (24).
+          grep -Fq "Verified using v1 scheme (JAR signing): true" <<< "$SIGNATURE_OUTPUT"
+          grep -Fq "Verified using v2 scheme (APK Signature Scheme v2): true" <<< "$SIGNATURE_OUTPUT"
+          grep -Fq "Verified using v3 scheme (APK Signature Scheme v3): true" <<< "$SIGNATURE_OUTPUT"
+          grep -Fq "Number of signers: 1" <<< "$SIGNATURE_OUTPUT"
+          grep -Fq "$EXPECTED_SIGNING_CERT_DN" <<< "$SIGNATURE_OUTPUT"
+          SIGNATURE_OUTPUT_LOWER="${SIGNATURE_OUTPUT,,}"
+          grep -Fq "$EXPECTED_SIGNING_CERT_SHA256" <<< "$SIGNATURE_OUTPUT_LOWER"
+
+          echo "Production APK signature verified: v1/v2/v3 + official JE X FYZ certificate."
+          ls -lh "$APK"
+
+      # Stable delivery filename keeps the latest release asset replaceable.
+      - name: Prepare release APK filename
+        shell: bash
+        run: |
+          set -euo pipefail
+          cp build/app/outputs/flutter-apk/app-release.apk \
+             "build/app/outputs/flutter-apk/JEXFYZ-release.apk"
+          test -s "build/app/outputs/flutter-apk/JEXFYZ-release.apk"
+          ls -lh "build/app/outputs/flutter-apk/JEXFYZ-release.apk"
+
+      # Package corresponding App source for the exact source commit used by the APK.
+      - name: Package corresponding source archive
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          SOURCE_PARENT="$RUNNER_TEMP/jexfyz-source"
+          SOURCE_ROOT="$SOURCE_PARENT/JEXFYZ-corresponding-source"
+          SOURCE_ARCHIVE="$GITHUB_WORKSPACE/build/app/outputs/flutter-apk/JEXFYZ-corresponding-source.zip"
+          mkdir -p "$SOURCE_ROOT" "$(dirname "$SOURCE_ARCHIVE")"
+
+          # App source, build configuration, assets, locks and tests from exact checked-out commit.
+          git archive --format=tar "$GITHUB_SHA" \
+            lib assets android test pubspec.yaml pubspec.lock README.md \
+            | tar -xf - -C "$SOURCE_ROOT"
+          # The release workflow generates this launcher because wrapper binaries are intentionally not tracked.
+          cp -a android/gradlew "$SOURCE_ROOT/android/gradlew"
+          if [ -f android/gradle/wrapper/gradle-wrapper.jar ]; then
+            mkdir -p "$SOURCE_ROOT/android/gradle/wrapper"
+            cp -a android/gradle/wrapper/gradle-wrapper.jar "$SOURCE_ROOT/android/gradle/wrapper/gradle-wrapper.jar"
+          fi
+
+          cat > "$SOURCE_ROOT/SOURCE_BUNDLE_README.md" <<EOF2
+          # JE X FYZ corresponding source bundle
+
+          - Exact App source commit used for the APK: $GITHUB_SHA
+          - Flutter application source, Android host source, build configuration, assets and tests are included in this archive.
+          - Floating Monitor supports six live metrics: Battery, Hotside, Voltage, Adaptive, Peltier and Fan Speed (F).
+          - FPS sampling and its Shizuku/SurfaceFlinger integration have been removed from the App.
+          - This source archive is attached to the same private GitHub Release as JEXFYZ-release.apk.
+          EOF2
+
+          (cd "$SOURCE_PARENT" && zip -qr "$SOURCE_ARCHIVE" JEXFYZ-corresponding-source)
+          test -s "$SOURCE_ARCHIVE"
+          unzip -t "$SOURCE_ARCHIVE"
+          unzip -l "$SOURCE_ARCHIVE" | grep -F 'JEXFYZ-corresponding-source/android/app/src/main/kotlin/com/horizontalzzz/jexfyz/FloatingMonitorService.kt'
+          unzip -l "$SOURCE_ARCHIVE" | grep -F 'JEXFYZ-corresponding-source/lib/floating_monitor.dart'
+          unzip -p "$SOURCE_ARCHIVE" JEXFYZ-corresponding-source/SOURCE_BUNDLE_README.md | grep -F "$GITHUB_SHA"
+          echo "Corresponding source archive prepared for $GITHUB_SHA"
+
+      # Publish one APK plus the source archive as GitHub Release assets.
+      # The source archive matches the exact App commit; still exactly one APK is delivered.
+      - name: Publish APK and corresponding source to GitHub Release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+
+          APK="build/app/outputs/flutter-apk/JEXFYZ-release.apk"
+          SOURCE_ARCHIVE="build/app/outputs/flutter-apk/JEXFYZ-corresponding-source.zip"
+          RELEASE_TAG="jexfyz-latest"
+          RELEASE_TITLE="JE X FYZ — Latest App"
+          APP_VERSION="$(sed -n 's/^version: //p' pubspec.yaml | head -n 1)"
+
+          test -s "$APK"
+          test -s "$SOURCE_ARCHIVE"
+          test -n "$APP_VERSION"
+
+          RELEASE_NOTES="Automated JE X FYZ App release.
+          App version: $APP_VERSION
+          Source commit: $GITHUB_SHA
+          APK: JEXFYZ-release.apk
+          Corresponding source: JEXFYZ-corresponding-source.zip (App source commit $GITHUB_SHA; includes the six-metric Floating Monitor with Fan Speed labeled F)."
+
+          if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
+            echo "Updating existing GitHub Release $RELEASE_TAG"
+            gh release upload "$RELEASE_TAG" "$APK" "$SOURCE_ARCHIVE" --clobber
+            gh release edit "$RELEASE_TAG" \
+              --target "$GITHUB_SHA" \
+              --title "$RELEASE_TITLE" \
+              --notes "$RELEASE_NOTES" \
+              --latest
+          else
+            echo "Creating GitHub Release $RELEASE_TAG"
+            gh release create "$RELEASE_TAG" "$APK" "$SOURCE_ARCHIVE" \
+              --target "$GITHUB_SHA" \
+              --title "$RELEASE_TITLE" \
+              --notes "$RELEASE_NOTES" \
+              --latest
+          fi
+
+          # `gh release edit --target` updates Release metadata but does not move an existing Git tag ref.
+          gh api --method PATCH "repos/${GITHUB_REPOSITORY}/git/refs/tags/${RELEASE_TAG}" \
+            -f "sha=${GITHUB_SHA}" \
+            -F force=true >/dev/null
+          TAG_TARGET_SHA="$(gh api "repos/${GITHUB_REPOSITORY}/git/ref/tags/${RELEASE_TAG}" --jq '.object.sha')"
+          test "$TAG_TARGET_SHA" = "$GITHUB_SHA"
+          echo "Release tag $RELEASE_TAG points to exact source commit: $TAG_TARGET_SHA"
+
+          APK_ASSET_COUNT="$(gh release view "$RELEASE_TAG" --json assets --jq '[.assets[] | select(.name == "JEXFYZ-release.apk")] | length')"
+          SOURCE_ASSET_COUNT="$(gh release view "$RELEASE_TAG" --json assets --jq '[.assets[] | select(.name == "JEXFYZ-corresponding-source.zip")] | length')"
+          APK_COUNT="$(gh release view "$RELEASE_TAG" --json assets --jq '[.assets[] | select(.name | endswith(".apk"))] | length')"
+          ASSET_COUNT="$(gh release view "$RELEASE_TAG" --json assets --jq '.assets | length')"
+          test "$APK_ASSET_COUNT" = "1"
+          test "$SOURCE_ASSET_COUNT" = "1"
+          test "$APK_COUNT" = "1"
+          test "$ASSET_COUNT" = "2"
+          echo "GitHub Release assets verified: exactly one APK plus one matching source archive."
+
+      # This closes the release-delivery loop: the bytes users receive from
+      # GitHub must be identical to the signed APK that passed CI verification.
+      - name: Verify downloaded GitHub Release asset
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+
+          APK="build/app/outputs/flutter-apk/JEXFYZ-release.apk"
+          SOURCE_ARCHIVE="build/app/outputs/flutter-apk/JEXFYZ-corresponding-source.zip"
+          RELEASE_TAG="jexfyz-latest"
+          # Independently verify the Git ref in the same final step that checks
+          # the downloaded release bytes. Release metadata alone is insufficient.
+          TAG_TARGET_SHA="$(gh api "repos/${GITHUB_REPOSITORY}/git/ref/tags/${RELEASE_TAG}" --jq '.object.sha')"
+          test "$TAG_TARGET_SHA" = "$GITHUB_SHA"
+          echo "Release tag verified for source commit: $TAG_TARGET_SHA"
+          DOWNLOADED="$RUNNER_TEMP/release-verify/JEXFYZ-release.apk"
+          DOWNLOADED_SOURCE="$RUNNER_TEMP/release-verify/JEXFYZ-corresponding-source.zip"
+
+          mkdir -p "$RUNNER_TEMP/release-verify"
+          gh release download "$RELEASE_TAG" \
+            --pattern "JEXFYZ-release.apk" \
+            --dir "$RUNNER_TEMP/release-verify" \
+            --clobber
+          gh release download "$RELEASE_TAG" \
+            --pattern "JEXFYZ-corresponding-source.zip" \
+            --dir "$RUNNER_TEMP/release-verify" \
+            --clobber
+
+          test -s "$DOWNLOADED"
+          test -s "$DOWNLOADED_SOURCE"
+
+          LOCAL_SHA="$(sha256sum "$APK" | awk '{print $1}')"
+          DOWNLOADED_SHA="$(sha256sum "$DOWNLOADED" | awk '{print $1}')"
+          test "$LOCAL_SHA" = "$DOWNLOADED_SHA"
+          LOCAL_SOURCE_SHA="$(sha256sum "$SOURCE_ARCHIVE" | awk '{print $1}')"
+          DOWNLOADED_SOURCE_SHA="$(sha256sum "$DOWNLOADED_SOURCE" | awk '{print $1}')"
+          test "$LOCAL_SOURCE_SHA" = "$DOWNLOADED_SOURCE_SHA"
+          unzip -t "$DOWNLOADED_SOURCE"
+          unzip -p "$DOWNLOADED_SOURCE" JEXFYZ-corresponding-source/SOURCE_BUNDLE_README.md | grep -F "$GITHUB_SHA"
+          echo "Corresponding source bundle SHA-256: $DOWNLOADED_SOURCE_SHA"
+
+          APK_SIGNER="$(find "$ANDROID_SDK_ROOT/build-tools" -type f -name apksigner 2>/dev/null | sort -V | tail -n 1)"
+          test -n "$APK_SIGNER"
+
+          set +e
+          DOWNLOADED_JAR_SIGNATURE_OUTPUT="$(jarsigner -verify -certs "$DOWNLOADED" 2>&1)"
+          DOWNLOADED_JAR_SIGNATURE_STATUS=$?
+          set -e
+          printf '%s\n' "$DOWNLOADED_JAR_SIGNATURE_OUTPUT"
+          if [ "$DOWNLOADED_JAR_SIGNATURE_STATUS" -ne 0 ] || ! grep -Eiq 'jar verified\.' <<< "$DOWNLOADED_JAR_SIGNATURE_OUTPUT"; then
+            echo "Downloaded JAR/v1 signature validation failed."
+            exit 1
+          fi
+
+          DOWNLOADED_SIGNATURE_OUTPUT="$("$APK_SIGNER" verify --min-sdk-version 23 --verbose --print-certs "$DOWNLOADED" 2>&1)"
+          printf '%s\n' "$DOWNLOADED_SIGNATURE_OUTPUT"
+
+          grep -Fq "Verified using v1 scheme (JAR signing): true" <<< "$DOWNLOADED_SIGNATURE_OUTPUT"
+          grep -Fq "Verified using v2 scheme (APK Signature Scheme v2): true" <<< "$DOWNLOADED_SIGNATURE_OUTPUT"
+          grep -Fq "Verified using v3 scheme (APK Signature Scheme v3): true" <<< "$DOWNLOADED_SIGNATURE_OUTPUT"
+          grep -Fq "Number of signers: 1" <<< "$DOWNLOADED_SIGNATURE_OUTPUT"
+
+          DOWNLOADED_SIGNATURE_OUTPUT_LOWER="${DOWNLOADED_SIGNATURE_OUTPUT,,}"
+          grep -Fq "$EXPECTED_SIGNING_CERT_DN" <<< "$DOWNLOADED_SIGNATURE_OUTPUT"
+          grep -Fq "$EXPECTED_SIGNING_CERT_SHA256" <<< "$DOWNLOADED_SIGNATURE_OUTPUT_LOWER"
+
+          echo "Published GitHub Release asset re-download verification passed."
+          echo "SHA-256: $DOWNLOADED_SHA"
