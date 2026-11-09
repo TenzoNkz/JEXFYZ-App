@@ -65,6 +65,45 @@ Purpose: canonical current App/UI/BLE/telemetry contract. Current source defines
 - **Not run / unverified:** Flutter formatter, focused widget tests, full `flutter test`, `flutter analyze`, screenshots and physical/OEM display review. The current runtime lacks Flutter, Dart, Gradle and ADB. Report these as BLOCKED / NOT RUN; visual status is `VISUAL NOT VERIFIED`.
 - Build #131 remains the latest verified release. No App Build, APK/Release, Firmware, BIN, Firebase, OTA, flash or device operation occurred. A later package requires separate `Eksekusi Build App!`.
 
+## Usage Statistics — requested App-only feature (2026-11-09)
+
+**Owner direction:** do not add a standalone Firmware timer for now. Prefer a Usage Statistics / Statistik Penggunaan page inside Settings, showing historical telemetry and Operating Profile so the owner can draw conclusions from actual cooler use.
+
+### Settings navigation and page hierarchy
+
+- Add a distinct **Statistics / Statistik** section to `SettingsPage` (currently in `lib/floating_monitor.dart`), after Device and before Firmware, with one `Usage Statistics / Statistik Penggunaan` entry. Open it as a Settings subpage using the established `JexFixedScalePage(compactUi: true, ...)` contract.
+- The page is vertically scrollable and uses the existing Settings compact visual system, light/dark themes, English/Indonesian localization and the established 360-dp canvas/DPI behavior.
+- Default period selector proposal: 1 hour, 24 hours, 7 days and 30 days. Open at 24 hours unless product review selects another default.
+
+### Requested data presentation
+
+1. **Phone Battery Temperature / Suhu Baterai HP** — first trend chart. Show actual phone battery temperature in °C, with minimum, maximum and duration-weighted average for the selected period. Label it as the phone battery, not an unspecified cooler battery.
+2. **Hotside Temperature / Suhu Hotside** — second trend chart. Show actual NTC Hotside temperature in °C, minimum/maximum/duration-weighted average and a reference line for the current configured Hotside limit. Invalid NTC / `--` creates a gap, never zero.
+3. **Operating Profile Timeline / Riwayat Operasi** — one shared time axis with three separate lanes: Voltage as 5V/9V/12V step states; Adaptive as ON/OFF state intervals; Fan Speed as a percentage step line. Keep their units/legends separate rather than plotting unlike scales as one temperature curve. Optional summary: time spent at each rail, Adaptive active duration, average/maximum Fan Speed.
+
+### Capture and truth rules
+
+- Record only while the App has a valid synchronized BLE/P1 session and is receiving real values. Do not fabricate values or infer a physical state from command ACK alone.
+- Phone Battery temperature comes from the existing Android `getBatteryTemperature` reader (`_readBatteryTemperatureOnce()`), already scheduled at 1 Hz during the connected telemetry session. Record a timestamped sample on valid value change; invalid/unavailable readings create a gap.
+- Hotside comes from authoritative Firmware `HOT` telemetry, already delivered on the existing ~1 Hz scheduler. Record at most one sample per received telemetry tick and write only when the numeric value changes (or validity changes).
+- Voltage, Adaptive ON/OFF and Fan Speed are event-driven state changes. Record an initial baseline from the completed P1 full sync and subsequent records only when the corresponding telemetry state changes. Do not invent per-second state samples.
+- Timestamp every record in UTC/epoch and render it in the phone's local timezone. Keep records keyed by cooler identity so separate devices are not silently merged.
+- If the BLE session disconnects, App process stops receiving telemetry, the phone Battery reading is invalid, or NTC becomes invalid, close the current data segment and render a visible gap. On reconnect, begin a new segment from the new verified full-sync snapshot; never draw a continuous line across an unobserved interval.
+- Because temperature points are stored only when values change, chart drawing holds the last valid value horizontally until the next changed sample, but only inside a confirmed observation segment. Compute average as duration-weighted (not a simple arithmetic average of change events); min/max use valid observations.
+
+### Local storage and retention proposal
+
+- Keep statistics on the Android App locally. Do not send raw history to Firebase and do not persist it in Firmware NVS. Existing `AppSettingsStore` / `flutter_secure_storage` is for small user preferences and is not a time-series database.
+- Current `pubspec.yaml` has no local database or chart package. For implementation, prefer a local SQLite store (for example `sqflite`) with buffered/batched inserts and a small repository boundary. A custom Flutter painter can draw the charts while retaining minimal chart dependencies; review package trade-offs before adding dependencies.
+- Suggested retention default: detailed change/event history for 7 days, compact 1-minute aggregates and state-duration summaries for up to 30 days. The retention period can be made configurable later; provide a clear Clear Statistics action with confirmation.
+- Logging and DB writes must not block the BLE parser/UI or battery heartbeat. Use a bounded queue/batched writes, handle storage-full/write failure visibly, and keep collection independent of whether the Statistics page is open.
+
+### User-visible limitation
+
+- Statistics represent periods when the App's connected-device service actually received telemetry. They are not guaranteed full-day hardware logs while BLE is disconnected, App is force-stopped, or Android does not deliver the connected-device session. Show coverage / missing-data gaps and the last-recorded timestamp so the graph is not misleading.
+
+**Status:** OWNER-REQUESTED DESIGN / NOT IMPLEMENTED. This is an App-only feature and does not require a new Firmware timer or Firmware source change. Implementation, database migration, charts, tests and Settings UI require a separate explicit `Eksekusi Full!`; App packaging still requires separate `Eksekusi Build App!`.
+
 ## Floating Monitor
 
 - Exactly six metrics: B/H/V/A/P/F = Battery temperature, Hotside, Voltage, Adaptive, Peltier, Fan. F is Fan/Kipas, not FPS. Fan shows live PWM speed when running, localized OFF/MATI when off, and -- when disconnected.
