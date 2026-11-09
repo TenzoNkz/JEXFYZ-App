@@ -54,6 +54,22 @@ Durable hardware/user requirements live here. The source-level architecture and 
 - Decorative RGB IDs: Static 1, Breath 2, Comet 4, Dual Chase 5, Left/Right 6, Rainbow 7. ID 3 / Mirror Pulse is retired; invalid stored values migrate to Static and new MODE:3 commands are rejected.
 - Firmware emits LED_SYNC:<mode>,<phase_ms>,<cycle_ms> atomically at BLE notification time. Safety/OTA indications outrank decorative animation.
 
+### Owner-requested Touch Voltage cycle — pending implementation (2026-11-09)
+
+**Owner requirement:** change the physical TTP223 **single-tap** Voltage selection from the current ping-pong sequence to a repeating one-way cycle:
+
+`5V → 9V → 12V → 5V → 9V → 12V → ...`
+
+- The existing V7.1 implementation currently ping-pongs `5V → 9V → 12V → 9V → 5V → ...` using `touchVoltageAscending`; this is verified in `firmware/JEXFYZ-V7.1.ino` at `executeTouchSingle()` and its global state declaration.
+- Recommended implementation: calculate the next rail from authoritative `currentVoltage` only: `V5 → V9`, `V9 → V12`, `V12 → V5`. Remove the separate direction-memory variable when implementing so the next tap cannot retain a stale ascending/descending direction after another voltage-selection path.
+- Derive every next step from actual current rail. If App/manual or another permitted path changes the actual rail, the next physical single tap continues from that rail rather than from an independent sequence index.
+- A rejected/blocked voltage request must not advance an independent cycle state. Keep `requestVoltage()` as the sole request gate and preserve its OTA/transition/manual-source/1-second voltage guard/NTC/Hotside/adaptive-ceiling validations. Preserve the existing `TOUCH_VOLTAGE` ACK semantics.
+- Scope is limited to a valid physical single tap while Adaptive is OFF. Touch single tap remains rejected while Adaptive is active. Double tap continues to toggle RGB; long press and its existing Adaptive-OFF/cooling behavior remain unchanged. Preserve startup grace, raw qualification, tap/double-tap/long-press timing and startup-held-touch suppression.
+- Preserve the existing selector sequence and safety: 200 ms break-before-make, 1,000 ms settle/guard, Peltier active-soft-start pause/resume contract, completed-ramp continuity, Fan 100% handoff, NTC/Hotside/explicit-OFF/OTA override priority, and cooperative `millis()` timing. No executable `delay()` or timing `while()` loops.
+- **Regression matrix:** from 5V expect 9V, then 12V, then 5V, then repeat; from 9V expect 12V; from 12V expect 5V; repeat after an App/manual Voltage change; rejected request leaves the actual-state-derived next target consistent; verify 12V→5V selector handoff; verify double tap and long press are unchanged; verify Adaptive/OTA/safety gates remain authoritative.
+- **Version rule:** any functional implementation increments the embedded `FW_VERSION` and renames the sole active sketch to match (expected next version `V7.2`, file `firmware/JEXFYZ-V7.2.ino`, subject to current live-version recheck at execution). Keep exactly one active versioned `.ino`.
+- **Current status:** REQUEST RECORDED / NOT IMPLEMENTED. `firmware/JEXFYZ-V7.1.ino` remains current source (`FW_VERSION="V7.1"`). This Diskusi made documentation-only updates; no Firmware source/test edit, compilation, BIN, Firebase, OTA, flash or device operation occurred. Owner must issue a separate `Eksekusi Full!` for source/test implementation. Owner-side compilation remains separate with the approved Arduino-ESP32 Core 3.3.7 unless explicitly authorized otherwise.
+
 ## Telemetry and phone Battery
 
 - Hotside telemetry is sent every second; other state should send only when changed.
