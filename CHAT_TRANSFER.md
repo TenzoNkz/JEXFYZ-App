@@ -1,3 +1,18 @@
+# CURRENT APP BUILD EXECUTION — BUILD #132 PRE-TRIGGER — HOME LIGHT MODE / NOTIFY CONTRAST — 2026-11-09
+
+- **Mode/authorization:** owner explicitly issued `@Thinking Eksekusi Build App!`. Only guarded App Build/QC/release and justified App-scope repairs are authorized.
+- **Current intended App source:** initial HEAD before this checkpoint `72fce7c8bba98f505010bd45fa48b8ddcfd84ba7`. Since Build #131 source `b3c4fee432fddc49430840daeb1e2eecbe78a0db`, the only executable paths changed are `lib/main.dart` and `test/widget_test.dart`; remaining differences are documentation/prompt/checkpoint records.
+- **Change purpose:** theme-aware Home status-icon depth/cavity colors for Battery, Hotside, Voltage, Adaptive, Peltier, Fan and Fan Speed; Light Mode metric accent contrast target >=4.5:1; separate high-contrast Light Mode NOTIFY foregrounds while preserving existing pastel card tints and Dark Mode colors. Regression tests cover theme/palette propagation, repaint, metric and NOTIFY contrast, and Dark Mode preservation.
+- **Prior static evidence only:** lexical delimiter-balance checks and painter hard-coded-dark-color audit were reported as passing. Formatter, Flutter tests, analyzer, Android compile and screenshot/OEM visual QA have not yet run on this source. CI must establish all current workflow gates.
+- **Last verified Release:** Build #131 / run `42474266430`, source `b3c4fee432fddc49430840daeb1e2eecbe78a0db`, Release ID `403010611`, tag `jexfyz-latest`; existing APK/ZIP are still that older source until Build #132 completes.
+- **Workflow:** ID `374946166`, live workflow blob `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12`; issue opened/reopened only, exact owner/title/body-token guard, no push/PR trigger. Trigger issue #34 remains open with exact required title/token.
+- **Pre-trigger Actions status:** no queued/in-progress/waiting/requested run. Build #131 is complete success; Build #130 remains a recorded failure. No new run exists yet.
+- **Checkpoint writes:** APP_BUILD_REPORT.md pre-trigger record committed in `22c3aeeae07f4a5358e150f44e2e46b578711d66`; final checkpoint write follows. Re-read files and verify final HEAD before triggering.
+- **Next exact action:** after final re-read, close issue #34 exactly once and reopen it exactly once; confirm a single Build #132 run with source SHA equal to the post-checkpoint main HEAD. Follow only that run.
+- **Protected:** Android `versionName "Telegram @horizontalzzz"`; no Firmware, BIN, Firebase, OTA, flash or device action.
+
+---
+
 # CURRENT CONTINUATION CHECKPOINT — FULL EFFICIENCY / MAXIMUM RIGOR — 2026-11-09
 
 - **Owner preference:** work at maximum appropriate depth while minimizing wasted context, repeated reads, duplicate tool calls, irrelevant audits and verbose activity narration. Efficiency must never reduce engineering rigor, safety, required validation or evidence quality.
