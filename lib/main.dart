@@ -2111,6 +2111,9 @@ class JexAnimatedIcon extends StatefulWidget {
   final int voltageLevel;
   final bool warning;
   final bool valueKnown;
+  final bool lightTheme;
+  final Color lightSurfaceColor;
+  final Color lightOutlineColor;
 
   const JexAnimatedIcon({
     super.key,
@@ -2124,6 +2127,9 @@ class JexAnimatedIcon extends StatefulWidget {
     this.voltageLevel = 5,
     this.warning = false,
     this.valueKnown = true,
+    this.lightTheme = false,
+    this.lightSurfaceColor = Colors.white,
+    this.lightOutlineColor = const Color(0xFF3F444D),
   });
 
   const JexAnimatedIcon.glyph({
@@ -2138,7 +2144,10 @@ class JexAnimatedIcon extends StatefulWidget {
         glyph = icon,
         level = 1,
         voltageLevel = 5,
-        valueKnown = false;
+        valueKnown = false,
+        lightTheme = false,
+        lightSurfaceColor = Colors.white,
+        lightOutlineColor = const Color(0xFF3F444D);
 
   @override
   State<JexAnimatedIcon> createState() => _JexAnimatedIconState();
@@ -2697,6 +2706,9 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
               warningStrength: _currentWarningLevel(),
               valueKnown: widget.valueKnown,
               fanCoasting: _fanCoasting,
+              lightTheme: widget.lightTheme,
+              lightSurfaceColor: widget.lightSurfaceColor,
+              lightOutlineColor: widget.lightOutlineColor,
             ),
           );
         },
@@ -2718,6 +2730,9 @@ class _JexIconPainter extends CustomPainter {
   final double warningStrength;
   final bool valueKnown;
   final bool fanCoasting;
+  final bool lightTheme;
+  final Color lightSurfaceColor;
+  final Color lightOutlineColor;
 
   const _JexIconPainter({
     required this.kind,
@@ -2732,7 +2747,25 @@ class _JexIconPainter extends CustomPainter {
     required this.warningStrength,
     required this.valueKnown,
     required this.fanCoasting,
+    required this.lightTheme,
+    required this.lightSurfaceColor,
+    required this.lightOutlineColor,
   });
+
+  Color _depthPaintColor(
+    Color darkColor, {
+    required double darkAlpha,
+    required double lightAlpha,
+  }) =>
+      lightTheme
+          ? lightOutlineColor.withValues(alpha: lightAlpha)
+          : darkColor.withValues(alpha: darkAlpha);
+
+  Color _cavityPaintColor(
+    Color darkColor, {
+    required double darkAlpha,
+  }) =>
+      lightTheme ? lightSurfaceColor : darkColor.withValues(alpha: darkAlpha);
 
   Paint _stroke(double width, Color paintColor) => Paint()
     ..color = paintColor
@@ -3336,7 +3369,11 @@ class _JexIconPainter extends CustomPainter {
         }
         canvas.drawPath(
           shell.shift(Offset(s * .014, s * .018)),
-          _fill(const Color(0xFF060A10).withValues(alpha: .72)),
+          _fill(_depthPaintColor(
+            const Color(0xFF060A10),
+            darkAlpha: .72,
+            lightAlpha: .46,
+          )),
         );
         canvas.drawPath(shell, _stroke(s * .092, Colors.white.withValues(alpha: .16)));
         _drawGlow(
@@ -3349,7 +3386,10 @@ class _JexIconPainter extends CustomPainter {
           Rect.fromLTWH(s * .17, s * .31, s * .60, s * .38),
           Radius.circular(s * .055),
         );
-        canvas.drawRRect(inner, _fill(const Color(0xFF09121A).withValues(alpha: .92)));
+        canvas.drawRRect(inner, _fill(_cavityPaintColor(
+            const Color(0xFF09121A),
+            darkAlpha: .92,
+          )));
         canvas.drawRRect(inner, _stroke(s * .022, mainColor.withValues(alpha: .74)));
         canvas.save();
         canvas.clipRRect(inner);
@@ -3427,7 +3467,10 @@ class _JexIconPainter extends CustomPainter {
         );
         canvas.save();
         canvas.clipPath(shell);
-        canvas.drawRRect(tubeInner, _fill(const Color(0xFF09121A).withValues(alpha: .94)));
+        canvas.drawRRect(tubeInner, _fill(_cavityPaintColor(
+              const Color(0xFF09121A),
+              darkAlpha: .94,
+            )));
         canvas.drawRRect(
           tubeInner,
           _stroke(s * .020, mainColor.withValues(alpha: .74)),
@@ -3486,7 +3529,11 @@ class _JexIconPainter extends CustomPainter {
         final bolt = _bolt(s);
         canvas.drawPath(
           bolt.shift(Offset(s * .020, s * .018)),
-          _fill(const Color(0xFF070B12).withValues(alpha: .74)),
+          _fill(_depthPaintColor(
+            const Color(0xFF070B12),
+            darkAlpha: .74,
+            lightAlpha: .46,
+          )),
         );
         canvas.drawPath(bolt, _fill(mainColor.withValues(alpha: .64 + .24 * safeLevel)));
         canvas.drawPath(bolt, _stroke(s * .045, Colors.white.withValues(alpha: .18)));
@@ -3539,7 +3586,14 @@ class _JexIconPainter extends CustomPainter {
         );
         canvas.drawPath(
           crystal,
-          _stroke(crystalWidth * 1.60, const Color(0xFF071019).withValues(alpha: .92)),
+          _stroke(
+            crystalWidth * 1.60,
+            _depthPaintColor(
+              const Color(0xFF071019),
+              darkAlpha: .92,
+              lightAlpha: .52,
+            ),
+          ),
         );
         canvas.drawPath(crystal, _stroke(crystalWidth, mainColor.withValues(alpha: .98)));
         canvas.drawPath(
@@ -3569,9 +3623,11 @@ class _JexIconPainter extends CustomPainter {
           ..lineTo(cx, cy + s * .052)
           ..lineTo(cx - s * .038, cy)
           ..close();
+        final coreShade =
+            lightTheme ? lightSurfaceColor : const Color(0xFF0C2633);
         canvas.drawPath(
           core,
-          _fill(Color.lerp(mainColor, const Color(0xFF0C2633), .32)!
+          _fill(Color.lerp(mainColor, coreShade, .32)!
               .withValues(alpha: active ? .86 : .72)),
         );
         canvas.drawPath(core, _stroke(s * .020, Colors.white.withValues(alpha: .76)));
@@ -3594,7 +3650,14 @@ class _JexIconPainter extends CustomPainter {
         }
         canvas.drawCircle(
           Offset(cx, cy), s * .405,
-          _stroke(s * .042, const Color(0xFF070B12).withValues(alpha: .92)),
+          _stroke(
+             s * .042,
+             _depthPaintColor(
+               const Color(0xFF070B12),
+               darkAlpha: .92,
+               lightAlpha: .52,
+             ),
+           ),
         );
         canvas.drawCircle(
           Offset(cx, cy), s * .392,
@@ -3605,7 +3668,14 @@ class _JexIconPainter extends CustomPainter {
           _drawGlow(canvas, rotor, mainColor, s * .075, s * .025, .18 * strength);
         }
         canvas.drawPath(rotor, _fill(mainColor.withValues(alpha: .98)));
-        canvas.drawPath(rotor, _stroke(s * .022, const Color(0xFF071019).withValues(alpha: .90)));
+        canvas.drawPath(rotor, _stroke(
+            s * .022,
+            _depthPaintColor(
+              const Color(0xFF071019),
+              darkAlpha: .90,
+              lightAlpha: .52,
+            ),
+          ));
         canvas.drawPath(rotor, _stroke(s * .012, mainColor.withValues(alpha: .94)));
         for (var blade = 0; blade < 3; blade++) {
           canvas.drawPath(
@@ -3613,8 +3683,14 @@ class _JexIconPainter extends CustomPainter {
             _stroke(s * .022, Colors.white.withValues(alpha: active ? .42 : .28)),
           );
         }
-        final hubColor = Color.lerp(mainColor, const Color(0xFF101319), .48)!;
-        canvas.drawCircle(Offset(cx, cy), s * .096, _fill(const Color(0xFF070B12)));
+        final hubShade =
+            lightTheme ? lightSurfaceColor : const Color(0xFF101319);
+        final hubColor = Color.lerp(mainColor, hubShade, .48)!;
+        canvas.drawCircle(
+          Offset(cx, cy),
+          s * .096,
+          _fill(_cavityPaintColor(const Color(0xFF070B12), darkAlpha: 1.0)),
+        );
         canvas.drawCircle(Offset(cx, cy), s * .084, _fill(hubColor));
         canvas.drawCircle(
           Offset(cx, cy),
@@ -3640,7 +3716,14 @@ class _JexIconPainter extends CustomPainter {
         const sweep = math.pi;
         canvas.drawArc(
           gauge, start, sweep, false,
-          _stroke(s * .090, const Color(0xFF070B12).withValues(alpha: .96)),
+          _stroke(
+            s * .090,
+            _depthPaintColor(
+              const Color(0xFF070B12),
+              darkAlpha: .96,
+              lightAlpha: .52,
+            ),
+          ),
         );
         canvas.drawArc(gauge, start, sweep, false,
             _stroke(s * .055, mainColor.withValues(alpha: .30)));
@@ -3697,12 +3780,20 @@ class _JexIconPainter extends CustomPainter {
             _stroke(s * .060, mainColor.withValues(alpha: opacity)),
           );
         }
-        canvas.drawCircle(Offset(cx, cy), s * .062,
-            _fill(const Color(0xFF070B12)));
+        canvas.drawCircle(
+          Offset(cx, cy),
+          s * .062,
+          _fill(_cavityPaintColor(const Color(0xFF070B12), darkAlpha: 1.0)),
+        );
         canvas.drawCircle(Offset(cx, cy), s * .050,
             _stroke(s * .018, mainColor.withValues(alpha: .88)));
-        canvas.drawCircle(Offset(cx, cy), s * .034,
-            _fill(Color.lerp(mainColor, const Color(0xFF171A22), .20)!));
+        final speedHubShade =
+            lightTheme ? lightOutlineColor : const Color(0xFF171A22);
+        canvas.drawCircle(
+          Offset(cx, cy),
+          s * .034,
+          _fill(Color.lerp(mainColor, speedHubShade, .20)!),
+        );
         canvas.drawCircle(
           Offset(cx - s * .008, cy - s * .009), s * .013,
           _fill(Colors.white.withValues(alpha: valueKnown ? .74 : .36)),
@@ -3767,7 +3858,10 @@ class _JexIconPainter extends CustomPainter {
       oldDelegate.valueKnown != valueKnown ||
       oldDelegate.fanCoasting != fanCoasting ||
       oldDelegate.frostIntensityOverride != frostIntensityOverride ||
-      oldDelegate.frostParticleCountOverride != frostParticleCountOverride;
+      oldDelegate.frostParticleCountOverride != frostParticleCountOverride ||
+      oldDelegate.lightTheme != lightTheme ||
+      oldDelegate.lightSurfaceColor != lightSurfaceColor ||
+      oldDelegate.lightOutlineColor != lightOutlineColor;
 }
 
 const MethodChannel securityChannel = MethodChannel('je_x_fyz/security');
@@ -3824,12 +3918,60 @@ bool isNotifyErrorMessage(String value) {
   return markers.any(normalized.contains);
 }
 
-// AI-THEME: lightThemeAccentText — Generate a darker semantic accent for text on bright surfaces.
-Color lightThemeAccentText(Color color) {
-  final hsl = HSLColor.fromColor(color);
-  final lightness = hsl.lightness.clamp(0.22, 0.48).toDouble();
-  final saturation = hsl.saturation.clamp(0.58, 1.0).toDouble();
-  return hsl.withLightness(lightness).withSaturation(saturation).toColor();
+// WCAG contrast ratio for opaque foreground/background colors.
+double jexContrastRatio(Color foreground, Color background) {
+  final foregroundLuminance = foreground.computeLuminance();
+  final backgroundLuminance = background.computeLuminance();
+  final lighter = math.max(foregroundLuminance, backgroundLuminance);
+  final darker = math.min(foregroundLuminance, backgroundLuminance);
+  return (lighter + .05) / (darker + .05);
+}
+
+// AI-THEME: lightThemeAccentText — Darken a semantic accent only as far as needed for contrast.
+Color lightThemeAccentText(
+  Color color, {
+  Color background = Colors.white,
+  double minimumContrast = 4.5,
+}) {
+  if (!minimumContrast.isFinite || minimumContrast < 1.0) {
+    throw ArgumentError.value(minimumContrast, 'minimumContrast');
+  }
+  final opaqueColor = color.withValues(alpha: 1.0);
+  if (jexContrastRatio(opaqueColor, background) >= minimumContrast) {
+    return opaqueColor;
+  }
+
+  final hsl = HSLColor.fromColor(opaqueColor);
+  var lowerLightness = 0.0;
+  var upperLightness = hsl.lightness;
+  var best = Colors.black;
+  for (var i = 0; i < 24; i++) {
+    final candidateLightness = (lowerLightness + upperLightness) / 2;
+    final candidate = hsl.withLightness(candidateLightness).toColor();
+    if (jexContrastRatio(candidate, background) >= minimumContrast) {
+      best = candidate;
+      lowerLightness = candidateLightness;
+    } else {
+      upperLightness = candidateLightness;
+    }
+  }
+  return best;
+}
+
+// Keep semantic decoration colors distinct from accessible Light Mode foregrounds.
+Color jexHomeNotifyForegroundColor({
+  required bool darkTheme,
+  required bool hasError,
+  required bool warning,
+}) {
+  if (darkTheme) {
+    if (hasError) return const Color(0xFFFF5164);
+    if (warning) return const Color(0xFFFFB72B);
+    return const Color(0xFF4DE7B7);
+  }
+  if (hasError) return const Color(0xFFB42318);
+  if (warning) return const Color(0xFFB54708);
+  return const Color(0xFF027A48);
 }
 
 // AI-METHOD: isTransientOtaResultEvent — Accept only fresh OTA success/failure envelopes for Home NOTIFY.
@@ -7142,7 +7284,8 @@ void _handleAckLine(String line) {
       connected: connected,
       stateActive: animationActive ?? active,
     );
-    final homeDark = appThemeNotifier.value != AppThemePreset.light;
+    final theme = Theme.of(context);
+    final homeDark = theme.brightness != Brightness.light;
     // AI-THEME / DASHBOARD-LIGHT-CONTRAST-CONTRACT
     // Light mode stays colorful while separating surface, outline, and glyph contrast.
     // The accent identifies the metric without becoming a harsh solid block.
@@ -7155,7 +7298,10 @@ void _handleAckLine(String line) {
         final indicatorColor = animatedColor ?? color;
         final lightAccentOpacity = active ? .12 : .09;
         final lightOutlineOpacity = active ? .50 : .36;
-        final lightTextAccent = indicatorColor;
+        final lightTextAccent = lightThemeAccentText(
+          indicatorColor,
+          background: theme.colorScheme.surface,
+        );
         final indicatorFill = homeDark
             ? indicatorColor.withValues(alpha: .12)
             : indicatorColor.withValues(alpha: lightAccentOpacity);
@@ -7201,6 +7347,9 @@ void _handleAckLine(String line) {
                             kind: animatedKind,
                             size: 26,
                             color: indicatorColor,
+                            lightTheme: !homeDark,
+                            lightSurfaceColor: theme.colorScheme.surface,
+                            lightOutlineColor: theme.colorScheme.onSurfaceVariant,
                             connected: connected,
                             active: animatedKind == JexAnimatedIconKind.speed
                                 ? (animationActive ?? active)
@@ -7249,9 +7398,11 @@ void _handleAckLine(String line) {
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
                         // Preserve semantic accents while disconnected; unavailable data is --.
-                        color: active
-                            ? lightTextAccent
-                            : indicatorColor.withValues(alpha: .82),
+                        color: homeDark
+                            ? (active
+                                ? indicatorColor
+                                : indicatorColor.withValues(alpha: .82))
+                            : lightTextAccent,
                         fontSize: 18.5,
                         fontWeight: FontWeight.w900,
                         height: 0.95,
@@ -7526,7 +7677,7 @@ void _handleAckLine(String line) {
   // Retain the original icon-left / text-left Row; only the connection badge is removed.
   // The card stays compact for one line and grows naturally for two lines without shrinking its font.
   Widget _homeNotify() {
-    final headerDark = appThemeNotifier.value != AppThemePreset.light;
+    final headerDark = Theme.of(context).brightness != Brightness.light;
     final noticeTextColor =
         headerDark ? const Color(0xFFF4F6FA) : const Color(0xFF16181D);
     final custom = notice.trim().toUpperCase();
@@ -7547,6 +7698,11 @@ void _handleAckLine(String line) {
         : alert
             ? const Color(0xFFFFB72B)
             : const Color(0xFF4DE7B7);
+    final foregroundColor = jexHomeNotifyForegroundColor(
+      darkTheme: headerDark,
+      hasError: hasError,
+      warning: warning,
+    );
 
     return Container(
       width: double.infinity,
@@ -7560,7 +7716,7 @@ void _handleAckLine(String line) {
         border: Border.all(
           color: headerDark
               ? color.withValues(alpha: .25)
-              : color.withValues(alpha: .30),
+              : foregroundColor.withValues(alpha: .28),
         ),
       ),
       child: Row(
@@ -7573,7 +7729,7 @@ void _handleAckLine(String line) {
               child: JexAnimatedIcon.glyph(
                 icon: icon,
                 size: 27,
-                color: color,
+                color: foregroundColor,
                 active: true,
               ),
             ),
@@ -7593,7 +7749,7 @@ void _handleAckLine(String line) {
                     overflow: TextOverflow.ellipsis,
                     textAlign: TextAlign.start,
                     style: TextStyle(
-                      color: color,
+                      color: foregroundColor,
                       fontSize: 8.5,
                       fontWeight: FontWeight.w900,
                       letterSpacing: 0.8,
