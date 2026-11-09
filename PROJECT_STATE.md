@@ -2,6 +2,15 @@
 
 Last refreshed: 2026-11-09 (Asia/Jakarta). Current-state summary only; always fetch live main/source, tests, Actions and Release data before acting.
 
+## Firmware — Touch single-tap Voltage one-way cycle requested (2026-11-09)
+
+- **Owner request:** physical TTP223 single tap must cycle `5V → 9V → 12V → 5V → 9V → 12V → ...`, not ping-pong `5V → 9V → 12V → 9V → 5V`.
+- **Current implementation:** only active sketch is `firmware/JEXFYZ-V7.1.ino`, embedded `FW_VERSION="V7.1"`, source blob `c44e076b2c1ee2d0b66b4fcd308d0febc69976e9`. `executeTouchSingle()` uses `touchVoltageAscending` to reverse direction; static inspection confirms the reported behavior. The current QC test file pins the V7.1 filename/version and has no test for the Touch Voltage cycle.
+- **Decision/specification:** derive the next step from authoritative `currentVoltage`: V5→V9, V9→V12, V12→V5. Keep the change limited to hardware single tap while Adaptive is OFF. App/manual rail changes should naturally become the new starting point. Double tap RGB, long press, Touch debounce/timing, and Adaptive gate remain unchanged.
+- **Safety invariants:** preserve `requestVoltage()` validation (OTA/transition/manual permission, voltage guard, NTC safe-5V, Hotside and Adaptive clamp), 200 ms selector deadtime, 1 s guard, Peltier soft-start pause/resume, Fan 100% handoff, safety override priority and non-blocking millis() logic.
+- **Implementation/version plan:** under a new explicit `Eksekusi Full!`, update the source/test contracts, rename the one active sketch to `firmware/JEXFYZ-V7.2.ino`, set `FW_VERSION="V7.2"`, update hard-pinned test source paths/version expectations and add sequence/rejection/other-gesture regression coverage. Owner-side compilation with Arduino-ESP32 Core 3.3.7, BIN identity/publication, Firebase and OTA/flash are separate and are not authorized by Diskusi or Eksekusi Full.
+- **Current evidence/status:** STATIC SOURCE CHECK and owner requirement recorded; REQUEST RECORDED / NOT IMPLEMENTED. No executable Firmware source/test changes, compile, BIN, Firebase, OTA or device action occurred.
+
 ## Latest verified App release and Home Light Mode repair — Build #133 (2026-11-09)
 
 - **Latest verified published App package:** Build #133 / [Actions run 42619673642](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42619673642), terminal success, all 21 main workflow steps passed. Exact tested/package source SHA: `5201a3e07f36305ffe3882a1b965b9e7414cd71a`.
