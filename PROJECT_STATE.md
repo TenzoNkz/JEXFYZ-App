@@ -1,4 +1,14 @@
 # JE X FYZ / JE Cooler — Current Project State
+## Current App Build candidate — pre-trigger checkpoint (2026-11-10)
+
+- **Mode:** owner explicitly authorized `Eksekusi Build App!`; guarded App Build/QC/Release only. No Firmware/BIN/Firebase/OTA/flash/device operation.
+- **Candidate source:** main pre-documentation HEAD `0d5ffe66ed520c5e3502d8f86dfaf33a41a2f550`; recursive tree 131 entries, not truncated. Compared with Build #133 packaged SHA `5201a3e07f36305ffe3882a1b965b9e7414cd71a`, main was 61 commits ahead and 0 behind. Current diff includes App/test changes in `lib/usage_statistics.dart`, `lib/main.dart`, `lib/floating_monitor.dart`, `test/usage_statistics_test.dart`, `test/floating_monitor_layout_contract_test.dart`, `pubspec.yaml` and `pubspec.lock`, plus docs. No Firmware source changes are present in this compare.
+- **Candidate behavior:** Usage Statistics uses App-local SQLite and synchronized BLE/P1 sessions; Battery/Hotside temperature history and authoritative Voltage/Adaptive/Fan Speed state timelines, 1h/24h/7d/30d views, explicit data gaps and 30-day retention. “Last value change” now uses the latest valid persisted temperature event bounded by active snapshot/closed-session end. Source/test changes are committed; this candidate is NOT YET CI-VALIDATED.
+- **Preflight:** workflow ID `374946166`, only issue opened/reopened trigger, exact owner/title/token guard, workflow blob `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12`; no active/queued/requested run. Issue #33 is owner-authored with exact title/body token and currently CLOSED; reopen once only after pre-trigger docs are verified.
+- **Latest package baseline:** Build #133 / run `42619673642` on `5201a3e...`; 145 Flutter tests passed, analyzer exit 0 with 25 infos, Android gate success (native JUnit tasks NO-SOURCE), APK V1/V2/V3 + production certificate, corresponding source ZIP, exact Release/tag source SHA and downloaded asset checksums verified. This does NOT validate the new Usage Statistics code.
+- **Next:** commit/re-read the pre-trigger ledger/checkpoint, confirm final main SHA and no active run, reopen issue #33 once, then follow only the one new run. Expected next display number is #134; record actual run number/ID and head SHA from Actions. Preserve all gates and `versionName "Telegram @horizontalzzz"`.
+
+
 
 ## Current App Build candidate — pre-trigger checkpoint (2026-11-10)
 
