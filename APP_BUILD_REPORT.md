@@ -1,3 +1,12 @@
+## BUILD #135 PROGRESS — FLUTTER PASSED; GRADLE SETUP ACTIVE — 2026-11-10
+
+- **Run/job/source:** #135 / run `42747092939`, job `129601682007`, source `2cd9a0e886167c857504926043b5cab03c67c163`.
+- **Passed:** steps 1–4 (`Set up job`, checkout, Java 17, Flutter setup) completed `success`.
+- **Current gate:** step 5 `Set up Gradle` is `in_progress`. Steps 6–21 remain pending for toolchain, local.properties, signing prep, wrapper, App audit, dependencies, analyzer, Flutter tests, Android gate, APK, V1/V2/V3 + certificate, source ZIP, Release/tag and downloaded asset checks.
+- **Last completed gate:** Flutter setup (step 4). Analyzer and all downstream validation remain unrun for this attempt. Continue only #135.
+
+---
+
 ## BUILD #135 PROGRESS — JAVA 17 PASSED; FLUTTER SETUP ACTIVE — 2026-11-10
 
 - **Run/job/source:** #135 / run `42747092939`, job `129601682007`, source `2cd9a0e886167c857504926043b5cab03c67c163`.
