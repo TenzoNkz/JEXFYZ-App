@@ -12,6 +12,16 @@
 - **Protected config/scope:** preserve Android `versionName "Telegram @horizontalzzz"`; no Firmware, BIN, Firebase, OTA, flashing or device operation. CI does not prove physical/OEM/BLE/thermal behavior.
 
 ---
+## BUILD #142 PROGRESS — QUEUED/STARTED; JAVA 17 SETUP ACTIVE — 2026-11-10
+
+- **Run/source:** [Build #142 / Actions run 42782901555](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42782901555), workflow `374946166`, issue event, attempt 1, exact source SHA `6ec326bd662744eee786817c7ebf68485741a915` matched final main at trigger.
+- **Trigger:** issue #33 exact guard validated, closed once at `2026-11-10T08:28:08Z`, verified closed with no active run and main SHA `6ec326bd662744eee786817c7ebf68485741a915`, reopened once at `2026-11-10T08:28:21Z`. Exactly one new run appeared at `2026-11-10T08:28:23Z`.
+- **Job:** `build` / `129716981807`, status `in_progress`. Steps 1 Set up job and 2 Checkout repository `success`; step 3 Set up Java 17 `in_progress`; steps 4–21 pending. No analyzer/test/build/signing result claimed yet.
+- **Artifacts/Release:** no run artifacts; Release/tag remain Build #138 pending full #142 gate completion.
+- **Last completed gate:** checkout. **Current gate:** Java 17 setup. **Remaining:** Flutter/Gradle/toolchain, signing prep, security audit, dependencies, analyzer, full tests, Android Gradle, APK, signing/certificate, source ZIP, Release/tag and downloaded asset verification.
+- **Disposition:** ACTIVE — follow only run `42782901555`; no duplicate trigger.
+
+---
 ## BUILD #141 — FAILED AT FLUTTER TEST GATE; LOCALE EXPECTATION REPAIRED — 2026-11-10
 
 - **Run/job/source:** [Build #141 / Actions run 42782355435](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42782355435), workflow `374946166`, event `issues`, attempt 1; job `build` / `129715178789`; immutable source `2fb8dc6ec4a0f41e7cce73e6a49db0e716b56cda` matched main at trigger.
