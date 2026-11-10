@@ -1,12 +1,13 @@
-## Current App build candidate — Build #143 active (2026-11-10)
+## Current App release — Build #143 completed and verified (2026-11-10)
 
-- **Latest verified package:** Build #138 / run `42749408202`, source `b553f22092d9b33b2c81753254d2e3f03928fa18`; 21 main gates, Flutter 157/157, analyzer 25 info-level, Android gate (`NO-SOURCE` native JUnit), signing/certificate, source ZIP, Release/tag and downloaded asset checks all passed.
-- **Build #142:** run `42782901555`, job `129716981807`, source `6ec326bd662744eee786817c7ebf68485741a915`. Analyzer passed (25 info, no warnings/errors); Flutter suite 158 passed / 1 failed because `find.text('00:10')` matched both session elapsed header and chart x-axis endpoint.
-- **Repair:** commit `f210e6b9036723150f1596d3d54ed270f401ca63` targets the uniquely keyed `usage-session-elapsed` Text and asserts its data is `00:10`; chart-axis label remains. Full file read-back verified. Awaiting CI.
-- **Candidate source before docs checkpoint:** `f210e6b9036723150f1596d3d54ed270f401ca63`, complete recursive tree 131 entries. Hybrid Home header palette and output-gated per-second Usage Statistics remain intact.
-- **Build #143 CI:** run `42783474515`, job `129718855331`, exact checkout source `121ef9e0f5ed6a0003837d32e4c8b1701f38631a` matched main at trigger. Steps 1–12 passed including analyzer; steps 1–13 passed including full Flutter test gate; step 14 Android Gradle gate in progress; steps 15–21 pending. Exact test count awaits final log.
-- **Trigger:** issue #33 remains OPEN exact; it was closed/reopened once and exactly one #143 run appeared. Workflow remains guarded issue-only with all 21 gates; versionName `Telegram @horizontalzzz` preserved.
-- **Status:** test fix committed; full Flutter suite still UNVERIFIED. Physical BLE, storage soak, OEM visuals, install and thermal/electrical remain unverified.
+- **Latest verified package:** Build #143 / Actions run 42783474515, job 129718855331, final conclusion success; all 21 required gates and cleanup passed.
+- **Exact package source/tag:** 121ef9e0f5ed6a0003837d32e4c8b1701f38631a. The jexfyz-latest tag and Release ID 403010611 target this exact commit. Later main updates are documentation-only; do not misidentify them as the APK source.
+- **Quality gates:** App security/architecture audit passed; analyzer 25 info-level only (zero warnings/errors); Flutter suite 159/159 passed. Android :app:testDebugUnitTest task completed but reported NO-SOURCE, so native Android JUnit tests were not run.
+- **APK:** obfuscated Flutter release output using --obfuscate --split-debug-info=build/symbols; APK V1/V2/V3 and pinned official certificate verified on build output and downloaded Release file. Certificate SHA-256 dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0 (RSA 4096, JE X FYZ DN).
+- **Assets:** APK download URL https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-release.apk, 55,685,211 bytes, SHA-256 65d001c7a8df708dd35d5c80665c4cb7e377d47f11bdb675022c00817b251cd0; source ZIP https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-corresponding-source.zip, 2,911,348 bytes, SHA-256 b7682a0d73a1d494d5d187481115480465bdb6aaf3fa9db79fcebca8279e4fc6. Release contains exactly these two intended assets and re-download/hash/source-marker/signature checks passed.
+- Android versionName "Telegram @horizontalzzz" preserved. Release metadata version 1.0.0+3.
+- **Known warnings:** :app:testDebugUnitTest NO-SOURCE; Kotlin 2.2.20 and Gradle deprecations; generated native ELF DWARF debug info not removed/obfuscated despite Dart obfuscation flags; Java jarsigner trust-chain/META-INF warnings although expected pinned cert and apksigner V1/V2/V3 verified. Review native ELF symbol stripping and toolchain modernization separately.
+- **Field evidence UNVERIFIED:** installation identity, OEM screenshots/layout at 350-dp/420-dp, physical BLE lifecycle, Usage Statistics real sensor/soak/storage behavior, cooling thermal/electrical performance, Firmware V7.1 source-to-BIN identity, physical OTA/reboot and recovery. No Firmware/device operation was performed.
 
 ---
 ## HISTORICAL App build candidate — Build #142 active before test failure
@@ -133,19 +134,19 @@
 - Local formatter was not run in this session. Build #138's hosted workflow did not include a separate Dart formatter step.
 - No actual screenshot/OEM visual QA, installation identity, physical BLE lifecycle test, usage-history soak/storage stress test or thermal/electrical validation has been performed. Hosted CI is not physical acceptance.
 
-## Default hybrid Home theme contrast — implemented; awaiting CI (2026-11-10)
+## Default hybrid Home theme contrast — implemented; Build #143 CI passed; field QA pending (2026-11-10)
 
 - **Observed:** owner-provided Default screenshot showed the intended dark Home header and light lower Display Menu panel, but low-contrast metric labels/values, NOTIFY body and animated metric glyph treatment in the header.
 - **Root cause (STATIC SOURCE CHECK):** Default intentionally inherits Light Theme for the lower white panel and light dialogs, while the header is dark. The former inherited-brightness checks in _homeMetric() and _homeNotify() selected the wrong header foreground/painter palette.
 - **Implemented source:** lib/app_settings.dart defines a single preset-based jexHomeHeaderUsesDarkPalette resolver (Default/Dark = dark; Light = light), and a separate jexDashboardContentUsesDarkPalette resolver (only explicit Dark = dark). lib/main.dart uses the header resolver consistently in metrics/indicator painter and NOTIFY; the lower-panel resolver and Default white surface remain separate. Source commits: 8b9e04e06cc28aa88cdd38e70dae48aa7c2b5ba7 and follow-up test 8115f6702c9be1381c10d1ed610b4a6e720c6753.
 - **Regression contract:** test/widget_test.dart checks Default/Dark/Light palette mapping, NOTIFY resolver usage and metric resolver usage. This is committed source/test evidence only until hosted CI passes.
-- **Status:** IMPLEMENTED ON MAIN / AWAITING VERIFIED CI. The owner screenshot's installed APK identity remains unknown. No physical screenshot/OEM acceptance is inferred from source or widget-test intent.
+- **Status:** IMPLEMENTED ON MAIN / BUILD #143 HOSTED CI VALIDATED / FIELD ACCEPTANCE PENDING. The owner screenshot's installed APK identity remains unknown. No physical screenshot/OEM acceptance is inferred from source or widget-test intent.
 
 ## Open design and engineering gaps
 
-- **Physical App acceptance remains pending:** after the owner installs Build #138, inspect Home, Settings/Connection and Usage Statistics at 350-dp/420-dp, English/Indonesian, Light/Dark. For Home, verify Battery/Hotside/Voltage/Adaptive/Peltier/Fan/Fan Speed normal, warning and unknown states plus NOTIFY success/warning/error with one-/two-line copy. CI tests are not screenshot/OEM acceptance.
+- **Physical App acceptance remains pending:** after the owner installs Build #143, inspect Home, Settings/Connection and Usage Statistics at 350-dp/420-dp, English/Indonesian, Light/Dark. For Home, verify Battery/Hotside/Voltage/Adaptive/Peltier/Fan/Fan Speed normal, warning and unknown states plus NOTIFY success/warning/error with one-/two-line copy. CI tests are not screenshot/OEM acceptance.
 - **BLE runtime acceptance remains pending:** verify passive rediscovery, prerequisite cancellation, manual-sheet pre-emption and neutral dismissal, selected-device handoff, fresh primary/fallback advertisement handling, adapter loss and reconnect on the actual phone/cooler. Flutter tests do not represent a physical radio session.
-- Exact Build #138 installed APK identity on the field unit, Firmware V7.1 source-to-BIN identity, physical OTA/reboot/BLE recovery and thermal/electrical behavior remain independently UNVERIFIED.
+- Exact Build #143 installed APK identity on the field unit, Firmware V7.1 source-to-BIN identity, physical OTA/reboot/BLE recovery and thermal/electrical behavior remain independently UNVERIFIED.
 - BLE App-only identity authorization remains BLOCKED / NOT IMPLEMENTED until trusted enrollment/signing backend and Firmware verification exist.
 - Rapid Hotside-rise/rate-of-rise shutdown plus manual re-arm remains NOT IMPLEMENTED in Firmware V7.1; do not conflate it with Adaptive Fan tiers or ordinary Hotside-limit protection.
 
