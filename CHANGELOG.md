@@ -1,3 +1,12 @@
+## 2026-11-10 — Usage Statistics animated multi-chart redesign requested (design only)
+
+- Owner asked for a more professional Usage Statistics page, smooth display transitions and diagrams for every tracked operating metric, including Voltage and Adaptive Mode.
+- Source inspection found the temperature painter currently draws step lines without animation; recorder updates debounce 450 ms before the page reloads the full SQLite session snapshot. Current Operating Profile contains Voltage, Adaptive and Fan Speed timeline lanes; Peltier ON/OFF is not persisted as a chart event yet.
+- Design direction: session overview; separate Phone Battery and Hotside temperature charts; stepped Voltage, Adaptive and Peltier charts; Fan Speed 0–100% chart; shared elapsed-time axis/crosshair and per-chart semantic scales.
+- Preserve raw temperature capture at about 1 Hz. Smoothness should use Flutter frame-synchronized display animation (60/120 Hz), not 1-ms timers, synthetic sensor points or additional DB writes. Discrete state charts remain stepped and gaps/sessions must never be bridged.
+- Reduce live refresh cost using incremental in-memory deltas, asynchronous SQLite persistence and gap/extrema-preserving render decimation. Stress-test queue/backpressure and long sessions.
+- Documentation updated in APP_NOTES.md, DESIGN_NOTES.md, CHAT_TRANSFER.md, PROJECT_STATE.md and HANDOVER.md. **No source/test/build/device change in Diskusi.** Implementation requires explicit Eksekusi Full!; App QC/package requires separate Eksekusi Build App!.
+
 ## 2026-11-10 — Compact Peltier and LED Color Picker overlays (source implemented; not released)
 
 - Implemented the owner-authorized follow-up sizing pass for the Peltier safety dialog and LED Color Picker only. Build #143 remains the latest verified App release; these changes are unbuilt.
