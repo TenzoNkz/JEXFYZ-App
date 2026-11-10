@@ -16,6 +16,14 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 enum AppLanguage { english, indonesia }
 enum AppThemePreset { defaultTheme, light, dark }
 
+// Default is a deliberate hybrid: the Home header is dark while its lower
+// Dashboard content remains light. Keep header and content palette decisions separate.
+bool jexHomeHeaderUsesDarkPalette(AppThemePreset preset) =>
+    preset != AppThemePreset.light;
+
+bool jexDashboardContentUsesDarkPalette(AppThemePreset preset) =>
+    preset == AppThemePreset.dark;
+
 // AI-MEMORY / MODEL CONTRACT
 // AppSettings is the persisted UI preference model. It must remain independent from
 // live device telemetry so reconnects never replay local control state into firmware.
