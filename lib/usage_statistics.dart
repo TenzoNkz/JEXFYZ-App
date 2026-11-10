@@ -85,6 +85,19 @@ class UsageStatsSession {
   }
 }
 
+int usageSessionCoverageEndMs({
+  required UsageStatsSession session,
+  required int publishedAtMs,
+}) {
+  final endedAt = session.endedAtMs;
+  if (endedAt != null) return endedAt;
+  return math.min(
+    publishedAtMs,
+    session.lastSeenAtMs +
+        const Duration(milliseconds: 1500).inMilliseconds,
+  ).toInt();
+}
+
 class UsageStatsLiveUpdate {
   final String coolerId;
   final UsageStatsSession session;
@@ -1587,12 +1600,10 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
         });
         // Battery phone samples must never extend the P1 operating timeline.
         // An open run is covered only through the last fresh Firmware HOT heartbeat.
-        final coverageEndMs = update.session.endedAtMs ??
-            math.min(
-              update.publishedAtMs,
-              update.session.lastSeenAtMs +
-                  const Duration(milliseconds: 1500).inMilliseconds,
-            );
+        final coverageEndMs = usageSessionCoverageEndMs(
+          session: update.session,
+          publishedAtMs: update.publishedAtMs,
+        );
         final retainedEndMs = sameSession
             ? math.min(previous.toMs, coverageEndMs)
             : update.session.startedAtMs;
@@ -3075,7 +3086,10 @@ String _formatTemperature(double? value) =>
     value == null ? '--' : value.toStringAsFixed(1) + '°C';
 
 String _formatDuration(int milliseconds) {
-  if (milliseconds <= 0) return '0m';
+  if (milliseconds <= 0) return '0s';
+  if (milliseconds < 60000) {
+    return (milliseconds ~/ 1000).toString() + 's';
+  }
   final minutes = milliseconds ~/ 60000;
   final hours = minutes ~/ 60;
   final days = hours ~/ 24;
