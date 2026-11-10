@@ -13,34 +13,18 @@ import 'package:sqflite/sqflite.dart';
 
 import 'app_settings.dart';
 
-enum UsagePeriod { hour, day, week, month }
+/// Physical output telemetry, not a BLE connection or selected mode, defines operation.
+bool usageCoolerIsActive({required bool fanOn, required bool peltierOn}) =>
+    fanOn || peltierOn;
 
-extension UsagePeriodContract on UsagePeriod {
-  Duration get duration {
-    switch (this) {
-      case UsagePeriod.hour:
-        return const Duration(hours: 1);
-      case UsagePeriod.day:
-        return const Duration(hours: 24);
-      case UsagePeriod.week:
-        return const Duration(days: 7);
-      case UsagePeriod.month:
-        return const Duration(days: 30);
-    }
-  }
-
-  String get label {
-    switch (this) {
-      case UsagePeriod.hour:
-        return '1H';
-      case UsagePeriod.day:
-        return '24H';
-      case UsagePeriod.week:
-        return '7D';
-      case UsagePeriod.month:
-        return '30D';
-    }
-  }
+String formatUsageElapsed(int milliseconds) {
+  final totalSeconds = math.max(0, milliseconds ~/ 1000).toInt();
+  final hours = totalSeconds ~/ 3600;
+  final minutes = (totalSeconds ~/ 60) % 60;
+  final seconds = totalSeconds % 60;
+  String two(int value) => value.toString().padLeft(2, '0');
+  if (hours > 0) return '$hours:${two(minutes)}:${two(seconds)}';
+  return '${two(minutes)}:${two(seconds)}';
 }
 
 class UsageStatsSession {
@@ -79,6 +63,8 @@ class UsageStatsSession {
       lastBatterySeenAtMs: readNullableInt('last_battery_seen_at_ms'),
     );
   }
+
+  bool get isActive => endedAtMs == null;
 
   int? lastSeenFor(String metric) {
     switch (metric) {
@@ -223,9 +209,14 @@ class UsageStatsSummary {
 }
 
 abstract interface class UsageStatisticsRepository {
-  Future<UsageStatsSnapshot> loadSnapshot({
+  Future<List<UsageStatsSession>> loadSessions({
     required String coolerId,
-    required Duration period,
+    int? nowMs,
+  });
+
+  Future<UsageStatsSnapshot> loadSessionSnapshot({
+    required String coolerId,
+    required int sessionId,
     int? nowMs,
   });
 
@@ -282,7 +273,7 @@ class UsageStatsAnalytics {
     );
   }
 
-  static int? lastTemperatureChangeAtMs(UsageStatsSnapshot snapshot) {
+  static int? lastTemperatureSampleAtMs(UsageStatsSnapshot snapshot) {
     final sessionsById = <int, UsageStatsSession>{
       for (final session in snapshot.sessions) session.id: session,
     };
@@ -523,6 +514,12 @@ class UsageStatisticsStore implements UsageStatisticsRepository {
       'WHERE timestamp_ms < ? GROUP BY session_id, metric)',
       [cutoff, cutoff],
     );
+    await database.rawDelete(
+      'DELETE FROM usage_samples WHERE timestamp_ms < ? '
+      'AND id NOT IN (SELECT MAX(id) FROM usage_samples '
+      'WHERE timestamp_ms < ? GROUP BY session_id)',
+      [cutoff, cutoff],
+    );
     await database.delete(
       'usage_sessions',
       where: 'COALESCE(ended_at_ms, last_seen_at_ms) < ?',
@@ -531,13 +528,37 @@ class UsageStatisticsStore implements UsageStatisticsRepository {
     _lastPrunedAtMs = timestampMs;
   }
 
+  Future<void> _createUsageSamplesTable(DatabaseExecutor database) async {
+    await database.execute('''
+      CREATE TABLE usage_samples (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        session_id INTEGER NOT NULL,
+        timestamp_ms INTEGER NOT NULL,
+        battery_seen INTEGER NOT NULL DEFAULT 0,
+        battery_c REAL,
+        hotside_seen INTEGER NOT NULL DEFAULT 0,
+        hotside_c REAL,
+        FOREIGN KEY(session_id) REFERENCES usage_sessions(id)
+          ON DELETE CASCADE,
+        UNIQUE(session_id, timestamp_ms)
+      )
+    ''');
+    await database.execute(
+      'CREATE INDEX usage_samples_session_time '
+      'ON usage_samples(session_id, timestamp_ms)',
+    );
+    await database.execute(
+      'CREATE INDEX usage_samples_timestamp ON usage_samples(timestamp_ms)',
+    );
+  }
+
   Future<Database> _openDatabase() async {
     final directory = await getDatabasesPath();
     final databasePath = p.join(directory, _databaseName);
 
     return openDatabase(
       databasePath,
-      version: 1,
+      version: 2,
       onConfigure: (database) async {
         await database.execute('PRAGMA foreign_keys = ON');
       },
@@ -577,6 +598,34 @@ class UsageStatisticsStore implements UsageStatisticsRepository {
         await database.execute(
           'CREATE INDEX usage_events_timestamp ON usage_events(timestamp_ms)',
         );
+        await _createUsageSamplesTable(database);
+      },
+      onUpgrade: (database, oldVersion, newVersion) async {
+        if (oldVersion < 2) {
+          await _createUsageSamplesTable(database);
+          // Preserve v1 change-only temperature history as sparse samples.
+          // The seen flags distinguish an absent metric from an explicit invalid gap.
+          await database.execute('''
+            INSERT INTO usage_samples (
+              session_id, timestamp_ms, battery_seen, battery_c,
+              hotside_seen, hotside_c
+            )
+            SELECT
+              session_id,
+              timestamp_ms,
+              MAX(CASE WHEN metric = 'battery' THEN 1 ELSE 0 END),
+              MAX(CASE WHEN metric = 'battery' THEN value_num ELSE NULL END),
+              MAX(CASE WHEN metric = 'hotside' THEN 1 ELSE 0 END),
+              MAX(CASE WHEN metric = 'hotside' THEN value_num ELSE NULL END)
+            FROM usage_events
+            WHERE metric IN ('battery', 'hotside')
+            GROUP BY session_id, timestamp_ms
+          ''');
+          await database.delete(
+            'usage_events',
+            where: "metric IN ('battery', 'hotside')",
+          );
+        }
       },
       onOpen: (database) async {
         // A process restart closes a session at its last real telemetry receipt.
@@ -593,6 +642,12 @@ class UsageStatisticsStore implements UsageStatisticsRepository {
           'DELETE FROM usage_events WHERE timestamp_ms < ? '
           'AND id NOT IN (SELECT MAX(id) FROM usage_events '
           'WHERE timestamp_ms < ? GROUP BY session_id, metric)',
+          [cutoff, cutoff],
+        );
+        await database.rawDelete(
+          'DELETE FROM usage_samples WHERE timestamp_ms < ? '
+          'AND id NOT IN (SELECT MAX(id) FROM usage_samples '
+          'WHERE timestamp_ms < ? GROUP BY session_id)',
           [cutoff, cutoff],
         );
         await database.delete(
@@ -627,8 +682,18 @@ class UsageStatisticsStore implements UsageStatisticsRepository {
         'cooler_id': coolerId,
         'started_at_ms': timestampMs,
         'last_seen_at_ms': timestampMs,
-        'last_hotside_seen_at_ms': hotsideC == null ? null : timestampMs,
-        'last_battery_seen_at_ms': batteryC == null ? null : timestampMs,
+        'last_hotside_seen_at_ms': timestampMs,
+        'last_battery_seen_at_ms': timestampMs,
+      });
+
+      // The start snapshot is the first sample of this confirmed active run.
+      await transaction.insert('usage_samples', {
+        'session_id': sessionId,
+        'timestamp_ms': timestampMs,
+        'battery_seen': 1,
+        'battery_c': batteryC,
+        'hotside_seen': 1,
+        'hotside_c': hotsideC,
       });
 
       Future<void> insertBaseline(
@@ -646,8 +711,6 @@ class UsageStatisticsStore implements UsageStatisticsRepository {
         });
       }
 
-      await insertBaseline('battery', numberValue: batteryC);
-      await insertBaseline('hotside', numberValue: hotsideC);
       await insertBaseline('voltage', textValue: voltage);
       await insertBaseline('adaptive', textValue: adaptive);
       await insertBaseline('fan_speed', numberValue: fanSpeed?.toDouble());
@@ -670,6 +733,36 @@ class UsageStatisticsStore implements UsageStatisticsRepository {
       'value_num': numberValue,
       'value_text': textValue,
     });
+  }
+
+  Future<void> recordTemperatureSample({
+    required int sessionId,
+    required int timestampMs,
+    required String metric,
+    required double? value,
+  }) async {
+    final database = await _database;
+    if (metric == 'battery') {
+      await database.rawInsert(
+        'INSERT INTO usage_samples '
+        '(session_id, timestamp_ms, battery_seen, battery_c) '
+        'VALUES (?, ?, 1, ?) '
+        'ON CONFLICT(session_id, timestamp_ms) DO UPDATE SET '
+        'battery_seen = 1, battery_c = excluded.battery_c',
+        [sessionId, timestampMs, value],
+      );
+    } else if (metric == 'hotside') {
+      await database.rawInsert(
+        'INSERT INTO usage_samples '
+        '(session_id, timestamp_ms, hotside_seen, hotside_c) '
+        'VALUES (?, ?, 1, ?) '
+        'ON CONFLICT(session_id, timestamp_ms) DO UPDATE SET '
+        'hotside_seen = 1, hotside_c = excluded.hotside_c',
+        [sessionId, timestampMs, value],
+      );
+    } else {
+      throw ArgumentError.value(metric, 'metric', 'Unsupported temperature metric');
+    }
   }
 
   Future<void> touchSensor({
@@ -702,15 +795,6 @@ class UsageStatisticsStore implements UsageStatisticsRepository {
     }
   }
 
-  Future<void> touchSession(int sessionId, int timestampMs) async {
-    final database = await _database;
-    await database.update(
-      'usage_sessions',
-      {'last_seen_at_ms': timestampMs},
-      where: 'id = ? AND ended_at_ms IS NULL',
-      whereArgs: [sessionId],
-    );
-  }
 
   Future<void> endSession({
     required int sessionId,
@@ -730,52 +814,109 @@ class UsageStatisticsStore implements UsageStatisticsRepository {
   }
 
   @override
-  Future<UsageStatsSnapshot> loadSnapshot({
+  Future<List<UsageStatsSession>> loadSessions({
     required String coolerId,
-    required Duration period,
     int? nowMs,
   }) async {
-    final end = nowMs ?? DateTime.now().millisecondsSinceEpoch;
-    final start = end - period.inMilliseconds;
+    final now = nowMs ?? DateTime.now().millisecondsSinceEpoch;
+    final cutoff = now - const Duration(days: retentionDays).inMilliseconds;
     final database = await _database;
-    final sessionMaps = await database.query(
+    final rows = await database.query(
       'usage_sessions',
-      where: 'cooler_id = ? AND started_at_ms <= ? '
-          'AND COALESCE(ended_at_ms, last_seen_at_ms) >= ?',
-      whereArgs: [coolerId, end, start],
-      orderBy: 'started_at_ms ASC',
+      where: 'cooler_id = ? AND COALESCE(ended_at_ms, last_seen_at_ms) >= ?',
+      whereArgs: [coolerId, cutoff],
+      orderBy: 'started_at_ms DESC',
     );
+    return rows.map(UsageStatsSession.fromMap).toList(growable: false);
+  }
 
-    if (sessionMaps.isEmpty) {
-      return UsageStatsSnapshot.empty(fromMs: start, toMs: end);
+  @override
+  Future<UsageStatsSnapshot> loadSessionSnapshot({
+    required String coolerId,
+    required int sessionId,
+    int? nowMs,
+  }) async {
+    final now = nowMs ?? DateTime.now().millisecondsSinceEpoch;
+    final database = await _database;
+    final sessionRows = await database.query(
+      'usage_sessions',
+      where: 'id = ? AND cooler_id = ?',
+      whereArgs: [sessionId, coolerId],
+      limit: 1,
+    );
+    if (sessionRows.isEmpty) {
+      return UsageStatsSnapshot.empty(fromMs: now, toMs: now);
     }
 
-    final sessions =
-        sessionMaps.map(UsageStatsSession.fromMap).toList(growable: false);
-    final ids = sessions.map((session) => session.id).toList(growable: false);
-    final placeholders = List<String>.filled(ids.length, '?').join(',');
-    final eventMaps = await database.rawQuery(
-      'SELECT e.session_id, e.timestamp_ms, e.metric, e.value_num, e.value_text '
-      'FROM usage_events e '
-      'WHERE e.session_id IN (' +
-          placeholders +
-          ') AND e.timestamp_ms <= ? '
-          'AND (e.timestamp_ms >= ? OR e.id = ('
-          'SELECT prior.id FROM usage_events prior '
-          'WHERE prior.session_id = e.session_id '
-          'AND prior.metric = e.metric AND prior.timestamp_ms < ? '
-          'ORDER BY prior.timestamp_ms DESC LIMIT 1)) '
-          'ORDER BY e.session_id ASC, e.timestamp_ms ASC',
-      [...ids, end, start, start],
+    final session = UsageStatsSession.fromMap(sessionRows.first);
+    final recordedEnd = session.endedAtMs ??
+        math.min(now, session.lastSeenAtMs +
+            const Duration(milliseconds: 1500).inMilliseconds);
+    final end = math.max(session.startedAtMs, recordedEnd).toInt();
+
+    final stateRows = await database.query(
+      'usage_events',
+      columns: [
+        'session_id',
+        'timestamp_ms',
+        'metric',
+        'value_num',
+        'value_text',
+      ],
+      where: 'session_id = ? AND timestamp_ms <= ?',
+      whereArgs: [sessionId, end],
+      orderBy: 'timestamp_ms ASC',
     );
+    final events = stateRows.map(UsageStatsEvent.fromMap).toList();
+
+    final sampleRows = await database.query(
+      'usage_samples',
+      columns: [
+        'session_id',
+        'timestamp_ms',
+        'battery_seen',
+        'battery_c',
+        'hotside_seen',
+        'hotside_c',
+      ],
+      where: 'session_id = ? AND timestamp_ms <= ?',
+      whereArgs: [sessionId, end],
+      orderBy: 'timestamp_ms ASC',
+    );
+    for (final row in sampleRows) {
+      final id = (row['session_id'] as num).toInt();
+      final timestamp = (row['timestamp_ms'] as num).toInt();
+      if ((row['battery_seen'] as num).toInt() == 1) {
+        final raw = row['battery_c'];
+        events.add(UsageStatsEvent(
+          sessionId: id,
+          timestampMs: timestamp,
+          metric: 'battery',
+          numberValue: raw is num ? raw.toDouble() : null,
+          textValue: null,
+        ));
+      }
+      if ((row['hotside_seen'] as num).toInt() == 1) {
+        final raw = row['hotside_c'];
+        events.add(UsageStatsEvent(
+          sessionId: id,
+          timestampMs: timestamp,
+          metric: 'hotside',
+          numberValue: raw is num ? raw.toDouble() : null,
+          textValue: null,
+        ));
+      }
+    }
+    events.sort((a, b) {
+      final timeOrder = a.timestampMs.compareTo(b.timestampMs);
+      return timeOrder != 0 ? timeOrder : a.metric.compareTo(b.metric);
+    });
 
     return UsageStatsSnapshot(
-      fromMs: start,
+      fromMs: session.startedAtMs,
       toMs: end,
-      sessions: sessions,
-      events: eventMaps
-          .map(UsageStatsEvent.fromMap)
-          .toList(growable: false),
+      sessions: [session],
+      events: events,
     );
   }
 
@@ -804,6 +945,8 @@ class UsageStatisticsRecorder {
   final Map<String, double?> _temperatures = {};
   final Map<String, Object?> _states = {};
   final Map<String, int> _lastSensorSeenMs = {};
+  Timer? _p1FreshnessTimer;
+  int? _lastP1ReceiptAtMs;
 
   // Kept visible for the lifetime of this process because a later successful
   // write cannot prove that a previously dropped sample was recovered.
@@ -826,6 +969,27 @@ class UsageStatisticsRecorder {
     revisionNotifier.value++;
   }
 
+  void _startP1FreshnessWatchdog() {
+    _p1FreshnessTimer?.cancel();
+    _p1FreshnessTimer = Timer.periodic(
+      const Duration(milliseconds: 500),
+      (_) {
+        final sessionId = _sessionId;
+        final lastReceipt = _lastP1ReceiptAtMs;
+        if (sessionId == null || lastReceipt == null) return;
+        final now = DateTime.now().millisecondsSinceEpoch;
+        if (now - lastReceipt >
+            const Duration(milliseconds: 2500).inMilliseconds) {
+          unawaited(endSession(
+            reason: 'stale_p1',
+            timestampMs: lastReceipt +
+                const Duration(milliseconds: 1500).inMilliseconds,
+          ));
+        }
+      },
+    );
+  }
+
   Future<void> startSession({
     required String coolerId,
     double? batteryC,
@@ -838,7 +1002,18 @@ class UsageStatisticsRecorder {
     if (safeId.isEmpty) return Future<void>.value();
 
     return _enqueue(() async {
+      if (_sessionId != null && _coolerId == safeId) return;
+
       final now = DateTime.now().millisecondsSinceEpoch;
+      _p1FreshnessTimer?.cancel();
+      final previousSessionId = _sessionId;
+      if (previousSessionId != null) {
+        await _store.endSession(
+          sessionId: previousSessionId,
+          timestampMs: now,
+          reason: 'superseded_session',
+        );
+      }
       _sessionId = await _store.startSession(
         coolerId: safeId,
         timestampMs: now,
@@ -858,9 +1033,12 @@ class UsageStatisticsRecorder {
         ..['voltage'] = voltage
         ..['adaptive'] = adaptive
         ..['fan_speed'] = fanSpeed;
-      _lastSensorSeenMs.clear();
-      if (batteryC != null) _lastSensorSeenMs['battery'] = now;
-      if (hotsideC != null) _lastSensorSeenMs['hotside'] = now;
+      _lastSensorSeenMs
+        ..clear()
+        ..['battery'] = now
+        ..['hotside'] = now;
+      _lastP1ReceiptAtMs = now;
+      _startP1FreshnessWatchdog();
       _notifyChanged();
     });
   }
@@ -877,49 +1055,64 @@ class UsageStatisticsRecorder {
         value != null && value.isFinite && value >= 0 && value <= 100
             ? value
             : null;
+    final receivedAtMs = DateTime.now().millisecondsSinceEpoch;
+    if (metric == 'hotside' && _sessionId != null) {
+      // Advance the watchdog on receipt, before the serialized SQLite write.
+      _lastP1ReceiptAtMs = receivedAtMs;
+    }
 
     return _enqueue(() async {
       final sessionId = _sessionId;
       if (sessionId == null) return;
 
-      final now = DateTime.now().millisecondsSinceEpoch;
       final lastSeen = _lastSensorSeenMs[metric];
-      var previous = _temperatures[metric];
-
       if (lastSeen != null &&
-          now - lastSeen >
-              const Duration(milliseconds: 2500).inMilliseconds &&
-          previous != null) {
-        await _store.recordEvent(
+          receivedAtMs - lastSeen >
+              const Duration(milliseconds: 2500).inMilliseconds) {
+        // Do not bridge a missing sensor interval with a stale value.
+        await _store.recordTemperatureSample(
           sessionId: sessionId,
           timestampMs: lastSeen +
               const Duration(milliseconds: 1500).inMilliseconds,
           metric: metric,
+          value: null,
         );
-        previous = null;
+        if (metric == 'hotside') {
+          final cutoff = lastSeen +
+              const Duration(milliseconds: 1500).inMilliseconds;
+          await _store.endSession(
+            sessionId: sessionId,
+            timestampMs: cutoff,
+            reason: 'stale_p1',
+          );
+          _p1FreshnessTimer?.cancel();
+          _p1FreshnessTimer = null;
+          _sessionId = null;
+          _coolerId = null;
+          _temperatures.clear();
+          _states.clear();
+          _lastSensorSeenMs.clear();
+          _lastP1ReceiptAtMs = null;
+          _notifyChanged();
+          return;
+        }
       }
 
-      final changed = previous == null
-          ? safeValue != null
-          : safeValue == null || (previous - safeValue).abs() >= 0.05;
-      if (changed) {
-        await _store.recordEvent(
-          sessionId: sessionId,
-          timestampMs: now,
-          metric: metric,
-          numberValue: safeValue,
-        );
-      }
-
-      // The 1 Hz sensor receipt updates freshness even when the numeric value
-      // has not changed, so the chart holds the last reading only while observed.
+      // Persist every 1 Hz observation, even when its numeric value is unchanged.
+      // Null samples are explicit gaps, not zero or a carried-forward reading.
+      await _store.recordTemperatureSample(
+        sessionId: sessionId,
+        timestampMs: receivedAtMs,
+        metric: metric,
+        value: safeValue,
+      );
       await _store.touchSensor(
         sessionId: sessionId,
         metric: metric,
-        timestampMs: now,
+        timestampMs: receivedAtMs,
       );
       _temperatures[metric] = safeValue;
-      _lastSensorSeenMs[metric] = now;
+      _lastSensorSeenMs[metric] = receivedAtMs;
       _notifyChanged();
     });
   }
@@ -957,7 +1150,6 @@ class UsageStatisticsRecorder {
       final now = DateTime.now().millisecondsSinceEpoch;
       final previous = _states[metric];
       if (previous == canonical) {
-        await _store.touchSession(sessionId, now);
         _notifyChanged();
         return;
       }
@@ -971,27 +1163,32 @@ class UsageStatisticsRecorder {
         numberValue: numeric,
         textValue: text,
       );
-      await _store.touchSession(sessionId, now);
       _states[metric] = canonical;
       _notifyChanged();
     });
   }
 
-  Future<void> endSession({String reason = 'disconnected'}) {
+  Future<void> endSession({
+    String reason = 'disconnected',
+    int? timestampMs,
+  }) {
     return _enqueue(() async {
       final id = _sessionId;
       if (id == null) return;
 
       await _store.endSession(
         sessionId: id,
-        timestampMs: DateTime.now().millisecondsSinceEpoch,
+        timestampMs: timestampMs ?? DateTime.now().millisecondsSinceEpoch,
         reason: reason,
       );
+      _p1FreshnessTimer?.cancel();
+      _p1FreshnessTimer = null;
       _sessionId = null;
       _coolerId = null;
       _temperatures.clear();
       _states.clear();
       _lastSensorSeenMs.clear();
+      _lastP1ReceiptAtMs = null;
       _notifyChanged();
     });
   }
@@ -1020,10 +1217,10 @@ class UsageStatisticsRecorder {
       );
       _lastSensorSeenMs
         ..clear()
-        ..addAll({
-          for (final entry in _temperatures.entries)
-            if (entry.value != null) entry.key: now,
-        });
+        ..['battery'] = now
+        ..['hotside'] = now;
+      _lastP1ReceiptAtMs = now;
+      _startP1FreshnessWatchdog();
       _notifyChanged();
     });
   }
@@ -1049,7 +1246,9 @@ class UsageStatisticsPage extends StatefulWidget {
 
 class _UsageStatisticsPageState extends State<UsageStatisticsPage>
     with WidgetsBindingObserver {
-  UsagePeriod _period = UsagePeriod.day;
+  List<UsageStatsSession> _sessions = const [];
+  int? _selectedSessionId;
+  bool _sessionSelectionPinned = false;
   UsageStatsSnapshot? _snapshot;
   UsageStatsSummary? _summary;
   bool _loading = true;
@@ -1101,6 +1300,8 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
     if (coolerId == null || coolerId.isEmpty) {
       if (mounted) {
         setState(() {
+          _sessions = const [];
+          _selectedSessionId = null;
           _snapshot = null;
           _summary = null;
           _loading = false;
@@ -1116,13 +1317,24 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
     do {
       _reloadPending = false;
       try {
-        final snapshot = await _repository.loadSnapshot(
-          coolerId: coolerId,
-          period: _period.duration,
-        );
-        final summary = UsageStatsAnalytics.summarize(snapshot);
+        final sessions = await _repository.loadSessions(coolerId: coolerId);
+        final requestedId = _sessionSelectionPinned ? _selectedSessionId : null;
+        final selectedId = requestedId != null &&
+                sessions.any((session) => session.id == requestedId)
+            ? requestedId
+            : (sessions.isEmpty ? null : sessions.first.id);
+        final snapshot = selectedId == null
+            ? null
+            : await _repository.loadSessionSnapshot(
+                coolerId: coolerId,
+                sessionId: selectedId,
+              );
+        final summary =
+            snapshot == null ? null : UsageStatsAnalytics.summarize(snapshot);
         if (!mounted) break;
         setState(() {
+          _sessions = sessions;
+          _selectedSessionId = selectedId;
           _snapshot = snapshot;
           _summary = summary;
           _loading = false;
@@ -1138,6 +1350,15 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
     } while (_reloadPending && mounted);
 
     _queryRunning = false;
+  }
+
+  void _selectSession(int sessionId) {
+    if (_selectedSessionId == sessionId) return;
+    setState(() {
+      _selectedSessionId = sessionId;
+      _sessionSelectionPinned = true;
+    });
+    _load();
   }
 
   Future<void> _clearHistory() async {
@@ -1179,6 +1400,8 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
       } else {
         await UsageStatisticsRecorder.instance.clearHistory(coolerId);
       }
+      _sessionSelectionPinned = false;
+      _selectedSessionId = null;
       await _load();
     } catch (error) {
       if (!mounted) return;
@@ -1225,7 +1448,11 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
           physics: const AlwaysScrollableScrollPhysics(),
           padding: const EdgeInsets.fromLTRB(14, 10, 14, 28),
           children: [
-            _periodSelector(),
+            if (_sessions.isNotEmpty) ...[
+              _sessionSelector(language),
+              const SizedBox(height: 8),
+              _sessionHeader(language, scheme),
+            ],
             if (UsageStatisticsRecorder.instance.lastWriteError != null) ...[
               const SizedBox(height: 10),
               _messageState(
@@ -1283,13 +1510,13 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
             else if (summary == null || !summary.hasData)
               _messageState(
                 JexText.phrase(
-                  'No usage data yet.',
-                  'Belum ada data penggunaan.',
+                  'No cooling history yet.',
+                  'Belum ada riwayat pendinginan.',
                   language,
                 ),
                 JexText.phrase(
-                  'Connect your cooler with JE Cooler to start recording real readings and operating changes.',
-                  'Hubungkan cooler dengan JE Cooler untuk mulai merekam suhu dan perubahan operasi yang sebenarnya.',
+                  'A run is recorded only while the Firmware confirms FAN or PELTIER is ON.',
+                  'Sesi direkam hanya saat Firmware mengonfirmasi FAN atau PELTIER AKTIF.',
                   language,
                 ),
                 scheme,
@@ -1324,8 +1551,8 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
               const SizedBox(height: 12),
               Text(
                 JexText.phrase(
-                  'History is recorded only while valid BLE/P1 telemetry is received. Missing, invalid or disconnected periods are shown as gaps.',
-                  'Riwayat hanya direkam saat telemetry BLE/P1 yang valid diterima. Periode tanpa data, data tidak valid, atau terputus ditampilkan sebagai celah.',
+                  'Battery and Hotside are sampled every second during confirmed cooler operation. Missing or invalid sensor readings remain gaps.',
+                  'Suhu Battery dan Hotside direkam setiap detik selama cooler benar-benar beroperasi. Pembacaan sensor yang hilang atau tidak valid tetap menjadi celah.',
                   language,
                 ),
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
@@ -1334,8 +1561,8 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
               ),
               Text(
                 JexText.phrase(
-                  'Stored locally on this phone. Last value change: ',
-                  'Disimpan lokal di ponsel ini. Perubahan nilai terakhir: ',
+                  'Stored locally on this phone. Last valid sample: ',
+                  'Disimpan lokal di ponsel ini. Sampel valid terakhir: ',
                   language,
                 ) +
                     _formatLastSample(_snapshot, language),
@@ -1354,24 +1581,127 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
     );
   }
 
-  Widget _periodSelector() {
-    return SegmentedButton<UsagePeriod>(
-      segments: [
-        for (final period in UsagePeriod.values)
-          ButtonSegment<UsagePeriod>(
-            value: period,
-            label: Text(period.label),
+  Widget _sessionSelector(AppLanguage language) {
+    if (_sessions.length < 2 || _selectedSessionId == null) {
+      return const SizedBox.shrink();
+    }
+    return DropdownButton<int>(
+      key: const ValueKey<String>('usage-session-selector'),
+      isExpanded: true,
+      value: _selectedSessionId,
+      items: [
+        for (final session in _sessions)
+          DropdownMenuItem<int>(
+            value: session.id,
+            child: Text(
+              _sessionOptionLabel(session, language),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
           ),
       ],
-      selected: {_period},
-      onSelectionChanged: (selection) {
-        if (selection.isEmpty || selection.first == _period) return;
-        setState(() => _period = selection.first);
-        _load();
+      onChanged: (sessionId) {
+        if (sessionId != null) _selectSession(sessionId);
       },
-      showSelectedIcon: false,
     );
   }
+
+  Widget _sessionHeader(AppLanguage language, ColorScheme scheme) {
+    final snapshot = _snapshot;
+    UsageStatsSession? selected;
+    for (final session in _sessions) {
+      if (session.id == _selectedSessionId) {
+        selected = session;
+        break;
+      }
+    }
+    if (snapshot == null || selected == null) {
+      return const SizedBox.shrink();
+    }
+    final active = selected.isActive;
+    final elapsed = formatUsageElapsed(snapshot.toMs - snapshot.fromMs);
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Row(
+        children: [
+          Icon(
+            Icons.timelapse,
+            color: active ? scheme.primary : scheme.onSurfaceVariant,
+            size: 20,
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  JexText.phrase(
+                    active ? 'Cooling active' : 'Completed cooling run',
+                    active ? 'Pendinginan aktif' : 'Sesi pendinginan selesai',
+                    language,
+                  ),
+                  style: Theme.of(context).textTheme.labelMedium,
+                ),
+                Text(
+                  _sessionStartLabel(selected),
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: scheme.onSurfaceVariant,
+                      ),
+                ),
+              ],
+            ),
+          ),
+          Text(
+            elapsed,
+            key: const ValueKey<String>('usage-session-elapsed'),
+            style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                  fontWeight: FontWeight.w800,
+                  fontFeatures: const [FontFeature.tabularFigures()],
+                ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  String _sessionOptionLabel(
+    UsageStatsSession session,
+    AppLanguage language,
+  ) {
+    final start = DateTime.fromMillisecondsSinceEpoch(
+      session.startedAtMs,
+    ).toLocal();
+    final durationEnd = session.endedAtMs ?? session.lastSeenAtMs;
+    final elapsed = formatUsageElapsed(durationEnd - session.startedAtMs);
+    final prefix = session.isActive
+        ? JexText.phrase('Active · ', 'Aktif · ', language)
+        : '';
+    return prefix +
+        _twoDigits(start.day) +
+        '/' +
+        _twoDigits(start.month) +
+        ' ' +
+        _twoDigits(start.hour) +
+        ':' +
+        _twoDigits(start.minute) +
+        ' · ' +
+        elapsed;
+  }
+
+  String _sessionStartLabel(UsageStatsSession session) {
+    final start = DateTime.fromMillisecondsSinceEpoch(
+      session.startedAtMs,
+    ).toLocal();
+    return _twoDigits(start.day) +
+        '/' +
+        _twoDigits(start.month) +
+        ' ' +
+        _twoDigits(start.hour) +
+        ':' +
+        _twoDigits(start.minute);
+  }
+
+  String _twoDigits(int value) => value.toString().padLeft(2, '0');
 
   Widget _messageState(
     String title,
@@ -1545,13 +1875,13 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              _axisTime(_snapshot!.fromMs, _period.duration.inMilliseconds),
+              _axisTime(_snapshot!.fromMs, _snapshot!.fromMs),
               style: Theme.of(context).textTheme.labelSmall?.copyWith(
                     color: scheme.onSurfaceVariant,
                   ),
             ),
             Text(
-              _axisTime(_snapshot!.toMs, _period.duration.inMilliseconds),
+              _axisTime(_snapshot!.toMs, _snapshot!.fromMs),
               style: Theme.of(context).textTheme.labelSmall?.copyWith(
                     color: scheme.onSurfaceVariant,
                   ),
@@ -1648,11 +1978,11 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
       return JexText.phrase('No valid sample', 'Belum ada sampel valid', language);
     }
     final timestampMs =
-        UsageStatsAnalytics.lastTemperatureChangeAtMs(snapshot);
+        UsageStatsAnalytics.lastTemperatureSampleAtMs(snapshot);
     if (timestampMs == null) {
       return JexText.phrase('No valid sample', 'Belum ada sampel valid', language);
     }
-    return _axisTime(timestampMs, _period.duration.inMilliseconds);
+    return _axisTime(timestampMs, snapshot.fromMs);
   }
 }
 
@@ -1802,14 +2132,14 @@ class _UsageLinePainter extends CustomPainter {
     final range = toMs - fromMs;
     final startText = TextPainter(
       text: TextSpan(
-        text: _axisTime(fromMs, range),
+        text: _axisTime(fromMs, fromMs),
         style: TextStyle(color: labelColor, fontSize: 9),
       ),
       textDirection: TextDirection.ltr,
     )..layout();
     final endText = TextPainter(
       text: TextSpan(
-        text: _axisTime(toMs, range),
+        text: _axisTime(toMs, fromMs),
         style: TextStyle(color: labelColor, fontSize: 9),
       ),
       textDirection: TextDirection.ltr,
@@ -1945,12 +2275,6 @@ String _formatDuration(int milliseconds) {
   return minutes.toString() + 'm';
 }
 
-String _axisTime(int timestampMs, int rangeMs) {
-  final value = DateTime.fromMillisecondsSinceEpoch(timestampMs).toLocal();
-  String two(int part) => part.toString().padLeft(2, '0');
-  if (rangeMs <= const Duration(hours: 24).inMilliseconds) {
-    return two(value.hour) + ':' + two(value.minute);
-  }
-  return two(value.day) + '/' + two(value.month);
-}
+String _axisTime(int timestampMs, int sessionStartMs) =>
+    formatUsageElapsed(timestampMs - sessionStartMs);
 
