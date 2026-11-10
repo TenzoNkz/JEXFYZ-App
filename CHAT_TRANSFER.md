@@ -2,13 +2,13 @@
 
 **Run:** [#135 / Actions run 42747092939](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42747092939), workflow `374946166`, event `issues`, attempt 1, exact source `2cd9a0e886167c857504926043b5cab03c67c163`.
 
-**Job:** `build` / `129601682007`, hosted runner, `in_progress`. Steps 1–3 (job setup, checkout, Java 17) are `success`. Step 4 `Set up Flutter` is `in_progress`. Steps 5–21 remain pending.
+**Job:** `build` / `129601682007`, hosted runner, `in_progress`. Steps 1–4 (job setup, checkout, Java 17, Flutter) are `success`. Step 5 `Set up Gradle` is `in_progress`. Steps 6–21 remain pending.
 
-**Last completed gate:** Java 17 setup (step 3). **Current gate:** Flutter setup (step 4). **Remaining:** Gradle/toolchain, Flutter local.properties, production signing setup, wrapper, App security/architecture audit, dependencies, analyzer, full Flutter tests including Usage Statistics regression tests, Android gate, obfuscated APK, V1/V2/V3 signing, production certificate, source ZIP, Release/tag parity and downloaded-asset verification.
+**Last completed gate:** Flutter setup (step 4). **Current gate:** Gradle setup (step 5). **Remaining:** toolchain verification, local.properties, production signing prep, wrapper, App audit, dependencies, analyzer, full Flutter tests including Usage Statistics regressions, Android gate, obfuscated APK, V1/V2/V3 and certificate, source ZIP, Release/tag parity and downloaded-asset verification.
 
-**Failure/repair history:** Build #134 failed at analyzer because of an unnecessary non-null assertion; repair commit `25684ed93d189a173bdbd8c9115c2bedb5959f53` removes it and a redundant import. #134 remains a preserved failure, not a success. Run #135 is the only active run.
+**Failure/repair history:** Build #134 remains terminal analyzer failure. Commit `25684ed93d189a173bdbd8c9115c2bedb5959f53` made the narrow App-only warning/import fix. Build #135 is the only active run and will provide the validation; do not trigger another.
 
-**Release baseline:** Build #133 is still the latest verified package; no #135 APK/ZIP/Release update exists. Do not trigger another run.
+**Release baseline:** Build #133 remains latest verified package. No #135 APK/ZIP/Release update exists yet.
 
 **Boundaries:** preserve Android `versionName "Telegram @horizontalzzz"`; no Firmware/BIN/Firebase/OTA/flash/device work.
 
