@@ -1,4 +1,21 @@
-## CURRENT CHECKPOINT — BUILD #143 PRE-TRIGGER AFTER BUILD #142 TEST FINDER FAILURE — 2026-11-10
+## CURRENT CHECKPOINT — BUILD #143 ACTIVE / FLUTTER TESTS — 2026-11-10
+
+**Run:** [Build #143 / Actions run 42783474515](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42783474515), workflow `374946166`, issue event, attempt 1. Job `build` / `129718855331`, status `in_progress`.
+
+**Exact source:** `121ef9e0f5ed6a0003837d32e4c8b1701f38631a`, equal to main at trigger. Documentation commits after trigger do not alter this immutable checkout.
+
+**Passed:** steps 1–12 including toolchain, security/architecture audit, signing prep, dependencies and Dart analyzer.
+
+**Current gate:** step 13 `Run Flutter tests` is `in_progress`; steps 14–21 pending. Test count/outcome unavailable while the job is active. Artifact list empty; no APK/source ZIP/Release result.
+
+**Last completed gate:** analyzer (step 12). **Continue only run `42783474515`; no duplicate issue event or retry while active.**
+
+**Recent failures included in this source:** #139/#140 analyzer/test identifier repairs; #141 Indonesian completed-session localization assertion; #142 broad `00:10` finder corrected to the keyed `usage-session-elapsed` widget. #143 must establish full-suite outcome.
+
+**Protected scope:** preserve Android `versionName "Telegram @horizontalzzz"`. CI does not prove phone install, OEM visuals, physical BLE, storage soak, cooling/thermal/electrical, Firmware/BIN or OTA.
+
+---
+## HISTORICAL PRE-TRIGGER CHECKPOINT — BUILD #143 AFTER BUILD #142 TEST FINDER FAILURE — 2026-11-10
 
 **Authorization:** owner `Eksekusi Build App!` operation remains active. #142 is terminal; a test-only finder issue has a concrete repair. One guarded App Build/QC retry is authorized; no Firmware/BIN/Firebase/OTA/flash/device work.
 
