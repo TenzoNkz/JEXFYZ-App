@@ -78,6 +78,21 @@ class UsageStatsSession {
   }
 }
 
+class UsageStatsLiveUpdate {
+  final String coolerId;
+  final UsageStatsSession session;
+  final List<UsageStatsEvent> events;
+  final int publishedAtMs;
+
+  const UsageStatsLiveUpdate({
+    required this.coolerId,
+    required this.session,
+    required this.events,
+    required this.publishedAtMs,
+  });
+}
+
+
 class UsageStatsEvent {
   final int sessionId;
   final int timestampMs;
@@ -182,10 +197,12 @@ class UsageStatsSummary {
   final UsageTemperatureSummary hotside;
   final Map<String, int> voltageDurationMs;
   final int adaptiveOnDurationMs;
+  final int peltierOnDurationMs;
   final double? fanSpeedAverage;
   final double? fanSpeedMaximum;
   final List<UsageStateSegment> voltageSegments;
   final List<UsageStateSegment> adaptiveSegments;
+  final List<UsageStateSegment> peltierSegments;
   final List<UsageStateSegment> fanSpeedSegments;
 
   const UsageStatsSummary({
@@ -193,10 +210,12 @@ class UsageStatsSummary {
     required this.hotside,
     required this.voltageDurationMs,
     required this.adaptiveOnDurationMs,
+    required this.peltierOnDurationMs,
     required this.fanSpeedAverage,
     required this.fanSpeedMaximum,
     required this.voltageSegments,
     required this.adaptiveSegments,
+    required this.peltierSegments,
     required this.fanSpeedSegments,
   });
 
@@ -205,6 +224,7 @@ class UsageStatsSummary {
       hotside.hasData ||
       voltageSegments.isNotEmpty ||
       adaptiveSegments.isNotEmpty ||
+      peltierSegments.isNotEmpty ||
       fanSpeedSegments.isNotEmpty;
 }
 
@@ -229,6 +249,7 @@ class UsageStatsAnalytics {
     final hotside = _temperatureSummary(snapshot, 'hotside');
     final voltage = _stateSegments(snapshot, 'voltage');
     final adaptive = _stateSegments(snapshot, 'adaptive');
+    final peltier = _stateSegments(snapshot, 'peltier');
     final fan = _stateSegments(snapshot, 'fan_speed');
 
     final voltageTimes = <String, int>{'5V': 0, '9V': 0, '12V': 0};
@@ -243,6 +264,13 @@ class UsageStatsAnalytics {
     for (final segment in adaptive) {
       if (segment.textValue?.toUpperCase() == 'ON') {
         adaptiveOnMs += segment.durationMs;
+      }
+    }
+
+    var peltierOnMs = 0;
+    for (final segment in peltier) {
+      if (segment.textValue?.toUpperCase() == 'ON') {
+        peltierOnMs += segment.durationMs;
       }
     }
 
@@ -264,11 +292,13 @@ class UsageStatsAnalytics {
       hotside: hotside,
       voltageDurationMs: voltageTimes,
       adaptiveOnDurationMs: adaptiveOnMs,
+      peltierOnDurationMs: peltierOnMs,
       fanSpeedAverage:
           fanObservedMs == 0 ? null : fanWeighted / fanObservedMs,
       fanSpeedMaximum: fanMaximum,
       voltageSegments: voltage,
       adaptiveSegments: adaptive,
+      peltierSegments: peltier,
       fanSpeedSegments: fan,
     );
   }
@@ -414,6 +444,32 @@ class UsageStatsAnalytics {
     UsageStatsSnapshot snapshot,
     String metric,
   ) {
+  static double? temperatureAt(
+    List<UsageChartPoint> points,
+    int timestampMs,
+  ) {
+    UsageChartPoint? previous;
+    for (final point in points) {
+      if (point.timestampMs > timestampMs) break;
+      previous = point;
+    }
+    if (previous == null || previous.value == null) return null;
+    return previous.value;
+  }
+
+  static UsageStateSegment? stateAt(
+    List<UsageStateSegment> segments,
+    int timestampMs,
+  ) {
+    for (final segment in segments) {
+      if (timestampMs >= segment.startMs && timestampMs <= segment.endMs) {
+        return segment;
+      }
+    }
+    return null;
+  }
+
+
     final result = <UsageStateSegment>[];
 
     for (final session in snapshot.sessions) {
@@ -667,6 +723,7 @@ class UsageStatisticsStore implements UsageStatisticsRepository {
     double? hotsideC,
     String? voltage,
     String? adaptive,
+    String? peltier,
     int? fanSpeed,
   }) async {
     final database = await _database;
@@ -713,6 +770,7 @@ class UsageStatisticsStore implements UsageStatisticsRepository {
 
       await insertBaseline('voltage', textValue: voltage);
       await insertBaseline('adaptive', textValue: adaptive);
+      await insertBaseline('peltier', textValue: peltier);
       await insertBaseline('fan_speed', numberValue: fanSpeed?.toDouble());
       return sessionId;
     });
@@ -945,6 +1003,11 @@ class UsageStatisticsRecorder {
   final Map<String, double?> _temperatures = {};
   final Map<String, Object?> _states = {};
   final Map<String, int> _lastSensorSeenMs = {};
+  final StreamController<UsageStatsLiveUpdate> _liveUpdates =
+      StreamController<UsageStatsLiveUpdate>.broadcast(sync: true);
+  Stream<UsageStatsLiveUpdate> get liveUpdates => _liveUpdates.stream;
+  int? _sessionStartedAtMs;
+  int? _sessionEndedAtMs;
   Timer? _p1FreshnessTimer;
   int? _lastP1ReceiptAtMs;
 
@@ -968,6 +1031,41 @@ class UsageStatisticsRecorder {
   void _notifyChanged() {
     revisionNotifier.value++;
   }
+
+  UsageStatsSession? _liveSession({int? endedAtMs}) {
+    final id = _sessionId;
+    final coolerId = _coolerId;
+    final startedAt = _sessionStartedAtMs;
+    if (id == null || coolerId == null || startedAt == null) return null;
+    final lastHot = _lastSensorSeenMs['hotside'];
+    final lastBattery = _lastSensorSeenMs['battery'];
+    return UsageStatsSession(
+      id: id,
+      coolerId: coolerId,
+      startedAtMs: startedAt,
+      endedAtMs: endedAtMs ?? _sessionEndedAtMs,
+      lastSeenAtMs: lastHot ?? startedAt,
+      lastHotsideSeenAtMs: lastHot,
+      lastBatterySeenAtMs: lastBattery,
+    );
+  }
+
+  void _publishLiveUpdate({
+    required int timestampMs,
+    List<UsageStatsEvent> events = const [],
+    int? endedAtMs,
+  }) {
+    final session = _liveSession(endedAtMs: endedAtMs);
+    final coolerId = _coolerId;
+    if (session == null || coolerId == null) return;
+    _liveUpdates.add(UsageStatsLiveUpdate(
+      coolerId: coolerId,
+      session: session,
+      events: List<UsageStatsEvent>.unmodifiable(events),
+      publishedAtMs: timestampMs,
+    ));
+  }
+
 
   void _startP1FreshnessWatchdog() {
     _p1FreshnessTimer?.cancel();
@@ -996,6 +1094,7 @@ class UsageStatisticsRecorder {
     double? hotsideC,
     String? voltage,
     String? adaptive,
+    String? peltier,
     int? fanSpeed,
   }) {
     final safeId = coolerId.trim();
@@ -1021,6 +1120,7 @@ class UsageStatisticsRecorder {
         hotsideC: hotsideC,
         voltage: voltage,
         adaptive: adaptive,
+        peltier: peltier,
         fanSpeed: fanSpeed,
       );
       _coolerId = safeId;
@@ -1032,13 +1132,29 @@ class UsageStatisticsRecorder {
         ..clear()
         ..['voltage'] = voltage
         ..['adaptive'] = adaptive
+        ..['peltier'] = peltier
         ..['fan_speed'] = fanSpeed;
       _lastSensorSeenMs
         ..clear()
         ..['battery'] = now
         ..['hotside'] = now;
+      _sessionStartedAtMs = now;
+      _sessionEndedAtMs = null;
       _lastP1ReceiptAtMs = now;
       _startP1FreshnessWatchdog();
+      final sessionId = _sessionId!;
+      _publishLiveUpdate(timestampMs: now, events: [
+        UsageStatsEvent(sessionId: sessionId, timestampMs: now, metric: 'battery', numberValue: batteryC, textValue: null),
+        UsageStatsEvent(sessionId: sessionId, timestampMs: now, metric: 'hotside', numberValue: hotsideC, textValue: null),
+        if (voltage != null)
+          UsageStatsEvent(sessionId: sessionId, timestampMs: now, metric: 'voltage', numberValue: null, textValue: voltage),
+        if (adaptive != null)
+          UsageStatsEvent(sessionId: sessionId, timestampMs: now, metric: 'adaptive', numberValue: null, textValue: adaptive),
+        if (peltier != null)
+          UsageStatsEvent(sessionId: sessionId, timestampMs: now, metric: 'peltier', numberValue: null, textValue: peltier),
+        if (fanSpeed != null)
+          UsageStatsEvent(sessionId: sessionId, timestampMs: now, metric: 'fan_speed', numberValue: fanSpeed.toDouble(), textValue: null),
+      ]);
       _notifyChanged();
     });
   }
@@ -1085,6 +1201,20 @@ class UsageStatisticsRecorder {
             timestampMs: cutoff,
             reason: 'stale_p1',
           );
+          _sessionEndedAtMs = cutoff;
+          _publishLiveUpdate(
+            timestampMs: cutoff,
+            endedAtMs: cutoff,
+            events: [
+              UsageStatsEvent(
+                sessionId: sessionId,
+                timestampMs: cutoff,
+                metric: 'hotside',
+                numberValue: null,
+                textValue: null,
+              ),
+            ],
+          );
           _p1FreshnessTimer?.cancel();
           _p1FreshnessTimer = null;
           _sessionId = null;
@@ -1093,6 +1223,8 @@ class UsageStatisticsRecorder {
           _states.clear();
           _lastSensorSeenMs.clear();
           _lastP1ReceiptAtMs = null;
+          _sessionStartedAtMs = null;
+          _sessionEndedAtMs = null;
           _notifyChanged();
           return;
         }
@@ -1113,6 +1245,15 @@ class UsageStatisticsRecorder {
       );
       _temperatures[metric] = safeValue;
       _lastSensorSeenMs[metric] = receivedAtMs;
+      _publishLiveUpdate(timestampMs: receivedAtMs, events: [
+        UsageStatsEvent(
+          sessionId: sessionId,
+          timestampMs: receivedAtMs,
+          metric: metric,
+          numberValue: safeValue,
+          textValue: null,
+        ),
+      ]);
       _notifyChanged();
     });
   }
@@ -1121,7 +1262,7 @@ class UsageStatisticsRecorder {
     required String metric,
     required Object? value,
   }) {
-    if (!const {'voltage', 'adaptive', 'fan_speed'}.contains(metric)) {
+    if (!const {'voltage', 'adaptive', 'peltier', 'fan_speed'}.contains(metric)) {
       return Future<void>.value();
     }
 
@@ -1132,7 +1273,7 @@ class UsageStatisticsRecorder {
         return Future<void>.value();
       }
       canonical = value.toUpperCase();
-    } else if (metric == 'adaptive') {
+    } else if (metric == 'adaptive' || metric == 'peltier') {
       if (value is! String ||
           !const {'ON', 'OFF'}.contains(value.toUpperCase())) {
         return Future<void>.value();
@@ -1164,6 +1305,15 @@ class UsageStatisticsRecorder {
         textValue: text,
       );
       _states[metric] = canonical;
+      _publishLiveUpdate(timestampMs: now, events: [
+        UsageStatsEvent(
+          sessionId: sessionId,
+          timestampMs: now,
+          metric: metric,
+          numberValue: numeric,
+          textValue: text,
+        ),
+      ]);
       _notifyChanged();
     });
   }
@@ -1176,11 +1326,14 @@ class UsageStatisticsRecorder {
       final id = _sessionId;
       if (id == null) return;
 
+      final endedAt = timestampMs ?? DateTime.now().millisecondsSinceEpoch;
       await _store.endSession(
         sessionId: id,
-        timestampMs: timestampMs ?? DateTime.now().millisecondsSinceEpoch,
+        timestampMs: endedAt,
         reason: reason,
       );
+      _sessionEndedAtMs = endedAt;
+      _publishLiveUpdate(timestampMs: endedAt, endedAtMs: endedAt);
       _p1FreshnessTimer?.cancel();
       _p1FreshnessTimer = null;
       _sessionId = null;
@@ -1189,6 +1342,8 @@ class UsageStatisticsRecorder {
       _states.clear();
       _lastSensorSeenMs.clear();
       _lastP1ReceiptAtMs = null;
+      _sessionStartedAtMs = null;
+      _sessionEndedAtMs = null;
       _notifyChanged();
     });
   }
@@ -1213,14 +1368,30 @@ class UsageStatisticsRecorder {
         hotsideC: _temperatures['hotside'],
         voltage: _states['voltage'] as String?,
         adaptive: _states['adaptive'] as String?,
+        peltier: _states['peltier'] as String?,
         fanSpeed: (_states['fan_speed'] as num?)?.toInt(),
       );
       _lastSensorSeenMs
         ..clear()
         ..['battery'] = now
         ..['hotside'] = now;
+      _sessionStartedAtMs = now;
+      _sessionEndedAtMs = null;
       _lastP1ReceiptAtMs = now;
       _startP1FreshnessWatchdog();
+      final sessionId = _sessionId!;
+      _publishLiveUpdate(timestampMs: now, events: [
+        UsageStatsEvent(sessionId: sessionId, timestampMs: now, metric: 'battery', numberValue: _temperatures['battery'], textValue: null),
+        UsageStatsEvent(sessionId: sessionId, timestampMs: now, metric: 'hotside', numberValue: _temperatures['hotside'], textValue: null),
+        if (_states['voltage'] is String)
+          UsageStatsEvent(sessionId: sessionId, timestampMs: now, metric: 'voltage', numberValue: null, textValue: _states['voltage'] as String),
+        if (_states['adaptive'] is String)
+          UsageStatsEvent(sessionId: sessionId, timestampMs: now, metric: 'adaptive', numberValue: null, textValue: _states['adaptive'] as String),
+        if (_states['peltier'] is String)
+          UsageStatsEvent(sessionId: sessionId, timestampMs: now, metric: 'peltier', numberValue: null, textValue: _states['peltier'] as String),
+        if (_states['fan_speed'] is num)
+          UsageStatsEvent(sessionId: sessionId, timestampMs: now, metric: 'fan_speed', numberValue: (_states['fan_speed'] as num).toDouble(), textValue: null),
+      ]);
       _notifyChanged();
     });
   }
