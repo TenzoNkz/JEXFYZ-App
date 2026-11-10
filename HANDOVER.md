@@ -2,31 +2,28 @@
 
 Updated: 2026-11-10 (Asia/Jakarta).
 
-## Current published release — Build #138
+## Latest verified App package — Build #138
 
-- [Actions run 42749408202](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42749408202), job 129609197264, terminal success on source b553f22092d9b33b2c81753254d2e3f03928fa18.
-- All 21 main workflow steps passed; analyzer had 25 info-only diagnostics/no warnings; Flutter suite passed 157/157. Android Gradle gate succeeded but native app JUnit tasks were NO-SOURCE.
-- Obfuscated APK passed V1/V2/V3 and expected production-certificate verification. Matching source ZIP and downloaded Release assets passed integrity/identity verification. Release/tag jexfyz-latest point to #138 source.
-- This package predates the current Home/Statistics source changes described below.
+- Run `42749408202`, exact source `b553f22092d9b33b2c81753254d2e3f03928fa18`, terminal success; all 21 main gates, Flutter 157/157 and analyzer 25 info-only diagnostics passed.
+- Android Gradle gate succeeded with native app JUnit tasks `NO-SOURCE`. Obfuscated APK V1/V2/V3 and expected production certificate passed; matching source ZIP, Release/tag and downloaded asset integrity checks passed.
+- Release `jexfyz-latest` ID `403010611`; its APK/source hashes are recorded in `APP_BUILD_REPORT.md`. Build #138 predates the current Home/Statistics source changes.
 
-## Current App candidate — Build #139 pre-trigger
+## Build #139 failure and concrete repair
 
-Preflight source HEAD: 8115f6702c9be1381c10d1ed610b4a6e720c6753; recursive tree 131 entries, complete. Two App change groups are now committed on main and await hosted CI:
+- Run `42765001359`, job `129659294295`, source `2ad43deb499f73dede808e2cc03d1a8843697f59`, failed at analyzer step 12. Error: test called obsolete `lastTemperatureChangeAtMs`; warnings: unused `range` and `expectedTime`. Flutter tests and all downstream steps skipped.
+- Commits `93b1ba7b859089eeccd30719ddfb8b8ab2dabaf6` and `2656b6eb9071cf878de2373cfab03d1872e089f8` remove both warnings and align the test with `lastTemperatureSampleAtMs`. Files re-read after commit. Retry is justified; no gate relaxed.
 
-**1. Default hybrid Home palette.** Default/Dark use the dark header palette; Light uses light. _homeMetric() and _homeNotify() share the same preset-based header resolver. The lower panel remains independently light for Default/Light and dark for explicit Dark. Regression tests assert all three mappings and both header call sites.
+## Build #140 candidate
 
-**2. Usage Statistics active-run sampling.** A run requires full BLE/P1 readiness, valid protocol and known authoritative output telemetry, and stays active only while FAN or PELTIER is ON. Both OFF, disconnect/disposal or stale P1 closes it. Per-second Battery/Hotside samples are stored in local SQLite with explicit null gaps. Voltage/Adaptive/Fan Speed remain event-driven against elapsed-run seconds. The wall-clock 1H/24H/7D/30D filter is removed; 30-day pruning remains retention. Regression tests cover output gating, elapsed-time analytics, gaps, session separation and local-only storage.
+- Source before docs checkpoint: `2656b6eb9071cf878de2373cfab03d1872e089f8`; tree 131 entries, complete.
+- Includes the Default/Dark Home header palette resolver for metrics/NOTIFY while preserving the white Default lower content, plus active-output gated Usage Statistics with per-second temperature samples, explicit gaps and elapsed run timelines.
+- Home and Statistics fixes plus the two analyzer repairs are committed. They are not yet CI-validated; Build #138 remains the latest verified package.
+- Preserve Android `versionName "Telegram @horizontalzzz"`.
 
-Per-second SQLite growth/queue pressure and actual phone BLE sampling remain UNVERIFIED; CI does not establish physical acceptance.
+## Trigger / next action
 
-## Trigger / CI state
+- Workflow blob `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12`, 545 lines, remains issue opened/reopened only, exact owner/title/body token, all 21 gates intact; no push/PR trigger.
+- Issue #33 remains OPEN with exact guard. #139 is terminal; no active/queued run and no open PR. No #140 trigger has been sent.
+- Commit/read back this failure/repair checkpoint, refresh main/tree/workflow/issue/Actions/Release/tag/version; close issue #33 once, verify CLOSED/no run, reopen exactly once, then follow only the new issue run and verify its source SHA equals final main. No repeated event if no run appears.
 
-- Workflow: .github/workflows/jexfyz-app-build-trigger.yml, blob 9dc1e61ba49f19cad4edbb99a832d5333d9f0f12; issue-open/reopen only with owner, exact title and body token; all analyzer/test/Android/signing/source/Release/download gates intact.
-- Issue #33 is OPEN and exact: owner TenzoNkz, title JE X FYZ — EKSEKUSI BUILD APP TRIGGER, body token JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1.
-- Latest App run #138 is terminal success; no active/queued run and no open PR were found. No new trigger has been sent yet.
-- Last completed gate: repository/source/workflow/issue/Actions/jobs/logs/Release/tag/artifact preflight. Current run state: NOT STARTED.
-- Next: commit/re-read this pre-trigger ledger/checkpoint; refresh final main HEAD/tree and trigger/Actions state. Then close issue #33 once, verify closed and no run, reopen exactly once. Follow only the single new issue-triggered run and require exact head_sha parity with final pre-trigger main. Do not repeat event if no run appears.
-
-## Protected scope
-
-Keep Android versionName "Telegram @horizontalzzz". Do not compile Firmware, publish/replace BIN, modify Firebase, use OTA, flash or operate devices. Build CI does not prove installation, OEM visuals, BLE behavior, cooling or thermal/electrical performance.
+Physical installation/OEM visuals, real BLE, storage soak, cooling/thermal/electrical, Firmware/BIN and OTA remain outside CI and unverified. No Firmware/device operation is authorized.

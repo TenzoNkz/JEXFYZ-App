@@ -1,4 +1,27 @@
-## CURRENT CHECKPOINT — BUILD #139 PRE-TRIGGER / SOURCE CANDIDATE — 2026-11-10
+## CURRENT CHECKPOINT — BUILD #140 PRE-TRIGGER AFTER ANALYZER REPAIR — 2026-11-10
+
+**Mode/authorization:** owner explicitly repeated `Eksekusi Build App!` after #139 failed. This authorizes one guarded evidence-based retry following concrete analyzer repairs, only for App Build/QC/release and App-scope root causes. No Firmware/BIN/Firebase/OTA/flash/device work.
+
+**Failed run:** [Build #139 / run 42765001359](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42765001359), job `129659294295`, source `2ad43deb499f73dede808e2cc03d1a8843697f59`, terminal failure at step 12 analyzer. Steps 1–11 passed. Analyzer reported 25 infos, two warnings and one error: unused `range` in `lib/usage_statistics.dart:2132`; undefined old `lastTemperatureChangeAtMs` in `test/usage_statistics_test.dart:528`; unused `expectedTime` in that test at line 534. Steps 13–21 skipped; no artifacts or Release mutation.
+
+**Concrete repairs on main:** `93b1ba7b859089eeccd30719ddfb8b8ab2dabaf6` removes unused painter local `range`; `2656b6eb9071cf878de2373cfab03d1872e089f8` aligns the test with `lastTemperatureSampleAtMs`, the “Last valid sample” label and elapsed-session semantics, removing unused formatting locals. Both files were re-read and match the committed content. No gate was weakened.
+
+**Current source before docs checkpoint:** `2656b6eb9071cf878de2373cfab03d1872e089f8`; complete recursive tree 131 entries. Home hybrid palette correction plus output-gated per-second Usage Statistics source/tests remain present; the latest two commits specifically repair analyzer findings. The docs checkpoint that follows must not touch App code; final build source will be the verified main SHA just before issue trigger.
+
+**Latest verified package:** Build #138 / [run 42749408202](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42749408202), source `b553f22092d9b33b2c81753254d2e3f03928fa18`, 21 main gates passed, 157/157 Flutter tests, 25 info-only analyzer diagnostics, Android gate passed with app JUnit tasks `NO-SOURCE`, V1/V2/V3 + expected certificate, matching source ZIP, Release/tag parity and downloaded assets verified. #138 does not contain the latest Home/Statistics corrections.
+
+**Current Release (still #138):** Release `jexfyz-latest` ID `403010611` and tag target #138 source. APK SHA-256 `2ed225d992288cccc02313d206675a7313c73a4cad061de70cddf7209d39b9f8`; source ZIP SHA-256 `47161a972131c95a74e8f5a191754504b76e2c31edd95fd19b1b4c75717ab906`.
+
+**Trigger/Actions state:** workflow blob `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12` remains issue-only (no push/PR trigger) with owner/title/token guard and all 21 gates. Issue #33 is OPEN and exact. #139 terminal failed; no active run, no open PR. No #140 event sent yet.
+
+**Last completed gate:** concrete analyzer failure repair, both source/test commits and read-back verification. **Current run state:** NOT STARTED; no #140 run/job ID.
+
+**Next exact action:** re-fetch final main/tree/workflow/issue/Actions/Release/tag/version after committing and re-reading the ledger/checkpoint; close #33 once, verify CLOSED and no active run, then reopen exactly once. Follow only the one new issue-triggered run and demand exact source-SHA parity. If no run appears, stop BLOCKED; never duplicate the issue event.
+
+**Protected scope:** preserve Android `versionName "Telegram @horizontalzzz"`. CI does not prove installation, OEM visual acceptance, physical BLE, storage soak, cooling/thermal/electrical behavior, Firmware/BIN or OTA.
+
+---
+## HISTORICAL CHECKPOINT — BUILD #139 PRE-TRIGGER / SOURCE CANDIDATE — 2026-11-10
 
 **Mode / authorization:** current owner message explicitly selects Eksekusi Build App!. Only the guarded App Build/QC/release workflow and justified App-scope repairs are authorized. Firmware compile, BIN generation/publication/replacement, Firebase, OTA, flashing, device operation and unrelated release work remain excluded.
 
