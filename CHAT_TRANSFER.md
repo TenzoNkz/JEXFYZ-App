@@ -1,4 +1,15 @@
-## CURRENT CHECKPOINT — BUILD #143 ACTIVE / FLUTTER TESTS — 2026-11-10
+## CURRENT CHECKPOINT — BUILD #143 ACTIVE / ANDROID GATE — 2026-11-10
+
+**Run:** [Build #143 / Actions run 42783474515](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42783474515), job `129718855331`, immutable source `121ef9e0f5ed6a0003837d32e4c8b1701f38631a`.
+
+**Passed:** workflow steps 1–13 are all `success`, including analyzer and full Flutter test gate. This hosted suite validates the current sample/session test fixes, including #142's keyed duration-label assertion. The exact test count is not yet confirmed from a readable completed log.
+
+**Current gate:** step 14 `Run Android unit-test gate` is `in_progress`; steps 15–21 pending. No APK/source ZIP/Release/artifact yet.
+
+**Last completed gate:** Flutter test suite (step 13). Continue only run `42783474515`; no duplicate trigger/retry while active.
+
+---
+## HISTORICAL CHECKPOINT — BUILD #143 ACTIVE / FLUTTER TESTS — 2026-11-10
 
 **Run:** [Build #143 / Actions run 42783474515](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42783474515), workflow `374946166`, issue event, attempt 1. Job `build` / `129718855331`, status `in_progress`.
 
