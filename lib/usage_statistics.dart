@@ -17,7 +17,6 @@ import 'app_settings.dart';
 bool usageCoolerIsActive({required bool fanOn, required bool peltierOn}) =>
     fanOn || peltierOn;
 
-String formatUsageElapsed(int milliseconds) {
 double usageInterpolate(double? from, double? to, double progress) {
   if (to == null) return 0;
   if (from == null) return to;
@@ -25,7 +24,7 @@ double usageInterpolate(double? from, double? to, double progress) {
   return from + (to - from) * fraction;
 }
 
-
+String formatUsageElapsed(int milliseconds) {
   final totalSeconds = math.max(0, milliseconds ~/ 1000).toInt();
   final hours = totalSeconds ~/ 3600;
   final minutes = (totalSeconds ~/ 60) % 60;
@@ -448,14 +447,19 @@ class UsageStatsAnalytics {
     );
   }
 
-  static List<UsageStateSegment> _stateSegments(
-    UsageStatsSnapshot snapshot,
-    String metric,
-  ) {
   static double? temperatureAt(
     List<UsageChartPoint> points,
     int timestampMs,
   ) {
+    UsageChartPoint? previous;
+    for (final point in points) {
+      if (point.timestampMs > timestampMs) break;
+      previous = point;
+    }
+    if (previous == null || previous.value == null) return null;
+    return previous.value;
+  }
+
   static List<UsageChartPoint> decimatePoints(
     List<UsageChartPoint> points, {
     int maxPoints = 1600,
@@ -501,16 +505,6 @@ class UsageStatsAnalytics {
     return List<UsageChartPoint>.unmodifiable(result);
   }
 
-
-    UsageChartPoint? previous;
-    for (final point in points) {
-      if (point.timestampMs > timestampMs) break;
-      previous = point;
-    }
-    if (previous == null || previous.value == null) return null;
-    return previous.value;
-  }
-
   static UsageStateSegment? stateAt(
     List<UsageStateSegment> segments,
     int timestampMs,
@@ -523,11 +517,15 @@ class UsageStatsAnalytics {
     return null;
   }
 
-
+  static List<UsageStateSegment> _stateSegments(
+    UsageStatsSnapshot snapshot,
+    String metric,
+  ) {
     final result = <UsageStateSegment>[];
 
     for (final session in snapshot.sessions) {
-      final sessionStart = math.max(snapshot.fromMs, session.startedAtMs).toInt();
+      final sessionStart =
+          math.max(snapshot.fromMs, session.startedAtMs).toInt();
       final sessionEnd = math.min(
         snapshot.toMs,
         math.min(
@@ -595,6 +593,7 @@ class UsageStatsAnalytics {
     return result;
   }
 }
+
 
 class UsageStatisticsStore implements UsageStatisticsRepository {
   UsageStatisticsStore._();
@@ -2573,7 +2572,7 @@ class _AnimatedUsageLineChartState extends State<_AnimatedUsageLineChart>
   }
 }
 
-
+class _UsageLinePainter extends CustomPainter {
   final List<UsageChartPoint> points;
   final int fromMs;
   final int toMs;
@@ -2862,7 +2861,7 @@ class _AnimatedUsageTimelineState extends State<_AnimatedUsageTimeline>
   }
 }
 
-
+class _UsageTimelinePainter extends CustomPainter {
   final List<UsageStateSegment> segments;
   final int fromMs;
   final int toMs;
