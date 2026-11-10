@@ -234,6 +234,24 @@ void main() {
       expect(usageInterpolate(null, 37, .5), 37);
     });
 
+    test('temperature cursor stops at the sensor freshness endpoint', () {
+      const points = <UsageChartPoint>[
+        UsageChartPoint(
+          timestampMs: 1000,
+          value: 35,
+          sessionId: 1,
+          breakBefore: true,
+        ),
+        UsageChartPoint(
+          timestampMs: 2500,
+          value: 35,
+          sessionId: 1,
+        ),
+      ];
+      expect(UsageStatsAnalytics.temperatureAt(points, 2500), 35);
+      expect(UsageStatsAnalytics.temperatureAt(points, 2501), isNull);
+    });
+
     test('render decimation preserves extrema and invalid-data boundaries', () {
       final points = List<UsageChartPoint>.generate(2400, (index) {
         final double? value = index == 900
