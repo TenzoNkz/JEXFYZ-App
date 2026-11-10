@@ -84,12 +84,12 @@ Purpose: canonical current App/UI/BLE/telemetry contract. Current source defines
 ### Capture and truth rules
 
 - Record only while the App has a valid synchronized BLE/P1 session and is receiving real values. Do not fabricate values or infer a physical state from command ACK alone.
-- Phone Battery temperature comes from the existing Android `getBatteryTemperature` reader (`_readBatteryTemperatureOnce()`), already scheduled at 1 Hz during the connected telemetry session. Record a timestamped sample on valid value change; invalid/unavailable readings create a gap.
-- Hotside comes from authoritative Firmware `HOT` telemetry, already delivered on the existing ~1 Hz scheduler. Record at most one sample per received telemetry tick and write only when the numeric value changes (or validity changes).
+- Phone Battery temperature comes from the existing Android `getBatteryTemperature` reader (`_readBatteryTemperatureOnce()`), scheduled at 1 Hz during the connected telemetry session. The current recorder persists every observation, including an unchanged value; invalid/unavailable readings create an explicit gap.
+- Hotside comes from authoritative Firmware `HOT` telemetry, delivered on the existing ~1 Hz scheduler. The current recorder persists every received sample tick, including unchanged values; invalid NTC readings create an explicit gap.
 - Voltage, Adaptive ON/OFF and Fan Speed are event-driven state changes. Record an initial baseline from the completed P1 full sync and subsequent records only when the corresponding telemetry state changes. Do not invent per-second state samples.
 - Timestamp every record in UTC/epoch and render it in the phone's local timezone. Keep records keyed by cooler identity so separate devices are not silently merged.
 - If the BLE session disconnects, App process stops receiving telemetry, the phone Battery reading is invalid, or NTC becomes invalid, close the current data segment and render a visible gap. On reconnect, begin a new segment from the new verified full-sync snapshot; never draw a continuous line across an unobserved interval.
-- Because temperature points are stored only when values change, chart drawing holds the last valid value horizontally until the next changed sample, but only inside a confirmed observation segment. Compute average as duration-weighted (not a simple arithmetic average of change events); min/max use valid observations.
+- Temperature chart statistics use timestamp-weighted coverage and valid samples, not a simple average of state changes. Missing/invalid intervals remain gaps and must not be connected or interpolated across.
 
 ### Local storage and retention proposal
 
@@ -111,6 +111,44 @@ Purpose: canonical current App/UI/BLE/telemetry contract. Current source defines
 - The serialized recorder write queue still has no explicit bound/coalescing, and the 30-day raw event store has not been stress-measured. These remain validation risks, not observed runtime failures.
 - Validation remains **STATIC SOURCE CHECK / FLUTTER VALIDATION NOT RUN**. The source and regression test were committed and read back from `main`; Flutter/Dart/Gradle/ADB are unavailable here, so formatter, focused test, full suite, analyzer, screenshot, physical-device and App Build results are not claimed.
 - Live tag `jexfyz-latest` resolves to source `5201a3e07f36305ffe3882a1b965b9e7414cd71a`; the Usage Statistics source and regression test were added to `main` after that package tag. Usage Statistics is therefore **not included in the currently tagged package**.
+
+### Owner follow-up — professional animated multi-metric diagrams (2026-11-10)
+
+**Owner request / current mode:** Diskusi!. The owner wants Usage Statistics to look more professional, with smooth transitions and a diagram for every tracked operating parameter, explicitly including Voltage and the feature they referred to as “AI mode”. Treat “AI mode” as the existing **Adaptive Mode / Mode Adaptif** label unless the owner corrects it. This is a design requirement/proposal only; executable source and tests are unchanged in this discussion.
+
+**Live source findings (STATIC SOURCE CHECK, main at 83e73d6e2a39ad732d261a75c3b33e54e8718bef):**
+- Battery and Hotside temperature observations are persisted every ~1 second while a synchronized, active cooler session is receiving the relevant service telemetry. The recorder serializes SQLite writes and updates its revision notifier.
+- The temperature painter currently builds a step-shaped path by drawing horizontally then vertically between consecutive observations; it has no animation controller or tween. The graph is therefore not visually interpolating between samples.
+- The page debounces a recorder revision for 450 ms, then re-queries the session list and entire selected-session snapshot from SQLite and recomputes analytics. This is not a frame-smooth live-chart pipeline and can become more expensive as a session grows.
+- The Operating Profile currently renders three short 28-dp lanes: Voltage (5V/9V/12V), Adaptive ON/OFF and Fan Speed (%). These are timeline bars rather than full chart panels with a shared interactive cursor.
+- The state recorder accepts only voltage, adaptive and fan_speed. The active-session boundary is correctly based on authoritative FAN || PELTIER, but **Peltier ON/OFF is not persisted as a chart event yet**. Fan OFF is currently encoded as Fan Speed 0%.
+- The current page already preserves invalid-sensor gaps, separate session boundaries, Hotside limit reference, duration-weighted temperature averages, Voltage time-per-rail, Adaptive ON duration and Fan average/maximum.
+
+**Proposed presentation hierarchy:**
+1. Compact session overview: LIVE/completed state, elapsed cooler-active duration, last sample time and observed-data coverage.
+2. Two separate analog trend diagrams: Phone Battery Temperature (°C) and Hotside Temperature (°C), each with current value, Min/Avg/Max and a synchronized elapsed-time axis. Keep the Hotside safety-limit reference line.
+3. Four aligned operating-state diagrams, each with its own semantic scale and legend:
+   - Voltage rail: 5V / 9V / 12V stepped state chart; include duration at each rail.
+   - Adaptive Mode: ON/OFF stepped state chart; include ON duration and run percentage.
+   - Peltier Switch: ON/OFF stepped state chart; add a recorder/state event from authoritative PELTIER telemetry and seed the session baseline from the completed full sync. Never infer state from a command ACK.
+   - Fan Speed: 0–100% time-series/area chart; 0% is explicitly Fan OFF. Include average and peak.
+4. Use one shared elapsed-session x-axis and a synchronized crosshair/readout so a selected time shows Battery, Hotside, Voltage, Adaptive, Peltier and Fan Speed together. Preserve units and separate y-scales; never put voltage, temperature, percentages and Boolean states on one numeric axis.
+
+**Motion / sampling truth:**
+- Raw temperature capture remains about **1 sample per second**; do not invent or persist synthetic millisecond measurements. “Smooth every millisecond” should mean frame-synchronized presentation: animate on Flutter's vsync (normally about 16.7 ms at 60 Hz or 8.3 ms at 120 Hz), not a 1 ms timer or 1000 database writes per second.
+- For temperature and Fan Speed, animate the visual transition toward each new authoritative sample using timestamp-aware interpolation, with no overshoot beyond the observed values. Keep exact raw sample markers/readouts and compute min/max/average from persisted observations.
+- For Voltage, Adaptive and Peltier, retain discrete stepped transitions. Animate the cursor/indicator or a restrained short transition, but do not interpolate 5V to 9V as a fictitious 7V or ON to OFF as a fractional state.
+- Never smooth across invalid sensor gaps, stale telemetry, disconnects or separate cooling sessions. A gap must visibly break the line/state coverage.
+- Use a lightweight in-memory live model/delta stream while the page is open instead of re-querying and sorting the entire SQLite session on every UI refresh. Keep SQLite persistence serialized and asynchronous; decimate points for rendering on long sessions while preserving gaps, extrema and full-resolution persisted analytics. Add bounded queue/backpressure and long-session soak coverage before increasing write frequency.
+
+**Regression and acceptance requirements:**
+- Unit tests for Peltier session baseline/events/duration, Voltage and Adaptive durations, Fan OFF=0, gaps, session boundaries, timestamp-weighted summaries and no fictitious state interpolation.
+- Animation/widget tests for 60-Hz frame progression, 120-Hz progression where practical, stable final value, bounded interpolation/no overshoot, pause/dispose behavior, and no line continuity across gaps.
+- Test long runs/high point counts, decimated rendering while keeping full-resolution summary accuracy, and SQLite write/query pressure.
+- Visual review at 350-dp/420-dp, Light/Dark, English/Indonesian and long session labels. Actual screenshots are required before VISUAL PASS; source review/widget tests alone are not visual evidence.
+
+**Authorization / next action:** Diskusi! permits this design and documentation update only. Source/test implementation requires a new explicit Eksekusi Full!; hosted App QC/package requires separate Eksekusi Build App!. No Firmware, BIN, Firebase, OTA or device change is requested or authorized by this record.
+
 
 ## Floating Monitor
 
