@@ -1,4 +1,25 @@
-## CURRENT CHECKPOINT — BUILD #140 PRE-TRIGGER AFTER ANALYZER REPAIR — 2026-11-10
+## CURRENT CHECKPOINT — BUILD #140 ACTIVE / FLUTTER SETUP — 2026-11-10
+
+**Current run:** [Build #140 / Actions run 42781821476](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42781821476), workflow `374946166`, issue event, attempt 1. Job `build` / `129713425920`, status `in_progress`.
+
+**Exact source:** `cdd0b6dc6bc91d01029e89a0b88fc1185205e239`, equal to final `main` SHA at trigger. Following docs commits are later than the run checkout and do not change its immutable source.
+
+**Job gates:** steps 1–3 (runner, checkout, Java 17) `success`; step 4 Flutter setup `in_progress`; steps 5–21 pending. No analyzer, tests, Android, APK, signing, ZIP or Release outcome is claimed yet. Current Actions artifacts list is empty.
+
+**Last completed gate:** Java 17 setup. **Current gate:** Flutter setup. **Remaining:** toolchain verification, signing prep, architecture/security audit, dependency install, analyzer, full Flutter tests, Android Gradle gate, obfuscated APK, V1/V2/V3 and production certificate, corresponding source ZIP, Release/tag parity and downloaded asset verification.
+
+**Latest failed attempt preserved:** #139 / run `42765001359` failed at analyzer step 12 due the stale `lastTemperatureChangeAtMs` test call plus two unused locals. Fixes committed and read back in `93b1ba7b859089eeccd30719ddfb8b8ab2dabaf6` and `2656b6eb9071cf878de2373cfab03d1872e089f8`. This retry is evidence-based; no gate was weakened.
+
+**Release baseline:** #138 remains latest verified package; Release/tag target `b553f22092d9b33b2c81753254d2e3f03928fa18`. No #140 artifact or Release mutation yet.
+
+**Issue/trigger:** issue #33 is OPEN and exact guard retained. It was closed once and reopened once for #140; exactly one matching run appeared. Do not close/reopen or trigger again. Continue only run `42781821476`.
+
+**Next action:** inspect actual job steps/logs as they advance, preserve each milestone/failure/artifact in `APP_BUILD_REPORT.md` and this checkpoint. At success/blockage finalize the ledger/checkpoint. Never treat CI as phone/OEM/BLE/Firmware/BIN/OTA evidence.
+
+**Protected scope:** retain Android `versionName "Telegram @horizontalzzz"`; no Firmware compile, BIN, Firebase, OTA, flashing or device action.
+
+---
+## HISTORICAL PRE-TRIGGER CHECKPOINT — BUILD #140 — 2026-11-10
 
 **Mode/authorization:** owner explicitly repeated `Eksekusi Build App!` after #139 failed. This authorizes one guarded evidence-based retry following concrete analyzer repairs, only for App Build/QC/release and App-scope root causes. No Firmware/BIN/Firebase/OTA/flash/device work.
 
