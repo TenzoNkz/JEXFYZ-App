@@ -1482,6 +1482,7 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
   final List<UsageStatsLiveUpdate> _pendingLiveUpdates = [];
   Timer? _liveFlushTimer;
   int? _selectedTimestampMs;
+  String? _lastRecorderWriteError;
   String? _error;
 
   UsageStatisticsRepository get _repository =>
@@ -1491,8 +1492,10 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    _liveSubscription =
-        UsageStatisticsRecorder.instance.liveUpdates.listen(_handleLiveUpdate);
+    final recorder = UsageStatisticsRecorder.instance;
+    _lastRecorderWriteError = recorder.lastWriteError;
+    recorder.revisionNotifier.addListener(_handleRecorderStatusChange);
+    _liveSubscription = recorder.liveUpdates.listen(_handleLiveUpdate);
     _load();
   }
 
@@ -1505,8 +1508,17 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
   void dispose() {
     _liveFlushTimer?.cancel();
     _liveSubscription?.cancel();
+    UsageStatisticsRecorder.instance.revisionNotifier
+        .removeListener(_handleRecorderStatusChange);
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
+  }
+
+  void _handleRecorderStatusChange() {
+    final error = UsageStatisticsRecorder.instance.lastWriteError;
+    if (error == _lastRecorderWriteError || !mounted) return;
+    _lastRecorderWriteError = error;
+    setState(() {});
   }
 
   void _handleLiveUpdate(UsageStatsLiveUpdate update) {
@@ -2081,15 +2093,15 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
         ),
         const SizedBox(height: 8),
         Row(children: [
-          metric('Battery', _formatTemperature(battery)),
-          metric('Hotside', _formatTemperature(hotside)),
-          metric('Voltage', voltage?.textValue ?? '--'),
+          metric(JexText.phrase('Battery', 'Baterai HP', language), _formatTemperature(battery)),
+          metric(JexText.phrase('Hotside', 'Hotside', language), _formatTemperature(hotside)),
+          metric(JexText.phrase('Voltage', 'Tegangan', language), voltage?.textValue ?? '--'),
         ]),
         const SizedBox(height: 7),
         Row(children: [
-          metric('Adaptive', adaptive?.textValue ?? '--'),
-          metric('Peltier', peltier?.textValue ?? '--'),
-          metric('Fan', fan?.numberValue == null
+          metric(JexText.phrase('Adaptive', 'Mode Adaptif', language), adaptive?.textValue ?? '--'),
+          metric(JexText.phrase('Peltier', 'Peltier', language), peltier?.textValue ?? '--'),
+          metric(JexText.phrase('Fan Speed', 'Kecepatan Kipas', language), fan?.numberValue == null
               ? '--'
               : fan!.numberValue!.toStringAsFixed(0) + '%'),
         ]),
@@ -2893,11 +2905,15 @@ class _UsageTimelinePainter extends CustomPainter {
       baseline,
     );
 
+    const left = 34.0;
+    const right = 8.0;
+    final plotWidth = math.max(1.0, size.width - left - right).toDouble();
     double xFor(int time) =>
+        left +
         ((time - fromMs) / (toMs - fromMs))
             .clamp(0.0, 1.0)
             .toDouble() *
-        size.width;
+        plotWidth;
 
     if (lane == 'fan_speed') {
       final grid = Paint()
@@ -2909,6 +2925,7 @@ class _UsageTimelinePainter extends CustomPainter {
       }
       final area = Path();
       final line = Path();
+      double? previousY;
       var started = false;
       for (var index = 0; index < segments.length; index++) {
         final segment = segments[index];
@@ -2929,13 +2946,18 @@ class _UsageTimelinePainter extends CustomPainter {
           line.moveTo(startX, y);
           started = true;
         } else {
-          area.lineTo(startX, y);
-          line.lineTo(startX, y);
+          area
+            ..lineTo(startX, size.height - 2)
+            ..lineTo(startX, y);
+          line
+            ..lineTo(startX, previousY ?? y)
+            ..lineTo(startX, y);
         }
         area
           ..lineTo(endX, y)
           ..lineTo(endX, size.height - 2);
         line.lineTo(endX, y);
+        previousY = y;
       }
       if (started) {
         area.close();
