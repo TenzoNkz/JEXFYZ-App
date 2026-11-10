@@ -8,9 +8,9 @@
 - **Trigger state:** workflow issue-only with owner/title/body token guard and all 21 gates; issue #33 OPEN exact; #141 terminal; no active run or open PR. No #142 event sent. Explicit Build App mode authorizes one guarded retry after checkpoint and fresh preflight.
 - Preserve Android `versionName "Telegram @horizontalzzz"`; physical install/OEM/BLE/thermal, Firmware/BIN/OTA are separate.
 
-## Build #142 candidate — pre-trigger
+## Build #142 candidate — active CI run
 
-- **Run state:** NOT STARTED. One close/reopen of issue #33 remains after docs read-back and fresh preflight; require exact source SHA match and follow only one run.
+- **Active run:** [Build #142 / Actions run 42782901555](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42782901555), job `129716981807`, exact source `6ec326bd662744eee786817c7ebf68485741a915`. Steps 1–2 passed, step 3 Java 17 in progress, steps 4–21 pending. No artifacts/release yet.
 
 ---
 ## Authorization and trigger
