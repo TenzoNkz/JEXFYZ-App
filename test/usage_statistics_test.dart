@@ -320,7 +320,15 @@ void main() {
 
       expect(find.text('Usage Statistics'), findsOneWidget);
       expect(find.text('No usage data yet.'), findsOneWidget);
-      expect(find.byType(CustomPaint), findsNothing);
+      for (final key in <Key>[
+        const ValueKey<String>('usage-temperature-chart-battery'),
+        const ValueKey<String>('usage-temperature-chart-hotside'),
+        const ValueKey<String>('usage-profile-timeline-voltage'),
+        const ValueKey<String>('usage-profile-timeline-adaptive'),
+        const ValueKey<String>('usage-profile-timeline-fan_speed'),
+      ]) {
+        expect(find.byKey(key), findsNothing);
+      }
       expect(tester.takeException(), isNull);
     });
 
@@ -380,7 +388,15 @@ void main() {
       expect(find.text('Suhu Hotside'), findsOneWidget);
       expect(find.text('Riwayat Operasi'), findsOneWidget);
       expect(find.text('30D'), findsOneWidget);
-      expect(find.byType(CustomPaint), findsNWidgets(5));
+      for (final key in <Key>[
+        const ValueKey<String>('usage-temperature-chart-battery'),
+        const ValueKey<String>('usage-temperature-chart-hotside'),
+        const ValueKey<String>('usage-profile-timeline-voltage'),
+        const ValueKey<String>('usage-profile-timeline-adaptive'),
+        const ValueKey<String>('usage-profile-timeline-fan_speed'),
+      ]) {
+        expect(find.byKey(key), findsOneWidget);
+      }
 
       await pumpAtWidth(420, ThemeData.dark(useMaterial3: true));
       expect(find.text('Suhu Baterai HP'), findsOneWidget);
@@ -466,12 +482,16 @@ void main() {
         );
         await tester.pumpAndSettle();
 
-        expect(
-          find.text(
-            'Stored locally on this phone. Last value change: $expectedTime',
-          ),
-          findsOneWidget,
+        final lastValueChange = find.textContaining(
+          'Stored locally on this phone. Last value change: $expectedTime',
         );
+        await tester.scrollUntilVisible(
+          lastValueChange,
+          240,
+          scrollable: find.byType(Scrollable).first,
+        );
+        await tester.pumpAndSettle();
+        expect(lastValueChange, findsOneWidget);
         expect(tester.takeException(), isNull);
       },
     );
