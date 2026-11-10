@@ -1,4 +1,15 @@
-## CURRENT CHECKPOINT — BUILD #142 ACTIVE / JAVA 17 SETUP — 2026-11-10
+## CURRENT CHECKPOINT — BUILD #142 ACTIVE / VERIFY TOOLCHAIN — 2026-11-10
+
+**Run:** [Build #142 / Actions run 42782901555](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42782901555), job `129716981807`, immutable source `6ec326bd662744eee786817c7ebf68485741a915`, `in_progress`.
+
+**Passed:** workflow steps 1–5: runner, checkout, Java 17, Flutter 3.47.2, Gradle 9.3.1.
+
+**Current gate:** step 6 `Verify toolchain` is `in_progress`; steps 7–21 remain pending. No analyzer/test/Android/APK/signature/ZIP/Release outcome yet.
+
+**Last completed gate:** Gradle setup (step 5). Continue only #142; no duplicate trigger.
+
+---
+## HISTORICAL CHECKPOINT — BUILD #142 ACTIVE / JAVA 17 SETUP — 2026-11-10
 
 **Run:** [Build #142 / Actions run 42782901555](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42782901555), workflow `374946166`, event `issues`, attempt 1. Job `build` / `129716981807`, `in_progress`.
 
