@@ -448,6 +448,52 @@ class UsageStatsAnalytics {
     List<UsageChartPoint> points,
     int timestampMs,
   ) {
+  static List<UsageChartPoint> decimatePoints(
+    List<UsageChartPoint> points, {
+    int maxPoints = 1600,
+  }) {
+    if (points.length <= maxPoints || maxPoints < 8) {
+      return points;
+    }
+
+    final selected = <UsageChartPoint>{};
+    final bucketCount = math.max(1, maxPoints ~/ 4).toInt();
+    final bucketSize = points.length / bucketCount;
+    for (var bucket = 0; bucket < bucketCount; bucket++) {
+      final start = (bucket * bucketSize).floor();
+      final end = math.min(points.length, ((bucket + 1) * bucketSize).ceil());
+      if (start >= end) continue;
+      selected
+        ..add(points[start])
+        ..add(points[end - 1]);
+
+      int? minimumIndex;
+      int? maximumIndex;
+      for (var index = start; index < end; index++) {
+        final point = points[index];
+        if (point.value == null || point.breakBefore) {
+          selected.add(point);
+        }
+        if (point.value == null) continue;
+        if (minimumIndex == null ||
+            point.value! < points[minimumIndex].value!) {
+          minimumIndex = index;
+        }
+        if (maximumIndex == null ||
+            point.value! > points[maximumIndex].value!) {
+          maximumIndex = index;
+        }
+      }
+      if (minimumIndex != null) selected.add(points[minimumIndex]);
+      if (maximumIndex != null) selected.add(points[maximumIndex]);
+    }
+
+    final result = selected.toList()
+      ..sort((a, b) => a.timestampMs.compareTo(b.timestampMs));
+    return List<UsageChartPoint>.unmodifiable(result);
+  }
+
+
     UsageChartPoint? previous;
     for (final point in points) {
       if (point.timestampMs > timestampMs) break;
@@ -2368,7 +2414,8 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
   }
 }
 
-class _UsageLinePainter extends CustomPainter {
+
+class _AnimatedUsageLineChart extends StatefulWidget {
   final List<UsageChartPoint> points;
   final int fromMs;
   final int toMs;
@@ -2376,6 +2423,111 @@ class _UsageLinePainter extends CustomPainter {
   final Color gridColor;
   final Color labelColor;
   final double? referenceValue;
+  final int? cursorTimestampMs;
+
+  const _AnimatedUsageLineChart({
+    super.key,
+    required this.points,
+    required this.fromMs,
+    required this.toMs,
+    required this.color,
+    required this.gridColor,
+    required this.labelColor,
+    required this.referenceValue,
+    required this.cursorTimestampMs,
+  });
+
+  @override
+  State<_AnimatedUsageLineChart> createState() =>
+      _AnimatedUsageLineChartState();
+}
+
+class _AnimatedUsageLineChartState extends State<_AnimatedUsageLineChart>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+  double? _fromValue;
+  double? _targetValue;
+
+  double? get _displayedValue {
+    final from = _fromValue;
+    final target = _targetValue;
+    if (from == null) return target;
+    if (target == null) return null;
+    return from + (target - from) * Curves.easeOutCubic.transform(_controller.value);
+  }
+
+  double? _latestObservedValue(List<UsageChartPoint> points) {
+    if (points.isEmpty || points.last.value == null) return null;
+    return points.last.value;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _targetValue = _latestObservedValue(widget.points);
+    _fromValue = _targetValue;
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 320),
+      value: 1,
+    );
+  }
+
+  @override
+  void didUpdateWidget(covariant _AnimatedUsageLineChart oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (!identical(oldWidget.points, widget.points)) {
+      final nextValue = _latestObservedValue(widget.points);
+      if (nextValue == null) {
+        _fromValue = null;
+        _targetValue = null;
+        _controller.value = 1;
+      } else if (nextValue != _targetValue) {
+        final current = _displayedValue ?? _targetValue ?? nextValue;
+        _fromValue = current;
+        _targetValue = nextValue;
+        _controller.forward(from: 0);
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (context, _) => CustomPaint(
+        painter: _UsageLinePainter(
+          points: widget.points,
+          fromMs: widget.fromMs,
+          toMs: widget.toMs,
+          color: widget.color,
+          gridColor: widget.gridColor,
+          labelColor: widget.labelColor,
+          referenceValue: widget.referenceValue,
+          animatedLatestValue: _displayedValue,
+          cursorTimestampMs: widget.cursorTimestampMs,
+        ),
+      ),
+    );
+  }
+}
+
+
+  final List<UsageChartPoint> points;
+  final int fromMs;
+  final int toMs;
+  final Color color;
+  final Color gridColor;
+  final Color labelColor;
+  final double? referenceValue;
+  final double? animatedLatestValue;
+  final int? cursorTimestampMs;
 
   const _UsageLinePainter({
     required this.points,
@@ -2385,6 +2537,8 @@ class _UsageLinePainter extends CustomPainter {
     required this.gridColor,
     required this.labelColor,
     required this.referenceValue,
+    this.animatedLatestValue,
+    this.cursorTimestampMs,
   });
 
   @override
@@ -2479,8 +2633,11 @@ class _UsageLinePainter extends CustomPainter {
     double? previousY;
     var drawn = false;
 
-    for (final point in points) {
-      final value = point.value;
+    for (var pointIndex = 0; pointIndex < points.length; pointIndex++) {
+      final point = points[pointIndex];
+      final value = pointIndex == points.length - 1 && point.value != null
+          ? (animatedLatestValue ?? point.value)
+          : point.value;
       if (value == null) {
         if (path != null && drawn) canvas.drawPath(path, linePaint);
         path = null;
@@ -2502,14 +2659,27 @@ class _UsageLinePainter extends CustomPainter {
         previousY = y;
         drawn = false;
       } else {
-        path
-          ..lineTo(x, previousY ?? y)
-          ..lineTo(x, y);
+        path!.lineTo(x, y);
         previousY = y;
         drawn = true;
       }
     }
     if (path != null && drawn) canvas.drawPath(path, linePaint);
+
+    if (cursorTimestampMs != null) {
+      final cursorX = xFor(cursorTimestampMs!);
+      final cursorPaint = Paint()
+        ..color = labelColor.withValues(alpha: .85)
+        ..strokeWidth = 1
+        ..style = PaintingStyle.stroke;
+      for (var y = plot.top; y < plot.bottom; y += 7) {
+        canvas.drawLine(
+          Offset(cursorX, y),
+          Offset(cursorX, math.min(y + 3.5, plot.bottom).toDouble()),
+          cursorPaint,
+        );
+      }
+    }
 
     final startText = TextPainter(
       text: TextSpan(
@@ -2539,7 +2709,9 @@ class _UsageLinePainter extends CustomPainter {
       oldDelegate.toMs != toMs ||
       oldDelegate.color != color ||
       oldDelegate.gridColor != gridColor ||
-      oldDelegate.referenceValue != referenceValue;
+      oldDelegate.referenceValue != referenceValue ||
+      oldDelegate.animatedLatestValue != animatedLatestValue ||
+      oldDelegate.cursorTimestampMs != cursorTimestampMs;
 }
 
 class _UsageTimelinePainter extends CustomPainter {
@@ -2548,6 +2720,7 @@ class _UsageTimelinePainter extends CustomPainter {
   final int toMs;
   final String lane;
   final ColorScheme scheme;
+  final int? cursorTimestampMs;
 
   const _UsageTimelinePainter({
     required this.segments,
@@ -2555,6 +2728,7 @@ class _UsageTimelinePainter extends CustomPainter {
     required this.toMs,
     required this.lane,
     required this.scheme,
+    this.cursorTimestampMs,
   });
 
   @override
@@ -2576,7 +2750,57 @@ class _UsageTimelinePainter extends CustomPainter {
             .toDouble() *
         size.width;
 
-    for (final segment in segments) {
+    if (lane == 'fan_speed') {
+      final grid = Paint()
+        ..color = scheme.outlineVariant.withValues(alpha: .55)
+        ..strokeWidth = .7;
+      for (final fraction in [0.0, .5, 1.0]) {
+        final y = 2 + (size.height - 5) * (1 - fraction);
+        canvas.drawLine(Offset(0, y), Offset(size.width, y), grid);
+      }
+      final area = Path();
+      final line = Path();
+      var started = false;
+      for (final segment in segments) {
+        final speed = (segment.numberValue ?? 0).clamp(0, 100).toDouble();
+        final startX = xFor(segment.startMs);
+        final endX = xFor(segment.endMs);
+        final y = size.height - 2 -
+            (size.height - 5) * speed / 100;
+        if (endX <= startX) continue;
+        if (!started) {
+          area.moveTo(startX, size.height - 2);
+          area.lineTo(startX, y);
+          line.moveTo(startX, y);
+          started = true;
+        } else {
+          area.lineTo(startX, y);
+          line.lineTo(startX, y);
+        }
+        area
+          ..lineTo(endX, y)
+          ..lineTo(endX, size.height - 2);
+        line.lineTo(endX, y);
+      }
+      if (started) {
+        area.close();
+        canvas.drawPath(
+          area,
+          Paint()..color = scheme.primary.withValues(alpha: .12),
+        );
+        canvas.drawPath(
+          line,
+          Paint()
+            ..color = scheme.primary
+            ..strokeWidth = 2
+            ..strokeCap = StrokeCap.round
+            ..strokeJoin = StrokeJoin.round
+            ..style = PaintingStyle.stroke,
+        );
+      }
+    }
+
+    for (final segment in lane == 'fan_speed' ? const <UsageStateSegment>[] : segments) {
       final start = xFor(segment.startMs);
       final end = xFor(segment.endMs);
       if (end <= start) continue;
@@ -2626,6 +2850,20 @@ class _UsageTimelinePainter extends CustomPainter {
         Paint()..color = color,
       );
     }
+
+    if (cursorTimestampMs != null && toMs > fromMs) {
+      final x = xFor(cursorTimestampMs!);
+      final cursorPaint = Paint()
+        ..color = scheme.onSurface.withValues(alpha: .7)
+        ..strokeWidth = 1;
+      for (var y = 1.0; y < size.height; y += 7) {
+        canvas.drawLine(
+          Offset(x, y),
+          Offset(x, math.min(y + 3.5, size.height).toDouble()),
+          cursorPaint,
+        );
+      }
+    }
   }
 
   @override
@@ -2634,7 +2872,8 @@ class _UsageTimelinePainter extends CustomPainter {
       oldDelegate.fromMs != fromMs ||
       oldDelegate.toMs != toMs ||
       oldDelegate.lane != lane ||
-      oldDelegate.scheme != scheme;
+      oldDelegate.scheme != scheme ||
+      oldDelegate.cursorTimestampMs != cursorTimestampMs;
 }
 
 String _formatTemperature(double? value) =>
