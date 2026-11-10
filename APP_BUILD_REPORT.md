@@ -1,3 +1,27 @@
+## BUILD #143 — PRE-TRIGGER CHECKPOINT AFTER BUILD #142 OVER-BROAD TEXT FINDER FAILURE — 2026-11-10
+
+- **Authorization:** owner explicitly selected `Eksekusi Build App!`; the same authorized App Build/QC operation continues. #142 is terminal and a concrete Flutter test assertion defect was repaired. One further guarded App-only retry is authorized; no Firmware/BIN/Firebase/OTA/flash/device action.
+- **Candidate source before docs checkpoint:** main `f210e6b9036723150f1596d3d54ed270f401ca63`, complete recursive tree 131 entries. Newest commit modifies only `test/usage_statistics_test.dart`.
+- **Failed attempt #142:** run `42782901555`, job `129716981807`, immutable source `6ec326bd662744eee786817c7ebf68485741a915`, event `issues`, attempt 1, terminal failure at step 13 `Run Flutter tests`. Steps 1–12 all succeeded, including analyzer with 25 info-level diagnostics and no warnings/errors. Full Flutter tests: **158 passed / 1 failed**. Failure at `test/usage_statistics_test.dart:432`: `find.text('00:10')` expected exactly one widget, but correctly found two: session elapsed header and elapsed chart end-axis label. Steps 14–21 skipped; no artifacts/APK/source ZIP/Release mutation.
+- **Repair commit:** `f210e6b9036723150f1596d3d54ed270f401ca63`, only `test/usage_statistics_test.dart`; replaces the global text-count assertion with a `tester.widget<Text>` lookup by stable `ValueKey('usage-session-elapsed')` and asserts that widget's `.data == '00:10'`. Both legitimate UI labels remain. Full-file read-back verified the replacement; production code/layout not changed and no gate weakened.
+- **Previous #141 localization repair remains:** `bafff332f406fdb75e4534d3d9c426d13e83a31b` expects Indonesian `Sesi pendinginan selesai` when the test sets Indonesian locale. Analyzer fixes from #139/#140 remain and #142 analyzer passed all of them.
+- **Latest verified package remains #138:** run `42749408202`, source `b553f22092d9b33b2c81753254d2e3f03928fa18`; all 21 gates, 157/157 Flutter tests, 25 analyzer info-level diagnostics, Android gate with app JUnit tasks `NO-SOURCE`, production signing/certificate, matching source ZIP, Release/tag and downloaded-asset verification passed. Release ID `403010611` still targets #138.
+- **Trigger state:** workflow blob `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12` remains issue-only with owner/title/token guard and all 21 gates. Issue #33 OPEN exact; #142 terminal, no active/queued run or open PR. No #143 trigger has been sent.
+- **Run state:** NOT STARTED; no #143 run/job ID yet. Documentation checkpoint commits after candidate are docs-only; require exact main SHA match in the new run.
+- **Next exact action:** commit/read back the #142 failure/repair checkpoint, re-fetch main/tree/workflow/issue/Actions/Release/tag/versionName. Close #33 once, verify CLOSED and zero active runs, reopen exactly once; follow only the single run matching final main SHA. If no run appears, stop BLOCKED and do not repeat the event.
+- **Protected config/scope:** preserve Android `versionName "Telegram @horizontalzzz"`. No Firmware/BIN/Firebase/OTA/flashing/device work; CI does not prove physical/OEM/BLE/thermal behavior.
+
+---
+## BUILD #142 — FAILED AT FLUTTER TEST GATE; OVER-BROAD TIME TEXT FINDER REPAIRED — 2026-11-10
+
+- **Run/job/source:** [Build #142 / Actions run 42782901555](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42782901555), workflow `374946166`, event `issues`, attempt 1; job `build` / `129716981807`; immutable source `6ec326bd662744eee786817c7ebf68485741a915`.
+- **Passed:** workflow steps 1–12, including setup, security/architecture audit, dependencies and analyzer. Analyzer exit 0, **25 info-level diagnostics**, no warnings/errors.
+- **Failed:** step 13 `Run Flutter tests`; **158 passed / 1 failed**. `test/usage_statistics_test.dart:432` used `find.text('00:10')` expecting exactly one match. Actual UI correctly contained two: `Text-[<'usage-session-elapsed'>]('00:10')` for total run duration and `Text('00:10')` at the temperature chart's elapsed-time axis endpoint. This is an over-broad test finder, not duplicate or incorrect UI output.
+- **Skipped:** steps 14–21 (Android Gradle, APK, V1/V2/V3, certificate, source ZIP, Release/tag and downloaded asset checks). Artifacts empty; no Release/tag mutation.
+- **Repair:** commit `f210e6b9036723150f1596d3d54ed270f401ca63` replaces the broad text finder with the uniquely keyed elapsed-header `Text` widget and asserts its `data` is `00:10`. The chart-axis text is intentionally preserved. Full test file read-back verified; no production UI or workflow changes. This correction is not yet CI-validated.
+- **Disposition:** FAILED / TEST FINDER ROOT CAUSE REPAIRED / RETRY NOT STARTED. #142 analyzer success validates the prior analyzer and locale fixes; this latest test-contract repair requires hosted full-suite validation.
+
+---
 ## BUILD #142 — PRE-TRIGGER CHECKPOINT AFTER BUILD #141 LOCALIZATION TEST FAILURE — 2026-11-10
 
 - **Authorization:** the owner's explicit `Eksekusi Build App!` operation remains active. #141 is terminal; a concrete localization assertion mismatch was identified and corrected in an App test. This authorizes one evidence-based guarded App Build/QC retry only; no Firmware/BIN/Firebase/OTA/flash/device action.
@@ -12,7 +36,7 @@
 - **Protected config/scope:** preserve Android `versionName "Telegram @horizontalzzz"`; no Firmware, BIN, Firebase, OTA, flashing or device operation. CI does not prove physical/OEM/BLE/thermal behavior.
 
 ---
-## BUILD #142 PROGRESS — ANALYZER PASSED; FULL FLUTTER TESTS ACTIVE — 2026-11-10
+## HISTORICAL BUILD #142 PROGRESS — ANALYZER PASSED; FULL FLUTTER TESTS ACTIVE — 2026-11-10
 
 - **Run/job/source:** [run 42782901555](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42782901555), job `129716981807`, exact source `6ec326bd662744eee786817c7ebf68485741a915`.
 - **Passed gates:** steps 1–12 success: runner/checkout, Java 17, Flutter 3.47.2, Gradle 9.3.1, toolchain, local.properties, production signing prep, wrapper, App security/architecture audit, dependency installation and Dart analyzer.
