@@ -93,7 +93,7 @@ void main() {
     expect(floating, contains('JexFixedScalePage(compactUi: true, child: FloatingSettingsPage())'));
     expect(
       RegExp(
-        r"JexText\.phrase\s*\(\s*'Usage Statistics'\s*,\s*'Statistik Penggunaan'\s*,\s*language\s*\)",
+        r"JexText\.phrase\s*\(\s*'Usage Statistics'\s*,\s*'Statistik Penggunaan'\s*,\s*language\s*,\s*\)",
       ).hasMatch(floating),
       isTrue,
     );
