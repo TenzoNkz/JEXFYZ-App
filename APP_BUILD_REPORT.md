@@ -1,3 +1,15 @@
+## BUILD #138 PROGRESS — GUARDED RUNNER STARTED; JAVA SETUP ACTIVE — 2026-11-10
+
+- **Run:** [Build #138 / Actions run 42749408202](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42749408202), workflow ID `374946166`, event `issues`, attempt 1, branch `main`; created/started `2026-11-10T03:26:00Z`.
+- **Source/trigger parity:** issue #33 closed once at `2026-11-10T03:25:41Z`, exact owner/title/token and zero active runs revalidated, then reopened once at `2026-11-10T03:25:58Z`. Exactly one new issue run appeared. Immutable `head_sha` `b553f22092d9b33b2c81753254d2e3f03928fa18` equals final main SHA immediately before trigger. No duplicate event, push/PR/manual-dispatch.
+- **Job:** `build`, ID `129609197264`, hosted runner, `in_progress`. Steps 1 `Set up job` and 2 `Checkout repository` succeeded; step 3 `Set up Java 17` is `in_progress`. Steps 4–21 pending.
+- **Candidate test fixes under validation:** `a2036ea6909bb027506b638f0d0f1f7aa77e3f32` applies a width-specific page key in `pumpAtWidth` to reset responsive scroll state; `40d430bc2fab2d01b72346fe407b38ae872e0807` allows trailing comma in the multiline localization regex (confirmed matching actual source). These are test-only changes and are not yet CI-validated.
+- **Last completed gate:** checkout (step 2). **Current gate:** Java 17 setup (step 3). **Remaining:** Flutter/Gradle/toolchain, local.properties, production signing preparation, wrapper, App security audit, dependencies, analyzer, full Flutter tests, Android unit-test gate, obfuscated APK, V1/V2/V3 + expected certificate, matching source ZIP, Release/tag parity and downloaded asset identity/checksum/source-marker/signature verification.
+- **Artifacts/release:** initial Actions artifact list empty. No #138 APK/ZIP/release update yet; Build #133 remains latest verified package.
+- **Disposition:** ACTIVE — follow only run `42749408202` / job `129609197264`; do not trigger another while active. Preserve all gates and Android `versionName "Telegram @horizontalzzz"`. No Firmware/BIN/Firebase/OTA/flash/device operation.
+
+---
+
 ## BUILD #137 — FAILED AT FLUTTER TEST GATE; TWO LAST ASSERTION CAUSES REPAIRED — 2026-11-10
 
 - **Run:** [Build #137 / Actions run 42748861814](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42748861814), workflow ID `374946166`, issue event, attempt 1; terminal `completed/failure` at `2026-11-10T03:22:45Z`.
