@@ -1,3 +1,15 @@
+## BUILD #136 PROGRESS — GUARDED RUNNER STARTED; JAVA SETUP ACTIVE — 2026-11-10
+
+- **Run:** [Build #136 / Actions run 42748124633](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42748124633), workflow ID `374946166`, event `issues`, attempt 1, branch `main`, created/started `2026-11-10T03:14:28Z`.
+- **Source/trigger parity:** issue #33 was closed once at `2026-11-10T03:14:16Z`, revalidated against exact owner/title/token and zero active run, then reopened once at `2026-11-10T03:14:26Z`. Exactly one new issue-triggered run appeared. Its immutable `head_sha` is `55d1387ed016914b4af85fb1b49d3e7e222cce44`, exactly matching final pre-trigger `main`. No second issue event, push/PR/manual-dispatch or duplicate run was used.
+- **Job:** `build`, ID `129605035668`, hosted runner; status `in_progress`. Steps 1 `Set up job` and 2 `Checkout repository` succeeded; step 3 `Set up Java 17` is `in_progress`. Steps 4–21 pending.
+- **Candidate repairs under validation:** chart-key commit `7b539c0c9e50e6a2cd9860cd5fd33e5e0bf35c10`; Usage Statistics widget test commit `bb0c540d1bb9e7800d0d9c18ed0f2fab178a8715`; Floating Monitor static contract test commit `39457247735fbebe487ddd137831cc831f80aef4`. These are the exact changes missing from failed #135 source; #136 must validate them.
+- **Last completed gate:** repository checkout (step 2). **Current gate:** Java 17 setup (step 3). **Remaining:** Flutter/Gradle/toolchain, local.properties, production signing prep, wrapper, App audit, dependencies, analyzer, full Flutter suite, Android gate, obfuscated APK, V1/V2/V3 and certificate verification, matching source ZIP, Release/tag parity and downloaded asset integrity/source marker/signature checks.
+- **Artifacts/release:** no Actions artifact at initial run inspection. No #136 APK/ZIP/release update yet; Build #133 remains latest verified release until all current gates pass.
+- **Disposition:** ACTIVE — follow only run `42748124633` / job `129605035668`. Do not trigger another run while queued/active. Preserve workflow gates and Android `versionName "Telegram @horizontalzzz"`; no Firmware/BIN/Firebase/OTA/flash/device action.
+
+---
+
 ## BUILD #135 — FAILED AT FLUTTER TEST GATE; FOUR APP TEST ROOT CAUSES REPAIRED — 2026-11-10
 
 - **Run:** [Build #135 / Actions run 42747092939](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42747092939), workflow ID `374946166`, issue event, attempt 1, terminal `completed/failure` at `2026-11-10T03:07:05Z`.
