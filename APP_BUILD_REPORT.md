@@ -12,6 +12,15 @@
 - **Protected identity:** retain Android `versionName "Telegram @horizontalzzz"`; no Firmware/BIN/Firebase/OTA/flash/device action. CI is not physical/OEM/BLE/thermal evidence.
 
 ---
+## BUILD #141 PROGRESS — RUN ACCEPTED; FLUTTER SETUP ACTIVE — 2026-11-10
+
+- **Run/source:** [Build #141 / Actions run 42782355435](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42782355435), workflow `374946166`, issue event, attempt 1, exact source `2fb8dc6ec4a0f41e7cce73e6a49db0e716b56cda` matching `main` at trigger.
+- **Trigger:** issue #33 was revalidated exact/open; closed once at `2026-11-10T08:23:56Z`, verified closed with no active run and main SHA `2fb8dc6ec4a0f41e7cce73e6a49db0e716b56cda`, then reopened once at `2026-11-10T08:24:10Z`. Exactly one new run appeared at `2026-11-10T08:24:13Z`.
+- **Job:** `build` / `129715178789`, status `in_progress`. Steps 1–3 (runner, checkout, Java 17) `success`; step 4 Flutter setup `in_progress`; steps 5–21 pending. No analyzer, test, Android, APK, signature or Release result claimed yet.
+- **Artifacts/Release:** run artifact list currently empty; the published Release remains Build #138 source. Continue only this run and do not duplicate.
+- **Last completed gate:** Java 17 setup (step 3). **Current gate:** Flutter setup (step 4). **Remaining:** Gradle/toolchain, local.properties, signing prep, App audit, dependencies, analyzer, Flutter suite, Android gate, obfuscated APK, signatures/certificate, source ZIP, Release/tag parity and downloaded-asset checks.
+
+---
 ## BUILD #140 — FAILED AT DART ANALYZER; FINAL TEST IDENTIFIER REPAIRED — 2026-11-10
 
 - **Run/job/source:** [Build #140 / Actions run 42781821476](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42781821476), workflow `374946166`, issue event, attempt 1; job `build` / `129713425920`; exact source `cdd0b6dc6bc91d01029e89a0b88fc1185205e239`.
