@@ -2,18 +2,20 @@
 
 Updated: 2026-11-10 (Asia/Jakarta).
 
-## Active Build #142
+## Build #142 failed; Build #143 test repair
 
-- [Actions run 42782901555](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42782901555), job `129716981807`, source `6ec326bd662744eee786817c7ebf68485741a915` matched main at trigger.
-- Run `in_progress`: steps 1–2 success, step 3 Java 17 setup in progress, steps 4–21 pending. No analyzer/test/build/asset result yet; no artifact.
-- Issue #33 exact/open, closed once/reopened once for #142; exactly one run appeared. Follow this run only.
+- #142 run `42782901555`, job `129716981807`, source `6ec326bd662744eee786817c7ebf68485741a915`. Analyzer passed (25 info; no warning/error). Flutter tests 158 passed / 1 failed.
+- Failure at test line 432: `find.text('00:10')` expected one result; UI correctly has the same text in both the session elapsed header and chart axis endpoint.
+- Repair commit `f210e6b9036723150f1596d3d54ed270f401ca63` asserts the uniquely keyed `usage-session-elapsed` Text's `.data`. Test file read-back verified; no production UI change.
 
-## Latest test repair under validation
+## Candidate and release
 
-- #141's only test failure was an English expectation while the widget test selected Indonesian. UI correctly renders `Sesi pendinginan selesai`; test finder corrected in `bafff332f406fdb75e4534d3d9c426d13e83a31b`. #142 validates it.
+- Candidate before docs checkpoint: `f210e6b9036723150f1596d3d54ed270f401ca63`, full tree 131 entries; Home hybrid palette + cooler-output per-second Statistics still present.
+- Latest verified release remains #138 / run `42749408202`; all 21 gates, Flutter 157/157, signing/certificate/source ZIP/Release/tag/download checks passed; Android app JUnit tasks `NO-SOURCE`.
 
-## Latest verified package
+## Next action
 
-- Build #138 / run `42749408202` remains the published baseline until a later run completes all 21 gates. Release/tag provenance and hashes are recorded in `APP_BUILD_REPORT.md`.
+- Issue #33 OPEN exact; #142 terminal; no active run/PR. Workflow issue-only and all gates intact. No #143 trigger sent yet.
+- After docs read-back and final preflight, close #33 once, verify closed/no active, reopen once and require single run with final main SHA. Never repeat the event.
 
-Preserve `versionName "Telegram @horizontalzzz"`. No Firmware/BIN/Firebase/OTA/flash/device operations. Physical install/OEM/BLE/thermal evidence remains separate.
+Preserve `versionName "Telegram @horizontalzzz"`. No Firmware/BIN/Firebase/OTA/flash/device action. Device/OEM/BLE/thermal evidence remains separate.
