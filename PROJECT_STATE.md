@@ -1,4 +1,14 @@
-## Current App build candidate — Build #142 active (2026-11-10)
+## Current App build candidate — Build #143 pre-trigger (2026-11-10)
+
+- **Latest verified package:** Build #138 / run `42749408202`, source `b553f22092d9b33b2c81753254d2e3f03928fa18`; 21 main gates, Flutter 157/157, analyzer 25 info-level, Android gate (`NO-SOURCE` native JUnit), signing/certificate, source ZIP, Release/tag and downloaded asset checks all passed.
+- **Build #142:** run `42782901555`, job `129716981807`, source `6ec326bd662744eee786817c7ebf68485741a915`. Analyzer passed (25 info, no warnings/errors); Flutter suite 158 passed / 1 failed because `find.text('00:10')` matched both session elapsed header and chart x-axis endpoint.
+- **Repair:** commit `f210e6b9036723150f1596d3d54ed270f401ca63` targets the uniquely keyed `usage-session-elapsed` Text and asserts its data is `00:10`; chart-axis label remains. Full file read-back verified. Awaiting CI.
+- **Candidate source before docs checkpoint:** `f210e6b9036723150f1596d3d54ed270f401ca63`, complete recursive tree 131 entries. Hybrid Home header palette and output-gated per-second Usage Statistics remain intact.
+- **Trigger:** issue #33 exact/open; #142 terminal; no active/queued run or PR. No #143 trigger sent. Workflow remains guarded issue-only with all 21 gates; `versionName "Telegram @horizontalzzz"` preserved.
+- **Status:** test fix committed; full Flutter suite still UNVERIFIED. Physical BLE, storage soak, OEM visuals, install and thermal/electrical remain unverified.
+
+---
+## HISTORICAL App build candidate — Build #142 active before test failure
 
 - **Latest verified package:** Build #138 / run `42749408202`, source `b553f22092d9b33b2c81753254d2e3f03928fa18`; 21 main gates, Flutter 157/157 and analyzer 25 info-only passed; Android gate passed with JUnit tasks `NO-SOURCE`; APK V1/V2/V3/certificate, source ZIP, Release/tag and downloaded asset verification all passed.
 - **Build #141:** run `42782355435`, job `129715178789`, source `2fb8dc6ec4a0f41e7cce73e6a49db0e716b56cda`. Analyzer passed (25 infos, no warning/error); Flutter tests failed **158/1** because test locale was Indonesian but expected English `Completed cooling run`. The actual localized UI label is `Sesi pendinginan selesai`; fixture was a completed session. No APK/Release changes.
