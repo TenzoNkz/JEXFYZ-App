@@ -1,5 +1,13 @@
 # JE X FYZ / JE Cooler — Current Project State
-## Current App Build candidate — pre-trigger checkpoint (2026-11-10)
+## Build #134 result / next guarded retry — 2026-11-10
+
+- **Run:** #134 / `42746617402`, source `479d1017729a90a081b30479977b0bc6c6777fbc`, terminal failure at analyzer step 12. Steps 1–11 passed. The analyzer found 27 diagnostics including a blocking warning at `lib/usage_statistics.dart:1789:13` (unnecessary non-null assertion); Flutter tests, Android gate, APK/signing/source/release steps were skipped. No Build #134 artifact or Release update exists.
+- **Repair:** `25684ed93d189a173bdbd8c9115c2bedb5959f53`, limited to `lib/usage_statistics.dart`: removed redundant `path!` and redundant `dart:ui` import. Source read-back verified. No behavior/test/workflow/gate/analyzer-flag changes. CI validation is pending.
+- **Retry preflight:** no active/queued run. Issue #33 is OPEN and still has exact owner/title/token. The retry checkpoint is saved in `CHAT_TRANSFER.md`; after final pre-trigger verification, close #33 once then reopen once to trigger the next guarded run (expected #135). Do not send a duplicate event.
+- **Latest verified package:** Build #133 / run `42619673642`, source `5201a3e07f36305ffe3882a1b965b9e7414cd71a`; Release/tag remain there until all new workflow gates and downloaded assets pass. Build #133 does not include current Usage Statistics changes.
+- Preserve `android/app/build.gradle` `versionName "Telegram @horizontalzzz"`. No Firmware/BIN/Firebase/OTA/flash/device operation is included.
+
+## Superseded pre-trigger snapshot — App Build candidate (2026-11-10)
 
 - **Mode:** owner explicitly authorized `Eksekusi Build App!`; guarded App Build/QC/Release only. No Firmware/BIN/Firebase/OTA/flash/device operation.
 - **Candidate source:** main pre-documentation HEAD `0d5ffe66ed520c5e3502d8f86dfaf33a41a2f550`; recursive tree 131 entries, not truncated. Compared with Build #133 packaged SHA `5201a3e07f36305ffe3882a1b965b9e7414cd71a`, main was 61 commits ahead and 0 behind. Current diff includes App/test changes in `lib/usage_statistics.dart`, `lib/main.dart`, `lib/floating_monitor.dart`, `test/usage_statistics_test.dart`, `test/floating_monitor_layout_contract_test.dart`, `pubspec.yaml` and `pubspec.lock`, plus docs. No Firmware source changes are present in this compare.
