@@ -1526,7 +1526,7 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
     if (coolerId == null || update.coolerId != coolerId) return;
     _pendingLiveUpdates.add(update);
     _liveFlushTimer ??= Timer(
-      const Duration(milliseconds: 80),
+      const Duration(milliseconds: 16),
       _flushLiveUpdates,
     );
   }
@@ -1581,10 +1581,18 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
           final byTime = a.timestampMs.compareTo(b.timestampMs);
           return byTime != 0 ? byTime : a.metric.compareTo(b.metric);
         });
-        final toMs = math.max(
-          sameSession ? previous.toMs : update.session.startedAtMs,
-          math.max(update.publishedAtMs, update.session.endedAtMs ?? 0),
-        ).toInt();
+        // Battery phone samples must never extend the P1 operating timeline.
+        // An open run is covered only through the last fresh Firmware HOT heartbeat.
+        final coverageEndMs = update.session.endedAtMs ??
+            math.min(
+              update.publishedAtMs,
+              update.session.lastSeenAtMs +
+                  const Duration(milliseconds: 1500).inMilliseconds,
+            );
+        final retainedEndMs = sameSession
+            ? math.min(previous.toMs, coverageEndMs)
+            : update.session.startedAtMs;
+        final toMs = math.max(retainedEndMs, coverageEndMs).toInt();
         _snapshot = UsageStatsSnapshot(
           fromMs: update.session.startedAtMs,
           toMs: toMs,
