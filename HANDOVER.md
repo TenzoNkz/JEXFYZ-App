@@ -2,18 +2,20 @@
 
 Updated: 2026-11-10 (Asia/Jakarta).
 
-## Active guarded App Build — #141
+## Build #141 test failure; Build #142 candidate
 
-- [Actions run 42782355435](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42782355435), job `129715178789`, immutable source `2fb8dc6ec4a0f41e7cce73e6a49db0e716b56cda` matched main at trigger.
-- Steps 1–12 succeeded, including Dart analyzer. Step 13 `Run Flutter tests` is currently `in_progress`; steps 14–21 pending. No test count or APK/Release result claimed yet; job log archive/artifacts not yet available while active.
-- Continue #141 only. Issue #33 is OPEN exact; no second trigger.
+- #141 run `42782355435`, job `129715178789`, source `2fb8dc6ec4a0f41e7cce73e6a49db0e716b56cda`. Steps 1–12 passed including analyzer (25 info, no warnings/errors). Flutter tests: 158 pass / 1 fail.
+- Failing test at `test/usage_statistics_test.dart:431` set Indonesian language but expected English `Completed cooling run`; widget correctly renders `Sesi pendinginan selesai`. Fixture session has an end timestamp; status branch is completed, so this is test locale mismatch.
+- Repair commit `bafff332f406fdb75e4534d3d9c426d13e83a31b` updates both finder assertions. Read-back verified. This needs a new hosted test validation.
 
-## Relevant repairs in this source
+## Candidate and release
 
-- #139 and #140 analyzer/test mismatches were repaired in `93b1ba7b859089eeccd30719ddfb8b8ab2dabaf6`, `2656b6eb9071cf878de2373cfab03d1872e089f8` and `2a0b1b94f7ebce1607ba26067441accb31a105c7`. All are included in #141 checkout; analyzer now passed.
+- Candidate before docs checkpoint: `bafff332f406fdb75e4534d3d9c426d13e83a31b`, full tree 131 entries. Includes Home hybrid palette correction, output-gated per-second Usage Statistics and prior analyzer fixes.
+- Latest verified APK/release remains #138 / run `42749408202`, source `b553f22092d9b33b2c81753254d2e3f03928fa18`. All 21 gates and Flutter 157/157 passed; Android app JUnit tasks `NO-SOURCE`; signing/certificate, source ZIP, Release/tag and downloaded checksums/signatures verified.
 
-## Last verified package
+## Trigger
 
-- Build #138 / run `42749408202` remains current published package until #141 completes all gates. Release/tag and hashes remain documented in `APP_BUILD_REPORT.md`.
+- Issue #33 remains OPEN exact. #141 terminal; no active run or PR. Workflow unchanged issue-only guard and all gates; no #142 event sent yet.
+- After docs read-back, refresh main/tree/workflow/issue/Actions/Release/version, close #33 once, verify no active run and exact closed guard, then reopen once. Follow only the new run and verify final main SHA parity. Never repeat the event.
 
-Preserve `versionName "Telegram @horizontalzzz"`. No Firmware/BIN/Firebase/OTA/flashing/device operation. Physical installation/OEM/BLE/thermal evidence remains separate.
+Keep `versionName "Telegram @horizontalzzz"`. No Firmware/BIN/Firebase/OTA/flash/device operation. Owner installation/OEM/physical BLE/thermal remains unverified.
