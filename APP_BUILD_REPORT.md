@@ -1,3 +1,27 @@
+## BUILD #142 — PRE-TRIGGER CHECKPOINT AFTER BUILD #141 LOCALIZATION TEST FAILURE — 2026-11-10
+
+- **Authorization:** the owner's explicit `Eksekusi Build App!` operation remains active. #141 is terminal; a concrete localization assertion mismatch was identified and corrected in an App test. This authorizes one evidence-based guarded App Build/QC retry only; no Firmware/BIN/Firebase/OTA/flash/device action.
+- **Source before docs checkpoint:** `main` HEAD `bafff332f406fdb75e4534d3d9c426d13e83a31b`; recursive tree complete, 131 entries. The newest commit changes only `test/usage_statistics_test.dart`.
+- **Failed attempt #141:** run `42782355435`, job `129715178789`, immutable checkout SHA `2fb8dc6ec4a0f41e7cce73e6a49db0e716b56cda`, event `issues`, attempt 1, terminal failure at step 13 `Run Flutter tests`. Steps 1–12 succeeded, including Dart analyzer; analyzer reported 25 info-only diagnostics. Flutter suite result: **158 passed / 1 failed**. Failure at `test/usage_statistics_test.dart:431`: expected English `Completed cooling run`, but the test sets `AppLanguage.indonesia` and UI correctly renders `Sesi pendinginan selesai`. Fixture session has `endedAtMs: 10000`; this was a test-locale mismatch, not a production state/UI defect. Steps 14–21 skipped; no artifacts/APK/source ZIP/Release change.
+- **Repair commit:** `bafff332f406fdb75e4534d3d9c426d13e83a31b`, only `test/usage_statistics_test.dart`; both completed-session finder expectations now use `Sesi pendinginan selesai`. Full file read-back verified two Indonesian assertions, zero old English strings, selected Indonesian language and completed fixture. No production code, localization strings, test gates or analyzer settings changed.
+- **Earlier analyzer repairs remain:** `93b1ba7b859089eeccd30719ddfb8b8ab2dabaf6` removes unused `range`; `2656b6eb9071cf878de2373cfab03d1872e089f8` updates `lastTemperatureSampleAtMs` and removes obsolete locals; `2a0b1b94f7ebce1607ba26067441accb31a105c7` fixes both remaining `lastValidSample` references. Analyzer passed all of these in #141.
+- **Latest verified package remains #138:** run `42749408202`, source `b553f22092d9b33b2c81753254d2e3f03928fa18`, full 21 gates and 157/157 Flutter tests, analyzer 25 info-level, Android gate (app JUnit tasks `NO-SOURCE`), signing/certificate, source ZIP, Release/tag and downloaded-assets all verified. Release ID `403010611` remains at #138.
+- **Trigger preflight:** workflow `.github/workflows/jexfyz-app-build-trigger.yml` blob `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12`, issue-only and all 21 gates intact. Issue #33 is OPEN exact owner/title/body token; #141 terminal; no active/queued run or open PR. No #142 trigger has been sent.
+- **Run state:** NOT STARTED; no #142 run/job exists. Documentation changes following this source candidate are docs-only; require the actual new run `head_sha` to match final `main`.
+- **Next exact action:** commit/read back failure+repair ledger and checkpoint, refresh main/tree/workflow/issue/Actions/Release/tag/versionName, close issue #33 once and verify CLOSED/no active run, reopen exactly once. Follow only the one new issue-triggered run; if no run appears, stop BLOCKED without repeating the event.
+- **Protected config/scope:** preserve Android `versionName "Telegram @horizontalzzz"`; no Firmware, BIN, Firebase, OTA, flashing or device operation. CI does not prove physical/OEM/BLE/thermal behavior.
+
+---
+## BUILD #141 — FAILED AT FLUTTER TEST GATE; LOCALE EXPECTATION REPAIRED — 2026-11-10
+
+- **Run/job/source:** [Build #141 / Actions run 42782355435](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42782355435), workflow `374946166`, event `issues`, attempt 1; job `build` / `129715178789`; immutable source `2fb8dc6ec4a0f41e7cce73e6a49db0e716b56cda` matched main at trigger.
+- **Passed:** steps 1–12 including Java/Flutter/Gradle/toolchain, signing preparation, architecture audit, dependencies and Dart analyzer. Analyzer exited 0 with 25 info-level diagnostics; no warning/error.
+- **Failed:** step 13 `Run Flutter tests`; **158 passed / 1 failed**. `test/usage_statistics_test.dart:431` expected `Completed cooling run` but the same test explicitly sets `appLanguageNotifier.value = AppLanguage.indonesia`. The current widget correctly resolves the Indonesian localization `Sesi pendinginan selesai`. The `_sampleSnapshot()` fixture has `endedAtMs: 10000`, so the completed-state branch is valid. The failure is an English-vs-Indonesian test assertion, not a production UI/state defect.
+- **Skipped:** steps 14–21 (Android Gradle, APK, V1/V2/V3, certificate, source ZIP, Release/tag and downloaded assets); artifacts list empty; no Release/tag mutation.
+- **Repair:** commit `bafff332f406fdb75e4534d3d9c426d13e83a31b` changes both width-pass expectations to `Sesi pendinginan selesai`; full-file read-back verified. No product code or localization behavior was altered, no test/gate weakened. This correction is not yet CI-validated.
+- **Disposition:** FAILED / TEST ROOT CAUSE REPAIRED / RETRY NOT YET STARTED. #139/#140 analyzer repairs are CI-validated by #141's analyzer pass; full tests remain to validate.
+
+---
 ## BUILD #141 — PRE-TRIGGER CHECKPOINT AFTER BUILD #140 TEST-IDENTIFIER FAILURE — 2026-11-10
 
 - **Authorization:** the owner's repeated `Eksekusi Build App!` operation remains active. #140 is terminal; the following repair is a concrete test-only correction, so one further guarded App Build/QC retry is authorized. No Firmware/BIN/Firebase/OTA/flash/device scope.
@@ -12,7 +36,7 @@
 - **Protected identity:** retain Android `versionName "Telegram @horizontalzzz"`; no Firmware/BIN/Firebase/OTA/flash/device action. CI is not physical/OEM/BLE/thermal evidence.
 
 ---
-## BUILD #141 PROGRESS — ANALYZER PASSED; FLUTTER TEST SUITE ACTIVE — 2026-11-10
+## HISTORICAL BUILD #141 PROGRESS — ANALYZER PASSED; FLUTTER TEST SUITE ACTIVE — 2026-11-10
 
 - **Run/job/source:** [run 42782355435](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42782355435), job `129715178789`, exact checked-out source `2fb8dc6ec4a0f41e7cce73e6a49db0e716b56cda`.
 - **Passed gates:** steps 1–12 all `success`: hosted runner, checkout, Java 17, Flutter, Gradle, toolchain, local.properties, production signing preparation, wrapper, App security/architecture audit, dependency installation and `Analyze Dart code`.
