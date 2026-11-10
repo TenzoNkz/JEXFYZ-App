@@ -93,14 +93,14 @@ void main() {
     expect(floating, contains('JexFixedScalePage(compactUi: true, child: FloatingSettingsPage())'));
     expect(
       RegExp(
-        r"JexText\\.phrase\\s*\\(\\s*'Usage Statistics'\\s*,\\s*'Statistik Penggunaan'\\s*,\\s*language\\s*\\)",
+        r"JexText\.phrase\s*\(\s*'Usage Statistics'\s*,\s*'Statistik Penggunaan'\s*,\s*language\s*\)",
       ).hasMatch(floating),
       isTrue,
     );
     expect(floating, contains('UsageStatisticsPage('));
     expect(
       RegExp(
-        r'JexFixedScalePage\\(\\s*compactUi:\\s*true,\\s*child:\\s*UsageStatisticsPage\\(',
+        r'JexFixedScalePage\(\s*compactUi:\s*true,\s*child:\s*UsageStatisticsPage\(',
       ).hasMatch(floating),
       isTrue,
     );
