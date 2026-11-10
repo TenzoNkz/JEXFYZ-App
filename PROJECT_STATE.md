@@ -1,13 +1,14 @@
 # JE X FYZ / JE Cooler — Current Project State
 
-## Build #135 result / next guarded retry — 2026-11-10
+## Build #136 active — guarded App Build/QC — 2026-11-10
 
-- **Run:** [#135 / Actions run 42747092939](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42747092939), source `2cd9a0e886167c857504926043b5cab03c67c163`, job `129601682007`; terminal failure at Flutter tests step 13. Steps 1–12 passed, including analyzer (25 info-only diagnostics, no warnings). Flutter suite: **153 passed / 4 failed**.
-- **Failure diagnoses:** two Usage Statistics assertions counted framework-wide `CustomPaint` nodes (actual 7 in empty state, 12 on populated state) instead of only the five App charts; the timestamp test queried a lazy ListView label without scrolling it into view; the Floating Monitor static source test looked for the Settings navigation route in `app_settings.dart` although it is in `floating_monitor.dart`.
-- **Repairs:** `7b539c0c9e50e6a2cd9860cd5fd33e5e0bf35c10` adds five stable chart keys only; `bb0c540d1bb9e7800d0d9c18ed0f2fab178a8715` narrows canvas assertions and scrolls the timestamp into view; `39457247735fbebe487ddd137831cc831f80aef4` checks navigation in the correct source file. Each file has exact GitHub read-back verification. No behavior, analyzer/test gate, workflow or release configuration was weakened. Repairs are not yet CI-validated.
-- **Release state:** #135 steps 14–21 were skipped. No new APK/ZIP/Release asset. Latest verified release/tag remains Build #133 source `5201a3e07f36305ffe3882a1b965b9e7414cd71a`.
-- **Retry state:** no active run. Issue #33 remains OPEN and matches exact owner/title/token. Commit/re-read the #136 pre-trigger checkpoint, then close #33 once and reopen once; verify exactly one run whose source SHA equals final main HEAD.
-- **Protected config/scope:** Android `versionName "Telegram @horizontalzzz"`; no Firmware/BIN/Firebase/OTA/flash/device work.
+- **Run:** [#136 / Actions run 42748124633](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42748124633), job `129605035668`, attempt 1, event `issues`; exact immutable source SHA `55d1387ed016914b4af85fb1b49d3e7e222cce44` matched final pre-trigger main.
+- **Trigger:** issue #33 was closed once and reopened once after final preflight; exactly one new issue-triggered run appeared. No duplicate trigger.
+- **Current gate:** steps 1–2 runner setup/checkout succeeded; step 3 Java 17 succeeded; step 4 Flutter setup is in progress. Analyzer/tests/build/release are not yet validated in this run.
+- **Repairs being validated:** Usage Statistics chart key metadata `7b539c0c9e50e6a2cd9860cd5fd33e5e0bf35c10`; targeted widget finder/scroll fix `bb0c540d1bb9e7800d0d9c18ed0f2fab178a8715`; correct Floating Monitor source contract `39457247735fbebe487ddd137831cc831f80aef4`. Build #135 failure remains preserved: analyzer succeeded (25 info only), tests were 153 pass / 4 fail.
+- **Last completed gate:** Java 17 (step 3). **Active:** Flutter setup (step 4). **Remaining:** Gradle/toolchain, security audit, dependencies, analyzer, full tests, Android gate, obfuscated APK, signing/certificate, source ZIP, exact Release/tag/source parity and downloaded asset integrity.
+- **Release baseline:** #133 remains latest verified package (source `5201a3e07f36305ffe3882a1b965b9e7414cd71a`). No #136 APK/ZIP/release update yet.
+- Preserve `versionName "Telegram @horizontalzzz"`. No Firmware/BIN/Firebase/OTA/flash/device operation.
 
 ## Superseded status — Build #134 analyzer failure / pre-Build #135 retry — 2026-11-10
 
