@@ -283,6 +283,38 @@ class UsageStatsAnalytics {
     );
   }
 
+  static int? lastTemperatureChangeAtMs(UsageStatsSnapshot snapshot) {
+    final sessionsById = <int, UsageStatsSession>{
+      for (final session in snapshot.sessions) session.id: session,
+    };
+    int? latestTimestampMs;
+
+    for (final event in snapshot.events) {
+      final value = event.numberValue;
+      if ((event.metric != 'battery' && event.metric != 'hotside') ||
+          value == null ||
+          !value.isFinite) {
+        continue;
+      }
+
+      final session = sessionsById[event.sessionId];
+      if (session == null) continue;
+      final sessionEndMs = session.endedAtMs ?? session.lastSeenAtMs;
+      if (event.timestampMs < session.startedAtMs ||
+          event.timestampMs > sessionEndMs ||
+          event.timestampMs > snapshot.toMs) {
+        continue;
+      }
+
+      if (latestTimestampMs == null ||
+          event.timestampMs > latestTimestampMs) {
+        latestTimestampMs = event.timestampMs;
+      }
+    }
+
+    return latestTimestampMs;
+  }
+
   static UsageTemperatureSummary _temperatureSummary(
     UsageStatsSnapshot snapshot,
     String metric,
@@ -1305,7 +1337,7 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
                   'Disimpan lokal di ponsel ini. Perubahan nilai terakhir: ',
                   language,
                 ) +
-                    _formatLastSample(summary, language),
+                    _formatLastSample(_snapshot, language),
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
                       color: scheme.onSurfaceVariant,
                     ),
@@ -1605,18 +1637,18 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
   }
 
   String _formatLastSample(
-    UsageStatsSummary summary,
+    UsageStatsSnapshot? snapshot,
     AppLanguage language,
   ) {
-    final points = [
-      ...summary.battery.points,
-      ...summary.hotside.points,
-    ].where((point) => point.value != null).toList();
-    if (points.isEmpty) {
+    if (snapshot == null) {
       return JexText.phrase('No valid sample', 'Belum ada sampel valid', language);
     }
-    points.sort((a, b) => a.timestampMs.compareTo(b.timestampMs));
-    return _axisTime(points.last.timestampMs, _period.duration.inMilliseconds);
+    final timestampMs =
+        UsageStatsAnalytics.lastTemperatureChangeAtMs(snapshot);
+    if (timestampMs == null) {
+      return JexText.phrase('No valid sample', 'Belum ada sampel valid', language);
+    }
+    return _axisTime(timestampMs, _period.duration.inMilliseconds);
   }
 }
 

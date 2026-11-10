@@ -391,6 +391,80 @@ void main() {
 
     });
 
+    testWidgets(
+      'last value change uses the latest persisted temperature event',
+      (tester) async {
+        final previousLanguage = appLanguageNotifier.value;
+        addTearDown(() => appLanguageNotifier.value = previousLanguage);
+        appLanguageNotifier.value = AppLanguage.english;
+
+        final startMs = DateTime(2026, 1, 1, 8).millisecondsSinceEpoch;
+        final latestChangeMs =
+            startMs + const Duration(minutes: 2).inMilliseconds;
+        final endMs = startMs + const Duration(minutes: 10).inMilliseconds;
+        final snapshot = UsageStatsSnapshot(
+          fromMs: startMs,
+          toMs: endMs,
+          sessions: [
+            UsageStatsSession(
+              id: 7,
+              coolerId: 'AA:BB:CC',
+              startedAtMs: startMs,
+              endedAtMs: null,
+              lastSeenAtMs: endMs,
+              lastHotsideSeenAtMs: endMs,
+              lastBatterySeenAtMs: endMs,
+            ),
+          ],
+          events: [
+            UsageStatsEvent(
+              sessionId: 7,
+              timestampMs: startMs,
+              metric: 'battery',
+              numberValue: 20,
+              textValue: null,
+            ),
+            UsageStatsEvent(
+              sessionId: 7,
+              timestampMs: latestChangeMs,
+              metric: 'hotside',
+              numberValue: 35,
+              textValue: null,
+            ),
+          ],
+        );
+        expect(
+          UsageStatsAnalytics.lastTemperatureChangeAtMs(snapshot),
+          latestChangeMs,
+        );
+
+        final localChange =
+            DateTime.fromMillisecondsSinceEpoch(latestChangeMs).toLocal();
+        final expectedTime =
+            '${localChange.hour.toString().padLeft(2, '0')}:'
+            '${localChange.minute.toString().padLeft(2, '0')}';
+
+        await tester.pumpWidget(
+          MaterialApp(
+            theme: ThemeData.light(useMaterial3: true),
+            home: UsageStatisticsPage(
+              coolerId: 'AA:BB:CC',
+              repository: _FakeUsageRepository(snapshot),
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+
+        expect(
+          find.text(
+            'Stored locally on this phone. Last value change: $expectedTime',
+          ),
+          findsOneWidget,
+        );
+        expect(tester.takeException(), isNull);
+      },
+    );
+
     testWidgets('clear action delegates to the injected local repository', (tester) async {
       final repository = _FakeUsageRepository(_sampleSnapshot());
       await tester.pumpWidget(
