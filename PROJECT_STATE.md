@@ -1,5 +1,14 @@
 # JE X FYZ / JE Cooler — Current Project State
 
+## Current App Build candidate — pre-trigger checkpoint (2026-11-10)
+
+- **Mode:** owner authorized `Eksekusi Build App!`; guarded App Build/QC/Release only. No Firmware/BIN/Firebase/OTA/flash/device operation.
+- **Candidate source:** main pre-doc HEAD `0d5ffe66ed520c5e3502d8f86dfaf33a41a2f550`; recursive tree 131 entries, not truncated. Compared with Build #133 packaged SHA `5201a3e07f36305ffe3882a1b965b9e7414cd71a`, main is 61 commits ahead, 0 behind and includes App/test changes to Usage Statistics, timestamp freshness handling, Flutter dependencies and regressions. The current source is NOT YET CI-VALIDATED.
+- **Preflight:** workflow ID `374946166`, issue-only opened/reopened trigger, owner/title/token guard, workflow blob `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12`; no active/queued/requested run. Issue #33 is owner-authored, exact title/token, currently CLOSED; reopen once only after pre-trigger docs are verified.
+- **Latest package baseline:** Build #133 / run `42619673642` on `5201a3e...`; 145 Flutter tests passed, analyzer exit 0 with 25 infos, configured Android gate success (native JUnit tasks NO-SOURCE), APK V1/V2/V3 + production certificate, corresponding source ZIP, exact Release/tag source SHA and downloaded asset checksums verified. This does NOT validate the new Usage Statistics code.
+- **Next:** commit/re-read the pre-trigger ledger/checkpoint, confirm final main SHA and no active run, reopen issue #33 once, then follow only the one new run. Expected next display number is #134; record actual run number/ID and head SHA from Actions. Preserve all gates and `versionName "Telegram @horizontalzzz"`.
+
+
 Last refreshed: 2026-11-10 (Asia/Jakarta). Current-state summary only; always fetch live main/source, tests, Actions and Release data before acting.
 
 ## App — Usage Statistics implementation state (2026-11-09)
@@ -30,7 +39,7 @@ Last refreshed: 2026-11-10 (Asia/Jakarta). Current-state summary only; always fe
 - **Signing/release identity:** V1/V2/V3 all verified; expected production certificate DN and SHA-256 match. Release ID `403010611`, live tag `jexfyz-latest`, Release metadata and tag ref all target the exact package SHA. Exactly one APK plus one matching source ZIP; step 21 downloaded both and verified digest, source marker, ZIP integrity, APK signatures and certificate.
 - **Android Gradle caveat:** `:app:testDebugUnitTest` gate passed (`BUILD SUCCESSFUL in 3m 29s`), but native app JUnit compile/process/test tasks were `NO-SOURCE`; no native Android JUnit case ran.
 - **Release warnings:** 25 Dart infos; Kotlin Gradle Plugin 2.2.20 upgrade advisory; deprecated Android Gradle options / future Gradle 10 warnings; nonfatal Flutter watcher and ELF DWARF notices; self-signed/untimestamped certificate and auxiliary META-INF JAR notices; post-job cache saves denied by token scope but cleanup succeeded. Required V1/V2/V3 and expected production certificate checks passed.
-- **Source/HEAD parity:** current `main` is ahead of the package source only through documentation/checkpoint commits; the verified compare after Build #133 showed no App source, test, workflow or Android config changes after the packaged SHA.
+- **Source/HEAD parity at Build #133:** at the time of that package, later `main` commits were documentation-only. This was superseded on 2026-11-10: current `main` includes the Usage Statistics and persisted-temperature-timestamp App/test changes described in the current Build candidate checkpoint above; Build #133 does not contain them.
 - **Field boundary:** Build #133 installation is not independently confirmed. No screenshot/OEM visual acceptance, physical BLE session, cooling/thermal measurement, Firmware compile, BIN/Firebase mutation, OTA, flashing or device operation occurred in the build.
 - **Next exact action:** owner installs Build #133 and performs the visual matrix (350-dp/420-dp, Light/Dark, EN/ID, icon normal/warning/unknown states and NOTIFY variants), then real-device BLE/connection checks. Do not infer these outcomes from hosted CI.
 
@@ -61,7 +70,7 @@ Last refreshed: 2026-11-10 (Asia/Jakarta). Current-state summary only; always fe
 - Localization is included: Home Fan Speed uses Fan Speed / Kecepatan Kipas while the switch and compact Floating Monitor F metric retain Fan / Kipas; Hotside/Adaptive wording and Monitor Melayang notification copy remain localized.
 - Home-equivalent uncapped 360-dp canvas and compact Settings/Connection typography, Bluetooth scan-state presentation, and passive/manual/one-shot scanner arbitration are included in earlier released package changes; Build #133 preserves these behaviors.
 - Analyzer passed with 25 info-level diagnostics. Android Gradle test gate succeeded but native JUnit app tasks were `NO-SOURCE`.
-- Exact package source is `5201a3e07f36305ffe3882a1b965b9e7414cd71a`; later `main` commits are documentation/checkpoint-only. Local `dart format` was not run because Dart is not installed in the current runtime, and the guarded workflow has no formatter step.
+- Build #133 package source was `5201a3e07f36305ffe3882a1b965b9e7414cd71a`; current `main` is newer and includes the unvalidated Usage Statistics/timestamp App source and tests. Local `dart format` remains NOT RUN because Dart is absent from this runtime; the hosted workflow has no formatter step.
 - No actual screenshot/OEM visual QA or real-device BLE lifecycle test has been performed. CI is widget/test and hosted build evidence only, not physical acceptance.
 
 ## Default hybrid Home theme contrast regression — diagnosed, not repaired (2026-11-09)
