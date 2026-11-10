@@ -1,4 +1,25 @@
-## CURRENT CHECKPOINT — BUILD #141 ACTIVE / FLUTTER TESTS — 2026-11-10
+## CURRENT CHECKPOINT — BUILD #142 PRE-TRIGGER AFTER BUILD #141 TEST FAILURE — 2026-11-10
+
+**Authorization:** the owner's `Eksekusi Build App!` operation remains active. #141 is terminal; a test-only locale mismatch was corrected. One guarded retry is authorized for App Build/QC, no Firmware/BIN/Firebase/OTA/flash/device scope.
+
+**Failed #141:** [run 42782355435](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42782355435), job `129715178789`, source `2fb8dc6ec4a0f41e7cce73e6a49db0e716b56cda`. Steps 1–12 passed including analyzer (25 infos, no warnings/errors). Flutter tests: **158 passed / 1 failed** at `test/usage_statistics_test.dart:431`: test set Indonesian locale but expected English `Completed cooling run`; UI correctly renders `Sesi pendinginan selesai` for the completed fixture. Steps 14–21 skipped, no artifacts or Release mutation.
+
+**Repair:** commit `bafff332f406fdb75e4534d3d9c426d13e83a31b` updates both language-specific finder assertions to `Sesi pendinginan selesai`; read-back verified two Indonesian expectations, zero old English expectations, Indonesian locale and ended fixture. No production code or gate changed.
+
+**Candidate source before docs checkpoint:** `bafff332f406fdb75e4534d3d9c426d13e83a31b`; complete tree 131 entries. Includes previous analyzer repairs, Default hybrid Home theme resolver and output-gated per-second Usage Statistics.
+
+**Latest verified release:** Build #138 / run `42749408202`, exact source `b553f22092d9b33b2c81753254d2e3f03928fa18`; all 21 gates and 157/157 passed; Android JUnit tasks `NO-SOURCE`; signing/certificate, source archive, Release/tag and downloaded assets verified. Release #138 remains unchanged.
+
+**Trigger state:** workflow blob `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12`, issue-only guard and all 21 checks remain. Issue #33 OPEN exact; #141 terminal; no active/queued run or open PR. No #142 event sent.
+
+**Last completed gate:** #141 analyzer passed; Flutter suite failed on a locale-specific test expectation; the exact test-only repair is committed/read-back verified. **Run state:** NOT STARTED; no #142 run/job.
+
+**Next:** after checkpoint commit/read-back, re-fetch main/tree/workflow/issue/Actions/Release/tag/protected version. Close issue #33 once, verify CLOSED/no active run, reopen once, require exactly one new run with source SHA equal to final main. Never duplicate an event.
+
+**Protected scope:** preserve `versionName "Telegram @horizontalzzz"`. No Firmware/BIN/Firebase/OTA/flashing/device actions; CI remains separate from physical/OEM/BLE/thermal evidence.
+
+---
+## HISTORICAL CHECKPOINT — BUILD #141 ACTIVE / FLUTTER TESTS BEFORE FAILURE — 2026-11-10
 
 **Run:** [Build #141 / Actions run 42782355435](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42782355435), job `129715178789`, source `2fb8dc6ec4a0f41e7cce73e6a49db0e716b56cda`, `in_progress`.
 
