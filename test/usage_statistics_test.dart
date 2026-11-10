@@ -429,7 +429,10 @@ void main() {
       expect(find.text('24H'), findsNothing);
       expect(find.text('7D'), findsNothing);
       expect(find.text('Sesi pendinginan selesai'), findsOneWidget);
-      expect(find.text('00:10'), findsOneWidget);
+      final elapsedHeader = tester.widget<Text>(
+        find.byKey(const ValueKey<String>('usage-session-elapsed')),
+      );
+      expect(elapsedHeader.data, '00:10');
       for (final key in <Key>[
         const ValueKey<String>('usage-temperature-chart-battery'),
         const ValueKey<String>('usage-temperature-chart-hotside'),
