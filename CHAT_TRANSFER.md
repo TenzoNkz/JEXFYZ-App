@@ -1,22 +1,20 @@
-## CURRENT CHECKPOINT — MODAL OVERLAY SIZE POLISH / DISKUSI — 2026-11-10
+## CURRENT CHECKPOINT — COMPACT MODAL OVERLAYS IMPLEMENTED / LOCAL VALIDATION BLOCKED — 2026-11-10
 
-**Mode / authorization:** owner selected `Diskusi!`. This interaction is read-only for App source, tests, configuration, workflow, Build/Release and Firmware/device operations. Documentation-only design/checkpoint updates are allowed. No executable source, test, build or device action was performed for this overlay request.
+**Mode / authorization:** owner selected combined `Diskusi!` + `Eksekusi Full!`. The discussion established the more compact sizing, then the authorized App-only source/test change was implemented directly on `main`. No App Build, APK/Release, Firmware, BIN, Firebase, OTA, flashing or device operation is authorized/performed here.
 
-**Current release baseline:** Build #143 remains the latest verified App package (Actions run 42783474515, exact package source `121ef9e0f5ed6a0003837d32e4c8b1701f38631a`). Hosted Flutter tests passed 159/159; Android `:app:testDebugUnitTest` was `NO-SOURCE`. This is release/CI evidence, not proof that the supplied screenshots came from that APK or that field visuals passed.
+**Release baseline:** Build #143 remains the latest verified App package (Actions run 42783474515, exact package source `121ef9e0f5ed6a0003837d32e4c8b1701f38631a`). It does not include the current unbuilt overlay source changes.
 
-**Owner screenshots reviewed:** two 691×1536 images show (1) the Peltier safety confirmation dialog and (2) the LED color picker. Approximate panel footprints are 78% width / 24% height and 91% width / 52% height respectively. The screenshot's installed APK/source identity remains UNVERIFIED.
+**Implemented scope:**
+- `lib/main.dart`: Peltier dialog now uses 20-dp title / 15-dp body / 14-dp actions, compact inset/padding and 72×48 / 128×48 dp action minima. Fan-before-Peltier safety and ACK ordering remain unchanged.
+- `lib/main.dart`: LED picker now max 312 dp width and `min(308 dp, 82% available height)`, with internal scrolling. All 36 colors and six-column order remain. Visible swatches are 32×32 dp inside 48×48 dp cells; Cancel/Select targets are 72×48 dp. Preview, Cancel, explicit Select and final white option remain.
+- `test/widget_test.dart`: added source-contract/helper regression tests for Peltier compact sizes/safety ordering, picker responsive height, full 36-color set, scrollable six-column grid, 48-dp targets and 32-dp swatches.
+- No global scale, 360-dp canvas, Home, Settings, BLE, RGB protocol, Firmware or persisted data behavior was changed.
 
-**Live source evidence:** `lib/main.dart` blob `0c0f8b4ae8acba2b5aa81276a078eef5b7be7098`; `lib/floating_monitor.dart` blob `58db2cb27dc60069fe96139f99ed63585f16736d`; `test/widget_test.dart` blob `510d4e8072c161cae81c05ddfc15285d5222e000`.
-- Peltier modal: `_togglePeltier()` around main.dart 6505–6592; title 24 dp, body 17 dp, action text 16 dp and generous 24–26 dp interior padding. Button minima are 48/50 dp.
-- LED palette: `_showLedColorPicker()` around 6910–6965 and `_JexColorPickerCard` around 1529–1698; 36 color presets in a 6×6 non-scrollable grid, 42-dp tiles, 7-dp gaps, 18-dp card padding, 46-dp header and 22-dp title. The panel has no maximum height.
-- Both are wrapped by `JexFixedScalePage`. Its 360-dp canvas and single `constraints.maxWidth / 360` scaling are protected and must not be altered to solve the overlay-specific sizing.
+**Commits/evidence:** implementation changes are in `lib/main.dart` commits `07602f598f2e95e71860a42b54521e08b8881680` and `ae44645cea27eced3f42749d892bd7794e5a2a7c`; tests in `3d6fc0c3bd5df922b3949cc4d6f18acbc81e6853`. Latest source/test blobs before documentation checkpoint: `main.dart` `6fc50bf1812575f1502d433499270bc0cad8c14f`; `widget_test.dart` `795de84a1d18c990a67dd6a40e8420a2c6ccbd0f`.
 
-**Selected diagnosis / proposed repair:** reduce only overlay typography and internal spacing. For Peltier, target title 20–21 dp, body 15–16 dp, actions 14–15 dp and tighter padding while preserving at least 48×48 dp action targets and safety copy. For the color picker, constrain panel height to a compact responsive maximum and make the grid internally scrollable; retain all 36 colors, the 6-column hue order, preview/Cancel/Select semantics and a final accessible white option. Reduce visible swatch art to roughly 34–36 dp while preserving 48×48 dp hit targets. No global scale/transform changes.
+**Validation boundary:** STATIC SOURCE CHECK — both changed Dart files pass delimiter-balance inspection; source tokens confirm 36 color presets, white final option, six columns, 48-dp cells and preserved safety gate. Local Flutter/Dart/Gradle/ADB are unavailable. `dart format`, focused widget tests, `flutter analyze`, full `flutter test`, screenshot capture, Android Build/Release and device acceptance are BLOCKED / NOT RUN. No test or visual pass is claimed. The owner's screenshots do not identify their installed APK/source SHA.
 
-**Test/acceptance requirements:** both overlays at 350-dp/420-dp viewport cases, English/Indonesian and long translations, constrained height/portrait; actual screenshot review; Peltier Cancel/Fan action and safety gating; palette swatch preview, Cancel, Select, white option and scroll behavior; touch-target review. Formatter, focused tests, analyzer and full Flutter suite remain NOT RUN in this Diskusi.
-
-**Exact next action:** owner may issue `Eksekusi Full!` to authorize the narrow App source/test repair. This recommendation is not source authorization. After source/test completion and review, a separate `Eksekusi Build App!` is required to package an APK. Build #143 remains the verified release until then.
-
+**Exact next action:** after source review, owner may issue separate `Eksekusi Build App!` for guarded hosted formatting/analyzer/test/build/release QC. Then install that package and provide actual before/after screenshots for both overlays at 350-dp/420-dp, English/Indonesian and constrained-height cases. Build #143 remains the only verified release until a separately authorized build succeeds.
 ---
 
 ## CURRENT CHECKPOINT — BUILD #143 COMPLETED / RELEASE VERIFIED — 2026-11-10
