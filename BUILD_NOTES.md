@@ -11,11 +11,11 @@
 - **Next:** after commit/read-back, recheck final main/tree/workflow/issue/Actions/Release/tag/protected version; close #33 once, verify closed/no run, reopen once; confirm a single new run with exact final main SHA. Stop BLOCKED if event does not produce a run.
 - Preserve Android `versionName "Telegram @horizontalzzz"`. Physical installation, OEM visuals, BLE, storage soak, thermal/electrical, Firmware/BIN/OTA remain separate and unverified.
 
-## Build #140 candidate — pre-trigger, no run yet
+## Build #140 candidate — active CI run
 
 - **App source:** Default/Dark Home header uses dark palette; Light uses light; Default lower content remains light. Metrics and NOTIFY share the header resolver. Usage Statistics requires full P1 readiness and confirmed FAN/PELTIER output, records per-second temperature samples/gaps in local SQLite against elapsed run time, and retains transition events for Voltage/Adaptive/Fan Speed. The 1H/24H/7D/30D chart period selector is removed; 30-day DB pruning is retention.
 - **Test:** latest sample regression now matches `lastTemperatureSampleAtMs`, and stale test-only wall-clock formatting code was removed. The hosted workflow must revalidate the complete suite.
-- **Run state:** NOT STARTED; no #140 run/job ID exists. Latest verified package remains #138.
+- **Active run:** [Build #140 / Actions run 42781821476](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42781821476), job `129713425920`, exact source `cdd0b6dc6bc91d01029e89a0b88fc1185205e239`. Steps 1–3 success, step 4 Flutter setup in progress, steps 5–21 pending. No artifacts or new release yet. Latest verified package remains #138.
 
 ---
 ## Authorization and trigger
