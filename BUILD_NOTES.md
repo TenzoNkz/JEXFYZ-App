@@ -10,7 +10,7 @@
 
 ## Build #141 candidate — active CI run
 
-- **Active run:** [Build #141 / Actions run 42782355435](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42782355435), job `129715178789`, exact source `2fb8dc6ec4a0f41e7cce73e6a49db0e716b56cda`. Steps 1–3 passed; step 4 Flutter setup in progress; steps 5–21 pending. No build artifact or new Release yet.
+- **Active run:** [Build #141 / Actions run 42782355435](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42782355435), job `129715178789`, exact source `2fb8dc6ec4a0f41e7cce73e6a49db0e716b56cda`. Steps 1–12 passed including Dart analyzer; step 13 full Flutter test suite is in progress; steps 14–21 pending. No test count, build artifact or new Release yet.
 
 ---
 ## Authorization and trigger
