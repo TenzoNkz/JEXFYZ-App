@@ -1,20 +1,26 @@
-## CURRENT EXECUTION CHECKPOINT — BUILD #138 ACTIVE — 2026-11-10
+## CURRENT CHECKPOINT — BUILD #138 RELEASED / VERIFIED CI — 2026-11-10
 
-**Run:** [#138 / Actions run 42749408202](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42749408202), workflow `374946166`, event `issues`, attempt 1. Immutable source SHA `b553f22092d9b33b2c81753254d2e3f03928fa18` matched final main before trigger. Issue #33 closed once then reopened once; exactly one new run appeared.
+**Restored operation / evidence boundary:** this chat is `Diskusi!`, read-only for executable source, tests, configuration, workflow, Actions/Release and all Firmware/device operations. The successful Build #138 was performed earlier under the owner's separate explicit `Eksekusi Build App!` authorization; this chat did not trigger or rerun it.
 
-**Job:** `build` / `129609197264`, hosted runner, `in_progress`. Steps 1–2 (job setup, checkout) succeeded; step 3 `Set up Java 17` is `in_progress`. Steps 4–21 pending.
+**Latest verified App package:** [Build #138 / Actions run 42749408202](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42749408202), job `129609197264`, terminal `success`, tested source `b553f22092d9b33b2c81753254d2e3f03928fa18`. All 21 main workflow steps passed; Dart analyzer succeeded with 25 info-only diagnostics/no analyzer warnings; Flutter suite passed **157/157**. Both #137 follow-up test repairs are now CI-validated.
 
-**Last completed gate:** checkout (step 2). **Current gate:** Java 17 setup (step 3). **Remaining:** Java/Flutter/Gradle/toolchain, local.properties, production signing prep, wrapper, App security audit, dependencies, analyzer, complete Flutter tests including #137 scroll-state/trailing-comma fixes, Android unit test gate, obfuscated APK, V1/V2/V3 and expected certificate, source ZIP, Release/tag parity and downloaded asset integrity/source-marker/signature checks.
+**Android gate and signing:** `./gradlew --no-daemon :app:testDebugUnitTest` reported `BUILD SUCCESSFUL in 3m 33s`, with native app JUnit compile/test tasks `NO-SOURCE` (no app JUnit cases ran). Obfuscated release APK V1/V2/V3 verification passed and expected production signer DN/SHA-256 matched.
 
-**#137 failure and repairs:** #137 / run `42748861814` terminal failure at test step 13 after 155 passed / 2 failed. Analyzer passed (25 info only, no warnings). Follow-up repairs included width-specific page key `a2036ea6909bb027506b638f0d0f1f7aa77e3f32` and trailing-comma regex `40d430bc2fab2d01b72346fe407b38ae872e0807`; both are under CI validation in #138.
+**Published assets / provenance:** Release `jexfyz-latest` ID `403010611` and lightweight tag both target exact tested source `b553f22092d9b33b2c81753254d2e3f03928fa18`.
+- APK asset `729969125`, 55,455,835 bytes; SHA-256 `2ed225d992288cccc02313d206675a7313c73a4cad061de70cddf7209d39b9f8`.
+- Corresponding source ZIP asset `729969127`, 2,908,354 bytes; SHA-256 `47161a972131c95a74e8f5a191754504b76e2c31edd95fd19b1b4c75717ab906`.
+- Downloaded asset verification passed: digests, source marker, ZIP integrity, APK signatures/certificate.
 
-**Release baseline:** Build #133 remains latest verified package; no #138 APK/ZIP/Release update yet. Continue only run `42749408202`; do not trigger another.
+**Live repository:** `main` currently `f05e65508194555ebee254785669e11b99bc3e2f`. It is two documentation-only commits beyond the exact tested source; no executable source/config/workflow changes followed Build #138. Recursive tree: 131 entries, 50 Markdown files, `truncated=false`. No active Actions run or open PR was found. Issue #33 remains OPEN with the exact title/token guard; do not close/reopen or trigger another build.
 
-**Protected config/scope:** preserve Android `versionName "Telegram @horizontalzzz"`; no Firmware/BIN/Firebase/OTA/flash/device operation. CI is not physical UI/BLE/thermal evidence.
+**Current App workstream:** Usage Statistics (Battery Temperature, Hotside Temperature and operating-profile timelines, 1h/24h/7d/30d, local SQLite, 30-day retention) is now included in the Build #138 source and passed the complete hosted Flutter test suite. Storage-size stress testing, screenshot/OEM acceptance, physical install, live BLE session/reconnect and thermal/electrical testing remain UNVERIFIED. The Android JUnit NO-SOURCE caveat remains explicit. Existing Default hybrid Home header contrast issue is separately diagnosed but not repaired; no source edit is authorized in Diskusi.
 
+**Other backlog / protected scope:** Firmware TTP223 single-tap Voltage one-way cycle (V7.2 plan) remains REQUESTED / NOT IMPLEMENTED and separate from App release. No Firmware source/BIN, Firebase, OTA, flashing or device operation occurred. Keep `versionName "Telegram @horizontalzzz"`.
+
+**Next exact action:** owner installs Build #138 and reports the visual/runtime acceptance results (350dp/420dp, Light/Dark, English/Indonesian, Usage Statistics empty/populated/period/clear-history/gap states, plus Home and Bluetooth/Connection; BLE and thermal claims require actual device evidence). No new build should be triggered until owner reports results and explicitly authorizes the appropriate mode.
 ---
 
-## PRE-TRIGGER CHECKPOINT — BUILD #138 — 2026-11-10
+## HISTORICAL PRE-TRIGGER CHECKPOINT — BUILD #138 — 2026-11-10
 
 **Mode / authorization:** owner explicitly selected `@Thinking Eksekusi Build App!`. Scope is guarded Android App Build/QC/Release and evidence-backed App-only repairs. Firmware compilation, BIN generation/publication/replacement, Firebase, OTA, flashing, device operations and unrelated release work remain excluded.
 
