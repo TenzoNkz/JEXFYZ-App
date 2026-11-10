@@ -196,6 +196,35 @@ void main() {
       expect(UsageStatisticsStore.retentionDays, 30);
     });
 
+    test('live coverage is bounded by the latest P1 HOT heartbeat', () {
+      const session = UsageStatsSession(
+        id: 1,
+        coolerId: 'AA:BB:CC',
+        startedAtMs: 0,
+        endedAtMs: null,
+        lastSeenAtMs: 1000,
+        lastHotsideSeenAtMs: 1000,
+        lastBatterySeenAtMs: 4000,
+      );
+      expect(
+        usageSessionCoverageEndMs(session: session, publishedAtMs: 5000),
+        2500,
+      );
+      const ended = UsageStatsSession(
+        id: 2,
+        coolerId: 'AA:BB:CC',
+        startedAtMs: 0,
+        endedAtMs: 2200,
+        lastSeenAtMs: 1000,
+        lastHotsideSeenAtMs: 1000,
+        lastBatterySeenAtMs: 4000,
+      );
+      expect(
+        usageSessionCoverageEndMs(session: ended, publishedAtMs: 5000),
+        2200,
+      );
+    });
+
     test('display interpolation is frame-safe and never overshoots observed values', () {
       expect(usageInterpolate(20, 40, 0), 20);
       expect(usageInterpolate(20, 40, .5), 30);
@@ -263,6 +292,10 @@ void main() {
       expect(summary.voltageDurationMs['12V'], 3000);
       expect(summary.adaptiveOnDurationMs, 5000);
       expect(summary.peltierOnDurationMs, 4000);
+      expect(
+        UsageStatsAnalytics.stateAt(summary.peltierSegments, 6000)?.textValue,
+        'ON',
+      );
       expect(
         UsageStatsAnalytics.stateAt(summary.peltierSegments, 8000)?.textValue,
         'ON',
@@ -377,6 +410,8 @@ void main() {
     expect(usage, contains('recordTemperatureSample('));
     expect(usage, contains("insertBaseline('peltier', textValue: peltier)"));
     expect(usage, contains("metric: 'peltier'"));
+    expect(usage, contains("case 'adaptive':\n        case 'peltier':"));
+    expect(usage, contains('usageSessionCoverageEndMs('));
     expect(usage, contains('Stream<UsageStatsLiveUpdate> get liveUpdates'));
     expect(usage, contains('Duration(milliseconds: 16)'));
     expect(usage, contains('AnimationController('));
@@ -524,6 +559,12 @@ void main() {
       ]) {
         expect(find.byKey(key), findsOneWidget);
       }
+      await tester.tap(
+        find.byKey(const ValueKey<String>('usage-profile-timeline-peltier')),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('Waktu dipilih'), findsOneWidget);
+      expect(tester.takeException(), isNull);
 
       await pumpAtWidth(420, ThemeData.dark(useMaterial3: true));
       expect(find.text('Suhu Baterai HP'), findsOneWidget);
