@@ -6,7 +6,7 @@
 - **Artifact provenance:** obfuscated APK built; V1/V2/V3 verification and expected production certificate identity passed. Release `jexfyz-latest` ID `403010611` and tag target the exact source SHA. Exactly one APK and one corresponding source ZIP were published and re-downloaded/verified.
 - APK asset `729969125`: 55,455,835 bytes; SHA-256 `2ed225d992288cccc02313d206675a7313c73a4cad061de70cddf7209d39b9f8`.
 - Source ZIP asset `729969127`: 2,908,354 bytes; SHA-256 `47161a972131c95a74e8f5a191754504b76e2c31edd95fd19b1b4c75717ab906`.
-- **Current main:** `f05e65508194555ebee254785669e11b99bc3e2f`, two commits ahead of the tested source and zero behind; comparison shows only `APP_BUILD_REPORT.md` and `CHAT_TRANSFER.md` changed after the build. Preserve this separation: docs newer than APK source is expected and does not change package provenance.
+- **Post-build repository state:** `main` contains documentation-only checkpoint, build-ledger, state and handover updates beyond the exact tested source. No executable source, tests, configuration or workflow changed after Build #138. Docs newer than the APK source do not alter package provenance.
 - **Outstanding owner/device validation:** Build #138 installation, screenshot/OEM visual acceptance, physical BLE lifecycle, storage-size stress and cooling/thermal/electrical behavior are UNVERIFIED. Build #138 is VERIFIED CI, not physical acceptance. Gradle cache writes were non-blockingly denied by token scope; workflow succeeded.
 - Preserve Android `versionName "Telegram @horizontalzzz"`. No Firmware compile/BIN, Firebase, OTA, flashing or device operation was part of the App build.
 
