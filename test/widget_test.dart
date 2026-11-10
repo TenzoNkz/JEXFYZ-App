@@ -191,6 +191,38 @@ void main() {
     expect(source, contains('valueKnown'));
   });
 
+  test('Default Home keeps a dark header with a light lower content surface', () {
+    expect(
+      jexHomeHeaderUsesDarkPalette(AppThemePreset.defaultTheme),
+      isTrue,
+    );
+    expect(
+      jexDashboardContentUsesDarkPalette(AppThemePreset.defaultTheme),
+      isFalse,
+    );
+    expect(jexHomeHeaderUsesDarkPalette(AppThemePreset.light), isFalse);
+    expect(jexDashboardContentUsesDarkPalette(AppThemePreset.light), isFalse);
+    expect(jexHomeHeaderUsesDarkPalette(AppThemePreset.dark), isTrue);
+    expect(jexDashboardContentUsesDarkPalette(AppThemePreset.dark), isTrue);
+
+    final source = File('lib/main.dart').readAsStringSync();
+    final notifyStart = source.indexOf('Widget _homeNotify()');
+    expect(notifyStart, isNonNegative);
+    final notifyEnd = source.indexOf('void _handle', notifyStart);
+    final notify = source.substring(
+      notifyStart,
+      notifyEnd > notifyStart ? notifyEnd : source.length,
+    );
+    expect(
+      notify,
+      contains('jexHomeHeaderUsesDarkPalette(appThemeNotifier.value)'),
+    );
+    expect(
+      source,
+      contains('jexDashboardContentUsesDarkPalette(appThemeNotifier.value)'),
+    );
+  });
+
   test('Home indicator painter receives Light Mode theme tokens and repaints on changes', () {
     final source = File('lib/main.dart').readAsStringSync();
     final widgetStart = source.indexOf('class JexAnimatedIcon extends StatefulWidget {');
@@ -206,6 +238,10 @@ void main() {
     final metricEnd = source.indexOf('Widget _homeStateChip(', metricStart);
     final metric = source.substring(metricStart, metricEnd);
     expect(metric, contains('lightTheme: !homeDark'));
+    expect(
+      metric,
+      contains('jexHomeHeaderUsesDarkPalette(appThemeNotifier.value)'),
+    );
     expect(metric, contains('lightSurfaceColor: theme.colorScheme.surface'));
     expect(metric, contains('lightOutlineColor: theme.colorScheme.onSurfaceVariant'));
 
