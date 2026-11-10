@@ -10,7 +10,7 @@
 
 ## Build #142 candidate — active CI run
 
-- **Active run:** [Build #142 / Actions run 42782901555](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42782901555), job `129716981807`, exact source `6ec326bd662744eee786817c7ebf68485741a915`. Steps 1–2 passed, step 3 Java 17 in progress, steps 4–21 pending. No artifacts/release yet.
+- **Active run:** [Build #142 / Actions run 42782901555](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42782901555), job `129716981807`, exact source `6ec326bd662744eee786817c7ebf68485741a915`. Steps 1–5 passed (runner, checkout, Java, Flutter, Gradle); step 6 Verify toolchain in progress; steps 7–21 pending. No artifacts/release yet.
 
 ---
 ## Authorization and trigger
