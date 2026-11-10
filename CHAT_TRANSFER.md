@@ -1,4 +1,20 @@
-## CURRENT EXECUTION CHECKPOINT — BUILD #135 PRE-TRIGGER — 2026-11-10
+## CURRENT EXECUTION CHECKPOINT — BUILD #135 ACTIVE — 2026-11-10
+
+**Run:** [#135 / Actions run 42747092939](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42747092939), workflow ID `374946166`, event `issues`, attempt 1. Exact source SHA: `2cd9a0e886167c857504926043b5cab03c67c163`, matching pre-trigger main HEAD and including the App analyzer repair `25684ed93d189a173bdbd8c9115c2bedb5959f53`.
+
+**Trigger:** issue #33 closed once then reopened once after the repair and checkpoint commits. Exactly one new run appeared. No duplicate trigger.
+
+**Job:** `build` / `129601682007`, hosted runner, `in_progress`. First job inspection: step 1 `Set up job` is `in_progress`; no completed step yet. Remaining gates 1–21 await runner progress.
+
+**Last completed gate:** none. **Current gate:** job setup (step 1). Continue this run/job only. On any failure, inspect exact logs and repair only an App-scope root cause; do not weaken analyzer/tests/signing/release gates.
+
+**Release baseline:** Build #133 remains latest verified release on source `5201a3e07f36305ffe3882a1b965b9e7414cd71a`; Build #135 has no artifact or Release update yet. Build #134's analyzer failure and code repair remain recorded in `APP_BUILD_REPORT.md`.
+
+**Boundaries:** preserve Android `versionName "Telegram @horizontalzzz"`; no Firmware/BIN/Firebase/OTA/flash/device actions. Hosted CI does not establish physical UI, BLE or thermal acceptance.
+
+---
+
+## PRE-TRIGGER CHECKPOINT — BUILD #135 — 2026-11-10
 
 **Mode / authorization:** owner explicitly selected `@Thinking Eksekusi Build App!`. Only guarded Android App Build/QC/Release and justified App-scope repair are authorized. No Firmware compile, BIN, Firebase, OTA, flashing, device operation or unrelated release work.
 
