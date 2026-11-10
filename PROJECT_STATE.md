@@ -10,17 +10,6 @@
 
 
 
-## Current App Build candidate — pre-trigger checkpoint (2026-11-10)
-
-- **Mode:** owner authorized `Eksekusi Build App!`; guarded App Build/QC/Release only. No Firmware/BIN/Firebase/OTA/flash/device operation.
-- **Candidate source:** main pre-doc HEAD `0d5ffe66ed520c5e3502d8f86dfaf33a41a2f550`; recursive tree 131 entries, not truncated. Compared with Build #133 packaged SHA `5201a3e07f36305ffe3882a1b965b9e7414cd71a`, main is 61 commits ahead, 0 behind and includes App/test changes to Usage Statistics, timestamp freshness handling, Flutter dependencies and regressions. The current source is NOT YET CI-VALIDATED.
-- **Preflight:** workflow ID `374946166`, issue-only opened/reopened trigger, owner/title/token guard, workflow blob `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12`; no active/queued/requested run. Issue #33 is owner-authored, exact title/token, currently CLOSED; reopen once only after pre-trigger docs are verified.
-- **Latest package baseline:** Build #133 / run `42619673642` on `5201a3e...`; 145 Flutter tests passed, analyzer exit 0 with 25 infos, configured Android gate success (native JUnit tasks NO-SOURCE), APK V1/V2/V3 + production certificate, corresponding source ZIP, exact Release/tag source SHA and downloaded asset checksums verified. This does NOT validate the new Usage Statistics code.
-- **Next:** commit/re-read the pre-trigger ledger/checkpoint, confirm final main SHA and no active run, reopen issue #33 once, then follow only the one new run. Expected next display number is #134; record actual run number/ID and head SHA from Actions. Preserve all gates and `versionName "Telegram @horizontalzzz"`.
-
-
-Last refreshed: 2026-11-10 (Asia/Jakarta). Current-state summary only; always fetch live main/source, tests, Actions and Release data before acting.
-
 ## App — Usage Statistics implementation state (2026-11-09)
 
 - **Owner direction:** no standalone Firmware timer for now. Build an App Usage Statistics / Statistik Penggunaan page inside Settings from locally recorded telemetry.
