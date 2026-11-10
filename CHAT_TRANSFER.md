@@ -1,4 +1,25 @@
-## CURRENT CHECKPOINT — BUILD #141 PRE-TRIGGER AFTER BUILD #140 ANALYZER FAILURE — 2026-11-10
+## CURRENT CHECKPOINT — BUILD #141 ACTIVE / FLUTTER SETUP — 2026-11-10
+
+**Run:** [Build #141 / Actions run 42782355435](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42782355435), workflow `374946166`, issue event, attempt 1. Job `build` / `129715178789`, `in_progress`.
+
+**Exact checkout source:** `2fb8dc6ec4a0f41e7cce73e6a49db0e716b56cda`, equal to final `main` SHA at trigger. Later note-only commits do not change this immutable build source.
+
+**Job gates:** steps 1–3 success; step 4 Flutter setup in progress; steps 5–21 pending. No analyzer/test/Android/APK/signing/ZIP/Release result is yet available. Artifacts list empty.
+
+**Last completed gate:** Java 17 setup. **Current gate:** Flutter setup. **Remaining:** Gradle/toolchain, local.properties, production signing prep, App security audit, dependencies, analyzer, full Flutter tests, Android Gradle gate, obfuscated APK, V1/V2/V3 + official certificate, source ZIP, Release/tag parity and downloaded-asset verification.
+
+**Failure/repair history:** #139 analyzer failure repaired by `93b1ba7b859089eeccd30719ddfb8b8ab2dabaf6` and `2656b6eb9071cf878de2373cfab03d1872e089f8`; #140's remaining finder-name mismatch repaired by `2a0b1b94f7ebce1607ba26067441accb31a105c7`. These are included in #141 checkout; #141 must validate them.
+
+**Release baseline:** #138 remains latest verified package, Release/tag source `b553f22092d9b33b2c81753254d2e3f03928fa18`; no #141 assets yet.
+
+**Trigger state:** issue #33 is OPEN exact; close/reopen was performed once for #141, exactly one matching run appeared. Do not trigger again. Continue only run `42782355435`.
+
+**Next:** inspect actual step status/logs; append each gate result/failure/artifact to the report and refresh this checkpoint at milestones. CI never substitutes for phone/OEM/BLE/Firmware/BIN/OTA evidence.
+
+**Protected scope:** preserve Android `versionName "Telegram @horizontalzzz"`; no Firmware/BIN/Firebase/OTA/flashing/device operation.
+
+---
+## HISTORICAL PRE-TRIGGER CHECKPOINT — BUILD #141 AFTER BUILD #140 ANALYZER FAILURE — 2026-11-10
 
 **Authorization:** the owner's repeated `Eksekusi Build App!` operation remains active; #140 is terminal and a specific App test failure has been repaired. Only the existing guarded App Build/QC/release plus justified App-scope fixes are authorized. No Firmware/BIN/Firebase/OTA/flash/device actions.
 
