@@ -1701,68 +1701,67 @@ class _JexColorPickerCardState extends State<_JexColorPickerCard> {
                     mainAxisSpacing: 2,
                     mainAxisExtent: 48,
                   ),
-              itemBuilder: (_, index) {
-                final preset = widget.colors[index];
-                final value = preset.hex;
-                final isSelected = normalizedSelected == value;
-                final isWhite = value == '#FFFFFF';
-                final name = JexText.of(preset.nameKey, lang);
-                  return Tooltip(
-                    message: name,
-                    child: Semantics(
-                      label: name,
-                      button: true,
-                      selected: isSelected,
-                      child: InkWell(
-                        borderRadius: BorderRadius.circular(9),
-                      onTap: _isApplying
-                          ? null
-                          : () {
-                              if (_draftSelected == value) return;
-                              setState(() => _draftSelected = value);
-                            },
-                        child: SizedBox.expand(
-                          child: Center(
-                            child: AnimatedContainer(
-                              width: 32,
-                              height: 32,
-                              duration: const Duration(milliseconds: 120),
-                              decoration: BoxDecoration(
-                                color: ledPaletteColor(value),
-                                borderRadius: BorderRadius.circular(9),
-                                border: Border.all(
-                                  color: isSelected
-                                      ? scheme.onSurface
-                                      : (isWhite ? scheme.outline : Colors.transparent),
-                                  width: isSelected ? 2 : 1,
+                  itemBuilder: (_, index) {
+                    final preset = widget.colors[index];
+                    final value = preset.hex;
+                    final isSelected = normalizedSelected == value;
+                    final isWhite = value == '#FFFFFF';
+                    final name = JexText.of(preset.nameKey, lang);
+                    return Tooltip(
+                      message: name,
+                      child: Semantics(
+                        label: name,
+                        button: true,
+                        selected: isSelected,
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(9),
+                          onTap: _isApplying
+                              ? null
+                              : () {
+                                  if (_draftSelected == value) return;
+                                  setState(() => _draftSelected = value);
+                                },
+                          child: SizedBox.expand(
+                            child: Center(
+                              child: AnimatedContainer(
+                                width: 32,
+                                height: 32,
+                                duration: const Duration(milliseconds: 120),
+                                decoration: BoxDecoration(
+                                  color: ledPaletteColor(value),
+                                  borderRadius: BorderRadius.circular(9),
+                                  border: Border.all(
+                                    color: isSelected
+                                        ? scheme.onSurface
+                                        : (isWhite ? scheme.outline : Colors.transparent),
+                                    width: isSelected ? 2 : 1,
+                                  ),
+                                  boxShadow: isSelected
+                                      ? [
+                                          BoxShadow(
+                                            color: scheme.primary.withValues(alpha: .22),
+                                            blurRadius: 4,
+                                            spreadRadius: .5,
+                                          ),
+                                        ]
+                                      : null,
                                 ),
-                                boxShadow: isSelected
-                                    ? [
-                                        BoxShadow(
-                                          color: scheme.primary.withValues(alpha: .22),
-                                          blurRadius: 4,
-                                          spreadRadius: .5,
-                                        ),
-                                      ]
+                                child: isSelected
+                                    ? JexAnimatedIcon.glyph(
+                                        icon: PhosphorIconsBold.check,
+                                        color: isWhite ? Colors.black : Colors.white,
+                                        size: 16,
+                                        active: true,
+                                      )
                                     : null,
                               ),
-                              child: isSelected
-                                  ? JexAnimatedIcon.glyph(
-                                      icon: PhosphorIconsBold.check,
-                                      color: isWhite ? Colors.black : Colors.white,
-                                      size: 16,
-                                      active: true,
-                                    )
-                                  : null,
                             ),
                           ),
                         ),
                       ),
-                    ),
-                  ),
-                );
-              },
-            ),
+                    );
+                  },
+                ),
               ),
             ),
           ],
