@@ -144,6 +144,20 @@ UsageStatsSnapshot _sampleSnapshot() {
     UsageStatsEvent(
       sessionId: 1,
       timestampMs: 0,
+      metric: 'peltier',
+      numberValue: null,
+      textValue: 'OFF',
+    ),
+    UsageStatsEvent(
+      sessionId: 1,
+      timestampMs: 6000,
+      metric: 'peltier',
+      numberValue: null,
+      textValue: 'ON',
+    ),
+    UsageStatsEvent(
+      sessionId: 1,
+      timestampMs: 0,
       metric: 'fan_speed',
       numberValue: 60,
       textValue: null,
@@ -182,6 +196,43 @@ void main() {
       expect(UsageStatisticsStore.retentionDays, 30);
     });
 
+    test('display interpolation is frame-safe and never overshoots observed values', () {
+      expect(usageInterpolate(20, 40, 0), 20);
+      expect(usageInterpolate(20, 40, .5), 30);
+      expect(usageInterpolate(20, 40, 1), 40);
+      expect(usageInterpolate(20, 40, -1), 20);
+      expect(usageInterpolate(20, 40, 2), 40);
+      expect(usageInterpolate(null, 37, .5), 37);
+    });
+
+    test('render decimation preserves extrema and invalid-data boundaries', () {
+      final points = List<UsageChartPoint>.generate(2400, (index) {
+        final double? value = index == 900
+            ? null
+            : index == 711
+                ? -20
+                : index == 1531
+                    ? 120
+                    : (index % 100).toDouble();
+        return UsageChartPoint(
+          timestampMs: index * 1000,
+          value: value,
+          sessionId: 1,
+          breakBefore: index == 1531,
+        );
+      });
+      final rendered = UsageStatsAnalytics.decimatePoints(points);
+      expect(rendered.length, lessThan(points.length));
+      expect(rendered, contains(points[711]));
+      expect(rendered, contains(points[900]));
+      expect(rendered, contains(points[1531]));
+      expect(rendered.any((point) => point.value == null), isTrue);
+      expect(
+        rendered.any((point) => point.value == 120 && point.breakBefore),
+        isTrue,
+      );
+    });
+
     test('temperature uses a duration-weighted average and preserves invalid gaps', () {
       final summary = UsageStatsAnalytics.summarize(_sampleSnapshot());
 
@@ -211,6 +262,11 @@ void main() {
       expect(summary.voltageDurationMs['9V'], 3000);
       expect(summary.voltageDurationMs['12V'], 3000);
       expect(summary.adaptiveOnDurationMs, 5000);
+      expect(summary.peltierOnDurationMs, 4000);
+      expect(
+        UsageStatsAnalytics.stateAt(summary.peltierSegments, 8000)?.textValue,
+        'ON',
+      );
       expect(summary.fanSpeedAverage, 80);
       expect(summary.fanSpeedMaximum, 100);
     });
@@ -301,6 +357,9 @@ void main() {
     expect(main, contains('usageCoolerIsActive(fanOn: fanOn, peltierOn: peltierOn)'));
     expect(main, contains("if (outputStateReported && coolerActive)"));
     expect(main, contains("if (outputStateReported && !coolerActive)"));
+    expect(main, contains("if (values.containsKey('PELTIER'))"));
+    expect(main, contains("metric: 'peltier'"));
+    expect(main, contains("peltier: peltierOn ? 'ON' : 'OFF'"));
     expect(main, contains('device?.remoteId.toString()'));
     expect(main, contains("metric: \'battery\'"));
   });
@@ -316,6 +375,14 @@ void main() {
     expect(usage, contains('version: 2'));
     expect(usage, contains('onUpgrade: (database, oldVersion, newVersion)'));
     expect(usage, contains('recordTemperatureSample('));
+    expect(usage, contains("insertBaseline('peltier', textValue: peltier)"));
+    expect(usage, contains("metric: 'peltier'"));
+    expect(usage, contains('Stream<UsageStatsLiveUpdate> get liveUpdates'));
+    expect(usage, contains('Duration(milliseconds: 16)'));
+    expect(usage, contains('AnimationController('));
+    expect(usage, contains('Curves.easeOutCubic'));
+    expect(usage, contains('decimatePoints('));
+    expect(usage, isNot(contains('Duration(milliseconds: 450)')));
     expect(usage, contains('battery_seen'));
     expect(usage, contains('hotside_seen'));
     expect(usage, contains('loadSessionSnapshot('));
@@ -362,6 +429,7 @@ void main() {
         const ValueKey<String>('usage-temperature-chart-hotside'),
         const ValueKey<String>('usage-profile-timeline-voltage'),
         const ValueKey<String>('usage-profile-timeline-adaptive'),
+        const ValueKey<String>('usage-profile-timeline-peltier'),
         const ValueKey<String>('usage-profile-timeline-fan_speed'),
       ]) {
         expect(find.byKey(key), findsNothing);
@@ -451,6 +519,7 @@ void main() {
       for (final key in <Key>[
         const ValueKey<String>('usage-profile-timeline-voltage'),
         const ValueKey<String>('usage-profile-timeline-adaptive'),
+        const ValueKey<String>('usage-profile-timeline-peltier'),
         const ValueKey<String>('usage-profile-timeline-fan_speed'),
       ]) {
         expect(find.byKey(key), findsOneWidget);
