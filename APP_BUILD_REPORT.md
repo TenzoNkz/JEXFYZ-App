@@ -1,4 +1,26 @@
-## BUILD #138 PROGRESS — GUARDED RUNNER STARTED; JAVA SETUP ACTIVE — 2026-11-10
+## BUILD #138 — VERIFIED SUCCESS AND RELEASE PUBLISHED — 2026-11-10
+
+- **Mode/trigger:** Build #138 ran under the owner's earlier explicit `Eksekusi Build App!` authorization, through the guarded issue-only event. Issue #33 was closed once, the exact owner/title/body token and absence of active runs were rechecked, then reopened once. Exactly one run appeared; no push/PR/manual-dispatch bypass or duplicate trigger was used. Current Diskusi work did not initiate or rerun a build.
+- **Run/source:** [Build #138 / Actions run 42749408202](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42749408202), workflow `374946166`, event `issues`, attempt 1, job `build` / `129609197264`. Terminal `completed/success`. Immutable tested source SHA: `b553f22092d9b33b2c81753254d2e3f03928fa18`.
+- **Workflow gates:** all 21 main steps succeeded: runner/checkout, Java 17, Flutter, Gradle/toolchain, local.properties, production signing preparation, wrapper, App security/architecture audit, dependency installation, analyzer, Flutter tests, Android unit-test gate, obfuscated release APK, APK signing/certificate verification, source archive, Release publication and downloaded-asset verification.
+- **Dart analyzer:** exit success with 25 info-level diagnostics; no analyzer warning/error. The information-level findings include existing Flutter deprecations and unnecessary imports.
+- **Flutter tests:** complete suite passed **157/157**. This CI run validates the two follow-up test fixes from #137: width-specific page identity to reset responsive scroll state and the localization source regex allowing Dart's trailing comma.
+- **Android gate:** `./gradlew --no-daemon :app:testDebugUnitTest` ended `BUILD SUCCESSFUL in 3m 33s`. Limitation: `:app:compileDebugUnitTestKotlin`, `:app:compileDebugUnitTestJavaWithJavac` and `:app:testDebugUnitTest` reported `NO-SOURCE`; no native Android app JUnit case actually executed.
+- **APK/signing:** obfuscated release APK built. V1/JAR, V2 and V3 signature verification each returned true. The verified signer matched expected production certificate DN `CN=JE X FYZ, OU=JE X FYZ, O=JE X FYZ, L=Indonesia, ST=Central Java, C=ID` and SHA-256 `dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0`.
+- **Source archive:** corresponding source ZIP was built for the exact same source SHA; downloaded ZIP integrity check reported no compressed-data errors and the source marker matched the APK source.
+- **Release/tag parity:** Release `jexfyz-latest` (ID `403010611`) and lightweight tag `refs/tags/jexfyz-latest` both target exact tested source `b553f22092d9b33b2c81753254d2e3f03928fa18`. Exactly one APK and one corresponding source ZIP are published:
+  - APK asset `729969125`, `JEXFYZ-release.apk`, 55,455,835 bytes, SHA-256 `2ed225d992288cccc02313d206675a7313c73a4cad061de70cddf7209d39b9f8`.
+  - Source ZIP asset `729969127`, `JEXFYZ-corresponding-source.zip`, 2,908,354 bytes, SHA-256 `47161a972131c95a74e8f5a191754504b76e2c31edd95fd19b1b4c75717ab906`.
+  - The workflow independently re-downloaded both assets and passed digest, source-marker, ZIP-integrity and APK signature/certificate verification.
+- **Current main:** after the build source, `main` advanced to `f05e65508194555ebee254785669e11b99bc3e2f`. Commit comparison shows exactly two commits ahead of the build source and no divergence; those later changes touch only `APP_BUILD_REPORT.md` and `CHAT_TRANSFER.md`, not executable source/config/workflow. The current checkpoint/handover/state notes are being reconciled separately under Diskusi.
+- **Non-blocking notices:** Gradle 9.3.1 emitted an out-of-date advisory. Post-job Gradle/pub/Flutter cache writes were denied because the token had no writable cache scope; cleanup completed and the workflow/job remained successful. These notices did not fail a required gate.
+- **Protected identity:** live `android/app/build.gradle` still contains `versionName "Telegram @horizontalzzz"`.
+- **Evidence boundary / remaining risks:** this is VERIFIED CI and published-artifact evidence, not proof of owner installation, OEM screenshot acceptance, live BLE/session behavior, storage-size stress, physical cooling/thermal/electrical behavior, Firmware compilation/BIN identity, OTA or device operation. The Android JUnit gate was successful but had no app JUnit source. No Firmware/BIN/Firebase/OTA/flash/device operation occurred.
+- **Disposition:** Build #138 is terminal success; no active workflow run or open PR was present at the post-run review. Issue #33 remains OPEN with the exact trigger guard. Do not retrigger. The next useful step is owner-side installation and visual/runtime acceptance of Build #138; record findings before authorizing any source repair or new build.
+
+---
+
+## BUILD #138 INITIAL PROGRESS SNAPSHOT — SUPERSEDED BY VERIFIED SUCCESS ENTRY ABOVE — 2026-11-10
 
 - **Run:** [Build #138 / Actions run 42749408202](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42749408202), workflow ID `374946166`, event `issues`, attempt 1, branch `main`; created/started `2026-11-10T03:26:00Z`.
 - **Source/trigger parity:** issue #33 closed once at `2026-11-10T03:25:41Z`, exact owner/title/token and zero active runs revalidated, then reopened once at `2026-11-10T03:25:58Z`. Exactly one new issue run appeared. Immutable `head_sha` `b553f22092d9b33b2c81753254d2e3f03928fa18` equals final main SHA immediately before trigger. No duplicate event, push/PR/manual-dispatch.
