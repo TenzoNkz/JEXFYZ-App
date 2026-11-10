@@ -10,6 +10,17 @@
 - **Field evidence UNVERIFIED:** installation identity, OEM screenshots/layout at 350-dp/420-dp, physical BLE lifecycle, Usage Statistics real sensor/soak/storage behavior, cooling thermal/electrical performance, Firmware V7.1 source-to-BIN identity, physical OTA/reboot and recovery. No Firmware/device operation was performed.
 
 ---
+## Current App Statistics design request — animated diagrams / implementation pending
+
+- **Owner direction (2026-11-10):** redesign Usage Statistics as a professional, smoothly animated multi-chart screen. “AI mode” is understood as the existing Adaptive Mode / Mode Adaptif feature.
+- **Current source finding:** Battery/Hotside observations are persisted at about 1 Hz, but the temperature painter uses step segments and has no animation. The page waits 450 ms after recorder notifications, reloads the selected SQLite session and recomputes summary. Operating Profile displays only three compact lanes (Voltage, Adaptive, Fan Speed).
+- **Missing metric:** Peltier ON/OFF is not currently persisted as a chart event. The recorder accepts only Voltage, Adaptive and Fan Speed; Fan OFF is represented as speed 0%. Add Peltier state from authoritative PELTIER telemetry plus a full-sync baseline; never infer it from ACK.
+- **Design target:** session overview + two analog temperature charts + four operating diagrams (Voltage 5/9/12V; Adaptive ON/OFF; Peltier ON/OFF; Fan Speed 0–100%). Use a shared elapsed-session axis/crosshair and separate legends/scales. Preserve Hotside limit, accurate Min/Avg/Max, state durations, gaps and session boundaries.
+- **Animation truth:** keep raw sensor sampling around 1 Hz; animate display on vsync at 60/120 Hz (16.7/8.3 ms frame cadence), not 1-ms polling or synthetic samples. Analog traces may interpolate visually without overshoot; discrete Voltage/Adaptive/Peltier remain step charts. Never bridge gaps/sessions.
+- **Performance direction:** avoid re-querying the full SQLite session after each 450-ms debounce. Use incremental in-memory live deltas while persisting asynchronously; decimate long chart paths while preserving gaps/extrema and full-resolution analytics. Stress-test serialized write queue and long sessions.
+- **Scope/status:** design recorded in APP_NOTES.md and DESIGN_NOTES.md; source/tests unchanged for this request. Static-source evidence only. Implementation requires explicit Eksekusi Full!; App hosted QC/package requires separate Eksekusi Build App!.
+- **Build #143 remains latest verified APK** and does not contain the compact modal source updates or this Statistics redesign.
+
 ## Current App UI correction — compact modal overlays implemented, validation pending
 
 - **Release/source distinction:** Build #143 remains the latest verified package. The modal sizing correction below is committed to `main` but is NOT in Build #143 and has not been packaged.
