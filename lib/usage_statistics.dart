@@ -2129,7 +2129,6 @@ class _UsageLinePainter extends CustomPainter {
     }
     if (path != null && drawn) canvas.drawPath(path, linePaint);
 
-    final range = toMs - fromMs;
     final startText = TextPainter(
       text: TextSpan(
         text: _axisTime(fromMs, fromMs),
