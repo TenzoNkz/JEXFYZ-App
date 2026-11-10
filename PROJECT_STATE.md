@@ -1,14 +1,13 @@
 # JE X FYZ / JE Cooler — Current Project State
 
-## Build #136 active — guarded App Build/QC — 2026-11-10
+## Build #136 result / next guarded retry — 2026-11-10
 
-- **Run:** [#136 / Actions run 42748124633](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42748124633), job `129605035668`, attempt 1, event `issues`; exact immutable source SHA `55d1387ed016914b4af85fb1b49d3e7e222cce44` matched final pre-trigger main.
-- **Trigger:** issue #33 was closed once and reopened once after final preflight; exactly one new issue-triggered run appeared. No duplicate trigger.
-- **Current gate:** steps 1–2 runner setup/checkout succeeded; step 3 Java 17 succeeded; step 4 Flutter setup is in progress. Analyzer/tests/build/release are not yet validated in this run.
-- **Repairs being validated:** Usage Statistics chart key metadata `7b539c0c9e50e6a2cd9860cd5fd33e5e0bf35c10`; targeted widget finder/scroll fix `bb0c540d1bb9e7800d0d9c18ed0f2fab178a8715`; correct Floating Monitor source contract `39457247735fbebe487ddd137831cc831f80aef4`. Build #135 failure remains preserved: analyzer succeeded (25 info only), tests were 153 pass / 4 fail.
-- **Last completed gate:** Java 17 (step 3). **Active:** Flutter setup (step 4). **Remaining:** Gradle/toolchain, security audit, dependencies, analyzer, full tests, Android gate, obfuscated APK, signing/certificate, source ZIP, exact Release/tag/source parity and downloaded asset integrity.
-- **Release baseline:** #133 remains latest verified package (source `5201a3e07f36305ffe3882a1b965b9e7414cd71a`). No #136 APK/ZIP/release update yet.
-- Preserve `versionName "Telegram @horizontalzzz"`. No Firmware/BIN/Firebase/OTA/flash/device operation.
+- **Run:** [#136 / Actions run 42748124633](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42748124633), immutable source `55d1387ed016914b4af85fb1b49d3e7e222cce44`, job `129605035668`; terminal failure at Flutter tests step 13. Steps 1–12 passed; analyzer reported 25 infos, no warnings. Suite: **155 passed / 2 failed**.
+- **Remaining test failures:** populated Usage Statistics layout expected `Riwayat Operasi` before scrolling the lazy page; Floating Monitor static test searched for the localization phrase as one line although source is multiline in `floating_monitor.dart`.
+- **Follow-up repairs:** `0141362dba965cf7ba695f7ae86af1bb8c43a8fb` scrolls to the profile heading in Light/Dark layout and checks temperature/timeline chart keys only when mounted; `c54758341b87894d3d8fe7c550f5045f0ff1b8ab` uses whitespace-tolerant regex for multiline menu localization and route. Both files exact read-back verified. These fixes are not yet CI-validated.
+- **#136 limitations:** empty-state chart key test and last-value timestamp widget test passed; populated layout test stopped at heading assertion before reaching all five chart-key assertions. Steps 14–21 skipped; no APK/source ZIP/Release update.
+- **Retry state:** no active run. Issue #33 remains OPEN and matches exact owner/title/token. Save and re-read the #137 retry checkpoint, close issue #33 once and reopen once, then verify exactly one run with exact final main source SHA.
+- **Latest verified Release:** Build #133 source `5201a3e07f36305ffe3882a1b965b9e7414cd71a`; Release/tag unchanged. Preserve Android `versionName "Telegram @horizontalzzz"`. No Firmware/BIN/Firebase/OTA/flash/device operation.
 
 ## Superseded status — Build #134 analyzer failure / pre-Build #135 retry — 2026-11-10
 
