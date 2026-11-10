@@ -24,14 +24,16 @@ Updated: 2026-11-10 (Asia/Jakarta).
 
 - #139/#140 analyzer/test identifier fixes, #141 Indonesian completed-session assertion repair and #142 stable-key elapsed-label assertion fix are included and now pass the hosted analyzer/Flutter test gates.
 
-## Current scoped App UI workstream — modal overlay sizing
+## Current scoped App UI workstream — compact modal overlays implemented
 
-- Owner supplied two 691×1536 screenshots showing an oversized Peltier safety dialog and a near-full-width/half-height LED color picker.
-- Diagnosis and recommended internal sizing changes are recorded in `DESIGN_NOTES.md`. Preserve the 360-dp `JexFixedScalePage` canvas, single DPI transform, all 36 LED colors, preview/Cancel/Select semantics and Peltier safety actions.
-- Current interaction is `Diskusi!`; no source/test change is authorized or made for this visual request. The next source step requires an explicit `Eksekusi Full!`. A resulting APK requires a separate `Eksekusi Build App!`.
+- **Peltier safety dialog:** title 20 dp, body 15 dp, actions 14 dp; tighter spacing and 72×48 / 128×48 dp minimum action sizes. Fan-first safety gating/ACK behavior preserved.
+- **LED Color Picker:** width cap 312 dp, responsive height cap `min(308 dp, 82% of available safe-area height)`, six-column scrollable grid, all 36 colors including final white, 48×48 dp cells with 32×32 dp visible swatches. Preview/Cancel/Select semantics preserved.
+- **Files:** `lib/main.dart` and `test/widget_test.dart`; details in `DESIGN_NOTES.md`. Source/test commits: `07602f598f2e95e71860a42b54521e08b8881680`, `ae44645cea27eced3f42749d892bd7794e5a2a7c`, `3d6fc0c3bd5df922b3949cc4d6f18acbc81e6853`.
+- Local Flutter/Dart tools are unavailable. Formatter, tests and analyzer are BLOCKED / NOT RUN; static source delimiter checks passed. Real screenshots are not available for this new source SHA, so VISUAL NOT VERIFIED. No APK contains this change yet.
+- Protected 360-dp canvas/DPI formula, Home, Settings, RGB protocol, BLE, Peltier/Fan safety, Firmware and Release workflow remain unchanged.
 
 ## Next direction
 
-Build #143 remains the latest verified App package. After the modal sizing source/test change is implemented and separately built, the owner should install that package and perform field visual acceptance for both overlays plus Home, Bluetooth/Settings, Usage Statistics, language/theme states and 350-dp/420-dp layouts. Build #143 installation identity and OEM acceptance remain UNVERIFIED. Do not infer physical acceptance or Firmware/device authorization from CI.
+Build #143 remains the latest verified App package. A separate `Eksekusi Build App!` is now the next required step to run guarded hosted QC and package the overlay source/test changes. After that package is released, the owner should install it and provide actual visual acceptance screenshots for both overlays in English/Indonesian and at 350-dp/420-dp/constrained-height cases. Build #143 installation identity and OEM acceptance remain UNVERIFIED. Do not infer physical acceptance or Firmware/device authorization from CI.
 
 Preserve the mode boundary: Diskusi! is engineering discussion only; Eksekusi Full! is App/source implementation when explicitly commanded; Eksekusi Build App! is guarded App Build/QC only.
