@@ -1,4 +1,29 @@
-## CURRENT EXECUTION CHECKPOINT — BUILD #136 ACTIVE — 2026-11-10
+## CURRENT EXECUTION CHECKPOINT — BUILD #137 PRE-TRIGGER — 2026-11-10
+
+**Mode / authorization:** owner explicitly selected `@Thinking Eksekusi Build App!`. Only the guarded Android App Build/QC/Release workflow and evidence-backed App-scope repairs are authorized. Firmware compilation, BIN generation/publication/replacement, Firebase, OTA, flashing, device operation and unrelated release work remain excluded.
+
+**Failed attempt #136:** [run 42748124633](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42748124633), job `129605035668`, immutable source `55d1387ed016914b4af85fb1b49d3e7e222cce44`, terminal failure at Flutter tests step 13. Steps 1–12 passed; analyzer reported 25 info-only diagnostics and no warnings. Test result: **155 passed / 2 failed**. Steps 14–21 skipped; no APK, source ZIP or release update. Full evidence is at the top of `APP_BUILD_REPORT.md`.
+
+**Repairs on current branch:**
+- `7b539c0c9e50e6a2cd9860cd5fd33e5e0bf35c10` — stable keys for two temperature plots and three profile timelines.
+- `bb0c540d1bb9e7800d0d9c18ed0f2fab178a8715` — targeted chart-key assertions, timestamp scrolling, fixes prior false broad finder results.
+- `39457247735fbebe487ddd137831cc831f80aef4` — first correction to inspect the correct source file.
+- `0141362dba965cf7ba695f7ae86af1bb8c43a8fb` — scroll to the operating-profile heading in 350dp Light and 420dp Dark layouts; check temperature canvases before scroll and timeline canvases after scroll.
+- `c54758341b87894d3d8fe7c550f5045f0ff1b8ab` — whitespace-tolerant Dart raw regex for the multiline `JexText.phrase` and nested route. These two follow-up test repairs have not yet been CI-validated. No workflow/gate/analyzer setting/production behavior was weakened.
+
+**Candidate code/test head before docs checkpoint:** `c54758341b87894d3d8fe7c550f5045f0ff1b8ab`. Subsequent retry checkpoint commits are documentation-only; exact final trigger source must be captured from run metadata and match final main HEAD before issue event.
+
+**Actions / issue state:** #136 is terminal; no active run exists. Issue #33 is OPEN, still owner `TenzoNkz`, exact required title and exact token. No #137 event has been sent. After this checkpoint is committed/read back, close #33 once, revalidate closed state and no active run, then reopen exactly once. Expected run #137; verify actual ID/number/source SHA. A missing run means STOP BLOCKED; do not repeat the event.
+
+**Last completed gate:** #136 analyzer success and test failure diagnosis; concrete follow-up test repairs committed and read back. **Current run state:** NOT STARTED. **Remaining:** final branch/tree/workflow/issue/Actions/release preflight; issue close/reopen once; monitor only the new run through analyzer, complete Flutter tests, Android gate, obfuscated APK, production signing/certificate, matching source ZIP, Release/tag parity and downloaded asset identity/checksum/source marker/signature verification.
+
+**Latest verified Release:** Build #133 source `5201a3e07f36305ffe3882a1b965b9e7414cd71a`. Release `jexfyz-latest` ID `403010611` and tag still target #133; its APK/ZIP hashes are in `APP_BUILD_REPORT.md`. No #136 artifacts were produced.
+
+**Protected config/evidence:** preserve Android `versionName "Telegram @horizontalzzz"` and all existing CI gates. No Firmware/BIN/Firebase/OTA/flash/device work. CI is not device/OEM/BLE/thermal validation.
+
+---
+
+## SUPERSEDED CHECKPOINT — BUILD #136 ACTIVE — 2026-11-10
 
 **Run:** [#136 / Actions run 42748124633](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42748124633), workflow `374946166`, event `issues`, attempt 1. **Immutable source SHA:** `55d1387ed016914b4af85fb1b49d3e7e222cce44`; this exactly matched final `main` immediately before trigger. Issue #33 was closed once then reopened once; exactly one new run appeared.
 
@@ -14,7 +39,7 @@
 
 ---
 
-## PRE-TRIGGER CHECKPOINT — BUILD #136 — 2026-11-10
+## SUPERSEDED PRE-TRIGGER CHECKPOINT — BUILD #136 — 2026-11-10
 
 **Mode / authorization:** owner explicitly selected `@Thinking Eksekusi Build App!`. Only the guarded Android App Build/QC/Release workflow and evidence-backed App-scope repairs are authorized. Firmware compilation, BIN generation/publication/replacement, Firebase, OTA, flashing, device operation and unrelated release work remain excluded.
 
