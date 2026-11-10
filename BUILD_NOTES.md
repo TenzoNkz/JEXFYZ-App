@@ -8,9 +8,9 @@
 - **Trigger:** issue #33 OPEN exact; #142 terminal; no active run/PR. No #143 event sent. The explicit Build App operation permits one guarded retry after checkpoint/read-back.
 - Preserve Android `versionName "Telegram @horizontalzzz"`; device/OEM/BLE/thermal and Firmware/BIN/OTA remain distinct.
 
-## Build #143 candidate — pre-trigger
+## Build #143 candidate — active CI run
 
-- **Run state:** NOT STARTED. Next: docs read-back, final preflight, one close/reopen issue trigger, and verify one exact-SHA run. Stop BLOCKED if no run appears; no repeated event.
+- **Active run:** [Build #143 / Actions run 42783474515](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42783474515), job `129718855331`, exact source `121ef9e0f5ed6a0003837d32e4c8b1701f38631a`. Steps 1–12 passed including analyzer; step 13 Flutter tests in progress; steps 14–21 pending. No test count or artifacts yet.
 
 ---
 ## Authorization and trigger
