@@ -1,3 +1,24 @@
+## CURRENT CHECKPOINT — MODAL OVERLAY SIZE POLISH / DISKUSI — 2026-11-10
+
+**Mode / authorization:** owner selected `Diskusi!`. This interaction is read-only for App source, tests, configuration, workflow, Build/Release and Firmware/device operations. Documentation-only design/checkpoint updates are allowed. No executable source, test, build or device action was performed for this overlay request.
+
+**Current release baseline:** Build #143 remains the latest verified App package (Actions run 42783474515, exact package source `121ef9e0f5ed6a0003837d32e4c8b1701f38631a`). Hosted Flutter tests passed 159/159; Android `:app:testDebugUnitTest` was `NO-SOURCE`. This is release/CI evidence, not proof that the supplied screenshots came from that APK or that field visuals passed.
+
+**Owner screenshots reviewed:** two 691×1536 images show (1) the Peltier safety confirmation dialog and (2) the LED color picker. Approximate panel footprints are 78% width / 24% height and 91% width / 52% height respectively. The screenshot's installed APK/source identity remains UNVERIFIED.
+
+**Live source evidence:** `lib/main.dart` blob `0c0f8b4ae8acba2b5aa81276a078eef5b7be7098`; `lib/floating_monitor.dart` blob `58db2cb27dc60069fe96139f99ed63585f16736d`; `test/widget_test.dart` blob `510d4e8072c161cae81c05ddfc15285d5222e000`.
+- Peltier modal: `_togglePeltier()` around main.dart 6505–6592; title 24 dp, body 17 dp, action text 16 dp and generous 24–26 dp interior padding. Button minima are 48/50 dp.
+- LED palette: `_showLedColorPicker()` around 6910–6965 and `_JexColorPickerCard` around 1529–1698; 36 color presets in a 6×6 non-scrollable grid, 42-dp tiles, 7-dp gaps, 18-dp card padding, 46-dp header and 22-dp title. The panel has no maximum height.
+- Both are wrapped by `JexFixedScalePage`. Its 360-dp canvas and single `constraints.maxWidth / 360` scaling are protected and must not be altered to solve the overlay-specific sizing.
+
+**Selected diagnosis / proposed repair:** reduce only overlay typography and internal spacing. For Peltier, target title 20–21 dp, body 15–16 dp, actions 14–15 dp and tighter padding while preserving at least 48×48 dp action targets and safety copy. For the color picker, constrain panel height to a compact responsive maximum and make the grid internally scrollable; retain all 36 colors, the 6-column hue order, preview/Cancel/Select semantics and a final accessible white option. Reduce visible swatch art to roughly 34–36 dp while preserving 48×48 dp hit targets. No global scale/transform changes.
+
+**Test/acceptance requirements:** both overlays at 350-dp/420-dp viewport cases, English/Indonesian and long translations, constrained height/portrait; actual screenshot review; Peltier Cancel/Fan action and safety gating; palette swatch preview, Cancel, Select, white option and scroll behavior; touch-target review. Formatter, focused tests, analyzer and full Flutter suite remain NOT RUN in this Diskusi.
+
+**Exact next action:** owner may issue `Eksekusi Full!` to authorize the narrow App source/test repair. This recommendation is not source authorization. After source/test completion and review, a separate `Eksekusi Build App!` is required to package an APK. Build #143 remains the verified release until then.
+
+---
+
 ## CURRENT CHECKPOINT — BUILD #143 COMPLETED / RELEASE VERIFIED — 2026-11-10
 
 **Disposition:** Build #143 / Actions run 42783474515 COMPLETED / SUCCESS / RELEASED. Workflow 374946166, attempt 1; job 129718855331 completed successfully. All 21 required gates and post-job cleanup passed.
