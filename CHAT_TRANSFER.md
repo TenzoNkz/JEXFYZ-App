@@ -1,4 +1,17 @@
-## CURRENT CHECKPOINT — BUILD #141 ACTIVE / FLUTTER SETUP — 2026-11-10
+## CURRENT CHECKPOINT — BUILD #141 ACTIVE / FLUTTER TESTS — 2026-11-10
+
+**Run:** [Build #141 / Actions run 42782355435](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42782355435), job `129715178789`, source `2fb8dc6ec4a0f41e7cce73e6a49db0e716b56cda`, `in_progress`.
+
+**Passed:** workflow steps 1–12 including setup, security/architecture audit, dependencies and **Dart analyzer** are all `success`. This validates the fixes to the prior `lastTemperatureSampleAtMs` API and test finder identifiers through the analyzer gate.
+
+**Current gate:** step 13 `Run Flutter tests` is `in_progress`. Steps 14–21 remain pending. No full-suite pass/count, Android gate, APK, signing, source ZIP or Release evidence is claimed yet. Job log archive not yet available while active; no Actions artifacts.
+
+**Last completed gate:** Dart analyzer (step 12). **Remaining:** Flutter tests, Android Gradle gate, obfuscated APK, V1/V2/V3 + expected certificate, corresponding source ZIP, Release/tag parity and downloaded asset verification.
+
+**Continue only run `42782355435`; no duplicate trigger/retry.** Keep the exact source SHA immutable in the ledger and distinguish hosted CI from owner/device/OEM/BLE/thermal evidence.
+
+---
+## HISTORICAL CHECKPOINT — BUILD #141 ACTIVE / FLUTTER SETUP — 2026-11-10
 
 **Run:** [Build #141 / Actions run 42782355435](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42782355435), workflow `374946166`, issue event, attempt 1. Job `build` / `129715178789`, `in_progress`.
 
