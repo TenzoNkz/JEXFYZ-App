@@ -24,8 +24,14 @@ Updated: 2026-11-10 (Asia/Jakarta).
 
 - #139/#140 analyzer/test identifier fixes, #141 Indonesian completed-session assertion repair and #142 stable-key elapsed-label assertion fix are included and now pass the hosted analyzer/Flutter test gates.
 
+## Current scoped App UI workstream — modal overlay sizing
+
+- Owner supplied two 691×1536 screenshots showing an oversized Peltier safety dialog and a near-full-width/half-height LED color picker.
+- Diagnosis and recommended internal sizing changes are recorded in `DESIGN_NOTES.md`. Preserve the 360-dp `JexFixedScalePage` canvas, single DPI transform, all 36 LED colors, preview/Cancel/Select semantics and Peltier safety actions.
+- Current interaction is `Diskusi!`; no source/test change is authorized or made for this visual request. The next source step requires an explicit `Eksekusi Full!`. A resulting APK requires a separate `Eksekusi Build App!`.
+
 ## Next direction
 
-Build #143 App package is released. The next step is owner installation and separate field acceptance (Home hybrid theme, Bluetooth/Settings sizing, Usage Statistics, language/theme states and 350-dp/420-dp layouts). Do not infer physical acceptance or Firmware/device authorization from CI.
+Build #143 remains the latest verified App package. After the modal sizing source/test change is implemented and separately built, the owner should install that package and perform field visual acceptance for both overlays plus Home, Bluetooth/Settings, Usage Statistics, language/theme states and 350-dp/420-dp layouts. Build #143 installation identity and OEM acceptance remain UNVERIFIED. Do not infer physical acceptance or Firmware/device authorization from CI.
 
 Preserve the mode boundary: Diskusi! is engineering discussion only; Eksekusi Full! is App/source implementation when explicitly commanded; Eksekusi Build App! is guarded App Build/QC only.
