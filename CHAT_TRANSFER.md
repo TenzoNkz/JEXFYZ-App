@@ -20,28 +20,6 @@
 
 ---
 
-## CURRENT EXECUTION CHECKPOINT — GUARDED APP BUILD #134 PRE-TRIGGER — 2026-11-10
-
-**Mode / authorization:** owner explicitly selected `@Thinking Eksekusi Build App!`. Only the guarded App Build/QC/Release workflow and justified App-scope repairs are authorized. No Firmware compile, BIN generation/publication/replacement, Firebase, OTA, flashing, device operation or unrelated release work.
-
-**Repository / candidate source:** `TenzoNkz/JEXFYZ-App`, branch `main`. Pre-doc source HEAD: `0d5ffe66ed520c5e3502d8f86dfaf33a41a2f550`. Full recursive tree is complete (131 entries, `truncated=false`). The required documentation checkpoint is being committed before triggering; the exact workflow checkout SHA must equal the final main HEAD after those documentation commits.
-
-**Current App source candidate:** Usage Statistics is implemented under `lib/usage_statistics.dart` and integrated into Settings; it records Battery/Hotside changes and authoritative Voltage/Adaptive/Fan Speed events within synchronized BLE/P1 sessions, uses local SQLite, shows trend/profile views for 1h/24h/7d/30d and preserves missing-data gaps. The displayed “Last value change” time is now the latest valid persisted Battery/Hotside event, bounded by session/snapshot time. Relevant source commits are `fb9d6f2716ad7875acbdd3abbe8cb12452f25dda` and `81e409caad2e3f4a3c271db1b60a00f0f0083806`. Widget regression coverage is committed. This source candidate is not yet validated by CI.
-
-**Latest package remains old:** Build #133 / run `42619673642` succeeded on source `5201a3e07f36305ffe3882a1b965b9e7414cd71a`, not the current candidate. It passed all 21 workflow gates, analyzer with 25 infos, 145 Flutter tests, Android Gradle gate, obfuscated APK, V1/V2/V3 + expected certificate, exact source ZIP, Release/tag parity and downloaded-asset digest/identity checks. Native app JUnit tasks were `NO-SOURCE`. Release `jexfyz-latest` and live tag still point to #133. Build #132 failure remains in `APP_BUILD_REPORT.md` and was corrected before #133; never rewrite that failed history.
-
-**Live pre-trigger state:** no queued/requested/waiting/in-progress run exists for workflow ID `374946166`. Live workflow blob `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12` remains issue opened/reopened only; owner + exact title + body token gates remain. Issue #33 is valid and CLOSED (owner `TenzoNkz`, exact title `JE X FYZ — EKSEKUSI BUILD APP TRIGGER`, body token `JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1`). No trigger has been sent in this interaction yet.
-
-**Validation limitations:** current runtime has no Flutter/Dart/Gradle/ADB. Local formatter, Flutter tests, analyzer and Android build are NOT RUN. CI candidate must establish them. 30-day SQLite growth and recorder queue backpressure remain unverified risks. No physical/device validation is implied.
-
-**Last completed gate:** live repository + full tree + canonical notes + workflow + recent Actions/jobs/logs + current Release/assets/tag + exact issue guard preflight are verified. **Current run state:** NOT STARTED; waiting for one authorized issue reopen after the final checkpoint commit. **Remaining:** reopen issue #33 exactly once; find the single new run with head SHA equal to final pre-trigger main HEAD; follow the same run/job through all gates; then verify live Release/tag/source parity, exactly one APK and matching source ZIP, downloaded checksums/source marker and signature/certificate. If no run appears, do not repeat the event; stop BLOCKED.
-
-**Protected configuration:** Android `versionName "Telegram @horizontalzzz"` remains unchanged. Keep the issue-only trigger and every current CI/security/release gate intact.
-
-**Evidence boundary:** hosted CI is App source/build evidence only. No screenshot/OEM/phone acceptance, real BLE/cooling test, Firmware compile, BIN, Firebase mutation, OTA, flashing or device operation has occurred or is authorized.
-
----
-
 ## SUPERSEDED CHECKPOINT — APP SOURCE CORRECTION COMPLETE / BUILD APP PREFLIGHT — 2026-11-10
 
 **Mode / authorization:** Owner issued `@Thinking Eksekusi Full!`. App source, focused tests, static repository audit and canonical documentation were in scope. This work did **not** authorize App Build/Release, Firmware, BIN, Firebase, OTA, flashing or device operations. No workflow was triggered.
