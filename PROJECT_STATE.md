@@ -10,6 +10,16 @@
 - **Field evidence UNVERIFIED:** installation identity, OEM screenshots/layout at 350-dp/420-dp, physical BLE lifecycle, Usage Statistics real sensor/soak/storage behavior, cooling thermal/electrical performance, Firmware V7.1 source-to-BIN identity, physical OTA/reboot and recovery. No Firmware/device operation was performed.
 
 ---
+## Current App UI correction — compact modal overlays implemented, validation pending
+
+- **Release/source distinction:** Build #143 remains the latest verified package. The modal sizing correction below is committed to `main` but is NOT in Build #143 and has not been packaged.
+- **Peltier safety dialog:** title 20 dp, body 15 dp, actions 14 dp; reduced insets and internal padding; Cancel 72×48 dp and Fan 128×48 dp minimums. FAN-before-PELTIER safety flow and ACK semantics remain unchanged.
+- **LED Color Picker:** width cap 312 dp; responsive max height `min(308 dp, 82% of available height)`; compact card/header typography; 36 colors retained in the existing six-column order. Internal scrollbar replaces the non-scrollable grid. Each grid cell remains 48×48 dp with 32×32 dp visible swatch art. Cancel/Select controls remain 72×48 dp; preview/commit and final white option remain.
+- **Protected invariants:** only the two overlays and their tests changed. No 360-dp canvas, transform, Home, Settings, BLE/P1, RGB protocol, color storage, Peltier safety, Firmware, versionName, workflow or Release change.
+- **Regression source:** `test/widget_test.dart` now checks modal sizes/safety ordering, picker responsive max height, all 36 color entries, final white, six-column scrolling and 48-dp cells/action targets. These tests are committed but not executed locally.
+- **Evidence:** source commits `07602f598f2e95e71860a42b54521e08b8881680` and `ae44645cea27eced3f42749d892bd7794e5a2a7c`; test commit `3d6fc0c3bd5df922b3949cc4d6f18acbc81e6853`. Static delimiter scan passed for both Dart files. Flutter/Dart are unavailable; formatter, tests, analyzer and device screenshots are BLOCKED / NOT RUN. Visual status remains VISUAL NOT VERIFIED.
+- **Next:** a separate owner-issued `Eksekusi Build App!` is required for hosted QC/package. Build #143 remains the verified APK baseline.
+
 ## HISTORICAL App build candidate — Build #142 active before test failure
 
 - **Latest verified package:** Build #138 / run `42749408202`, source `b553f22092d9b33b2c81753254d2e3f03928fa18`; 21 main gates, Flutter 157/157 and analyzer 25 info-only passed; Android gate passed with JUnit tasks `NO-SOURCE`; APK V1/V2/V3/certificate, source ZIP, Release/tag and downloaded asset verification all passed.
@@ -145,7 +155,7 @@
 ## Open design and engineering gaps
 
 - **Physical App acceptance remains pending:** after the owner installs Build #143, inspect Home, Settings/Connection and Usage Statistics at 350-dp/420-dp, English/Indonesian, Light/Dark. For Home, verify Battery/Hotside/Voltage/Adaptive/Peltier/Fan/Fan Speed normal, warning and unknown states plus NOTIFY success/warning/error with one-/two-line copy. CI tests are not screenshot/OEM acceptance.
-- **New App visual finding — modal overlay sizing (2026-11-10):** owner screenshots show oversized Peltier safety and LED color picker overlays. Live source evidence is in `DESIGN_NOTES.md`; recommended correction is overlay-only typography/spacing and a height-constrained scrollable 36-color grid. Current interaction is `Diskusi!` / diagnosis only; source/tests are NOT CHANGED for this request. Next source scope requires `Eksekusi Full!`; App packaging still requires `Eksekusi Build App!`.
+- **App visual correction — modal overlays (2026-11-10):** Peltier dialog and LED Color Picker compact sizing are now SOURCE IMPLEMENTED with regression test source committed. Local formatter/tests/analyzer are BLOCKED / NOT RUN because Flutter/Dart are unavailable; actual screenshots remain VISUAL NOT VERIFIED. Build #143 is still the latest verified APK. A separate `Eksekusi Build App!` is required to run hosted QC and package the changes.
 - **BLE runtime acceptance remains pending:** verify passive rediscovery, prerequisite cancellation, manual-sheet pre-emption and neutral dismissal, selected-device handoff, fresh primary/fallback advertisement handling, adapter loss and reconnect on the actual phone/cooler. Flutter tests do not represent a physical radio session.
 - Exact Build #143 installed APK identity on the field unit, Firmware V7.1 source-to-BIN identity, physical OTA/reboot/BLE recovery and thermal/electrical behavior remain independently UNVERIFIED.
 - BLE App-only identity authorization remains BLOCKED / NOT IMPLEMENTED until trusted enrollment/signing backend and Firmware verification exist.
