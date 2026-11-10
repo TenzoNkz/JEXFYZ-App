@@ -4,7 +4,7 @@
 
 **Canonical repository:** `TenzoNkz/JEXFYZ-App`, branch `main`.
 **Source/test commit:** `fb9d6f2716ad7875acbdd3abbe8cb12452f25dda` — `fix(statistics): report latest persisted temperature change`.
-**Verified pre-documentation HEAD:** `fb9d6f2716ad7875acbdd3abbe8cb12452f25dda`; the source/test commit preserved all 131 existing tracked paths. The final documentation checkpoint commit and its tree are verified in the active handover after commit.
+**Verified base HEAD for this checkpoint refresh:** `f24735cc4fd1ac2a1c2172fbab73ae2024f4cd62`; recursive tree `f44e6b432849d5d08eac52e3857868804ed2892e`, 131 entries, `truncated=false`. The source/test commit preserved every existing tracked path. The docs checkpoint is committed as a normal child of this verified base.
 
 **Completed App correction:** `UsageStatsAnalytics.lastTemperatureChangeAtMs(snapshot)` selects the latest finite, non-null Battery/Hotside temperature event, validates its owning session bounds, and excludes events after `snapshot.toMs`. The Statistics page formats this persisted timestamp. Synthetic held-value chart endpoints continue to serve chart rendering but no longer influence the “Last value change” label. SQLite schema, recorder/session lifecycle, P1 gates and Firmware remain unchanged.
 
@@ -12,7 +12,7 @@
 
 **Validation evidence:** source/test files were committed and verified from `main`. Local Flutter, Dart, Gradle and ADB are absent, so `dart format`, focused widget tests, full `flutter test`, `flutter analyze`, screenshots and device validation are **BLOCKED / NOT RUN**. Build #133's 145 tests target the older release source and do not validate this fix. No Build App run was started in this interaction.
 
-**Release boundary:** Build #133 / Actions run `42619673642` remains latest verified release at source `5201a3e07f36305ffe3882a1b965b9e7414cd71a`. Current `main` is 57 commits ahead of that tag. Usage Statistics is not released. The official guarded App workflow remains issue opened/reopened only, owner + exact-title + body-token gated, Flutter 3.47.2 / Gradle 9.3.1. A new explicit `Eksekusi Build App!` is required to run it; re-check Actions before reopening issue #33 once.
+**Release boundary:** Build #133 / Actions run `42619673642` remains latest verified release at source `5201a3e07f36305ffe3882a1b965b9e7414cd71a`. The source/test and documentation commits on `main` are newer than that tag. Usage Statistics is not released. The official guarded App workflow remains issue opened/reopened only, owner + exact-title + body-token gated, Flutter 3.47.2 / Gradle 9.3.1. A new explicit `Eksekusi Build App!` is required to run it; re-check Actions before reopening issue #33 once.
 
 **Remaining risks:** recorder writes still use a serialized Future queue without explicit bound/coalescing; 30-day raw SQLite growth has not been stress-tested. These are unverified risks, not confirmed defects. Physical/OEM visual acceptance remains separate from hosted CI.
 
