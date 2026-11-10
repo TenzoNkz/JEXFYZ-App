@@ -2,9 +2,9 @@
 
 **Run:** [#137 / Actions run 42748861814](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42748861814), workflow `374946166`, event `issues`, attempt 1. Immutable source SHA `00c650f3776624353d7b1492ddff1b21c8b5fd49` matched final main HEAD before issue trigger. Issue #33 closed once then reopened once; exactly one new run appeared.
 
-**Job:** `build` / `129607409197`, hosted runner, `in_progress`. Steps 1–3 (job setup, checkout, Java 17) succeeded. Step 4 `Set up Flutter` is `in_progress`. Steps 5–21 pending.
+**Job:** `build` / `129607409197`, hosted runner, `in_progress`. Steps 1–10 (job setup, checkout, Java 17, Flutter, Gradle, toolchain, local.properties, signing prep, wrapper and App audit) succeeded. Step 11 `Install dependencies` is `in_progress`. Steps 12–21 pending.
 
-**Last completed gate:** Java 17 setup (step 3). **Current gate:** Flutter setup (step 4). **Remaining:** Java/Flutter/Gradle/toolchain, local.properties, production signing preparation, wrapper, App security audit, dependencies, analyzer, full Flutter suite (including the two #136 follow-up test fixes), Android gate, obfuscated APK, V1/V2/V3 and expected certificate, corresponding source ZIP, Release/tag parity and final downloaded asset identity/checksum/source-marker/signature verification.
+**Last completed gate:** App security/architecture audit (step 10). **Current gate:** dependency installation (step 11). **Remaining:** Java/Flutter/Gradle/toolchain, local.properties, production signing preparation, wrapper, App security audit, dependencies, analyzer, full Flutter suite (including the two #136 follow-up test fixes), Android gate, obfuscated APK, V1/V2/V3 and expected certificate, corresponding source ZIP, Release/tag parity and final downloaded asset identity/checksum/source-marker/signature verification.
 
 **Repair/test history:** #136 failed after 155 tests passed / 2 failed, analyzer 25 info-only diagnostics, steps 1–12 passed. The new #137 source includes scroll-aware profile checks `0141362dba965cf7ba695f7ae86af1bb8c43a8fb` and multiline route regex `c54758341b87894d3d8fe7c550f5045f0ff1b8ab`; these are not yet CI-validated. Full failure evidence remains in `APP_BUILD_REPORT.md`.
 
