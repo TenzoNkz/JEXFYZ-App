@@ -1,4 +1,28 @@
-## CURRENT EXECUTION CHECKPOINT — BUILD #135 ACTIVE — 2026-11-10
+## CURRENT EXECUTION CHECKPOINT — BUILD #136 PRE-TRIGGER — 2026-11-10
+
+**Mode / authorization:** owner explicitly selected `@Thinking Eksekusi Build App!`. Only the guarded Android App Build/QC/Release workflow and evidence-backed App-scope repairs are authorized. Firmware compilation, BIN generation/publication/replacement, Firebase, OTA, flashing, device operation and unrelated release work remain excluded.
+
+**Failed attempt preserved:** [Build #135 / Actions run 42747092939](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42747092939), job `129601682007`, immutable source SHA `2cd9a0e886167c857504926043b5cab03c67c163`, terminal failure at step 13. Steps 1–12 passed, including Dart analyzer (25 info-only diagnostics, no warning). Flutter tests: **153 passed / 4 failed**. Steps 14–21 were skipped; no APK, source ZIP, or release update was produced. Full error details are preserved at the top of `APP_BUILD_REPORT.md`.
+
+**Concrete repairs now committed/read back:**
+- `7b539c0c9e50e6a2cd9860cd5fd33e5e0bf35c10` — add unique ValueKeys to the five intended Usage Statistics canvases (two temperature charts and three operating-profile timelines); no graph calculation or presentation changes.
+- `bb0c540d1bb9e7800d0d9c18ed0f2fab178a8715` — make empty/populated chart assertions target those specific keys and scroll the lazy timestamp label into view before finding it.
+- `39457247735fbebe487ddd137831cc831f80aef4` — static contract test checks the Usage Statistics menu and route in `floating_monitor.dart`, where it is implemented, not `app_settings.dart`.
+These correct test observability/source targeting; no workflow, analyzer flag, test gate, release/signing check or behavior was weakened. All three repairs remain **not yet CI-validated**.
+
+**Candidate code/test head before documentation-only retry checkpoint:** `39457247735fbebe487ddd137831cc831f80aef4`. The following checkpoint commits are documentation-only. The eventual Build #136 `head_sha` must be fetched from Actions and must equal the final main SHA immediately before the issue event.
+
+**Actions / trigger state:** Build #135 is terminal; no active run remains. Issue #33 is OPEN and currently matches owner `TenzoNkz`, exact title `JE X FYZ — EKSEKUSI BUILD APP TRIGGER`, exact body `JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1`. **No Build #136 trigger has been sent.** Once these checkpoint commits are verified, close issue #33 once, revalidate it is closed and there is no active/queued run, then reopen exactly once. Expect next run #136 but record actual ID/number/source SHA. If no run appears, do not repeat the event; stop BLOCKED.
+
+**Last completed gate:** #135 analyzer success and completed test diagnosis; concrete App/test repairs committed and read back. **Current run state:** NOT STARTED. **Remaining:** final main/tree/workflow/issue/Actions/Release preflight; one guarded issue reopen; follow only the single new run through full tests, Android gate, APK, V1/V2/V3+production cert, source ZIP, Release/tag parity and downloaded asset identity/checksum/source marker/signature verification.
+
+**Release baseline:** Build #133 / run `42619673642`, source `5201a3e07f36305ffe3882a1b965b9e7414cd71a`, remains the latest verified package. Release `jexfyz-latest` ID `403010611` and tag remain at that SHA. APK SHA-256 `8fc837b9ec946cb3bccb6a8d400dc1483a19de9eff506c22ada2d4dcef0b1146`; source ZIP SHA-256 `3a35158b16df567dbc2be1804c9bd0681d96012daffc61adddf61aa6b7be01fb`. These assets do not include Usage Statistics changes.
+
+**Protected configuration and evidence boundary:** Android `versionName "Telegram @horizontalzzz"` must remain exact. No Firmware/BIN/Firebase/OTA/flash/device work. CI evidence does not prove physical installation, OEM screenshots, BLE runtime or cooling/thermal behavior.
+
+---
+
+## SUPERSEDED CHECKPOINT — BUILD #135 ACTIVE — 2026-11-10
 
 **Run:** [#135 / Actions run 42747092939](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42747092939), workflow `374946166`, event `issues`, attempt 1, source SHA `2cd9a0e886167c857504926043b5cab03c67c163`.
 
