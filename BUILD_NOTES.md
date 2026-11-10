@@ -8,9 +8,9 @@
 - **Workflow/trigger:** unchanged issue-only guarded workflow, all 21 gates. Issue #33 OPEN exact; #140 terminal, no active run/PR; no #141 trigger sent. Current Build App authorization permits one guarded retry after checkpoint/read-back.
 - Preserve Android `versionName "Telegram @horizontalzzz"`. Physical installation/OEM/BLE/storage soak/thermal/electrical/Firmware/BIN/OTA are not proven by CI.
 
-## Build #141 candidate — pre-trigger
+## Build #141 candidate — active CI run
 
-- **Run state:** NOT STARTED, no run/job ID. Next action after docs read-back is final preflight then exactly one close/reopen issue event. Stop BLOCKED if no corresponding run appears; never duplicate the event.
+- **Active run:** [Build #141 / Actions run 42782355435](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42782355435), job `129715178789`, exact source `2fb8dc6ec4a0f41e7cce73e6a49db0e716b56cda`. Steps 1–3 passed; step 4 Flutter setup in progress; steps 5–21 pending. No build artifact or new Release yet.
 
 ---
 ## Authorization and trigger
