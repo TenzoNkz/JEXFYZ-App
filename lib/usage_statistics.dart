@@ -470,6 +470,9 @@ class UsageStatsAnalytics {
       previous = point;
     }
     if (previous == null || previous.value == null) return null;
+    // The analytics path ends at each sensor's freshness horizon. Do not hold a
+    // last value beyond that endpoint when another sensor keeps the session alive.
+    if (points.isEmpty || timestampMs > points.last.timestampMs) return null;
     return previous.value;
   }
 
