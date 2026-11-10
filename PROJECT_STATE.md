@@ -1,10 +1,11 @@
-## Current App build candidate — Build #143 pre-trigger (2026-11-10)
+## Current App build candidate — Build #143 active (2026-11-10)
 
 - **Latest verified package:** Build #138 / run `42749408202`, source `b553f22092d9b33b2c81753254d2e3f03928fa18`; 21 main gates, Flutter 157/157, analyzer 25 info-level, Android gate (`NO-SOURCE` native JUnit), signing/certificate, source ZIP, Release/tag and downloaded asset checks all passed.
 - **Build #142:** run `42782901555`, job `129716981807`, source `6ec326bd662744eee786817c7ebf68485741a915`. Analyzer passed (25 info, no warnings/errors); Flutter suite 158 passed / 1 failed because `find.text('00:10')` matched both session elapsed header and chart x-axis endpoint.
 - **Repair:** commit `f210e6b9036723150f1596d3d54ed270f401ca63` targets the uniquely keyed `usage-session-elapsed` Text and asserts its data is `00:10`; chart-axis label remains. Full file read-back verified. Awaiting CI.
 - **Candidate source before docs checkpoint:** `f210e6b9036723150f1596d3d54ed270f401ca63`, complete recursive tree 131 entries. Hybrid Home header palette and output-gated per-second Usage Statistics remain intact.
-- **Trigger:** issue #33 exact/open; #142 terminal; no active/queued run or PR. No #143 trigger sent. Workflow remains guarded issue-only with all 21 gates; `versionName "Telegram @horizontalzzz"` preserved.
+- **Build #143 CI:** run `42783474515`, job `129718855331`, exact checkout source `121ef9e0f5ed6a0003837d32e4c8b1701f38631a` matched main at trigger. Steps 1–12 passed including analyzer; step 13 Flutter tests in progress; steps 14–21 pending. No test count/result yet.
+- **Trigger:** issue #33 remains OPEN exact; it was closed/reopened once and exactly one #143 run appeared. Workflow remains guarded issue-only with all 21 gates; versionName `Telegram @horizontalzzz` preserved.
 - **Status:** test fix committed; full Flutter suite still UNVERIFIED. Physical BLE, storage soak, OEM visuals, install and thermal/electrical remain unverified.
 
 ---
