@@ -1,4 +1,13 @@
-## BUILD #143 — PRE-TRIGGER CHECKPOINT AFTER BUILD #142 OVER-BROAD TEXT FINDER FAILURE — 2026-11-10
+## BUILD #143 PROGRESS — ANALYZER PASSED; FLUTTER TEST SUITE ACTIVE — 2026-11-10
+
+- **Run/job/source:** [Build #143 / Actions run 42783474515](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42783474515), workflow `374946166`, event `issues`, attempt 1; job `build` / `129718855331`; immutable checkout `121ef9e0f5ed6a0003837d32e4c8b1701f38631a`, matching `main` at trigger.
+- **Passed:** steps 1–12 all `success`, including runner/checkout, Java 17, Flutter 3.47.2, Gradle 9.3.1, toolchain, local.properties, production signing prep, wrapper, App security/architecture audit, dependency installation and Dart analyzer.
+- **Current gate:** step 13 `Run Flutter tests` is `in_progress`. Steps 14–21 (Android gate, obfuscated APK, V1/V2/V3, production certificate, source ZIP, Release/tag and downloaded asset verification) remain pending.
+- **Test result/count:** not yet known; active job log archive is not currently retrievable. Actions artifacts list empty; no APK or #143 release asset yet.
+- **Disposition:** ACTIVE — continue only run `42783474515`. The #142 stable-key test fix is included in this checkout but has not yet been fully CI-validated. No duplicate trigger.
+
+---
+## HISTORICAL BUILD #143 — PRE-TRIGGER CHECKPOINT AFTER BUILD #142 OVER-BROAD TEXT FINDER FAILURE — 2026-11-10
 
 - **Authorization:** owner explicitly selected `Eksekusi Build App!`; the same authorized App Build/QC operation continues. #142 is terminal and a concrete Flutter test assertion defect was repaired. One further guarded App-only retry is authorized; no Firmware/BIN/Firebase/OTA/flash/device action.
 - **Candidate source before docs checkpoint:** main `f210e6b9036723150f1596d3d54ed270f401ca63`, complete recursive tree 131 entries. Newest commit modifies only `test/usage_statistics_test.dart`.
