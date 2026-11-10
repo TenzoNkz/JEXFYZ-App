@@ -1,4 +1,29 @@
-## CURRENT EXECUTION CHECKPOINT — BUILD #137 ACTIVE — 2026-11-10
+## CURRENT EXECUTION CHECKPOINT — BUILD #138 PRE-TRIGGER — 2026-11-10
+
+**Mode / authorization:** owner explicitly selected `@Thinking Eksekusi Build App!`. Scope is guarded Android App Build/QC/Release and evidence-backed App-only repairs. Firmware compilation, BIN generation/publication/replacement, Firebase, OTA, flashing, device operations and unrelated release work remain excluded.
+
+**Failed attempt #137:** [run 42748861814](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42748861814), job `129607409197`, immutable source `00c650f3776624353d7b1492ddff1b21c8b5fd49`, terminal failure at step 13. Steps 1–12 succeeded; analyzer had 25 info-only diagnostics and no warnings. Flutter tests **155 passed / 2 failed**. Steps 14–21 skipped; no APK, source ZIP or Release change. Full failure evidence is at the top of `APP_BUILD_REPORT.md`.
+
+**New concrete test repairs:**
+- `a2036ea6909bb027506b638f0d0f1f7aa77e3f32` — adds a width-specific `ValueKey<double>(width)` to each responsive test page in `pumpAtWidth`, ensuring 350dp Light and 420dp Dark passes start with fresh scroll state.
+- `40d430bc2fab2d01b72346fe407b38ae872e0807` — updates the Usage Statistics localization raw regex to allow the real Dart trailing comma after `language`. The expression was independently tested against current `floating_monitor.dart` content and returned true.
+Both files re-fetched and exact-content read-back verified. No production behavior, workflow, analyzer/test gates, signing checks or release requirements changed. Repairs are **not yet CI-validated**.
+
+**Earlier repairs still present:** stable keys for the two temperature charts and three operating-profile timelines (`7b539c0c9e50e6a2cd9860cd5fd33e5e0bf35c10`); scoped chart/timestamp widget assertions (`bb0c540d1bb9e7800d0d9c18ed0f2fab178a8715`); route source targeting `floating_monitor.dart` (`39457247735fbebe487ddd137831cc831f80aef4`); profile heading scrolling for Light/Dark (`0141362dba965cf7ba695f7ae86af1bb8c43a8fb`); multiline route regex (`c54758341b87894d3d8fe7c550f5045f0ff1b8ab`).
+
+**Candidate code/test head before next docs checkpoint:** `40d430bc2fab2d01b72346fe407b38ae872e0807`. The final Build #138 `head_sha` must be captured from Actions and match main immediately before the single issue event.
+
+**Actions / trigger state:** #137 is terminal; no active run. Issue #33 is OPEN, owner `TenzoNkz`, exact required title `JE X FYZ — EKSEKUSI BUILD APP TRIGGER` and exact body token `JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1`. No Build #138 trigger has been sent. After this checkpoint is committed/read back, close #33 once; revalidate exact guard, final main HEAD and zero active runs; then reopen exactly once. Expect #138 but verify actual run number/ID/source SHA. If no run appears, don't repeat the event; stop BLOCKED.
+
+**Last completed gate:** #137 analyzer success and test failure diagnosis; both concrete follow-up test fixes committed/read back. **Current run state:** NOT STARTED. **Remaining:** final main/tree/workflow/issue/Actions/Release preflight; one guarded reopen; follow only new run through full test suite, Android gate, APK, V1/V2/V3+production certificate, matching source ZIP, Release/tag/source parity and downloaded asset identity/checksum/source marker/signature verification.
+
+**Release baseline:** Build #133 source `5201a3e07f36305ffe3882a1b965b9e7414cd71a`; Release `jexfyz-latest` ID `403010611` and tag still target #133. No #137 APK/ZIP/Release mutation.
+
+**Protected config/evidence:** preserve Android `versionName "Telegram @horizontalzzz"` and all current workflow gates. No Firmware/BIN/Firebase/OTA/flash/device operations. CI does not prove physical installation, OEM UI, BLE or cooling/thermal behavior.
+
+---
+
+## SUPERSEDED CHECKPOINT — BUILD #137 ACTIVE — 2026-11-10
 
 **Run:** [#137 / Actions run 42748861814](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42748861814), workflow `374946166`, event `issues`, attempt 1. Immutable source SHA `00c650f3776624353d7b1492ddff1b21c8b5fd49` matched final main HEAD before issue trigger. Issue #33 closed once then reopened once; exactly one new run appeared.
 
@@ -14,7 +39,7 @@
 
 ---
 
-## PRE-TRIGGER CHECKPOINT — BUILD #137 — 2026-11-10
+## SUPERSEDED PRE-TRIGGER CHECKPOINT — BUILD #137 — 2026-11-10
 
 **Mode / authorization:** owner explicitly selected `@Thinking Eksekusi Build App!`. Only the guarded Android App Build/QC/Release workflow and evidence-backed App-scope repairs are authorized. Firmware compilation, BIN generation/publication/replacement, Firebase, OTA, flashing, device operation and unrelated release work remain excluded.
 
