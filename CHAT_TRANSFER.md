@@ -1,4 +1,15 @@
-## CURRENT CHECKPOINT — BUILD #142 ACTIVE / VERIFY TOOLCHAIN — 2026-11-10
+## CURRENT CHECKPOINT — BUILD #142 ACTIVE / FLUTTER TESTS — 2026-11-10
+
+**Run:** [Build #142 / Actions run 42782901555](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42782901555), job `129716981807`, source `6ec326bd662744eee786817c7ebf68485741a915`, `in_progress`.
+
+**Passed:** steps 1–12 including full toolchain setup, signing preparation, App audit, dependencies and **Dart analyzer**.
+
+**Current gate:** step 13 `Run Flutter tests` is `in_progress`; steps 14–21 pending. Test count/result not available yet while job remains active. No APK/source ZIP/Release or artifact yet.
+
+**Last completed gate:** Dart analyzer (step 12). Continue only run `42782901555`; do not launch another trigger.
+
+---
+## HISTORICAL CHECKPOINT — BUILD #142 ACTIVE / VERIFY TOOLCHAIN — 2026-11-10
 
 **Run:** [Build #142 / Actions run 42782901555](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42782901555), job `129716981807`, immutable source `6ec326bd662744eee786817c7ebf68485741a915`, `in_progress`.
 
