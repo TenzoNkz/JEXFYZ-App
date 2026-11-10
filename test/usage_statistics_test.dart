@@ -13,12 +13,27 @@ class _FakeUsageRepository implements UsageStatisticsRepository {
   _FakeUsageRepository(this.snapshot);
 
   @override
-  Future<UsageStatsSnapshot> loadSnapshot({
+  Future<List<UsageStatsSession>> loadSessions({
     required String coolerId,
-    required Duration period,
     int? nowMs,
   }) async =>
-      snapshot;
+      snapshot.sessions
+          .where((session) => session.coolerId == coolerId)
+          .toList(growable: false);
+
+  @override
+  Future<UsageStatsSnapshot> loadSessionSnapshot({
+    required String coolerId,
+    required int sessionId,
+    int? nowMs,
+  }) async {
+    final selected = snapshot.sessions.any(
+      (session) => session.id == sessionId && session.coolerId == coolerId,
+    );
+    return selected
+        ? snapshot
+        : UsageStatsSnapshot.empty(fromMs: 0, toMs: nowMs ?? 0);
+  }
 
   @override
   Future<void> clearCooler(String coolerId) async {
@@ -152,12 +167,18 @@ UsageStatsSnapshot _sampleSnapshot() {
 
 void main() {
   group('Usage Statistics analytics', () {
-    test('periods map to the intended time ranges', () {
-      expect(UsagePeriod.hour.duration, const Duration(hours: 1));
-      expect(UsagePeriod.day.duration, const Duration(hours: 24));
-      expect(UsagePeriod.week.duration, const Duration(days: 7));
-      expect(UsagePeriod.month.duration, const Duration(days: 30));
-      expect(UsagePeriod.month.label, '30D');
+    test('active state follows authoritative physical outputs, not connection or Adaptive', () {
+      expect(usageCoolerIsActive(fanOn: false, peltierOn: false), isFalse);
+      expect(usageCoolerIsActive(fanOn: true, peltierOn: false), isTrue);
+      expect(usageCoolerIsActive(fanOn: false, peltierOn: true), isTrue);
+      expect(usageCoolerIsActive(fanOn: true, peltierOn: true), isTrue);
+    });
+
+    test('elapsed time labels use the selected cooling run, not wall-clock periods', () {
+      expect(formatUsageElapsed(0), '00:00');
+      expect(formatUsageElapsed(1000), '00:01');
+      expect(formatUsageElapsed(12 * 60 * 1000 + 35000), '12:35');
+      expect(formatUsageElapsed(60 * 60 * 1000 + 2000), '1:00:02');
       expect(UsageStatisticsStore.retentionDays, 30);
     });
 
@@ -260,7 +281,7 @@ void main() {
     });
   });
 
-  test('the recorder starts only after final P1 synchronization and ends on disconnect', () {
+  test('cooling run recording is gated by synchronized authoritative FAN/PELTIER telemetry', () {
     final main = File('lib/main.dart').readAsStringSync();
     final finalSync = main.indexOf('if (!fullSyncReceived)', main.indexOf('finalSyncDeadline'));
     final connected = main.indexOf('connected = true;', finalSync);
@@ -276,8 +297,12 @@ void main() {
     expect(recorderMethod, isNonNegative);
     expect(telemetryHook, greaterThan(commitMethod));
     expect(disconnect, isNonNegative);
+    expect(main, contains('runtimeOutputsKnown'));
+    expect(main, contains('usageCoolerIsActive(fanOn: fanOn, peltierOn: peltierOn)'));
+    expect(main, contains("if (outputStateReported && coolerActive)"));
+    expect(main, contains("if (outputStateReported && !coolerActive)"));
     expect(main, contains('device?.remoteId.toString()'));
-    expect(main, contains('metric: \'battery\''));
+    expect(main, contains("metric: \'battery\'"));
   });
 
   test('statistics storage is local SQLite and is not added to Firmware or Firebase', () {
@@ -287,6 +312,15 @@ void main() {
     expect(pubspec, contains('sqflite: 2.4.2'));
     expect(usage, contains('CREATE TABLE usage_sessions'));
     expect(usage, contains('CREATE TABLE usage_events'));
+    expect(usage, contains('CREATE TABLE usage_samples'));
+    expect(usage, contains('version: 2'));
+    expect(usage, contains('onUpgrade: (database, oldVersion, newVersion)'));
+    expect(usage, contains('recordTemperatureSample('));
+    expect(usage, contains('battery_seen'));
+    expect(usage, contains('hotside_seen'));
+    expect(usage, contains('loadSessionSnapshot('));
+    expect(usage, isNot(contains('UsagePeriod')));
+    expect(usage, isNot(contains('_periodSelector')));
     expect(usage, contains('ON DELETE CASCADE'));
     expect(usage, contains('last_hotside_seen_at_ms'));
     expect(usage, contains('end_reason'));
@@ -319,7 +353,10 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Usage Statistics'), findsOneWidget);
-      expect(find.text('No usage data yet.'), findsOneWidget);
+      expect(find.text('No cooling history yet.'), findsOneWidget);
+      for (final obsolete in ['1H', '24H', '7D', '30D']) {
+        expect(find.text(obsolete), findsNothing);
+      }
       for (final key in <Key>[
         const ValueKey<String>('usage-temperature-chart-battery'),
         const ValueKey<String>('usage-temperature-chart-hotside'),
@@ -355,7 +392,7 @@ void main() {
       expect(tester.takeException(), isNull);
     });
 
-    testWidgets('renders all three sections in the compact Home canvas', (tester) async {
+    testWidgets('renders active cooling run sections in the compact Home canvas', (tester) async {
       final previousLanguage = appLanguageNotifier.value;
       addTearDown(() => appLanguageNotifier.value = previousLanguage);
       addTearDown(tester.view.resetPhysicalSize);
@@ -387,7 +424,12 @@ void main() {
       await pumpAtWidth(350, ThemeData.light(useMaterial3: true));
       expect(find.text('Suhu Baterai HP'), findsOneWidget);
       expect(find.text('Suhu Hotside'), findsOneWidget);
-      expect(find.text('30D'), findsOneWidget);
+      expect(find.text('30D'), findsNothing);
+      expect(find.text('1H'), findsNothing);
+      expect(find.text('24H'), findsNothing);
+      expect(find.text('7D'), findsNothing);
+      expect(find.text('Completed cooling run'), findsOneWidget);
+      expect(find.text('00:10'), findsOneWidget);
       for (final key in <Key>[
         const ValueKey<String>('usage-temperature-chart-battery'),
         const ValueKey<String>('usage-temperature-chart-hotside'),
@@ -414,7 +456,11 @@ void main() {
       await pumpAtWidth(420, ThemeData.dark(useMaterial3: true));
       expect(find.text('Suhu Baterai HP'), findsOneWidget);
       expect(find.text('Suhu Hotside'), findsOneWidget);
-      expect(find.text('30D'), findsOneWidget);
+      expect(find.text('30D'), findsNothing);
+      expect(find.text('1H'), findsNothing);
+      expect(find.text('24H'), findsNothing);
+      expect(find.text('7D'), findsNothing);
+      expect(find.text('Completed cooling run'), findsOneWidget);
       final profileHeadingDark = find.text('Riwayat Operasi');
       await tester.scrollUntilVisible(
         profileHeadingDark,
@@ -448,11 +494,9 @@ void main() {
               id: 7,
               coolerId: 'AA:BB:CC',
               startedAtMs: startMs,
-              endedAtMs: null,
-              lastSeenAtMs:
-                  startMs + const Duration(minutes: 3).inMilliseconds,
-              lastHotsideSeenAtMs:
-                  startMs + const Duration(minutes: 3).inMilliseconds,
+              endedAtMs: endMs,
+              lastSeenAtMs: endMs,
+              lastHotsideSeenAtMs: endMs,
               lastBatterySeenAtMs: endMs,
             ),
           ],
@@ -503,7 +547,7 @@ void main() {
         await tester.pumpAndSettle();
 
         final lastValueChange = find.textContaining(
-          'Stored locally on this phone. Last value change: $expectedTime',
+          'Stored locally on this phone. Last valid sample: 04:00',
         );
         await tester.scrollUntilVisible(
           lastValueChange,
@@ -535,7 +579,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(repository.clearCalls, 1);
-      expect(find.text('No usage data yet.'), findsOneWidget);
+      expect(find.text('No cooling history yet.'), findsOneWidget);
       expect(tester.takeException(), isNull);
     });
   });
