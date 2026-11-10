@@ -5345,6 +5345,7 @@ class _DashboardScreenState extends State<DashboardScreen>
       hotsideC: hotsideTemp == '--' ? null : double.tryParse(hotsideTemp),
       voltage: validVoltage,
       adaptive: adaptiveOn ? 'ON' : 'OFF',
+      peltier: peltierOn ? 'ON' : 'OFF',
       fanSpeed: fanOn ? fanSpeed : 0,
     ));
   }
@@ -5389,6 +5390,14 @@ class _DashboardScreenState extends State<DashboardScreen>
       unawaited(recorder.recordState(
         metric: 'adaptive',
         value: adaptiveOn ? 'ON' : 'OFF',
+      ));
+    }
+
+    // Peltier state is recorded only from authoritative P1 telemetry.
+    if (values.containsKey('PELTIER')) {
+      unawaited(recorder.recordState(
+        metric: 'peltier',
+        value: peltierOn ? 'ON' : 'OFF',
       ));
     }
 
