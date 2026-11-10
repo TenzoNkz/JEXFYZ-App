@@ -1304,6 +1304,7 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
                 summary: summary.battery,
                 color: scheme.primary,
                 language: language,
+                metricKey: 'battery',
               ),
               const SizedBox(height: 22),
               _temperatureSection(
@@ -1315,6 +1316,7 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
                 summary: summary.hotside,
                 color: scheme.tertiary,
                 language: language,
+                metricKey: 'hotside',
                 referenceValue: widget.hotLimit.toDouble(),
               ),
               const SizedBox(height: 22),
@@ -1411,6 +1413,7 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
     required UsageTemperatureSummary summary,
     required Color color,
     required AppLanguage language,
+    required String metricKey,
     double? referenceValue,
   }) {
     final scheme = Theme.of(context).colorScheme;
@@ -1437,6 +1440,7 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
           width: double.infinity,
           child: hasData
               ? CustomPaint(
+                  key: ValueKey<String>('usage-temperature-chart-$metricKey'),
                   painter: _UsageLinePainter(
                     points: summary.points,
                     fromMs: _snapshot!.fromMs,
@@ -1599,6 +1603,7 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
             height: 28,
             width: double.infinity,
             child: CustomPaint(
+              key: ValueKey<String>('usage-profile-timeline-$lane'),
               painter: _UsageTimelinePainter(
                 segments: segments,
                 fromMs: _snapshot!.fromMs,
