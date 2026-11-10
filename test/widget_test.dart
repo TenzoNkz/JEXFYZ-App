@@ -223,6 +223,61 @@ void main() {
     );
   });
 
+  test('Peltier safety prompt is compact and preserves fan-first safety behavior', () {
+    final source = File('lib/main.dart').readAsStringSync();
+    final start = source.indexOf('Future<void> _togglePeltier(bool enabled)');
+    final end = source.indexOf('if (approved != true) return;', start);
+    expect(start, isNonNegative);
+    expect(end, greaterThan(start));
+
+    final dialog = source.substring(start, end);
+    expect(dialog, contains('fontSize: 20'));
+    expect(dialog, contains('fontSize: 15'));
+    expect(dialog, contains('fontSize: 14'));
+    expect(dialog, contains('minimumSize: const Size(72, 48)'));
+    expect(dialog, contains('minimumSize: const Size(128, 48)'));
+    expect(dialog, contains('insetPadding: const EdgeInsets.symmetric(horizontal: 30, vertical: 18)'));
+    expect(source.indexOf("final fanOk = await _sendAndWaitAck('FAN:ON')", end), greaterThan(end));
+  });
+
+  test('LED color picker stays compact, scrollable and retains all 36 accessible colors', () {
+    expect(jexLedColorPickerMaxHeight(800), 308.0);
+    expect(jexLedColorPickerMaxHeight(300), 246.0);
+    expect(jexLedColorPickerMaxHeight(0), 0.0);
+    expect(ledColorPresets.length, 36);
+    expect(ledColorPresets.last.hex, '#FFFFFF');
+
+    final source = File('lib/main.dart').readAsStringSync();
+    final routeStart = source.indexOf('Future<void> _showLedColorPicker()');
+    final routeEnd = source.indexOf('// AI-METHOD: _openFirmwareSettings', routeStart);
+    expect(routeStart, isNonNegative);
+    expect(routeEnd, greaterThan(routeStart));
+    final route = source.substring(routeStart, routeEnd);
+    expect(route, contains('maxWidth: 312'));
+    expect(route, contains('jexLedColorPickerMaxHeight(constraints.maxHeight)'));
+    expect(route, contains('EdgeInsets.fromLTRB(24, 4, 24, 4)'));
+
+    final cardStart = source.indexOf('class _JexColorPickerCardState');
+    final cardEnd = source.indexOf('enum JexAnimatedIconKind', cardStart);
+    expect(cardStart, isNonNegative);
+    expect(cardEnd, greaterThan(cardStart));
+    final card = source.substring(cardStart, cardEnd);
+    expect(card, contains('Expanded('));
+    expect(card, contains('Scrollbar('));
+    expect(card, contains('thumbVisibility: true'));
+    expect(card, contains('crossAxisCount: 6'));
+    expect(card, contains('crossAxisSpacing: 2'));
+    expect(card, contains('mainAxisExtent: 48'));
+    expect(card, contains('SizedBox.expand('));
+    expect(card, contains('width: 32'));
+    expect(card, contains('height: 32'));
+    expect(card, contains('minimumSize: const Size(72, 48)'));
+    expect(card, isNot(contains('NeverScrollableScrollPhysics')));
+
+    // 312-dp panel - 14-dp inner padding - 10-dp column gaps = six 48-dp targets.
+    expect((312.0 - 14.0 - 10.0) / 6.0, 48.0);
+  });
+
   test('Home indicator painter receives Light Mode theme tokens and repaints on changes', () {
     final source = File('lib/main.dart').readAsStringSync();
     final widgetStart = source.indexOf('class JexAnimatedIcon extends StatefulWidget {');
