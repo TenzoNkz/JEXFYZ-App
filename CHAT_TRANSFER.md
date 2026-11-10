@@ -3,8 +3,8 @@
 **Mode / authorization:** Owner issued `@Thinking Eksekusi Full!`. App source, focused tests, static repository audit and canonical documentation were in scope. This work did **not** authorize App Build/Release, Firmware, BIN, Firebase, OTA, flashing or device operations. No workflow was triggered.
 
 **Canonical repository:** `TenzoNkz/JEXFYZ-App`, branch `main`.
-**Source/test commit:** `fb9d6f2716ad7875acbdd3abbe8cb12452f25dda` — `fix(statistics): report latest persisted temperature change`.
-**Verified base HEAD for this checkpoint refresh:** `f24735cc4fd1ac2a1c2172fbab73ae2024f4cd62`; recursive tree `f44e6b432849d5d08eac52e3857868804ed2892e`, 131 entries, `truncated=false`. The source/test commit preserved every existing tracked path. The docs checkpoint is committed as a normal child of this verified base.
+**Source/test commit chain:** `fb9d6f2716ad7875acbdd3abbe8cb12452f25dda` adds the event-based label and widget test; `81e409caad2e3f4a3c271db1b60a00f0f0083806` corrects active-session bounds to preserve independent Battery/Hotside freshness. Latest source/test commit: `81e409caad2e3f4a3c271db1b60a00f0f0083806`.
+**Verified base HEAD for this checkpoint refresh:** `81e409caad2e3f4a3c271db1b60a00f0f0083806`; the source/test tree remains complete with all 131 tracked paths and no deletions. The source/test commit preserved every existing tracked path. The docs checkpoint is committed as a normal child of this verified base.
 
 **Completed App correction:** `UsageStatsAnalytics.lastTemperatureChangeAtMs(snapshot)` selects the latest finite, non-null Battery/Hotside temperature event, validates its owning session bounds, and excludes events after `snapshot.toMs`. The Statistics page formats this persisted timestamp. Synthetic held-value chart endpoints continue to serve chart rendering but no longer influence the “Last value change” label. SQLite schema, recorder/session lifecycle, P1 gates and Firmware remain unchanged.
 

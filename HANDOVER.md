@@ -5,7 +5,7 @@ Updated: 2026-11-10 (Asia/Jakarta).
 ## Current result — App source cleanup / Build App preflight
 
 - **Authorized mode:** `Eksekusi Full!`. App-source, focused-test, documentation and repository-audit scope only. No App Build/Release, Firmware, BIN, Firebase, OTA, flash or device operation.
-- **Source correction committed:** `fb9d6f2716ad7875acbdd3abbe8cb12452f25dda`. Usage Statistics “Last value change” now uses the latest valid persisted Battery/Hotside event timestamp, bounded to its session and snapshot end; it no longer uses synthetic graph endpoints.
+- **Source correction commits:** `fb9d6f2716ad7875acbdd3abbe8cb12452f25dda` adds persisted-event timestamps and the widget regression; `81e409caad2e3f4a3c271db1b60a00f0f0083806` fixes the active-session bound so a newer Battery event is not rejected merely because the independent Hotside heartbeat is older. Closed sessions remain bounded by `endedAtMs`; active snapshots by `snapshot.toMs`.
 - **Regression coverage added:** `test/usage_statistics_test.dart` includes a widget case with a later freshness endpoint than the most recent temperature change. The UI must display the actual persisted event time.
 - **Validation boundary:** source/test content was committed and read back. Flutter/Dart/Gradle/ADB are not installed in the active runtime; formatter, focused tests, full test suite, analyzer, screenshots and device checks are **BLOCKED / NOT RUN**. The hosted Build App workflow has not been started for this candidate.
 - **Build candidate:** current `main` is 57 commits ahead of `jexfyz-latest` / Build #133 package source `5201a3e07f36305ffe3882a1b965b9e7414cd71a`. Build #133 is still the latest verified package; Usage Statistics is not released.
