@@ -1,3 +1,15 @@
+## BUILD #137 PROGRESS — GUARDED RUNNER STARTED; JAVA SETUP ACTIVE — 2026-11-10
+
+- **Run:** [Build #137 / Actions run 42748861814](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42748861814), workflow ID `374946166`, event `issues`, attempt 1, branch `main`; created/started `2026-11-10T03:21:04Z`.
+- **Source/trigger parity:** issue #33 closed once at `2026-11-10T03:20:48Z`, revalidated against exact owner/title/token and zero active runs, then reopened once at `2026-11-10T03:21:02Z`. Exactly one new issue-triggered run appeared. Immutable `head_sha` `00c650f3776624353d7b1492ddff1b21c8b5fd49` equals pre-trigger final main SHA. No duplicate event, push/PR/manual-dispatch.
+- **Job:** `build`, ID `129607409197`, hosted runner, `in_progress`. Steps 1 `Set up job` and 2 `Checkout repository` succeeded; step 3 `Set up Java 17` is `in_progress`. Steps 4–21 pending.
+- **Candidate test fixes under validation:** `0141362dba965cf7ba695f7ae86af1bb8c43a8fb` adds scroll-aware Light/Dark layout assertions; `c54758341b87894d3d8fe7c550f5045f0ff1b8ab` makes the multiline Usage Statistics route contract whitespace-tolerant. Earlier chart key and timestamp fixes passed their reached assertions in #136. No CI proof yet for the new follow-up fixes.
+- **Last completed gate:** checkout (step 2). **Current gate:** Java 17 setup (step 3). **Remaining:** toolchain/Flutter/Gradle, App security audit, dependencies, analyzer, full Flutter test suite, Android gate, obfuscated APK, V1/V2/V3 + production certificate, matching source ZIP, Release/tag parity and final downloaded asset identity/checksum/source-marker/signature verification.
+- **Artifacts/release:** initial Actions artifacts list empty. No #137 APK/ZIP/release update yet; Build #133 remains latest verified release.
+- **Disposition:** ACTIVE — follow only run `42748861814` / job `129607409197`; do not trigger another while active. Preserve all gates and Android `versionName "Telegram @horizontalzzz"`. No Firmware/BIN/Firebase/OTA/flash/device operation.
+
+---
+
 ## BUILD #136 — FAILED AT FLUTTER TEST GATE; TWO REMAINING TEST CONTRACTS REPAIRED — 2026-11-10
 
 - **Run:** [Build #136 / Actions run 42748124633](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42748124633), workflow ID `374946166`, event `issues`, attempt 1; terminal `completed/failure` at `2026-11-10T03:16:28Z`.
