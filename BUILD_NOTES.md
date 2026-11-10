@@ -1,18 +1,25 @@
-## Current release baseline — Build #138; Build #142 test finder failure repaired; candidate awaits #143
+## Current verified App release — Build #143 SUCCESS (2026-11-10)
 
-- **Latest verified package:** Build #138 / run `42749408202`, source `b553f22092d9b33b2c81753254d2e3f03928fa18`; all 21 gates, Flutter 157/157, analyzer 25 infos, Android gate with app JUnit tasks `NO-SOURCE`, V1/V2/V3/certificate, source ZIP, Release/tag and downloaded assets verified.
-- **Build #142:** run `42782901555`, job `129716981807`, source `6ec326bd662744eee786817c7ebf68485741a915`; steps 1–12 passed including analyzer (25 infos, no warnings/errors); Flutter 158 passed / 1 failed because broad `find.text('00:10')` hit two legitimate widgets.
-- **Repair:** commit `f210e6b9036723150f1596d3d54ed270f401ca63` replaces the global text-count assertion with a lookup by `usage-session-elapsed` key and checks `.data`. Test file read-back verified; chart-axis label is preserved.
-- **Candidate before docs checkpoint:** `f210e6b9036723150f1596d3d54ed270f401ca63`, tree 131 complete; includes Home hybrid palette, cooler-active Statistics and all prior fixes.
-- **Release:** `jexfyz-latest` ID `403010611` remains on #138; asset hashes unchanged and stored above.
-- **Trigger:** issue #33 OPEN exact; #142 terminal; no active run/PR. No #143 event sent. The explicit Build App operation permits one guarded retry after checkpoint/read-back.
-- Preserve Android `versionName "Telegram @horizontalzzz"`; device/OEM/BLE/thermal and Firmware/BIN/OTA remain distinct.
+- **Latest verified package:** Build #143 / run 42783474515, job 129718855331, final conclusion success; all 21 workflow gates and cleanup passed.
+- **Exact App source:** 121ef9e0f5ed6a0003837d32e4c8b1701f38631a; the jexfyz-latest tag / Release ID 403010611 targets that same SHA. Main's later documentation checkpoints do not alter the tested App source.
+- **Validation:** security/architecture audit passed; analyzer 25 info-only, zero warnings/errors; Flutter tests 159/159 passed. Android Gradle :app:testDebugUnitTest returned NO-SOURCE; no native Android app JUnit tests ran, even though the Gradle gate completed successfully.
+- **Build/signing:** Flutter release build used --obfuscate --split-debug-info=build/symbols; production APK one signer, RSA 4096, V1/V2/V3 all verified. Pinned certificate SHA-256 dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0; expected JE X FYZ DN matched. Same checks passed on the downloaded Release APK.
+- **APK asset:** JEXFYZ-release.apk, 55,685,211 bytes, SHA-256 65d001c7a8df708dd35d5c80665c4cb7e377d47f11bdb675022c00817b251cd0; download https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-release.apk.
+- **Source asset:** JEXFYZ-corresponding-source.zip, 2,911,348 bytes, SHA-256 b7682a0d73a1d494d5d187481115480465bdb6aaf3fa9db79fcebca8279e4fc6; download https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-corresponding-source.zip. Workflow confirmed exactly one APK plus one source ZIP, matching tag/source SHA, archive integrity, source marker, local/downloaded SHA equality and downloaded APK signature.
+- **Release:** jexfyz-latest, Release ID 403010611, target 121ef9e0f5ed6a0003837d32e4c8b1701f38631a. Android versionName "Telegram @horizontalzzz" remains intact; release metadata reports 1.0.0+3.
+- **Warnings:** Android test task NO-SOURCE; Flutter/Kotlin warning (Kotlin 2.2.20 soon below compatibility recommendation 2.3.20); Gradle deprecations before Gradle 10; native ELF DWARF debug info remains present despite Dart obfuscation; jarsigner PKIX trust-chain/META-INF warnings (expected pinned certificate matched; apksigner V1/V2/V3 passed). Optional cache writes were denied during cleanup but job succeeded. Native ELF debug-symbol stripping and toolchain modernization are follow-up App hardening work, not reasons to misstate this build.
+- **Not covered:** physical install/OEM QA, responsive layout at 350-dp/420-dp, real BLE/device telemetry and Statistics soak, thermal/electrical behavior, Firmware/BIN/Firebase/OTA/flash.
 
-## Build #143 candidate — active CI run
+## Superseded failure repairs included in Build #143
 
-- **Active run:** [Build #143 / Actions run 42783474515](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42783474515), job `129718855331`, exact source `121ef9e0f5ed6a0003837d32e4c8b1701f38631a`. Steps 1–12 passed including analyzer; step 13 Flutter tests in progress; steps 14–21 pending. No test count or artifacts yet.
+- #139 analyzer failure repaired by 93b1ba7b859089eeccd30719ddfb8b8ab2dabaf6 and 2656b6eb9071cf878de2373cfab03d1872e089f8.
+- #140 stale test identifier repaired by 2a0b1b94f7ebce1607ba26067441accb31a105c7.
+- #141 Indonesian localized assertion repaired by bafff332f406fdb75e4534d3d9c426d13e83a31b.
+- #142 elapsed label changed to stable-key lookup by f210e6b9036723150f1596d3d54ed270f401ca63.
+- Build #143 passed analyzer and Flutter suite with all these repairs included.
 
 ---
+
 ## Authorization and trigger
 
 - Start end-to-end App Build/QC/release only with @Thinking Eksekusi Build App!.
