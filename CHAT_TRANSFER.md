@@ -1,4 +1,38 @@
-## CURRENT CHECKPOINT — COMPACT MODAL OVERLAYS IMPLEMENTED / LOCAL VALIDATION BLOCKED — 2026-11-10
+## CURRENT CHECKPOINT — USAGE STATISTICS ANIMATED MULTI-CHART REDESIGN / DISKUSI — 2026-11-10
+
+**Mode / authorization:** owner selected `Diskusi!`. This is a design/source review plus documentation-only checkpoint. No executable source, test, configuration, workflow, Build/Release, Firmware, BIN, Firebase, OTA, flashing or device operation was changed/run for this Statistics request.
+
+**Release/source baseline:** Build #143 remains the latest verified App package (run 42783474515; exact package source/tag target `121ef9e0f5ed6a0003837d32e4c8b1701f38631a`). The compact Peltier/Color Picker source changes from the previous interaction are committed on main but are not part of Build #143 and remain unbuilt. The statistics chart redesign below is not implemented.
+
+**Live source evidence at start of this discussion:** `main` was `83e73d6e2a39ad732d261a75c3b33e54e8718bef`. `lib/usage_statistics.dart` blob `d5f3470350f8b3f4c485bf4b809d0578ae94a167`; `lib/main.dart` blob `6fc50bf1812575f1502d433499270bc0cad8c14f`; `test/usage_statistics_test.dart` blob `43bbc7179842c6df52c1814da11eeb8148037a13`.
+- Battery/Hotside are captured around 1 Hz while synchronized cooler-active telemetry is received and the current recorder writes each observation.
+- Temperature chart path currently draws a step shape and has no animation controller/tween.
+- Recorder changes are debounced for 450 ms; each reload queries the full session list/snapshot from SQLite and recomputes analytics.
+- Current profile plots are three compact timeline lanes: Voltage, Adaptive and Fan Speed. The existing page has no Peltier ON/OFF history lane: although PELTIER telemetry contributes to session active/inactive gating, `recordState` currently only stores Voltage, Adaptive and Fan Speed. Fan OFF is represented as Fan Speed 0%.
+- Current analytics already include duration-weighted temperature summary and time totals for Voltage/Adaptive/Fan Speed.
+
+**Owner design direction recorded:**
+1. Session overview: LIVE/completed, cooler-active elapsed duration, last sample and observed-data coverage.
+2. Separate Phone Battery Temperature and Hotside °C trend charts with current reading, Min/Avg/Max, Hotside safety-limit reference and visible gaps.
+3. Four synchronized operating diagrams: Voltage 5V/9V/12V step chart; Adaptive Mode ON/OFF step chart; Peltier ON/OFF step chart; Fan Speed 0–100% trace (0% means Fan OFF).
+4. Shared elapsed-session time axis and crosshair/tooltip that reads all metrics at the same timestamp; separate units/scales and legends.
+
+**Motion and truth constraints:**
+- Raw temperature remains about one sample/second. “Smooth every millisecond” means frame-synchronized rendering (about 16.7 ms at 60 Hz / 8.3 ms at 120 Hz), not 1-ms timers, 1000 DB writes/sec or synthetic measurements.
+- Temperature/Fan Speed may use timestamp-aware display interpolation with no overshoot. Preserve raw observed points and compute summaries from actual samples.
+- Voltage, Adaptive and Peltier remain discrete step charts; never show invented intermediate states such as 7V between 5V/9V or fractional ON/OFF.
+- Never interpolate across invalid/stale/disconnected gaps or sessions.
+- Prefer an incremental in-memory live delta model while the page is open; persist asynchronously to SQLite. Decimate long plot paths with gap/extrema preservation while keeping full-resolution persisted analytics. Validate queue/backpressure and long-session performance.
+
+**Regression/visual acceptance:** Peltier baseline/event/duration tests; state-duration and no-fictitious-interpolation tests; 60/120-Hz animation progression/no-overshoot/lifecycle tests; large-session decimation and write/query pressure; 350-dp/420-dp, Light/Dark, English/Indonesian and actual screenshot review. Visual status remains VISUAL NOT VERIFIED until real App screenshots are inspected.
+
+**Documentation updated:** `APP_NOTES.md` and `DESIGN_NOTES.md` now contain this design and the live-source gaps. No source/test implementation occurred. The durable documentation/checkpoint writes will be verified against the final main HEAD.
+
+**Exact next action:** owner may issue `Eksekusi Full!` to implement the Statistics redesign in App source/tests only. Include Peltier telemetry-event capture and incremental live chart handling without changing Firmware. After source/tests, separate `Eksekusi Build App!` is required for hosted QC and packaging. No device/Firmware/BIN/OTA action is implied.
+
+---
+
+## PRIOR CHECKPOINT — COMPACT MODAL OVERLAYS IMPLEMENTED / LOCAL VALIDATION BLOCKED — 2026-11-10
 
 **Mode / authorization:** owner selected combined `Diskusi!` + `Eksekusi Full!`. The discussion established the more compact sizing, then the authorized App-only source/test change was implemented directly on `main`. No App Build, APK/Release, Firmware, BIN, Firebase, OTA, flashing or device operation is authorized/performed here.
 
