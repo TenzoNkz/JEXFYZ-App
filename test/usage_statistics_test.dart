@@ -474,16 +474,16 @@ void main() {
     });
 
     testWidgets(
-      'last value change uses the latest persisted temperature event',
+      'last valid sample uses the latest persisted temperature sample',
       (tester) async {
         final previousLanguage = appLanguageNotifier.value;
         addTearDown(() => appLanguageNotifier.value = previousLanguage);
         appLanguageNotifier.value = AppLanguage.english;
 
         final startMs = DateTime(2026, 1, 1, 8).millisecondsSinceEpoch;
-        final hotsideChangeMs =
+        final hotsideSampleMs =
             startMs + const Duration(minutes: 2).inMilliseconds;
-        final latestChangeMs =
+        final latestSampleMs =
             startMs + const Duration(minutes: 4).inMilliseconds;
         final endMs = startMs + const Duration(minutes: 10).inMilliseconds;
         final snapshot = UsageStatsSnapshot(
@@ -510,14 +510,14 @@ void main() {
             ),
             UsageStatsEvent(
               sessionId: 7,
-              timestampMs: hotsideChangeMs,
+              timestampMs: hotsideSampleMs,
               metric: 'hotside',
               numberValue: 35,
               textValue: null,
             ),
             UsageStatsEvent(
               sessionId: 7,
-              timestampMs: latestChangeMs,
+              timestampMs: latestSampleMs,
               metric: 'battery',
               numberValue: 21,
               textValue: null,
@@ -525,15 +525,9 @@ void main() {
           ],
         );
         expect(
-          UsageStatsAnalytics.lastTemperatureChangeAtMs(snapshot),
-          latestChangeMs,
+          UsageStatsAnalytics.lastTemperatureSampleAtMs(snapshot),
+          latestSampleMs,
         );
-
-        final localChange =
-            DateTime.fromMillisecondsSinceEpoch(latestChangeMs).toLocal();
-        final expectedTime =
-            '${localChange.hour.toString().padLeft(2, '0')}:'
-            '${localChange.minute.toString().padLeft(2, '0')}';
 
         await tester.pumpWidget(
           MaterialApp(
@@ -546,7 +540,7 @@ void main() {
         );
         await tester.pumpAndSettle();
 
-        final lastValueChange = find.textContaining(
+        final lastValidSample = find.textContaining(
           'Stored locally on this phone. Last valid sample: 04:00',
         );
         await tester.scrollUntilVisible(
