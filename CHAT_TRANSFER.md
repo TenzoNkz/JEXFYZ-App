@@ -1,4 +1,20 @@
-## CURRENT EXECUTION CHECKPOINT — BUILD #138 PRE-TRIGGER — 2026-11-10
+## CURRENT EXECUTION CHECKPOINT — BUILD #138 ACTIVE — 2026-11-10
+
+**Run:** [#138 / Actions run 42749408202](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42749408202), workflow `374946166`, event `issues`, attempt 1. Immutable source SHA `b553f22092d9b33b2c81753254d2e3f03928fa18` matched final main before trigger. Issue #33 closed once then reopened once; exactly one new run appeared.
+
+**Job:** `build` / `129609197264`, hosted runner, `in_progress`. Steps 1–2 (job setup, checkout) succeeded; step 3 `Set up Java 17` is `in_progress`. Steps 4–21 pending.
+
+**Last completed gate:** checkout (step 2). **Current gate:** Java 17 setup (step 3). **Remaining:** Java/Flutter/Gradle/toolchain, local.properties, production signing prep, wrapper, App security audit, dependencies, analyzer, complete Flutter tests including #137 scroll-state/trailing-comma fixes, Android unit test gate, obfuscated APK, V1/V2/V3 and expected certificate, source ZIP, Release/tag parity and downloaded asset integrity/source-marker/signature checks.
+
+**#137 failure and repairs:** #137 / run `42748861814` terminal failure at test step 13 after 155 passed / 2 failed. Analyzer passed (25 info only, no warnings). Follow-up repairs included width-specific page key `a2036ea6909bb027506b638f0d0f1f7aa77e3f32` and trailing-comma regex `40d430bc2fab2d01b72346fe407b38ae872e0807`; both are under CI validation in #138.
+
+**Release baseline:** Build #133 remains latest verified package; no #138 APK/ZIP/Release update yet. Continue only run `42749408202`; do not trigger another.
+
+**Protected config/scope:** preserve Android `versionName "Telegram @horizontalzzz"`; no Firmware/BIN/Firebase/OTA/flash/device operation. CI is not physical UI/BLE/thermal evidence.
+
+---
+
+## PRE-TRIGGER CHECKPOINT — BUILD #138 — 2026-11-10
 
 **Mode / authorization:** owner explicitly selected `@Thinking Eksekusi Build App!`. Scope is guarded Android App Build/QC/Release and evidence-backed App-only repairs. Firmware compilation, BIN generation/publication/replacement, Firebase, OTA, flashing, device operations and unrelated release work remain excluded.
 
