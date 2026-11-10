@@ -1526,6 +1526,11 @@ class _JexLedStripPainter extends CustomPainter {
       oldDelegate.background != background;
 }
 
+double jexLedColorPickerMaxHeight(double availableHeight) {
+  if (!availableHeight.isFinite || availableHeight <= 0) return 0;
+  return math.min(308.0, availableHeight * .82).toDouble();
+}
+
 class _JexColorPickerCard extends StatefulWidget {
   final List<LedColorPreset> colors;
   final String selected;
@@ -1586,18 +1591,18 @@ class _JexColorPickerCardState extends State<_JexColorPickerCard> {
 
     return Material(
       color: scheme.surface,
-      elevation: 20,
-      shadowColor: Colors.black.withValues(alpha: .28),
-      borderRadius: BorderRadius.circular(22),
+      elevation: 12,
+      shadowColor: Colors.black.withValues(alpha: .24),
+      borderRadius: BorderRadius.circular(18),
       clipBehavior: Clip.antiAlias,
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(18, 18, 18, 18),
+        padding: const EdgeInsets.fromLTRB(7, 8, 7, 8),
         child: Column(
-          mainAxisSize: MainAxisSize.min,
+          mainAxisSize: MainAxisSize.max,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             SizedBox(
-              height: 46,
+              height: 48,
               child: Stack(
                 alignment: Alignment.center,
                 children: [
@@ -1606,8 +1611,8 @@ class _JexColorPickerCardState extends State<_JexColorPickerCard> {
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: scheme.onSurface,
-                      fontSize: 22,
-                      fontWeight: FontWeight.w900,
+                      fontSize: 19,
+                      fontWeight: FontWeight.w800,
                     ),
                   ),
                   Align(
@@ -1615,16 +1620,16 @@ class _JexColorPickerCardState extends State<_JexColorPickerCard> {
                     child: TextButton(
                       onPressed: _isApplying ? null : widget.onCancel,
                       style: TextButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(horizontal: 8),
-                        minimumSize: const Size(64, 44),
+                        padding: const EdgeInsets.symmetric(horizontal: 6),
+                        minimumSize: const Size(72, 48),
                         tapTargetSize: MaterialTapTargetSize.padded,
                       ),
                       child: Text(
                         JexText.of('cancel', lang),
                         style: TextStyle(
                           color: scheme.primary,
-                          fontSize: 15,
-                          fontWeight: FontWeight.w800,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w700,
                         ),
                       ),
                     ),
@@ -1634,16 +1639,16 @@ class _JexColorPickerCardState extends State<_JexColorPickerCard> {
                     child: TextButton(
                       onPressed: _isApplying ? null : _applySelection,
                       style: TextButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(horizontal: 8),
-                        minimumSize: const Size(64, 44),
+                        padding: const EdgeInsets.symmetric(horizontal: 6),
+                        minimumSize: const Size(72, 48),
                         tapTargetSize: MaterialTapTargetSize.padded,
                       ),
                       child: Text(
                         JexText.of('select', lang),
                         style: TextStyle(
                           color: scheme.primary,
-                          fontSize: 15,
-                          fontWeight: FontWeight.w800,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w700,
                         ),
                       ),
                     ),
@@ -1651,13 +1656,13 @@ class _JexColorPickerCardState extends State<_JexColorPickerCard> {
                 ],
               ),
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 4),
             Row(
               mainAxisSize: MainAxisSize.min,
               children: [
                 Container(
-                  width: 18,
-                  height: 18,
+                  width: 16,
+                  height: 16,
                   decoration: BoxDecoration(
                     color: selectedColor,
                     shape: BoxShape.circle,
@@ -1665,82 +1670,100 @@ class _JexColorPickerCardState extends State<_JexColorPickerCard> {
                   ),
                 ),
                 const SizedBox(width: 8),
-                Text(
-                  selectedName,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: scheme.primary,
-                    fontSize: 15,
-                    fontWeight: FontWeight.w800,
+                Flexible(
+                  child: Text(
+                    selectedName,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: scheme.primary,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 16),
-            GridView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: widget.colors.length,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 6,
-                crossAxisSpacing: 7,
-                mainAxisSpacing: 7,
-                mainAxisExtent: 42,
-              ),
+            const SizedBox(height: 6),
+            Expanded(
+              child: Scrollbar(
+                thumbVisibility: true,
+                thickness: 3,
+                radius: const Radius.circular(4),
+                child: GridView.builder(
+                  padding: const EdgeInsets.only(bottom: 2),
+                  physics: const BouncingScrollPhysics(),
+                  itemCount: widget.colors.length,
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 6,
+                    crossAxisSpacing: 2,
+                    mainAxisSpacing: 2,
+                    mainAxisExtent: 48,
+                  ),
               itemBuilder: (_, index) {
                 final preset = widget.colors[index];
                 final value = preset.hex;
                 final isSelected = normalizedSelected == value;
                 final isWhite = value == '#FFFFFF';
                 final name = JexText.of(preset.nameKey, lang);
-                return Tooltip(
-                  message: name,
-                  child: Semantics(
-                    label: name,
-                    button: true,
-                    selected: isSelected,
-                    child: InkWell(
-                      borderRadius: BorderRadius.circular(11),
+                  return Tooltip(
+                    message: name,
+                    child: Semantics(
+                      label: name,
+                      button: true,
+                      selected: isSelected,
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(9),
                       onTap: _isApplying
                           ? null
                           : () {
                               if (_draftSelected == value) return;
                               setState(() => _draftSelected = value);
                             },
-                      child: AnimatedContainer(
-                        duration: const Duration(milliseconds: 120),
-                        decoration: BoxDecoration(
-                          color: ledPaletteColor(value),
-                          borderRadius: BorderRadius.circular(11),
-                          border: Border.all(
-                            color: isSelected
-                                ? scheme.onSurface
-                                : (isWhite ? scheme.outline : Colors.transparent),
-                            width: isSelected ? 2.5 : 1,
+                        child: SizedBox.expand(
+                          child: Center(
+                            child: AnimatedContainer(
+                              width: 32,
+                              height: 32,
+                              duration: const Duration(milliseconds: 120),
+                              decoration: BoxDecoration(
+                                color: ledPaletteColor(value),
+                                borderRadius: BorderRadius.circular(9),
+                                border: Border.all(
+                                  color: isSelected
+                                      ? scheme.onSurface
+                                      : (isWhite ? scheme.outline : Colors.transparent),
+                                  width: isSelected ? 2 : 1,
+                                ),
+                                boxShadow: isSelected
+                                    ? [
+                                        BoxShadow(
+                                          color: scheme.primary.withValues(alpha: .22),
+                                          blurRadius: 4,
+                                          spreadRadius: .5,
+                                        ),
+                                      ]
+                                    : null,
+                              ),
+                              child: isSelected
+                                  ? JexAnimatedIcon.glyph(
+                                      icon: PhosphorIconsBold.check,
+                                      color: isWhite ? Colors.black : Colors.white,
+                                      size: 16,
+                                      active: true,
+                                    )
+                                  : null,
+                            ),
                           ),
-                          boxShadow: isSelected
-                              ? [
-                                  BoxShadow(
-                                    color: scheme.primary.withValues(alpha: .28),
-                                    blurRadius: 7,
-                                    spreadRadius: 1,
-                                  ),
-                                ]
-                              : null,
                         ),
-                        child: isSelected
-                            ? JexAnimatedIcon.glyph(
-                                icon: PhosphorIconsBold.check,
-                                color: isWhite ? Colors.black : Colors.white,
-                                size: 18,
-                                active: true,
-                              )
-                            : null,
                       ),
                     ),
                   ),
                 );
               },
+            ),
+              ),
             ),
           ],
         ),
@@ -6525,32 +6548,33 @@ void _handleAckLine(String line) {
                     padding: EdgeInsets.fromLTRB(16, top, 16, 16),
                     child: Center(
                       child: ConstrainedBox(
-                        constraints: const BoxConstraints(maxWidth: 420),
+                        constraints: const BoxConstraints(maxWidth: 340),
                         child: AlertDialog(
-                          insetPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
-                          titlePadding: const EdgeInsets.fromLTRB(26, 24, 26, 12),
-                          contentPadding: const EdgeInsets.fromLTRB(26, 0, 26, 8),
-                          actionsPadding: const EdgeInsets.fromLTRB(18, 8, 18, 20),
-                          actionsOverflowButtonSpacing: 10,
+                          insetPadding: const EdgeInsets.symmetric(horizontal: 30, vertical: 18),
+                          titlePadding: const EdgeInsets.fromLTRB(20, 18, 20, 8),
+                          contentPadding: const EdgeInsets.fromLTRB(20, 0, 20, 6),
+                          actionsPadding: const EdgeInsets.fromLTRB(12, 4, 12, 12),
+                          actionsOverflowButtonSpacing: 6,
                           title: Text(
                             JexText.of('peltierSafety', appLanguageNotifier.value),
                             style: const TextStyle(
-                              fontSize: 24,
-                              height: 1.12,
+                              fontSize: 20,
+                              height: 1.14,
                               fontWeight: FontWeight.w800,
                             ),
                           ),
                           content: Text(
                             JexText.of('fanRequiredPeltier', appLanguageNotifier.value),
-                            style: const TextStyle(fontSize: 17, height: 1.35),
+                            style: const TextStyle(fontSize: 15, height: 1.32),
                           ),
                           actions: [
                             TextButton(
                               style: TextButton.styleFrom(
-                                minimumSize: const Size(86, 48),
-                                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                                minimumSize: const Size(72, 48),
+                                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                                tapTargetSize: MaterialTapTargetSize.padded,
                                 textStyle: const TextStyle(
-                                  fontSize: 16,
+                                  fontSize: 14,
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),
@@ -6559,10 +6583,11 @@ void _handleAckLine(String line) {
                             ),
                             FilledButton(
                               style: FilledButton.styleFrom(
-                                minimumSize: const Size(142, 50),
-                                padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 13),
+                                minimumSize: const Size(128, 48),
+                                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                tapTargetSize: MaterialTapTargetSize.padded,
                                 textStyle: const TextStyle(
-                                  fontSize: 16,
+                                  fontSize: 14,
                                   fontWeight: FontWeight.w700,
                                 ),
                               ),
@@ -6923,14 +6948,17 @@ void _handleAckLine(String line) {
           child: SafeArea(
             child: LayoutBuilder(
               builder: (dialogContext, constraints) {
-                // Pin the palette to the bottom safe area. The panel itself does not
-                // scroll/drag; swatch taps stage a preview, and only Cancel or Select closes it.
+                // Keep the card compact; only the swatch grid scrolls. Swatches stage
+                // a preview and only Cancel or Select closes the picker.
                 return Align(
                   alignment: Alignment.bottomCenter,
                   child: Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+                    padding: const EdgeInsets.fromLTRB(24, 4, 24, 4),
                     child: ConstrainedBox(
-                      constraints: const BoxConstraints(maxWidth: 420),
+                      constraints: BoxConstraints(
+                        maxWidth: 312,
+                        maxHeight: jexLedColorPickerMaxHeight(constraints.maxHeight),
+                      ),
                       child: _JexColorPickerCard(
                         colors: ledColorPresets,
                         selected: rgbColor.toUpperCase(),
