@@ -10,18 +10,6 @@
 
 ---
 
-## Current App build candidate — Build #139 pre-trigger (2026-11-10)
-
-- **Latest verified published package:** Build #138 / [Actions run 42749408202](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42749408202), source b553f22092d9b33b2c81753254d2e3f03928fa18; all 21 main CI steps passed, 157/157 Flutter tests passed and the hosted Release/download verification succeeded. Its APK/ZIP remain the current published artifacts, not the newer source candidate.
-- **Current App candidate at preflight:** main 8115f6702c9be1381c10d1ed610b4a6e720c6753; recursive tree 131 entries, complete. The branch is 25 commits ahead of #138 source and 0 behind.
-- **Default hybrid Home:** committed source now uses jexHomeHeaderUsesDarkPalette(AppThemePreset) for both metric/icon palette decisions and NOTIFY foreground; Default/Dark header dark, Light header light. jexDashboardContentUsesDarkPalette independently keeps Default/Light lower content light and Dark content dark. Test coverage exists for the three presets and both semantic areas. Awaiting CI.
-- **Usage Statistics:** committed source now opens a run only after full synchronized BLE/P1 readiness and known authoritative Firmware outputs, with active = FAN ON OR PELTIER ON. Both OFF, disconnect or stale P1 ends the run. Battery and Hotside are stored as per-second samples, including null gaps, in local SQLite schema v2; Voltage/Adaptive/Fan Speed remain transition events against elapsed session time. The wall-clock 1H/24H/7D/30D selector is removed; 30-day pruning is retention only. Regression tests cover output gating, elapsed-time analytics, gaps, separate sessions and local-only storage. Awaiting CI; storage growth/backpressure stress validation remains open.
-- **Workflow/trigger:** unchanged guarded issue-only workflow; issue #33 is OPEN and exact owner/title/token matched. No active/queued run or open PR exists. No #139 event has yet been sent; the checkpointed final main SHA must match the new run's actual head_sha.
-- **Status:** App source/tests are committed but NOT YET VERIFIED BY CI on the new candidate. Build #138 remains the only verified package. Preserve versionName "Telegram @horizontalzzz".
-- **Evidence boundary:** installation, physical BLE, screenshot/OEM acceptance, cooling/thermal/electrical behavior, Firmware/BIN and OTA remain separate and unverified. No Firmware/device operation occurred.
-
----
-
 ## Current App release and validation — Build #138 — 2026-11-10
 
 - **Latest verified published package:** Build #138 / [Actions run 42749408202](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42749408202), job `129609197264`, terminal `success`, immutable tested source `b553f22092d9b33b2c81753254d2e3f03928fa18`.
