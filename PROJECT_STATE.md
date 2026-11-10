@@ -1,13 +1,13 @@
 # JE X FYZ / JE Cooler — Current Project State
 
-## Build #136 result / next guarded retry — 2026-11-10
+## Build #137 result / next guarded retry — 2026-11-10
 
-- **Run:** [#136 / Actions run 42748124633](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42748124633), immutable source `55d1387ed016914b4af85fb1b49d3e7e222cce44`, job `129605035668`; terminal failure at Flutter tests step 13. Steps 1–12 passed; analyzer reported 25 infos, no warnings. Suite: **155 passed / 2 failed**.
-- **Remaining test failures:** populated Usage Statistics layout expected `Riwayat Operasi` before scrolling the lazy page; Floating Monitor static test searched for the localization phrase as one line although source is multiline in `floating_monitor.dart`.
-- **Follow-up repairs:** `0141362dba965cf7ba695f7ae86af1bb8c43a8fb` scrolls to the profile heading in Light/Dark layout and checks temperature/timeline chart keys only when mounted; `c54758341b87894d3d8fe7c550f5045f0ff1b8ab` uses whitespace-tolerant regex for multiline menu localization and route. Both files exact read-back verified. These fixes are not yet CI-validated.
-- **#136 limitations:** empty-state chart key test and last-value timestamp widget test passed; populated layout test stopped at heading assertion before reaching all five chart-key assertions. Steps 14–21 skipped; no APK/source ZIP/Release update.
-- **Retry state:** no active run. Issue #33 remains OPEN and matches exact owner/title/token. Save and re-read the #137 retry checkpoint, close issue #33 once and reopen once, then verify exactly one run with exact final main source SHA.
-- **Latest verified Release:** Build #133 source `5201a3e07f36305ffe3882a1b965b9e7414cd71a`; Release/tag unchanged. Preserve Android `versionName "Telegram @horizontalzzz"`. No Firmware/BIN/Firebase/OTA/flash/device operation.
+- **Run:** [#137 / Actions run 42748861814](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42748861814), immutable source `00c650f3776624353d7b1492ddff1b21c8b5fd49`, job `129607409197`; terminal failure at Flutter tests step 13. Steps 1–12 passed, analyzer 25 info-only/no warnings. Full suite: **155 passed / 2 failed**.
+- **Failure 1:** responsive Usage Statistics test retained scroll offset from 350dp Light pass when pumping 420dp Dark page. Fixed by using a width-specific `ValueKey<double>(width)` on the page to force fresh scroll state; commit `a2036ea6909bb027506b638f0d0f1f7aa77e3f32`.
+- **Failure 2:** multiline localization regex did not allow Dart's trailing comma after `language`. Pattern now accounts for comma and whitespace and was executed against actual `floating_monitor.dart` successfully; commit `40d430bc2fab2d01b72346fe407b38ae872e0807`.
+- Both file modifications re-fetched and exact read-back verified. Not yet validated by a subsequent CI run. Steps 14–21 skipped, no APK/ZIP/Release mutation.
+- **Retry state:** #137 terminal; no active run. Issue #33 remains OPEN and guard matches. Save/read back Build #138 checkpoint, then close #33 once and reopen once; verify exactly one issue-triggered run and exact source SHA.
+- **Latest verified release:** Build #133 source `5201a3e07f36305ffe3882a1b965b9e7414cd71a`; Release/tag unchanged. Preserve `versionName "Telegram @horizontalzzz"`. No Firmware/BIN/Firebase/OTA/flash/device operation.
 
 ## Superseded status — Build #134 analyzer failure / pre-Build #135 retry — 2026-11-10
 
