@@ -1,4 +1,4 @@
-## Current App build candidate — Build #142 pre-trigger (2026-11-10)
+## Current App build candidate — Build #142 active (2026-11-10)
 
 - **Latest verified package:** Build #138 / run `42749408202`, source `b553f22092d9b33b2c81753254d2e3f03928fa18`; 21 main gates, Flutter 157/157 and analyzer 25 info-only passed; Android gate passed with JUnit tasks `NO-SOURCE`; APK V1/V2/V3/certificate, source ZIP, Release/tag and downloaded asset verification all passed.
 - **Build #141:** run `42782355435`, job `129715178789`, source `2fb8dc6ec4a0f41e7cce73e6a49db0e716b56cda`. Analyzer passed (25 infos, no warning/error); Flutter tests failed **158/1** because test locale was Indonesian but expected English `Completed cooling run`. The actual localized UI label is `Sesi pendinginan selesai`; fixture was a completed session. No APK/Release changes.
