@@ -1,4 +1,27 @@
-## BUILD #140 — PRE-TRIGGER CHECKPOINT AFTER BUILD #139 ANALYZER FAILURE — 2026-11-10
+## BUILD #141 — PRE-TRIGGER CHECKPOINT AFTER BUILD #140 TEST-IDENTIFIER FAILURE — 2026-11-10
+
+- **Authorization:** the owner's repeated `Eksekusi Build App!` operation remains active. #140 is terminal; the following repair is a concrete test-only correction, so one further guarded App Build/QC retry is authorized. No Firmware/BIN/Firebase/OTA/flash/device scope.
+- **Candidate source before docs checkpoint:** main `2a0b1b94f7ebce1607ba26067441accb31a105c7`; complete recursive tree 131 entries. It includes all prior Home/Usage Statistics implementation and analyzer fixes, plus the last remaining test variable-reference correction.
+- **Failed attempt #140:** run `42781821476`, job `129713425920`, immutable source `cdd0b6dc6bc91d01029e89a0b88fc1185205e239`, event `issues`, attempt 1, terminal failure at step 12 analyzer. Steps 1–11 passed. Analyzer: 25 info diagnostics, one warning and two errors. `test/usage_statistics_test.dart:543:15` declared `lastValidSample` but did not use it; lines 547 and 552 still referenced undefined `lastValueChange`. Steps 13–21 skipped; Actions artifacts empty; no APK/source ZIP/Release/tag update.
+- **Repair commit:** `2a0b1b94f7ebce1607ba26067441accb31a105c7`, only `test/usage_statistics_test.dart`; both remaining references were changed to `lastValidSample`. Entire file was re-read and verified: old-name count zero; new-name references three (declaration + both uses). This removes the exact analyzer warning/error pair without changing production behavior or weakening any check.
+- **Previous repairs still present:** `93b1ba7b859089eeccd30719ddfb8b8ab2dabaf6` removes unused `range`; `2656b6eb9071cf878de2373cfab03d1872e089f8` updates test API to `lastTemperatureSampleAtMs` and removes stale `expectedTime`/`localChange`. These and the newest identifier fix are committed/read-back verified; combined changes await CI.
+- **Latest verified package remains #138:** run `42749408202`, source `b553f22092d9b33b2c81753254d2e3f03928fa18`; all 21 main gates, Flutter 157/157, analyzer 25 infos, Android gate (native JUnit tasks `NO-SOURCE`), APK V1/V2/V3/certificate, corresponding source ZIP, Release/tag and downloaded-asset verification passed. Release ID `403010611` remains at #138.
+- **Trigger preflight:** workflow blob `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12` remains issue-only with the exact owner/title/token guard and all 21 gates. Issue #33 is OPEN exact; #140 is terminal; no active/queued run or open PR. No #141 event has been sent yet.
+- **Run state:** NOT STARTED. No #141 run/job exists yet. Documentation checkpoint commit(s) after candidate source are docs-only; require new run `head_sha` equal final main SHA at trigger.
+- **Next exact action:** commit and read back this failure/repair ledger and checkpoint; refresh main/tree/workflow/issue/Actions/Release/tag/versionName. Close issue #33 once, verify CLOSED and zero active runs, reopen once; follow only the single matching run. If no run appears, stop BLOCKED and do not repeat the event.
+- **Protected identity:** retain Android `versionName "Telegram @horizontalzzz"`; no Firmware/BIN/Firebase/OTA/flash/device action. CI is not physical/OEM/BLE/thermal evidence.
+
+---
+## BUILD #140 — FAILED AT DART ANALYZER; FINAL TEST IDENTIFIER REPAIRED — 2026-11-10
+
+- **Run/job/source:** [Build #140 / Actions run 42781821476](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42781821476), workflow `374946166`, issue event, attempt 1; job `build` / `129713425920`; exact source `cdd0b6dc6bc91d01029e89a0b88fc1185205e239`.
+- **Passed:** steps 1–11 (runner/checkout, Java 17, Flutter 3.47.2, Gradle 9.3.1, toolchain, local.properties, production signing prep, wrapper, App security/architecture audit and dependencies).
+- **Failure:** step 12 `Analyze Dart code`, exit 1. 28 diagnostics: 25 infos (non-fatal), one warning and two errors. `test/usage_statistics_test.dart:543:15` unused local `lastValidSample`; `:547:11` and `:552:16` undefined `lastValueChange`. Cause: the declaration had been renamed but two finder uses retained the old identifier. Steps 13–21 were skipped. Run artifacts empty, no APK or source ZIP, no Release/tag mutation.
+- **Repair:** commit `2a0b1b94f7ebce1607ba26067441accb31a105c7` changes exactly the two stale references to `lastValidSample`; complete-file read-back verified zero `lastValueChange` occurrences and the declaration plus both references present. This is TEST SOURCE REPAIR / NOT YET CI-VALIDATED; no test/gate/analyzer config or production behavior changed.
+- **Disposition:** failed analyzer root cause repaired; one evidence-based retry is pending. No runner/network/permission/transient infrastructure issue is indicated.
+
+---
+## HISTORICAL BUILD #140 — PRE-TRIGGER CHECKPOINT AFTER BUILD #139 ANALYZER FAILURE — 2026-11-10
 
 - **Authorization:** the owner explicitly repeated `Eksekusi Build App!` after the previously active run. This authorizes one evidence-based App Build/QC retry following the concrete analyzer repair. Scope remains the guarded App workflow and App-scope repairs only; no Firmware compile, BIN/Firebase, OTA, flashing or device operation.
 - **Current source before docs checkpoint:** `main` HEAD `2656b6eb9071cf878de2373cfab03d1872e089f8`; complete recursive tree 131 entries, `truncated=false`. This candidate contains two narrow fixes after failed #139: `93b1ba7b859089eeccd30719ddfb8b8ab2dabaf6` removes the unused `range` local in `_UsageLinePainter`; `2656b6eb9071cf878de2373cfab03d1872e089f8` updates the statistics test to `lastTemperatureSampleAtMs`, renames it around the latest valid sample, and removes obsolete unused `expectedTime`/`localChange` locals. Both changed paths were read-back verified.
@@ -13,7 +36,7 @@
 - **Protected identity/evidence boundary:** preserve Android `versionName "Telegram @horizontalzzz"`. CI is not physical installation, OEM screenshot, BLE runtime, cooling/thermal/electrical, Firmware/BIN or OTA evidence. No such operation occurred.
 
 ---
-## BUILD #140 PROGRESS — ACCEPTED; FLUTTER SETUP ACTIVE — 2026-11-10
+## HISTORICAL BUILD #140 PROGRESS — ACCEPTED; FLUTTER SETUP ACTIVE — 2026-11-10 (SUPERSEDED BY TERMINAL FAILURE)
 
 - **Run/source:** [Build #140 / Actions run 42781821476](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42781821476), workflow `374946166`, issue event, attempt 1; source SHA `cdd0b6dc6bc91d01029e89a0b88fc1185205e239`, exact final `main` SHA when triggered.
 - **Trigger:** issue #33 was verified exact/open, closed once at `2026-11-10T08:19:58Z`, verified CLOSED with zero active runs and main SHA `cdd0b6dc6bc91d01029e89a0b88fc1185205e239`, then reopened once at `2026-11-10T08:20:07Z`. Exactly one new run appeared at `2026-11-10T08:20:09Z`. No duplicate trigger.
