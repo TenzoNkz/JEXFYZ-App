@@ -11,7 +11,7 @@
 - Corresponding source ZIP asset `729969127`, 2,908,354 bytes; SHA-256 `47161a972131c95a74e8f5a191754504b76e2c31edd95fd19b1b4c75717ab906`.
 - Downloaded asset verification passed: digests, source marker, ZIP integrity, APK signatures/certificate.
 
-**Live repository:** `main` currently `f05e65508194555ebee254785669e11b99bc3e2f`. It is two documentation-only commits beyond the exact tested source; no executable source/config/workflow changes followed Build #138. Recursive tree: 131 entries, 50 Markdown files, `truncated=false`. No active Actions run or open PR was found. Issue #33 remains OPEN with the exact title/token guard; do not close/reopen or trigger another build.
+**Live repository:** `main` is ahead of the exact tested source only by verified documentation/checkpoint updates; no executable source, test, configuration or workflow changes followed Build #138. Recursive tree: 131 entries, 50 Markdown files, `truncated=false`. No active Actions run or open PR was found. Issue #33 remains OPEN with the exact title/token guard; do not close/reopen or trigger another build.
 
 **Current App workstream:** Usage Statistics (Battery Temperature, Hotside Temperature and operating-profile timelines, 1h/24h/7d/30d, local SQLite, 30-day retention) is now included in the Build #138 source and passed the complete hosted Flutter test suite. Storage-size stress testing, screenshot/OEM acceptance, physical install, live BLE session/reconnect and thermal/electrical testing remain UNVERIFIED. The Android JUnit NO-SOURCE caveat remains explicit. Existing Default hybrid Home header contrast issue is separately diagnosed but not repaired; no source edit is authorized in Diskusi.
 
