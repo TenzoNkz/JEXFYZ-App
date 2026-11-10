@@ -2,16 +2,17 @@
 
 Updated: 2026-11-10 (Asia/Jakarta).
 
-## Current result — Build #136 failure; Build #137 test corrections committed
+## Current result — Build #137 failure; Build #138 corrections committed
 
-- **Authorized mode:** owner selected `Eksekusi Build App!`. Only guarded Android App Build/QC/Release and justified App-scope repairs are authorized. Firmware compilation, BIN generation/publication, Firebase, OTA, flashing, device operation and unrelated releases remain excluded.
-- **Build #136:** [Actions run 42748124633](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42748124633), source `55d1387ed016914b4af85fb1b49d3e7e222cce44`, job `129605035668`. Terminal failure at test step 13. Steps 1–12 passed; analyzer yielded 25 info-only diagnostics and no warnings. Full Flutter suite: **155 passed / 2 failed**.
-- **Remaining causes:** compact Usage Statistics test did not scroll down to lazy `Riwayat Operasi` heading before searching; static contract used a one-line localization literal while `floating_monitor.dart` expresses it across multiple lines. The previous empty-state canvas and last-value timestamp tests passed on #136; the populated layout test stopped at the heading before all five canvas-key checks.
-- **Follow-up repairs:** `0141362dba965cf7ba695f7ae86af1bb8c43a8fb` scrolls to the operating-profile heading in Light/Dark view and splits chart-key assertions by viewport; `c54758341b87894d3d8fe7c550f5045f0ff1b8ab` uses whitespace-tolerant regex for multiline localization and route structure. Both modified test files were fetched back and exact-content verified. These changes are not yet CI-validated.
-- **Current state:** #136 is terminal; no active run exists. Issue #33 is OPEN and retains exact owner/title/body token. Finish and read back the #137 pre-trigger checkpoint, close issue #33 once, revalidate, then reopen it once. Expected Build #137; verify actual run ID, number and SHA. No duplicate event.
-- **Latest package remains Build #133:** source `5201a3e07f36305ffe3882a1b965b9e7414cd71a`; Release `jexfyz-latest` / ID `403010611` and tag remain there. Build #136 produced no APK, source ZIP or Release update.
-- **Protected Android config:** `versionName "Telegram @horizontalzzz"` stays exact.
-- **Validation boundary:** local Flutter/Dart/Gradle/ADB are absent; no local formatter/tests/analyzer/Android build or device checks. Hosted CI does not establish phone installation, OEM UI, BLE behavior or cooler thermal performance.
+- **Authorized mode:** owner selected `Eksekusi Build App!`. Only guarded Android App Build/QC/Release and evidence-backed App-scope repairs are authorized. Firmware compilation, BIN generation/publication, Firebase, OTA, flashing, device operation and unrelated releases are excluded.
+- **Build #137:** [Actions run 42748861814](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42748861814), immutable source `00c650f3776624353d7b1492ddff1b21c8b5fd49`, job `129607409197`; terminal failure at test step 13. Steps 1–12 passed, analyzer reported 25 info-only diagnostics / no warnings, Flutter tests 155 passed / 2 failed.
+- **Remaining root causes:** responsive widget test retained the prior Light 350dp ListView scroll position when rebuilding the Dark 420dp pass, so top temperature headings were no longer mounted; route regex handled whitespace but missed Dart's trailing comma.
+- **Repairs:** commit `a2036ea6909bb027506b638f0d0f1f7aa77e3f32` gives the page a width-specific `ValueKey<double>` so each responsive pass gets fresh scroll state. Commit `40d430bc2fab2d01b72346fe407b38ae872e0807` allows the trailing comma after `language`; the regex was tested against the actual `floating_monitor.dart` source and returned true. Both file contents read back exactly. These changes are not yet CI-validated.
+- **Earlier test fixes:** chart keys `7b539c0c...`, targeted chart/timestamp tests `bb0c540d...`, source contract path correction `394572477...`, #136 scroll-aware profile assertions `0141362d...`, and initial multiline regex `c5475834...` remain committed. #137 passed analyzer, the empty chart test and timestamp test; the Light profile heading/timeline checks were reached before the Dark viewport assertion failed.
+- **Current state:** #137 terminal; no active run. Issue #33 remains OPEN with exact owner/title/body token. Build #138 checkpoint is next; after saving and reading back, close issue #33 once, revalidate, then reopen it once. Expected Build #138; confirm actual run ID/number/source SHA. No duplicate trigger.
+- **Latest published package remains Build #133:** source `5201a3e07f36305ffe3882a1b965b9e7414cd71a`; Release `jexfyz-latest` / ID `403010611` and tag target it. Build #137 produced no APK, source ZIP or Release change.
+- **Protected Android config:** `versionName "Telegram @horizontalzzz"` remains exact.
+- **Validation boundary:** local Flutter/Dart/Gradle/ADB unavailable; no local test/analyzer/formatter/Android build or device checks. Hosted CI does not prove physical install, OEM UI, BLE or cooler thermal behavior.
 
 ## Separate Firmware backlog
 
