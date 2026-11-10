@@ -1,3 +1,12 @@
+## 2026-11-10 — Compact Peltier and LED Color Picker overlays (source implemented; not released)
+
+- Implemented the owner-authorized follow-up sizing pass for the Peltier safety dialog and LED Color Picker only. Build #143 remains the latest verified App release; these changes are unbuilt.
+- Peltier dialog typography is now 20/15/14 dp (title/body/actions), with smaller insets/padding and 72×48 / 128×48 dp minimum Cancel/Fan actions. The FAN-before-PELTIER safety flow, command/ACK order and bilingual copy remain.
+- LED picker width is capped at 312 dp and height at `min(308 dp, 82% of available safe-area height)`. The six-column grid now scrolls internally; all 36 presets remain, including final white. 48×48 dp cells contain 32×32 dp visual swatches; Cancel/Select targets are 72×48 dp. Preview/Cancel/Select staging semantics remain.
+- Added regression source in `test/widget_test.dart` for compact sizes, fan-first safety, responsive height, 36 colors/final white, scroll behavior, six-column geometry and touch target calculations.
+- Preserved `JexFixedScalePage`, the 360-dp canvas and single DPI transform. No Home/Settings/BLE/RGB/Firmware/workflow changes.
+- **Validation:** static source inspection and lexical delimiter-balance checks passed. Flutter/Dart/Gradle/ADB are unavailable in the active runtime; `dart format`, focused widget tests, analyzer, full Flutter suite, screenshots, App Build/Release and device checks are BLOCKED / NOT RUN. Visual status remains VISUAL NOT VERIFIED. Separate `Eksekusi Build App!` is required before packaging.
+
 ## 2026-11-10 — Usage Statistics last-change timestamp and repository hygiene audit
 
 - Corrected the Usage Statistics “Last value change” label to use the latest valid persisted Battery/Hotside temperature event, constrained to the owning session and snapshot end. Synthetic held-value chart endpoints remain solely for chart rendering.
