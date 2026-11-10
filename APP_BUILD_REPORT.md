@@ -1,3 +1,15 @@
+## BUILD #134 PROGRESS — GUARDED RUNNER STARTED; JAVA SETUP ACTIVE — 2026-11-10
+
+- **Run:** [Build #134 / Actions run 42746617402](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42746617402), workflow ID `374946166`, event `issues`, attempt 1, branch `main`. Created/started `2026-11-10T03:01:02Z`; current source SHA `479d1017729a90a081b30479977b0bc6c6777fbc`.
+- **Trigger/source parity:** issue #33 was revalidated as owner-authored, exact-title, exact-token and closed, then reopened once at `2026-11-10T03:01:00Z`. Exactly one new issue-triggered run appeared. The run's `head_sha` equals the final pre-trigger main HEAD exactly. No push, PR, workflow_dispatch, second issue event or duplicate run was used.
+- **Job:** `build`, job ID `129600136902`, hosted runner; run/job are `in_progress`. Step 1 `Set up job` and step 2 `Checkout repository` are `success`; step 3 `Set up Java 17` is `in_progress`. Steps 4–21 are pending.
+- **Last completed gate:** runner setup and checkout (steps 1–2). **Current gate:** Java 17 setup (step 3). **Remaining:** Flutter/Gradle toolchain, security/architecture audit, dependencies, Dart analyzer, complete Flutter tests (including new Usage Statistics regressions), Android configured gate, obfuscated APK, V1/V2/V3 signing, production certificate, source ZIP, Release/tag parity and downloaded asset identity/checksum/signature verification.
+- **Release baseline:** until steps 20–21 pass, Release `jexfyz-latest` remains Build #133 source `5201a3e07f36305ffe3882a1b965b9e7414cd71a`; its existing two assets/checksums are recorded immediately below in the pre-trigger checkpoint. No Build #134 APK/source ZIP/Release update is evidenced yet. Current Actions artifact list is empty; the workflow publishes to the GitHub Release.
+- **Disposition:** ACTIVE — continue only run `42746617402` / job `129600136902`; do not trigger another run while queued/active. Preserve all gates and Android `versionName "Telegram @horizontalzzz"`. No Firmware/BIN/Firebase/OTA/flash/device operation.
+- **Evidence boundary:** no test/build success, APK, signature/certificate, source ZIP, Release, installation, BLE, thermal, Firmware/BIN or OTA claim is made at this progress point.
+
+---
+
 ## BUILD #134 — PRE-TRIGGER CHECKPOINT / CURRENT APP CANDIDATE — 2026-11-10
 
 - **Disposition:** PRE-TRIGGER ONLY. This is a build candidate checkpoint, not a started Actions attempt. No Build #134 run ID or job ID exists yet. Live preflight found no queued, requested, waiting, or in-progress run for workflow ID `374946166`.
