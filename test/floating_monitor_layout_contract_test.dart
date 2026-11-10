@@ -91,9 +91,19 @@ void main() {
     expect(floating, contains('JexFixedScalePage(compactUi: true, child: NotificationsSettingsPage())'));
     expect(floating, contains('JexFixedScalePage(compactUi: true, child: BluetoothSettingsPage())'));
     expect(floating, contains('JexFixedScalePage(compactUi: true, child: FloatingSettingsPage())'));
-    expect(floating, contains("JexText.phrase('Usage Statistics', 'Statistik Penggunaan', language)"));
+    expect(
+      RegExp(
+        r"JexText\\.phrase\\s*\\(\\s*'Usage Statistics'\\s*,\\s*'Statistik Penggunaan'\\s*,\\s*language\\s*\\)",
+      ).hasMatch(floating),
+      isTrue,
+    );
     expect(floating, contains('UsageStatisticsPage('));
-    expect(floating, contains('JexFixedScalePage(\n                          compactUi: true,'));
+    expect(
+      RegExp(
+        r'JexFixedScalePage\\(\\s*compactUi:\\s*true,\\s*child:\\s*UsageStatisticsPage\\(',
+      ).hasMatch(floating),
+      isTrue,
+    );
     expect(floating, contains('telemetry: floatingTelemetryNotifier.value'));
     expect(floating, contains('size.toDouble().clamp(0.3, 1.0)'));
     expect(floating, contains("maxLabel: '1.00×'"));
