@@ -428,7 +428,7 @@ void main() {
       expect(find.text('1H'), findsNothing);
       expect(find.text('24H'), findsNothing);
       expect(find.text('7D'), findsNothing);
-      expect(find.text('Completed cooling run'), findsOneWidget);
+      expect(find.text('Sesi pendinginan selesai'), findsOneWidget);
       expect(find.text('00:10'), findsOneWidget);
       for (final key in <Key>[
         const ValueKey<String>('usage-temperature-chart-battery'),
@@ -460,7 +460,7 @@ void main() {
       expect(find.text('1H'), findsNothing);
       expect(find.text('24H'), findsNothing);
       expect(find.text('7D'), findsNothing);
-      expect(find.text('Completed cooling run'), findsOneWidget);
+      expect(find.text('Sesi pendinginan selesai'), findsOneWidget);
       final profileHeadingDark = find.text('Riwayat Operasi');
       await tester.scrollUntilVisible(
         profileHeadingDark,
