@@ -1,16 +1,17 @@
 ## CURRENT EXECUTION CHECKPOINT — BUILD #135 ACTIVE — 2026-11-10
 
-**Run:** [#135 / Actions run 42747092939](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42747092939), workflow ID `374946166`, event `issues`, attempt 1. Exact source SHA: `2cd9a0e886167c857504926043b5cab03c67c163`, matching pre-trigger main HEAD and including the App analyzer repair `25684ed93d189a173bdbd8c9115c2bedb5959f53`.
+**Run:** [#135 / Actions run 42747092939](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42747092939), workflow `374946166`, event `issues`, attempt 1, exact source `2cd9a0e886167c857504926043b5cab03c67c163`.
 
-**Trigger:** issue #33 closed once then reopened once after the repair and checkpoint commits. Exactly one new run appeared. No duplicate trigger.
+**Job:** `build` / `129601682007`, hosted runner, `in_progress`. Steps 1–3 (job setup, checkout, Java 17) are `success`. Step 4 `Set up Flutter` is `in_progress`. Steps 5–21 remain pending.
 
-**Job:** `build` / `129601682007`, hosted runner, `in_progress`. First job inspection: step 1 `Set up job` is `in_progress`; no completed step yet. Remaining gates 1–21 await runner progress.
+**Last completed gate:** Java 17 setup (step 3). **Current gate:** Flutter setup (step 4). **Remaining:** Gradle/toolchain, Flutter local.properties, production signing setup, wrapper, App security/architecture audit, dependencies, analyzer, full Flutter tests including Usage Statistics regression tests, Android gate, obfuscated APK, V1/V2/V3 signing, production certificate, source ZIP, Release/tag parity and downloaded-asset verification.
 
-**Last completed gate:** none. **Current gate:** job setup (step 1). Continue this run/job only. On any failure, inspect exact logs and repair only an App-scope root cause; do not weaken analyzer/tests/signing/release gates.
+**Failure/repair history:** Build #134 failed at analyzer because of an unnecessary non-null assertion; repair commit `25684ed93d189a173bdbd8c9115c2bedb5959f53` removes it and a redundant import. #134 remains a preserved failure, not a success. Run #135 is the only active run.
 
-**Release baseline:** Build #133 remains latest verified release on source `5201a3e07f36305ffe3882a1b965b9e7414cd71a`; Build #135 has no artifact or Release update yet. Build #134's analyzer failure and code repair remain recorded in `APP_BUILD_REPORT.md`.
+**Release baseline:** Build #133 is still the latest verified package; no #135 APK/ZIP/Release update exists. Do not trigger another run.
 
-**Boundaries:** preserve Android `versionName "Telegram @horizontalzzz"`; no Firmware/BIN/Firebase/OTA/flash/device actions. Hosted CI does not establish physical UI, BLE or thermal acceptance.
+**Boundaries:** preserve Android `versionName "Telegram @horizontalzzz"`; no Firmware/BIN/Firebase/OTA/flash/device work.
+
 
 ---
 
