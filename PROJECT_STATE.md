@@ -1,4 +1,14 @@
-## Current App build candidate — Build #141 active (2026-11-10)
+## Current App build candidate — Build #142 pre-trigger (2026-11-10)
+
+- **Latest verified package:** Build #138 / run `42749408202`, source `b553f22092d9b33b2c81753254d2e3f03928fa18`; 21 main gates, Flutter 157/157 and analyzer 25 info-only passed; Android gate passed with JUnit tasks `NO-SOURCE`; APK V1/V2/V3/certificate, source ZIP, Release/tag and downloaded asset verification all passed.
+- **Build #141:** run `42782355435`, job `129715178789`, source `2fb8dc6ec4a0f41e7cce73e6a49db0e716b56cda`. Analyzer passed (25 infos, no warning/error); Flutter tests failed **158/1** because test locale was Indonesian but expected English `Completed cooling run`. The actual localized UI label is `Sesi pendinginan selesai`; fixture was a completed session. No APK/Release changes.
+- **Repair:** commit `bafff332f406fdb75e4534d3d9c426d13e83a31b` updates both test expectations to the Indonesian localized label; full file read-back confirmed. Awaiting CI.
+- **Candidate source before docs checkpoint:** `bafff332f406fdb75e4534d3d9c426d13e83a31b`, complete recursive tree 131 entries. Home hybrid header palette resolver and cooler-output gated per-second Usage Statistics remain unchanged.
+- **Workflow/trigger:** issue-only guarded workflow unchanged with all 21 gates. Issue #33 is OPEN exact; #141 terminal; no active/queued runs or open PR. No #142 trigger sent yet. Preserve `versionName "Telegram @horizontalzzz"`.
+- **Status:** source and test repairs committed but full Flutter suite remains UNVERIFIED. Storage soak, physical BLE, OEM visuals, installation and thermal/electrical tests remain separate.
+
+---
+## HISTORICAL App build candidate — Build #141 active before test failure
 
 - **Latest verified package:** Build #138 / run `42749408202`, source `b553f22092d9b33b2c81753254d2e3f03928fa18`; 21 main gates and Flutter 157/157 passed, analyzer 25 infos, Android Gradle gate with app JUnit tasks `NO-SOURCE`, signing/certificate, source ZIP, Release/tag and downloaded-asset identity/checksums verified.
 - **Build #139:** terminal analyzer failure due outdated `lastTemperatureChangeAtMs` plus unused locals; repaired by `93b1ba7b859089eeccd30719ddfb8b8ab2dabaf6` and `2656b6eb9071cf878de2373cfab03d1872e089f8`.
