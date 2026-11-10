@@ -1,4 +1,20 @@
-## CURRENT EXECUTION CHECKPOINT — BUILD #137 PRE-TRIGGER — 2026-11-10
+## CURRENT EXECUTION CHECKPOINT — BUILD #137 ACTIVE — 2026-11-10
+
+**Run:** [#137 / Actions run 42748861814](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42748861814), workflow `374946166`, event `issues`, attempt 1. Immutable source SHA `00c650f3776624353d7b1492ddff1b21c8b5fd49` matched final main HEAD before issue trigger. Issue #33 closed once then reopened once; exactly one new run appeared.
+
+**Job:** `build` / `129607409197`, hosted runner, `in_progress`. Steps 1–2 (job setup and checkout) succeeded. Step 3 `Set up Java 17` is `in_progress`. Steps 4–21 pending.
+
+**Last completed gate:** checkout (step 2). **Current gate:** Java 17 setup (step 3). **Remaining:** Java/Flutter/Gradle/toolchain, local.properties, production signing preparation, wrapper, App security audit, dependencies, analyzer, full Flutter suite (including the two #136 follow-up test fixes), Android gate, obfuscated APK, V1/V2/V3 and expected certificate, corresponding source ZIP, Release/tag parity and final downloaded asset identity/checksum/source-marker/signature verification.
+
+**Repair/test history:** #136 failed after 155 tests passed / 2 failed, analyzer 25 info-only diagnostics, steps 1–12 passed. The new #137 source includes scroll-aware profile checks `0141362dba965cf7ba695f7ae86af1bb8c43a8fb` and multiline route regex `c54758341b87894d3d8fe7c550f5045f0ff1b8ab`; these are not yet CI-validated. Full failure evidence remains in `APP_BUILD_REPORT.md`.
+
+**Release baseline:** Build #133 is still latest verified package; no #137 APK/ZIP or Release update yet. Continue only #137; no duplicate trigger.
+
+**Protected config/scope:** preserve Android `versionName "Telegram @horizontalzzz"`; no Firmware/BIN/Firebase/OTA/flash/device operation. Hosted CI is not physical UI/BLE/thermal evidence.
+
+---
+
+## PRE-TRIGGER CHECKPOINT — BUILD #137 — 2026-11-10
 
 **Mode / authorization:** owner explicitly selected `@Thinking Eksekusi Build App!`. Only the guarded Android App Build/QC/Release workflow and evidence-backed App-scope repairs are authorized. Firmware compilation, BIN generation/publication/replacement, Firebase, OTA, flashing, device operation and unrelated release work remain excluded.
 
