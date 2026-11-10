@@ -1,16 +1,16 @@
-## Current release baseline — Build #138; Build #141 test locale mismatch repaired; candidate awaits #142
+## Current release baseline — Build #138; Build #142 test finder failure repaired; candidate awaits #143
 
-- **Latest verified package:** Build #138 / run `42749408202`, source `b553f22092d9b33b2c81753254d2e3f03928fa18`; all 21 gates, Flutter 157/157, analyzer 25 info-only, Android gate (JUnit tasks `NO-SOURCE`), V1/V2/V3/certificate, source ZIP, Release/tag and downloaded asset checks passed.
-- **Build #141:** run `42782355435`, job `129715178789`, source `2fb8dc6ec4a0f41e7cce73e6a49db0e716b56cda`. Analyzer passed; Flutter suite 158 passed / 1 failed. Test set Indonesian locale but expected English `Completed cooling run`; correct Indonesian UI label is `Sesi pendinginan selesai` for the completed fixture. Steps 14–21 skipped; no asset/release update.
-- **Repair:** commit `bafff332f406fdb75e4534d3d9c426d13e83a31b` changes both locale expectations to `Sesi pendinginan selesai`. Read-back confirms two matching assertions; production UI/localization unchanged. Hosted suite still needs validation.
-- **Current candidate before docs checkpoint:** `bafff332f406fdb75e4534d3d9c426d13e83a31b`, full tree 131 entries; current Home and active-run Statistics implementation preserved.
-- **Release/tag:** Release `jexfyz-latest` ID `403010611` remains at #138. APK SHA-256 `2ed225d992288cccc02313d206675a7313c73a4cad061de70cddf7209d39b9f8`; source ZIP SHA-256 `47161a972131c95a74e8f5a191754504b76e2c31edd95fd19b1b4c75717ab906`.
-- **Trigger state:** workflow issue-only with owner/title/body token guard and all 21 gates; issue #33 OPEN exact; #141 terminal; no active run or open PR. No #142 event sent. Explicit Build App mode authorizes one guarded retry after checkpoint and fresh preflight.
-- Preserve Android `versionName "Telegram @horizontalzzz"`; physical install/OEM/BLE/thermal, Firmware/BIN/OTA are separate.
+- **Latest verified package:** Build #138 / run `42749408202`, source `b553f22092d9b33b2c81753254d2e3f03928fa18`; all 21 gates, Flutter 157/157, analyzer 25 infos, Android gate with app JUnit tasks `NO-SOURCE`, V1/V2/V3/certificate, source ZIP, Release/tag and downloaded assets verified.
+- **Build #142:** run `42782901555`, job `129716981807`, source `6ec326bd662744eee786817c7ebf68485741a915`; steps 1–12 passed including analyzer (25 infos, no warnings/errors); Flutter 158 passed / 1 failed because broad `find.text('00:10')` hit two legitimate widgets.
+- **Repair:** commit `f210e6b9036723150f1596d3d54ed270f401ca63` replaces the global text-count assertion with a lookup by `usage-session-elapsed` key and checks `.data`. Test file read-back verified; chart-axis label is preserved.
+- **Candidate before docs checkpoint:** `f210e6b9036723150f1596d3d54ed270f401ca63`, tree 131 complete; includes Home hybrid palette, cooler-active Statistics and all prior fixes.
+- **Release:** `jexfyz-latest` ID `403010611` remains on #138; asset hashes unchanged and stored above.
+- **Trigger:** issue #33 OPEN exact; #142 terminal; no active run/PR. No #143 event sent. The explicit Build App operation permits one guarded retry after checkpoint/read-back.
+- Preserve Android `versionName "Telegram @horizontalzzz"`; device/OEM/BLE/thermal and Firmware/BIN/OTA remain distinct.
 
-## Build #142 candidate — active CI run
+## Build #143 candidate — pre-trigger
 
-- **Active run:** [Build #142 / Actions run 42782901555](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42782901555), job `129716981807`, exact source `6ec326bd662744eee786817c7ebf68485741a915`. Steps 1–12 passed including analyzer; step 13 Flutter test suite in progress; steps 14–21 pending. No test count or artifact/release result yet.
+- **Run state:** NOT STARTED. Next: docs read-back, final preflight, one close/reopen issue trigger, and verify one exact-SHA run. Stop BLOCKED if no run appears; no repeated event.
 
 ---
 ## Authorization and trigger
