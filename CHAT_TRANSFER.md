@@ -2,9 +2,9 @@
 
 **Run:** [#136 / Actions run 42748124633](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42748124633), workflow `374946166`, event `issues`, attempt 1. **Immutable source SHA:** `55d1387ed016914b4af85fb1b49d3e7e222cce44`; this exactly matched final `main` immediately before trigger. Issue #33 was closed once then reopened once; exactly one new run appeared.
 
-**Job:** `build` / `129605035668`, hosted runner, `in_progress`. Steps 1–2 (job setup and checkout) succeeded. Step 3 `Set up Java 17` is `in_progress`. Steps 4–21 pending.
+**Job:** `build` / `129605035668`, hosted runner, `in_progress`. Steps 1–3 (job setup, checkout, Java 17) succeeded. Step 4 `Set up Flutter` is `in_progress`. Steps 5–21 pending.
 
-**Last completed gate:** checkout (step 2). **Current gate:** Java 17 setup (step 3). **Remaining:** Java/Flutter/Gradle/toolchain, signing prep, App security audit, dependencies, analyzer, full Flutter tests including #135 four test repairs, Android unit-test gate, obfuscated APK, V1/V2/V3 + production certificate, corresponding source ZIP, Release/tag parity and final downloaded asset identity/checksum/source-marker/signature verification.
+**Last completed gate:** Java 17 setup (step 3). **Current gate:** Flutter setup (step 4). **Remaining:** Java/Flutter/Gradle/toolchain, signing prep, App security audit, dependencies, analyzer, full Flutter tests including #135 four test repairs, Android unit-test gate, obfuscated APK, V1/V2/V3 + production certificate, corresponding source ZIP, Release/tag parity and final downloaded asset identity/checksum/source-marker/signature verification.
 
 **Repair source under validation:** `7b539c0c9e50e6a2cd9860cd5fd33e5e0bf35c10`, `bb0c540d1bb9e7800d0d9c18ed0f2fab178a8715`, `39457247735fbebe487ddd137831cc831f80aef4`. Build #135 failed earlier with 153 pass / 4 test failures; exact causes and this repair history are in `APP_BUILD_REPORT.md`. Do not rewrite #135 as success.
 
