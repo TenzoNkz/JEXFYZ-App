@@ -544,12 +544,12 @@ void main() {
           'Stored locally on this phone. Last valid sample: 04:00',
         );
         await tester.scrollUntilVisible(
-          lastValueChange,
+          lastValidSample,
           240,
           scrollable: find.byType(Scrollable).first,
         );
         await tester.pumpAndSettle();
-        expect(lastValueChange, findsOneWidget);
+        expect(lastValidSample, findsOneWidget);
         expect(tester.takeException(), isNull);
       },
     );
