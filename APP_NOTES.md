@@ -1,7 +1,3 @@
-
-
-## Usage Statistics — implementation status (2026-11-09)
-Owner authorized App-only implementation with `Eksekusi Full!`. The feature source was already committed in `810c550` and retention follow-up in `8b3270e`; the erroneous sparse-tree checkpoint was repaired by `18b4d22`. The current source now adds the 30D range, 30-day retention and a visible warning for local write failures. Flutter/Dart tests, analyzer, formatter, screenshots and App Build have not been run for this feature. Preserve the hard exclusions: no App build/release and no Firmware/device/OTA work.
 # JE X FYZ / JE Cooler — App Behavior Reference
 
 Purpose: canonical current App/UI/BLE/telemetry contract. Current source defines implementation; DESIGN_NOTES.md holds owner-approved screen-specific visual constraints; PRODUCT_DESIGN_CONSTITUTION.md defines cross-screen design principles; VISUAL_QUALITY_GATE.md defines evidence-based visual acceptance; CHANGELOG.md and APP_BUILD_REPORT.md hold history/evidence.
@@ -111,10 +107,10 @@ Purpose: canonical current App/UI/BLE/telemetry contract. Current source defines
 ### Static source audit follow-up — 2026-11-10
 
 - Live-source review confirms the recording boundary is after completed P1 synchronization; HOT freshness bounds the operating timeline, Phone Battery freshness is tracked separately, invalid temperature readings create gaps, and sessions are closed on disconnect/process interruption. Settings navigation, duration-weighted summaries and event-driven state lanes are present in source.
-- **Low-priority display accuracy issue:** `_temperatureSummary()` appends a synthetic final `UsageChartPoint` at the observation/session endpoint to complete the held step. `_formatLastSample()` then chooses the latest non-null chart point while labeling it “Last value change”. That timestamp can therefore be the synthetic endpoint (up to the 1.5-second freshness allowance / selected query endpoint), not the last persisted temperature-change event. This does not alter chart values, min/max or averages. Recommended correction: derive this label from the latest valid Battery/Hotside event timestamp in the loaded snapshot, and add a widget test for an unchanged value with a later freshness heartbeat.
+- **Display accuracy correction — 2026-11-10:** the “Last value change” label now uses `UsageStatsAnalytics.lastTemperatureChangeAtMs(snapshot)` to select the latest valid persisted Battery/Hotside temperature event, bounded by its owning session and the snapshot end. Synthetic held-value chart endpoints are no longer used for this label. A focused widget regression test supplies an earlier Battery baseline, a later Hotside event and a still-later unchanged-sensor freshness endpoint; it asserts the displayed time is the persisted event time. SQLite schema and chart sample-and-hold behavior are unchanged.
 - The serialized recorder write queue still has no explicit bound/coalescing, and the 30-day raw event store has not been stress-measured. These remain validation risks, not observed runtime failures.
-- Validation remains **SOURCE REVIEW ONLY / FLUTTER VALIDATION NOT RUN**. The current runtime has no Flutter, Dart, Gradle or ADB executable. No formatter, test, analyzer, screenshot, physical-device or build result is inferred from this review.
-- Live tag `jexfyz-latest` resolves to source `5201a3e07f36305ffe3882a1b965b9e7414cd71a`; `main` is 50 commits ahead and the compare identifies `lib/usage_statistics.dart` and `test/usage_statistics_test.dart` as additions after that tag. Usage Statistics is therefore **not included in the currently tagged package**.
+- Validation remains **STATIC SOURCE CHECK / FLUTTER VALIDATION NOT RUN**. The source and regression test were committed and read back from `main`; Flutter/Dart/Gradle/ADB are unavailable here, so formatter, focused test, full suite, analyzer, screenshot, physical-device and App Build results are not claimed.
+- Live tag `jexfyz-latest` resolves to source `5201a3e07f36305ffe3882a1b965b9e7414cd71a`; `main` is 57 commits ahead; the comparison shows the feature source and tests were added after that tag. Usage Statistics is therefore **not included in the currently tagged package**.
 
 ## Floating Monitor
 

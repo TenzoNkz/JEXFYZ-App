@@ -1,3 +1,10 @@
+## 2026-11-10 — Usage Statistics last-change timestamp and repository hygiene audit
+
+- Corrected the Usage Statistics “Last value change” label to use the latest valid persisted Battery/Hotside temperature event, constrained to the owning session and snapshot end. Synthetic held-value chart endpoints remain solely for chart rendering.
+- Added a widget regression test where the most recent event occurs before a later unchanged-sensor freshness endpoint; the page must show the persisted event timestamp.
+- Source and test are committed to `main` in `fb9d6f2716ad7875acbdd3abbe8cb12452f25dda`. Flutter formatter, focused/full tests and analyzer are **BLOCKED / NOT RUN** because Flutter/Dart are unavailable in this environment. This is not Build App or release evidence.
+- Audited all non-main branches. Two branches are fully merged; two still contain unmerged Firmware/diagnostic material. No branch ref was deleted because the available connector has no delete-ref operation; no source or archive directory was removed.
+
 ## 2026-11-09 — Usage Statistics 30D completion and repository-tree recovery
 
 - Confirmed Usage Statistics source had already been committed in `810c550` and retention follow-up in `8b3270e`; corrected the false “not committed” checkpoint claim.

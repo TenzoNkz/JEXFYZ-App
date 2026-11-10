@@ -1,10 +1,6 @@
-
-
-## App — Usage Statistics source implementation (2026-11-09)
-The App-only feature is present in live source (feature commit `810c550`, retention follow-up `8b3270e`). The recovery commit `18b4d22` restored the full 131-entry tree after a bad sparse-tree checkpoint; later source commits add the missing 30D filter, 30-day retention and a visible SQLite write-failure warning. Current validation is STATIC SOURCE CHECK only: Flutter/Dart formatter, focused/full tests, analyzer, screenshots and App Build are NOT RUN. See the active CHAT_TRANSFER checkpoint.
 # JE X FYZ / JE Cooler — Current Project State
 
-Last refreshed: 2026-11-09 (Asia/Jakarta). Current-state summary only; always fetch live main/source, tests, Actions and Release data before acting.
+Last refreshed: 2026-11-10 (Asia/Jakarta). Current-state summary only; always fetch live main/source, tests, Actions and Release data before acting.
 
 ## App — Usage Statistics implementation state (2026-11-09)
 
@@ -12,7 +8,7 @@ Last refreshed: 2026-11-09 (Asia/Jakarta). Current-state summary only; always fe
 - **Layout:** Phone Battery Temperature trend first; Hotside Temperature trend second; Operating Profile timeline third with separate Voltage (5V/9V/12V), Adaptive ON/OFF and Fan Speed (%) lanes. Implemented periods: 1h / 24h / 7d / 30d, default 24h.
 - **Capture:** phone Battery from existing Android 1Hz reader; Hotside from Firmware ~1Hz `HOT`; Voltage/Adaptive/Fan Speed only on authoritative state changes. Save only changed temperature values with timestamps; show explicit gaps when session/data is missing. Use duration-weighted averages for change-only samples.
 - **Storage:** App-local SQLite (`sqflite` 2.4.2), not `flutter_secure_storage`, Firmware NVS or Firebase. Current source retains changed-value temperature events and state changes for 30 days; no 1-minute rollup table exists. Storage-size stress validation remains open.
-- **Status:** SOURCE IMPLEMENTED / VALIDATION NOT RUN. P1 sync-gated session recording, temperature/state capture, SQLite persistence, Settings navigation, graphs/timelines, confirmed clear-history, 30D period and 30-day retention are in source. Focused tests exist but were not executed here; UI screenshots and physical app/device behavior remain unverified. A package still requires separate `Eksekusi Build App!`.
+- **Status:** SOURCE IMPLEMENTED / VALIDATION NOT RUN. P1 sync-gated session recording, temperature/state capture, SQLite persistence, Settings navigation, graphs/timelines, confirmed clear-history, 30D period and 30-day retention are in source. The “Last value change” label now uses the latest valid persisted Battery/Hotside event timestamp (source/test commit `fb9d6f2`); its widget regression test is committed but not executed in this runtime. UI screenshots and physical app/device behavior remain unverified. A package still requires separate `Eksekusi Build App!`.
 - **Timer decision:** separate Firmware session/operating timer is DEFERRED by owner in favor of this App Usage Statistics feature; see `FIRMWARE_NOTES.md`.
 
 ## Firmware — Touch single-tap Voltage one-way cycle requested (2026-11-09)
