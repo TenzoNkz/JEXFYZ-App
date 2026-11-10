@@ -1,4 +1,25 @@
-## CURRENT CHECKPOINT — BUILD #140 ACTIVE / FLUTTER SETUP — 2026-11-10
+## CURRENT CHECKPOINT — BUILD #141 PRE-TRIGGER AFTER BUILD #140 ANALYZER FAILURE — 2026-11-10
+
+**Authorization:** the owner's repeated `Eksekusi Build App!` operation remains active; #140 is terminal and a specific App test failure has been repaired. Only the existing guarded App Build/QC/release plus justified App-scope fixes are authorized. No Firmware/BIN/Firebase/OTA/flash/device actions.
+
+**Failed #140:** [run 42781821476](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42781821476), job `129713425920`, exact source `cdd0b6dc6bc91d01029e89a0b88fc1185205e239`, terminal failure at analyzer step 12. Steps 1–11 passed; 25 infos, 1 warning and 2 errors. The test declared `lastValidSample` but scroll/assert still used undefined `lastValueChange`. Downstream steps 13–21 skipped; no assets or Release mutation.
+
+**Repair:** commit `2a0b1b94f7ebce1607ba26067441accb31a105c7` updates both remaining finder references to `lastValidSample`; read-back confirms zero old-name occurrences, declaration and both uses present. Previous fixes `93b1ba7b859089eeccd30719ddfb8b8ab2dabaf6` (unused range) and `2656b6eb9071cf878de2373cfab03d1872e089f8` (sample API/unused test locals) remain. These fixes are not yet CI-validated; no gate weakened.
+
+**Candidate source before documentation:** `2a0b1b94f7ebce1607ba26067441accb31a105c7`, recursive tree complete 131 entries. Default hybrid Home palette and per-second cooler-active Usage Statistics remain included.
+
+**Last verified package:** Build #138 / run `42749408202`, source `b553f22092d9b33b2c81753254d2e3f03928fa18`. All 21 steps and Flutter 157/157 passed; Android Gradle gate succeeded with JUnit tasks `NO-SOURCE`; V1/V2/V3/certificate, source ZIP, Release/tag parity and downloaded assets verified. Release #138 remains unchanged.
+
+**Trigger/Actions:** workflow blob `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12` remains issue-only owner/title/token guarded with all gates. Issue #33 is OPEN and exact; #140 terminal; no active run or open PR. No #141 trigger sent yet.
+
+**Last completed gate:** #140 analyzer failure diagnosis; two stale references repaired and committed/read back. **Current run state:** NOT STARTED; no #141 run/job.
+
+**Next action:** after docs commit/read-back, refresh final main/tree/workflow/issue/Actions/Release/tag/protected version. Close #33 once, verify closed/zero active, reopen once; follow only the new matching run and verify exact source SHA parity. If no run appears, stop BLOCKED without a repeated event.
+
+**Protected scope:** keep Android `versionName "Telegram @horizontalzzz"`. No Firmware compile, BIN/Firebase, OTA, flashing or device operation. CI is not installation, OEM visual, BLE or thermal validation.
+
+---
+## HISTORICAL CHECKPOINT — BUILD #140 ACTIVE / FLUTTER SETUP BEFORE FAILURE — 2026-11-10
 
 **Current run:** [Build #140 / Actions run 42781821476](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42781821476), workflow `374946166`, issue event, attempt 1. Job `build` / `129713425920`, status `in_progress`.
 
