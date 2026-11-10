@@ -1,3 +1,17 @@
+## BUILD #134 — FAILED AT DART ANALYZER GATE; NARROW APP REPAIR COMMITTED — 2026-11-10
+
+- **Run:** [Build #134 / Actions run 42746617402](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42746617402), workflow ID `374946166`, event `issues`, attempt 1, exact source SHA `479d1017729a90a081b30479977b0bc6c6777fbc`. Terminal `completed/failure` at `2026-11-10T03:02:40Z`.
+- **Job:** `build`, ID `129600136902`. Steps 1–11 passed: hosted job, checkout, Java 17, Flutter, Gradle, toolchain, local.properties, production signing-secret preparation, wrapper, App security/architecture audit, dependency installation.
+- **Failing gate:** step 12 `Analyze Dart code`, command `flutter analyze --no-fatal-infos`, exited 1. Output reported 27 diagnostics. One warning was actionable and caused the failure: `lib/usage_statistics.dart:1789:13`, `unnecessary_non_null_assertion` — the `!` on the chart painter's `Path` local had no effect because the receiver was already non-null in that branch. The other shown diagnostics were informational deprecation/unnecessary-import notices. This was a real analyzer warning, not an infrastructure failure.
+- **Skipped gates/artifacts:** steps 13–21 (Flutter suite, Android Gradle gate, APK, V1/V2/V3 signing, cert, source ZIP, Release and downloaded-asset verification) were skipped. No Build #134 APK/source ZIP/Actions artifact was produced. No Release asset or tag was changed.
+- **Evidence-backed App repair:** commit `25684ed93d189a173bdbd8c9115c2bedb5959f53`, message `fix(stats): remove analyzer warning in chart painter`. Only `lib/usage_statistics.dart` changed: removed the redundant `path!` assertion from the non-null painter branch and removed the redundant `dart:ui show FontFeature` import (the symbol is already exported by `material.dart`). No behavior, workflow, test, analyzer setting, gate, signing or Android configuration was weakened or changed.
+- **Read-back:** current repaired source blob `b9d653a7f51b3508c629891f6f363a79de3557f8`; exact updated imports and painter block were re-fetched and verified. This is source read-back, not a test/analyzer pass. The fix still requires the guarded hosted workflow to execute.
+- **Retry basis/state:** #134 is terminal; live workflow query shows no queued/in-progress/requested run. Issue #33 remains open after its single #134 trigger. A retry is justified only after this concrete warning repair and the retry ledger/checkpoint are committed/read back; close issue #33 once, then reopen exactly once. Do not send a duplicate reopen or retry without the repair.
+- **Release baseline:** Release ID `403010611`, tag `jexfyz-latest`, and both existing assets still point to Build #133 source `5201a3e07f36305ffe3882a1b965b9e7414cd71a`. Build #133's verified APK/ZIP hashes remain recorded above; do not describe those assets as containing Usage Statistics.
+- **Protected contract/scope:** preserve `android/app/build.gradle` `versionName "Telegram @horizontalzzz"`. No Firmware compilation, BIN, Firebase mutation, OTA, flashing or device operation.
+
+---
+
 ## BUILD #134 PROGRESS — APP AUDIT PASSED; DEPENDENCIES INSTALL ACTIVE — 2026-11-10
 
 - **Run/job/source:** #134 / `42746617402`, job `129600136902`, exact source `479d1017729a90a081b30479977b0bc6c6777fbc`.
