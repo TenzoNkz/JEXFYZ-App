@@ -1,12 +1,23 @@
-## CURRENT CHECKPOINT — BUILD #143 ACTIVE / ANDROID GATE — 2026-11-10
+## CURRENT CHECKPOINT — BUILD #143 COMPLETED / RELEASE VERIFIED — 2026-11-10
 
-**Run:** [Build #143 / Actions run 42783474515](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42783474515), job `129718855331`, immutable source `121ef9e0f5ed6a0003837d32e4c8b1701f38631a`.
+**Disposition:** Build #143 / Actions run 42783474515 COMPLETED / SUCCESS / RELEASED. Workflow 374946166, attempt 1; job 129718855331 completed successfully. All 21 required gates and post-job cleanup passed.
 
-**Passed:** workflow steps 1–13 are all `success`, including analyzer and full Flutter test gate. This hosted suite validates the current sample/session test fixes, including #142's keyed duration-label assertion. The exact test count is not yet confirmed from a readable completed log.
+**Immutable build source:** 121ef9e0f5ed6a0003837d32e4c8b1701f38631a; exact main HEAD at trigger and exact jexfyz-latest tag target. The branch has later documentation-only checkpoint commits; package source remains this exact SHA.
 
-**Current gate:** step 14 `Run Android unit-test gate` is `in_progress`; steps 15–21 pending. No APK/source ZIP/Release/artifact yet.
+**Validation:** App security/architecture audit passed; Dart analyzer 25 info-level findings, 0 warnings/errors; Flutter tests 159/159 passed. Android Gradle task completed BUILD SUCCESSFUL, but :app:testDebugUnitTest was NO-SOURCE (no native JUnit tests ran). Flutter release APK command used --obfuscate --split-debug-info=build/symbols. Production APK V1/V2/V3 signature and pinned certificate matched on original and downloaded APK.
 
-**Last completed gate:** Flutter test suite (step 13). Continue only run `42783474515`; no duplicate trigger/retry while active.
+**Release:** jexfyz-latest, Release ID 403010611; exactly one APK plus one matching source ZIP. The workflow downloaded both assets, compared SHA-256 to build outputs, checked ZIP integrity/source SHA marker, and re-verified APK signature. All checks passed.
+
+- APK: https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-release.apk — 55,685,211 bytes — SHA-256 65d001c7a8df708dd35d5c80665c4cb7e377d47f11bdb675022c00817b251cd0.
+- Source: https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-corresponding-source.zip — 2,911,348 bytes — SHA-256 b7682a0d73a1d494d5d187481115480465bdb6aaf3fa9db79fcebca8279e4fc6.
+- Certificate SHA-256: dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0; DN CN=JE X FYZ, OU=JE X FYZ, O=JE X FYZ, L=Indonesia, ST=Central Java, C=ID; RSA 4096-bit.
+- Android Gradle versionName "Telegram @horizontalzzz" unchanged. Release metadata: 1.0.0+3.
+
+**Warnings retained:** Android native test task was NO-SOURCE; Kotlin 2.2.20 / Gradle deprecations; native ELF DWARF debug-information warnings despite Dart obfuscation; jarsigner PKIX chain/META-INF warnings. Pinned signer fingerprint and required V1/V2/V3 checks passed. Inspect native ELF debug-symbol stripping and dependency/Gradle modernization separately.
+
+**Still unverified:** owner installation/OEM visuals, 350-dp/420-dp field layout, physical BLE and reconnect, real telemetry/Statistics soak, thermal/electrical cooling, Firmware/BIN/Firebase/OTA/flash. Build #143 is an App CI/Release result, not physical-device acceptance.
+
+**Next action:** owner downloads and installs Build #143, then performs separate App field acceptance. Continue only with explicitly scoped App work; do not infer Firmware/device authorization.
 
 ---
 ## HISTORICAL CHECKPOINT — BUILD #143 ACTIVE / FLUTTER TESTS — 2026-11-10
