@@ -386,11 +386,23 @@ void main() {
       await pumpAtWidth(350, ThemeData.light(useMaterial3: true));
       expect(find.text('Suhu Baterai HP'), findsOneWidget);
       expect(find.text('Suhu Hotside'), findsOneWidget);
-      expect(find.text('Riwayat Operasi'), findsOneWidget);
       expect(find.text('30D'), findsOneWidget);
       for (final key in <Key>[
         const ValueKey<String>('usage-temperature-chart-battery'),
         const ValueKey<String>('usage-temperature-chart-hotside'),
+      ]) {
+        expect(find.byKey(key), findsOneWidget);
+      }
+
+      final profileHeadingLight = find.text('Riwayat Operasi');
+      await tester.scrollUntilVisible(
+        profileHeadingLight,
+        240,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.pumpAndSettle();
+      expect(profileHeadingLight, findsOneWidget);
+      for (final key in <Key>[
         const ValueKey<String>('usage-profile-timeline-voltage'),
         const ValueKey<String>('usage-profile-timeline-adaptive'),
         const ValueKey<String>('usage-profile-timeline-fan_speed'),
@@ -401,8 +413,15 @@ void main() {
       await pumpAtWidth(420, ThemeData.dark(useMaterial3: true));
       expect(find.text('Suhu Baterai HP'), findsOneWidget);
       expect(find.text('Suhu Hotside'), findsOneWidget);
-      expect(find.text('Riwayat Operasi'), findsOneWidget);
       expect(find.text('30D'), findsOneWidget);
+      final profileHeadingDark = find.text('Riwayat Operasi');
+      await tester.scrollUntilVisible(
+        profileHeadingDark,
+        240,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.pumpAndSettle();
+      expect(profileHeadingDark, findsOneWidget);
       expect(tester.takeException(), isNull);
 
     });
