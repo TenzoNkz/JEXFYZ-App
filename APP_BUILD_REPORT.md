@@ -1,3 +1,15 @@
+## BUILD #135 PROGRESS — GUARDED RETRY STARTED; JOB SETUP ACTIVE — 2026-11-10
+
+- **Run:** [Build #135 / Actions run 42747092939](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42747092939), workflow ID `374946166`, event `issues`, attempt 1, branch `main`, exact source SHA `2cd9a0e886167c857504926043b5cab03c67c163`. Run created/started `2026-11-10T03:05:15Z`.
+- **Trigger/source parity:** after Build #134's terminal analyzer failure and the concrete repair commit `25684ed93d189a173bdbd8c9115c2bedb5959f53`, issue #33 was closed once at `2026-11-10T03:05:01Z` and reopened once at `2026-11-10T03:05:13Z`. Exactly one new run appeared; its `head_sha` equals the final pre-trigger main HEAD exactly. No push/PR/manual-dispatch or duplicate issue event was used.
+- **Job:** `build`, job ID `129601682007`, hosted runner, `in_progress`. At first live inspection step 1 `Set up job` was `in_progress`; no job step had completed yet. Flutter/Gradle setup, toolchain/security audit, dependencies, analyzer, full tests, Android gate, APK, signing/certificate, source ZIP, Release/tag and downloaded-asset verification remain pending.
+- **Last completed gate:** none yet. **Current gate:** job setup (step 1). Continue only this run/job; do not start another while active.
+- **Release baseline:** Build #133 remains latest verified published package; Release `jexfyz-latest` and tag remain on source `5201a3e07f36305ffe3882a1b965b9e7414cd71a` until #135 passes all gates. No #135 APK, ZIP or Release update is evidenced yet. Actions artifact list is empty at this early stage; release delivery is through GitHub assets.
+- **Failure history:** #134 failure and the narrow warning repair remain preserved immediately below this section. Do not rewrite #134 as successful.
+- **Scope/config:** preserve Android `versionName "Telegram @horizontalzzz"`; no Firmware/BIN/Firebase/OTA/flash/device operation.
+
+---
+
 ## BUILD #134 — FAILED AT DART ANALYZER GATE; NARROW APP REPAIR COMMITTED — 2026-11-10
 
 - **Run:** [Build #134 / Actions run 42746617402](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42746617402), workflow ID `374946166`, event `issues`, attempt 1, exact source SHA `479d1017729a90a081b30479977b0bc6c6777fbc`. Terminal `completed/failure` at `2026-11-10T03:02:40Z`.
