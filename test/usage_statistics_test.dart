@@ -373,6 +373,7 @@ void main() {
             home: JexFixedScalePage(
               compactUi: true,
               child: UsageStatisticsPage(
+                key: ValueKey<double>(width),
                 coolerId: 'AA:BB:CC',
                 repository: repository,
               ),
