@@ -6,7 +6,6 @@
 
 import 'dart:async';
 import 'dart:math' as math;
-import 'dart:ui' show FontFeature;
 
 import 'package:flutter/material.dart';
 import 'package:path/path.dart' as p;
@@ -1786,7 +1785,7 @@ class _UsageLinePainter extends CustomPainter {
         previousY = y;
         drawn = false;
       } else {
-        path!
+        path
           ..lineTo(x, previousY ?? y)
           ..lineTo(x, y);
         previousY = y;
