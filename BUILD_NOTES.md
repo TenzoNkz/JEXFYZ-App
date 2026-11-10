@@ -1,21 +1,16 @@
-## Current release baseline — Build #138; Build #139 failed analyzer; candidate awaits Build #140
+## Current release baseline — Build #138; Build #140 analyzer failure repaired; candidate awaits #141
 
-- **Latest verified package:** Build #138 / [Actions run 42749408202](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42749408202), source `b553f22092d9b33b2c81753254d2e3f03928fa18`. All 21 main workflow steps passed; analyzer 25 info-level diagnostics; Flutter tests 157/157; Android Gradle gate succeeded with native app JUnit tasks `NO-SOURCE`; APK V1/V2/V3 and expected production certificate, matching source ZIP, Release/tag and downloaded-asset checks passed.
-- **APK:** asset `729969125`, 55,455,835 bytes, SHA-256 `2ed225d992288cccc02313d206675a7313c73a4cad061de70cddf7209d39b9f8`.
-- **Source ZIP:** asset `729969127`, 2,908,354 bytes, SHA-256 `47161a972131c95a74e8f5a191754504b76e2c31edd95fd19b1b4c75717ab906`.
-- **Build #139 failed:** run `42765001359`, job `129659294295`, source `2ad43deb499f73dede808e2cc03d1a8843697f59`. Steps 1–11 passed; analyzer step 12 failed with 25 info diagnostics, two warnings (unused `range`, unused `expectedTime`) and one error (test references removed `lastTemperatureChangeAtMs`). Steps 13–21 skipped; no APK/ZIP/Release update.
-- **Concrete repair on main:** `93b1ba7b859089eeccd30719ddfb8b8ab2dabaf6` removes unused `range`; `2656b6eb9071cf878de2373cfab03d1872e089f8` switches the test to `lastTemperatureSampleAtMs` and removes obsolete expected-time locals. Both files read-back verified. No analyzer/test/release gate changed.
-- **Current source candidate before checkpoint:** main `2656b6eb9071cf878de2373cfab03d1872e089f8`, complete recursive tree 131 entries. It includes hybrid Home header palette repair and cooler-output gated per-second Usage Statistics; new UI/test plus analyzer repairs are awaiting hosted CI.
-- **Workflow:** blob `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12`, issue opened/reopened only, owner/title/body-token guard, Flutter `3.47.2`, Gradle `9.3.1`; all architecture/security, dependency, analyzer, Flutter test, Android, obfuscated APK, V1/V2/V3/certificate, source ZIP, Release/tag and downloaded-asset checks remain.
-- **Trigger state:** issue #33 OPEN, exact owner/title/token. #139 terminal; no active/queued run or open PR. No #140 trigger sent. The current repeated Build App authorization permits one guarded close/reopen after the docs checkpoint and fresh final preflight.
-- **Next:** after commit/read-back, recheck final main/tree/workflow/issue/Actions/Release/tag/protected version; close #33 once, verify closed/no run, reopen once; confirm a single new run with exact final main SHA. Stop BLOCKED if event does not produce a run.
-- Preserve Android `versionName "Telegram @horizontalzzz"`. Physical installation, OEM visuals, BLE, storage soak, thermal/electrical, Firmware/BIN/OTA remain separate and unverified.
+- **Latest verified package:** Build #138 / run `42749408202`, source `b553f22092d9b33b2c81753254d2e3f03928fa18`; all 21 main steps, Flutter 157/157, analyzer 25 info-only diagnostics, Android Gradle gate (app JUnit tasks `NO-SOURCE`), APK V1/V2/V3 + expected certificate, corresponding source ZIP, Release/tag parity and downloaded-asset checks passed.
+- **Build #139 failed:** analyzer step 12 due stale `lastTemperatureChangeAtMs` and two unused locals; repaired in `93b1ba7b859089eeccd30719ddfb8b8ab2dabaf6` and `2656b6eb9071cf878de2373cfab03d1872e089f8`.
+- **Build #140 failed:** run `42781821476`, job `129713425920`, source `cdd0b6dc6bc91d01029e89a0b88fc1185205e239`, step 12 analyzer; 25 infos, 1 warning and 2 errors from two stale `lastValueChange` references after declaration rename. Repair `2a0b1b94f7ebce1607ba26067441accb31a105c7` updates both remaining references; test file read-back confirms old name zero.
+- **Candidate before documentation:** main source/test HEAD `2a0b1b94f7ebce1607ba26067441accb31a105c7`, complete recursive tree 131 entries. Includes Home hybrid palette fix and active-output gated per-second Usage Statistics plus analyzer/test repairs; awaiting CI.
+- **Release/tag:** Release `jexfyz-latest` ID `403010611` still targets #138; APK SHA-256 `2ed225d992288cccc02313d206675a7313c73a4cad061de70cddf7209d39b9f8`; source ZIP SHA-256 `47161a972131c95a74e8f5a191754504b76e2c31edd95fd19b1b4c75717ab906`.
+- **Workflow/trigger:** unchanged issue-only guarded workflow, all 21 gates. Issue #33 OPEN exact; #140 terminal, no active run/PR; no #141 trigger sent. Current Build App authorization permits one guarded retry after checkpoint/read-back.
+- Preserve Android `versionName "Telegram @horizontalzzz"`. Physical installation/OEM/BLE/storage soak/thermal/electrical/Firmware/BIN/OTA are not proven by CI.
 
-## Build #140 candidate — active CI run
+## Build #141 candidate — pre-trigger
 
-- **App source:** Default/Dark Home header uses dark palette; Light uses light; Default lower content remains light. Metrics and NOTIFY share the header resolver. Usage Statistics requires full P1 readiness and confirmed FAN/PELTIER output, records per-second temperature samples/gaps in local SQLite against elapsed run time, and retains transition events for Voltage/Adaptive/Fan Speed. The 1H/24H/7D/30D chart period selector is removed; 30-day DB pruning is retention.
-- **Test:** latest sample regression now matches `lastTemperatureSampleAtMs`, and stale test-only wall-clock formatting code was removed. The hosted workflow must revalidate the complete suite.
-- **Active run:** [Build #140 / Actions run 42781821476](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42781821476), job `129713425920`, exact source `cdd0b6dc6bc91d01029e89a0b88fc1185205e239`. Steps 1–3 success, step 4 Flutter setup in progress, steps 5–21 pending. No artifacts or new release yet. Latest verified package remains #138.
+- **Run state:** NOT STARTED, no run/job ID. Next action after docs read-back is final preflight then exactly one close/reopen issue event. Stop BLOCKED if no corresponding run appears; never duplicate the event.
 
 ---
 ## Authorization and trigger
