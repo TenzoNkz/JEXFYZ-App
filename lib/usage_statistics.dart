@@ -299,7 +299,7 @@ class UsageStatsAnalytics {
 
       final session = sessionsById[event.sessionId];
       if (session == null) continue;
-      final sessionEndMs = session.endedAtMs ?? session.lastSeenAtMs;
+      final sessionEndMs = session.endedAtMs ?? snapshot.toMs;
       if (event.timestampMs < session.startedAtMs ||
           event.timestampMs > sessionEndMs ||
           event.timestampMs > snapshot.toMs) {

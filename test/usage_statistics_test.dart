@@ -399,8 +399,10 @@ void main() {
         appLanguageNotifier.value = AppLanguage.english;
 
         final startMs = DateTime(2026, 1, 1, 8).millisecondsSinceEpoch;
-        final latestChangeMs =
+        final hotsideChangeMs =
             startMs + const Duration(minutes: 2).inMilliseconds;
+        final latestChangeMs =
+            startMs + const Duration(minutes: 4).inMilliseconds;
         final endMs = startMs + const Duration(minutes: 10).inMilliseconds;
         final snapshot = UsageStatsSnapshot(
           fromMs: startMs,
@@ -411,8 +413,10 @@ void main() {
               coolerId: 'AA:BB:CC',
               startedAtMs: startMs,
               endedAtMs: null,
-              lastSeenAtMs: endMs,
-              lastHotsideSeenAtMs: endMs,
+              lastSeenAtMs:
+                  startMs + const Duration(minutes: 3).inMilliseconds,
+              lastHotsideSeenAtMs:
+                  startMs + const Duration(minutes: 3).inMilliseconds,
               lastBatterySeenAtMs: endMs,
             ),
           ],
@@ -426,9 +430,16 @@ void main() {
             ),
             UsageStatsEvent(
               sessionId: 7,
-              timestampMs: latestChangeMs,
+              timestampMs: hotsideChangeMs,
               metric: 'hotside',
               numberValue: 35,
+              textValue: null,
+            ),
+            UsageStatsEvent(
+              sessionId: 7,
+              timestampMs: latestChangeMs,
+              metric: 'battery',
+              numberValue: 21,
               textValue: null,
             ),
           ],
