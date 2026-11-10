@@ -1,4 +1,25 @@
-## CURRENT CHECKPOINT — BUILD #142 ACTIVE / FLUTTER TESTS — 2026-11-10
+## CURRENT CHECKPOINT — BUILD #143 PRE-TRIGGER AFTER BUILD #142 TEST FINDER FAILURE — 2026-11-10
+
+**Authorization:** owner `Eksekusi Build App!` operation remains active. #142 is terminal; a test-only finder issue has a concrete repair. One guarded App Build/QC retry is authorized; no Firmware/BIN/Firebase/OTA/flash/device work.
+
+**Failed #142:** [run 42782901555](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42782901555), job `129716981807`, source `6ec326bd662744eee786817c7ebf68485741d9d`? exact: `6ec326bd662744eee786817c7ebf68485741a915`. Steps 1–12 passed including analyzer (25 infos, no warnings/errors). Flutter tests **158/1**: line 432 broad `find.text('00:10')` matched both session header and chart endpoint. Steps 14–21 skipped; no artifacts/Release changes.
+
+**Repair:** commit `f210e6b9036723150f1596d3d54ed270f401ca63` asserts elapsed duration via unique `usage-session-elapsed` key and keeps the chart-axis label. Full test file read-back verified. Previous locale fix `bafff332f406fdb75e4534d3d9c426d13e83a31b` and analyzer fixes remain.
+
+**Candidate source before docs checkpoint:** `f210e6b9036723150f1596d3d54ed270f401ca63`; complete tree 131 entries. Contains the Home hybrid theme repair, cooler-output per-second Statistics, and all prior test fixes.
+
+**Latest verified release:** Build #138 / run `42749408202`, exact source `b553f22092d9b33b2c81753254d2e3f03928fa18`; 21 workflow gates, Flutter 157/157, analyzer 25 info-level; Android JUnit caveat `NO-SOURCE`; signing/certificate/source ZIP/Release/tag/download checks passed. Release #138 remains unchanged.
+
+**Trigger state:** workflow issue-only with 21 gates; issue #33 OPEN exact; #142 terminal; no active run/PR. No #143 trigger sent.
+
+**Last completed gate:** #142 analyzer passed; full Flutter suite failed on one overly broad time text finder; test-only repair committed and read-back verified. **Run state:** NOT STARTED.
+
+**Next:** after docs commit/read-back, verify final main/tree/workflow/issue/Actions/Release/tag/versionName; close #33 once, verify closed/no active, reopen exactly once; follow only one run with exact final source SHA. Do not duplicate the event.
+
+**Protected scope:** preserve Android `versionName "Telegram @horizontalzzz"`. No Firmware/BIN/Firebase/OTA/flash/device operations; CI is not physical/OEM/BLE/thermal evidence.
+
+---
+## HISTORICAL CHECKPOINT — BUILD #142 ACTIVE / FLUTTER TESTS BEFORE FAILURE — 2026-11-10
 
 **Run:** [Build #142 / Actions run 42782901555](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42782901555), job `129716981807`, source `6ec326bd662744eee786817c7ebf68485741a915`, `in_progress`.
 
