@@ -26,6 +26,15 @@ This file describes the current guarded App release process. APP_BUILD_REPORT.md
 
 
 
+## Usage Statistics release-candidate preflight — 2026-11-10
+
+- **Assessment:** READY TO START ONE GUARDED BUILD/QC ATTEMPT; NOT YET VERIFIED RELEASE-READY. The source feature is committed on `main` and the current workflow executes the missing hosted validation gates (`flutter analyze --no-fatal-infos`, full `flutter test`, Android `:app:testDebugUnitTest`) before APK creation. A missing local Flutter run is therefore not a reason to bypass or pretend validation; the official pipeline itself must supply that evidence.
+- **Candidate source state:** live `main` before this documentation note was `2377ee40e8435b2505426a7398473600123772fe`. `jexfyz-latest` still targets Build #133 source `5201a3e07f36305ffe3882a1b965b9e7414cd71a`; compare reported `main` ahead by 53 commits and identifies `lib/usage_statistics.dart` and `test/usage_statistics_test.dart` as additions after the tag. Usage Statistics is not in the current package.
+- **Workflow:** `.github/workflows/jexfyz-app-build-trigger.yml` remains issue opened/reopened only, owner + exact title + body-token guarded. The re-fetched workflow uses Flutter `3.47.2` stable and Gradle `9.3.1`; it runs the architecture/security audit, dependency resolution, analyzer, all Flutter tests, Android Gradle gate, obfuscated APK, V1/V2/V3 signing, expected production certificate, corresponding-source ZIP, Release/tag and re-downloaded asset verification. No gate is to be weakened.
+- **Trigger inventory:** issue #33 is closed, authored by `TenzoNkz`, has the exact required title `JE X FYZ — EKSEKUSI BUILD APP TRIGGER` and body token `JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1`; issue #32 is another matching closed trigger. Issue #34 is deleted (GitHub returned 410). There are no open issues or open PRs. #33 is the newest valid reusable trigger candidate; only reopen it once after a fresh Actions-state check and an explicit `Eksekusi Build App!`. This Diskusi did not reopen/create an issue or trigger a run.
+- **Known items that will remain visible even if CI passes:** low-priority “Last value change” label can display a synthetic held-value endpoint rather than the last persisted event; recorder queue has no explicit bound/coalescing; 30-day raw event-store growth is not stress-measured. These are not proven runtime failures and must not be described as fixed by CI. Physical/OEM visual acceptance is separate.
+- **Result boundary:** Build #133 remains the latest documented verified package. The new Usage Statistics code has no hosted analyzer/test/Android/build/signature/release evidence yet. `Eksekusi Build App!` authorizes a single guarded validation/release attempt and justified App-scope repairs from concrete failures; it does not authorize Firmware/BIN/Firebase/OTA/flash/device actions.
+
 ## Authorization and trigger
 
 - Start end-to-end App Build/QC/release only with @Thinking Eksekusi Build App!.
