@@ -1,32 +1,16 @@
-# JE X FYZ / JE Cooler — Current Project State
+## Current App release and validation — Build #138 — 2026-11-10
 
-## Build #137 result / next guarded retry — 2026-11-10
+- **Latest verified published package:** Build #138 / [Actions run 42749408202](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42749408202), job `129609197264`, terminal `success`, immutable tested source `b553f22092d9b33b2c81753254d2e3f03928fa18`.
+- **CI:** all 21 main workflow steps succeeded. Dart analyzer exited successfully with 25 info-level diagnostics and no analyzer warnings/errors. Full Flutter suite: **157/157 passed**, including the responsive Usage Statistics reset and localization trailing-comma contract repairs.
+- **Android gate caveat:** Gradle `:app:testDebugUnitTest` command completed successfully in 3m 33s, but app JUnit compile/test tasks were `NO-SOURCE`; no native app JUnit case executed.
+- **Artifact provenance:** obfuscated APK built; V1/V2/V3 verification and expected production certificate identity passed. Release `jexfyz-latest` ID `403010611` and tag target the exact source SHA. Exactly one APK and one corresponding source ZIP were published and re-downloaded/verified.
+- APK asset `729969125`: 55,455,835 bytes; SHA-256 `2ed225d992288cccc02313d206675a7313c73a4cad061de70cddf7209d39b9f8`.
+- Source ZIP asset `729969127`: 2,908,354 bytes; SHA-256 `47161a972131c95a74e8f5a191754504b76e2c31edd95fd19b1b4c75717ab906`.
+- **Current main:** `f05e65508194555ebee254785669e11b99bc3e2f`, two commits ahead of the tested source and zero behind; comparison shows only `APP_BUILD_REPORT.md` and `CHAT_TRANSFER.md` changed after the build. Preserve this separation: docs newer than APK source is expected and does not change package provenance.
+- **Outstanding owner/device validation:** Build #138 installation, screenshot/OEM visual acceptance, physical BLE lifecycle, storage-size stress and cooling/thermal/electrical behavior are UNVERIFIED. Build #138 is VERIFIED CI, not physical acceptance. Gradle cache writes were non-blockingly denied by token scope; workflow succeeded.
+- Preserve Android `versionName "Telegram @horizontalzzz"`. No Firmware compile/BIN, Firebase, OTA, flashing or device operation was part of the App build.
 
-- **Run:** [#137 / Actions run 42748861814](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42748861814), immutable source `00c650f3776624353d7b1492ddff1b21c8b5fd49`, job `129607409197`; terminal failure at Flutter tests step 13. Steps 1–12 passed, analyzer 25 info-only/no warnings. Full suite: **155 passed / 2 failed**.
-- **Failure 1:** responsive Usage Statistics test retained scroll offset from 350dp Light pass when pumping 420dp Dark page. Fixed by using a width-specific `ValueKey<double>(width)` on the page to force fresh scroll state; commit `a2036ea6909bb027506b638f0d0f1f7aa77e3f32`.
-- **Failure 2:** multiline localization regex did not allow Dart's trailing comma after `language`. Pattern now accounts for comma and whitespace and was executed against actual `floating_monitor.dart` successfully; commit `40d430bc2fab2d01b72346fe407b38ae872e0807`.
-- Both file modifications re-fetched and exact read-back verified. Not yet validated by a subsequent CI run. Steps 14–21 skipped, no APK/ZIP/Release mutation.
-- **Retry state:** #137 terminal; no active run. Issue #33 remains OPEN and guard matches. Save/read back Build #138 checkpoint, then close #33 once and reopen once; verify exactly one issue-triggered run and exact source SHA.
-- **Latest verified release:** Build #133 source `5201a3e07f36305ffe3882a1b965b9e7414cd71a`; Release/tag unchanged. Preserve `versionName "Telegram @horizontalzzz"`. No Firmware/BIN/Firebase/OTA/flash/device operation.
-
-## Superseded status — Build #134 analyzer failure / pre-Build #135 retry — 2026-11-10
-
-- **Run:** #134 / `42746617402`, source `479d1017729a90a081b30479977b0bc6c6777fbc`, terminal failure at analyzer step 12. Steps 1–11 passed. The analyzer found 27 diagnostics including a blocking warning at `lib/usage_statistics.dart:1789:13` (unnecessary non-null assertion); Flutter tests, Android gate, APK/signing/source/release steps were skipped. No Build #134 artifact or Release update exists.
-- **Repair:** `25684ed93d189a173bdbd8c9115c2bedb5959f53`, limited to `lib/usage_statistics.dart`: removed redundant `path!` and redundant `dart:ui` import. Source read-back verified. No behavior/test/workflow/gate/analyzer-flag changes. CI validation is pending.
-- **Retry preflight:** no active/queued run. Issue #33 is OPEN and still has exact owner/title/token. The retry checkpoint is saved in `CHAT_TRANSFER.md`; after final pre-trigger verification, close #33 once then reopen once to trigger the next guarded run (expected #135). Do not send a duplicate event.
-- **Latest verified package:** Build #133 / run `42619673642`, source `5201a3e07f36305ffe3882a1b965b9e7414cd71a`; Release/tag remain there until all new workflow gates and downloaded assets pass. Build #133 does not include current Usage Statistics changes.
-- Preserve `android/app/build.gradle` `versionName "Telegram @horizontalzzz"`. No Firmware/BIN/Firebase/OTA/flash/device operation is included.
-
-## Superseded pre-trigger snapshot — App Build candidate (2026-11-10)
-
-- **Mode:** owner explicitly authorized `Eksekusi Build App!`; guarded App Build/QC/Release only. No Firmware/BIN/Firebase/OTA/flash/device operation.
-- **Candidate source:** main pre-documentation HEAD `0d5ffe66ed520c5e3502d8f86dfaf33a41a2f550`; recursive tree 131 entries, not truncated. Compared with Build #133 packaged SHA `5201a3e07f36305ffe3882a1b965b9e7414cd71a`, main was 61 commits ahead and 0 behind. Current diff includes App/test changes in `lib/usage_statistics.dart`, `lib/main.dart`, `lib/floating_monitor.dart`, `test/usage_statistics_test.dart`, `test/floating_monitor_layout_contract_test.dart`, `pubspec.yaml` and `pubspec.lock`, plus docs. No Firmware source changes are present in this compare.
-- **Candidate behavior:** Usage Statistics uses App-local SQLite and synchronized BLE/P1 sessions; Battery/Hotside temperature history and authoritative Voltage/Adaptive/Fan Speed state timelines, 1h/24h/7d/30d views, explicit data gaps and 30-day retention. “Last value change” now uses the latest valid persisted temperature event bounded by active snapshot/closed-session end. Source/test changes are committed; this candidate is NOT YET CI-VALIDATED.
-- **Preflight:** workflow ID `374946166`, only issue opened/reopened trigger, exact owner/title/token guard, workflow blob `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12`; no active/queued/requested run. Issue #33 is owner-authored with exact title/body token and currently CLOSED; reopen once only after pre-trigger docs are verified.
-- **Latest package baseline:** Build #133 / run `42619673642` on `5201a3e...`; 145 Flutter tests passed, analyzer exit 0 with 25 infos, Android gate success (native JUnit tasks NO-SOURCE), APK V1/V2/V3 + production certificate, corresponding source ZIP, exact Release/tag source SHA and downloaded asset checksums verified. This does NOT validate the new Usage Statistics code.
-- **Next:** commit/re-read the pre-trigger ledger/checkpoint, confirm final main SHA and no active run, reopen issue #33 once, then follow only the one new run. Expected next display number is #134; record actual run number/ID and head SHA from Actions. Preserve all gates and `versionName "Telegram @horizontalzzz"`.
-
-
+---
 
 ## App — Usage Statistics implementation state (2026-11-09)
 
@@ -34,7 +18,7 @@
 - **Layout:** Phone Battery Temperature trend first; Hotside Temperature trend second; Operating Profile timeline third with separate Voltage (5V/9V/12V), Adaptive ON/OFF and Fan Speed (%) lanes. Implemented periods: 1h / 24h / 7d / 30d, default 24h.
 - **Capture:** phone Battery from existing Android 1Hz reader; Hotside from Firmware ~1Hz `HOT`; Voltage/Adaptive/Fan Speed only on authoritative state changes. Save only changed temperature values with timestamps; show explicit gaps when session/data is missing. Use duration-weighted averages for change-only samples.
 - **Storage:** App-local SQLite (`sqflite` 2.4.2), not `flutter_secure_storage`, Firmware NVS or Firebase. Current source retains changed-value temperature events and state changes for 30 days; no 1-minute rollup table exists. Storage-size stress validation remains open.
-- **Status:** SOURCE IMPLEMENTED / VALIDATION NOT RUN. P1 sync-gated session recording, temperature/state capture, SQLite persistence, Settings navigation, graphs/timelines, confirmed clear-history, 30D period and 30-day retention are in source. The “Last value change” label now uses the latest valid persisted Battery/Hotside event timestamp (source/test commits `fb9d6f2` and `81e409c`); its widget regression test is committed but not executed in this runtime. UI screenshots and physical app/device behavior remain unverified. A package still requires separate `Eksekusi Build App!`.
+- **Status:** VERIFIED CI in Build #138 / source `b553f22092d9b33b2c81753254d2e3f03928fa18`. The full Flutter suite passed 157/157 and includes Usage Statistics chart/timeline layout, timestamp and localization contracts. The page, P1 sync-gated capture, SQLite persistence, Settings navigation, graph/timeline periods, clear-history and 30-day retention were included in the released source. Storage-size stress validation remains open; owner installation, screenshot/OEM behavior, real BLE session capture and device behavior remain UNVERIFIED.
 - **Timer decision:** separate Firmware session/operating timer is DEFERRED by owner in favor of this App Usage Statistics feature; see `FIRMWARE_NOTES.md`.
 
 ## Firmware — Touch single-tap Voltage one-way cycle requested (2026-11-09)
@@ -46,9 +30,9 @@
 - **Implementation/version plan:** under a new explicit `Eksekusi Full!`, update the source/test contracts, rename the one active sketch to `firmware/JEXFYZ-V7.2.ino`, set `FW_VERSION="V7.2"`, update hard-pinned test source paths/version expectations and add sequence/rejection/other-gesture regression coverage. Owner-side compilation with Arduino-ESP32 Core 3.3.7, BIN identity/publication, Firebase and OTA/flash are separate and are not authorized by Diskusi or Eksekusi Full.
 - **Current evidence/status:** STATIC SOURCE CHECK and owner requirement recorded; REQUEST RECORDED / NOT IMPLEMENTED. No executable Firmware source/test changes, compile, BIN, Firebase, OTA or device action occurred.
 
-## Latest verified App release and Home Light Mode repair — Build #133 (2026-11-09)
+## Prior App release and Home Light Mode repair — Build #133 (superseded by Build #138 on 2026-11-10)
 
-- **Latest verified published App package:** Build #133 / [Actions run 42619673642](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42619673642), terminal success, all 21 main workflow steps passed. Exact tested/package source SHA: `5201a3e07f36305ffe3882a1b965b9e7414cd71a`.
+- **Historical package:** Build #133 / [Actions run 42619673642](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42619673642), terminal success, all 21 main workflow steps passed. Its tested/package source SHA was `5201a3e07f36305ffe3882a1b965b9e7414cd71a`; Build #138 is now the current published package.
 - **Included Home change:** theme-aware painter depth/cavity colors across Battery, Hotside, Voltage, Adaptive, Peltier, Fan and Fan Speed; Light Mode metric accent contrast; Light Mode NOTIFY success/warning/error foreground contrast. Dark Mode painter colors and status-card tints/predicates remain preserved. Theme palette changes invalidate painter output.
 - **Regression and QC evidence:** analyzer exit 0 with 25 info-level diagnostics; full Flutter test suite **145/145 passed**, including painter theme/repaint, Light/Dark fallback, metric contrast and composited NOTIFY foreground tests. The #132 indentation-sensitive source-contract matcher was repaired by whitespace normalization while retaining semantic color/helper/state/geometry assertions.
 - **APK:** Release asset `727484780`, 54,849,627 bytes, SHA-256 `8fc837b9ec946cb3bccb6a8d400dc1483a19de9eff506c22ada2d4dcef0b1146`.
@@ -58,7 +42,7 @@
 - **Release warnings:** 25 Dart infos; Kotlin Gradle Plugin 2.2.20 upgrade advisory; deprecated Android Gradle options / future Gradle 10 warnings; nonfatal Flutter watcher and ELF DWARF notices; self-signed/untimestamped certificate and auxiliary META-INF JAR notices; post-job cache saves denied by token scope but cleanup succeeded. Required V1/V2/V3 and expected production certificate checks passed.
 - **Source/HEAD parity at Build #133:** at the time of that package, later `main` commits were documentation-only. This was superseded on 2026-11-10: current `main` includes the Usage Statistics and persisted-temperature-timestamp App/test changes described in the current Build candidate checkpoint above; Build #133 does not contain them.
 - **Field boundary:** Build #133 installation is not independently confirmed. No screenshot/OEM visual acceptance, physical BLE session, cooling/thermal measurement, Firmware compile, BIN/Firebase mutation, OTA, flashing or device operation occurred in the build.
-- **Next exact action:** owner installs Build #133 and performs the visual matrix (350-dp/420-dp, Light/Dark, EN/ID, icon normal/warning/unknown states and NOTIFY variants), then real-device BLE/connection checks. Do not infer these outcomes from hosted CI.
+- **Historical next action superseded:** installation/visual acceptance should now be performed against Build #138, not Build #133.
 
 ## Agent skills and capability system
 
@@ -70,25 +54,23 @@
 - Current container checked 2026-11-07: Python 3 and Git are available; Flutter, Dart, Gradle, ADB, Arduino CLI and ESP-IDF are absent. Re-check tool availability per task. This environment cannot claim local Flutter/Android/Firmware builds or physical-device validation.
 ## Production and release baseline
 
-- **Protected known production reference:** App Build #124 + Firmware V7.1. Keep this stable reference distinct from newer published artifacts and the exact package installed on the field unit.
-- **Latest independently verified published App package:** Build #133 / [Actions run 42619673642](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42619673642), exact tested/package source `5201a3e07f36305ffe3882a1b965b9e7414cd71a`. Release `jexfyz-latest` (ID `403010611`) and live tag both target this SHA.
-- APK asset `727484780`: 54,849,627 bytes, SHA-256 `8fc837b9ec946cb3bccb6a8d400dc1483a19de9eff506c22ada2d4dcef0b1146`.
-- Matching source ZIP asset `727484787`: 2,890,067 bytes, SHA-256 `3a35158b16df567dbc2be1804c9bd0681d96012daffc61adddf61aa6b7be01fb`.
-- Build #133 passed all 21 workflow main steps, 145 Flutter tests, analyzer (25 info-level diagnostics), configured Android Gradle gate, obfuscated APK build, V1/V2/V3 and expected production-certificate checks, source ZIP marker/integrity, exact Release/tag parity and downloaded-asset checksum/identity/signature verification.
-- Android `:app:testDebugUnitTest` succeeded, but app JUnit compile/process/test tasks were `NO-SOURCE`; no native Android JUnit case executed.
-- Live Actions query after completion: Build #133 terminal `success`; no active/queued/waiting run was created by this task. APK delivery uses GitHub Release assets, not Actions artifacts.
-- **Field evidence (UNVERIFIED):** Build #133 installation on the phone has not been independently confirmed. Physical screenshot/OEM QA and BLE session remain pending. Firmware V7.1 compile/Online OTA remains USER-REPORTED; exact field BIN identity and physical behavior remain unverified.
+- **Protected known production reference:** App Build #124 + Firmware V7.1. Keep separate from the newest published App package and from the exact package actually installed on the field phone.
+- **Latest independently verified published App package:** Build #138 / run `42749408202`, exact tested source `b553f22092d9b33b2c81753254d2e3f03928fa18`. Release `jexfyz-latest` (ID `403010611`) and lightweight tag target this same SHA.
+- APK asset `729969125`: 55,455,835 bytes, SHA-256 `2ed225d992288cccc02313d206675a7313c73a4cad061de70cddf7209d39b9f8`.
+- Corresponding source ZIP asset `729969127`: 2,908,354 bytes, SHA-256 `47161a972131c95a74e8f5a191754504b76e2c31edd95fd19b1b4c75717ab906`.
+- Build #138 passed all 21 workflow main steps, analyzer (25 info-only diagnostics), all 157 Flutter tests, configured Android Gradle gate, obfuscated APK build, V1/V2/V3 and expected production-certificate checks, corresponding source archive integrity/source marker, exact Release/tag parity and downloaded asset checksums/signatures.
+- Android `:app:testDebugUnitTest` succeeded, but app JUnit compile/test tasks were `NO-SOURCE`; no native app JUnit case ran.
+- Current `main` is two documentation-only commits beyond Build #138 source; it does not change the executable package source. Latest release provenance remains pinned to the exact Build #138 SHA.
+- **Field evidence UNVERIFIED:** Build #138 installation, screenshot/OEM QA, physical BLE lifecycle, Firmware V7.1 source-to-BIN identity, physical OTA/reboot and cooler thermal/electrical behavior remain unverified. Do not infer them from hosted CI.
 
 ## Current App source and validation
 
-- Build #133 packages the Home Light Mode correction: the painter receives brightness/surface/outline theme tokens and preserves the previous Dark Mode paint fallback; depth/cavity finish is theme-aware for all Home indicators. Palette changes trigger painter repaint.
-- Home metric values use Light Mode contrast-adjusted accents targeting >=4.5:1; Dark Mode semantic accents remain unchanged. NOTIFY uses distinct Light Mode success/warning/error foregrounds while preserving original status tints, message predicates/priority, localization and layout.
-- Regression tests cover theme propagation/repaint, theme-aware geometry, metric contrast, NOTIFY composited foreground contrast and Dark Mode foreground preservation. Build #133 full Flutter suite passed 145/145.
-- Localization is included: Home Fan Speed uses Fan Speed / Kecepatan Kipas while the switch and compact Floating Monitor F metric retain Fan / Kipas; Hotside/Adaptive wording and Monitor Melayang notification copy remain localized.
-- Home-equivalent uncapped 360-dp canvas and compact Settings/Connection typography, Bluetooth scan-state presentation, and passive/manual/one-shot scanner arbitration are included in earlier released package changes; Build #133 preserves these behaviors.
-- Analyzer passed with 25 info-level diagnostics. Android Gradle test gate succeeded but native JUnit app tasks were `NO-SOURCE`.
-- Build #133 package source was `5201a3e07f36305ffe3882a1b965b9e7414cd71a`; current `main` is newer and includes the unvalidated Usage Statistics/timestamp App source and tests. Local `dart format` remains NOT RUN because Dart is absent from this runtime; the hosted workflow has no formatter step.
-- No actual screenshot/OEM visual QA or real-device BLE lifecycle test has been performed. CI is widget/test and hosted build evidence only, not physical acceptance.
+- Build #138 packages the current App source at `b553f22092d9b33b2c81753254d2e3f03928fa18`, including Usage Statistics, SQLite telemetry and its responsive/layout/localization regression fixes.
+- Build #138 analyzer passed with 25 info-level diagnostics and no warnings/errors; Flutter suite passed 157/157. Android Gradle gate succeeded, with app JUnit tasks `NO-SOURCE`.
+- The release remains obfuscated and production-signed; V1/V2/V3 checks, expected certificate identity, corresponding source ZIP and downloaded Release asset verification passed.
+- Android `versionName "Telegram @horizontalzzz"` is preserved.
+- Local formatter was not run in this session. Build #138's hosted workflow did not include a separate Dart formatter step.
+- No actual screenshot/OEM visual QA, installation identity, physical BLE lifecycle test, usage-history soak/storage stress test or thermal/electrical validation has been performed. Hosted CI is not physical acceptance.
 
 ## Default hybrid Home theme contrast regression — diagnosed, not repaired (2026-11-09)
 
@@ -100,9 +82,9 @@
 
 ## Open design and engineering gaps
 
-- **Physical App acceptance remains pending:** after the owner installs Build #133, inspect Home and Settings/Connection at 350-dp/420-dp, English/Indonesian, Light/Dark. For Home, verify Battery/Hotside/Voltage/Adaptive/Peltier/Fan/Fan Speed normal, warning and unknown states plus NOTIFY success/warning/error with one-/two-line copy. CI tests are not screenshot/OEM acceptance.
+- **Physical App acceptance remains pending:** after the owner installs Build #138, inspect Home, Settings/Connection and Usage Statistics at 350-dp/420-dp, English/Indonesian, Light/Dark. For Home, verify Battery/Hotside/Voltage/Adaptive/Peltier/Fan/Fan Speed normal, warning and unknown states plus NOTIFY success/warning/error with one-/two-line copy. CI tests are not screenshot/OEM acceptance.
 - **BLE runtime acceptance remains pending:** verify passive rediscovery, prerequisite cancellation, manual-sheet pre-emption and neutral dismissal, selected-device handoff, fresh primary/fallback advertisement handling, adapter loss and reconnect on the actual phone/cooler. Flutter tests do not represent a physical radio session.
-- Exact Build #133 installed APK identity on the field unit, Firmware V7.1 source-to-BIN identity, physical OTA/reboot/BLE recovery and thermal/electrical behavior remain independently UNVERIFIED.
+- Exact Build #138 installed APK identity on the field unit, Firmware V7.1 source-to-BIN identity, physical OTA/reboot/BLE recovery and thermal/electrical behavior remain independently UNVERIFIED.
 - BLE App-only identity authorization remains BLOCKED / NOT IMPLEMENTED until trusted enrollment/signing backend and Firmware verification exist.
 - Rapid Hotside-rise/rate-of-rise shutdown plus manual re-arm remains NOT IMPLEMENTED in Firmware V7.1; do not conflate it with Adaptive Fan tiers or ordinary Hotside-limit protection.
 
