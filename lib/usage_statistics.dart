@@ -1425,7 +1425,10 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
   bool _loading = true;
   bool _queryRunning = false;
   bool _reloadPending = false;
-  Timer? _reloadTimer;
+  StreamSubscription<UsageStatsLiveUpdate>? _liveSubscription;
+  final List<UsageStatsLiveUpdate> _pendingLiveUpdates = [];
+  Timer? _liveFlushTimer;
+  int? _selectedTimestampMs;
   String? _error;
 
   UsageStatisticsRepository get _repository =>
@@ -1435,8 +1438,8 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    UsageStatisticsRecorder.instance.revisionNotifier
-        .addListener(_handleRecorderChange);
+    _liveSubscription =
+        UsageStatisticsRecorder.instance.liveUpdates.listen(_handleLiveUpdate);
     _load();
   }
 
@@ -1447,17 +1450,86 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
 
   @override
   void dispose() {
-    _reloadTimer?.cancel();
-    UsageStatisticsRecorder.instance.revisionNotifier
-        .removeListener(_handleRecorderChange);
+    _liveFlushTimer?.cancel();
+    _liveSubscription?.cancel();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 
-  void _handleRecorderChange() {
-    _reloadTimer?.cancel();
-    _reloadTimer = Timer(const Duration(milliseconds: 450), () {
-      _load(silent: true);
+  void _handleLiveUpdate(UsageStatsLiveUpdate update) {
+    final coolerId = widget.coolerId?.trim();
+    if (coolerId == null || update.coolerId != coolerId) return;
+    _pendingLiveUpdates.add(update);
+    _liveFlushTimer ??= Timer(
+      const Duration(milliseconds: 80),
+      _flushLiveUpdates,
+    );
+  }
+
+  void _flushLiveUpdates() {
+    _liveFlushTimer?.cancel();
+    _liveFlushTimer = null;
+    if (!mounted || _pendingLiveUpdates.isEmpty) return;
+    final updates = List<UsageStatsLiveUpdate>.of(_pendingLiveUpdates);
+    _pendingLiveUpdates.clear();
+
+    setState(() {
+      for (final update in updates) {
+        final isSelected = update.session.id == _selectedSessionId;
+        final canFollowLatest = !_sessionSelectionPinned;
+        if (!isSelected &&
+            !(canFollowLatest &&
+                (_selectedSessionId == null ||
+                    update.session.startedAtMs >= (_snapshot?.fromMs ?? 0)))) {
+          continue;
+        }
+
+        if (!isSelected) {
+          _selectedSessionId = update.session.id;
+          final otherSessions = _sessions
+              .where((session) => session.id != update.session.id)
+              .toList();
+          _sessions = [update.session, ...otherSessions]
+            ..sort((a, b) => b.startedAtMs.compareTo(a.startedAtMs));
+          _sessionSelectionPinned = false;
+        } else {
+          _sessions = [
+            for (final session in _sessions)
+              if (session.id == update.session.id) update.session else session,
+          ];
+        }
+
+        final previous = _snapshot;
+        final sameSession = previous != null &&
+            previous.sessions.any((session) => session.id == update.session.id);
+        final mergedEvents = <UsageStatsEvent>[
+          if (sameSession) ...previous.events,
+        ];
+        for (final event in update.events) {
+          final exists = mergedEvents.any((existing) =>
+              existing.sessionId == event.sessionId &&
+              existing.metric == event.metric &&
+              existing.timestampMs == event.timestampMs);
+          if (!exists) mergedEvents.add(event);
+        }
+        mergedEvents.sort((a, b) {
+          final byTime = a.timestampMs.compareTo(b.timestampMs);
+          return byTime != 0 ? byTime : a.metric.compareTo(b.metric);
+        });
+        final toMs = math.max(
+          sameSession ? previous.toMs : update.session.startedAtMs,
+          math.max(update.publishedAtMs, update.session.endedAtMs ?? 0),
+        ).toInt();
+        _snapshot = UsageStatsSnapshot(
+          fromMs: update.session.startedAtMs,
+          toMs: toMs,
+          sessions: [update.session],
+          events: mergedEvents,
+        );
+        _summary = UsageStatsAnalytics.summarize(_snapshot!);
+        _loading = false;
+        _error = null;
+      }
     });
   }
 
@@ -1521,6 +1593,7 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
     } while (_reloadPending && mounted);
 
     _queryRunning = false;
+    if (_pendingLiveUpdates.isNotEmpty) _flushLiveUpdates();
   }
 
   void _selectSession(int sessionId) {
@@ -1528,6 +1601,7 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
     setState(() {
       _selectedSessionId = sessionId;
       _sessionSelectionPinned = true;
+      _selectedTimestampMs = null;
     });
     _load();
   }
@@ -1693,6 +1767,7 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
                 scheme,
               )
             else ...[
+              _sharedCursorReadout(summary, language, scheme),
               _temperatureSection(
                 title: JexText.phrase(
                   'Phone Battery Temperature',
@@ -1878,6 +1953,106 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
     String title,
     String message,
     ColorScheme scheme, {
+  void _setChartCursor(double localX, double width) {
+    final snapshot = _snapshot;
+    if (snapshot == null || width <= 0 || snapshot.toMs <= snapshot.fromMs) {
+      return;
+    }
+    final fraction = (localX / width).clamp(0.0, 1.0).toDouble();
+    final timestamp = snapshot.fromMs +
+        ((snapshot.toMs - snapshot.fromMs) * fraction).round();
+    if (_selectedTimestampMs == timestamp) return;
+    setState(() => _selectedTimestampMs = timestamp);
+  }
+
+  Widget _sharedCursorReadout(
+    UsageStatsSummary summary,
+    AppLanguage language,
+    ColorScheme scheme,
+  ) {
+    final timestamp = _selectedTimestampMs;
+    final snapshot = _snapshot;
+    if (timestamp == null || snapshot == null) {
+      return Padding(
+        padding: const EdgeInsets.only(bottom: 8),
+        child: Text(
+          JexText.phrase(
+            'Touch any chart to inspect all metrics at the same time.',
+            'Sentuh grafik untuk melihat semua metrik pada waktu yang sama.',
+            language,
+          ),
+          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: scheme.onSurfaceVariant,
+              ),
+        ),
+      );
+    }
+
+    final voltage = UsageStatsAnalytics.stateAt(summary.voltageSegments, timestamp);
+    final adaptive = UsageStatsAnalytics.stateAt(summary.adaptiveSegments, timestamp);
+    final peltier = UsageStatsAnalytics.stateAt(summary.peltierSegments, timestamp);
+    final fan = UsageStatsAnalytics.stateAt(summary.fanSpeedSegments, timestamp);
+    final battery = UsageStatsAnalytics.temperatureAt(summary.battery.points, timestamp);
+    final hotside = UsageStatsAnalytics.temperatureAt(summary.hotside.points, timestamp);
+
+    Widget metric(String label, String value) => Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(label, style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                color: scheme.onSurfaceVariant,
+              )),
+              Text(value, maxLines: 1, overflow: TextOverflow.ellipsis,
+                style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                  fontWeight: FontWeight.w700,
+                  fontFeatures: const [FontFeature.tabularFigures()],
+                )),
+            ],
+          ),
+        );
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(JexText.phrase('Selected time', 'Waktu dipilih', language),
+              style: Theme.of(context).textTheme.labelMedium),
+            Text(_axisTime(timestamp, snapshot.fromMs),
+              style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                fontWeight: FontWeight.w700,
+                fontFeatures: const [FontFeature.tabularFigures()],
+              )),
+          ],
+        ),
+        const SizedBox(height: 8),
+        Row(children: [
+          metric('Battery', _formatTemperature(battery)),
+          metric('Hotside', _formatTemperature(hotside)),
+          metric('Voltage', voltage?.textValue ?? '--'),
+        ]),
+        const SizedBox(height: 7),
+        Row(children: [
+          metric('Adaptive', adaptive?.textValue ?? '--'),
+          metric('Peltier', peltier?.textValue ?? '--'),
+          metric('Fan', fan?.numberValue == null
+              ? '--'
+              : fan!.numberValue!.toStringAsFixed(0) + '%'),
+        ]),
+        const SizedBox(height: 8),
+        Align(
+          alignment: Alignment.centerRight,
+          child: TextButton(
+            onPressed: () => setState(() => _selectedTimestampMs = null),
+            child: Text(JexText.phrase('Clear cursor', 'Hapus kursor', language)),
+          ),
+        ),
+      ],
+    );
+  }
+
+
     Widget? action,
   }) {
     return Padding(
@@ -1940,16 +2115,28 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
           height: 170,
           width: double.infinity,
           child: hasData
-              ? CustomPaint(
-                  key: ValueKey<String>('usage-temperature-chart-$metricKey'),
-                  painter: _UsageLinePainter(
-                    points: summary.points,
-                    fromMs: _snapshot!.fromMs,
-                    toMs: _snapshot!.toMs,
-                    color: color,
-                    gridColor: scheme.outlineVariant,
-                    labelColor: scheme.onSurfaceVariant,
-                    referenceValue: referenceValue,
+              ? LayoutBuilder(
+                  builder: (context, constraints) => GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTapDown: (details) => _setChartCursor(
+                      details.localPosition.dx,
+                      constraints.maxWidth,
+                    ),
+                    onHorizontalDragUpdate: (details) => _setChartCursor(
+                      details.localPosition.dx,
+                      constraints.maxWidth,
+                    ),
+                    child: _AnimatedUsageLineChart(
+                      key: ValueKey<String>('usage-temperature-chart-$metricKey'),
+                      points: UsageStatsAnalytics.decimatePoints(summary.points),
+                      fromMs: _snapshot!.fromMs,
+                      toMs: _snapshot!.toMs,
+                      color: color,
+                      gridColor: scheme.outlineVariant,
+                      labelColor: scheme.onSurfaceVariant,
+                      referenceValue: referenceValue,
+                      cursorTimestampMs: _selectedTimestampMs,
+                    ),
                   ),
                 )
               : Center(
@@ -2010,8 +2197,11 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
         rail + '  ' + _formatDuration(summary.voltageDurationMs[rail] ?? 0),
     ];
     final adaptiveLabel =
-        JexText.phrase('Adaptive ON: ', 'Adaptive AKTIF: ', language) +
+        JexText.phrase('Adaptive ON: ', 'Adaptif AKTIF: ', language) +
             _formatDuration(summary.adaptiveOnDurationMs);
+    final peltierLabel =
+        JexText.phrase('Peltier ON: ', 'Peltier AKTIF: ', language) +
+            _formatDuration(summary.peltierOnDurationMs);
     final fanAverage = summary.fanSpeedAverage;
     final fanMaximum = summary.fanSpeedMaximum;
 
@@ -2030,10 +2220,16 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
           lane: 'voltage',
         ),
         _timelineLane(
-          JexText.phrase('Adaptive', 'Adaptif', language),
+          JexText.phrase('Adaptive Mode', 'Mode Adaptif', language),
           summary.adaptiveSegments,
           scheme,
           lane: 'adaptive',
+        ),
+        _timelineLane(
+          JexText.phrase('Peltier Switch', 'Sakelar Peltier', language),
+          summary.peltierSegments,
+          scheme,
+          lane: 'peltier',
         ),
         _timelineLane(
           JexText.phrase('Fan Speed', 'Kecepatan Kipas', language),
@@ -2067,6 +2263,7 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
             for (final label in voltageLabels)
               Text(label, style: Theme.of(context).textTheme.bodySmall),
             Text(adaptiveLabel, style: Theme.of(context).textTheme.bodySmall),
+            Text(peltierLabel, style: Theme.of(context).textTheme.bodySmall),
             Text(
               JexText.phrase('Fan average: ', 'Rata-rata kipas: ', language) +
                   (fanAverage == null
@@ -2101,16 +2298,30 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
           Text(label, style: Theme.of(context).textTheme.labelMedium),
           const SizedBox(height: 5),
           SizedBox(
-            height: 28,
+            height: lane == 'fan_speed' ? 54 : 34,
             width: double.infinity,
-            child: CustomPaint(
-              key: ValueKey<String>('usage-profile-timeline-$lane'),
-              painter: _UsageTimelinePainter(
-                segments: segments,
-                fromMs: _snapshot!.fromMs,
-                toMs: _snapshot!.toMs,
-                lane: lane,
-                scheme: scheme,
+            child: LayoutBuilder(
+              builder: (context, constraints) => GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTapDown: (details) => _setChartCursor(
+                  details.localPosition.dx,
+                  constraints.maxWidth,
+                ),
+                onHorizontalDragUpdate: (details) => _setChartCursor(
+                  details.localPosition.dx,
+                  constraints.maxWidth,
+                ),
+                child: CustomPaint(
+                  key: ValueKey<String>('usage-profile-timeline-$lane'),
+                  painter: _UsageTimelinePainter(
+                    segments: segments,
+                    fromMs: _snapshot!.fromMs,
+                    toMs: _snapshot!.toMs,
+                    lane: lane,
+                    scheme: scheme,
+                    cursorTimestampMs: _selectedTimestampMs,
+                  ),
+                ),
               ),
             ),
           ),
