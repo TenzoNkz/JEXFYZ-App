@@ -1,4 +1,19 @@
-## CURRENT CHECKPOINT — BUILD #142 PRE-TRIGGER AFTER BUILD #141 TEST FAILURE — 2026-11-10
+## CURRENT CHECKPOINT — BUILD #142 ACTIVE / JAVA 17 SETUP — 2026-11-10
+
+**Run:** [Build #142 / Actions run 42782901555](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42782901555), workflow `374946166`, event `issues`, attempt 1. Job `build` / `129716981807`, `in_progress`.
+
+**Exact source:** `6ec326bd662744eee786817c7ebf68485741a915`, matched final main SHA at trigger.
+
+**Job gates:** steps 1–2 success; step 3 Java 17 setup in progress; steps 4–21 pending. No analyzer/test/build/signing/release result yet. Artifact list empty.
+
+**Last completed gate:** checkout. **Current gate:** Java 17. **Remaining:** Java/Flutter/Gradle toolchain, local.properties, signing, App security/architecture audit, dependencies, analyzer, Flutter tests, Android gate, APK, V1/V2/V3 and certificate, source ZIP, Release/tag parity and downloaded asset verification.
+
+**Failure/repair context:** #141 analyzer passed but Flutter 158/1 failed only on test locale mismatch. The test was corrected in `bafff332f406fdb75e4534d3d9c426d13e83a31b`; #142 is the first hosted attempt to validate that change.
+
+**Continue only `42782901555`; no further trigger or rerun while active.** Keep CI distinct from install/OEM/BLE/Firmware/BIN/OTA evidence.
+
+---
+## HISTORICAL PRE-TRIGGER CHECKPOINT — BUILD #142 — 2026-11-10
 
 **Authorization:** the owner's `Eksekusi Build App!` operation remains active. #141 is terminal; a test-only locale mismatch was corrected. One guarded retry is authorized for App Build/QC, no Firmware/BIN/Firebase/OTA/flash/device scope.
 
