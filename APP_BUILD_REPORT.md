@@ -1,3 +1,21 @@
+## BUILD #137 — FAILED AT FLUTTER TEST GATE; TWO LAST ASSERTION CAUSES REPAIRED — 2026-11-10
+
+- **Run:** [Build #137 / Actions run 42748861814](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42748861814), workflow ID `374946166`, issue event, attempt 1; terminal `completed/failure` at `2026-11-10T03:22:45Z`.
+- **Source/job:** immutable source SHA `00c650f3776624353d7b1492ddff1b21c8b5fd49`; job `build`, ID `129607409197`.
+- **Passed gates:** steps 1–12 success, including Java/Flutter/Gradle/toolchain/signing preparation, App security/architecture audit, dependency install and Dart analyzer. Analyzer reported 25 info diagnostics only, with no warnings/errors.
+- **Failing gate:** step 13 `Run Flutter tests`; 155 passed, 2 failed, exit code 1. Steps 14–21 (Android gate, APK, V1/V2/V3 signing, cert, source ZIP, Release and downloaded asset checks) skipped. Actions artifacts empty; no Release/tag/asset mutation.
+- **Two failures and exact root causes:**
+  1. `test/usage_statistics_test.dart:414`, responsive widget test. The 350dp Light pass scrolls down to the `Riwayat Operasi` section. The test then pumps a 420dp Dark tree using the same page identity, preserving scroll position; it immediately expects `Suhu Baterai HP`, which is now above the current viewport / not mounted in the lazy list. The test now gives each width a distinct `ValueKey<double>(width)` on `UsageStatisticsPage`, so each responsive pass gets fresh page/scroll state and starts at the top before asserting temperature headings.
+  2. `test/floating_monitor_layout_contract_test.dart:94`, raw regex now handled multiline whitespace correctly but still rejected Dart's trailing comma after the `language` argument. The expression now explicitly matches `language\s*,\s*\)`. Independently tested against the current actual `lib/floating_monitor.dart` content; the regex returns true.
+- **Repairs committed/read back:** `test/usage_statistics_test.dart` commit `a2036ea6909bb027506b638f0d0f1f7aa77e3f32` applies a width-specific `ValueKey<double>` to the page in the reusable `pumpAtWidth` helper. `test/floating_monitor_layout_contract_test.dart` commit `40d430bc2fab2d01b72346fe407b38ae872e0807` allows the source's trailing comma in the multiline localization pattern. Both files were re-fetched and exact-content read-back verified; live source regex match independently confirmed. No production behavior, workflow, analyzer/test gates or signing/release requirements were weakened.
+- **Validation boundary:** these fixes are not yet CI-validated. #137 validates the preceding #136 scroll and regex changes only partially: the Light pass reached and checked the operating profile heading/timeline keys; the Dark pass did not reach assertions after the page remained scrolled. The route static test remained failed solely due the missing trailing-comma pattern. No local Dart/Flutter tools are available.
+- **Retry state:** #137 terminal, no active run. Issue #33 remains OPEN with exact owner/title/body token. After saving and reading the #138 pre-trigger checkpoint, close #33 once, revalidate no active run and exact guard, then reopen exactly once. Expected #138; verify actual run ID/number and exact SHA. No duplicate issue events.
+- **Candidate code/test head before retry docs:** `40d430bc2fab2d01b72346fe407b38ae872e0807`; subsequent checkpoint commits are documentation-only and the run's `head_sha` must equal final pre-trigger main.
+- **Release baseline:** Build #133 / source `5201a3e07f36305ffe3882a1b965b9e7414cd71a` remains latest verified package. Release `jexfyz-latest` ID `403010611` and tag remain on #133. No #137 APK, source ZIP or Release update.
+- **Protected scope/config:** preserve Android `versionName "Telegram @horizontalzzz"`, trigger guard, workflow, analyzer/test/signing/release gates. No Firmware compile, BIN generation/publication, Firebase mutation, OTA, flashing or device operation.
+
+---
+
 ## BUILD #137 PROGRESS — APP AUDIT PASSED; DEPENDENCIES INSTALL ACTIVE — 2026-11-10
 
 - **Run/job/source:** #137 / `42748861814`, job `129607409197`, source SHA `00c650f3776624353d7b1492ddff1b21c8b5fd49`.
