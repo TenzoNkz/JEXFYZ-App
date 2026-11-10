@@ -559,9 +559,15 @@ void main() {
       ]) {
         expect(find.byKey(key), findsOneWidget);
       }
-      await tester.tap(
-        find.byKey(const ValueKey<String>('usage-profile-timeline-peltier')),
+      final peltierChart =
+          find.byKey(const ValueKey<String>('usage-profile-timeline-peltier'));
+      await tester.scrollUntilVisible(
+        peltierChart,
+        180,
+        scrollable: find.byType(Scrollable).first,
       );
+      await tester.pumpAndSettle();
+      await tester.tap(peltierChart);
       await tester.pumpAndSettle();
       expect(find.text('Waktu dipilih'), findsOneWidget);
       expect(tester.takeException(), isNull);
