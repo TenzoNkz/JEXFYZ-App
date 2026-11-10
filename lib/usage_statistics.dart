@@ -509,8 +509,12 @@ class UsageStatsAnalytics {
     List<UsageStateSegment> segments,
     int timestampMs,
   ) {
-    for (final segment in segments) {
-      if (timestampMs >= segment.startMs && timestampMs <= segment.endMs) {
+    for (var index = 0; index < segments.length; index++) {
+      final segment = segments[index];
+      final includesEnd =
+          index == segments.length - 1 && timestampMs == segment.endMs;
+      if (timestampMs >= segment.startMs &&
+          (timestampMs < segment.endMs || includesEnd)) {
         return segment;
       }
     }
@@ -2031,7 +2035,11 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
     if (snapshot == null || width <= 0 || snapshot.toMs <= snapshot.fromMs) {
       return;
     }
-    final fraction = (localX / width).clamp(0.0, 1.0).toDouble();
+    const plotLeft = 34.0;
+    const plotRight = 8.0;
+    final plotWidth = math.max(1.0, width - plotLeft - plotRight).toDouble();
+    final fraction =
+        ((localX - plotLeft) / plotWidth).clamp(0.0, 1.0).toDouble();
     final timestamp = snapshot.fromMs +
         ((snapshot.toMs - snapshot.fromMs) * fraction).round();
     if (_selectedTimestampMs == timestamp) return;
@@ -2907,14 +2915,14 @@ class _UsageTimelinePainter extends CustomPainter {
     final baseline = Paint()
       ..color = scheme.outlineVariant.withValues(alpha: 0.65)
       ..strokeWidth = 0.8;
+    const left = 34.0;
+    const right = 8.0;
     canvas.drawLine(
-      Offset(0, size.height - 1),
-      Offset(size.width, size.height - 1),
+      Offset(left, size.height - 1),
+      Offset(size.width - right, size.height - 1),
       baseline,
     );
 
-    const left = 34.0;
-    const right = 8.0;
     final plotWidth = math.max(1.0, size.width - left - right).toDouble();
     double xFor(int time) =>
         left +
@@ -2929,7 +2937,7 @@ class _UsageTimelinePainter extends CustomPainter {
         ..strokeWidth = .7;
       for (final fraction in [0.0, .5, 1.0]) {
         final y = 2 + (size.height - 5) * (1 - fraction);
-        canvas.drawLine(Offset(0, y), Offset(size.width, y), grid);
+        canvas.drawLine(Offset(left, y), Offset(left + plotWidth, y), grid);
       }
       final area = Path();
       final line = Path();
@@ -3013,6 +3021,7 @@ class _UsageTimelinePainter extends CustomPainter {
           bottom = size.height - 3;
           break;
         case 'adaptive':
+        case 'peltier':
           color = segment.textValue?.toUpperCase() == 'ON'
               ? const Color(0xFF26966D)
               : scheme.outlineVariant;
