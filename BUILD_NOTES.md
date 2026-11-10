@@ -1,16 +1,16 @@
-## Current release baseline — Build #138; Build #140 analyzer failure repaired; candidate awaits #141
+## Current release baseline — Build #138; Build #141 test locale mismatch repaired; candidate awaits #142
 
-- **Latest verified package:** Build #138 / run `42749408202`, source `b553f22092d9b33b2c81753254d2e3f03928fa18`; all 21 main steps, Flutter 157/157, analyzer 25 info-only diagnostics, Android Gradle gate (app JUnit tasks `NO-SOURCE`), APK V1/V2/V3 + expected certificate, corresponding source ZIP, Release/tag parity and downloaded-asset checks passed.
-- **Build #139 failed:** analyzer step 12 due stale `lastTemperatureChangeAtMs` and two unused locals; repaired in `93b1ba7b859089eeccd30719ddfb8b8ab2dabaf6` and `2656b6eb9071cf878de2373cfab03d1872e089f8`.
-- **Build #140 failed:** run `42781821476`, job `129713425920`, source `cdd0b6dc6bc91d01029e89a0b88fc1185205e239`, step 12 analyzer; 25 infos, 1 warning and 2 errors from two stale `lastValueChange` references after declaration rename. Repair `2a0b1b94f7ebce1607ba26067441accb31a105c7` updates both remaining references; test file read-back confirms old name zero.
-- **Candidate before documentation:** main source/test HEAD `2a0b1b94f7ebce1607ba26067441accb31a105c7`, complete recursive tree 131 entries. Includes Home hybrid palette fix and active-output gated per-second Usage Statistics plus analyzer/test repairs; awaiting CI.
-- **Release/tag:** Release `jexfyz-latest` ID `403010611` still targets #138; APK SHA-256 `2ed225d992288cccc02313d206675a7313c73a4cad061de70cddf7209d39b9f8`; source ZIP SHA-256 `47161a972131c95a74e8f5a191754504b76e2c31edd95fd19b1b4c75717ab906`.
-- **Workflow/trigger:** unchanged issue-only guarded workflow, all 21 gates. Issue #33 OPEN exact; #140 terminal, no active run/PR; no #141 trigger sent. Current Build App authorization permits one guarded retry after checkpoint/read-back.
-- Preserve Android `versionName "Telegram @horizontalzzz"`. Physical installation/OEM/BLE/storage soak/thermal/electrical/Firmware/BIN/OTA are not proven by CI.
+- **Latest verified package:** Build #138 / run `42749408202`, source `b553f22092d9b33b2c81753254d2e3f03928fa18`; all 21 gates, Flutter 157/157, analyzer 25 info-only, Android gate (JUnit tasks `NO-SOURCE`), V1/V2/V3/certificate, source ZIP, Release/tag and downloaded asset checks passed.
+- **Build #141:** run `42782355435`, job `129715178789`, source `2fb8dc6ec4a0f41e7cce73e6a49db0e716b56cda`. Analyzer passed; Flutter suite 158 passed / 1 failed. Test set Indonesian locale but expected English `Completed cooling run`; correct Indonesian UI label is `Sesi pendinginan selesai` for the completed fixture. Steps 14–21 skipped; no asset/release update.
+- **Repair:** commit `bafff332f406fdb75e4534d3d9c426d13e83a31b` changes both locale expectations to `Sesi pendinginan selesai`. Read-back confirms two matching assertions; production UI/localization unchanged. Hosted suite still needs validation.
+- **Current candidate before docs checkpoint:** `bafff332f406fdb75e4534d3d9c426d13e83a31b`, full tree 131 entries; current Home and active-run Statistics implementation preserved.
+- **Release/tag:** Release `jexfyz-latest` ID `403010611` remains at #138. APK SHA-256 `2ed225d992288cccc02313d206675a7313c73a4cad061de70cddf7209d39b9f8`; source ZIP SHA-256 `47161a972131c95a74e8f5a191754504b76e2c31edd95fd19b1b4c75717ab906`.
+- **Trigger state:** workflow issue-only with owner/title/body token guard and all 21 gates; issue #33 OPEN exact; #141 terminal; no active run or open PR. No #142 event sent. Explicit Build App mode authorizes one guarded retry after checkpoint and fresh preflight.
+- Preserve Android `versionName "Telegram @horizontalzzz"`; physical install/OEM/BLE/thermal, Firmware/BIN/OTA are separate.
 
-## Build #141 candidate — active CI run
+## Build #142 candidate — pre-trigger
 
-- **Active run:** [Build #141 / Actions run 42782355435](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42782355435), job `129715178789`, exact source `2fb8dc6ec4a0f41e7cce73e6a49db0e716b56cda`. Steps 1–12 passed including Dart analyzer; step 13 full Flutter test suite is in progress; steps 14–21 pending. No test count, build artifact or new Release yet.
+- **Run state:** NOT STARTED. One close/reopen of issue #33 remains after docs read-back and fresh preflight; require exact source SHA match and follow only one run.
 
 ---
 ## Authorization and trigger
