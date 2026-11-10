@@ -1,15 +1,20 @@
-## CURRENT EXECUTION CHECKPOINT — BUILD #134 ACTIVE — 2026-11-10
+## CURRENT EXECUTION CHECKPOINT — BUILD #135 PRE-TRIGGER — 2026-11-10
 
-**Run:** [#134 / Actions run 42746617402](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42746617402), workflow `374946166`, event `issues`, attempt 1, exact source `479d1017729a90a081b30479977b0bc6c6777fbc` (matches pre-trigger main).
+**Mode / authorization:** owner explicitly selected `@Thinking Eksekusi Build App!`. Only guarded Android App Build/QC/Release and justified App-scope repair are authorized. No Firmware compile, BIN, Firebase, OTA, flashing, device operation or unrelated release work.
 
-**Job:** `build` / `129600136902`, hosted runner, `in_progress`. Steps 1–10 succeeded: job setup, checkout, Java 17, Flutter, Gradle, toolchain verification, local.properties, production signing prep, wrapper setup, and App security/architecture audit. Step 11 `Install dependencies` is `in_progress`. Steps 12–21 remain pending.
+**Failed attempt preserved:** Build #134 / [run 42746617402](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42746617402), source `479d1017729a90a081b30479977b0bc6c6777fbc`, terminal failure at analyzer step 12. Steps 1–11 passed; Flutter analyzer exited 1 with 27 diagnostics including one blocking warning at `lib/usage_statistics.dart:1789:13`: redundant non-null assertion on a Path local. Flutter tests, Android gate and steps 15–21 were skipped; no artifact/release was produced. Full failure evidence is at the top of `APP_BUILD_REPORT.md`.
 
-**Last completed gate:** JE X FYZ App-only security/architecture audit (step 10). **Current gate:** dependency installation (step 11). **Remaining:** analyzer, full Flutter tests including Usage Statistics regressions, Android configured gate, obfuscated APK, V1/V2/V3 signing, production certificate, matching source ZIP, Release/tag parity and downloaded-asset identity/checksum/signature verification.
+**Concrete repair:** commit `25684ed93d189a173bdbd8c9115c2bedb5959f53`, only `lib/usage_statistics.dart` changed. Removed the redundant `path!` and redundant `dart:ui` import. Source blob `b9d653a7f51b3508c629891f6f363a79de3557f8` was read back. No logic, workflow, tests, analyzer flags or gates were changed. This is not yet CI-validated.
 
-**Release baseline:** Build #133 source `5201a3e07f36305ffe3882a1b965b9e7414cd71a` is still the latest published package; no Build #134 artifact/release exists yet. Only one Build #134 run is active. Continue it; do not trigger another.
+**Run / retry state:** #134 is terminal; current Actions preflight found no active/queued/requested run. Issue #33 is currently OPEN with exact owner/title/token. The #134 trigger was the single reopen already recorded; do not send another event before retry checkpoint is committed and revalidated. Retry is justified by the concrete analyzer-warning repair; the next guarded attempt is expected to be Build #135, but actual run metadata must be checked.
 
-**Boundaries:** preserve `versionName "Telegram @horizontalzzz"`; no Firmware/BIN/Firebase/OTA/flash/device work. Hosted CI does not prove physical UI/BLE/thermal acceptance.
+**Last completed gate:** analyzer root cause identified, narrow App repair committed and read back, Build #134 failure recorded in `APP_BUILD_REPORT.md`. **Current run state:** no active run. **Remaining:** finish this retry pre-trigger checkpoint, confirm current main/source/tree and no active run, close issue #33 once, reopen it once, and verify exactly one issue-triggered run whose `head_sha` equals final pre-trigger main HEAD. Follow only that run/job.
 
+**Release baseline:** Release `jexfyz-latest` / ID `403010611` and tag still target Build #133 SHA `5201a3e07f36305ffe3882a1b965b9e7414cd71a`; existing APK and ZIP are unchanged and do not contain the new Usage Statistics work.
+
+**Preserve:** all workflow gates, production signing checks and Android `versionName "Telegram @horizontalzzz"`. Do not retry blindly, bypass the issue trigger, or claim CI success. No Firmware/BIN/Firebase/OTA/flash/device action.
+
+---
 
 ---
 
