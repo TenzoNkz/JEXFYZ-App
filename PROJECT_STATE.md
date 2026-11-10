@@ -1,11 +1,12 @@
-## Current App build candidate — Build #141 pre-trigger (2026-11-10)
+## Current App build candidate — Build #141 active (2026-11-10)
 
 - **Latest verified package:** Build #138 / run `42749408202`, source `b553f22092d9b33b2c81753254d2e3f03928fa18`; 21 main gates and Flutter 157/157 passed, analyzer 25 infos, Android Gradle gate with app JUnit tasks `NO-SOURCE`, signing/certificate, source ZIP, Release/tag and downloaded-asset identity/checksums verified.
 - **Build #139:** terminal analyzer failure due outdated `lastTemperatureChangeAtMs` plus unused locals; repaired by `93b1ba7b859089eeccd30719ddfb8b8ab2dabaf6` and `2656b6eb9071cf878de2373cfab03d1872e089f8`.
 - **Build #140:** run `42781821476`, job `129713425920`, source `cdd0b6dc6bc91d01029e89a0b88fc1185205e239`, terminal analyzer failure. Test declaration `lastValidSample` had two stale `lastValueChange` references. Repair commit `2a0b1b94f7ebce1607ba26067441accb31a105c7` updates both; file read-back verified. Steps 13–21 skipped; no asset/Release mutation.
 - **Candidate before docs checkpoint:** `2a0b1b94f7ebce1607ba26067441accb31a105c7`, complete tree 131 entries. Current App changes include Default hybrid Home header correction plus authoritative FAN/PELTIER-active per-second Usage Statistics; the analyzer repairs are committed.
-- **Trigger:** issue #33 exact/open; #140 terminal; no active/queued run or open PR. No #141 trigger sent yet. Workflow unchanged issue-only with all 21 gates. Preserve `versionName "Telegram @horizontalzzz"`.
-- **Status:** current App candidate/test repairs committed but NOT YET CI-VERIFIED. Per-second storage stress, physical BLE, OEM visuals, install and thermal/electrical behavior remain UNVERIFIED.
+- **Build #141 CI:** run `42782355435`, job `129715178789`, source `2fb8dc6ec4a0f41e7cce73e6a49db0e716b56cda` exactly matched main at trigger. Steps 1–3 success; step 4 Flutter setup in progress; steps 5–21 pending. No result claimed yet.
+- **Trigger:** issue #33 exact/open; it was closed once/reopened once; exactly one #141 run appeared. No active duplicate or open PR. Workflow unchanged issue-only with all 21 gates. Preserve `versionName "Telegram @horizontalzzz"`.
+- **Status:** current App candidate/test repairs committed and under CI validation in Build #141. Per-second storage stress, physical BLE, OEM visuals, install and thermal/electrical behavior remain UNVERIFIED.
 
 ---
 ## HISTORICAL App build candidate — Build #140 active before analyzer failure
