@@ -18,6 +18,14 @@ bool usageCoolerIsActive({required bool fanOn, required bool peltierOn}) =>
     fanOn || peltierOn;
 
 String formatUsageElapsed(int milliseconds) {
+double usageInterpolate(double? from, double? to, double progress) {
+  if (to == null) return 0;
+  if (from == null) return to;
+  final fraction = progress.clamp(0.0, 1.0).toDouble();
+  return from + (to - from) * fraction;
+}
+
+
   final totalSeconds = math.max(0, milliseconds ~/ 1000).toInt();
   final hours = totalSeconds ~/ 3600;
   final minutes = (totalSeconds ~/ 60) % 60;
@@ -2144,7 +2152,25 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(title, style: Theme.of(context).textTheme.titleMedium),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(child: Text(title, style: Theme.of(context).textTheme.titleMedium)),
+            Text(
+              _formatTemperature(
+                UsageStatsAnalytics.temperatureAt(
+                  summary.points,
+                  _snapshot!.toMs,
+                ),
+              ),
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    color: color,
+                    fontWeight: FontWeight.w800,
+                    fontFeatures: const [FontFeature.tabularFigures()],
+                  ),
+            ),
+          ],
+        ),
         if (referenceValue != null) ...[
           const SizedBox(height: 2),
           Text(
@@ -2250,6 +2276,15 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
             _formatDuration(summary.peltierOnDurationMs);
     final fanAverage = summary.fanSpeedAverage;
     final fanMaximum = summary.fanSpeedMaximum;
+    String latestText(List<UsageStateSegment> values, {bool percentage = false}) {
+      if (values.isEmpty) return '--';
+      final latest = values.last;
+      if (latest.textValue != null) return latest.textValue!;
+      if (latest.numberValue != null) {
+        return latest.numberValue!.toStringAsFixed(0) + (percentage ? '%' : '');
+      }
+      return '--';
+    }
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -2264,24 +2299,28 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
           summary.voltageSegments,
           scheme,
           lane: 'voltage',
+          currentValue: latestText(summary.voltageSegments),
         ),
         _timelineLane(
           JexText.phrase('Adaptive Mode', 'Mode Adaptif', language),
           summary.adaptiveSegments,
           scheme,
           lane: 'adaptive',
+          currentValue: latestText(summary.adaptiveSegments),
         ),
         _timelineLane(
           JexText.phrase('Peltier Switch', 'Sakelar Peltier', language),
           summary.peltierSegments,
           scheme,
           lane: 'peltier',
+          currentValue: latestText(summary.peltierSegments),
         ),
         _timelineLane(
           JexText.phrase('Fan Speed', 'Kecepatan Kipas', language),
           summary.fanSpeedSegments,
           scheme,
           lane: 'fan_speed',
+          currentValue: latestText(summary.fanSpeedSegments, percentage: true),
         ),
         const SizedBox(height: 4),
         Row(
@@ -2335,13 +2374,27 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
     List<UsageStateSegment> segments,
     ColorScheme scheme, {
     required String lane,
+    String? currentValue,
   }) {
     return Padding(
       padding: const EdgeInsets.only(top: 8),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(label, style: Theme.of(context).textTheme.labelMedium),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(label, style: Theme.of(context).textTheme.labelMedium),
+              if (currentValue != null)
+                Text(
+                  currentValue,
+                  style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                    fontWeight: FontWeight.w800,
+                    fontFeatures: const [FontFeature.tabularFigures()],
+                  ),
+                ),
+            ],
+          ),
           const SizedBox(height: 5),
           SizedBox(
             height: lane == 'fan_speed' ? 54 : 34,
@@ -2357,16 +2410,14 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
                   details.localPosition.dx,
                   constraints.maxWidth,
                 ),
-                child: CustomPaint(
+                child: _AnimatedUsageTimeline(
                   key: ValueKey<String>('usage-profile-timeline-$lane'),
-                  painter: _UsageTimelinePainter(
-                    segments: segments,
-                    fromMs: _snapshot!.fromMs,
-                    toMs: _snapshot!.toMs,
-                    lane: lane,
-                    scheme: scheme,
-                    cursorTimestampMs: _selectedTimestampMs,
-                  ),
+                  segments: segments,
+                  fromMs: _snapshot!.fromMs,
+                  toMs: _snapshot!.toMs,
+                  lane: lane,
+                  scheme: scheme,
+                  cursorTimestampMs: _selectedTimestampMs,
                 ),
               ),
             ),
@@ -2453,7 +2504,11 @@ class _AnimatedUsageLineChartState extends State<_AnimatedUsageLineChart>
     final target = _targetValue;
     if (from == null) return target;
     if (target == null) return null;
-    return from + (target - from) * Curves.easeOutCubic.transform(_controller.value);
+    return usageInterpolate(
+      from,
+      target,
+      Curves.easeOutCubic.transform(_controller.value),
+    );
   }
 
   double? _latestObservedValue(List<UsageChartPoint> points) {
@@ -2714,13 +2769,107 @@ class _AnimatedUsageLineChartState extends State<_AnimatedUsageLineChart>
       oldDelegate.cursorTimestampMs != cursorTimestampMs;
 }
 
-class _UsageTimelinePainter extends CustomPainter {
+
+class _AnimatedUsageTimeline extends StatefulWidget {
   final List<UsageStateSegment> segments;
   final int fromMs;
   final int toMs;
   final String lane;
   final ColorScheme scheme;
   final int? cursorTimestampMs;
+
+  const _AnimatedUsageTimeline({
+    required this.segments,
+    required this.fromMs,
+    required this.toMs,
+    required this.lane,
+    required this.scheme,
+    required this.cursorTimestampMs,
+  });
+
+  @override
+  State<_AnimatedUsageTimeline> createState() => _AnimatedUsageTimelineState();
+}
+
+class _AnimatedUsageTimelineState extends State<_AnimatedUsageTimeline>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+  double? _fromSpeed;
+  double? _targetSpeed;
+
+  double? get _displayedSpeed => usageInterpolate(
+        _fromSpeed,
+        _targetSpeed,
+        Curves.easeOutCubic.transform(_controller.value),
+      );
+
+  double? _latestSpeed(List<UsageStateSegment> segments) =>
+      segments.isEmpty ? null : segments.last.numberValue;
+
+  @override
+  void initState() {
+    super.initState();
+    _targetSpeed = _latestSpeed(widget.segments);
+    _fromSpeed = _targetSpeed;
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 280),
+      value: 1,
+    );
+  }
+
+  @override
+  void didUpdateWidget(covariant _AnimatedUsageTimeline oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.lane != 'fan_speed' ||
+        identical(oldWidget.segments, widget.segments)) {
+      return;
+    }
+    final next = _latestSpeed(widget.segments);
+    if (next == null) {
+      _fromSpeed = null;
+      _targetSpeed = null;
+      _controller.value = 1;
+    } else if (next != _targetSpeed) {
+      _fromSpeed = _displayedSpeed ?? next;
+      _targetSpeed = next;
+      _controller.forward(from: 0);
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (context, _) => CustomPaint(
+        painter: _UsageTimelinePainter(
+          segments: widget.segments,
+          fromMs: widget.fromMs,
+          toMs: widget.toMs,
+          lane: widget.lane,
+          scheme: widget.scheme,
+          cursorTimestampMs: widget.cursorTimestampMs,
+          animatedFanSpeed: _displayedSpeed,
+        ),
+      ),
+    );
+  }
+}
+
+
+  final List<UsageStateSegment> segments;
+  final int fromMs;
+  final int toMs;
+  final String lane;
+  final ColorScheme scheme;
+  final int? cursorTimestampMs;
+  final double? animatedFanSpeed;
 
   const _UsageTimelinePainter({
     required this.segments,
@@ -2729,6 +2878,7 @@ class _UsageTimelinePainter extends CustomPainter {
     required this.lane,
     required this.scheme,
     this.cursorTimestampMs,
+    this.animatedFanSpeed,
   });
 
   @override
@@ -2761,8 +2911,14 @@ class _UsageTimelinePainter extends CustomPainter {
       final area = Path();
       final line = Path();
       var started = false;
-      for (final segment in segments) {
-        final speed = (segment.numberValue ?? 0).clamp(0, 100).toDouble();
+      for (var index = 0; index < segments.length; index++) {
+        final segment = segments[index];
+        final rawSpeed = segment.numberValue ?? 0;
+        final speed = (index == segments.length - 1
+                ? animatedFanSpeed ?? rawSpeed
+                : rawSpeed)
+            .clamp(0, 100)
+            .toDouble();
         final startX = xFor(segment.startMs);
         final endX = xFor(segment.endMs);
         final y = size.height - 2 -
@@ -2873,7 +3029,8 @@ class _UsageTimelinePainter extends CustomPainter {
       oldDelegate.toMs != toMs ||
       oldDelegate.lane != lane ||
       oldDelegate.scheme != scheme ||
-      oldDelegate.cursorTimestampMs != cursorTimestampMs;
+      oldDelegate.cursorTimestampMs != cursorTimestampMs ||
+      oldDelegate.animatedFanSpeed != animatedFanSpeed;
 }
 
 String _formatTemperature(double? value) =>
