@@ -1,5 +1,15 @@
 # JE X FYZ / JE Cooler — Current Project State
-## Build #134 result / next guarded retry — 2026-11-10
+
+## Build #135 result / next guarded retry — 2026-11-10
+
+- **Run:** [#135 / Actions run 42747092939](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42747092939), source `2cd9a0e886167c857504926043b5cab03c67c163`, job `129601682007`; terminal failure at Flutter tests step 13. Steps 1–12 passed, including analyzer (25 info-only diagnostics, no warnings). Flutter suite: **153 passed / 4 failed**.
+- **Failure diagnoses:** two Usage Statistics assertions counted framework-wide `CustomPaint` nodes (actual 7 in empty state, 12 on populated state) instead of only the five App charts; the timestamp test queried a lazy ListView label without scrolling it into view; the Floating Monitor static source test looked for the Settings navigation route in `app_settings.dart` although it is in `floating_monitor.dart`.
+- **Repairs:** `7b539c0c9e50e6a2cd9860cd5fd33e5e0bf35c10` adds five stable chart keys only; `bb0c540d1bb9e7800d0d9c18ed0f2fab178a8715` narrows canvas assertions and scrolls the timestamp into view; `39457247735fbebe487ddd137831cc831f80aef4` checks navigation in the correct source file. Each file has exact GitHub read-back verification. No behavior, analyzer/test gate, workflow or release configuration was weakened. Repairs are not yet CI-validated.
+- **Release state:** #135 steps 14–21 were skipped. No new APK/ZIP/Release asset. Latest verified release/tag remains Build #133 source `5201a3e07f36305ffe3882a1b965b9e7414cd71a`.
+- **Retry state:** no active run. Issue #33 remains OPEN and matches exact owner/title/token. Commit/re-read the #136 pre-trigger checkpoint, then close #33 once and reopen once; verify exactly one run whose source SHA equals final main HEAD.
+- **Protected config/scope:** Android `versionName "Telegram @horizontalzzz"`; no Firmware/BIN/Firebase/OTA/flash/device work.
+
+## Superseded status — Build #134 analyzer failure / pre-Build #135 retry — 2026-11-10
 
 - **Run:** #134 / `42746617402`, source `479d1017729a90a081b30479977b0bc6c6777fbc`, terminal failure at analyzer step 12. Steps 1–11 passed. The analyzer found 27 diagnostics including a blocking warning at `lib/usage_statistics.dart:1789:13` (unnecessary non-null assertion); Flutter tests, Android gate, APK/signing/source/release steps were skipped. No Build #134 artifact or Release update exists.
 - **Repair:** `25684ed93d189a173bdbd8c9115c2bedb5959f53`, limited to `lib/usage_statistics.dart`: removed redundant `path!` and redundant `dart:ui` import. Source read-back verified. No behavior/test/workflow/gate/analyzer-flag changes. CI validation is pending.
