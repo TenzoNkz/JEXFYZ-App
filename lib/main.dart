@@ -5296,15 +5296,28 @@ class _DashboardScreenState extends State<DashboardScreen>
     );
   }
 
-  // AI-METHOD: _startUsageStatisticsSession — Start only after full P1 readiness and final SYNC.
+  // AI-METHOD: _startUsageStatisticsSession — Start only after full P1 readiness
+  // and only when authoritative Firmware output telemetry confirms cooling activity.
   void _startUsageStatisticsSession() {
+    final recorder = UsageStatisticsRecorder.instance;
+    final sessionReady = connected &&
+        dashboardReady &&
+        _bleSessionReady &&
+        protocolValid &&
+        runtimeOutputsKnown;
+    if (!sessionReady ||
+        !usageCoolerIsActive(fanOn: fanOn, peltierOn: peltierOn)) {
+      unawaited(recorder.endSession(reason: 'cooler_off'));
+      return;
+    }
+
     final coolerId =
         device?.remoteId.toString() ?? knownCoolerRemoteIdNotifier.value ?? '';
     final normalizedVoltage = voltage.trim().toUpperCase();
     final validVoltage = const {'5V', '9V', '12V'}.contains(normalizedVoltage)
         ? normalizedVoltage
         : null;
-    unawaited(UsageStatisticsRecorder.instance.startSession(
+    unawaited(recorder.startSession(
       coolerId: coolerId,
       batteryC: phoneBatteryValid ? double.tryParse(phoneBatteryTemp) : null,
       hotsideC: hotsideTemp == '--' ? null : double.tryParse(hotsideTemp),
@@ -5315,12 +5328,24 @@ class _DashboardScreenState extends State<DashboardScreen>
   }
 
   // Record only authoritative P1 telemetry after the Dashboard has passed SYNC_READY.
+  // A cooling session is active while either physical output is confirmed ON.
   void _recordUsageTelemetry(Map<String, String> values) {
     if (!connected || !dashboardReady || !_bleSessionReady || !protocolValid) {
       return;
     }
 
     final recorder = UsageStatisticsRecorder.instance;
+    final outputStateReported =
+        values.containsKey('FAN') || values.containsKey('PELTIER');
+    final coolerActive =
+        usageCoolerIsActive(fanOn: fanOn, peltierOn: peltierOn);
+
+    // Open the session before recording the state changes that caused the
+    // OFF→ON transition. startSession is idempotent for the same cooler.
+    if (outputStateReported && coolerActive) {
+      _startUsageStatisticsSession();
+    }
+
     if (values.containsKey('HOT')) {
       unawaited(recorder.recordTemperature(
         metric: 'hotside',
@@ -5345,13 +5370,18 @@ class _DashboardScreenState extends State<DashboardScreen>
       ));
     }
 
-    // FAN is authoritative for output ON/OFF. A stored PWM setting while the
-    // physical fan is OFF must be represented as 0% in the operating timeline.
+    // A stored PWM setting while the physical fan is OFF is represented as 0%.
     if (values.containsKey('FAN') || values.containsKey('FAN_SPEED')) {
       unawaited(recorder.recordState(
         metric: 'fan_speed',
         value: fanOn ? fanSpeed : 0,
       ));
+    }
+
+    // Record any final state/sample carried by the OFF packet before closing
+    // the session. When Fan remains ON for thermal protection, the session stays open.
+    if (outputStateReported && !coolerActive) {
+      unawaited(recorder.endSession(reason: 'cooler_off'));
     }
   }
 
@@ -7396,7 +7426,7 @@ void _handleAckLine(String line) {
       stateActive: animationActive ?? active,
     );
     final theme = Theme.of(context);
-    final homeDark = theme.brightness != Brightness.light;
+    final homeDark = jexHomeHeaderUsesDarkPalette(appThemeNotifier.value);
     // AI-THEME / DASHBOARD-LIGHT-CONTRAST-CONTRACT
     // Light mode stays colorful while separating surface, outline, and glyph contrast.
     // The accent identifies the metric without becoming a harsh solid block.
@@ -7790,7 +7820,7 @@ void _handleAckLine(String line) {
   // Retain the original icon-left / text-left Row; only the connection badge is removed.
   // The card stays compact for one line and grows naturally for two lines without shrinking its font.
   Widget _homeNotify() {
-    final headerDark = Theme.of(context).brightness != Brightness.light;
+    final headerDark = jexHomeHeaderUsesDarkPalette(appThemeNotifier.value);
     final noticeTextColor =
         headerDark ? const Color(0xFFF4F6FA) : const Color(0xFF16181D);
     final custom = notice.trim().toUpperCase();
@@ -9403,7 +9433,8 @@ void _handleAckLine(String line) {
         AppThemePreset.dark => const Color(0xFF101114),
       };
 
-  bool get _dashboardDark => appThemeNotifier.value == AppThemePreset.dark;
+  bool get _dashboardDark =>
+      jexDashboardContentUsesDarkPalette(appThemeNotifier.value);
 
   @override
   Widget build(BuildContext context) {
