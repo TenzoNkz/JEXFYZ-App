@@ -13,6 +13,16 @@
 - **Protected identity/evidence boundary:** preserve Android `versionName "Telegram @horizontalzzz"`. CI is not physical installation, OEM screenshot, BLE runtime, cooling/thermal/electrical, Firmware/BIN or OTA evidence. No such operation occurred.
 
 ---
+## BUILD #140 PROGRESS — ACCEPTED; FLUTTER SETUP ACTIVE — 2026-11-10
+
+- **Run/source:** [Build #140 / Actions run 42781821476](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42781821476), workflow `374946166`, issue event, attempt 1; source SHA `cdd0b6dc6bc91d01029e89a0b88fc1185205e239`, exact final `main` SHA when triggered.
+- **Trigger:** issue #33 was verified exact/open, closed once at `2026-11-10T08:19:58Z`, verified CLOSED with zero active runs and main SHA `cdd0b6dc6bc91d01029e89a0b88fc1185205e239`, then reopened once at `2026-11-10T08:20:07Z`. Exactly one new run appeared at `2026-11-10T08:20:09Z`. No duplicate trigger.
+- **Job:** `build` / `129713425920`, status `in_progress`. Steps 1 Set up job, 2 Checkout repository and 3 Set up Java 17 are `success`; step 4 Set up Flutter is `in_progress`. Steps 5–21 are pending. No test/build/signing result is claimed at this progress point.
+- **Artifacts/Release:** Actions run artifact list is empty so far. Existing Release/tag remain Build #138 source `b553f22092d9b33b2c81753254d2e3f03928fa18`; #140 has not reached packaging/publication.
+- **Last completed gate:** Java 17 setup (step 3). **Current gate:** Flutter setup (step 4). **Remaining:** Flutter/Gradle/toolchain, signing preparation, architecture audit, dependencies, analyzer, full Flutter suite, Android gate, APK, V1/V2/V3 + expected certificate, source ZIP, Release/tag and downloaded asset checks.
+- **Disposition:** ACTIVE — follow only run `42781821476` / job `129713425920`; no duplicate issue event or retry while active. Current checkout SHA is the repaired source candidate; #139 remains a terminal analyzer failure preserved above.
+
+---
 ## BUILD #139 — FAILED AT DART ANALYZER; CONCRETE APP/TEST REPAIRS COMMITTED — 2026-11-10
 
 - **Run/job/source:** [Build #139 / Actions run 42765001359](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42765001359), workflow `374946166`, issue event, attempt 1; job `build` / `129659294295`; exact checkout source `2ad43deb499f73dede808e2cc03d1a8843697f59`, matching `main` when triggered.
