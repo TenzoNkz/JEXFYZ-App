@@ -2,21 +2,31 @@
 
 Updated: 2026-11-10 (Asia/Jakarta).
 
-## Current release baseline — Build #138
+## Current published release — Build #138
 
-- **Latest verified package:** Build #138 / [Actions run 42749408202](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42749408202), terminal success, exact source `b553f22092d9b33b2c81753254d2e3f03928fa18`.
-- All 21 main workflow steps passed; analyzer had 25 info-only diagnostics/no warnings; Flutter tests **157/157 passed**. Android Gradle gate succeeded, but native app JUnit compile/test tasks were `NO-SOURCE`.
-- Obfuscated APK passed V1/V2/V3 and expected production-certificate verification. Matching source ZIP and downloaded Release assets verified. Release/tag `jexfyz-latest` point to Build #138 source.
-- Preserve `versionName "Telegram @horizontalzzz"`. No Firmware/BIN/Firebase/OTA/flash/device operation occurred.
+- [Actions run 42749408202](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42749408202), job 129609197264, terminal success on source b553f22092d9b33b2c81753254d2e3f03928fa18.
+- All 21 main workflow steps passed; analyzer had 25 info-only diagnostics/no warnings; Flutter suite passed 157/157. Android Gradle gate succeeded but native app JUnit tasks were NO-SOURCE.
+- Obfuscated APK passed V1/V2/V3 and expected production-certificate verification. Matching source ZIP and downloaded Release assets passed integrity/identity verification. Release/tag jexfyz-latest point to #138 source.
+- This package predates the current Home/Statistics source changes described below.
 
-## Next authorized work candidate — combined Home + Statistics corrections
+## Current App candidate — Build #139 pre-trigger
 
-**A. Default hybrid Home contrast:** the 2026-11-10 owner screenshot shows the dark Home header with low-contrast metric labels/values and NOTIFY body. Source root cause is confirmed: Default intentionally inherits Light Theme to preserve the white lower panel, but `_homeMetric()` and `_homeNotify()` use inherited brightness for the header palette. Repair with one preset-based header resolver (Default/Dark = dark, Light = light), keeping lower-panel resolution separate.
+Preflight source HEAD: 8115f6702c9be1381c10d1ed610b4a6e720c6753; recursive tree 131 entries, complete. Two App change groups are now committed on main and await hosted CI:
 
-**B. Usage Statistics revised by owner (2026-11-10):** remove the 1H/24H/7D/30D range selector. Store per-second Battery/Hotside measurements only during actual cooler operation, not merely while BLE is connected. Proposed gate: authoritative Firmware output `FAN == ON` OR `PELTIER == ON`; both OFF closes the run; fan-only thermal-protection cooling counts because an actual output remains active. Each OFF→ON run is a separate local session; disconnect/stale P1 closes it. Persist fresh per-second readings or explicit gaps; keep Voltage/Adaptive/Fan Speed as event-driven transitions on the elapsed-seconds axis. Show completed run history without fixed wall-clock range filters. Existing 30-day pruning is a DB retention rule, not a chart range.
+**1. Default hybrid Home palette.** Default/Dark use the dark header palette; Light uses light. _homeMetric() and _homeNotify() share the same preset-based header resolver. The lower panel remains independently light for Default/Light and dark for explicit Dark. Regression tests assert all three mappings and both header call sites.
 
-**Recommended next command:** `Eksekusi Full!` — authorize both narrowly scoped App repairs and regression tests. For Statistics, prove idle-connected no-recording, FAN-only/PELTIER-only active sessions, both-OFF end, reconnect resync, stale/missing sample gaps, and per-second data. For Home, prove all three presets' header and lower-panel palette choices. Preserve Home geometry, painter paths/animation, NOTIFY semantics, 360-dp canvas, BLE/safety/telemetry truth and local-only SQLite; no Firmware changes.
+**2. Usage Statistics active-run sampling.** A run requires full BLE/P1 readiness, valid protocol and known authoritative output telemetry, and stays active only while FAN or PELTIER is ON. Both OFF, disconnect/disposal or stale P1 closes it. Per-second Battery/Hotside samples are stored in local SQLite with explicit null gaps. Voltage/Adaptive/Fan Speed remain event-driven against elapsed-run seconds. The wall-clock 1H/24H/7D/30D filter is removed; 30-day pruning remains retention. Regression tests cover output gating, elapsed-time analytics, gaps, session separation and local-only storage.
 
-This is a recommendation, not source-change authorization. After source/tests are reviewed, a separate explicit `Eksekusi Build App!` is required to package the APK.
+Per-second SQLite growth/queue pressure and actual phone BLE sampling remain UNVERIFIED; CI does not establish physical acceptance.
 
-Open risks: per-second SQLite data growth requires stress/capacity validation; actual device screenshots and BLE/thermal behavior remain unverified. Firmware TTP223 Voltage one-way-cycle V7.2 remains separate and NOT IMPLEMENTED.
+## Trigger / CI state
+
+- Workflow: .github/workflows/jexfyz-app-build-trigger.yml, blob 9dc1e61ba49f19cad4edbb99a832d5333d9f0f12; issue-open/reopen only with owner, exact title and body token; all analyzer/test/Android/signing/source/Release/download gates intact.
+- Issue #33 is OPEN and exact: owner TenzoNkz, title JE X FYZ — EKSEKUSI BUILD APP TRIGGER, body token JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1.
+- Latest App run #138 is terminal success; no active/queued run and no open PR were found. No new trigger has been sent yet.
+- Last completed gate: repository/source/workflow/issue/Actions/jobs/logs/Release/tag/artifact preflight. Current run state: NOT STARTED.
+- Next: commit/re-read this pre-trigger ledger/checkpoint; refresh final main HEAD/tree and trigger/Actions state. Then close issue #33 once, verify closed and no run, reopen exactly once. Follow only the single new issue-triggered run and require exact head_sha parity with final pre-trigger main. Do not repeat event if no run appears.
+
+## Protected scope
+
+Keep Android versionName "Telegram @horizontalzzz". Do not compile Firmware, publish/replace BIN, modify Firebase, use OTA, flash or operate devices. Build CI does not prove installation, OEM visuals, BLE behavior, cooling or thermal/electrical performance.

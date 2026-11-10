@@ -1,4 +1,24 @@
-## CURRENT CHECKPOINT — BUILD #138 RELEASED / VERIFIED CI — 2026-11-10
+## CURRENT CHECKPOINT — BUILD #139 PRE-TRIGGER / SOURCE CANDIDATE — 2026-11-10
+
+**Mode / authorization:** current owner message explicitly selects Eksekusi Build App!. Only the guarded App Build/QC/release workflow and justified App-scope repairs are authorized. Firmware compile, BIN generation/publication/replacement, Firebase, OTA, flashing, device operation and unrelated release work remain excluded.
+
+**Candidate source reviewed:** main HEAD at preflight was 8115f6702c9be1381c10d1ed610b4a6e720c6753, complete recursive tree 131 entries, truncated=false. App candidate changes since Build #138 are committed: Default hybrid Home header palette resolver is applied to metrics/NOTIFY while the lower white Default panel remains light; Usage Statistics is gated on synchronized authoritative FAN/PELTIER outputs and records per-second Battery/Hotside samples with explicit gaps on elapsed active-run time. Voltage/Adaptive/Fan Speed remain event-driven. Regression tests cover the preset mapping and active-run/session/sample contracts. Relevant source/test commits: 8b9e04e06cc28aa88cdd38e70dae48aa7c2b5ba7, 8c1d57b593e7f471a0d5715929575f416e396a2b, 58fdac9fab2ce15b9154907d369096a49fb6b308, 0413b536fcb5771652ad6312cc40b5bcb748639e, 8115f6702c9be1381c10d1ed610b4a6e720c6753. These are source/test commits, not CI results.
+
+**Latest verified published build:** Build #138 / [Actions run 42749408202](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42749408202), job 129609197264, terminal success on source b553f22092d9b33b2c81753254d2e3f03928fa18. All 21 main steps passed, 157/157 Flutter tests passed, analyzer had 25 info-only diagnostics, Android Gradle gate succeeded with app JUnit tasks NO-SOURCE; V1/V2/V3, production certificate, source ZIP, Release/tag parity and re-downloaded assets verified. The #138 APK does NOT include the newer candidate above.
+
+**Release baseline (stale relative to candidate):** Release jexfyz-latest ID 403010611 and tag still target #138 SHA b553f22092d9b33b2c81753254d2e3f03928fa18. APK SHA-256 2ed225d992288cccc02313d206675a7313c73a4cad061de70cddf7209d39b9f8; source ZIP SHA-256 47161a972131c95a74e8f5a191754504b76e2c31edd95fd19b1b4c75717ab906.
+
+**Current Actions/trigger state:** latest App run #138 is completed/success; #137 is completed/failure and its two test fixes were validated by #138. There is no active/queued run and no open PR. Issue #33 is OPEN, owner TenzoNkz, exact title “JE X FYZ — EKSEKUSI BUILD APP TRIGGER”, exact body token JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1. Live workflow blob 9dc1e61ba49f19cad4edbb99a832d5333d9f0f12 remains issue-open/reopen only, with the owner/title/token guard and all analyzer/test/Android/signing/source/Release/download gates intact. No trigger for the new candidate has yet been sent.
+
+**Last completed gate:** source, full workflow, relevant previous failure, latest CI run/logs, current Release/tag/artifact and exact issue guard preflight. **Current run state:** NOT STARTED; no run/job ID and nothing active. The documented candidate HEAD 8115f670... will be followed by documentation-only checkpoint commits; the final SHA immediately before reopening issue #33 must be fetched and the new run's head_sha must match it exactly.
+
+**Next exact action:** finish/re-read the documentation checkpoint and verify final main/tree + workflow + issue #33 + Actions + Release/tag. Then close issue #33 once, verify CLOSED and no run, reopen exactly once. Confirm exactly one new issues-triggered run with exact final main SHA and follow only that run. If no run appears, stop BLOCKED; do not emit another event.
+
+**Protected identity / evidence boundary:** preserve versionName "Telegram @horizontalzzz". Owner installation, screenshot/OEM acceptance, BLE runtime, cooling/thermal/electrical behavior, Firmware compilation, BIN identity and OTA remain separate/unverified. No Firmware/device operation occurred.
+
+---
+
+## SUPERSEDED CHECKPOINT — BUILD #138 RELEASED / VERIFIED CI — 2026-11-10
 
 **Restored operation / evidence boundary:** this chat is `Diskusi!`, read-only for executable source, tests, configuration, workflow, Actions/Release and all Firmware/device operations. The successful Build #138 was performed earlier under the owner's separate explicit `Eksekusi Build App!` authorization; this chat did not trigger or rerun it.
 
