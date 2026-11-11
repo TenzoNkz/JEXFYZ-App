@@ -1,16 +1,21 @@
-## CURRENT CHECKPOINT — BUILD #151 ACTIVE / GUARDED APP QC — 2026-11-12
+## CURRENT CHECKPOINT — BUILD #151 SUCCESS / RELEASE VERIFIED — 2026-11-12
 
-- **Repository:** TenzoNkz/JEXFYZ-App, branch main. Main HEAD at Build #151 trigger: `e383924067b7ab2da27f2e41f21232cfb7144ec0`.
-- **Current build:** Build #151 / Actions run `43080954412`, workflow `374946166`, attempt 1, issue #33, job `130733048413`. Job currently active; initial state step 1 runner setup. The run source includes App repair commit `4368c9b81741690cfbcaa30ab00df6438e61d40f`. No #151 QC gate has completed in the initial snapshot.
-- **Prior Build #150:** run `43080229957` failed at analyzer from malformed `_openSettings()` in `lib/main.dart`; no artifacts. Root cause and log diagnostics are preserved in APP_BUILD_REPORT.md. Repair restored the missing `await Navigator.push<void>(` call and preserved Lock Voltage Settings callback.
-- **Last verified published App:** Build #149, source/tag `0507e3e11b67b8f8d042e49b74cc14a53bfc4f21`, Release ID 403010611. Its APK/ZIP remain published until #151 completes all gates.
-- **Android contract:** versionName `Telegram @horizontalzzz` remains exact.
-- **Separate validation gaps:** Firmware V7.2 compile, BIN, Firebase, OTA/flash, device/NVS/rail/LED/BLE and owner/OEM visual acceptance remain NOT RUN / UNVERIFIED; App CI does not cover them.
-- **Next:** inspect the single active #151 run through analyzer, tests, Android gate and artifact/release verification. No duplicate trigger.
+- **Repository:** TenzoNkz/JEXFYZ-App, branch main. Build #151 immutable source SHA: `e383924067b7ab2da27f2e41f21232cfb7144ec0`. Later main changes in this finalization are documentation-only.
+- **Build:** Actions run `43080954412`, workflow 374946166, attempt 1, job 130733048413; completed success. All gates 1–21 and cleanup 39–43 passed; zero active/queued runs at final pre-documentation check.
+- **QC:** Dart analyzer 23 infos, zero warnings/errors; Flutter 171/171 tests passed; Android Gradle gate BUILD SUCCESSFUL in 3m01. Native app JUnit task `:app:testDebugUnitTest` and its compile/process prerequisites are NO-SOURCE, so no native Android JUnit cases ran.
+- **Repair:** Build #150 failed analyzer due malformed `_openSettings()`; fixed by restoring `await Navigator.push<void>(` in App commit `4368c9b81741690cfbcaa30ab00df6438e61d40f`; Lock Voltage callback preserved. Build #150 failure remains historical and documented in APP_BUILD_REPORT.md.
+- **Release:** Release ID 403010611 / tag `jexfyz-latest` now point to exact Build #151 source SHA. Exactly one APK and one matching source ZIP; downloaded SHA, ZIP integrity, source marker and downloaded APK signature/certificate verified.
+- **APK:** 55,881,819 bytes; SHA-256 `4e69ee9bdbc716fc7dfe9679fd630e5ddde8694c61a5b618450026eae83f0935`. [APK](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-release.apk).
+- **Source ZIP:** 2,923,217 bytes; SHA-256 `2ad9f745196665e667fdff02ae0d92900665667ee2358f57d14b7e0da0273ac1`. [Source ZIP](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-corresponding-source.zip).
+- **Certificate:** RSA 4096, JE X FYZ DN, pinned SHA-256 `dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0`; V1/V2/V3 pass. Retain self-signed PKIX trust-chain/no-timestamp jarsigner caveat. Android versionName remains `Telegram @horizontalzzz`; App version 1.0.0+3.
+- **Separate gaps:** Firmware V7.2 compile/BIN, Firebase/OTA/flash, physical BLE/device/NVS/rail/LED, cooling thermal/electrical and owner/OEM visual acceptance are NOT RUN / UNVERIFIED. CI does not prove field acceptance.
+- **Next:** owner installation and physical App/BLE/OEM visual validation, separately from this completed Build App scope. No further build trigger for this SHA.
+
+---
 
 ## Firmware V7.2 source implementation — validation pending (2026-11-12)
 
-## Current App release — Build #149 verified (2026-11-11)
+## Previous App release — Build #149 verified (2026-11-11)
 
 - **Latest verified package:** Build #149 / Actions run 42967289995, job 130347345586, conclusion success; all 21 required workflow steps and cleanup 39–43 passed.
 - **Exact source/tag:** 0507e3e11b67b8f8d042e49b74cc14a53bfc4f21. jexfyz-latest tag and Release ID 403010611 target this exact commit. Current main also contains the newer, unreleased Peltier/LED source refinement documented below; it is not part of Build #149.
