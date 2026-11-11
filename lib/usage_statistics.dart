@@ -2048,6 +2048,37 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
     String title,
     String message,
     ColorScheme scheme, {
+    Widget? action,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 42),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.query_stats, size: 36, color: scheme.onSurfaceVariant),
+          const SizedBox(height: 14),
+          Text(
+            title,
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
+          const SizedBox(height: 8),
+          Text(
+            message,
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: scheme.onSurfaceVariant,
+                ),
+          ),
+          if (action != null) ...[
+            const SizedBox(height: 8),
+            action,
+          ],
+        ],
+      ),
+    );
+  }
+
   void _setChartCursor(double localX, double width) {
     final snapshot = _snapshot;
     if (snapshot == null || width <= 0 || snapshot.toMs <= snapshot.fromMs) {
@@ -2151,37 +2182,6 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
     );
   }
 
-
-    Widget? action,
-  }) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 42),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(Icons.query_stats, size: 36, color: scheme.onSurfaceVariant),
-          const SizedBox(height: 14),
-          Text(
-            title,
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.titleMedium,
-          ),
-          const SizedBox(height: 8),
-          Text(
-            message,
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: scheme.onSurfaceVariant,
-                ),
-          ),
-          if (action != null) ...[
-            const SizedBox(height: 8),
-            action,
-          ],
-        ],
-      ),
-    );
-  }
 
   Widget _temperatureSection({
     required String title,
@@ -2712,7 +2712,7 @@ class _UsageLinePainter extends CustomPainter {
         ..color = Colors.deepOrange.withValues(alpha: 0.75)
         ..strokeWidth = 1
         ..style = PaintingStyle.stroke;
-      final y = yFor(referenceValue!);
+      final y = yFor(referenceValue);
       for (var x = plot.left; x < plot.right; x += 7) {
         canvas.drawLine(
           Offset(x, y),
@@ -2730,7 +2730,6 @@ class _UsageLinePainter extends CustomPainter {
       ..strokeJoin = StrokeJoin.round;
     Path? path;
     int? pathSession;
-    double? previousY;
     var drawn = false;
 
     for (var pointIndex = 0; pointIndex < points.length; pointIndex++) {
@@ -2742,7 +2741,6 @@ class _UsageLinePainter extends CustomPainter {
         if (path != null && drawn) canvas.drawPath(path, linePaint);
         path = null;
         pathSession = null;
-        previousY = null;
         drawn = false;
         continue;
       }
@@ -2756,11 +2754,9 @@ class _UsageLinePainter extends CustomPainter {
         if (path != null && drawn) canvas.drawPath(path, linePaint);
         path = Path()..moveTo(x, y);
         pathSession = point.sessionId;
-        previousY = y;
         drawn = false;
       } else {
         path!.lineTo(x, y);
-        previousY = y;
         drawn = true;
       }
     }
@@ -2824,6 +2820,7 @@ class _AnimatedUsageTimeline extends StatefulWidget {
   final int? cursorTimestampMs;
 
   const _AnimatedUsageTimeline({
+    super.key,
     required this.segments,
     required this.fromMs,
     required this.toMs,
