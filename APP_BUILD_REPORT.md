@@ -1,4 +1,16 @@
-## NEXT GUARDED APP BUILD — PRE-TRIGGER READY AFTER BUILD #146 TEST REPAIRS — 2026-11-11
+## BUILD #147 ACTIVE — FLUTTER SETUP — 2026-11-11
+
+- **Run/job/source:** [Build #147 / Actions run 42946048711](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42946048711), job 130278994451, workflow 374946166, issue event, attempt 1; immutable checkout SHA ad21a36ab496e5323fa35ba090121eda359107a4.
+- **Trigger:** issue #33 exact guarded title/body was closed/reopened once under the owner's explicit Build App command. Exactly one new #147 run was observed.
+- **Included #146 repairs:** LED picker max height rounds to logical pixels; Statistics animation contract asserts Flutter Ticker/vsync instead of a removed fixed 16-ms timer; cursor test ensures full Peltier lane visible before tapping center; LED and Peltier static contracts match current compact layouts.
+- **Current status:** run/job in_progress; steps 1–3 success; step 4 Set up Flutter in progress; later steps pending. No artifact or Release mutation yet.
+- **Previous #146:** analyzer passed with 23 info-level findings and no warnings/errors; Flutter 161 passed / 5 failed; steps 14–21 skipped. It published no APK/source and did not modify Release.
+- **Known risks:** selected-session full-summary recomputation on each one-second UI batch; unbounded/unbatched SQLite recorder queue; long-session CPU/memory/backpressure; animation lifecycle/60–120-Hz stress coverage incomplete. These remain open even if standard CI passes.
+- **Disposition:** ACTIVE — monitor only run 42946048711; do not issue another trigger.
+
+---
+
+## HISTORICAL NEXT GUARDED APP BUILD — PRE-TRIGGER READY AFTER BUILD #146 TEST REPAIRS — 2026-11-11
 
 - **Pre-trigger main SHA:** 245f9870f7bd75b1c7f18827a4f4fb6ae5588b4b. Latest executable App/test commit: b1609b01d4dee470b96e2030cb5583df1efc1351; associated App height fix: 4028949dca6c2f5ced55f54861b6c5197426c1dd; Statistics tests: fb845d88567503de4a78668c2b6b08eeb61de5e5.
 - **Build #146 result:** run 42944693211/job 130274555621, source d5bc688cc14243cd944f2d8d653bbcb59d2805fe. Analyzer passed (23 info, zero warning/error); Flutter tests 161 passed / 5 failed; Android/build/signing/source/Release/download gates skipped. No #146 asset; Build #143 remains published.
