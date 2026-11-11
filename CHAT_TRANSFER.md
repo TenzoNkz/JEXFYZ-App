@@ -1,14 +1,16 @@
-## CURRENT CHECKPOINT — BUILD #150 FAILED / SOURCE REPAIRED / GUARDED RETRY READY — 2026-11-12
+## CURRENT CHECKPOINT — BUILD #151 ACTIVE / GUARDED APP QC — 2026-11-12
 
-**Disposition:** Build #150 failed at the Dart analyzer and produced no artifact. Its concrete App source defect is now repaired and read back; a new guarded run is justified but has not yet been triggered at this checkpoint.
+**Mode:** owner-authorized `Eksekusi Build App!`; App Build/QC/release only. No Firmware compilation, BIN/Firebase/OTA/flash or device operations.
 
-- **Failed attempt:** Build #150 / Actions run `43080229957`, job `130730553031`, source SHA `9245e142f4ea0e19e5f49e3ec1e1d80db2adf65c`. Steps 1–11 succeeded; step 12 analyzer failed (32 total diagnostics, parser errors at `lib/main.dart` lines 7036, 7048, 7049); steps 13–21 skipped; cleanup succeeded.
-- **Root cause:** `_openSettings()` had lost the opening `await Navigator.push<void>(` call, leaving orphaned constructor arguments and closing syntax. This was introduced with the V7.2 App source and is not an infrastructure failure.
-- **Repair:** commit `4368c9b81741690cfbcaa30ab00df6438e61d40f`, `lib/main.dart`, restored the missing Navigator call only. Read-back confirms the full Settings navigation method and unchanged `onVoltageLockChanged: _setVoltageLock` callback. No BLE/P1, Firmware, workflow, versionName or other App behavior was changed.
-- **Source validation:** static read-back only. Flutter, Dart and Gradle are unavailable in the active container; formatter/analyzer/tests NOT RUN locally. Hosted analyzer and full test/build gates remain mandatory.
-- **Preflight:** no active or queued Actions runs; issue #33 OPEN and exact owner/title/token guard retained; workflow blob `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12` unchanged and issue-only; recursive tree 131 entries, not truncated; Release/tag still on Build #149 source `0507e3e11b67b8f8d042e49b74cc14a53bfc4f21`, exactly one APK + one source ZIP. Android versionName `Telegram @horizontalzzz` preserved.
-- **Next:** trigger exactly one guarded issue #33 close/reopen attempt against the repaired `main`; then inspect its captured SHA, jobs and every gate. No blind retry.
-- **Boundary:** no Firmware compilation, BIN, Firebase, OTA, flash, device/BLE/NVS/rail/LED or OEM screenshot work.
+- **Current attempt:** Build #151 / Actions run `43080954412`, workflow `374946166`, attempt 1, issue event #33, job `130733048413`. Issue #33 was closed/reopened exactly once with owner/title/body-token guard. It remains OPEN. No duplicate trigger.
+- **Build source:** immutable run SHA `e383924067b7ab2da27f2e41f21232cfb7144ec0` (main HEAD at trigger). It includes repair commit `4368c9b81741690cfbcaa30ab00df6438e61d40f` restoring the missing `await Navigator.push<void>(` line inside `_openSettings()`; the Lock Voltage callback is preserved. Later documentation-only checkpoint commits do not change this run source.
+- **Prior attempt:** Build #150 / run `43080229957` failed at Dart analyzer due the missing Navigator call. Failure and exact log evidence are preserved in `APP_BUILD_REPORT.md`; its source was not silently rewritten as success. One source repair was committed before this guarded retry.
+- **Current run state:** job `130733048413` `in_progress`, initial snapshot step 1 Set up job. No validation gate has passed on #151 yet. Continue inspecting its live jobs/steps/logs only.
+- **Latest published artifact before #151 completion:** Build #149; `jexfyz-latest` still targets `0507e3e11b67b8f8d042e49b74cc14a53bfc4f21`. It remains the only verified Release until #151 passes all gates. Android Gradle `versionName "Telegram @horizontalzzz"` is unchanged.
+- **Workflow:** unchanged blob `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12`; issue-only opened/reopened trigger and owner/title/token condition; no push/PR release path.
+- **Remaining:** Java/Flutter/Gradle setup, secrets, App audit, dependencies, analyzer, full Flutter tests, Android Gradle gate, obfuscated APK, V1/V2/V3/cert, corresponding source ZIP, Release/tag parity, downloaded hashes/source marker/ZIP/signature verification.
+- **Not performed:** Firmware compile, BIN generation/publication, Firebase, OTA, flash, physical BLE/device/NVS/rail/LED, OEM screenshot or cooling/thermal/electrical validation.
+- **Next:** monitor run `43080954412` / job `130733048413`; no further trigger while active.
 
 ---
 
