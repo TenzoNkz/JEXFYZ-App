@@ -10,6 +10,13 @@ Purpose: canonical current App/UI/BLE/telemetry contract. Current source defines
 - The Home Default-hybrid contrast repair passed hosted CI in Build #143 and is included in the later Build #149 source package. Its actual installed-device appearance is still not visually accepted until owner screenshots/OEM rendering are inspected.
 - **Field acceptance remains pending:** the exact APK installed by the owner is not independently identified. Validate Home, Settings/Connection, dialogs and Usage Statistics on the actual phone; physical BLE lifecycle, live sensor-history soak and thermal/electrical cooling behavior remain unverified. Firmware/BIN/Firebase/OTA/flash status must not be inferred from App CI.
 
+## Peltier safety dialog and LED Color Picker — current main source refinement (2026-11-11)
+
+- Current `main` contains an unreleased refinement newer than Build #149. Build #149 remains the latest published package and does not contain these latest modal changes.
+- Peltier popup now targets an approximately 312-dp card width inside the existing 360-dp fixed canvas, uses 18/14/14 dp title/body/actions and tightened vertical padding. Cancel/Fan targets remain 48 dp high. English/Indonesian copy is shorter. Fan-first safety and existing command/ACK sequence are unchanged.
+- LED Color Picker has 60 unique named colors with complete English/Indonesian localization, six columns, internal scrolling, 48×48 dp hit cells and 32×32 dp swatches. Names now match standard HEX values where available. Preview, tooltip, accessibility label, draft selection, Cancel and explicit Select/commit share the same color name/value mapping. Legacy stored RGB aliases remain supported.
+- Source and regression-test files are committed, but Flutter/Dart are unavailable locally and no formatter, local tests, analyzer, hosted CI, new APK or visual screenshot validation has run for this refinement. Visual status remains VISUAL NOT VERIFIED until real screenshots are inspected.
+
 ## Bluetooth Connection sheet — scan presentation contract
 
 - The sheet starts its initial scan after its first frame and observes `FlutterBluePlus.isScanning` separately from fresh `onScanResults`. A completed scan with no matching JE Cooler displays the localized not-found message rather than remaining on Scanning or showing cached results from an earlier scan.

@@ -349,7 +349,7 @@ class JexText {
     },
     'ledColorCrimson': {
       AppLanguage.english: 'Crimson',
-      AppLanguage.indonesia: 'Merah Tua',
+      AppLanguage.indonesia: 'Merah Kirmizi',
     },
     'ledColorScarlet': {
       AppLanguage.english: 'Scarlet',
@@ -412,7 +412,7 @@ class JexText {
       AppLanguage.indonesia: 'Hijau Zamrud',
     },
     'ledColorMint': {
-      AppLanguage.english: 'Mint',
+      AppLanguage.english: 'Mint Green',
       AppLanguage.indonesia: 'Hijau Mint',
     },
     'ledColorJade': {
@@ -487,6 +487,131 @@ class JexText {
       AppLanguage.english: 'White',
       AppLanguage.indonesia: 'Putih',
     },
+    'ledColorMaroon': {
+      AppLanguage.english: 'Maroon',
+      AppLanguage.indonesia: 'Merah Marun',
+    },
+    'ledColorDarkRed': {
+      AppLanguage.english: 'Dark Red',
+      AppLanguage.indonesia: 'Merah Gelap',
+    },
+    'ledColorFirebrick': {
+      AppLanguage.english: 'Firebrick',
+      AppLanguage.indonesia: 'Merah Bata',
+    },
+    'ledColorTomato': {
+      AppLanguage.english: 'Tomato',
+      AppLanguage.indonesia: 'Tomat',
+    },
+    'ledColorDarkOrange': {
+      AppLanguage.english: 'Dark Orange',
+      AppLanguage.indonesia: 'Jingga Tua',
+    },
+    'ledColorSandyBrown': {
+      AppLanguage.english: 'Sandy Brown',
+      AppLanguage.indonesia: 'Cokelat Pasir',
+    },
+    'ledColorCinnamon': {
+      AppLanguage.english: 'Cinnamon',
+      AppLanguage.indonesia: 'Kayu Manis',
+    },
+    'ledColorGold': {
+      AppLanguage.english: 'Gold',
+      AppLanguage.indonesia: 'Emas',
+    },
+    'ledColorGoldenrod': {
+      AppLanguage.english: 'Goldenrod',
+      AppLanguage.indonesia: 'Kuning Goldenrod',
+    },
+    'ledColorKhaki': {
+      AppLanguage.english: 'Khaki',
+      AppLanguage.indonesia: 'Khaki',
+    },
+    'ledColorDarkGreen': {
+      AppLanguage.english: 'Dark Green',
+      AppLanguage.indonesia: 'Hijau Gelap',
+    },
+    'ledColorForestGreen': {
+      AppLanguage.english: 'Forest Green',
+      AppLanguage.indonesia: 'Hijau Hutan',
+    },
+    'ledColorOlive': {
+      AppLanguage.english: 'Olive',
+      AppLanguage.indonesia: 'Hijau Zaitun',
+    },
+    'ledColorPaleGreen': {
+      AppLanguage.english: 'Pale Green',
+      AppLanguage.indonesia: 'Hijau Pucat',
+    },
+    'ledColorTeal': {
+      AppLanguage.english: 'Teal',
+      AppLanguage.indonesia: 'Biru Kehijauan',
+    },
+    'ledColorTurquoiseStandard': {
+      AppLanguage.english: 'Turquoise',
+      AppLanguage.indonesia: 'Biru Pirus',
+    },
+    'ledColorAquamarine': {
+      AppLanguage.english: 'Aquamarine',
+      AppLanguage.indonesia: 'Akuamarin',
+    },
+    'ledColorCaribbeanTeal': {
+      AppLanguage.english: 'Caribbean Teal',
+      AppLanguage.indonesia: 'Teal Karibia',
+    },
+    'ledColorVividAzure': {
+      AppLanguage.english: 'Vivid Azure',
+      AppLanguage.indonesia: 'Biru Azur Cerah',
+    },
+    'ledColorDodgerBlue': {
+      AppLanguage.english: 'Dodger Blue',
+      AppLanguage.indonesia: 'Biru Dodger',
+    },
+    'ledColorMidnightBlue': {
+      AppLanguage.english: 'Midnight Blue',
+      AppLanguage.indonesia: 'Biru Tengah Malam',
+    },
+    'ledColorNavy': {
+      AppLanguage.english: 'Navy',
+      AppLanguage.indonesia: 'Biru Dongker',
+    },
+    'ledColorAmethyst': {
+      AppLanguage.english: 'Amethyst',
+      AppLanguage.indonesia: 'Ungu Kecubung',
+    },
+    'ledColorElectricViolet': {
+      AppLanguage.english: 'Electric Violet',
+      AppLanguage.indonesia: 'Ungu Elektrik',
+    },
+    'ledColorRebeccaPurple': {
+      AppLanguage.english: 'Rebecca Purple',
+      AppLanguage.indonesia: 'Ungu Rebecca',
+    },
+    'ledColorMediumPurple': {
+      AppLanguage.english: 'Medium Purple',
+      AppLanguage.indonesia: 'Ungu Sedang',
+    },
+    'ledColorLavender': {
+      AppLanguage.english: 'Lavender',
+      AppLanguage.indonesia: 'Lavender',
+    },
+    'ledColorPlum': {
+      AppLanguage.english: 'Plum',
+      AppLanguage.indonesia: 'Ungu Plum',
+    },
+    'ledColorDeepPink': {
+      AppLanguage.english: 'Deep Pink',
+      AppLanguage.indonesia: 'Merah Muda Pekat',
+    },
+    'ledColorNeonPink': {
+      AppLanguage.english: 'Neon Pink',
+      AppLanguage.indonesia: 'Merah Muda Neon',
+    },
+    'ledColorHotPinkStandard': {
+      AppLanguage.english: 'Hot Pink',
+      AppLanguage.indonesia: 'Merah Muda Terang',
+    },
+
     'customColor': {
       AppLanguage.english: 'Custom Color',
       AppLanguage.indonesia: 'Warna Kustom',
@@ -729,8 +854,8 @@ class JexText {
       AppLanguage.indonesia: 'Keamanan Peltier',
     },
     'fanRequiredPeltier': {
-      AppLanguage.english: 'The fan must be running before Peltier can be enabled.',
-      AppLanguage.indonesia: 'Kipas harus menyala sebelum Peltier dapat diaktifkan.',
+      AppLanguage.english: 'Turn on the fan before enabling Peltier.',
+      AppLanguage.indonesia: 'Nyalakan kipas sebelum mengaktifkan Peltier.',
     },
     'cancel': {
       AppLanguage.english: 'Cancel',

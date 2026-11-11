@@ -223,7 +223,7 @@ void main() {
     );
   });
 
-  test('Peltier safety prompt is compact and preserves fan-first safety behavior', () {
+  test('Peltier safety prompt is wide and compact while preserving fan-first safety behavior', () {
     final source = File('lib/main.dart').readAsStringSync();
     final start = source.indexOf('Future<void> _togglePeltier(bool enabled)');
     final end = source.indexOf('if (approved != true) return;', start);
@@ -231,21 +231,50 @@ void main() {
     expect(end, greaterThan(start));
 
     final dialog = source.substring(start, end);
-    expect(dialog, contains('fontSize: 20'));
-    expect(dialog, contains('fontSize: 15'));
+    expect(dialog, contains('fontSize: 18'));
     expect(dialog, contains('fontSize: 14'));
+    expect(dialog, contains('height: 1.12'));
+    expect(dialog, contains('height: 1.28'));
+    expect(dialog, contains('insetPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8)'));
+    expect(dialog, contains('titlePadding: const EdgeInsets.fromLTRB(16, 12, 16, 4)'));
+    expect(dialog, contains('contentPadding: const EdgeInsets.fromLTRB(16, 0, 16, 4)'));
+    expect(dialog, contains('actionsPadding: const EdgeInsets.fromLTRB(8, 2, 8, 6)'));
     expect(dialog, contains('minimumSize: const Size(72, 48)'));
     expect(dialog, contains('minimumSize: const Size(128, 48)'));
-    expect(dialog, contains('insetPadding: const EdgeInsets.symmetric(horizontal: 30, vertical: 18)'));
-    expect(source.indexOf("final fanOk = await _sendAndWaitAck('FAN:ON')", end), greaterThan(end));
+    expect(JexText.of('fanRequiredPeltier', AppLanguage.english), 'Turn on the fan before enabling Peltier.');
+    expect(JexText.of('fanRequiredPeltier', AppLanguage.indonesia), 'Nyalakan kipas sebelum mengaktifkan Peltier.');
+    final fanCommand = source.indexOf("final fanOk = await _sendAndWaitAck('FAN:ON')", end);
+    final peltierCommand = source.indexOf("_sendAndWaitAck(\n          'PELTIER:ON'", fanCommand);
+    expect(fanCommand, greaterThan(end));
+    expect(peltierCommand, greaterThan(fanCommand));
   });
 
-  test('LED color picker stays compact, scrollable and retains all 36 accessible colors', () {
+  test('LED color picker keeps 60 unique, accurately named bilingual colors accessible', () {
     expect(jexLedColorPickerMaxHeight(800), 308.0);
     expect(jexLedColorPickerMaxHeight(300), 246.0);
     expect(jexLedColorPickerMaxHeight(0), 0.0);
-    expect(ledColorPresets.length, 36);
+    expect(ledColorPresets.length, 60);
     expect(ledColorPresets.last.hex, '#FFFFFF');
+    final hexes = ledColorPresets.map((preset) => preset.hex).toSet();
+    final nameKeys = ledColorPresets.map((preset) => preset.nameKey).toSet();
+    expect(hexes.length, 60);
+    expect(nameKeys.length, 60);
+    final englishNames = ledColorPresets
+        .map((preset) => JexText.of(preset.nameKey, AppLanguage.english))
+        .toList();
+    final indonesianNames = ledColorPresets
+        .map((preset) => JexText.of(preset.nameKey, AppLanguage.indonesia))
+        .toList();
+    expect(englishNames.toSet().length, 60);
+    expect(indonesianNames.toSet().length, 60);
+    expect(englishNames.every((name) => name.trim().isNotEmpty), isTrue);
+    expect(indonesianNames.every((name) => name.trim().isNotEmpty), isTrue);
+    expect(ledColorDisplayName('#FF4500', AppLanguage.english), 'Orange Red');
+    expect(ledColorDisplayName('#FF6347', AppLanguage.english), 'Tomato');
+    expect(ledColorDisplayName('#FFD700', AppLanguage.english), 'Gold');
+    expect(ledColorDisplayName('#7FFF00', AppLanguage.english), 'Chartreuse');
+    expect(ledColorDisplayName('#FF1493', AppLanguage.english), 'Deep Pink');
+    expect(ledColorDisplayName('#40E0D0', AppLanguage.indonesia), 'Biru Pirus');
 
     final source = File('lib/main.dart').readAsStringSync();
     final routeStart = source.indexOf('Future<void> _showLedColorPicker()');
@@ -1959,7 +1988,7 @@ void main() {
     expect(state, contains('unawaited(_coastFanToStop());'));
   });
 
-  test('Peltier Safety dialog uses readable text and comfortable touch targets', () {
+  test('Peltier safety actions retain compact text and full-size tap targets', () {
     final source = File('lib/main.dart').readAsStringSync();
     final methodStart = source.indexOf('Future<void> _togglePeltier(bool enabled)');
     final dialogEnd = source.indexOf('if (approved != true) return;', methodStart);
@@ -1967,9 +1996,9 @@ void main() {
     expect(dialogEnd, greaterThan(methodStart));
     final dialog = source.substring(methodStart, dialogEnd);
     // The compact safety prompt keeps clear hierarchy with 48-dp minimum touch targets.
-    expect(dialog, contains('fontSize: 20'));
-    expect(dialog, contains('fontSize: 15'));
+    expect(dialog, contains('fontSize: 18'));
     expect(dialog, contains('fontSize: 14'));
+    expect(dialog, contains('insetPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8)'));
     expect(dialog, contains('minimumSize: const Size(72, 48)'));
     expect(dialog, contains('minimumSize: const Size(128, 48)'));
     expect(dialog, contains('barrierDismissible: true'));
