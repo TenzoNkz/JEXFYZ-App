@@ -1,3 +1,11 @@
+## 2026-11-11 — Statistics diagrams now refresh once per second
+
+- Owner-requested page cadence change: live Statistics diagram batches now flush once every 1 second through `usageStatisticsDiagramRefreshInterval`.
+- Pending live update objects are retained until the next flush; this is a UI aggregation/render cadence change only. Raw sensor capture, recorder event handling, timestamps and SQLite persistence remain unchanged.
+- Added regression source asserting the one-second timer wiring and independent data-capture path. Test source is committed but NOT RUN.
+- Flutter/Dart/Gradle are not available locally; formatter, analyzer, Flutter suite, Android QC and screenshot validation remain BLOCKED / NOT RUN. No App Build or Release was triggered.
+- This change does not close the remaining full-session analytics recomputation, write-queue/backpressure or animation lifecycle/frame-rate test gaps. Build readiness remains NOT YET RECOMMENDED.
+
 ## 2026-11-11 — Usage Statistics six-chart source implemented; release preflight still pending
 
 - Implemented two animated temperature charts plus four synchronized operating charts: Voltage, Adaptive, Peltier and Fan Speed. The shared elapsed-session cursor reports all six metrics.
