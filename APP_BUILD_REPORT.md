@@ -2393,3 +2393,16 @@
 - **Next disposition:** Build #149 is the current verified App package. Owner installation and field QA are the next distinct acceptance phase; keep Firmware/BIN/OTA/device work out of this App Build checkpoint.
 
 ---
+
+
+## BUILD #150 — GUARDED APP BUILD STARTED / RUNNER SETUP — 2026-11-12 (Asia/Jakarta)
+
+- **Disposition:** ACTIVE. Exactly one guarded issue-triggered attempt was opened from the owner-approved `Eksekusi Build App!` command. No retry or duplicate trigger.
+- **Run:** Build #150 / Actions run `43080229957`, workflow `374946166`, path `.github/workflows/jexfyz-app-build-trigger.yml`, event `issues`, attempt 1; issue `#33`; build job `130730553031`.
+- **Immutable build source SHA:** `9245e142f4ea0e19e5f49e3ec1e1d80db2adf65c`, the verified `main` HEAD at trigger time. Run metadata reports this exact SHA on branch `main`. This source includes the V7.2-related Flutter/App Lock Voltage, P1 synchronization and Settings changes plus associated tests; the Firmware source itself is not compiled or packaged by this App workflow.
+- **Trigger guard:** issue #33 was verified OPEN, owner-authored by `TenzoNkz`, with exact title `JE X FYZ — EKSEKUSI BUILD APP TRIGGER` and body token `JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1`. The issue was closed and reopened exactly once. Workflow blob remains `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12`; its only trigger is issue opened/reopened and its job retains the owner/title/token guard. No push/PR release trigger or bypass was added.
+- **Preflight evidence:** recursive tree 131 entries, `truncated=false`; no queued or in-progress run existed before triggering. Release/tag `jexfyz-latest` were still on Build #149 source `0507e3e11b67b8f8d042e49b74cc14a53bfc4f21`; exactly one APK and one source ZIP were present. Android Gradle `versionName "Telegram @horizontalzzz"` was verified unchanged.
+- **Initial run state:** run first appeared `queued`; latest job snapshot now shows build job `130730553031` `in_progress` at step 1, `Set up job`. No build/analyzer/test/artifact gate has completed yet. Continue monitoring this run only.
+- **Last completed gate:** none (runner/job setup in progress). **Remaining:** checkout/toolchain, signing-secrets preparation, App security/architecture audit, dependencies, analyzer, Flutter tests, Android Gradle gate, obfuscated APK build, V1/V2/V3 and production certificate verification, source ZIP, Release/tag parity, downloaded checksum/identity verification.
+- **No retries** are authorized or attempted. If a real gate fails, inspect its step/log and repair only the App-scope root cause; do not weaken checks.
+- **Evidence boundary:** CI is pending. No Firmware compile, BIN generation/publication, Firebase change, OTA, flash, physical device/NVS/rail/LED/BLE test or OEM visual acceptance was performed or inferred.
