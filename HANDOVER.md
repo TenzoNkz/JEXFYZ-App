@@ -5,7 +5,7 @@ Updated: 2026-11-11 (Asia/Jakarta).
 ## Latest verified App package — Build #149
 
 - Actions run 42967289995, workflow 374946166, attempt 1; job 130347345586; final conclusion success. All 21 required gates and post-job cleanup 39–43 passed.
-- Exact build/release source SHA: 0507e3e11b67b8f8d042e49b74cc14a53bfc4f21; jexfyz-latest tag and Release ID 403010611 point to this exact SHA. Current main includes later documentation-only commits.
+- Exact build/release source SHA: 0507e3e11b67b8f8d042e49b74cc14a53bfc4f21; jexfyz-latest tag and Release ID 403010611 point to this exact SHA. Current main includes the newer unbuilt Peltier/LED source refinement in commit `7f31c2d3b2571dbb9f1c4fa87dea0db0d3851bda`; the published tag/Release still points to the exact Build #149 source SHA.
 - Analyzer: 23 info-level findings, zero warnings/errors. Flutter tests 166/166 passed, including selected Statistics cursor readout after tapping Peltier lane while scrolled. Android Gradle gate succeeded, but :app:testDebugUnitTest and app JUnit compile/test tasks were NO-SOURCE; no native Android app JUnit tests ran.
 - APK built using Flutter --obfuscate --split-debug-info=build/symbols. Production certificate SHA-256 dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0 (RSA 4096, JE X FYZ DN); V1/V2/V3 all verified on original and downloaded APK.
 - **APK:** https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-release.apk — 55,881,819 bytes; SHA-256 84a9165f67420e99d6ae7585340e0ef7e29e80de1d413fbc9c7352866d0670d5.
@@ -20,4 +20,4 @@ Updated: 2026-11-11 (Asia/Jakarta).
 
 ## Next direction
 
-Immediate App task: owner-requested Peltier safety popup proportion refinement and LED Color Picker expansion/name correction; see `DESIGN_NOTES.md`. Current proposal is discussion-only, not implemented. After owner issues `Eksekusi Full!`, update only the scoped App source/tests/docs; a new package requires separate `Eksekusi Build App!`. Build #149 installation/OEM field acceptance remains pending afterward. Do not infer Firmware/device authorization from CI.
+Current main already contains the Peltier safety popup proportion refinement and the 60-color LED palette/name correction in commit `7f31c2d3b2571dbb9f1c4fa87dea0db0d3851bda`; source/test changes are committed but **NOT RELEASED**. Flutter/Dart formatter, tests/analyzer, hosted CI and visual/device screenshot acceptance were not run. Next safe App action is a separate guarded `Eksekusi Build App!` for QC/package; do not treat Build #149 as containing this update. Build #149 field acceptance, Statistics performance risks and physical BLE/thermal validation remain pending. Do not infer Firmware/device authorization from CI.

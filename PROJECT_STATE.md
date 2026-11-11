@@ -10,13 +10,14 @@
 - **Performance gaps remain OPEN:** full selected-session analytics recomputed each one-second batch; unbounded/unbatched SQLite write queue; long-session CPU/memory/backpressure and animation lifecycle/60–120-Hz stress tests. Do not infer these are validated by normal CI.
 - **Field evidence UNVERIFIED:** owner install identity, OEM visuals at 350-dp/420-dp, physical BLE, real Usage Statistics telemetry/soak, cooling thermal/electrical performance, Firmware/BIN/OTA. No Firmware/device operations were performed.
 
-## Current UI follow-up — owner request 2026-11-11 (Diskusi only)
+## Current main App source candidate — Peltier dialog and 60-color LED palette (2026-11-11)
 
-- Owner screenshot review: Peltier safety dialog still feels too tall/narrow with oversized text. Live source currently uses 20/15/14 dp typography and 30-dp horizontal AlertDialog insets; propose 304–312 dp effective width, roughly 132–142 dp target height, title/body 18/14 dp, action 14 dp, tighter vertical padding and unchanged 48-dp minimum action height.
-- LED Color Picker currently has 36 named EN/ID presets. Owner requests more options and accurate names. Recommendation: 60 unique curated colors total, six-column scrollable grid unchanged, plus 24 balanced tones. Correct mismatches by matching names to exact RGB (e.g. #FF6347 Tomato, #FFD700 Gold, #7FFF00 Chartreuse, #FF1493 Deep Pink).
-- The exact proposed layout/palette and acceptance matrix are in DESIGN_NOTES.md. These are discussion recommendations only; no source/test/config/workflow/build/Release/device operation was performed. Await explicit Eksekusi Full! before implementation. A new APK requires separate Eksekusi Build App!.
-- Build #149 installation/OEM field acceptance and the existing Statistics/SQLite/animation performance risks remain open.
-
+- **Source commit:** `7f31c2d3b2571dbb9f1c4fa87dea0db0d3851bda`. This is a source/test/documentation update after Build #149. The published `jexfyz-latest` Release/tag remains on Build #149 source `0507e3e11b67b8f8d042e49b74cc14a53bfc4f21`; the new UI refinements are **NOT RELEASED**.
+- **Peltier dialog:** effective width target approximately 312 dp in the protected 360-dp canvas; 18/14/14 dp title/body/actions; reduced insets and vertical padding. Cancel/Fan targets remain at least 48 dp high. Bilingual safety copy is shorter. The FAN-before-PELTIER command/ACK order and safety predicates are preserved.
+- **LED palette:** 60 unique HEX presets, 60 unique localization keys, 60 unique English names and 60 unique Indonesian names. Six-column scroll, 48-dp cells, 32-dp swatches, staged preview, Cancel, explicit Select/commit and legacy RGB aliases are retained. Known CSS-aligned names now match their exact HEX values.
+- **Regression source:** widget tests now cover dialog sizing/copy/tap heights/fan-first order, 60-color uniqueness, complete bilingual names, representative HEX-name mapping, final white, six-column scrolling and swatch/hit-target sizes.
+- **Validation boundary:** live source and localization static checks passed; full tree remained 131 entries, `truncated=false`. Flutter/Dart/Gradle/ADB are not installed in the active container, so `dart format`, focused/full `flutter test`, `flutter analyze`, Android build, hosted CI and screenshot/OEM/device acceptance are BLOCKED / NOT RUN. Visual status remains VISUAL NOT VERIFIED. No App Build, release, Firmware, BIN, Firebase, OTA, flash or device action occurred.
+- **Next action:** a separate `Eksekusi Build App!` is required before packaging these source changes. The Build #149 installation/field-acceptance checks and open Statistics/SQLite/animation performance risks remain outstanding.
 
 ---
 ## HISTORICAL App QC — Build #149 APK build active — 2026-11-11
