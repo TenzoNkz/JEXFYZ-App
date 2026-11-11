@@ -1,3 +1,12 @@
+## Build #146 Flutter test failure — five concrete repairs committed (2026-11-11)
+
+- Run 42944693211, job 130274555621, source d5bc688cc14243cd944f2d8d653bbcb59d2805fe. Analyzer passed (23 info only); Flutter suite 161 passed / 5 failed; Android and Release steps skipped.
+- Exact failures: max-height exact double (245.99999999999997 vs 246); outdated storage contract expected a fixed 16ms timer; old LED picker contract expected 22sp/42dp; cursor lane could be partially visible when tapped; old Peltier contract expected 24/17sp and larger buttons.
+- Repairs: 4028949dca6c2f5ced55f54861b6c5197426c1dd rounds bounded LED max height to whole dp; fb845d88567503de4a78668c2b6b08eeb61de5e5 asserts Ticker/vsync animation instead of fixed timer and ensures chart lane fully visible before tap; b1609b01d4dee470b96e2030cb5583df1efc1351 refreshes LED/Peltier source contracts to current compact sizes.
+- New hosted validation pending. Do not claim #146 produced a package; no artifact.
+- Performance gaps persist: full-session recompute per 1Hz batch; unbounded/unbatched SQLite queue; long-session CPU/memory/backpressure; animation lifecycle/60–120-Hz testing.
+
+---
 ## Active App QC — Build #146 (2026-11-11)
 
 - Run 42944693211, job 130274555621, source SHA `d5bc688cc14243cd944f2d8d653bbcb59d2805fe`. Steps 1–2 success; step 3 Java setup in progress.
