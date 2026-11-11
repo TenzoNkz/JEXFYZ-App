@@ -1,14 +1,15 @@
-## Current App candidate — Build #148 cursor test failure; expanded tap target committed (2026-11-11)
+## Current App candidate — cursor readout pinned; hosted QC pending (2026-11-11)
 
-- **Build #148:** run 42946808657, job 130281466870, source 8662d7d0f4b8a67521e0a80c7fdd95656cc84235. Steps 1–12 passed; analyzer 23 info, zero warnings/errors; Flutter 165 passed / 1 failed (shared Statistics cursor text absent); downstream Android/Release skipped. No package.
-- **Confirmed improvements:** LED 312dp panel contract and all earlier five Build #146 tests passed in #147/#148. Only cursor widget interaction remains.
-- **Follow-up source:** 98dd3657d225292a1d1f395693ad7f02d65b240d adds SizedBox.expand around timeline and onTapUp update; Listener pointer-down and horizontal drag remain. Hosted validation pending.
-- **Earlier cursor source/test:** 2963faaf8052aa3cca791a0f66d43f0d13800c87 and 8ba15dd2647f96a407efda82ae8ae2ec0e0bc676.
-- **Retry:** original explicit Build App authorization remains; confirm no active runs/PR and exact issue #33 guard before one retry.
-- **Known gaps:** full summary recompute per 1Hz batch; unbounded/unbatched SQLite queue; long-session CPU/memory/backpressure; animation lifecycle/60–120-Hz tests.
-- Preserve Android versionName "Telegram @horizontalzzz"; no Firmware/BIN/Firebase/OTA/flash/device operation.
+- **Latest executable App source:** f56b2a9a4893a1a0810cfdfb38524fd79df87d05. Moves selected Statistics cursor readout to conditional Scaffold.bottomNavigationBar so it remains mounted/visible when the user scrolls to lower chart lanes. Initial hint remains in ListView when no selected timestamp. Listener/tap-up/drag cursor handlers and existing Peltier-lane widget regression are retained.
+- **Build failures:** #144 analyzer 12 errors/3 warnings; #145 analyzer one nullable-double error; #146 analyzer passed, Flutter 161/5; #147 analyzer passed, Flutter 164/2; #148 analyzer passed, Flutter 165/1 (only selected-time readout not found). No later gate/package/release from these attempts.
+- **Root cause:** selected readout was an early lazy ListView child and could be evicted while the Peltier lane was visible. Pinned readout panel is a targeted App UI fix, not a weakened test.
+- **Preflight baseline:** workflow blob 9dc1e61ba49f19cad4edbb99a832d5333d9f0f12, issue #33 exact OPEN, no active runs/open PR. Latest published package remains Build #143 / source SHA 121ef9e0f5ed6a0003837d32e4c8b1701f38631a.
+- **Still open:** full analytics recomputation per 1Hz update, unbounded SQLite queue/backpressure, long-session CPU/memory and animation lifecycle/60–120-Hz stress tests. No claim of stress validation.
+- Preserve Android versionName "Telegram @horizontalzzz"; App-only boundary. New cursor patch is NOT YET HOSTED-VALIDATED.
 
 ---
+## HISTORICAL App candidate — Build #148 cursor test failure and pointer attempts (2026-11-11)
+
 ## HISTORICAL App QC — Build #148 active / Flutter test failure — 2026-11-11
 
 ## HISTORICAL App candidate — Build #147 two test failures repaired — 2026-11-11
