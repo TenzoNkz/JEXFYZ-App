@@ -1,4 +1,14 @@
-## Current App QC — Build #149 active (2026-11-11)
+## Current App QC — Build #149 APK build active (2026-11-11)
+
+- Run 42967289995, job 130347345586, source SHA 0507e3e11b67b8f8d042e49b74cc14a53bfc4f21.
+- **Passed:** steps 1–14, including analyzer, full Flutter tests and Android Gradle gate.
+- **Current:** step 15 Build latest release APK is in_progress; steps 16–21 pending. No artifact or new Release asset yet.
+- Pinned selected Statistics cursor readout source and regression test are included in the passing Flutter suite.
+- Full-session summary recomputation per 1Hz batch, unbounded SQLite queue/backpressure, long-session CPU/memory and animation lifecycle/60–120-Hz tests remain open.
+- Preserve Android versionName Telegram @horizontalzzz; App-only scope.
+
+---
+## HISTORICAL App QC — Build #149 active (2026-11-11)
 
 - **Run:** 42967289995, job 130347345586, workflow 374946166, issue event, attempt 1; immutable source SHA 0507e3e11b67b8f8d042e49b74cc14a53bfc4f21.
 - **Trigger:** issue #33 exact guard closed/reopened once; exactly one run created. No duplicate.
