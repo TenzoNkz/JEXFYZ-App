@@ -1726,9 +1726,12 @@ void main() {
     expect(colorCardStart, isNonNegative);
     expect(colorCardEnd, greaterThan(colorCardStart));
     final colorCard = source.substring(colorCardStart, colorCardEnd);
-    expect(colorCard, contains('fontSize: 22'));
-    expect(colorCard, contains('fontSize: 15'));
-    expect(colorCard, contains('mainAxisExtent: 42'));
+    // Compact anchored picker: compact heading, readable action labels and 48-dp swatches.
+    expect(colorCard, contains('fontSize: 19'));
+    expect(colorCard, contains('fontSize: 14'));
+    expect(colorCard, contains('height: 48'));
+    expect(colorCard, contains('mainAxisExtent: 48'));
+    expect(colorCard, contains('alignment: Alignment.centerLeft'));
     expect(colorCard, contains('alignment: Alignment.centerRight'));
     expect(colorCard, contains("JexText.of('select', lang)"));
     expect(colorCard, contains('onPressed: _isApplying ? null : _applySelection'));
@@ -1958,15 +1961,18 @@ void main() {
 
   test('Peltier Safety dialog uses readable text and comfortable touch targets', () {
     final source = File('lib/main.dart').readAsStringSync();
-    final dialogStart = source.indexOf('showGeneralDialog<bool>');
-    final dialogEnd = source.indexOf('if (approved != true) return;', dialogStart);
-    expect(dialogStart, isNonNegative);
-    expect(dialogEnd, greaterThan(dialogStart));
-    final dialog = source.substring(dialogStart, dialogEnd);
-    expect(dialog, contains('fontSize: 24'));
-    expect(dialog, contains('fontSize: 17'));
-    expect(dialog, contains('minimumSize: const Size(86, 48)'));
-    expect(dialog, contains('minimumSize: const Size(142, 50)'));
+    final methodStart = source.indexOf('Future<void> _togglePeltier(bool enabled)');
+    final dialogEnd = source.indexOf('if (approved != true) return;', methodStart);
+    expect(methodStart, isNonNegative);
+    expect(dialogEnd, greaterThan(methodStart));
+    final dialog = source.substring(methodStart, dialogEnd);
+    // The compact safety prompt keeps clear hierarchy with 48-dp minimum touch targets.
+    expect(dialog, contains('fontSize: 20'));
+    expect(dialog, contains('fontSize: 15'));
+    expect(dialog, contains('fontSize: 14'));
+    expect(dialog, contains('minimumSize: const Size(72, 48)'));
+    expect(dialog, contains('minimumSize: const Size(128, 48)'));
+    expect(dialog, contains('barrierDismissible: true'));
   });
 
   test('Android notifications use JE X FYZ branding and meaningful foreground text', () {
