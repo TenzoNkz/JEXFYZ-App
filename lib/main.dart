@@ -7033,6 +7033,7 @@ void _handleAckLine(String line) {
   }
 
   Future<void> _openSettings() async {
+    await Navigator.push<void>(
       context,
       MaterialPageRoute<void>(
         builder: (_) => JexFixedScalePage(
