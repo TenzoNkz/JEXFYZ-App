@@ -13,6 +13,9 @@ import 'package:sqflite/sqflite.dart';
 
 import 'app_settings.dart';
 
+/// Refresh cadence for the Statistics diagrams; collection and persistence are independent.
+const Duration usageStatisticsDiagramRefreshInterval = Duration(seconds: 1);
+
 /// Physical output telemetry, not a BLE connection or selected mode, defines operation.
 bool usageCoolerIsActive({required bool fanOn, required bool peltierOn}) =>
     fanOn || peltierOn;
@@ -1545,8 +1548,9 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
     final coolerId = widget.coolerId?.trim();
     if (coolerId == null || update.coolerId != coolerId) return;
     _pendingLiveUpdates.add(update);
+    // Retain every incoming event, but aggregate and refresh the diagrams once per second.
     _liveFlushTimer ??= Timer(
-      const Duration(milliseconds: 16),
+      usageStatisticsDiagramRefreshInterval,
       _flushLiveUpdates,
     );
   }
