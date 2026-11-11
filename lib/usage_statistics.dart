@@ -2454,18 +2454,24 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
                 ),
                 child: GestureDetector(
                   behavior: HitTestBehavior.opaque,
+                  onTapUp: (details) => _setChartCursor(
+                    details.localPosition.dx,
+                    constraints.maxWidth,
+                  ),
                   onHorizontalDragUpdate: (details) => _setChartCursor(
                     details.localPosition.dx,
                     constraints.maxWidth,
                   ),
-                  child: _AnimatedUsageTimeline(
-                    key: ValueKey<String>('usage-profile-timeline-$lane'),
-                    segments: segments,
-                    fromMs: _snapshot!.fromMs,
-                    toMs: _snapshot!.toMs,
-                    lane: lane,
-                    scheme: scheme,
-                    cursorTimestampMs: _selectedTimestampMs,
+                  child: SizedBox.expand(
+                    child: _AnimatedUsageTimeline(
+                      key: ValueKey<String>('usage-profile-timeline-$lane'),
+                      segments: segments,
+                      fromMs: _snapshot!.fromMs,
+                      toMs: _snapshot!.toMs,
+                      lane: lane,
+                      scheme: scheme,
+                      cursorTimestampMs: _selectedTimestampMs,
+                    ),
                   ),
                 ),
               ),
