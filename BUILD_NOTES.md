@@ -1,3 +1,12 @@
+## Active validation — Build #145 (2026-11-11)
+
+- Run 42944293567, job 130273243595, immutable source `264469a80b49f70a09f2d705b6ad339ae3ba5fe4`; issue-triggered attempt 1.
+- Steps 1–3 success; Step 4 Flutter setup in progress; later gates pending. No package yet.
+- Repair commits: `80b8874c9d851d1422009cfdbb85f33eec74f8b2` and `1e04495416426ea5f4b3c9280704b1deee9a821c`.
+- #144 stopped at analyzer; 12 errors, 3 warnings, 25 infos. No downstream test/build/release. Root cause was cursor helpers embedded in `_messageState` parameter list plus missing key forwarding on timeline widget.
+- Known open performance gaps: selected-session full-summary recompute each one-second UI batch; unbounded/unbatched recorder write queue; long-session CPU/memory/backpressure; animation lifecycle/60–120-Hz testing. Do not claim these are solved by normal CI gates.
+
+---
 ## Build #144 analyzer failure — concrete App repair committed, hosted retry pending (2026-11-11)
 
 - Run 42943589237, job 130270923510, source `e1d624bc0990ed3552ebbefaac1164cf025b794f`. Steps 1–11 success, step 12 analyzer failure, downstream 13–21 skipped; no package/Release mutation.
