@@ -14,6 +14,17 @@
 - **Open boundary:** Firmware V7.2 compile/BIN, Firebase/OTA/flash, physical BLE/device/NVS/rail/LED, cooling thermal/electrical, owner installation and OEM visual acceptance were NOT performed or inferred. App CI does not prove field acceptance.
 - **Next:** owner install + physical App/BLE/OEM visual QA (350-dp/420-dp, reconnect and Lock Voltage); record separately. No new App Build until source changes.
 
+
+## CURRENT ENGINEERING CHECKPOINT — V7.2 Lock Voltage source + Build #151 CI (2026-11-12)
+
+- **Live main:** `0d68a16812892fc3f91314321f55cd84bfaade9a` (the preceding baseline used for this checkpoint); recursive tree is complete (131 entries, `truncated=false`). Compared with immutable Build #151 source `e383924067b7ab2da27f2e41f21232cfb7144ec0`, main was 16 commits ahead / 0 behind and the diff changed only five Markdown files; Firmware, App source, tests, configuration and workflow blobs were unchanged.
+- **SOURCE IMPLEMENTED:** one active Firmware sketch, `firmware/JEXFYZ-V7.2.ino`, FW_VERSION V7.2, blob `140e758e7101cadc3ccc58cc5c52e49534b0032c`. Lock Voltage is persisted in Preferences `jexfyz/vLock5V`; ON applies a runtime 5V interlock, redirects an active transition without restarting the 200ms deadtime, forces Adaptive OFF, and is rechecked before selector activation. Unlock leaves the rail at 5V and Adaptive OFF; Adaptive requires an explicit re-enable after unlock.
+- **P1/App:** full sync includes `VOLTAGE_LOCK` and `VOLTAGE_LOCK_SAVED`; App waits for ACK plus matching state telemetry and reports persistence failure separately. Touch single tap follows actual rail 5V→9V→12V→5V. Refused Touch/manual voltage requests use a nonblocking two-red-pulse indicator, preempted by OTA/NTC/Hotside safety.
+- **VERIFIED CI (App/static-contract scope):** Build #151 run `43080954412`, job `130733048413`, source `e383924067b7ab2da27f2e41f21232cfb7144ec0`; hosted analyzer 23 info-level findings, zero warnings/errors; Flutter `171/171` passed, including the one-way Touch test and four V7.2 Lock Voltage/App contract tests. Android `:app:testDebugUnitTest` was `NO-SOURCE`. The relevant Firmware/App/test blobs are identical on current main. This is NOT an Arduino Firmware compile or physical validation.
+- **OPEN / UNVERIFIED:** Arduino-ESP32 Core 3.3.7 compile, BIN provenance, NVS power-cycle, physical rail/selector/soft-start, Touch/LED, BLE identity/security, thermal/electrical cooling, OTA/flash and owner-side OEM visual acceptance. BLE App-only authentication remains BLOCKED; another bonded/manual client may send `VOLTAGE_LOCK:OFF`.
+- **Minor source note:** the first comment block in the V7.2 sketch still says `V7.1 Firmware` while FW_VERSION is V7.2; no runtime effect, correct in a separately authorized source edit.
+- **Next direction:** independent Gemini review of the self-contained state-machine excerpts, then decide whether to request `Eksekusi Full!` for any source/test cleanup. This Diskusi authorizes no source edits, tests/builds, Firmware compilation, BIN, Firebase, OTA, flash or device work.
+
 ---
 
 ## CURRENT CHECKPOINT — BUILD #149 COMPLETED / RELEASE VERIFIED — 2026-11-11
