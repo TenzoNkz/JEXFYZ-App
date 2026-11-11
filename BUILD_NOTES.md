@@ -7,7 +7,7 @@
 - Performance gaps persist: full-session recompute per 1Hz batch; unbounded/unbatched SQLite queue; long-session CPU/memory/backpressure; animation lifecycle/60–120-Hz testing.
 
 ---
-## Active App QC — Build #146 (2026-11-11)
+## HISTORICAL App QC — Build #146 before Flutter test failure (2026-11-11)
 
 - Run 42944693211, job 130274555621, source SHA `d5bc688cc14243cd944f2d8d653bbcb59d2805fe`. Steps 1–2 success; step 3 Java setup in progress.
 - Includes repairs for #144 helper/method scope, timeline widget key, imports and #145 nullability/path assertion.
