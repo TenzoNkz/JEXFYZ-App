@@ -1,3 +1,13 @@
+## Build #147 pre-trigger ready — Build #146 Flutter tests repaired (2026-11-11)
+
+- Candidate main before this checkpoint: 245f9870f7bd75b1c7f18827a4f4fb6ae5588b4b; latest executable code/test commit b1609b01d4dee470b96e2030cb5583df1efc1351.
+- #146 run 42944693211/job 130274555621: analyzer 23 infos, zero warnings/errors; Flutter suite 161 passed / 5 failed; Android/build/signing/source/Release/download skipped. No #146 artifact.
+- Fixes: round LED picker max height; replace stale fixed-16ms animation contract with vsync/Ticker checks; ensure full Peltier timeline lane is visible before cursor tap; update old LED and Peltier UI contracts to current compact sizes.
+- Preflight: no active run/queued job, no open PR, issue #33 exact OPEN title/token, workflow issue-only guard unchanged, versionName preserved, tree complete. #143 remains current published baseline.
+- Explicit Build App authorization permits one guarded retry; capture new source SHA/run/job and don't duplicate.
+- Risk register unchanged: summary full recompute per 1-second batch; unbounded/unbatched SQLite writes; long-session CPU/memory/backpressure; animation lifecycle/60–120-Hz test coverage.
+
+---
 ## Build #146 Flutter test failure — five concrete repairs committed (2026-11-11)
 
 - Run 42944693211, job 130274555621, source d5bc688cc14243cd944f2d8d653bbcb59d2805fe. Analyzer passed (23 info only); Flutter suite 161 passed / 5 failed; Android and Release steps skipped.
