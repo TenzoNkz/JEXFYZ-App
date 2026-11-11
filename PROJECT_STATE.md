@@ -1,13 +1,15 @@
-## Current App candidate — Build #144 analyzer failure repaired; hosted retry pending (2026-11-11)
+## Current App QC — Build #145 active (2026-11-11)
 
-- **Build #144:** run 42943589237, job 130270923510, source `e1d624bc0990ed3552ebbefaac1164cf025b794f`. Steps 1–11 passed; analyzer step 12 failed with 12 errors, 3 warnings and 25 infos; steps 13–21 skipped. No package/Release output. Build #143 remains the latest verified release.
-- **Root cause:** `_setChartCursor` and `_sharedCursorReadout` were placed inside `_messageState`'s named parameter list in `lib/usage_statistics.dart`, corrupting method scope and creating cascaded missing symbol/parser errors. `_AnimatedUsageTimeline` also lacked `super.key`.
-- **Repairs:** `80b8874c9d851d1422009cfdbb85f33eec74f8b2` restored method/helper scope, correct optional `action` parameter, timeline key forwarding, removed unused `previousY` and unnecessary assertion. `1e04495416426ea5f4b3c9280704b1deee9a821c` removed two unnecessary Flutter imports. Source read-back verified the structure; hosted analyzer/test validation pending.
-- **Retry:** authorized by the original explicit Build App command plus concrete source repair. Next run must be new guarded issue event, one only, after confirming no active jobs and exact issue guard.
-- **Unclosed performance risks:** per-refresh full-session analytics recomputation, unbounded/unbatched SQLite write queue, long-session CPU/memory/backpressure and animation lifecycle/60–120-Hz stress tests.
-- Preserve Android `versionName "Telegram @horizontalzzz"`; no Firmware/BIN/Firebase/OTA/flash/device operation.
+- **Run:** 42944293567, job 130273243595, workflow 374946166, issue event, attempt 1; immutable source SHA `264469a80b49f70a09f2d705b6ad339ae3ba5fe4`.
+- **Status:** steps 1–3 success; step 4 Flutter setup in progress; 5–21 pending. No artifact yet.
+- **Retry repairs included:** `80b8874c9d851d1422009cfdbb85f33eec74f8b2` restores cursor helper/method boundaries, optional action parameter, timeline key, and clears two analyzer warnings; `1e04495416426ea5f4b3c9280704b1deee9a821c` removes redundant imports.
+- **Prior #144:** analyzer failure 12 errors, 3 warnings, 25 infos; downstream gates skipped. Root cause was malformed method scope and missing timeline key. No release mutation.
+- **Known gaps remain:** full selected-session summary recomputation per one-second batch; unbounded/unbatched SQLite write queue; long-session CPU/memory/backpressure; animation lifecycle/60–120-Hz tests.
+- Preserve `versionName "Telegram @horizontalzzz"`; no Firmware/BIN/Firebase/OTA/flash/device operation.
 
 ---
+## HISTORICAL App candidate — Build #144 analyzer failure / repair — 2026-11-11
+
 ## HISTORICAL App QC — Build #144 active / terminal analyzer failure — 2026-11-11
 
 ## HISTORICAL App candidate — guarded Build App requested (2026-11-11)
