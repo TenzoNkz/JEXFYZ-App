@@ -36,6 +36,12 @@
 - **Not run:** Flutter/Dart unavailable, so formatter, focused/full Flutter tests and analyzer BLOCKED / NOT RUN; no Android build, hosted CI, screenshots or device validation. No Build App, Firmware, BIN, Firebase, OTA, flash or device operation.
 - **Next:** separate `Eksekusi Build App!` for hosted QC/package. Then perform owner installation/visual acceptance. Statistics summary recomputation, unbounded SQLite queue and long-session/frame-rate stress risks remain open.
 
+**Chat Stuck recovery verification — 2026-11-11 (Asia/Jakarta):** inherited only the preceding `Eksekusi Full!` App UI scope. Live main HEAD at recovery was `6c7b881a6a7941e401d24c03f97f52b2c4bc84fb`; implementation commit `7f31c2d3b2571dbb9f1c4fa87dea0db0d3851bda` and stale-test cleanup `b24848222c0a90f213dd6017571e13857138d4f9` were already present, so no duplicate source patch was applied. Follow-on commits through the recovery HEAD are documentation-only.
+- Re-read `lib/main.dart`, `lib/app_settings.dart` and `test/widget_test.dart`. The Peltier dialog uses 8-dp AlertDialog insets inside the 16-dp fixed-canvas side padding (approx. 312 dp effective width), 18/14/14 dp typography, concise EN/ID safety copy and 72×48 / 128×48 dp action minima. The test checks FAN command before PELTIER command.
+- Static comparison confirms all 36 original preset HEX values remain; 24 additions produce 60 unique HEX values and 60 unique name keys. All 60 have non-empty, unique English and Indonesian names; test contracts assert 60 entries and representative HEX/name pairs. Selection staging, Cancel/Select, six columns, 48-dp cells, 32-dp swatches and legacy aliases remain.
+- Local environment check: Flutter, Dart, Gradle and ADB are not installed. Formatter, focused/full Flutter tests and analyzer are BLOCKED / NOT RUN. Latest Actions remains Build #149 run `42967289995`; no build/release was triggered. Visual/OEM screenshots and device behavior remain NOT VERIFIED.
+- Current main after the documentation checkpoint is newer than the Build #149 Release source; the 60-color/dialog changes are NOT RELEASED. Next safe operation is a separately authorized `Eksekusi Build App!` for hosted QC/package.
+
 
 ---
 ## HISTORICAL CHECKPOINT — BUILD #149 ANDROID GATE PASSED / APK BUILD ACTIVE — 2026-11-11
