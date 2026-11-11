@@ -8,7 +8,7 @@
 - Preserve Android versionName "Telegram @horizontalzzz"; no Firmware/BIN/Firebase/OTA/flash/device operation.
 
 ---
-## Current App QC — Build #146 active (2026-11-11)
+## HISTORICAL App QC — Build #146 active before Flutter test failure (2026-11-11)
 
 - **Run:** 42944693211, job 130274555621, workflow 374946166, issue event, attempt 1; immutable source `d5bc688cc14243cd944f2d8d653bbcb59d2805fe`.
 - **Initial status:** steps 1–2 success; step 3 Java 17 setup in progress; steps 4–21 pending. No artifact yet.
