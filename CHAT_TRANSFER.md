@@ -1,3 +1,21 @@
+## CURRENT CHECKPOINT — FIRMWARE V7.2 SOURCE IMPLEMENTED / VALIDATION PENDING — 2026-11-12
+
+Repository: TenzoNkz/JEXFYZ-App, branch main. Baseline before this source change: 2da154fdb18f3342ec06b74619637c836a85ff5d.
+
+Implemented source scope: one-way physical Touch cycle (actual rail V5→V9→V12→V5) and persistent 5V Lock Voltage, together with additive BLE P1 state/command, Flutter Settings toggle, bilingual locked Voltage/Adaptive presentation, NVS failure/retry status, red two-pulse rejection feedback and source-contract tests.
+
+Source paths: firmware/JEXFYZ-V7.2.ino (FW_VERSION="V7.2"); lib/main.dart; lib/floating_monitor.dart; test/firmware_qc_contract_test.dart; test/firmware_touch_adaptive_sync_test.dart. The V7.1 active sketch is removed by the versioned rename. Current Firmware blob f1eb83d5605691040fdc9d7f64fee5c4a0bfbf52. App main blob eb70fcb9fdf6c13105fef6b64a0b402c8fac8eb3. Settings UI blob 5a1e8b3118fc46f3b9a0cb470aaefc11779a70e7. QC contract blob 485c2dc79cdd537f8f523db5bc4c722a3a68ebaf. Touch contract blob f177d0c724b0275849e126d3edc349eaf4a05471. Final commit SHA will be recorded after commit.
+
+Behavioral contract: Lock ON imposes a firmware-side 5V ceiling; safe handoff uses the existing selector pipeline; in-flight transitions are retargeted without restarting the 200ms deadtime; Adaptive is forced OFF and blocked from reactivation while locked, including after reboot. OFF requires successful NVS write/readback; unlock leaves V5 and Adaptive OFF. Missing vLock5V key on V7.1 upgrade defaults OFF. Failed ON remains runtime-locked but unsaved; failed OFF remains locked. Touch sequence derives from actual currentVoltage.
+
+P1: VOLTAGE_LOCK:ON|OFF; full-sync/live state VOLTAGE_LOCK and VOLTAGE_LOCK_SAVED. Actual rail completion is still reported separately by VOLTAGE. UUID/framing unchanged.
+
+Security limitation: existing BLE Just Works + SYNC_READY does not authenticate the official App. A bonded/manual client may still send VOLTAGE_LOCK:OFF. App-only authorization remains BLOCKED; do not describe the Lock toggle as cryptographically App-only.
+
+Validation not performed: Flutter/Dart formatting, tests, analyzer and hosted CI are NOT RUN; Arduino-ESP32 Core 3.3.7 compilation, BIN generation/publication, Firebase, OTA, flash, device, NVS power-cycle, physical LED/rail and OEM screenshot checks are NOT RUN. No App Build/release was authorized. Build #149 remains latest released App package and does not include the new source.
+
+Next: run independent source/readback review; then owner must separately issue Eksekusi Build App! for hosted App QC/package and separately compile Firmware with the approved Arduino Core. Never infer hardware validation from source checks.
+
 ## CURRENT CHECKPOINT — BUILD #149 COMPLETED / RELEASE VERIFIED — 2026-11-11
 
 **Disposition:** Build #149 / Actions run 42967289995 COMPLETED / SUCCESS / RELEASED. Workflow 374946166, attempt 1; job 130347345586 completed success. All 21 required gates and post-job cleanup steps 39–43 passed.

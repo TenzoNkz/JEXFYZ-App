@@ -23,19 +23,19 @@ void main() {
   });
 
   test('Active firmware keeps one calibrated NTC read and cooperative timing', () {
-    final source = File('firmware/JEXFYZ-V7.1.ino').readAsStringSync();
-    expect(source, contains('FW_VERSION[] = "V7.1"'));
+    final source = File('firmware/JEXFYZ-V7.2.ino').readAsStringSync();
+    expect(source, contains('FW_VERSION[] = "V7.2"'));
     expect(RegExp(r'analogReadMilliVolts\(PIN_NTC\)').allMatches(source).length, 1);
     expect(RegExp(r'^\s*delay\s*\(', multiLine: true).hasMatch(source), isFalse);
     expect(RegExp(r'^\s*while\s*\(', multiLine: true).hasMatch(source), isFalse);
   });
 
-  test('V7.1 is detected as an OTA target from V7.0', () {
-    expect(isDifferentFirmwareVersion('V7.1', 'V7.0'), isTrue);
-    expect(isDifferentFirmwareVersion('V7.1', 'V7.1'), isFalse);
+  test('V7.2 is detected as an OTA target from V7.1', () {
+    expect(isDifferentFirmwareVersion('V7.2', 'V7.1'), isTrue);
+    expect(isDifferentFirmwareVersion('V7.2', 'V7.2'), isFalse);
 
-    final source = File('firmware/JEXFYZ-V7.1.ino').readAsStringSync();
-    expect(source, contains('FW_VERSION[] = "V7.1"'));
+    final source = File('firmware/JEXFYZ-V7.2.ino').readAsStringSync();
+    expect(source, contains('FW_VERSION[] = "V7.2"'));
     final versionCheck = source.indexOf('if (cloudVersion.equalsIgnoreCase(FW_VERSION))');
     final nextDownloadPath = source.indexOf('setOtaDiagnosticStage("ONLINE_WIFI_CONNECT")', versionCheck);
     expect(versionCheck, greaterThanOrEqualTo(0));
@@ -43,7 +43,7 @@ void main() {
   });
 
   test('Adaptive protection has 30-second stages and 60-second voltage recovery', () {
-    final source = File('firmware/JEXFYZ-V7.1.ino').readAsStringSync();
+    final source = File('firmware/JEXFYZ-V7.2.ino').readAsStringSync();
     expect(source, contains('HOT_PELTIER_OFF_MS          = 30000'));
     expect(source, contains('HOTSIDE_REARM_STABLE_MS = 5000UL'));
     expect(source, contains('ADAPTIVE_VOLTAGE_RECOVERY_STABLE_MS = 60000UL'));
@@ -54,9 +54,9 @@ void main() {
     expect(source, contains('adaptiveThermalRecoveryActive ||'));
   });
 
-  test('V7.1 Adaptive Fan PWM uses 2°C target bands and timed 10-point ramp steps', () {
-    final source = File('firmware/JEXFYZ-V7.1.ino').readAsStringSync();
-    expect(source, contains('FW_VERSION[] = "V7.1"'));
+  test('V7.2 Adaptive Fan PWM uses 2°C target bands and timed 10-point ramp steps', () {
+    final source = File('firmware/JEXFYZ-V7.2.ino').readAsStringSync();
+    expect(source, contains('FW_VERSION[] = "V7.2"'));
 
     final helperStart = source.indexOf('static uint8_t adaptiveFanTargetPwm(float temperatureC) {');
     final helperEnd = source.indexOf('static void resetAdaptiveFanPwmStepClock()', helperStart);
@@ -151,7 +151,7 @@ void main() {
     expect(expectedTarget(42.99, limit: 45), 90);
     expect(expectedTarget(40.0, limit: 45), 80);
 
-    final source = File('firmware/JEXFYZ-V7.1.ino').readAsStringSync();
+    final source = File('firmware/JEXFYZ-V7.2.ino').readAsStringSync();
     final helperStart = source.indexOf('static uint8_t adaptiveFanTargetPwm(float temperatureC) {');
     final helperEnd = source.indexOf('static void resetAdaptiveFanPwmStepClock()', helperStart);
     expect(helperStart, greaterThanOrEqualTo(0));
@@ -165,7 +165,7 @@ void main() {
   });
 
   test('Online OTA preserves the legacy connection path and GitHub URL restrictions', () {
-    final source = File('firmware/JEXFYZ-V7.1.ino').readAsStringSync();
+    final source = File('firmware/JEXFYZ-V7.2.ino').readAsStringSync();
 
     expect(source, isNot(contains('GITHUB_ROOT_CA')));
     expect(source, isNot(contains('-----BEGIN CERTIFICATE-----')));
@@ -192,7 +192,7 @@ void main() {
   });
 
   test('Manual and Adaptive transitions pause only an active soft-start and preserve full PWM', () {
-    final source = File('firmware/JEXFYZ-V7.1.ino').readAsStringSync();
+    final source = File('firmware/JEXFYZ-V7.2.ino').readAsStringSync();
 
     expect(source, contains('VOLTAGE_DEADTIME_MS           = 200'));
     expect(source, contains('VOLTAGE_GUARD_MS             = 1000'));
@@ -290,7 +290,7 @@ void main() {
   });
 
   test('Adaptive activation observes the new voltage-settle timestamp first', () {
-    final source = File('firmware/JEXFYZ-V7.1.ino').readAsStringSync();
+    final source = File('firmware/JEXFYZ-V7.2.ino').readAsStringSync();
     final start = source.indexOf('static void completeVoltageTransition() {');
     final end = source.indexOf('static float ntcTemperatureFromOhms', start);
 
@@ -315,7 +315,7 @@ void main() {
   });
 
   test('Adaptive ON/OFF handoffs do not force a redundant Peltier OFF cycle', () {
-    final source = File('firmware/JEXFYZ-V7.1.ino').readAsStringSync();
+    final source = File('firmware/JEXFYZ-V7.2.ino').readAsStringSync();
     final start = source.indexOf('static void setAdaptiveState(bool desired, String& reason) {');
     final end = source.indexOf('static bool setRgbState(bool desired)', start);
 
@@ -354,7 +354,7 @@ void main() {
   });
 
   test('Explicit Peltier OFF cancels deferred Adaptive-stop restoration', () {
-    final source = File('firmware/JEXFYZ-V7.1.ino').readAsStringSync();
+    final source = File('firmware/JEXFYZ-V7.2.ino').readAsStringSync();
     final start = source.indexOf('static bool setPeltierState(bool desired, String& reason) {');
     final end = source.indexOf('static bool forceAdaptiveFiveVolt()', start);
 
@@ -369,7 +369,7 @@ void main() {
     expect(peltierStop, greaterThan(cancelRestore));
   });
 
-  test('V7.1 and newer App mode state is updated only by atomic LED_SYNC', () {
+  test('V7.2 and newer App mode state is updated only by atomic LED_SYNC', () {
     final source = File('lib/main.dart').readAsStringSync();
     final start = source.indexOf("case 'MODE':");
     final end = source.indexOf("case 'LED_PHASE':", start);
@@ -384,7 +384,7 @@ void main() {
   });
 
   test('Firmware retires Mirror Pulse without renumbering other LED IDs', () {
-    final source = File('firmware/JEXFYZ-V7.1.ino').readAsStringSync();
+    final source = File('firmware/JEXFYZ-V7.2.ino').readAsStringSync();
     expect(source, contains('STATIC = 1'));
     expect(source, contains('BREATH = 2'));
     expect(source, contains('COMET = 4'));
@@ -397,7 +397,7 @@ void main() {
   });
 
   test('Firmware emits atomic LED_SYNC snapshot at BLE notify time', () {
-    final source = File('firmware/JEXFYZ-V7.1.ino').readAsStringSync();
+    final source = File('firmware/JEXFYZ-V7.2.ino').readAsStringSync();
     final serviceStart = source.indexOf('static void serviceBleTx() {');
     final serviceEnd = source.indexOf('static void sendDelta(', serviceStart);
     expect(serviceStart, greaterThanOrEqualTo(0));
@@ -418,7 +418,7 @@ void main() {
   });
 
   test('Full BLE sync sends atomic LED snapshot rather than two stale phase deltas', () {
-    final source = File('firmware/JEXFYZ-V7.1.ino').readAsStringSync();
+    final source = File('firmware/JEXFYZ-V7.2.ino').readAsStringSync();
     final start = source.indexOf('static void sendFullSync() {');
     final end = source.indexOf('static void sendHotsideTelemetry()', start);
     expect(start, greaterThanOrEqualTo(0));
@@ -430,7 +430,7 @@ void main() {
   });
 
   test('BLE command writes require encryption and bonding', () {
-    final source = File('firmware/JEXFYZ-V7.1.ino').readAsStringSync();
+    final source = File('firmware/JEXFYZ-V7.2.ino').readAsStringSync();
     expect(source, contains('#include <BLESecurity.h>'));
     expect(source, contains('BLESecurity::setAuthenticationMode(true, false, true)'));
     expect(source, contains('BLECharacteristic::PROPERTY_WRITE_ENC'));
@@ -461,7 +461,7 @@ void main() {
   });
 
   test('manual Peltier lock cannot be bypassed by one threshold sample', () {
-    final source = File('firmware/JEXFYZ-V7.1.ino').readAsStringSync();
+    final source = File('firmware/JEXFYZ-V7.2.ino').readAsStringSync();
     final start = source.indexOf('static bool manualPeltierSafetyLatchBlocksPeltier() {');
     final end = source.indexOf('static bool safetyAllowsPeltier()', start);
 
@@ -530,7 +530,7 @@ void main() {
 
 
   test('System LED indicators ignore RGB effect toggle but obey master brightness', () {
-    final source = File('firmware/JEXFYZ-V7.1.ino').readAsStringSync();
+    final source = File('firmware/JEXFYZ-V7.2.ino').readAsStringSync();
     final voltageStart = source.indexOf('static void startVoltageIndicator() {');
     final voltageEnd = source.indexOf('static uint32_t ledAnimationCycleMs(', voltageStart);
     expect(voltageStart, greaterThanOrEqualTo(0));
@@ -551,6 +551,96 @@ void main() {
     expect(source, contains('showAll(ledOn ? indicatorColor : 0x000000, hardwareBrightness())'));
     expect(source, contains('showAll(ledOn ? adaptiveStateIndicatorColor : 0x000000, hardwareBrightness())'));
     expect(source, contains('analogReadMilliVolts(PIN_NTC)'));
+  });
+
+
+  test('V7.2 persistent Lock Voltage is a central fail-closed 5V interlock', () {
+    final source = File('firmware/JEXFYZ-V7.2.ino').readAsStringSync();
+    expect(source, contains('FW_VERSION[] = "V7.2"'));
+    expect(source, contains('prefs.getBool("vLock5V", false)'));
+    expect(source, contains('prefs.putBool("vLock5V", desired)'));
+    expect(source, contains('voltageLockSaved = false;'));
+    expect(source, contains('sendDelta("VOLTAGE_LOCK", boolText(voltageLockActive));'));
+    expect(source, contains('sendDelta("VOLTAGE_LOCK_SAVED", boolText(voltageLockSaved));'));
+
+    final requestStart = source.indexOf(
+      'static bool requestVoltage(Voltage target, VoltageRequestSource source, bool bypassGuard)',
+    );
+    final transitionStart = source.indexOf('static void completeVoltageTransition()', requestStart);
+    expect(requestStart, isNonNegative);
+    expect(transitionStart, greaterThan(requestStart));
+    final request = source.substring(requestStart, transitionStart);
+    final lockGate = request.indexOf('if (voltageLockActive && target != Voltage::V5)');
+    final transitionGate = request.indexOf('if (voltageTransition)');
+    expect(lockGate, greaterThanOrEqualTo(0));
+    expect(transitionGate, greaterThan(lockGate));
+
+    final completionStart = source.indexOf('static void completeVoltageTransition()');
+    final completionEnd = source.indexOf('static float ntcTemperatureFromOhms', completionStart);
+    final completion = source.substring(completionStart, completionEnd);
+    final finalLockGate = completion.indexOf(
+      'if (voltageLockActive && pendingVoltage != Voltage::V5)',
+    );
+    final selectorWrite = completion.indexOf('digitalWrite(PIN_9V, currentVoltage == Voltage::V9 ? OUTPUT_ON : OUTPUT_OFF)');
+    expect(finalLockGate, greaterThanOrEqualTo(0));
+    expect(selectorWrite, greaterThan(finalLockGate));
+
+    final adaptiveStart = source.indexOf('static void setAdaptiveState(bool desired, String& reason)');
+    final adaptiveEnd = source.indexOf('static bool setRgbState(bool desired)', adaptiveStart);
+    final adaptive = source.substring(adaptiveStart, adaptiveEnd);
+    expect(adaptive, contains('if (desired && voltageLockActive)'));
+    expect(source, contains('if (voltageLockActive) {\n    adaptiveStartPending = false;'));
+
+    expect(source, contains('pendingVoltage = Voltage::V5;\n      voltageTransitionSource = VoltageRequestSource::SAFETY;'));
+    expect(source, isNot(contains('touchVoltageAscending')));
+    expect(source, contains('const Voltage next = currentVoltage == Voltage::V5'));
+    expect(source, contains('static void triggerVoltageLockRejectionFlash()'));
+    expect(source, contains('elapsed >= 720UL'));
+    expect(source, contains('hardwareBrightness()'));
+    expect(RegExp(r'^\s*delay\s*\(', multiLine: true).hasMatch(source), isFalse);
+    expect(RegExp(r'^\s*while\s*\(', multiLine: true).hasMatch(source), isFalse);
+  });
+
+  test('V7.2 red rejection flash outranks Adaptive indicator but yields to safety', () {
+    final source = File('firmware/JEXFYZ-V7.2.ino').readAsStringSync();
+    final start = source.indexOf('static void processLeds() {');
+    final end = source.indexOf('static bool voltageGuardAllows', start);
+    final led = source.substring(start, end);
+    final flash = led.indexOf('if (voltageLockRejectionFlashActive)');
+    final adaptiveResume = led.indexOf('if (adaptiveStateIndicatorActive) {', flash);
+    expect(flash, isNonNegative);
+    expect(adaptiveResume, greaterThan(flash));
+    expect(led, contains('if (rejectionPreempted) voltageLockRejectionFlashActive = false;'));
+    expect(led, contains('!ntcValid || hotsideProtectionActiveNow()'));
+  });
+
+  test('V7.2 Lock changes runtime before ON persistence and unlocks only after OFF persistence', () {
+    final source = File('firmware/JEXFYZ-V7.2.ino').readAsStringSync();
+    final start = source.indexOf('static bool setVoltageLock(bool desired, String& reason) {');
+    final end = source.indexOf('static bool setRgbState(bool desired)', start);
+    expect(start, isNonNegative);
+    expect(end, greaterThan(start));
+    final setter = source.substring(start, end);
+    expect(setter.indexOf('voltageLockActive = true;'),
+        lessThan(setter.indexOf('persistVoltageLockValue(true)')));
+    expect(setter.indexOf('if (!persistVoltageLockValue(false))'),
+        lessThan(setter.indexOf('voltageLockActive = false;')));
+    expect(setter, isNot(contains('setAdaptiveState(true')));
+  });
+
+  test('App treats Lock Voltage as synchronized Firmware state, not Android preference', () {
+    final source = File('lib/main.dart').readAsStringSync();
+    final settings = File('lib/floating_monitor.dart').readAsStringSync();
+    expect(source, contains("if (c.startsWith('VOLTAGE_LOCK:')) return 'VOLTAGE_LOCK';"));
+    expect(source, contains("case 'VOLTAGE_LOCK':"));
+    expect(source, contains("case 'VOLTAGE_LOCK_SAVED':"));
+    expect(source, contains('voltageLockKnown && voltageLockActive'));
+    expect(source, contains("enabled ? 'VOLTAGE_LOCK:ON' : 'VOLTAGE_LOCK:OFF'"));
+    expect(settings, contains('voltageLockSettingsNotifier'));
+    expect(settings, contains('Lock Voltage requires Firmware V7.2 or newer.'));
+    expect(settings, contains('onVoltageLockChanged(value)'));
+    expect(source, contains('_publishVoltageLockSettings();'));
+    expect(source, contains('voltageLockKnown = false;'));
   });
 
 }

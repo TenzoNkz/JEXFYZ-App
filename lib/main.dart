@@ -494,6 +494,8 @@ const Set<String> _jexKnownNotifyReasonCodes = <String>{
   'MANUAL_12V_ONLY',
   'VOLTAGE_TRANSITION',
   'VOLTAGE_GUARD_OR_BUSY',
+  'VOLTAGE_LOCKED',
+  'NVS_SAVE_FAILED',
   'SYNC_REQUIRED',
   'RATE_LIMIT',
   'RANGE_50_100_STEP_10',
@@ -581,6 +583,18 @@ String localizedNotifyReason(
       return JexText.phrase(
         'Voltage change in progress. Please wait.',
         'Perubahan tegangan berlangsung. Tunggu sebentar.',
+        language,
+      );
+    case 'VOLTAGE_LOCKED':
+      return JexText.phrase(
+        'Voltage is locked to 5V. Turn off Lock Voltage in Settings to change it.',
+        'Tegangan terkunci di 5V. Matikan Kunci Tegangan di Pengaturan untuk mengubahnya.',
+        language,
+      );
+    case 'NVS_SAVE_FAILED':
+      return JexText.phrase(
+        'Lock is active for this session, but the device could not save it. Retry the setting.',
+        'Kunci aktif untuk sesi ini, tetapi perangkat gagal menyimpannya. Coba ulang pengaturan.',
         language,
       );
     case 'VOLTAGE_GUARD_OR_BUSY':
@@ -4444,6 +4458,10 @@ class _DashboardScreenState extends State<DashboardScreen>
   bool fanOn = false;
   bool peltierOn = false;
   bool adaptiveOn = false;
+  bool voltageLockKnown = false;
+  bool voltageLockActive = false;
+  bool voltageLockSaved = false;
+  bool voltageLockBusy = false;
   String adaptiveCeiling = '12V';
   String adaptiveProfile = 'HOTSIDE';
   bool rgbOn = false;
@@ -5094,6 +5112,10 @@ class _DashboardScreenState extends State<DashboardScreen>
         connected = false;
         runtimeOutputsKnown = false;
         dashboardReady = false;
+        voltageLockKnown = false;
+        voltageLockActive = false;
+        voltageLockSaved = false;
+        voltageLockBusy = false;
         voltage = '--';
         hotsideTemp = '--';
         phoneBatteryTemp = '--';
@@ -5111,6 +5133,7 @@ class _DashboardScreenState extends State<DashboardScreen>
         resetReason = 'UNKNOWN';
         notice = JexText.of('connectingDevice', appLanguageNotifier.value);
       });
+      _publishVoltageLockSettings();
       _publishFloatingTelemetry();
     }
 
@@ -5474,6 +5497,10 @@ class _DashboardScreenState extends State<DashboardScreen>
       runtimeOutputsKnown = false;
       syncing = false;
       dashboardReady = false;
+      voltageLockKnown = false;
+      voltageLockActive = false;
+      voltageLockSaved = false;
+      voltageLockBusy = false;
       voltage = '--';
       fanOn = false;
       peltierOn = false;
@@ -5490,6 +5517,7 @@ class _DashboardScreenState extends State<DashboardScreen>
           ? JexText.of('otaInProgress', appLanguageNotifier.value)
           : JexText.of('bluetoothDisconnected', appLanguageNotifier.value);
     });
+    _publishVoltageLockSettings();
     _publishFloatingTelemetry();
 
     // Start reconnect only after connected=false has been committed.
@@ -5674,6 +5702,7 @@ class _DashboardScreenState extends State<DashboardScreen>
           ? syncedOtaNotice
           : JexText.of('systemReady', appLanguageNotifier.value);
     });
+    _publishVoltageLockSettings();
     _publishFloatingTelemetry();
     _startUsageStatisticsSession();
 
@@ -5770,6 +5799,7 @@ class _DashboardScreenState extends State<DashboardScreen>
     if (c.startsWith('HOTLIMIT:')) return 'HOTLIMIT';
     if (c.startsWith('BATT5:')) return 'BATT5';
     if (c.startsWith('BATT12:')) return 'BATT12';
+    if (c.startsWith('VOLTAGE_LOCK:')) return 'VOLTAGE_LOCK';
     if (c.startsWith('VOLTAGE:')) return 'VOLTAGE';
     if (c == 'FAN:ON' || c == 'FAN:OFF') return 'FAN';
     if (c == 'PELTIER:ON' || c == 'PELTIER:OFF') return 'PELTIER';
@@ -5868,6 +5898,7 @@ class _DashboardScreenState extends State<DashboardScreen>
     if (c == 'PELTIER:OFF') return const MapEntry('PELTIER', 'OFF');
     if (c == 'ADAPTIVE:ON') return const MapEntry('ADAPTIVE', 'ON');
     if (c == 'ADAPTIVE:OFF') return const MapEntry('ADAPTIVE', 'OFF');
+    if (c.startsWith('VOLTAGE_LOCK:')) return MapEntry('VOLTAGE_LOCK', c.substring(13));
     if (c.startsWith('VOLTAGE:')) return MapEntry('VOLTAGE', c.substring(8));
     if (c == 'RGB:ON') return const MapEntry('RGB', 'ON');
     if (c == 'RGB:OFF') return const MapEntry('RGB', 'OFF');
@@ -5892,6 +5923,8 @@ class _DashboardScreenState extends State<DashboardScreen>
         return peltierOn == (expected == 'ON');
       case 'ADAPTIVE':
         return adaptiveOn == (expected == 'ON');
+      case 'VOLTAGE_LOCK':
+        return voltageLockKnown && voltageLockActive == (expected.toUpperCase() == 'ON');
       case 'VOLTAGE':
         return voltage.toUpperCase() == expected.toUpperCase();
       case 'RGB':
@@ -5932,6 +5965,7 @@ class _DashboardScreenState extends State<DashboardScreen>
         c == 'SYNC_READY' ||
         c == 'CLOUDOTA' ||
         c == 'OTAENTER' ||
+        c.startsWith('VOLTAGE_LOCK:') ||
         c.startsWith('VOLTAGE:') ||
         c.startsWith('SSID:') ||
         c.startsWith('PASS:') ||
@@ -6267,6 +6301,15 @@ void _handleAckLine(String line) {
       case 'BLE_SESSION':
         _bleSessionReady = value == 'READY';
         break;
+      case 'VOLTAGE_LOCK':
+        voltageLockKnown = value.trim().toUpperCase() == 'ON' || value.trim().toUpperCase() == 'OFF';
+        voltageLockActive = value.trim().toUpperCase() == 'ON';
+        _publishVoltageLockSettings();
+        break;
+      case 'VOLTAGE_LOCK_SAVED':
+        voltageLockSaved = value.trim().toUpperCase() == 'ON';
+        _publishVoltageLockSettings();
+        break;
       case 'VOLTAGE':
         voltage = value;
         // 5V is the safe handoff milestone; wait for ADAPTIVE=ON for completion.
@@ -6498,6 +6541,10 @@ void _handleAckLine(String line) {
 
   // AI-METHOD: _requestVoltage — Apply the 1-second manual voltage guard.
   Future<void> _requestVoltage(String target) async {
+    if (voltageLockKnown && voltageLockActive && target != '5V') {
+      if (mounted) _showSnackBar(_friendlyReason('VOLTAGE_LOCKED'), color: Colors.orangeAccent);
+      return;
+    }
     if (!connected ||
         adaptiveOn ||
         voltageGuardActive ||
@@ -6722,6 +6769,10 @@ void _handleAckLine(String line) {
   // voltage/safety behavior; Flutter only presents the confirmed state.
   Future<void> _toggleAdaptive(bool enabled) async {
     if (!connected) return;
+    if (enabled && voltageLockKnown && voltageLockActive) {
+      _showSnackBar(_friendlyReason('VOLTAGE_LOCKED'), color: Colors.orangeAccent);
+      return;
+    }
     if (mounted) setState(() {
       adaptiveTransitioning = true;
     });
@@ -6934,8 +6985,54 @@ void _handleAckLine(String line) {
     return _waitUntil(() => fullSyncReceived, timeout: timeout);
   }
 
+  void _publishVoltageLockSettings() {
+    voltageLockSettingsNotifier.value = VoltageLockSettingsState(
+      sessionReady: connected &&
+          dashboardReady &&
+          _bleReady &&
+          _bleSessionReady &&
+          protocolValid,
+      known: voltageLockKnown,
+      active: voltageLockActive,
+      saved: voltageLockSaved,
+      busy: voltageLockBusy,
+    );
+  }
+
+  Future<void> _setVoltageLock(bool enabled) async {
+    if (!connected ||
+        !dashboardReady ||
+        !voltageLockKnown ||
+        voltageLockBusy ||
+        (enabled == voltageLockActive && voltageLockSaved)) {
+      return;
+    }
+
+    setState(() => voltageLockBusy = true);
+    _publishVoltageLockSettings();
+    try {
+      final lockCommand = enabled ? 'VOLTAGE_LOCK:ON' : 'VOLTAGE_LOCK:OFF';
+      final accepted = await _sendAndWaitAck(
+        lockCommand,
+        showError: false,
+        timeout: const Duration(seconds: 6),
+      );
+      if (!accepted && mounted) {
+        final reason = _lastCommandAckReason;
+        _showSnackBar(
+          _friendlyReason(reason),
+          color: Colors.orangeAccent,
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() => voltageLockBusy = false);
+        _publishVoltageLockSettings();
+      }
+    }
+  }
+
   Future<void> _openSettings() async {
-    await Navigator.push<void>(
       context,
       MaterialPageRoute<void>(
         builder: (_) => JexFixedScalePage(
@@ -6945,6 +7042,7 @@ void _handleAckLine(String line) {
             coolerId: device?.remoteId.toString() ?? knownCoolerRemoteIdNotifier.value,
             hotLimit: hotLimit,
             onOpenFirmwareUpdate: _openFirmwareSettings,
+            onVoltageLockChanged: _setVoltageLock,
           ),
         ),
       ),
@@ -6952,7 +7050,7 @@ void _handleAckLine(String line) {
   }
 
   Future<void> _setAdaptiveProfile(String profile) async {
-    if (!connected || adaptiveOn) return;
+    if (!connected || adaptiveOn || (voltageLockKnown && voltageLockActive)) return;
     final ok = await _sendAndConfirm('ADAPTIVE_PROFILE:' + profile);
     if (!ok && mounted) {
       _showSnackBar(
@@ -8284,7 +8382,8 @@ void _handleAckLine(String line) {
   // AI-METHOD / VOLTAGE-UI-CONTRACT
   // Voltage stays vertical. Each row is a custom single-select toggle; only one can be active.
   Widget _buildVoltageTab({Key? key}) {
-    final locked = !connected || adaptiveOn || voltageGuardActive;
+    final locked = !connected || adaptiveOn || voltageGuardActive ||
+        (voltageLockKnown && voltageLockActive);
     final lang = appLanguageNotifier.value;
 
     return KeyedSubtree(
@@ -8294,6 +8393,24 @@ void _handleAckLine(String line) {
         padding: const EdgeInsets.fromLTRB(2, 0, 2, 18),
         children: [
           _sectionTitle(JexText.of('voltage', lang)),
+          if (voltageLockKnown && voltageLockActive)
+            _card(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+              child: Row(
+                children: [
+                  Icon(Icons.lock_outline_rounded, color: Theme.of(context).colorScheme.primary, size: 18),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      voltage == '5V'
+                          ? JexText.phrase('Locked at 5V. Voltage selection is disabled.', 'Terkunci di 5V. Pemilihan tegangan dinonaktifkan.')
+                          : JexText.phrase('Lock active — safely returning to 5V. The value below remains actual device telemetry.', 'Kunci aktif — perangkat sedang kembali ke 5V dengan aman. Nilai di bawah tetap mengikuti telemetri aktual.'),
+                      style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant, fontSize: 10.5, fontWeight: FontWeight.w700),
+                    ),
+                  ),
+                ],
+              ),
+            ),
           _card(
             padding: const EdgeInsets.all(9),
             child: Column(
@@ -8510,7 +8627,8 @@ void _handleAckLine(String line) {
   // Custom profile selection replaces Material RadioListTile while preserving commands/state.
   Widget _buildAdaptiveTab({Key? key}) {
     final lang = appLanguageNotifier.value;
-    final locked = adaptiveOn || adaptiveTransitioning;
+    final locked = adaptiveOn || adaptiveTransitioning ||
+        (voltageLockKnown && voltageLockActive);
     final group =
         adaptiveProfile == 'HOTSIDE_BATTERY' ? 'HOTSIDE_BATTERY' : 'HOTSIDE';
 
@@ -8535,11 +8653,28 @@ void _handleAckLine(String line) {
               animationLevel: adaptiveOn ? 1.0 : 0.0,
               voltageLevel: jexVoltageAnimationLevel(voltage),
               value: adaptiveOn,
-              enabled: connected && runtimeOutputsKnown,
+              enabled: connected && runtimeOutputsKnown &&
+                  !(voltageLockKnown && voltageLockActive),
               stateKnown: runtimeOutputsKnown,
               onChanged: _toggleAdaptive,
             ),
           ),
+          if (voltageLockKnown && voltageLockActive)
+            _card(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+              child: Row(
+                children: [
+                  Icon(Icons.lock_outline_rounded, color: Theme.of(context).colorScheme.primary, size: 18),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      JexText.phrase('Adaptive Mode is forced OFF while Lock Voltage is active.', 'Mode Adaptif dipaksa MATI selama Kunci Tegangan aktif.'),
+                      style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant, fontSize: 10.5, fontWeight: FontWeight.w700),
+                    ),
+                  ),
+                ],
+              ),
+            ),
           _card(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
             child: Row(

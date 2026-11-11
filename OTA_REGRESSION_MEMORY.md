@@ -8,14 +8,14 @@ Last reconciled: 2026-10-21 (Asia/Jakarta). This is the canonical incident recor
 - No serial transcript establishing an exact HTTP/TLS error code was supplied. Do not invent one based on LEDs.
 - The failed path used `GITHUB_ROOT_CA`, `cloudClient.setCACert(...)`, `configTime(0, 0, "pool.ntp.org", "time.google.com")`, `OnlineOtaFlow::TIME_SYNCING`, epoch-validity state and a 20-second gate.
 
-## Historical OTA correction retained in current V7.1 source
+## Historical OTA correction retained in current V7.2 source
 
-- The correction originated in the then-current V6.3 source and remains present in active `firmware/JEXFYZ-V7.1.ino` (current blob `c44e076b2c1ee2d0b66b4fcd308d0febc69976e9`). OTA transport remains unchanged in V7.1; V7.0 is the preceding source checkpoint and V6.7/V6.9 are historical.
+- The correction originated in the then-current V6.3 source and remains present in active `firmware/JEXFYZ-V7.2.ino` (current blob `f1eb83d5605691040fdc9d7f64fee5c4a0bfbf52`). V7.2 does not modify OTA transport; V7.1 is the preceding source checkpoint and V7.0/V6.7/V6.9 are historical.
 - Restored `cloudClient.setInsecure()` for the Online OTA client.
 - Removed the embedded CA PEM, `setCACert()`, `configTime()`, `TIME_SYNCING`, epoch-validity condition and OTA-only 20-second NTP time gate.
 - Flow is Wi-Fi success → blue feedback → `prepareOnlineOtaDownload()` → GitHub GET attempt.
 - Kept allowlisted URL prefix `https://raw.githubusercontent.com/TenzoNkz/JEXFYZ-Firmware/`, redirect blocking, HTTP/length/size/image checks, ESP image magic byte `0xE9`, streaming Update lifecycle, all-safe output, OTA lifecycle and failure recovery.
-- Historical OTA source-contract evidence: `test/v6_7_qc_contract_test.dart` was used in App Build #35 (`38669526891`, code commit `d25ca28af9f2c04ff77ea710daac3edf3a44f3c8`); all 74 Flutter tests passed at that older checkpoint. That file has since been retired with V6.7. Current suite `test/firmware_qc_contract_test.dart` (current blob `367acddd4ca9123c2834f8a5177039d9dadaabc9`) contains source-level OTA/version-contract and V7.1 Adaptive target-band checks. The updated V7.1 contract tests were not independently run during this documentation/comment cleanup. Source checks are not an Arduino compile or a physical Online OTA/reboot validation.
+- Historical OTA source-contract evidence: `test/v6_7_qc_contract_test.dart` was used in App Build #35 (`38669526891`, code commit `d25ca28af9f2c04ff77ea710daac3edf3a44f3c8`); all 74 Flutter tests passed at that older checkpoint. That file has since been retired with V6.7. Current suite `test/firmware_qc_contract_test.dart` (current blob `367acddd4ca9123c2834f8a5177039d9dadaabc9`) contains source-level OTA/version-contract and V7.1 Adaptive target-band checks. The V7.2 source-contract tests were added but were not run during this execution. Source checks are not an Arduino compile or a physical Online OTA/reboot validation.
 
 ## User-reported evidence boundary
 

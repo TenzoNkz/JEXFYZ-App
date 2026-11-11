@@ -6,7 +6,7 @@ Durable hardware/user requirements live here. The source-level architecture and 
 
 - Owner reports the sold/shipped unit uses App Build #124 and Firmware V7.1, compiled and updated through Online OTA. This is USER-REPORTED.
 - The App package is independently evidenced by Actions run 39386733061, packaged source 7d4e7262c6a3474eefa8ccb58b08f070df3ac15a. This does not independently verify Firmware compilation, source-to-BIN identity, installed version, physical OTA/reboot, BLE recovery or electrical/thermal behavior.
-- Active editable Firmware source: firmware/JEXFYZ-V7.1.ino; FW_VERSION="V7.1"; current blob c44e076b2c1ee2d0b66b4fcd308d0febc69976e9.
+- Active editable Firmware source on main: firmware/JEXFYZ-V7.2.ino; FW_VERSION="V7.2"; source blob f1eb83d5605691040fdc9d7f64fee5c4a0bfbf52. This is source-only evidence; V7.2 has not been compiled or installed. The V7.1 shipped-unit report remains historical USER-REPORTED evidence.
 - The unit is not available for routine physical repair. Avoid discretionary release/update risk.
 
 ## BLE authorization — BLOCKED / NOT IMPLEMENTED
@@ -54,13 +54,13 @@ Durable hardware/user requirements live here. The source-level architecture and 
 - Decorative RGB IDs: Static 1, Breath 2, Comet 4, Dual Chase 5, Left/Right 6, Rainbow 7. ID 3 / Mirror Pulse is retired; invalid stored values migrate to Static and new MODE:3 commands are rejected.
 - Firmware emits LED_SYNC:<mode>,<phase_ms>,<cycle_ms> atomically at BLE notification time. Safety/OTA indications outrank decorative animation.
 
-### Owner-requested Touch Voltage cycle — pending implementation (2026-11-09)
+### Owner-requested Touch Voltage cycle — implemented in V7.2 source (2026-11-09; validation pending)
 
 **Owner requirement:** change the physical TTP223 **single-tap** Voltage selection from the current ping-pong sequence to a repeating one-way cycle:
 
 `5V → 9V → 12V → 5V → 9V → 12V → ...`
 
-- The existing V7.1 implementation currently ping-pongs `5V → 9V → 12V → 9V → 5V → ...` using `touchVoltageAscending`; this is verified in `firmware/JEXFYZ-V7.1.ino` at `executeTouchSingle()` and its global state declaration.
+- V7.1 used the ping-pong sequence `5V → 9V → 12V → 9V → 5V`. V7.2 removes `touchVoltageAscending`; each next target is derived from actual `currentVoltage`: `V5 → V9`, `V9 → V12`, `V12 → V5`.
 - Recommended implementation: calculate the next rail from authoritative `currentVoltage` only: `V5 → V9`, `V9 → V12`, `V12 → V5`. Remove the separate direction-memory variable when implementing so the next tap cannot retain a stale ascending/descending direction after another voltage-selection path.
 - Derive every next step from actual current rail. If App/manual or another permitted path changes the actual rail, the next physical single tap continues from that rail rather than from an independent sequence index.
 - A rejected/blocked voltage request must not advance an independent cycle state. Keep `requestVoltage()` as the sole request gate and preserve its OTA/transition/manual-source/1-second voltage guard/NTC/Hotside/adaptive-ceiling validations. Preserve the existing `TOUCH_VOLTAGE` ACK semantics.
@@ -68,7 +68,7 @@ Durable hardware/user requirements live here. The source-level architecture and 
 - Preserve the existing selector sequence and safety: 200 ms break-before-make, 1,000 ms settle/guard, Peltier active-soft-start pause/resume contract, completed-ramp continuity, Fan 100% handoff, NTC/Hotside/explicit-OFF/OTA override priority, and cooperative `millis()` timing. No executable `delay()` or timing `while()` loops.
 - **Regression matrix:** from 5V expect 9V, then 12V, then 5V, then repeat; from 9V expect 12V; from 12V expect 5V; repeat after an App/manual Voltage change; rejected request leaves the actual-state-derived next target consistent; verify 12V→5V selector handoff; verify double tap and long press are unchanged; verify Adaptive/OTA/safety gates remain authoritative.
 - **Combined V7.2 plan:** implement this Touch cycle together with the separately recorded persistent Lock Voltage 5V feature below, subject to a fresh live-version/source recheck at execution. Functional Firmware changes increment FW_VERSION and rename the single active sketch to firmware/JEXFYZ-V7.2.ino; set FW_VERSION="V7.2". Keep exactly one active versioned .ino.
-- **Current status:** REQUEST RECORDED / NOT IMPLEMENTED. `firmware/JEXFYZ-V7.1.ino` remains current source (`FW_VERSION="V7.1"`). This Diskusi made documentation-only updates; no Firmware source/test edit, compilation, BIN, Firebase, OTA, flash or device operation occurred. Owner must issue a separate `Eksekusi Full!` for source/test implementation. Owner-side compilation remains separate with the approved Arduino-ESP32 Core 3.3.7 unless explicitly authorized otherwise.
+- **Implementation status:** SOURCE IMPLEMENTED in `firmware/JEXFYZ-V7.2.ino`; source-contract tests added. The tests were not run. Arduino-ESP32 Core 3.3.7 compile, BIN generation, Firebase, OTA, flash and physical Touch/rail validation were not performed and remain separately gated.
 
 
 ### Owner-requested Lock Voltage 5V — persistent Firmware/App control (2026-11-11)
@@ -139,3 +139,14 @@ Durable hardware/user requirements live here. The source-level architecture and 
 - The owner-reported compile/OTA result must remain distinct from independent BIN/device evidence.
 - Two restart incidents were reported: (1) Manual 5 V→12 V while Peltier/Fan were ON and the 5-second ramp was active; (2) enabling Adaptive after 12 V + Peltier/Fan ON. Keep them separate; reset cause is not established, and brownout remains a hypothesis. See VOLTAGE_TRANSITION_MEMORY.md.
 - Static test presence does not prove execution. The V7.1 contract tests are not independently run by this docs rework; there was no Firmware compile, BIN generation/publication, Firebase update, physical OTA, flash or device operation.
+### V7.2 implementation checkpoint — persistent Lock Voltage + Touch cycle (2026-11-12)
+
+- Source: firmware/JEXFYZ-V7.2.ino, FW_VERSION="V7.2", blob f1eb83d5605691040fdc9d7f64fee5c4a0bfbf52. The V7.1 sketch is removed from the active tree; exactly one active versioned .ino remains.
+- Lock state is Firmware-owned. Preferences namespace "jexfyz", key "vLock5V". Missing key defaults OFF for V7.1 upgrades. Runtime interlock activates before ON persistence/handoff. Persisted state is confirmed only after putBool returns sizeof(bool) and readback matches.
+- NVS ON failure leaves runtime locked and saved=OFF, with retry supported. NVS OFF failure keeps runtime lock active. Repeating an already-saved state avoids unnecessary flash writes; repeated ON after a failed save retries NVS.
+- Lock ON centrally rejects every request above 5V, rechecks at the final selector boundary, redirects an in-flight transition without resetting its 200ms timestamp, forces Adaptive OFF and keeps it OFF until unlock. Unlock leaves V5 and Adaptive OFF.
+- P1 addition: VOLTAGE_LOCK:ON|OFF command; VOLTAGE_LOCK and VOLTAGE_LOCK_SAVED state. Existing UUID/framing retained. A Lock ACK does not prove the physical rail reached 5V; actual VOLTAGE telemetry does.
+- Touch single tap now follows the actual rail: 5V→9V→12V→5V. Two nonblocking red pulses are emitted for relevant denied Touch/manual voltage requests. OTA, NTC and Hotside safety indications preempt/cancel the feedback.
+- App Settings row, bilingual state/error/retry text, P1 synchronization, unknown/disconnected handling, and locked Voltage/Adaptive controls are source-implemented.
+- Residual security limitation: Just Works bonding + SYNC_READY still does not authenticate the official App; another bonded/manual client can potentially send VOLTAGE_LOCK:OFF. See BLE_APP_AUTH.md.
+- Static source contracts were updated but NOT RUN. No Flutter/Dart formatter, analyzer or tests; no Arduino compile, BIN, Firebase, OTA, flash, device/rail/NVS power-cycle test, hosted App CI, new APK, or OEM screenshot validation. All remain unverified/separately gated.

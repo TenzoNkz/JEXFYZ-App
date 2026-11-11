@@ -8,7 +8,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   test('Touch Adaptive-OFF publishes authoritative state before its ACK', () {
-    final source = File('firmware/JEXFYZ-V7.1.ino').readAsStringSync();
+    final source = File('firmware/JEXFYZ-V7.2.ino').readAsStringSync();
     final start = source.indexOf('static void executeTouchLong() {');
     final end = source.indexOf('static void processTouchInput()', start);
 
@@ -39,4 +39,18 @@ void main() {
     expect(source, contains("case 'ADAPTIVE':\n        adaptiveOn = value == 'ON';"));
     expect(source, contains('adaptiveOn: connected && adaptiveOn,'));
   });
+  test('V7.2 Touch single tap follows actual rail in a one-way cycle', () {
+    final source = File('firmware/JEXFYZ-V7.2.ino').readAsStringSync();
+    final start = source.indexOf('static void executeTouchSingle() {');
+    final end = source.indexOf('static void executeTouchDouble()', start);
+    expect(start, isNonNegative);
+    expect(end, greaterThan(start));
+    final handler = source.substring(start, end);
+    expect(handler, contains('currentVoltage == Voltage::V5'));
+    expect(handler, contains('? Voltage::V9'));
+    expect(handler, contains('currentVoltage == Voltage::V9 ? Voltage::V12 : Voltage::V5'));
+    expect(handler, isNot(contains('touchVoltageAscending')));
+    expect(handler, contains('triggerVoltageLockRejectionFlash()'));
+  });
+
 }

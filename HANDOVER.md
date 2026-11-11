@@ -1,23 +1,23 @@
 # JE X FYZ / JE Cooler — Immediate Handover
 
-Updated: 2026-11-11 (Asia/Jakarta).
+Updated: 2026-11-12 (Asia/Jakarta).
 
-## Latest verified App package — Build #149
+## Active source candidate — Firmware V7.2 + App Lock Voltage
 
-- Actions run 42967289995, workflow 374946166, attempt 1; job 130347345586; final conclusion success. All 21 required gates and post-job cleanup 39–43 passed.
-- Exact build/release source SHA: 0507e3e11b67b8f8d042e49b74cc14a53bfc4f21; jexfyz-latest tag and Release ID 403010611 point to this exact SHA. Current main includes the newer unbuilt Peltier/LED source refinement in commit `7f31c2d3b2571dbb9f1c4fa87dea0db0d3851bda`; the published tag/Release still points to the exact Build #149 source SHA.
-- Analyzer: 23 info-level findings, zero warnings/errors. Flutter tests 166/166 passed, including selected Statistics cursor readout after tapping Peltier lane while scrolled. Android Gradle gate succeeded, but :app:testDebugUnitTest and app JUnit compile/test tasks were NO-SOURCE; no native Android app JUnit tests ran.
-- APK built using Flutter --obfuscate --split-debug-info=build/symbols. Production certificate SHA-256 dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0 (RSA 4096, JE X FYZ DN); V1/V2/V3 all verified on original and downloaded APK.
-- **APK:** https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-release.apk — 55,881,819 bytes; SHA-256 84a9165f67420e99d6ae7585340e0ef7e29e80de1d413fbc9c7352866d0670d5.
-- **Source ZIP:** https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-corresponding-source.zip — 2,918,953 bytes; SHA-256 521a06c1f804a3f04a9b0f7165796e806c60bbd9e027c9986ff91e5f2e326782. Exactly one APK and one corresponding ZIP in Release; downloaded checksums, ZIP/source marker and downloaded APK signatures/cert passed.
-- Android versionName "Telegram @horizontalzzz" preserved; Release app version 1.0.0+3.
+- Repository: TenzoNkz/JEXFYZ-App, branch main.
+- Implemented source scope: one-way Touch cycle based on actual rail (5V→9V→12V→5V); persistent 5V Lock Voltage in ESP32 Preferences key vLock5V; central 5V rail ceiling; Adaptive forced OFF / no reactivation while locked; safe handoff preserving existing 200ms break-before-make and 1s settle guard; NVS fail-closed semantics and retry; additive P1 command/state; Settings toggle and locked Voltage/Adaptive UI; nonblocking two-red-pulse refusal feedback with OTA/NTC/Hotside priority; source regression contracts.
+- Source files: firmware/JEXFYZ-V7.2.ino, lib/main.dart, lib/floating_monitor.dart, test/firmware_qc_contract_test.dart, test/firmware_touch_adaptive_sync_test.dart. The prior V7.1 sketch is removed by the versioned rename. Current Firmware blob f1eb83d5605691040fdc9d7f64fee5c4a0bfbf52. App main blob eb70fcb9fdf6c13105fef6b64a0b402c8fac8eb3. Settings UI blob 5a1e8b3118fc46f3b9a0cb470aaefc11779a70e7. QC contract blob 485c2dc79cdd537f8f523db5bc4c722a3a68ebaf. Touch contract blob f177d0c724b0275849e126d3edc349eaf4a05471.
+- Lock persistence contract: ON activates the runtime ceiling before NVS I/O and handoff; NVS putBool length + readback are required for saved=ON. Failed ON stays locked for the session and can retry; failed OFF remains locked. An already-persisted same-state command does not cause another NVS write. Unlock does not restore a previous rail or restart Adaptive.
+- BLE: VOLTAGE_LOCK:ON|OFF; VOLTAGE_LOCK and VOLTAGE_LOCK_SAVED telemetry. Actual VOLTAGE:5V completion is separate from Lock ACK.
+- Security caveat remains: Just Works + SYNC_READY is not official-App identity. Another bonded BLE client may still send unlock; BLE App authorization remains a separate blocked project.
 
-## Warnings and open validation
+## Release and validation boundaries
 
-- Kotlin 2.2.20 compatibility/Built-in Kotlin migration advisory; Gradle 10 deprecations; native ELF DWARF debug data remains despite Dart obfuscation; jarsigner PKIX trust-chain and META-INF notices even though expected cert fingerprint and V1/V2/V3 passed; cache writes denied by token permissions; 29 package updates outside constraints.
-- The normal suite did not close the performance risks: full summary recompute per one-second batch, unbounded/unbatched SQLite recorder queue, long-session CPU/memory/backpressure, animation lifecycle/60–120-Hz tests.
-- Physical installation, OEM visuals, 350-dp/420-dp field layout, BLE runtime, real sensor Statistics soak, thermal/electrical cooling, Firmware/BIN/Firebase/OTA/flash remain unverified.
+- Latest published App remains Build #149 / Actions run 42967289995. It does not contain this new App source.
+- Flutter/Dart formatting, focused/full tests, analyzer and hosted CI were NOT RUN for this change. Static source contract tests were updated only.
+- Firmware V7.2 compilation, BIN, Firebase, OTA, flash, device/NVS/rail/LED testing were NOT RUN.
+- No new App Build/APK/Release was triggered. No hardware/device action was taken.
 
 ## Next direction
 
-The latest owner request is a cross-layer Firmware V7.2 scope: combine the pending one-way Touch voltage cycle with a persistent 5V Lock Voltage stored in ESP32 Preferences/NVS, its App Settings toggle and locked Voltage/Adaptive controls, P1 synchronization, and two-red-flash rejection feedback. Detailed design/guardrails are in FIRMWARE_NOTES.md and APP_NOTES.md. Current V7.1/App source is unchanged for this request. Recommended next mode: Eksekusi Full! for the specifically scoped Firmware + App source/tests/docs. This does not authorize Arduino compile, BIN, Firebase, OTA, flashing, device work or App release; a new APK still requires separate Eksekusi Build App!.
+Review the new commit/source readback first. Then obtain a separate owner Eksekusi Build App! for hosted App QC/package. Firmware compilation and hardware/NVS/rail acceptance must be separately performed/authorized.

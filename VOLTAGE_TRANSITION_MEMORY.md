@@ -4,10 +4,10 @@ Last reconciled: 2026-10-23 (Asia/Jakarta). This is the current rail/transition 
 
 ## Current source and evidence
 
-- Active Firmware: firmware/JEXFYZ-V7.1.ino, FW_VERSION="V7.1", live blob c44e076b2c1ee2d0b66b4fcd308d0febc69976e9.
-- V7.1's described change is Adaptive Fan target tiers; the preserved voltage-transition / Peltier soft-start contract below remains the project invariant.
-- Owner reports V7.1 compiled and installed via Online OTA. This is USER-REPORTED; exact BIN identity, physical reboot, BLE recovery and rail/current behavior remain independently UNVERIFIED.
-- No Firmware compilation, BIN/Firebase change, OTA, flash or device operation was performed in this docs rework.
+- Active Firmware source: firmware/JEXFYZ-V7.2.ino, FW_VERSION="V7.2", blob f1eb83d5605691040fdc9d7f64fee5c4a0bfbf52.
+- The V7.1 owner-reported compile/Online OTA is historical; it does not validate V7.2. The existing voltage-transition/Peltier soft-start contract below remains required.
+- V7.2 adds a persistent V5 lock. Lock ON retargets an in-flight transition to V5 without resetting voltageTransitionAt, rechecks the lock before selector assertion and keeps the loop enforcing a V5 endpoint. The lock command does not manipulate selector GPIO directly.
+- V7.2 source was not compiled, and no BIN/Firebase/OTA/flash/device operation or physical power/rail test was performed.
 
 ## Two separate restart reports
 
@@ -52,4 +52,10 @@ This file concerns rail transitions. Hotside/NTC thermal safety and OTA override
 5. Confirm explicit OFF, Hotside/NTC safety and OTA safe-output cancel pending resume.
 6. If reset recurs, capture reset reason/telemetry and, when possible, supply voltage/Peltier current. Keep the two incidents separate.
 7. Run thermal, Manual/Adaptive, Local OTA and Online OTA gates separately. App CI does not prove any of them.
+## V7.2 Lock Voltage transition interaction
 
+- Lock ON uses the same 200ms selector break-before-make and 1,000ms voltage settle/guard. If a transition is already active, only pendingVoltage is redirected to V5; voltageTransitionAt is not reset.
+- If no transition is active and the rail is above V5, Lock ON requests V5 through requestVoltage(V5, SAFETY, true). Existing active-soft-start pause/resume and completed-ramp continuity remain authoritative.
+- completeVoltageTransition() rechecks voltageLockActive immediately before selector GPIO assertion. The main scheduler requests V5 again if Lock is active and the applied rail is not V5.
+- Enabling Lock forces Adaptive OFF. Unlock does not automatically restore Adaptive or the prior rail. Actual VOLTAGE telemetry reports handoff separately from Lock ACK.
+- Source contracts were added but NOT RUN. Physical active-soft-start, completed-ramp, selector, settle-guard, NTC/Hotside priority, power-cycle and NVS-failure tests remain outstanding.

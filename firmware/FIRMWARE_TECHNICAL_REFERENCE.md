@@ -4,10 +4,10 @@ Last reconciled: 2026-10-23 (Asia/Jakarta). Source identity and behavior are rec
 
 ## Current source and evidence
 
-- Active source: firmware/JEXFYZ-V7.1.ino.
-- Embedded version: FW_VERSION="V7.1".
-- Live source blob at the start of this documentation rework: c44e076b2c1ee2d0b66b4fcd308d0febc69976e9.
-- Owner reports V7.1 compilation and Online OTA installation on the sold/shipped unit. USER-REPORTED; exact BIN provenance, installed-version query and physical post-update behavior remain UNVERIFIED.
+- Active source: firmware/JEXFYZ-V7.2.ino.
+- Embedded version: FW_VERSION="V7.2".
+- Current source blob: f1eb83d5605691040fdc9d7f64fee5c4a0bfbf52.
+- The owner-reported V7.1 compile/Online OTA applies to the previous revision and is not evidence for V7.2. V7.2 compilation, BIN provenance, installation and physical behavior remain UNVERIFIED.
 - Target toolchain: ESP32-C3 Super Mini / ESP32-C3 Dev Module; Arduino-ESP32 Core 3.3.7.
 - Build #124 is Android App release evidence only, not a Firmware compile.
 
@@ -80,3 +80,11 @@ Read OTA_PROTECTION.md and OTA_REGRESSION_MEMORY.md before any authorized OTA ch
 ## Evidence boundaries
 
 Static source contracts can verify strings, constants and code ordering. They do not certify Arduino compilation, exact BIN provenance, sensor accuracy, current draw, physical thermal response, rail stability, BLE pairing security, or end-to-end OTA/reboot. Record each gate independently.
+## V7.2 Lock Voltage and Touch progression
+
+- Preferences namespace "jexfyz" key "vLock5V" is the persisted authority. Missing key migrates as unlocked. Failed Preferences initialization is fail-closed at runtime; VOLTAGE_LOCK_SAVED reports whether the runtime value is confirmed saved.
+- Lock ON imposes a central 5V ceiling, retargets an active selector transition without restarting the 200ms deadtime, and is rechecked before selector activation. A loop-level safety request maintains a V5 endpoint. Adaptive ON/start/profile are blocked while locked.
+- Touch single tap advances from actual currentVoltage as V5→V9→V12→V5. The old direction flag is removed.
+- VOLTAGE_LOCK:ON|OFF is additive P1 using existing UUID/framing. VOLTAGE_LOCK and VOLTAGE_LOCK_SAVED are state telemetry. ACK/persistence does not replace actual VOLTAGE transition telemetry.
+- Denial feedback is a nonblocking two-pulse red LED state machine; OTA/Hotside/NTC safety overrides it.
+- This source description is not Arduino compile, BIN, NVS power-cycle, physical LED, rail/thermal or BLE validation.

@@ -142,7 +142,7 @@ enum class AdaptiveProfile : uint8_t;
  * ---------------------------------------------------------------------------
  */
 
-static constexpr char FW_VERSION[] = "V7.1";
+static constexpr char FW_VERSION[] = "V7.2";
 
 // ============================================================================
 // ========================== HEAP DIAGNOSTIC BUILD ===========================
@@ -340,6 +340,11 @@ static constexpr float BATTERY_HYSTERESIS_C = 0.5f;
 
 WebServer webServer(80);
 Preferences prefs;
+
+// Persistent 5V rail interlock. A failed NVS open fails closed for this boot.
+bool voltageLockActive = false;
+bool voltageLockSaved = false;
+bool persistedVoltageLock = false;
 Adafruit_NeoPixel leds(LED_COUNT, PIN_LED, NEO_GRB + NEO_KHZ800);
 
 BLEServer* bleServer = nullptr;
@@ -408,7 +413,7 @@ Voltage pendingVoltage = Voltage::V5;
 bool fanOn = false;
 bool peltierOn = false;
 // Hardware single-tap direction: 5V -> 9V -> 12V -> 9V -> 5V -> ...
-bool touchVoltageAscending = true;
+// V7.2 derives Touch rail progression from currentVoltage; no direction flag is retained.
 bool peltierSoftStarting = false;
 uint32_t peltierSoftStartAtMs = 0;
 bool peltierVoltagePauseActive = false;
@@ -471,6 +476,10 @@ bool persistedRgbOn = false;
 LedMode persistedRgbMode = LedMode::STATIC;
 uint8_t persistedRgbBrightness = 100;
 uint32_t persistedRgbColor = 0xFFFFFF;
+
+bool voltageLockRejectionFlashActive = false;
+uint32_t voltageLockRejectionFlashStartedAt = 0;
+uint8_t voltageLockRejectionFlashLastPhase = 0xFF;
 
 bool voltageTransition = false;
 uint32_t voltageTransitionAt = 0;
@@ -611,6 +620,8 @@ static void stopLocalOtaAp();
 static void startOnlineOta();
 static void processOnlineOta();
 static bool requestVoltage(Voltage target, VoltageRequestSource source, bool bypassGuard = false);
+static bool hotsideProtectionActiveNow();
+static void triggerVoltageLockRejectionFlash();
 static void activateAdaptiveAfterSafeFiveVolt();
 static void publishSafetyReason();
 static void evaluateAdaptiveBattery();
@@ -830,7 +841,16 @@ static bool parseFloatRange(const String& raw, float minValue, float maxValue, f
 
 static void loadSettings() {
   prefsReady = prefs.begin("jexfyz", false);
-  if (!prefsReady) return;
+  if (!prefsReady) {
+    voltageLockActive = true;
+    voltageLockSaved = false;
+    persistedVoltageLock = false;
+    return;
+  }
+
+  voltageLockActive = prefs.getBool("vLock5V", false);
+  persistedVoltageLock = voltageLockActive;
+  voltageLockSaved = true;
 
   hotLimit = constrain(prefs.getInt("hotLimit", 45), HOT_LIMIT_MIN, HOT_LIMIT_MAX);
   battery5Limit = constrain(
@@ -894,6 +914,18 @@ static void loadSettings() {
   persistedRgbMode = rgbMode;
   persistedRgbBrightness = rgbBrightness;
   persistedRgbColor = rgbColor;
+}
+
+static bool persistVoltageLockValue(bool desired) {
+  if (!prefsReady) { voltageLockSaved = false; return false; }
+  if (voltageLockSaved && persistedVoltageLock == desired) return true;
+  const size_t written = prefs.putBool("vLock5V", desired);
+  if (written != sizeof(bool)) { voltageLockSaved = false; return false; }
+  const bool readBack = prefs.getBool("vLock5V", !desired);
+  if (readBack != desired) { voltageLockSaved = false; return false; }
+  persistedVoltageLock = readBack;
+  voltageLockSaved = true;
+  return true;
 }
 
 static void markSettingsDirty() {
@@ -1681,8 +1713,39 @@ static void renderCustomLedFrame(uint32_t now) {
   leds.show();
 }
 
+static void triggerVoltageLockRejectionFlash() {
+  if (voltageLockRejectionFlashActive ||
+      otaActive || bootApClientSafe ||
+      otaState == OtaState::LOCAL_UPLOAD ||
+      otaState == OtaState::CLOUD_CONNECTING ||
+      otaState == OtaState::CLOUD_DOWNLOADING ||
+      otaState == OtaState::CLOUD_APPLYING ||
+      otaState == OtaState::SUCCESS || otaState == OtaState::FAILED ||
+      localOtaResultIndicatorActive || onlineResultIndicatorActive ||
+      hotsideLimitIndicatorMode != HotsideLimitIndicatorMode::NONE ||
+      !ntcValid || hotsideProtectionActiveNow()) {
+    return;
+  }
+  voltageLockRejectionFlashActive = true;
+  voltageLockRejectionFlashStartedAt = millis();
+  voltageLockRejectionFlashLastPhase = 0xFF;
+}
+
 static void processLeds() {
   static bool ledsForcedOff = false;
+
+  // Safety/OTA indications cancel, rather than queue, a lower-priority rejection flash.
+  const bool rejectionPreempted =
+      localOtaResultIndicatorActive || onlineResultIndicatorActive ||
+      otaActive || bootApClientSafe ||
+      otaState == OtaState::LOCAL_UPLOAD ||
+      otaState == OtaState::CLOUD_CONNECTING ||
+      otaState == OtaState::CLOUD_DOWNLOADING ||
+      otaState == OtaState::CLOUD_APPLYING ||
+      otaState == OtaState::SUCCESS || otaState == OtaState::FAILED ||
+      hotsideLimitIndicatorMode != HotsideLimitIndicatorMode::NONE ||
+      !ntcValid || hotsideProtectionActiveNow();
+  if (rejectionPreempted) voltageLockRejectionFlashActive = false;
 
   if (localOtaResultIndicatorActive) {
     ledsForcedOff = false;
@@ -1690,7 +1753,7 @@ static void processLeds() {
     return;
   }
 
-  if (adaptiveStateIndicatorActive) {
+  if (adaptiveStateIndicatorActive && !voltageLockRejectionFlashActive) {
     ledsForcedOff = false;
     processAdaptiveStateIndicator();
     return;
@@ -1759,6 +1822,31 @@ static void processLeds() {
     return;
   }
 
+  // Two finite red flashes outrank the ordinary voltage indicator and decorative RGB.
+  if (voltageLockRejectionFlashActive) {
+    const uint32_t elapsed = millis() - voltageLockRejectionFlashStartedAt;
+    if (elapsed >= 720UL) {
+      voltageLockRejectionFlashActive = false;
+      voltageLockRejectionFlashLastPhase = 0xFF;
+    } else {
+      const uint8_t phase = static_cast<uint8_t>(elapsed / 180UL);
+      if (phase != voltageLockRejectionFlashLastPhase) {
+        voltageLockRejectionFlashLastPhase = phase;
+        const bool redOn = phase == 0 || phase == 2;
+        showAll(redOn ? 0xFF0000 : 0x000000,
+                redOn ? hardwareBrightness() : 0);
+      }
+      return;
+    }
+  }
+
+  // Once the rejection flash has finished, resume any deferred Adaptive state indicator.
+  if (adaptiveStateIndicatorActive) {
+    ledsForcedOff = false;
+    processAdaptiveStateIndicator();
+    return;
+  }
+
   // Voltage is a system indicator, not a user RGB effect. Let it finish with RGB disabled.
   if (voltageIndicatorActive) {
     if (millis() >= voltageIndicatorUntil) {
@@ -1806,7 +1894,15 @@ static bool manualVoltageRequestAllowed(VoltageRequestSource source) {
 
 // Validate a voltage request, record its source, and open the 200 ms selector deadtime.
 static bool requestVoltage(Voltage target, VoltageRequestSource source, bool bypassGuard) {
-  if (otaActive || voltageTransition) return false;
+  if (otaActive) return false;
+  if (voltageLockActive && target != Voltage::V5) {
+    if (source == VoltageRequestSource::TOUCH ||
+        source == VoltageRequestSource::MANUAL) {
+      triggerVoltageLockRejectionFlash();
+    }
+    return false;
+  }
+  if (voltageTransition) return false;
   if (!manualVoltageRequestAllowed(source)) return false;
   // Respect the shared 1 s post-transition voltage guard unless the caller is an explicit safety path.
   if (!voltageGuardAllows(bypassGuard)) return false;
@@ -1862,6 +1958,12 @@ static void completeVoltageTransition() {
   // the universal thermal authority and may override any pending target.
   // Preserve the origin of the request so Battery-only retargeting cannot overwrite Safety/HOTSTEP transitions.
   VoltageRequestSource completedSource = voltageTransitionSource;
+
+  // Recheck the persistent lock immediately before any selector GPIO can be asserted.
+  if (voltageLockActive && pendingVoltage != Voltage::V5) {
+    pendingVoltage = Voltage::V5;
+    completedSource = VoltageRequestSource::SAFETY;
+  }
 
   // NTC validity is a final selector gate: an invalid sensor during deadtime forces the safe 5 V endpoint.
   if (!ntcValid && pendingVoltage != Voltage::V5) {
@@ -2765,6 +2867,8 @@ static void sendFullSync() {
   sendDelta("PROTOCOL", PROTOCOL_VERSION);
   sendDelta("BLE_SESSION", bleCommandGateOpen ? "READY" : "SYNC_REQUIRED");
   sendDelta("VOLTAGE", voltageToString(currentVoltage));
+  sendDelta("VOLTAGE_LOCK", boolText(voltageLockActive));
+  sendDelta("VOLTAGE_LOCK_SAVED", boolText(voltageLockSaved));
   sendDelta("FAN", boolText(fanOn));
   sendDelta("PELTIER", boolText(peltierOn));
   sendDelta("HOT", formatTemperature(hotsideC, ntcValid));
@@ -4143,6 +4247,12 @@ static bool forceAdaptiveFiveVolt() {
 
 static void activateAdaptiveAfterSafeFiveVolt() {
   if (!adaptiveStartPending || currentVoltage != Voltage::V5) return;
+  if (voltageLockActive) {
+    adaptiveStartPending = false;
+    adaptiveOn = false;
+    sendDelta("ADAPTIVE", "OFF");
+    return;
+  }
 
   bool previousFanOn = fanOn;
   bool previousPeltierOn = peltierOn;
@@ -4197,6 +4307,10 @@ static void activateAdaptiveAfterSafeFiveVolt() {
 }
 
 static void setAdaptiveState(bool desired, String& reason) {
+  if (desired && voltageLockActive) {
+    reason = "VOLTAGE_LOCKED";
+    return;
+  }
   if (desired) {
     // Adaptive is a mode switch only; it never powers on missing cooling outputs.
     // Both Fan and Peltier must already be ON from the Control menu.
@@ -4335,6 +4449,57 @@ static void setAdaptiveState(bool desired, String& reason) {
 
   applyCoolingOutputs(previousFanOn, previousPeltierOn, previousFanPwm);
 }
+static bool setVoltageLock(bool desired, String& reason) {
+  const bool previousActive = voltageLockActive;
+  const bool previousSaved = voltageLockSaved;
+  bool handoffReady = true;
+
+  if (desired) {
+    // Runtime interlock takes effect before NVS I/O or handoff work.
+    voltageLockActive = true;
+    if (adaptiveOn || adaptiveStartPending) {
+      String adaptiveReason;
+      setAdaptiveState(false, adaptiveReason);
+    }
+    adaptiveStartPending = false;
+    adaptiveOn = false;
+
+    // Redirect an in-flight transition without restarting its 200 ms clock.
+    if (voltageTransition) {
+      pendingVoltage = Voltage::V5;
+      voltageTransitionSource = VoltageRequestSource::SAFETY;
+    } else if (currentVoltage != Voltage::V5) {
+      handoffReady = requestVoltage(
+          Voltage::V5, VoltageRequestSource::SAFETY, true);
+    }
+
+    const bool saved = persistVoltageLockValue(true);
+    voltageLockSaved = saved;
+    if (previousActive != voltageLockActive || previousSaved != voltageLockSaved) {
+      ++stateSequence;
+    }
+    reason = !handoffReady
+        ? "VOLTAGE_FORCE_FAILED"
+        : saved ? "OK" : "NVS_SAVE_FAILED";
+    return handoffReady && saved;
+  }
+
+  // Unlock is fail-closed: don't remove the runtime ceiling until NVS confirms OFF.
+  if (!persistVoltageLockValue(false)) {
+    voltageLockSaved = false;
+    reason = "NVS_SAVE_FAILED";
+    return false;
+  }
+
+  voltageLockActive = false;
+  voltageLockSaved = true;
+  if (previousActive != voltageLockActive || previousSaved != voltageLockSaved) {
+    ++stateSequence;
+  }
+  reason = "OK";
+  return true;
+}
+
 static bool setRgbState(bool desired) {
   if (rgbOn == desired) return true;
 
@@ -4645,6 +4810,27 @@ static void handleCommand(const String& command) {
     return;
   }
 
+  if (command.startsWith("VOLTAGE_LOCK:")) {
+    String desiredText = command.substring(13);
+    desiredText.trim();
+    desiredText.toUpperCase();
+    if (desiredText != "ON" && desiredText != "OFF") {
+      sendAck("VOLTAGE_LOCK", false, "INVALID");
+      return;
+    }
+
+    String reason;
+    const bool ok = setVoltageLock(desiredText == "ON", reason);
+    sendDelta("VOLTAGE_LOCK", boolText(voltageLockActive));
+    sendDelta("VOLTAGE_LOCK_SAVED", boolText(voltageLockSaved));
+    sendDelta("ADAPTIVE", boolText(adaptiveOn));
+    sendDelta("ADAPTIVE_CEILING", voltageToString(adaptiveCeiling));
+    sendDelta("FAN", boolText(fanOn));
+    sendDelta("PELTIER", boolText(peltierOn));
+    sendAck("VOLTAGE_LOCK", ok, reason);
+    return;
+  }
+
   if (command.startsWith("VOLTAGE:")) {
     if (adaptiveOn) {
       sendAck("VOLTAGE", false, "ADAPTIVE_ACTIVE");
@@ -4662,6 +4848,11 @@ static void handleCommand(const String& command) {
       return;
     }
 
+    if (voltageLockActive && target != Voltage::V5) {
+      triggerVoltageLockRejectionFlash();
+      sendAck("VOLTAGE", false, "VOLTAGE_LOCKED");
+      return;
+    }
     const bool accepted = requestVoltage(target, VoltageRequestSource::MANUAL, false);
     sendAck("VOLTAGE", accepted,
             accepted ? "ACCEPTED" : "VOLTAGE_GUARD_OR_BUSY");
@@ -4706,6 +4897,10 @@ static void handleCommand(const String& command) {
   }
 
   if (command.startsWith("ADAPTIVE_PROFILE:")) {
+    if (voltageLockActive) {
+      sendAck("ADAPTIVE_PROFILE", false, "VOLTAGE_LOCKED");
+      return;
+    }
     if (adaptiveStartPending) {
       sendAck("ADAPTIVE_PROFILE", false, "ADAPTIVE_STARTING");
       return;
@@ -4842,39 +5037,28 @@ static void processPendingOnlineOtaStart() {
 static void executeTouchSingle() {
   if (otaActive) return;
 
-  if (adaptiveOn) {
-    sendAck("TOUCH_COOLING", false, "ADAPTIVE_ACTIVE");
+  if (voltageLockActive) {
+    triggerVoltageLockRejectionFlash();
+    sendAck("TOUCH_VOLTAGE", false, "VOLTAGE_LOCKED");
     return;
   }
 
-  Voltage next = currentVoltage;
-  bool nextAscending = touchVoltageAscending;
-
-  // Hardware-only single-tap voltage sequence:
-  // 5V -> 9V -> 12V -> 9V -> 5V -> 9V -> 12V -> ...
-  if (currentVoltage == Voltage::V5) {
-    next = Voltage::V9;
-    nextAscending = true;
-  } else if (currentVoltage == Voltage::V9) {
-    if (touchVoltageAscending) {
-      next = Voltage::V12;
-      nextAscending = false;
-    } else {
-      next = Voltage::V5;
-      nextAscending = true;
-    }
-  } else {
-    next = Voltage::V9;
-    nextAscending = false;
+  if (adaptiveOn || adaptiveStartPending) {
+    triggerVoltageLockRejectionFlash();
+    sendAck("TOUCH_VOLTAGE", false, "ADAPTIVE_ACTIVE");
+    return;
   }
+
+  // Derive each step from the physically applied rail: 5V -> 9V -> 12V -> 5V.
+  const Voltage next = currentVoltage == Voltage::V5
+      ? Voltage::V9
+      : currentVoltage == Voltage::V9 ? Voltage::V12 : Voltage::V5;
 
   const bool accepted = requestVoltage(next, VoltageRequestSource::TOUCH, false);
-  if (accepted) {
-    touchVoltageAscending = nextAscending;
-  }
+  if (!accepted) triggerVoltageLockRejectionFlash();
 
   sendAck("TOUCH_VOLTAGE", accepted,
-          accepted ? "OK" : "VOLTAGE_GUARD_OR_BUSY");
+          accepted ? "OK" : (voltageLockActive ? "VOLTAGE_LOCKED" : "VOLTAGE_GUARD_OR_BUSY"));
 }
 
 static void executeTouchDouble() {
@@ -5355,6 +5539,9 @@ void loop() {
   processBatteryLinkState();
   processAdaptiveHotTimer();
   completeVoltageTransition();
+  if (voltageLockActive && !voltageTransition && currentVoltage != Voltage::V5) {
+    requestVoltage(Voltage::V5, VoltageRequestSource::SAFETY, true);
+  }
   processAdaptiveHotsideFallback();
   evaluateAdaptiveBattery();
   processAdaptiveFanControl();

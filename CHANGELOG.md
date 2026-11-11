@@ -1,3 +1,13 @@
+## 2026-11-12 — Firmware V7.2 Lock Voltage and one-way Touch cycle (source implemented; validation pending)
+
+- Active sketch source advanced from V7.1 to firmware/JEXFYZ-V7.2.ino; FW_VERSION="V7.2". Exactly one active versioned sketch remains after the rename.
+- Physical single Touch now advances from actual applied rail: 5V→9V→12V→5V. Removed the old direction-memory flag.
+- Added ESP32 Preferences/NVS Lock Voltage key vLock5V. Lock ON creates a 5V ceiling, forces Adaptive OFF, safely hands off via the existing selector transition pipeline and blocks Adaptive reactivation while locked. Unlock requires successful NVS write/readback and leaves the device at 5V/Adaptive OFF.
+- Added P1 VOLTAGE_LOCK:ON|OFF and VOLTAGE_LOCK / VOLTAGE_LOCK_SAVED telemetry. App Settings exposes a bilingual Firmware-authoritative toggle with unknown/disconnected states and NVS retry; Voltage/Adaptive controls lock while active. Numeric Voltage remains actual telemetry.
+- Added nonblocking two-red-pulse rejection feedback for blocked Touch/manual voltage requests. OTA, NTC and Hotside safety indications retain priority.
+- Updated Firmware/App source-contract tests. Static source readback checks were performed; Flutter/Dart tests, format, analyzer and CI were NOT RUN. Arduino compile, BIN/Firebase/OTA/flash/device and physical NVS/rail/LED tests were NOT RUN.
+- No App Build/APK/Release was triggered; Build #149 remains the latest published package and does not include this source. BLE App-only authentication remains blocked; Just Works + SYNC_READY does not prevent another bonded client from issuing VOLTAGE_LOCK:OFF.
+
 ## 2026-11-11 — Compact Peltier dialog and 60-color LED palette (source implemented; not released)
 
 - Peltier safety dialog effective width is now approximately 312 dp within the existing 360-dp canvas; title/body/actions are 18/14/14 dp with tighter padding. Minimum Cancel/Fan touch heights remain 48 dp; concise bilingual copy and fan-first safety/ACK ordering are preserved.

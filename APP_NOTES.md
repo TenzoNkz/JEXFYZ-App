@@ -18,7 +18,7 @@ Purpose: canonical current App/UI/BLE/telemetry contract. Current source defines
 - Source and regression-test files are committed, but Flutter/Dart are unavailable locally and no formatter, local tests, analyzer, hosted CI, new APK or visual screenshot validation has run for this refinement. Visual status remains VISUAL NOT VERIFIED until real screenshots are inspected.
 
 
-## Owner-requested Lock Voltage 5V — App presentation contract (2026-11-11; pending implementation)
+## Lock Voltage 5V — App source implementation (2026-11-12; not yet released or field-validated)
 
 - Add a Settings control named **Lock Voltage** / **Kunci Tegangan**. Its persisted authority is Firmware ESP32 Preferences/NVS, not Android SharedPreferences. The value is learned from a new Firmware P1 full-sync/state field such as VOLTAGE_LOCK.
 - ON locks actual Firmware rail requests to 5 V, disables the App's 9 V/12 V Voltage controls and disables the Adaptive switch/profile controls with visible lock treatment. Keep Home metrics truthful: Voltage reflects actual telemetry (5 V once handoff completes) and Adaptive reflects actual OFF state; show a lock marker rather than inventing values.
@@ -28,7 +28,7 @@ Purpose: canonical current App/UI/BLE/telemetry contract. Current source defines
 - Localize title, supporting copy, ON/OFF, lock status, pending 5 V handoff, persistence-error and retry messages in English/Indonesian. If runtime Lock is ON but VOLTAGE_LOCK_SAVED is OFF, keep Voltage/Adaptive locked and clearly warn that the lock is only active for this session until NVS saving succeeds.
 - If an App voltage request is rejected specifically because Lock Voltage is ON, show a concise localized explanation; Firmware also emits its two-red-flash rejection signal. Firmware remains the enforcement point even when an older App still exposes manual buttons.
 - App-only security caveat: current BLE bonding/Just Works + P1 readiness do not authenticate the official App. Strict prevention of third-party BLE clients unlocking the feature requires the separate BLE App authentication design; do not imply that this UI-only change solves it.
-- No App source/test is changed by this Discussion. The feature is part of the pending cross-layer Firmware V7.2 implementation scope and still needs a separate guarded App Build after source work.
+- Source status: App Settings/P1/lock-control source and regression contracts are implemented on main with Firmware V7.2 source. Flutter/Dart formatting, focused/full tests and analyzer were NOT RUN here. No hosted CI or new APK was created. A separate guarded Eksekusi Build App! remains required before packaging or release.
 
 
 ## Bluetooth Connection sheet — scan presentation contract
@@ -199,3 +199,9 @@ Purpose: canonical current App/UI/BLE/telemetry contract. Current source defines
 - Keep Hotside as the named product component in both locales. Adaptive control/status copy uses Adaptive Mode / Mode Adaptif. The Floating Monitor feature is presented as Floating Monitor / Monitor Melayang, including its Android foreground-service notification/channel copy.
 - JexText.of asserts on absent keys or locale entries in debug builds while retaining the existing release fallback. `test/widget_test.dart` verifies every localization table entry has English and Indonesian copy and that unknown lookup keys assert in debug. Legacy Adaptive Profile (Sisi panas) and Peltier re-arm messages remain recognized when stored notices are re-localized.
 - Source inspection only at this checkpoint; Flutter formatter, tests, analyzer and Android/device rendering have not run because Flutter/Dart/Android toolchains are unavailable in this environment.
+### V7.2 Lock Voltage App integration — source contract
+
+- Settings reads the Firmware-owned VoltageLockSettingsState notifier; it does not store the hardware lock in Android preferences. The toggle is unavailable until BLE/P1 session readiness and a valid VOLTAGE_LOCK snapshot are present. V7.1 firmware remains unknown/unsupported rather than defaulting to OFF in the UI.
+- App sends absolute VOLTAGE_LOCK:ON / VOLTAGE_LOCK:OFF commands and waits for ACK plus authoritative VOLTAGE_LOCK telemetry. VOLTAGE_LOCK_SAVED separately identifies NVS persistence. Retry after ON persistence failure sends ON again. Actual voltage remains telemetry-only; VOLTAGE:5V appears only after Firmware reports it.
+- Voltage and Adaptive controls/profile rows are disabled while synchronized Lock is ON. Home telemetry is not optimistically changed. Settings and lock-state copy are bilingual.
+- Visual status: source exists, but actual Android/OEM screenshots at 350-dp/420-dp, English/Indonesian, Light/Dark, long text and enlarged text have NOT been captured/reviewed. VISUAL NOT VERIFIED.

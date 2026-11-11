@@ -24,6 +24,26 @@ import 'app_settings.dart';
 import 'jex_animated_glyph.dart';
 import 'usage_statistics.dart';
 
+// Firmware-owned Lock Voltage state. This notifier is presentation-only; it never persists device settings.
+class VoltageLockSettingsState {
+  final bool sessionReady;
+  final bool known;
+  final bool active;
+  final bool saved;
+  final bool busy;
+
+  const VoltageLockSettingsState({
+    this.sessionReady = false,
+    this.known = false,
+    this.active = false,
+    this.saved = false,
+    this.busy = false,
+  });
+}
+
+final ValueNotifier<VoltageLockSettingsState> voltageLockSettingsNotifier =
+    ValueNotifier<VoltageLockSettingsState>(const VoltageLockSettingsState());
+
 enum FloatingDisplayStyle { letters, icons }
 enum FloatingBackgroundColor { black, white }
 
@@ -1004,6 +1024,7 @@ class SettingsPage extends StatelessWidget {
   final String? coolerId;
   final int hotLimit;
   final Future<void> Function() onOpenFirmwareUpdate;
+  final Future<void> Function(bool enabled) onVoltageLockChanged;
 
   const SettingsPage({
     super.key,
@@ -1011,6 +1032,7 @@ class SettingsPage extends StatelessWidget {
     this.coolerId,
     this.hotLimit = 45,
     required this.onOpenFirmwareUpdate,
+    required this.onVoltageLockChanged,
   });
 
   @override
@@ -1078,6 +1100,11 @@ class SettingsPage extends StatelessWidget {
                     ),
                   ),
                 ),
+                ValueListenableBuilder<VoltageLockSettingsState>(
+                  valueListenable: voltageLockSettingsNotifier,
+                  builder: (context, state, _) =>
+                      _voltageLockSettingRow(context, language, state),
+                ),
                 _item(
                   context,
                   PhosphorIconsRegular.stack,
@@ -1133,6 +1160,105 @@ class SettingsPage extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+
+  Widget _voltageLockSettingRow(
+    BuildContext context,
+    AppLanguage language,
+    VoltageLockSettingsState state,
+  ) {
+    final scheme = Theme.of(context).colorScheme;
+    final String subtitle;
+    if (!state.sessionReady) {
+      subtitle = JexText.phrase(
+        'Connect and synchronize a JE Cooler to read its lock state.',
+        'Hubungkan dan sinkronkan JE Cooler untuk membaca status kunci.',
+        language,
+      );
+    } else if (!state.known) {
+      subtitle = JexText.phrase(
+        'Lock Voltage requires Firmware V7.2 or newer.',
+        'Lock Voltage memerlukan Firmware V7.2 atau lebih baru.',
+        language,
+      );
+    } else if (!state.saved) {
+      subtitle = JexText.phrase(
+        'Lock is active for this session, but saving to device memory failed.',
+        'Kunci aktif untuk sesi ini, tetapi penyimpanan ke memori perangkat gagal.',
+        language,
+      );
+    } else if (state.active) {
+      subtitle = JexText.phrase(
+        'Voltage is limited to 5V. Adaptive Mode remains OFF while locked.',
+        'Tegangan dibatasi 5V. Mode Adaptif tetap MATI selama terkunci.',
+        language,
+      );
+    } else {
+      subtitle = JexText.phrase(
+        'Allows manual selection of 5V, 9V and 12V.',
+        'Mengizinkan pemilihan manual 5V, 9V, dan 12V.',
+        language,
+      );
+    }
+
+    Widget trailing;
+    if (!state.known) {
+      trailing = Icon(
+        state.sessionReady ? Icons.info_outline_rounded : Icons.bluetooth_disabled,
+        size: 19,
+        color: scheme.onSurfaceVariant,
+      );
+    } else if (state.busy) {
+      trailing = const SizedBox(
+        width: 20,
+        height: 20,
+        child: CircularProgressIndicator(strokeWidth: 2),
+      );
+    } else {
+      trailing = Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Switch.adaptive(
+            value: state.active,
+            onChanged: state.sessionReady
+                ? (value) => unawaited(onVoltageLockChanged(value))
+                : null,
+          ),
+          if (state.active && !state.saved)
+            IconButton(
+              tooltip: JexText.phrase('Retry saving Lock Voltage', 'Coba simpan Kunci Tegangan lagi', language),
+              onPressed: state.sessionReady
+                  ? () => unawaited(onVoltageLockChanged(true))
+                  : null,
+              icon: const Icon(Icons.refresh_rounded, size: 19),
+            ),
+        ],
+      );
+    }
+
+    return ListTile(
+      dense: true,
+      minVerticalPadding: 9,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
+      leading: Icon(
+        Icons.lock_outline_rounded,
+        size: 19,
+        color: scheme.onSurfaceVariant,
+      ),
+      title: Text(
+        JexText.phrase('Lock Voltage', 'Kunci Tegangan', language),
+        style: TextStyle(
+          color: scheme.onSurface,
+          fontSize: 13,
+          fontWeight: FontWeight.w700,
+        ),
+      ),
+      subtitle: Text(
+        subtitle,
+        style: TextStyle(color: scheme.onSurfaceVariant, fontSize: 11),
+      ),
+      trailing: trailing,
     );
   }
 
