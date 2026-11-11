@@ -1,3 +1,12 @@
+## Build #144 analyzer failure — concrete App repair committed, hosted retry pending (2026-11-11)
+
+- Run 42943589237, job 130270923510, source `e1d624bc0990ed3552ebbefaac1164cf025b794f`. Steps 1–11 success, step 12 analyzer failure, downstream 13–21 skipped; no package/Release mutation.
+- Analyzer: 40 findings = 12 errors, 3 warnings, 25 infos. Core failure: cursor helper methods were inserted inside the _messageState named parameter list; action became undefined, helpers were out of class scope, parser/private-parameter errors cascaded. Timeline widget constructor also did not accept `key`.
+- Repairs: commit `80b8874c9d851d1422009cfdbb85f33eec74f8b2` moves helpers back to class scope, restores optional action parameter, forwards key in timeline widget, removes unused previousY and unnecessary non-null assertion. Commit `1e04495416426ea5f4b3c9280704b1deee9a821c` removes redundant imports. Read-back confirms changes; no Flutter toolchain means no local analyzer/test evidence.
+- Next guarded retry is authorized under same owner Build App command. Preflight must re-confirm #144 terminal, issue #33 guard, no active run/PR and exact repaired source SHA. Never weaken tests.
+- Still open: incremental summary optimization, SQLite queue bounds/backpressure and long-session CPU/memory, animation lifecycle/60–120-Hz test coverage.
+
+---
 ## Active guarded release attempt — Build #144 (2026-11-11)
 
 - Run 42943589237, job 130270923510, workflow 374946166, issue event, attempt 1; source SHA `e1d624bc0990ed3552ebbefaac1164cf025b794f`.
