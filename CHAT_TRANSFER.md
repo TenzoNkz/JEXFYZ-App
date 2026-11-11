@@ -1,16 +1,20 @@
-## CURRENT CHECKPOINT — BUILD #145 FAILED / NULLABILITY FIX COMMITTED / RETRY PRE-TRIGGER — 2026-11-11
+## CURRENT CHECKPOINT — BUILD #146 ACTIVE / RUNNER SETUP — 2026-11-11
 
-**Failed run:** Build #145 / Actions run 42944293567, job 130273243595, immutable source `264469a80b49f70a09f2d705b6ad339ae3ba5fe4`. Steps 1–11 passed; step 12 failed with 1 error, 1 warning and 23 infos; steps 13–21 skipped. No package/Release output.
+**Run:** [Build #146 / Actions run 42944693211](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42944693211), job 130274555621, attempt 1.
 
-**What was fixed from #144:** #144's malformed `_messageState` helper scope, undefined `action`, unavailable cursor helpers and missing timeline key no longer appear in #145 analyzer output.
+**Immutable source SHA:** `d5bc688cc14243cd944f2d8d653bbcb59d2805fe`. Includes fixes: `80b8874c9d851d1422009cfdbb85f33eec74f8b2`, `1e04495416426ea5f4b3c9280704b1deee9a821c`, `250d2a031667c0b7ceab98e3077a35a97408d8ce`.
 
-**Remaining #145 diagnostic:** painter field `referenceValue` remained nullable when passed to `yFor(double)`; redundant `path!` assertion also warned. Repair commit `250d2a031667c0b7ceab98e3077a35a97408d8ce` promotes a local nullable-field copy after checking it, and removes `path!`. Source read-back verified. Hosted validation pending.
+**Initial status:** steps 1–2 success, step 3 Java 17 setup in progress, remaining steps pending. No artifact yet.
 
-**Combined repair history:** `80b8874c9d851d1422009cfdbb85f33eec74f8b2`, `1e04495416426ea5f4b3c9280704b1deee9a821c`, `250d2a031667c0b7ceab98e3077a35a97408d8ce`.
+**Previous failures:** #144 12 errors/3 warnings/25 infos from method/helper scope and missing widget key. #145 fixed those but then exposed one nullable-field error and redundant `path!`; both are now repaired. No tests/build/release ran in #144 or #145.
 
-**Next:** fresh preflight, then one guarded retry for the nullable-flow patch. No weakening of analyzer/test gates. Keep unbounded queue/backpressure and animation lifecycle/60–120-Hz risks visible.
+**Still open:** full selected-session summary recomputation per one-second batch; unbounded/unbatched SQLite queue; long-session CPU/memory/backpressure; animation lifecycle/60–120-Hz testing.
+
+**Next:** monitor only run 42944693211; no duplicate trigger. Preserve all original gates and App-only boundary.
 
 ---
+## HISTORICAL CHECKPOINT — BUILD #145 FAILED / NULLABILITY FIX COMMITTED — 2026-11-11
+
 ## HISTORICAL CHECKPOINT — BUILD #145 ACTIVE / FLUTTER SETUP — 2026-11-11
 
 ## HISTORICAL CHECKPOINT — BUILD #144 FAILED / APP REPAIR COMMITTED — 2026-11-11
