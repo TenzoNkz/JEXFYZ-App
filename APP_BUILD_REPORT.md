@@ -1,4 +1,23 @@
-## BUILD #144 ACTIVE — INITIAL RUNNER SETUP — 2026-11-11
+## BUILD #144 TERMINAL FAILURE — DART ANALYZER — 2026-11-11
+
+- **Run/job/source:** [Build #144 / Actions run 42943589237](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42943589237), job 130270923510; immutable source `e1d624bc0990ed3552ebbefaac1164cf025b794f`.
+- **Passed:** steps 1–11: job/checkout, Java 17, Flutter, Gradle, toolchain, local.properties, production signing prep, wrapper, App security/architecture audit and dependency installation.
+- **Failed:** step 12 Dart analyzer. Exact output: **40 issues — 12 errors, 3 warnings, 25 info-level findings**. Primary root cause was malformed method structure in `lib/usage_statistics.dart`: `_setChartCursor` and `_sharedCursorReadout` were accidentally inserted inside the named-parameter list of `_messageState`. This made `action` appear undefined, hid both helpers, caused invalid private optional parameter/parser errors and cascaded undefined-method errors. Independent issue: `_AnimatedUsageTimeline` was called with `key:` but its constructor did not accept/forward a key.
+- **Additional warnings:** unused `previousY` local and unnecessary non-null assertion on `referenceValue`. Analyzer also reported two unnecessary Flutter imports in `lib/main.dart`; other info findings were deprecated members in Floating Monitor/widget tests.
+- **Downstream:** steps 13–21 were skipped; no Flutter test, Android gate, APK, source ZIP, signature, Release publication or downloaded asset verification occurred in #144. The #143 Release/tag and assets remain unchanged.
+- **Root-cause repairs:** commit `80b8874c9d851d1422009cfdbb85f33eec74f8b2` moves both cursor helpers back to class scope, restores `_messageState(..., { Widget? action })`, adds `super.key` to `_AnimatedUsageTimeline`, removes the unused `previousY` local and removes the unnecessary `referenceValue!`. Commit `1e04495416426ea5f4b3c9280704b1deee9a821c` removes redundant Flutter physics/scheduler imports. Source read-back verified the method/helper boundaries, single declarations, timeline key forwarding and removal of the reported warning patterns.
+- **Validation boundary:** no local Flutter/Dart/Gradle toolchain is available; the repairs have not yet been analyzer/test validated. Next guarded run must prove the fixes. Do not infer success or weaken any tests/gates.
+
+---
+## NEXT GUARDED RETRY — PRE-TRIGGER CHECKPOINT — 2026-11-11
+
+- The original explicit owner `Eksekusi Build App!` remains the authorization for this same end-to-end operation and a concrete App-scope repair/retry.
+- Current main after repairs/checkpoint docs is to be freshly re-read before trigger; latest source repair commits are `80b8874c9d851d1422009cfdbb85f33eec74f8b2` and `1e04495416426ea5f4b3c9280704b1deee9a821c`.
+- Retry only after confirming #144 terminal, no active run/PR, exact issue #33 owner/title/token, unchanged workflow and preserved versionName. Emit exactly one close/reopen event.
+- Known design/performance gaps still open: full-session summary recomputation per one-second refresh; unbounded/unbatched SQLite write queue; long-session CPU/memory/backpressure; animation lifecycle/60–120-Hz tests. These must be tracked and are not implied solved by build gates.
+
+---
+## HISTORICAL BUILD #144 ACTIVE — INITIAL RUNNER SETUP — 2026-11-11
 
 - **Run/job/source:** [Build #144 / run 42943589237](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42943589237), workflow 374946166, issue event, attempt 1; job build / 130270923510; immutable checkout SHA `e1d624bc0990ed3552ebbefaac1164cf025b794f`.
 - **Trigger:** issue #33 exact guarded title/body; closed/reopened once under the explicit owner command. Exactly one #144 run appeared. Workflow remains issue-only and unchanged; no duplicate trigger.
