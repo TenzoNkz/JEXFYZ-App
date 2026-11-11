@@ -11,15 +11,16 @@ Updated: 2026-11-11 (Asia/Jakarta).
 - APK and corresponding-source ZIP are published with verified SHA-256/source marker/signatures. Android versionName "Telegram @horizontalzzz" remains preserved.
 - **Important:** Build #143 predates the latest compact modal and animated Statistics source. Do not identify it as containing either change.
 
-## Current Statistics source — implemented, pre-build source follow-up remains
+## Current Statistics source — 1-Hz diagram refresh; pre-build QC incomplete
 
-- Latest source before this documentation checkpoint: `e1b43200d276808fa5b37612d32f0f71f4ea1420`. Files: `lib/usage_statistics.dart` (2c175ba727b5d06137b6e69fa8151f99c833b56c), `lib/main.dart` (56e71dcaa482cabddd141cd3ae5c6cf28437ada7), `test/usage_statistics_test.dart` (e99b1bcab8ad7e0df4fb494eeb6a90306c480524).
-- Six charts/readouts now exist: Battery °C, Hotside °C, Voltage 5/9/12V, Adaptive ON/OFF, Peltier ON/OFF and Fan Speed 0–100%. Shared elapsed-time cursor reads all six.
-- Peltier is seeded from completed P1 full sync and recorded from telemetry-confirmed PELTIER events. Open-session chart coverage is limited by the latest fresh HOT heartbeat. Raw sensor sampling remains about 1 Hz; chart motion uses vsync; live updates are batched around 16 ms.
-- **Remaining concern:** live page currently recalculates the entire in-memory session summary after each live batch. The SQLite read is avoided, but analytics are not truly incremental. Serialized write queue remains unbounded/unbatched. Add an incremental accumulator and queue/long-session tests before release packaging.
-- Regression tests were added for Peltier duration/transition, HOT coverage, bounded interpolation, gap/extrema-preserving decimation and shared cursor. They have NOT RUN. Animation 60/120-Hz/lifecycle, queue/backpressure and long-session stress tests are still missing.
+- Latest App source/test checkpoint: `33fe9a545d7a8594e6e3a5119d3b1f564a93d868`. Files: `lib/usage_statistics.dart` (`0be670370685725283d51c84f1d33df83dd7e6e8`), `lib/main.dart` (`56e71dcaa482cabddd141cd3ae5c6cf28437ada7`), `test/usage_statistics_test.dart` (`af23d8b6b2e08d11ef28dc58496b574d1fa17e3b`).
+- Six charts/readouts: Battery °C, Hotside °C, Voltage 5/9/12V, Adaptive ON/OFF, Peltier ON/OFF and Fan Speed 0–100%. Shared elapsed-time cursor reads all six.
+- Peltier baseline is seeded from completed P1 full sync and subsequent state comes from telemetry-confirmed PELTIER events. Open-session chart coverage is bounded by the latest fresh HOT heartbeat. Raw sensor sampling remains about 1 Hz.
+- **New owner adjustment:** page-level live diagram batches now flush every one second using `usageStatisticsDiagramRefreshInterval`. Pending live update objects remain accumulated until flush; no sampling/downsampling or database-write interval was changed. Temperature chart tweening continues to use Flutter vsync; Voltage/Adaptive/Peltier remain discrete.
+- Regression source now includes an assertion for the one-second diagram refresh and independent data capture. It is committed but NOT RUN.
+- **Remaining concern:** each one-second batch still recalculates the complete in-memory session summary; the SQLite read is avoided, but analytics are not yet truly incremental. Serialized write queue remains unbounded/unbatched. Add an incremental accumulator plus queue/long-session and animation lifecycle/frame-rate coverage before release packaging.
 - No Flutter/Dart/Gradle toolchain is installed in the current environment: formatter, focused/full Flutter tests, analyzer and Android gate are BLOCKED / NOT RUN. Actual screenshot acceptance is VISUAL NOT VERIFIED.
-- **Diskusi decision (2026-11-11): NOT YET RECOMMENDED for Build App.** Run one final `Eksekusi Full!` for incremental analytics/performance and animation lifecycle test coverage. Then separately authorize `Eksekusi Build App!` for hosted QC/package.
+- **Build readiness:** NOT YET RECOMMENDED for Build App until the remaining source/performance concerns and regression work are closed. Build #143 remains the latest verified APK and predates the Statistics source. Use a separate `Eksekusi Build App!` only after source readiness; no Build was triggered here.
 
 ## Guarded Build App workflow state
 
