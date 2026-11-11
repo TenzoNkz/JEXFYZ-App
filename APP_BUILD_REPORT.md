@@ -1,4 +1,22 @@
-## BUILD #148 ACTIVE — FLUTTER SETUP — 2026-11-11
+## BUILD #148 TERMINAL FAILURE — STATISTICS CURSOR READOUT — 2026-11-11
+
+- **Run/job/source:** [Build #148 / Actions run 42946808657](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42946808657), job 130281466870; immutable source 8662d7d0f4b8a67521e0a80c7fdd95656cc84235.
+- **Passed:** steps 1–12, including security/architecture audit, dependencies and Dart analyzer. Analyzer reported 23 info-level findings, zero warnings and zero errors.
+- **Flutter tests:** 165 passed / 1 failed. The LED width contract (312dp) and all other Build #146/147 fixes passed. Only the Statistics shared cursor readout widget test continued to fail to find "Waktu dipilih". Android and release steps 14–21 were skipped; no #148 APK/source/Release mutation.
+- **Investigation:** #147 changed the hit area to a keyed opaque Listener with pointer-down cursor update; the #148 test verified the LED 312dp contract now passes, but the cursor readout remained absent. This suggests the timeline child/render bounds or tap-up path still did not commit the cursor; exact runtime callback invocation is not directly logged by the test.
+- **Follow-on App patch:** commit `98dd3657d225292a1d1f395693ad7f02d65b240d` wraps the animated timeline in SizedBox.expand to fill the lane and adds a GestureDetector onTapUp cursor update. Existing keyed Listener onPointerDown and onHorizontalDragUpdate remain. This adds a robust complete-area touch path without removing drag support.
+- **Prior cursor-related patches:** Listener/key source `2963faaf8052aa3cca791a0f66d43f0d13800c87`; cursor test uses the Listener key via `8ba15dd2647f96a407efda82ae8ae2ec0e0bc676`. These have now been followed by the SizedBox.expand/onTapUp patch; hosted validation is still pending.
+- **Disposition:** #148 FAILED at Flutter suite; no APK/Release. Build #143 remains the latest verified release.
+
+---
+## NEXT GUARDED RETRY — POST-#148 CURSOR TARGET EXPANSION PRE-TRIGGER — 2026-11-11
+
+- Candidate main before the next docs checkpoint: `98dd3657d225292a1d1f395693ad7f02d65b240d`. It contains expanded hit-target sizing and explicit tap-up cursor update.
+- Original explicit owner Eksekusi Build App! remains authorization for this App-scope repair/retry. Confirm #148 terminal, no active/queued run/PR, exact issue #33 title/token, unchanged workflow and versionName before one guarded reopen.
+- Known performance gaps remain: full-session summary recompute per one-second batch; unbounded/unbatched SQLite queue; long-session CPU/memory/backpressure; animation lifecycle/60–120-Hz tests.
+
+---
+## HISTORICAL BUILD #148 ACTIVE — FLUTTER SETUP — 2026-11-11
 
 - **Run/job/source:** [Build #148 / Actions run 42946808657](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42946808657), job 130281466870, workflow 374946166, issue event, attempt 1; immutable checkout SHA 8662d7d0f4b8a67521e0a80c7fdd95656cc84235.
 - **Trigger:** issue #33 exact guarded title/body was closed/reopened once under the owner's explicit Build App command. Exactly one #148 run exists.
