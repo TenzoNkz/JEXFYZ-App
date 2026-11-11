@@ -1,3 +1,13 @@
+## Active guarded release attempt — Build #144 (2026-11-11)
+
+- Run 42943589237, job 130270923510, workflow 374946166, issue event, attempt 1; source SHA `e1d624bc0990ed3552ebbefaac1164cf025b794f`.
+- Issue #33 exact guarded trigger closed/reopened once. Exactly one run created; no duplicate.
+- Initial runner status in_progress at step 1 Set up job; no later result/artifact at this checkpoint.
+- Candidate source includes compact Peltier/LED overlays, six-metric Usage Statistics, Peltier telemetry, synchronized cursor, interpolation/decimation, one-second page refresh and new tests.
+- Open risk register: selected-session summary recompute per one-second batch, unbounded/unbatched SQLite recorder queue, long-session CPU/memory/backpressure and animation lifecycle/60–120-Hz stress tests. Not independently validated by a passing CI run.
+- Keep every existing gate. Preserve Android versionName `Telegram @horizontalzzz`; App-only scope.
+
+---
 ## Current candidate — guarded Build App requested (2026-11-11)
 
 - Owner command: explicit `Eksekusi Build App!`; one new guarded issue-triggered App Build/QC attempt is authorized, without weakening gates.
