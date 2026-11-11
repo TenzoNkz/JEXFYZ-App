@@ -51,3 +51,9 @@ Secure automatic first enrollment therefore needs backend source, managed signin
 - Completed: localized Wi-Fi password visibility toggle in Firmware Update dialog; existing secure storage and OTA order retained.
 - Not completed: BLE App authorization, because the trusted enrollment/signing backend is missing and production deployment is outside this command's permission.
 - Not run: Flutter/Dart tests, analyzer, Android build, Arduino compile, BLE device test, Firebase production deployment, BIN publication, OTA or device operation.
+
+## Independent Lock Voltage review — 2026-11-12
+
+- The Gemini review correctly restated the existing limitation: encrypted/bonded Just Works plus `SYNC_READY` does not authenticate the official App. A third-party bonded client may be able to send `VOLTAGE_LOCK:OFF`. This remains BLOCKED / NOT IMPLEMENTED and is not a new regression introduced by V7.2.
+- Do not treat a static/shared "App Secret" or token embedded in the APK, or a public key accepted from the first BLE peer, as a sufficient fix. The intended design above requires a per-install Android Keystore signing key, trusted owner/device enrollment backed by a server-signed device-bound grant, Firmware-pinned authorized public key, fresh session nonce/challenge, signature verification, device binding, expiry and replay protection, and gating all command paths before handlers run.
+- This is a separate App/Firmware/backend security workstream. The source review does not authorize Firebase/backend deployment, key provisioning, Firmware changes, OTA or device operations.
