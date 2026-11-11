@@ -1,3 +1,13 @@
+## 2026-11-11 — Usage Statistics six-chart source implemented; release preflight still pending
+
+- Implemented two animated temperature charts plus four synchronized operating charts: Voltage, Adaptive, Peltier and Fan Speed. The shared elapsed-session cursor reports all six metrics.
+- Peltier baseline is seeded from synchronized P1 full state; subsequent events come from authoritative PELTIER telemetry only. Session coverage is limited by fresh HOT heartbeat; invalid/stale readings remain gaps.
+- Live UI consumes in-memory telemetry deltas coalesced around 16 ms; Flutter vsync drives display interpolation while raw Battery/Hotside capture remains about 1 Hz. Temperature rendering uses gap/extrema-preserving decimation.
+- Added regression source for Peltier durations/transition boundaries, HOT coverage, interpolation bounds, decimation, and six-lane/shared-cursor widgets. Latest source HEAD before this log update: `e1b43200d276808fa5b37612d32f0f71f4ea1420`.
+- **Validation NOT RUN:** Flutter/Dart/Gradle are absent locally; formatter, targeted/full tests, analyzer, Android Gradle, screenshots and field QA remain unavailable. Test source is not test-pass evidence.
+- **Pre-build decision:** one risk remains in the live path: every delta batch recomputes all selected-session analytics in memory; the SQLite query debounce is gone, but aggregation is not truly incremental. Queue/backpressure and animation lifecycle/60–120-Hz tests are also outstanding. Do one final App-scope Eksekusi Full! before the separate Build App release workflow.
+- Build #143 remains the latest verified APK and does not contain the current Statistics source. No Build/Release/Firmware/BIN/Firebase/OTA/flash/device operation occurred in this task.
+
 ## 2026-11-10 — Usage Statistics animated multi-chart redesign requested (design only)
 
 - Owner asked for a more professional Usage Statistics page, smooth display transitions and diagrams for every tracked operating metric, including Voltage and Adaptive Mode.
