@@ -1,15 +1,14 @@
-## CURRENT CHECKPOINT — BUILD #150 FAILED / APP ANALYZER REPAIR — 2026-11-12
+## CURRENT CHECKPOINT — BUILD #150 FAILED / SOURCE REPAIRED / GUARDED RETRY READY — 2026-11-12
 
-**Disposition:** Build #150 FAILED at the Dart analyzer. No APK, source ZIP, signing, tag or Release update was produced. The analyzer failure is a concrete source defect, not an infrastructure retry condition.
+**Disposition:** Build #150 failed at the Dart analyzer and produced no artifact. Its concrete App source defect is now repaired and read back; a new guarded run is justified but has not yet been triggered at this checkpoint.
 
-- **Run/job/source:** #150 / Actions run `43080229957`, job `130730553031`, attempt 1, exact tested source `9245e142f4ea0e19e5f49e3ec1e1d80db2adf65c`.
-- **Passed:** steps 1–11 (runner/checkout, Java 17, Flutter 3.47.2, Gradle 9.3.1, toolchain, signing setup, wrapper, security/architecture audit, dependencies). **Failed:** step 12 `Analyze Dart code`, exit 1, 32 reported analyzer issues. **Skipped:** steps 13–21 (Flutter tests, Android Gradle, APK/signing/source ZIP/Release/download verification). Cleanup 39–43 succeeded.
-- **Root cause:** malformed `_openSettings()` in `lib/main.dart`; the opening `await Navigator.push<void>(` was removed, leaving orphaned `context, MaterialPageRoute<void>(...)` and closing syntax. Analyzer parser diagnostics at lines 7036, 7048 and 7049. Valid baseline method exists in Build #149 source. Regression is already present in V7.2 source implementation commit `876ff6527c973d963df49fff1e37242cc302667b`.
-- **Repair in progress:** restore the missing Navigator.push opener only; preserve the Lock Voltage Settings callback and surrounding logic. No analyzer/test gate will be weakened.
-- **Release:** Build #149 remains latest published package. Tag/Release `jexfyz-latest` still target `0507e3e11b67b8f8d042e49b74cc14a53bfc4f21`. No #150 artifact exists.
-- **Tooling:** active container has Git but no Flutter/Dart/Gradle; local format/analyzer/tests are BLOCKED / NOT RUN. Hosted validation must determine whether further issues remain.
-- **No Firmware/BIN/Firebase/OTA/flash/device/BLE/NVS/rail/LED or OEM screenshot work.**
-- **Next safe action:** apply/read back the App-source fix; then fresh preflight and exactly one guarded retry only after the concrete repair is committed.
+- **Failed attempt:** Build #150 / Actions run `43080229957`, job `130730553031`, source SHA `9245e142f4ea0e19e5f49e3ec1e1d80db2adf65c`. Steps 1–11 succeeded; step 12 analyzer failed (32 total diagnostics, parser errors at `lib/main.dart` lines 7036, 7048, 7049); steps 13–21 skipped; cleanup succeeded.
+- **Root cause:** `_openSettings()` had lost the opening `await Navigator.push<void>(` call, leaving orphaned constructor arguments and closing syntax. This was introduced with the V7.2 App source and is not an infrastructure failure.
+- **Repair:** commit `4368c9b81741690cfbcaa30ab00df6438e61d40f`, `lib/main.dart`, restored the missing Navigator call only. Read-back confirms the full Settings navigation method and unchanged `onVoltageLockChanged: _setVoltageLock` callback. No BLE/P1, Firmware, workflow, versionName or other App behavior was changed.
+- **Source validation:** static read-back only. Flutter, Dart and Gradle are unavailable in the active container; formatter/analyzer/tests NOT RUN locally. Hosted analyzer and full test/build gates remain mandatory.
+- **Preflight:** no active or queued Actions runs; issue #33 OPEN and exact owner/title/token guard retained; workflow blob `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12` unchanged and issue-only; recursive tree 131 entries, not truncated; Release/tag still on Build #149 source `0507e3e11b67b8f8d042e49b74cc14a53bfc4f21`, exactly one APK + one source ZIP. Android versionName `Telegram @horizontalzzz` preserved.
+- **Next:** trigger exactly one guarded issue #33 close/reopen attempt against the repaired `main`; then inspect its captured SHA, jobs and every gate. No blind retry.
+- **Boundary:** no Firmware compilation, BIN, Firebase, OTA, flash, device/BLE/NVS/rail/LED or OEM screenshot work.
 
 ---
 
