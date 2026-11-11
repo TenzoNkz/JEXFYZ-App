@@ -1,3 +1,21 @@
+## CURRENT CHECKPOINT — STATISTICS DIAGRAM REFRESH AT 1 HZ — 2026-11-11
+
+**Mode:** owner authorized `Eksekusi Full!` for the Statistics refresh adjustment.
+
+**Latest App source/test checkpoint before this documentation update:** `main` source commit `33fe9a545d7a8594e6e3a5119d3b1f564a93d868`; `lib/usage_statistics.dart` blob `0be670370685725283d51c84f1d33df83dd7e6e8`; `lib/main.dart` blob `56e71dcaa482cabddd141cd3ae5c6cf28437ada7`; `test/usage_statistics_test.dart` blob `af23d8b6b2e08d11ef28dc58496b574d1fa17e3b`.
+
+**Owner change implemented:** the Statistics page now batches its live diagram refresh at exactly a one-second timer interval through `usageStatisticsDiagramRefreshInterval = Duration(seconds: 1)`. Live update objects are retained in the pending batch and processed on the next flush; this cadence change does not downsample telemetry events or discard samples due to the timer. Raw Battery/Hotside collection, recorder operation and SQLite persistence are unchanged. Flutter vsync still drives the visual interpolation between diagram refreshes; Voltage/Adaptive/Peltier remain discrete state charts.
+
+**Regression source:** added `Statistics diagrams refresh once per second without throttling data capture`. It checks the one-second constant, the page timer's use of that constant and the independent recording path. This test source has been committed but NOT RUN.
+
+**Validation status:** source/test contents were fetched again from live `main` and the new constant, timer wiring and regression assertion were read-back verified. Flutter/Dart/Gradle are unavailable in the active environment; formatter, analyzer, targeted/full Flutter tests and Android QC remain BLOCKED / NOT RUN. No App Build, Actions trigger, APK, Release, Firmware, BIN, Firebase, OTA, flash or device operation occurred.
+
+**Pre-build status remains:** NOT YET RECOMMENDED for release Build App until full-session analytics recomputation cost, unbounded SQLite write queue/backpressure, lifecycle/60–120-Hz tests and long-session stress coverage are addressed and hosted QC passes. Build #143 remains the latest verified APK and does not include the current Statistics source.
+
+**Protected scope:** App-only diagram presentation cadence and regression test. Sensor sampling, telemetry contracts, BLE/P1 protocol, data retention, database writes, Firmware, safety, Android versionName and guarded Build workflow remain unchanged.
+
+---
+
 ## CURRENT CHECKPOINT — USAGE STATISTICS IMPLEMENTED / PRE-BUILD DISKUSI — 2026-11-11
 
 **Mode:** owner asked `Diskusi!` whether the current work is ready for `Eksekusi Build App!`. This audit is read-only for executable source, tests, workflow and release. Only project-memory documentation was updated. No test/build/Actions trigger occurred.
