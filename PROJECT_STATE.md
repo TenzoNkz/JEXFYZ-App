@@ -13,9 +13,18 @@
 
 ---
 
-## Firmware V7.2 source implementation — validation pending (2026-11-12)
+## Firmware V7.2 source implementation — App CI verified; Firmware validation pending (2026-11-12)
 
-## Previous App release — Build #149 verified (2026-11-11)
+- **CURRENT source:** `firmware/JEXFYZ-V7.2.ino`, `FW_VERSION="V7.2"`, blob `140e758e7101cadc3ccc58cc5c52e49534b0032c`; it is the only active versioned `.ino` in the complete recursive tree (131 entries, `truncated=false`). Main HEAD before this documentation update is `ddf9aa441a22dc715bb026f4a1c3bd74e9b425ae`.
+- **STATIC SOURCE CHECK:** `vLock5V` is firmware-owned in Preferences namespace `jexfyz`; an absent key defaults OFF, while failed Preferences initialization fails closed. Lock ON applies the runtime interlock before persistence/handoff, blocks requests above 5V at the central request gate and final selector boundary, redirects an in-flight transition without restarting its 200ms deadtime, and maintains a loop-level 5V endpoint. Unlock persists OFF before removing the lock, leaves the rail at 5V and Adaptive OFF; Adaptive can be re-enabled only by a separate explicit action after unlock.
+- **P1/App integration:** full sync publishes `VOLTAGE_LOCK` and `VOLTAGE_LOCK_SAVED`; the App waits for ACK plus matching lock telemetry, reports NVS save failure/retry separately, and reflects the actual rail only from VOLTAGE telemetry. Touch single tap follows actual rail 5V→9V→12V→5V. Denied Touch/manual requests use a nonblocking double-red pulse that yields to NTC/Hotside/OTA safety indications.
+- **VERIFIED CI — App scope:** Build #151 / run `43080954412`, job `130733048413`, exact package source SHA `e383924067b7ab2da27f2e41f21232cfb7144ec0`. Relevant Firmware/App/test blobs are identical to current `main`. Analyzer: 23 info-level findings, zero warnings/errors. Flutter: **171/171 passed**, including the V7.2 one-way Touch test and four Lock Voltage/App source-contract tests. Android `:app:testDebugUnitTest` was `NO-SOURCE`; no native Android JUnit tests ran. This is App and static-source contract evidence, not Firmware compilation/runtime evidence.
+- **NOT RUN / UNVERIFIED:** Arduino-ESP32 Core 3.3.7 compile, BIN provenance, NVS persistence/power-cycle, rail/selector/soft-start behavior, physical Touch/LED, BLE security/identity, thermal/electrical cooling, OTA/flash and owner-side OEM visual acceptance.
+- **Security limitation:** bonded Just Works + `SYNC_READY` still does not authenticate the official App; another bonded/manual client may send `VOLTAGE_LOCK:OFF`. `BLE_APP_AUTH.md` remains BLOCKED / NOT IMPLEMENTED.
+- **Source cleanup item:** the sketch's opening comment says `V7.1 Firmware` although `FW_VERSION` is `V7.2`; no runtime effect, but fix in an authorized source patch.
+- **Next:** obtain an independent review of the pasted V7.2 lock/transition excerpts (Gemini handoff is prepared in this chat, not sent), then decide whether any source/test cleanup needs `Eksekusi Full!`. Firmware compile and any BIN/OTA/flash/device operation remain separate.
+
+## HISTORICAL App release — Build #149 verified (2026-11-11; superseded by Build #151)
 
 - **Latest verified package:** Build #149 / Actions run 42967289995, job 130347345586, conclusion success; all 21 required workflow steps and cleanup 39–43 passed.
 - **Exact source/tag:** 0507e3e11b67b8f8d042e49b74cc14a53bfc4f21. jexfyz-latest tag and Release ID 403010611 target this exact commit. Current main also contains the newer, unreleased Peltier/LED source refinement documented below; it is not part of Build #149.
@@ -27,15 +36,15 @@
 - **Performance gaps remain OPEN:** full selected-session analytics recomputed each one-second batch; unbounded/unbatched SQLite write queue; long-session CPU/memory/backpressure and animation lifecycle/60–120-Hz stress tests. Do not infer these are validated by normal CI.
 - **Field evidence UNVERIFIED:** owner install identity, OEM visuals at 350-dp/420-dp, physical BLE, real Usage Statistics telemetry/soak, cooling thermal/electrical performance, Firmware/BIN/OTA. No Firmware/device operations were performed.
 
-## Current main App source candidate — Peltier dialog and 60-color LED palette (2026-11-11)
+## HISTORICAL App source candidate — Peltier dialog and 60-color LED palette (later included in Build #151)
 
-- **Source commit:** `7f31c2d3b2571dbb9f1c4fa87dea0db0d3851bda`. This is a source/test/documentation update after Build #149. The published `jexfyz-latest` Release/tag remains on Build #149 source `0507e3e11b67b8f8d042e49b74cc14a53bfc4f21`; the new UI refinements are **NOT RELEASED**.
+- **Historical source commit:** `7f31c2d3b2571dbb9f1c4fa87dea0db0d3851bda`, with test cleanup `b24848222c0a90f213dd6017571e13857138d4f9`. These UI/test refinements were later included in Build #151 source `e383924067b7ab2da27f2e41f21232cfb7144ec0`; they are no longer an unreleased candidate.
 - **Peltier dialog:** effective width target approximately 312 dp in the protected 360-dp canvas; 18/14/14 dp title/body/actions; reduced insets and vertical padding. Cancel/Fan targets remain at least 48 dp high. Bilingual safety copy is shorter. The FAN-before-PELTIER command/ACK order and safety predicates are preserved.
 - **LED palette:** 60 unique HEX presets, 60 unique localization keys, 60 unique English names and 60 unique Indonesian names. Six-column scroll, 48-dp cells, 32-dp swatches, staged preview, Cancel, explicit Select/commit and legacy RGB aliases are retained. Known CSS-aligned names now match their exact HEX values.
 - **Regression source:** widget tests cover dialog sizing/copy/tap heights/fan-first order, 60-color uniqueness, complete bilingual names, representative HEX-name mapping, final white, six-column scrolling and swatch/hit-target sizes. Review found older assertions still pinned to 36 colors and an old first-color/name; test commit `b24848222c0a90f213dd6017571e13857138d4f9` updates those expectations to 60, `#800000` and `Kayu Manis`.
 - **Static evidence:** 60 unique HEX entries, 60 unique localization keys, 60 unique English and Indonesian names; no missing localization or duplicate values/names; final swatch remains white; Peltier actions remain 48 dp with fan-first command order.
-- **Validation boundary:** Flutter/Dart/Gradle/ADB are not installed in the active container, so `dart format`, focused/full `flutter test`, `flutter analyze`, Android build, hosted CI and screenshot/OEM/device acceptance are BLOCKED / NOT RUN. Static source/read-back checks are not test execution. Visual status remains VISUAL NOT VERIFIED. No App Build, release, Firmware, BIN, Firebase, OTA, flash or device action occurred.
-- **Next action:** a separate `Eksekusi Build App!` is required before packaging these source changes. The Build #149 installation/field-acceptance checks and open Statistics/SQLite/animation performance risks remain outstanding.
+- **Historical validation boundary at that snapshot:** local Flutter/Dart/Gradle/ADB tools were not installed, so local commands were BLOCKED / NOT RUN at that time. Build #151 later packaged these App refinements and passed hosted analyzer/tests. Screenshot/OEM/device acceptance and open Statistics/SQLite/animation performance risks remain separate and unverified.
+- **Historical next action:** the later guarded App Build completed as Build #151; see the active release checkpoint at the top of this file.
 
 ---
 ## HISTORICAL App QC — Build #149 APK build active — 2026-11-11
