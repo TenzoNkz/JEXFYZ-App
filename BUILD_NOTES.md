@@ -1,3 +1,16 @@
+## Build #144–#148 failure summary and cursor repair — pre-build #149 (2026-11-11)
+
+- #144 run 42943589237/job 130270923510/source e1d624bc0990ed3552ebbefaac1164cf025b794f: analyzer failed with 12 errors, 3 warnings and 25 infos; malformed helper/method scope/named arguments in usage_statistics.dart.
+- #145 run 42944293567/job 130273243595/source 264469a80b49f70a09f2d705b6ad339ae3ba5fe4: analyzer failed on double? passed to double plus redundant ! warning.
+- #146 run 42944693211/job 130274555621/source d5bc688cc14243cd944f2d8d653bbcb59d2805fe: analyzer passed (23 infos); Flutter 161/5. Failures were fractional max-height precision, obsolete 16ms timer source assertion, stale LED/Peltier UI source contracts, and Peltier cursor label.
+- #147 run 42946048711/job 130278994451/source ad21a36ab496e5323fa35ba090121eda359107a4: analyzer passed (23 infos); Flutter 164/2. Stale LED maxWidth assertion and cursor label remained.
+- #148 run 42946808657/job 130281466870/source 8662d7d0f4b8a67521e0a80c7fdd95656cc84235: analyzer passed (23 infos); Flutter 165/1. Only selected cursor readout remained absent after tapping Peltier chart. None of #144–#148 produced an APK or Release update.
+- **Root cause/fix:** _sharedCursorReadout sat as an early child inside the lazy ListView and could be unmounted when scrolling to Peltier. Source commit f56b2a9a4893a1a0810cfdfb38524fd79df87d05 moves the selected state into a conditional Scaffold.bottomNavigationBar; unselected helper remains in ListView. Existing Listener/tap-up/drag interaction and widget assertion remain intact.
+- New code is NOT YET HOSTED-VALIDATED. Do not claim fixed until the full Flutter test gate passes.
+- Remaining performance gaps: full-session summary recompute per one-second batch; unbounded/unbatched SQLite write queue; long-session CPU/memory/backpressure and animation lifecycle/60–120-Hz tests.
+- Keep Android versionName "Telegram @horizontalzzz", App-only scope.
+
+---
 ## Build #148 cursor widget test still failing — hit-area expansion committed (2026-11-11)
 
 - Run 42946808657, job 130281466870, source 8662d7d0f4b8a67521e0a80c7fdd95656cc84235. Analyzer 23 infos, zero warnings/errors; Flutter 165 passed / 1 failed; Android/release skipped.
