@@ -1,4 +1,21 @@
-## BUILD #145 ACTIVE — FLUTTER SETUP — 2026-11-11
+## BUILD #145 TERMINAL FAILURE — FINAL NULLABILITY DIAGNOSTIC — 2026-11-11
+
+- **Run/job/source:** [Build #145 / Actions run 42944293567](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42944293567), job 130273243595; immutable source `264469a80b49f70a09f2d705b6ad339ae3ba5fe4`.
+- **Passed:** steps 1–11 (setup/toolchain/signing prep, security/architecture audit and dependency installation). The #144 helper-scope/parameter/parser errors and missing timeline key diagnostic were all cleared.
+- **Failed:** step 12 Dart analyzer, with **25 findings: 1 error, 1 warning and 23 info-level**. Error: `lib/usage_statistics.dart:2715` passed nullable `referenceValue` to `yFor(double)`; the value is a painter field so flow analysis did not promote the field after its null check. Warning: `path!` at line 2759 was unnecessary because the preceding `startNew` branch condition guarantees the path is non-null in the else branch. Remaining 23 infos are deprecated Flutter APIs in Floating Monitor/widget color tests.
+- **Downstream:** steps 13–21 skipped; no Flutter tests, Android gate, APK, source archive, signing or Release publication from #145. Build #143 remains latest verified package.
+- **Repair:** commit `250d2a031667c0b7ceab98e3077a35a97408d8ce` introduces a local `final reference = referenceValue` and null-checks that local before calling `yFor(reference)`, and removes the redundant `path!` assertion. Source read-back verified the corrected logic. Hosted analyzer/test validation remains pending.
+- **Disposition:** #145 terminal analyzer failure; proceed only after recording the patch and performing a fresh guarded retry. No diagnostic was suppressed, no test removed and no workflow gate bypassed.
+
+---
+## NEXT GUARDED RETRY — POST-#145 PATCH PRE-TRIGGER — 2026-11-11
+
+- Candidate latest source includes the prior repair commits `80b8874c9d851d1422009cfdbb85f33eec74f8b2`, `1e04495416426ea5f4b3c9280704b1deee9a821c` and nullable-flow fix `250d2a031667c0b7ceab98e3077a35a97408d8ce`.
+- The original explicit owner `Eksekusi Build App!` remains authorization for this operation and concrete App-scope repairs/retries. Reconfirm #145 terminal/no active jobs, no open PR, exact issue #33 trigger, unchanged workflow, preserved versionName; emit one close/reopen event only.
+- Open performance gaps (full-session summary recompute per one-second refresh, unbounded/unbatched recorder queue, long-session CPU/memory/backpressure and animation lifecycle/60–120-Hz test coverage) remain separate and must be disclosed.
+
+---
+## HISTORICAL BUILD #145 ACTIVE — FLUTTER SETUP — 2026-11-11
 
 - **Run/job/source:** [Build #145 / Actions run 42944293567](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42944293567), job 130273243595, workflow 374946166, issue event, attempt 1; immutable checkout `264469a80b49f70a09f2d705b6ad339ae3ba5fe4`.
 - **Retry reason:** #144 failed the Dart analyzer because cursor helper functions were inside the `_messageState` parameter list and `_AnimatedUsageTimeline` lacked key forwarding. Repairs were committed as `80b8874c9d851d1422009cfdbb85f33eec74f8b2` and `1e04495416426ea5f4b3c9280704b1deee9a821c`; structure read-back passed, hosted validation pending.
