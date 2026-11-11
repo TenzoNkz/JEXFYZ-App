@@ -1,3 +1,13 @@
+## BUILD #146 ACTIVE — RUNNER SETUP — 2026-11-11
+
+- **Run/job/source:** [Build #146 / Actions run 42944693211](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42944693211), job 130274555621, workflow 374946166, issue event, attempt 1; immutable checkout `d5bc688cc14243cd944f2d8d653bbcb59d2805fe`.
+- **Retry basis:** #145's sole analyzer error (nullable painter field) and one redundant path assertion were fixed in `250d2a031667c0b7ceab98e3077a35a97408d8ce`; the earlier #144 structural issues were fixed in `80b8874c9d851d1422009cfdbb85f33eec74f8b2` and `1e04495416426ea5f4b3c9280704b1deee9a821c`. Latest source read-back verified.
+- **Initial status:** run/job `in_progress`; steps 1–2 success, step 3 Java 17 setup active; steps 4–21 pending. No artifact or #146 Release mutation yet.
+- **Prior attempts:** #144 failed with 12 errors/3 warnings/25 infos; #145 cleared those structural errors but still failed with one nullable error/one warning. Neither attempt ran Flutter tests or produced assets. Build #143 remains latest verified release.
+- **Risk register:** per-one-second full-session summary recomputation, unbounded/unbatched SQLite queue, long-session CPU/memory/backpressure, animation lifecycle and 60–120-Hz stress tests remain open.
+- **Disposition:** ACTIVE — continue only run 42944693211; do not trigger another build.
+
+---
 ## BUILD #145 TERMINAL FAILURE — FINAL NULLABILITY DIAGNOSTIC — 2026-11-11
 
 - **Run/job/source:** [Build #145 / Actions run 42944293567](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42944293567), job 130273243595; immutable source `264469a80b49f70a09f2d705b6ad339ae3ba5fe4`.
