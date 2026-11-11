@@ -2,7 +2,7 @@
 
 - Peltier safety dialog effective width is now approximately 312 dp within the existing 360-dp canvas; title/body/actions are 18/14/14 dp with tighter padding. Minimum Cancel/Fan touch heights remain 48 dp; concise bilingual copy and fan-first safety/ACK ordering are preserved.
 - LED palette expanded from 36 to 60 unique curated HEX values. Every preset has unique English/Indonesian names; exact CSS-aligned colors use standard names and descriptive hues use clear shade names. Six-column scrolling, 48-dp cells, 32-dp swatches, staged preview, Cancel and explicit Select remain.
-- Added/updated widget regression source for geometry, safety command ordering, bilingual copy, palette uniqueness/localization and key color-name mappings.
+- Added/updated widget regression source for geometry, safety command ordering, bilingual copy, palette uniqueness/localization and key color-name mappings. A follow-up review found older palette assertions still expected 36; test commit `b24848222c0a90f213dd6017571e13857138d4f9` aligns both legacy count checks, the first preset and the updated Cinnamon display label. These tests remain NOT RUN.
 - Source/test/docs committed on main, but Flutter/Dart are unavailable locally: formatter, focused/full Flutter tests and analyzer are BLOCKED / NOT RUN. No hosted CI, App Build/APK/Release, screenshot/OEM validation or device operation was run. Build #149 remains the latest released package; this source update is NOT RELEASED.
 
 ## 2026-11-11 — Statistics diagrams now refresh once per second
