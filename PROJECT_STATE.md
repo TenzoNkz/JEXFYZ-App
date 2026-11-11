@@ -1,13 +1,15 @@
-## Current App QC — Build #147 active (2026-11-11)
+## Current App candidate — Build #147 two test failures repaired; hosted retry pending (2026-11-11)
 
-- **Run:** 42946048711, job 130278994451, workflow 374946166, issue event, attempt 1; immutable source SHA ad21a36ab496e5323fa35ba090121eda359107a4.
-- **Status:** steps 1–3 success; step 4 Flutter setup in progress; later gates pending. No artifact yet.
-- **Included repairs:** LED picker max height rounds to integer logical pixels; Statistics contract checks Flutter Ticker/vsync instead of a fixed 16ms timer; cursor test ensures Peltier lane is fully visible before center tap; LED/Peltier UI contracts target current compact sizes.
-- **Prior #146:** analyzer passed (23 info, zero warning/error); Flutter 161/5; downstream Android/Release steps skipped, no package.
-- **Known gaps remain:** full summary recomputation per 1Hz UI batch; unbounded/unbatched SQLite queue; long-session CPU/memory/backpressure; animation lifecycle/60–120-Hz tests.
-- Preserve Android versionName "Telegram @horizontalzzz"; no Firmware/BIN/Firebase/OTA/flash/device operation.
+- **Build #147:** run 42946048711, job 130278994451, source ad21a36ab496e5323fa35ba090121eda359107a4. Analyzer passed (23 info, zero warnings/errors); Flutter suite 164 passed / 2 failed; Android/release gates skipped. No package.
+- **Remaining findings:** old LED source contract still expected 420dp max width although current panel width is 312dp; updated to 312. Statistics cursor remained unchanged after tap even once child was visible; source now uses an explicit keyed opaque Listener for pointer-down while preserving horizontal drag.
+- **Commits:** pointer Listener source 2963faaf8052aa3cca791a0f66d43f0d13800c87; LED max-width contract 269270634c8225125a0c78f5148f373fb7f72005; cursor interaction test 8ba15dd2647f96a407efda82ae8ae2ec0e0bc676; cleanup 01d43a2803310aa322a8a59e21f96b621203bc54 and 4d36b77ba4e3973162433ac5107d63cd1959264f. Read-back verified; hosted validation pending.
+- **Retry:** original Build App authorization remains valid for concrete App repairs. Verify #147 terminal, no active jobs/PR, exact issue #33/workflow and preserved versionName before one guarded retry.
+- **Known performance gaps:** full summary recompute per second; unbounded/unbatched SQLite queue; long-session CPU/memory/backpressure; animation lifecycle and 60–120-Hz tests.
+- No Firmware/BIN/Firebase/OTA/flash/device operation.
 
 ---
+## HISTORICAL App QC — Build #147 active / Flutter test gate — 2026-11-11
+
 ## HISTORICAL App candidate — Build #147 pre-trigger ready (2026-11-11)
 
 - Main before this checkpoint: 245f9870f7bd75b1c7f18827a4f4fb6ae5588b4b; latest executable App/test commit b1609b01d4dee470b96e2030cb5583df1efc1351. Includes rounded LED height and compact-picker/Peltier/Statistics cursor/animation contract updates.
