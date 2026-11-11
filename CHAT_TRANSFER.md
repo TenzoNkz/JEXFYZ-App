@@ -1,20 +1,20 @@
-## CURRENT CHECKPOINT — BUILD #148 ACTIVE / FLUTTER SETUP — 2026-11-11
+## CURRENT CHECKPOINT — BUILD #148 FAILED / CURSOR HIT-AREA EXPANSION COMMITTED / RETRY PRE-TRIGGER — 2026-11-11
 
-**Run:** [Build #148 / Actions run 42946808657](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42946808657), job 130281466870, workflow 374946166, issue event, attempt 1.
+**Failed run:** Build #148 / Actions run 42946808657, job 130281466870, source 8662d7d0f4b8a67521e0a80c7fdd95656cc84235.
 
-**Immutable source:** 8662d7d0f4b8a67521e0a80c7fdd95656cc84235.
+**Results:** steps 1–12 passed; analyzer 23 info, zero warnings/errors. Flutter tests 165 passed / 1 failed (Statistics cursor readout). LED width and all previous #146/147 repairs now pass. Steps 14–21 skipped; no package/Release output.
 
-**Included repairs:** 312dp LED contract; keyed opaque timeline Listener updates cursor on pointer-down; horizontal drag stays enabled. Prior fixes for height rounding, vsync animation assertion, compact LED/Peltier contracts and visible lane are retained.
+**Cursor follow-up:** #147 added keyed Listener pointer-down update; #148 confirmed 312dp LED test passes but cursor label is still absent. New source commit 98dd3657d225292a1d1f395693ad7f02d65b240d wraps the timeline in SizedBox.expand and adds GestureDetector onTapUp update while retaining Listener onPointerDown and horizontal drag. Read-back only; hosted validation pending.
 
-**Initial status:** steps 1–3 success; step 4 Flutter setup in progress; steps 5–21 pending. No artifact/Release update.
+**Earlier cursor commits:** Listener 2963faaf8052aa3cca791a0f66d43f0d13800c87; widget test 8ba15dd2647f96a407efda82ae8ae2ec0e0bc676. Current next run must prove pointer interaction.
 
-**Previous #147:** analyzer 23 infos/zero warnings/errors; Flutter 164 passed / 2 failed; no Android/APK/Release gate execution.
+**Risks:** per-one-second full summary recompute; unbounded/unbatched SQLite queue; long-session CPU/memory/backpressure; animation lifecycle/60–120-Hz stress tests.
 
-**Open risks:** full-session summary recompute per one-second batch; unbounded/unbatched SQLite queue; long-session CPU/memory/backpressure; animation lifecycle/60–120-Hz tests.
-
-**Next:** continue only #148; no duplicate triggers. Preserve original gates and App-only boundary.
+**Next:** fresh preflight then one guarded retry. No gate weakening.
 
 ---
+## HISTORICAL CHECKPOINT — BUILD #148 ACTIVE / FLUTTER SETUP — 2026-11-11
+
 ## HISTORICAL CHECKPOINT — BUILD #147 FAILED / CURSOR POINTER FIX — 2026-11-11
 
 ## HISTORICAL CHECKPOINT — BUILD #147 ACTIVE / FLUTTER SETUP — 2026-11-11
