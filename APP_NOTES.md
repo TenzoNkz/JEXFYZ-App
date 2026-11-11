@@ -17,6 +17,20 @@ Purpose: canonical current App/UI/BLE/telemetry contract. Current source defines
 - LED Color Picker has 60 unique named colors with complete English/Indonesian localization, six columns, internal scrolling, 48×48 dp hit cells and 32×32 dp swatches. Names now match standard HEX values where available. Preview, tooltip, accessibility label, draft selection, Cancel and explicit Select/commit share the same color name/value mapping. Legacy stored RGB aliases remain supported.
 - Source and regression-test files are committed, but Flutter/Dart are unavailable locally and no formatter, local tests, analyzer, hosted CI, new APK or visual screenshot validation has run for this refinement. Visual status remains VISUAL NOT VERIFIED until real screenshots are inspected.
 
+
+## Owner-requested Lock Voltage 5V — App presentation contract (2026-11-11; pending implementation)
+
+- Add a Settings control named **Lock Voltage** / **Kunci Tegangan**. Its persisted authority is Firmware ESP32 Preferences/NVS, not Android SharedPreferences. The value is learned from a new Firmware P1 full-sync/state field such as VOLTAGE_LOCK.
+- ON locks actual Firmware rail requests to 5 V, disables the App's 9 V/12 V Voltage controls and disables the Adaptive switch/profile controls with visible lock treatment. Keep Home metrics truthful: Voltage reflects actual telemetry (5 V once handoff completes) and Adaptive reflects actual OFF state; show a lock marker rather than inventing values.
+- On enable from 9/12 V or Adaptive ON, show an in-progress/locked state until authoritative Firmware telemetry confirms Adaptive OFF and Voltage 5 V. Do not optimistically paint the rail as 5 V before the transition completes.
+- The Lock Voltage setting remains available only when the BLE/P1 session is ready and Firmware's lock state has been synchronized. Before full sync or while disconnected, do not default the value to OFF or use stale Android storage as authority.
+- OFF is sent explicitly through the App setting. Firmware persists the change before acknowledging. Unlocking only removes the rail ceiling; do not automatically restore a prior 9/12 V voltage or enable Adaptive. Remain at 5 V until the user selects a new mode.
+- Localize title, supporting copy, ON/OFF, lock status, pending 5 V handoff and persistence-error messages in English/Indonesian.
+- If an App voltage request is rejected specifically because Lock Voltage is ON, show a concise localized explanation; Firmware also emits its two-red-flash rejection signal. Firmware remains the enforcement point even when an older App still exposes manual buttons.
+- App-only security caveat: current BLE bonding/Just Works + P1 readiness do not authenticate the official App. Strict prevention of third-party BLE clients unlocking the feature requires the separate BLE App authentication design; do not imply that this UI-only change solves it.
+- No App source/test is changed by this Discussion. The feature is part of the pending cross-layer Firmware V7.2 implementation scope and still needs a separate guarded App Build after source work.
+
+
 ## Bluetooth Connection sheet — scan presentation contract
 
 - The sheet starts its initial scan after its first frame and observes `FlutterBluePlus.isScanning` separately from fresh `onScanResults`. A completed scan with no matching JE Cooler displays the localized not-found message rather than remaining on Scanning or showing cached results from an earlier scan.
