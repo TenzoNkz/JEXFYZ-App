@@ -1742,7 +1742,7 @@ void main() {
     expect(source, contains("JexText.of('cancel', lang)"));
     expect(source, contains('Future<bool> _setRgbColor(String hex) async'));
     expect(source, contains('colors: ledColorPresets'));
-    expect(source, contains('constraints: const BoxConstraints(maxWidth: 420)'));
+    expect(colorDialog, contains('maxWidth: 312'));
     expect(source, contains('showGeneralDialog<void>'));
   });
 
