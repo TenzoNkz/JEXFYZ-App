@@ -1,3 +1,15 @@
+## Current App candidate — guarded Build App requested (2026-11-11)
+
+- **Owner command:** explicit `Eksekusi Build App!` authorizes one new guarded App Build/QC attempt for current source. This does not waive checks or authorize other subsystem/device operations.
+- **Candidate main before documentation checkpoint:** `18787069be826cad3027dc1a1eb9952cfaf92641`; latest executable source/test commit `33fe9a545d7a8594e6e3a5119d3b1f564a93d868`.
+- **Included App changes after Build #143:** compact Peltier safety prompt and LED color picker; six synchronized Usage Statistics charts/readouts (Battery, Hotside, Voltage, Adaptive, Peltier, Fan Speed); Peltier state seeded from P1 sync and recorded from telemetry; sensor freshness bounded by HOT heartbeat; shared cursor and interpolated temperature trends; one-second page-level chart batch flush; regression tests for overlay sizing, chart states/cursor/freshness/decimation and one-second refresh.
+- **Known unverified risks:** full selected-session analytics summary is still recomputed on each one-second live batch; SQLite serialized write queue is unbounded/unbatched; long-session CPU/memory/backpressure and animation lifecycle/60–120-Hz stress tests remain incomplete. No local Flutter/Dart/Gradle available, so formatter and local tests/analyzer were not run.
+- **Build preflight:** workflow blob `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12`; guarded issue-only event; issue #33 OPEN and exact title/token; no active Actions run and no open PR. One new reopened event is authorized.
+- **Release baseline:** Build #143 / run `42783474515`, source/tag `121ef9e0f5ed6a0003837d32e4c8b1701f38631a`. New candidate is not yet built/released.
+- **Protected contract:** Android `versionName "Telegram @horizontalzzz"`. Firmware, BIN, Firebase, OTA, flashing, physical BLE/cooling actions remain out of scope.
+- **Status:** PRE-TRIGGER. Await the official workflow's analyzer/test/Android/signing/Release/download verification; do not declare the new source released until every required gate passes.
+
+---
 ## Current App release — Build #143 completed and verified (2026-11-10)
 
 - **Latest verified package:** Build #143 / Actions run 42783474515, job 129718855331, final conclusion success; all 21 required gates and cleanup passed.
