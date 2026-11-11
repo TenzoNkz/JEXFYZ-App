@@ -1,16 +1,20 @@
-## CURRENT CHECKPOINT — NEXT GUARDED APP BUILD AUTHORIZED / PRE-TRIGGER — 2026-11-11
+## CURRENT CHECKPOINT — BUILD #144 ACTIVE / INITIAL SETUP — 2026-11-11
 
-**Mode:** owner explicitly commanded `Eksekusi Build App!` for the latest App source. Continue the guarded App Build/QC path only.
+**Run:** [Build #144 / Actions run 42943589237](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42943589237), workflow 374946166, issue event, attempt 1. Job build / 130270923510.
 
-**Candidate:** main before this checkpoint `18787069be826cad3027dc1a1eb9952cfaf92641`; latest executable source/test commit `33fe9a545d7a8594e6e3a5119d3b1f564a93d868`. This source is newer than Build #143 and includes compact Peltier/LED overlays, six-metric Usage Statistics and one-second page-level diagram batch refresh.
+**Immutable source SHA:** `e1d624bc0990ed3552ebbefaac1164cf025b794f`. Latest executable App/test source in this checkout: `33fe9a545d7a8594e6e3a5119d3b1f564a93d868`; later commit(s) are documentation-only.
 
-**Known gaps must remain visible:** selected-session summary is fully recomputed on each one-second refresh; serialized SQLite write queue remains unbounded/unbatched; long-session CPU/memory/backpressure and animation lifecycle/60–120-Hz tests are not yet complete. Hosted tests/analyzer have not run on this source. Owner has now authorized the guarded QC/build attempt; this does not waive any gate or prove these performance properties.
+**Trigger:** issue #33 exact title/token was closed/reopened once under explicit user command. Exactly one new run exists; issue remains OPEN. No active duplicate trigger.
 
-**Preflight:** workflow blob `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12`, issue-only trigger and exact guard. Issue #33 OPEN; exact title/body token match. No active Actions run, no open PR. Latest published package is Build #143 at source/tag `121ef9e0f5ed6a0003837d32e4c8b1701f38631a`.
+**Initial state:** run and job `in_progress`; step 1 Set up job is active; steps 2–21 not yet reported. No APK/source artifact or new Release asset yet.
 
-**Action:** create one checkpointed issue #33 close/reopen event, verify exactly one new run and immutable source SHA, then follow every required gate. Stop at the first real failure and repair only the App-scope root cause. Preserve Android `versionName "Telegram @horizontalzzz"`. No Firmware/BIN/Firebase/OTA/flash/device actions.
+**Known risks to retain:** full-session summary recompute per one-second batch, unbounded/unbatched SQLite write queue, long-session CPU/memory/backpressure, and animation lifecycle/60–120-Hz stress tests remain incomplete. This hosted build is validation, not proof of those missing performance/field tests.
+
+**Next:** monitor only run 42943589237; analyze actual job steps/logs; update this checkpoint at meaningful gate transitions. Preserve versionName and all security/release gates. No Firmware/BIN/Firebase/OTA/flash/device actions.
 
 ---
+## HISTORICAL CHECKPOINT — NEXT GUARDED APP BUILD AUTHORIZED / PRE-TRIGGER — 2026-11-11
+
 ## HISTORICAL CHECKPOINT — STATISTICS DIAGRAM REFRESH AT 1 HZ — 2026-11-11
 
 **Mode:** owner authorized `Eksekusi Full!` for the Statistics refresh adjustment.
