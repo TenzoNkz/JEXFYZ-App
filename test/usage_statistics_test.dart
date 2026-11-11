@@ -415,6 +415,20 @@ void main() {
     expect(main, contains("metric: \'battery\'"));
   });
 
+  test('Statistics diagrams refresh once per second without throttling data capture', () {
+    final usage = File('lib/usage_statistics.dart').readAsStringSync();
+
+    expect(usageStatisticsDiagramRefreshInterval, const Duration(seconds: 1));
+    expect(
+      usage,
+      contains(
+        'Timer(\n      usageStatisticsDiagramRefreshInterval,\n      _flushLiveUpdates,',
+      ),
+    );
+    expect(usage, contains('recordTemperatureSample('));
+    expect(usage, isNot(contains('Duration(milliseconds: 16)')));
+  });
+
   test('statistics storage is local SQLite and is not added to Firmware or Firebase', () {
     final usage = File('lib/usage_statistics.dart').readAsStringSync();
     final pubspec = File('pubspec.yaml').readAsStringSync();
