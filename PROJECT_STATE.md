@@ -1,13 +1,15 @@
-## Current App QC — Build #144 active (2026-11-11)
+## Current App candidate — Build #144 analyzer failure repaired; hosted retry pending (2026-11-11)
 
-- **Run:** 42943589237, job 130270923510, workflow 374946166, issue event, attempt 1; immutable source SHA `e1d624bc0990ed3552ebbefaac1164cf025b794f`.
-- **Trigger:** issue #33 exact guard was closed/reopened once; exactly one new run created. No active duplicate.
-- **Initial status:** step 1 Set up job is in progress; steps 2–21 not yet reported. No artifact/new Release yet.
-- **Executable App source:** latest implementation/test commit `33fe9a545d7a8594e6e3a5119d3b1f564a93d868`; Build #144 includes compact overlays and the new six-metric Statistics changes.
-- **Unclosed performance/test risks:** selected-session summary recomputation per one-second batch; unbounded/unbatched SQLite write queue; long-session CPU/memory/backpressure; animation lifecycle/60–120-Hz stress testing. Keep separate from workflow gate results.
-- Preserve `versionName "Telegram @horizontalzzz"`; no Firmware, BIN, Firebase, OTA, flash or physical-device operation.
+- **Build #144:** run 42943589237, job 130270923510, source `e1d624bc0990ed3552ebbefaac1164cf025b794f`. Steps 1–11 passed; analyzer step 12 failed with 12 errors, 3 warnings and 25 infos; steps 13–21 skipped. No package/Release output. Build #143 remains the latest verified release.
+- **Root cause:** `_setChartCursor` and `_sharedCursorReadout` were placed inside `_messageState`'s named parameter list in `lib/usage_statistics.dart`, corrupting method scope and creating cascaded missing symbol/parser errors. `_AnimatedUsageTimeline` also lacked `super.key`.
+- **Repairs:** `80b8874c9d851d1422009cfdbb85f33eec74f8b2` restored method/helper scope, correct optional `action` parameter, timeline key forwarding, removed unused `previousY` and unnecessary assertion. `1e04495416426ea5f4b3c9280704b1deee9a821c` removed two unnecessary Flutter imports. Source read-back verified the structure; hosted analyzer/test validation pending.
+- **Retry:** authorized by the original explicit Build App command plus concrete source repair. Next run must be new guarded issue event, one only, after confirming no active jobs and exact issue guard.
+- **Unclosed performance risks:** per-refresh full-session analytics recomputation, unbounded/unbatched SQLite write queue, long-session CPU/memory/backpressure and animation lifecycle/60–120-Hz stress tests.
+- Preserve Android `versionName "Telegram @horizontalzzz"`; no Firmware/BIN/Firebase/OTA/flash/device operation.
 
 ---
+## HISTORICAL App QC — Build #144 active / terminal analyzer failure — 2026-11-11
+
 ## HISTORICAL App candidate — guarded Build App requested (2026-11-11)
 
 - **Owner command:** explicit `Eksekusi Build App!` authorizes one new guarded App Build/QC attempt for current source. This does not waive checks or authorize other subsystem/device operations.
