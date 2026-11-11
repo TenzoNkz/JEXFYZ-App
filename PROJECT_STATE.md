@@ -1,3 +1,13 @@
+## Current App candidate — Build #146 Flutter test failures repaired; hosted retry pending (2026-11-11)
+
+- Build #146: run 42944693211, job 130274555621, source d5bc688cc14243cd944f2d8d653bbcb59d2805fe. Steps 1–12 passed; analyzer 23 info, 0 warnings/errors. Flutter tests 161 passed / 5 failed; Android/build/release steps skipped. No #146 package.
+- Test findings/fixes: (1) fractional max-height double precision fixed by round-to-logical-pixel; (2) animation source test now asserts vsync/Ticker rather than a removed 16ms timer; (3) old LED overlay contracts now match 19/14sp + 48dp compact swatches; (4) Peltier dialog contract now matches 20/15/14sp and 72x48/128x48 targets; (5) cursor tap test fully ensures Peltier lane visible before center tap.
+- Commits: App height rounding 4028949dca6c2f5ced55f54861b6c5197426c1dd; Statistics test fb845d88567503de4a78668c2b6b08eeb61de5e5; widget contracts b1609b01d4dee470b96e2030cb5583df1efc1351. Source/read-back verification only; new hosted validation pending.
+- Retry: prior owner Build App command authorizes concrete App repairs/retry. Recheck #146 terminal, no active run/PR, exact issue #33/workflow guard and versionName, then one guarded event.
+- Known performance/test gaps: full selected-session summary recomputation per one-second batch; unbounded/unbatched SQLite queue; long-session CPU/memory/backpressure; animation lifecycle/60–120-Hz tests remain open.
+- Preserve Android versionName "Telegram @horizontalzzz"; no Firmware/BIN/Firebase/OTA/flash/device operation.
+
+---
 ## Current App QC — Build #146 active (2026-11-11)
 
 - **Run:** 42944693211, job 130274555621, workflow 374946166, issue event, attempt 1; immutable source `d5bc688cc14243cd944f2d8d653bbcb59d2805fe`.
