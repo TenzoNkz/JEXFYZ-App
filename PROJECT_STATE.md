@@ -1,13 +1,18 @@
-## Current App QC — Build #149 APK build active (2026-11-11)
+## Current App release — Build #149 verified (2026-11-11)
 
-- Run 42967289995, job 130347345586, source SHA 0507e3e11b67b8f8d042e49b74cc14a53bfc4f21.
-- **Passed:** steps 1–14, including analyzer, full Flutter tests and Android Gradle gate.
-- **Current:** step 15 Build latest release APK is in_progress; steps 16–21 pending. No artifact or new Release asset yet.
-- Pinned selected Statistics cursor readout source and regression test are included in the passing Flutter suite.
-- Full-session summary recomputation per 1Hz batch, unbounded SQLite queue/backpressure, long-session CPU/memory and animation lifecycle/60–120-Hz tests remain open.
-- Preserve Android versionName Telegram @horizontalzzz; App-only scope.
+- **Latest verified package:** Build #149 / Actions run 42967289995, job 130347345586, conclusion success; all 21 required workflow steps and cleanup 39–43 passed.
+- **Exact source/tag:** 0507e3e11b67b8f8d042e49b74cc14a53bfc4f21. jexfyz-latest tag and Release ID 403010611 target this exact commit. Later documentation checkpoint commits do not modify the executable source in this package.
+- **Quality gates:** App security/architecture audit passed; analyzer 23 info-level, zero warnings/errors; Flutter suite 166/166 passed, including pinned selected-time Statistics cursor panel after tapping scrolled Peltier lane. Android :app:testDebugUnitTest gate completed successfully but app JUnit compile/test tasks were NO-SOURCE (no native JUnit test cases ran).
+- **APK:** Flutter release build used --obfuscate --split-debug-info=build/symbols. APK V1/V2/V3 and pinned production certificate verified on build output and re-downloaded Release APK. Cert SHA-256 dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0, RSA 4096, JE X FYZ DN.
+- **Assets:** APK 55,881,819 bytes, SHA-256 84a9165f67420e99d6ae7585340e0ef7e29e80de1d413fbc9c7352866d0670d5; source ZIP 2,918,953 bytes, SHA-256 521a06c1f804a3f04a9b0f7165796e806c60bbd9e027c9986ff91e5f2e326782. Release has exactly one APK and one matching source ZIP; downloaded asset checksums, source marker, ZIP integrity and APK signature/certificate were verified.
+- Android versionName "Telegram @horizontalzzz" remains exact; Release app version 1.0.0+3.
+- **Warnings:** native Android app JUnit tasks NO-SOURCE; Kotlin 2.2.20 compatibility/Built-in Kotlin warning; Gradle 10 deprecations; native ELF DWARF symbols remain; jarsigner PKIX trust-chain/META-INF warnings although pinned cert and V1/V2/V3 checks passed; optional cache writes denied; 29 package updates constrained.
+- **Performance gaps remain OPEN:** full selected-session analytics recomputed each one-second batch; unbounded/unbatched SQLite write queue; long-session CPU/memory/backpressure and animation lifecycle/60–120-Hz stress tests. Do not infer these are validated by normal CI.
+- **Field evidence UNVERIFIED:** owner install identity, OEM visuals at 350-dp/420-dp, physical BLE, real Usage Statistics telemetry/soak, cooling thermal/electrical performance, Firmware/BIN/OTA. No Firmware/device operations were performed.
 
 ---
+## HISTORICAL App QC — Build #149 APK build active — 2026-11-11
+
 ## HISTORICAL App QC — Build #149 active (2026-11-11)
 
 - **Run:** 42967289995, job 130347345586, workflow 374946166, issue event, attempt 1; immutable source SHA 0507e3e11b67b8f8d042e49b74cc14a53bfc4f21.
