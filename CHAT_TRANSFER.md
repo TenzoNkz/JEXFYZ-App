@@ -1,16 +1,29 @@
-## CURRENT CHECKPOINT — BUILD #149 ANDROID GATE PASSED / APK BUILD ACTIVE — 2026-11-11
+## CURRENT CHECKPOINT — BUILD #149 COMPLETED / RELEASE VERIFIED — 2026-11-11
 
-**Run:** 42967289995; job 130347345586; immutable source 0507e3e11b67b8f8d042e49b74cc14a53bfc4f21.
+**Disposition:** Build #149 / Actions run 42967289995 COMPLETED / SUCCESS / RELEASED. Workflow 374946166, attempt 1; job 130347345586 completed success. All 21 required gates and post-job cleanup steps 39–43 passed.
 
-**Passed:** steps 1–14, including analyzer, full Flutter test suite and Android Gradle gate. The cursor readout pinned panel is included in this checkout and its existing widget regression is within the successful Flutter gate.
+**Immutable build source:** 0507e3e11b67b8f8d042e49b74cc14a53bfc4f21. Exact main HEAD at trigger; live jexfyz-latest tag and Release now point to this SHA. Latest executable cursor-panel repair: f56b2a9a4893a1a0810cfdfb38524fd79df87d05. Later main commits are documentation-only.
 
-**Current:** step 15 Build latest release APK is in_progress. Steps 16–21 pending. No artifact/new Release asset yet. Live log archive is not available while build step is active; exact analyzer info count and Flutter test count are not asserted here.
+**Validation:** security/architecture audit passed; analyzer 23 info-level findings, zero warnings/errors; Flutter suite **166/166 passed**, including the selected-time cursor readout regression after scrolling/tapping the Peltier lane. Android Gradle gate passed in 3m04, but app JUnit compile/test tasks were NO-SOURCE (no native Android app JUnit cases ran). APK built with --obfuscate --split-debug-info=build/symbols; V1/V2/V3 and pinned production certificate matched on generated and downloaded APK.
 
-**Open risks:** summary recompute each one-second refresh, unbounded/unbatched SQLite write queue, long-session CPU/memory/backpressure and animation lifecycle/60–120-Hz stress tests. These remain explicit.
+**Release:** jexfyz-latest, Release ID 403010611; exact source/tag SHA match. Exactly one APK and one corresponding source ZIP; workflow downloaded both, matched hashes, verified ZIP/source marker and reverified the downloaded APK signature/certificate.
 
-**Next:** monitor only run 42967289995 through build, signature/certificate, source ZIP, Release/tag and download checks. No duplicate trigger. Preserve versionName. No Firmware/BIN/Firebase/OTA/flash/device actions.
+- APK: https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-release.apk — 55,881,819 bytes — SHA-256 84a9165f67420e99d6ae7585340e0ef7e29e80de1d413fbc9c7352866d0670d5.
+- Source: https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-corresponding-source.zip — 2,918,953 bytes — SHA-256 521a06c1f804a3f04a9b0f7165796e806c60bbd9e027c9986ff91e5f2e326782.
+- Certificate SHA-256: dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0; DN CN=JE X FYZ, OU=JE X FYZ, O=JE X FYZ, L=Indonesia, ST=Central Java, C=ID; RSA 4096-bit.
+- Android versionName "Telegram @horizontalzzz" unchanged; Release app version 1.0.0+3.
+
+**Warnings retained:** Android :app:testDebugUnitTest NO-SOURCE; Kotlin 2.2.20 future compatibility/Built-in Kotlin warning; Gradle 10 deprecations; native ELF DWARF debug info; jarsigner PKIX trust-chain/META-INF warnings despite pinned certificate and V1/V2/V3 success; optional cache writes denied; 29 package updates constrained. None failed the mandatory workflow gates.
+
+**Open performance risks:** full selected-session summary recompute per one-second flush; unbounded/unbatched SQLite write queue; long-session CPU/memory/backpressure; animation lifecycle and 60–120-Hz stress tests. CI does not close these risks.
+
+**Still unverified:** owner installation/OEM visual acceptance, 350-dp/420-dp field layout, physical BLE and reconnect, live telemetry/Statistics soak, thermal/electrical cooling, Firmware/BIN/Firebase/OTA/flash. Build #149 proves hosted App QC/release, not field acceptance.
+
+**Next action:** owner downloads/installs Build #149 and performs separate App field acceptance. Do not infer Firmware/device authorization.
 
 ---
+## HISTORICAL CHECKPOINT — BUILD #149 ANDROID GATE PASSED / APK BUILD ACTIVE — 2026-11-11
+
 ## HISTORICAL CHECKPOINT — BUILD #149 ACTIVE / INITIAL RUNNER SETUP — 2026-11-11
 
 ## HISTORICAL CHECKPOINT — CURSOR READOUT PINNED / PRE-BUILD #149 — 2026-11-11
