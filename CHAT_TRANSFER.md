@@ -1,15 +1,16 @@
-## CURRENT CHECKPOINT — BUILD #151 ACTIVE / FLUTTER TESTS — 2026-11-12
+## CURRENT CHECKPOINT — BUILD #151 ACTIVE / APK BUILD — 2026-11-12
 
-**Mode:** owner-authorized `Eksekusi Build App!`; guarded App Build/QC/release only. No Firmware compile, BIN/Firebase/OTA/flash or device operations.
+**Mode:** owner-authorized `Eksekusi Build App!`; guarded App Build/QC/release only.
 
-- **Run/job:** Build #151 / Actions run `43080954412`, workflow 374946166, attempt 1, job `130733048413`; source SHA `e383924067b7ab2da27f2e41f21232cfb7144ec0`. No duplicate trigger.
-- **Passed:** steps 1–12, including runner/checkout, Java 17, Flutter 3.47.2, Gradle 9.3.1, toolchain, signing setup, wrapper, App security/architecture audit, dependencies and **Dart analyzer**. Analyzer success verifies the Build #150 syntax fix reached the hosted analyzer gate. Diagnostic count not yet confirmed from logs.
-- **Current:** step 13 `Run Flutter tests` — in progress. **Pending:** step 14 Android Gradle gate; step 15 APK build; steps 16–17 V1/V2/V3 signing and production cert; 18 filename; 19 matching source ZIP; 20 release; 21 downloaded asset verification.
-- **Prior failure retained:** Build #150 / run `43080229957` failed at analyzer and produced no artifact; repaired via `4368c9b81741690cfbcaa30ab00df6438e61d40f`. Full log/root cause in APP_BUILD_REPORT.md.
-- **Latest published package:** Build #149, tag `jexfyz-latest` remains on source `0507e3e11b67b8f8d042e49b74cc14a53bfc4f21` until #151 passes all gates. Android versionName exact `Telegram @horizontalzzz`.
-- **Log access:** step log archive is not exposed during active test step; live job metadata confirms current state. No inference of success/failure until step completes.
-- **Not performed:** Firmware compile, BIN/Firebase/OTA/flash/device/BLE/NVS/rail/LED or OEM screenshot QA.
-- **Next:** continue inspecting run `43080954412` / job `130733048413` only.
+- **Run/job/source:** Build #151 / Actions run `43080954412`, job `130733048413`, attempt 1; immutable source SHA `e383924067b7ab2da27f2e41f21232cfb7144ec0`. It includes App syntax repair `4368c9b81741690cfbcaa30ab00df6438e61d40f`.
+- **Passed:** steps 1–14, including Dart analyzer, full Flutter test gate and Android Gradle unit-test gate. Exact Flutter test count and native Android JUnit execution/NO-SOURCE detail await completed job logs; not inferred from step status alone.
+- **Current step snapshot:** 1:Set up job=completed/success; 2:Checkout repository=completed/success; 3:Set up Java 17=completed/success; 4:Set up Flutter=completed/success; 5:Set up Gradle=completed/success; 6:Verify toolchain=completed/success; 7:Prepare Flutter local.properties=completed/success; 8:Prepare production release signing=completed/success; 9:Restore Gradle wrapper if missing=completed/success; 10:JE X FYZ security and architecture audit=completed/success; 11:Install dependencies=completed/success; 12:Analyze Dart code=completed/success; 13:Run Flutter tests=completed/success; 14:Run Android unit-test gate=completed/success; 15:Build latest release APK=in_progress; 16:Enforce V1/V2/V3 APK signing=pending; 17:Verify APK signature=pending; 18:Prepare release APK filename=pending; 19:Package corresponding source archive=pending; 20:Publish APK and corresponding source to GitHub Release=pending; 21:Verify downloaded GitHub Release asset=pending; 39:Post Set up Gradle=pending; 40:Post Set up Flutter=pending; 41:Post Set up Java 17=pending; 42:Post Checkout repository=pending.
+- **Current:** step 15 `Build latest release APK` — in progress. **Pending:** steps 16–17 V1/V2/V3 signing and pinned certificate; 18 artifact naming; 19 corresponding source ZIP; 20 Release/tag update; 21 downloaded asset SHA/source-marker/ZIP/signature verification.
+- Build #150 remains FAILED and preserved; source repair and analyzer-success evidence are recorded in APP_BUILD_REPORT.md.
+- **Latest published Release is still Build #149** until #151 passes all gates; `jexfyz-latest` points to `0507e3e11b67b8f8d042e49b74cc14a53bfc4f21`. Android `versionName "Telegram @horizontalzzz"` remains exact.
+- Workflow unchanged, issue-only/guarded. No additional trigger while #151 is active.
+- No Firmware compile, BIN/Firebase/OTA/flash/physical BLE-device/NVS/rail/LED or OEM screenshot testing.
+- **Next:** continue inspecting Build #151 APK generation and all subsequent signing/source/Release gates.
 
 ---
 
