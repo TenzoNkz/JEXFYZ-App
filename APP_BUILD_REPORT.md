@@ -1,3 +1,16 @@
+## NEXT GUARDED APP BUILD — PRE-TRIGGER READY AFTER BUILD #146 TEST REPAIRS — 2026-11-11
+
+- **Pre-trigger main SHA:** 245f9870f7bd75b1c7f18827a4f4fb6ae5588b4b. Latest executable App/test commit: b1609b01d4dee470b96e2030cb5583df1efc1351; associated App height fix: 4028949dca6c2f5ced55f54861b6c5197426c1dd; Statistics tests: fb845d88567503de4a78668c2b6b08eeb61de5e5.
+- **Build #146 result:** run 42944693211/job 130274555621, source d5bc688cc14243cd944f2d8d653bbcb59d2805fe. Analyzer passed (23 info, zero warning/error); Flutter tests 161 passed / 5 failed; Android/build/signing/source/Release/download gates skipped. No #146 asset; Build #143 remains published.
+- **Repairs in candidate:** round LED picker height to logical pixels; test actual Ticker/vsync animation; ensure complete Peltier chart lane visibility before cursor tap; update LED/Peltier static UI contracts to current compact sizes. No tests removed and no QC gates weakened.
+- **Preflight:** issue #33 OPEN exact title/token; workflow blob 9dc1e61ba49f19cad4edbb99a832d5333d9f0f12 remains issue-only guarded; no active/queued Actions run; no open PR; complete recursive tree 131 entries; Android versionName Telegram @horizontalzzz preserved.
+- **Release baseline:** jexfyz-latest Release ID 403010611 still targets Build #143 source 121ef9e0f5ed6a0003837d32e4c8b1701f38631a. No release asset mutation before the next successful candidate run.
+- **Authorization:** owner explicitly authorized Eksekusi Build App! and concrete App repair/retries. Exactly one close/reopen event on issue #33 may now be emitted after this checkpoint. Capture resulting immutable head SHA and new run/job IDs. Stop and inspect any failing gate; don't start duplicate attempts.
+- **Unresolved performance evidence:** full selected-session summary recomputed per 1-second chart batch; SQLite serialized queue unbounded/unbatched; no long-session CPU/memory/backpressure soak and no animation lifecycle/60–120-Hz stress proof. Keep these separate from CI results.
+- **Scope:** App only. No Firmware/BIN/Firebase/OTA/flash/device operation.
+
+---
+
 ## BUILD #146 TERMINAL FAILURE — FLUTTER TEST CONTRACTS / CURSOR HIT TARGET — 2026-11-11
 
 - **Run/job/source:** [Build #146 / Actions run 42944693211](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42944693211), job 130274555621; immutable source d5bc688cc14243cd944f2d8d653bbcb59d2805fe.
