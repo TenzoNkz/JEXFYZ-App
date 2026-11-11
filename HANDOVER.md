@@ -14,10 +14,17 @@ Updated: 2026-11-12 (Asia/Jakarta).
 - Certificate: pinned JE X FYZ identity, RSA 4096; V1/V2/V3 verified. Retain self-signed/PKIX trust-chain and no-timestamp jarsigner warnings. Android `versionName "Telegram @horizontalzzz"` remains unchanged.
 - Build #150 / run 43080229957 remains a historical analyzer failure; source syntax defect and repair are fully retained in APP_BUILD_REPORT.md.
 
+## V7.2 Lock Voltage — current source and validation boundary
+
+- V7.2 source and App integration are present in the Build #151 package. Firmware blob `140e758e7101cadc3ccc58cc5c52e49534b0032c`, App `lib/main.dart` blob `ddbb94fa325e134a2248674032128b38c863070d`, and Lock source-contract test blob `0150cbf22bb2550e0d9a690eafb3a6b7d480499b` match current `main`.
+- Build #151 hosted App CI passed analyzer (23 info-level findings, zero warnings/errors) and Flutter **171/171** tests, including four Lock Voltage/App contracts and the V7.2 Touch-cycle contract. Android `:app:testDebugUnitTest` was `NO-SOURCE`. This does not compile or execute ESP32 Firmware.
+- Source review confirms firmware-owned NVS lock, central/final 5V gates, P1 full-sync state, one-way Touch cycle and nonblocking two-red-pulse rejection. Adaptive is forced OFF while locked; unlock leaves 5V and Adaptive OFF, with explicit re-enable required after unlock.
+- Source header has a documentation typo (`V7.1 Firmware` comment vs `FW_VERSION="V7.2"`). BLE App-only identity remains BLOCKED: a different bonded/manual client may issue `VOLTAGE_LOCK:OFF`.
+
 ## Boundaries / not verified
 
-This proves hosted App CI and packaging only. No Firmware compilation, BIN, Firebase, OTA, flash or device operation occurred. Firmware V7.2 compile/BIN, physical BLE/NVS/rail/LED, thermal/electrical cooling and OEM visual acceptance remain NOT RUN / UNVERIFIED. Owner installation and physical App/BLE/OEM visual QA are separate follow-up evidence.
+This proves hosted App CI and packaging only. No Arduino-ESP32 Core 3.3.7 Firmware compilation, BIN provenance, Firebase, OTA, flash or device operation occurred. NVS power-cycle, BLE physical behavior/security, selector/rail/LED response, thermal/electrical cooling and OEM visual acceptance remain NOT RUN / UNVERIFIED. Owner installation and App/BLE/OEM visual QA are separate follow-up evidence.
 
 ## Next action
 
-Install the Build #151 APK and perform owner-side app launch, 350-dp/420-dp visual acceptance and physical BLE/reconnect/Lock Voltage validation; record observed results separately. Do not trigger another build unless App source changes.
+Recommended first: obtain the independent Gemini review prompt prepared in the current Diskusi handoff for the V7.2 Lock Voltage/NVS/selector-transition edge cases; it has NOT been sent. Then, before any firmware distribution, the owner should compile `firmware/JEXFYZ-V7.2.ino` with the approved Arduino-ESP32 Core 3.3.7 toolchain and preserve compile/BIN identity evidence. Do not publish BIN, change Firebase, perform OTA/flash or operate the device without separate explicit authorization. Install the already released Build #151 APK and complete 350-dp/420-dp App/OEM and BLE acceptance independently.
