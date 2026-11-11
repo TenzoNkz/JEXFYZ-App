@@ -1,3 +1,13 @@
+## Current candidate — guarded Build App requested (2026-11-11)
+
+- Owner command: explicit `Eksekusi Build App!`; one new guarded issue-triggered App Build/QC attempt is authorized, without weakening gates.
+- Candidate main before this documentation checkpoint: `18787069be826cad3027dc1a1eb9952cfaf92641`; latest executable source/test commit `33fe9a545d7a8594e6e3a5119d3b1f564a93d868`.
+- New App changes since Build #143: compact Peltier and LED overlays; Peltier telemetry state and seeded baseline; six synchronized Usage Statistics charts; shared cursor, temperature interpolation, discrete operating-state lanes, HOT freshness bound and display decimation; one-second UI batch refresh. Widget and Statistics regression source added.
+- Open risk register: selected-session full summary is recomputed per one-second batch; SQLite serialized write queue remains unbounded/unbatched; long-session CPU/memory/backpressure and animation lifecycle/60–120-Hz stress tests incomplete. Current local session has no Flutter/Dart/Gradle, so no local format/analyzer/test execution. Hosted workflow is now the authorized validation path; these risks must remain in final report even if gates pass.
+- Preflight: workflow blob `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12`, issue-only exact guard, issue #33 OPEN exact, no active Actions run/open PR. Release baseline Build #143 / tag SHA `121ef9e0f5ed6a0003837d32e4c8b1701f38631a`.
+- Keep Android `versionName "Telegram @horizontalzzz"`; App-only scope.
+
+---
 ## Current verified App release — Build #143 SUCCESS (2026-11-10)
 
 - **Latest verified package:** Build #143 / run 42783474515, job 129718855331, final conclusion success; all 21 workflow gates and cleanup passed.
