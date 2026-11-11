@@ -1,13 +1,15 @@
-## Current App candidate — Build #145 analyzer failure repaired; hosted retry pending (2026-11-11)
+## Current App QC — Build #146 active (2026-11-11)
 
-- **Build #145:** run 42944293567, job 130273243595, source `264469a80b49f70a09f2d705b6ad339ae3ba5fe4`. Setup/toolchain/audit/dependencies passed; analyzer failed with 1 error, 1 warning, 23 infos; tests/build/release steps skipped. No package.
-- **Correction to #144 repair status:** the malformed helper scope/parameter and missing timeline key errors were cleared in #145. One remaining painter nullability error was found; this is a separate follow-on.
-- **Latest repair:** commit `250d2a031667c0b7ceab98e3077a35a97408d8ce` uses a checked local copy of nullable `referenceValue` before `yFor(double)` and removes redundant `path!`. Read-back verified; hosted analyzer/test validation is pending.
-- **Retry:** original explicit Build App authorization remains active for concrete App-scope repairs. Recheck no active run, exact issue #33 guard, workflow and versionName, then emit one guarded event.
-- **Known performance/test gaps:** full selected-session summary recomputation per one-second batch; unbounded/unbatched SQLite queue; long-session CPU/memory/backpressure; animation lifecycle/60–120-Hz stress tests.
-- Preserve Android `versionName "Telegram @horizontalzzz"`; no Firmware/BIN/Firebase/OTA/flash/device operation.
+- **Run:** 42944693211, job 130274555621, workflow 374946166, issue event, attempt 1; immutable source `d5bc688cc14243cd944f2d8d653bbcb59d2805fe`.
+- **Initial status:** steps 1–2 success; step 3 Java 17 setup in progress; steps 4–21 pending. No artifact yet.
+- **Fixes included:** #144 method/helper scope and timeline key repairs (`80b8874c9d851d1422009cfdbb85f33eec74f8b2`); redundant imports removed (`1e04495416426ea5f4b3c9280704b1deee9a821c`); nullable painter value local promotion and removal of redundant `path!` (`250d2a031667c0b7ceab98e3077a35a97408d8ce`).
+- **Prior attempts:** #144 analyzer 12 errors/3 warnings/25 infos; #145 1 error/1 warning/23 infos. No downstream tests/build/Release on either attempt.
+- **Unverified performance gaps:** per-one-second full-session summary recomputation, unbounded/unbatched SQLite queue, long-session CPU/memory/backpressure, animation lifecycle and 60–120-Hz stress.
+- Preserve versionName `Telegram @horizontalzzz`; no Firmware/BIN/Firebase/OTA/flash/device operation.
 
 ---
+## HISTORICAL App candidate — Build #145 analyzer failure repaired — 2026-11-11
+
 ## HISTORICAL App QC — Build #145 terminal analyzer failure — 2026-11-11
 
 ## HISTORICAL App candidate — Build #144 analyzer failure / repair — 2026-11-11
