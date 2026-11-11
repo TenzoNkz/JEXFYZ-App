@@ -445,9 +445,13 @@ void main() {
     expect(usage, contains("case 'adaptive':\n        case 'peltier':"));
     expect(usage, contains('usageSessionCoverageEndMs('));
     expect(usage, contains('Stream<UsageStatsLiveUpdate> get liveUpdates'));
-    expect(usage, contains('Duration(milliseconds: 16)'));
+    // Diagram animation is frame-synchronized through Flutter tickers, not a fixed 16-ms timer.
+    expect(usage, contains('with SingleTickerProviderStateMixin'));
+    expect(usage, contains('vsync: this'));
     expect(usage, contains('AnimationController('));
     expect(usage, contains('Curves.easeOutCubic'));
+    expect(usage, contains('Duration(milliseconds: 320)'));
+    expect(usage, contains('Duration(milliseconds: 280)'));
     expect(usage, contains('decimatePoints('));
     expect(usage, isNot(contains('Duration(milliseconds: 450)')));
     expect(usage, contains('battery_seen'));
@@ -599,8 +603,12 @@ void main() {
         scrollable: find.byType(Scrollable).first,
       );
       await tester.pumpAndSettle();
-      await tester.tap(peltierChart);
+      // Scroll the whole lane into the viewport before dispatching the pointer;
+      // scrollUntilVisible may leave only an edge of a short timeline hittable.
+      await tester.ensureVisible(peltierChart);
       await tester.pumpAndSettle();
+      await tester.tapAt(tester.getCenter(peltierChart));
+      await tester.pump();
       expect(find.text('Waktu dipilih'), findsOneWidget);
       expect(tester.takeException(), isNull);
 
