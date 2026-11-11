@@ -1,4 +1,19 @@
-## CURRENT CHECKPOINT — BUILD #146 FAILED / FIVE TESTS REPAIRED / RETRY PRE-TRIGGER — 2026-11-11
+## CURRENT CHECKPOINT — BUILD #147 PRE-TRIGGER READY — 2026-11-11
+
+**Current main before this checkpoint:** 245f9870f7bd75b1c7f18827a4f4fb6ae5588b4b. Latest executable App/test commit: b1609b01d4dee470b96e2030cb5583df1efc1351; App height rounding: 4028949dca6c2f5ced55f54861b6c5197426c1dd; Statistics test updates: fb845d88567503de4a78668c2b6b08eeb61de5e5.
+
+**Build #146:** run 42944693211/job 130274555621; analyzer passed (23 infos, zero warnings/errors); Flutter tests 161 passed/5 failed; steps 14–21 skipped. No package or Release mutation.
+
+**Fixes now in candidate:** height rounding; vsync animation test contract; ensureVisible/center cursor tap; LED and Peltier compact overlay test contracts. All original tests retained.
+
+**Preflight:** issue #33 OPEN and exact guard; workflow unchanged issue-only; no active run/queued run; no open PR; tree 131 complete; versionName preserved; Build #143 remains Release/tag baseline. One guarded retry authorized from the original command.
+
+**Open risks remain:** full-summary recomputation each 1-second batch, unbounded/unbatched SQLite queue, long-session CPU/memory/backpressure and animation lifecycle/60–120-Hz stress testing. They are not proven by ordinary CI.
+
+**Next action:** emit exactly one close/reopen event on issue #33. Capture the run SHA and job ID; continue only that run. No Firmware/BIN/Firebase/OTA/flash/device operations.
+
+---
+## HISTORICAL CHECKPOINT — BUILD #146 FAILED / FIVE TESTS REPAIRED / RETRY PRE-TRIGGER — 2026-11-11
 
 **Failed run:** Build #146 / [Actions run 42944693211](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42944693211), job 130274555621, immutable source d5bc688cc14243cd944f2d8d653bbcb59d2805fe.
 
