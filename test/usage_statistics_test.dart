@@ -597,17 +597,16 @@ void main() {
       }
       final peltierChart =
           find.byKey(const ValueKey<String>('usage-profile-timeline-peltier'));
+      final peltierHitArea =
+          find.byKey(const ValueKey<String>('usage-profile-timeline-hit-area-peltier'));
       await tester.scrollUntilVisible(
-        peltierChart,
+        peltierHitArea,
         180,
         scrollable: find.byType(Scrollable).first,
       );
+      await tester.ensureVisible(peltierHitArea);
       await tester.pumpAndSettle();
-      // Scroll the whole lane into the viewport before dispatching the pointer;
-      // scrollUntilVisible may leave only an edge of a short timeline hittable.
-      await tester.ensureVisible(peltierChart);
-      await tester.pumpAndSettle();
-      await tester.tapAt(tester.getCenter(peltierChart));
+      await tester.tap(peltierHitArea);
       await tester.pump();
       expect(find.text('Waktu dipilih'), findsOneWidget);
       expect(tester.takeException(), isNull);
