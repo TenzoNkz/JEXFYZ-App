@@ -10,17 +10,17 @@
 - **Field evidence UNVERIFIED:** installation identity, OEM screenshots/layout at 350-dp/420-dp, physical BLE lifecycle, Usage Statistics real sensor/soak/storage behavior, cooling thermal/electrical performance, Firmware V7.1 source-to-BIN identity, physical OTA/reboot and recovery. No Firmware/device operation was performed.
 
 ---
-## Current App Statistics implementation — hosted QC not yet ready (2026-11-11)
+## Current App Statistics implementation — one-second diagram refresh; pre-build QC incomplete (2026-11-11)
 
-- **Owner direction:** professional animated Usage Statistics with a diagram for every tracked parameter. “AI mode” means the existing Adaptive Mode.
-- **Source:** implemented in `lib/usage_statistics.dart`, with Peltier full-sync baseline/authoritative telemetry capture in `lib/main.dart`; regression source in `test/usage_statistics_test.dart`. Latest pre-documentation source HEAD: `e1b43200d276808fa5b37612d32f0f71f4ea1420`.
-- **Presentation:** two analog temperature charts plus four operating diagrams: Voltage 5/9/12V, Adaptive ON/OFF, Peltier ON/OFF, Fan Speed 0–100%. One synchronized elapsed-time cursor reads all six values.
-- **Motion/data:** approximately 1-Hz raw Battery/Hotside capture remains. Animated chart interpolation uses Flutter vsync; live deltas are coalesced around 16 ms. Discrete state values remain stepped. HOT heartbeat limits session coverage; invalid samples and disconnected/stale regions remain gaps. Long temperature paths are decimated for display while analytics use full data.
-- **Remaining source/performance gap:** each live batch still recomputes the complete selected-session in-memory analytics summary; write queue remains unbounded/unbatched. No long-session CPU/memory/backpressure soak or 60/120-Hz/pause/dispose animation tests have run. Address this in a final Eksekusi Full! before release packaging.
-- **Validation:** no Flutter/Dart/Gradle toolchain is available locally; formatter, targeted/full Flutter tests, analyzer, Android gate and real screenshots are NOT RUN. A balanced delimiter check is STATIC SOURCE CHECK only. Visual outcome is VISUAL NOT VERIFIED.
-- **Release distinction:** Build #143 / run 42783474515 / source `121ef9e0f5ed6a0003837d32e4c8b1701f38631a` remains the latest verified APK and does not contain these Statistics changes. Current `jexfyz-latest` tag/Release ID 403010611 still targets that older SHA.
-- **Decision in Diskusi:** NOT YET RECOMMENDED to trigger the release Build App until the remaining incremental-analytics/performance and animation-lifecycle regression work is completed. No Build/Release has been triggered for current Statistics source.
-- **Next:** `Lanjut Eksekusi Full!` to close those code/test gaps; then a separate owner `Eksekusi Build App!` for guarded hosted analyzer/test/Android/signing/package gates. No Firmware/BIN/Firebase/OTA/flash/device permission is implied.
+- **Owner direction:** professional Usage Statistics diagrams for Battery, Hotside, Voltage, Adaptive Mode, Peltier and Fan Speed, with smooth transitions and one synchronized elapsed-time cursor.
+- **Latest source/test checkpoint:** source commit `33fe9a545d7a8594e6e3a5119d3b1f564a93d868`; `lib/usage_statistics.dart` blob `0be670370685725283d51c84f1d33df83dd7e6e8`; `lib/main.dart` blob `56e71dcaa482cabddd141cd3ae5c6cf28437ada7`; `test/usage_statistics_test.dart` blob `af23d8b6b2e08d11ef28dc58496b574d1fa17e3b`.
+- **Presentation:** two analog temperature charts plus four operating diagrams: Voltage 5/9/12V, Adaptive ON/OFF, Peltier ON/OFF and Fan Speed 0–100%. Temperature interpolation remains Flutter-vsync driven; discrete state lanes remain stepped.
+- **Diagram cadence:** `usageStatisticsDiagramRefreshInterval` is `Duration(seconds: 1)`. Live update objects are batched and flushed to the page once per second. This changes only diagram-page aggregation/render refresh cadence; it does not downsample the telemetry stream or alter Battery/Hotside capture, recorder event processing, timestamps or SQLite persistence.
+- **Regression source:** added a test asserting the one-second interval is wired to the live diagram flush while the independent data-capture path remains present. The new test and existing suite are NOT RUN.
+- **Remaining source/performance gap:** each one-second flush still recomputes the complete selected-session in-memory analytics summary rather than using an incremental accumulator. The serialized SQLite write queue is still unbounded/unbatched. Long-session CPU/memory/backpressure and animation lifecycle/60–120-Hz tests remain outstanding.
+- **Validation:** no Flutter/Dart/Gradle toolchain is available locally; formatter, targeted/full Flutter tests, analyzer, Android gate and real screenshots are BLOCKED / NOT RUN. Visual outcome is VISUAL NOT VERIFIED.
+- **Release distinction:** Build #143 / run 42783474515 / source `121ef9e0f5ed6a0003837d32e4c8b1701f38631a` remains the latest verified APK and does not contain the current Statistics source. Current `jexfyz-latest` tag/Release ID 403010611 still targets that older SHA.
+- **Build decision:** NOT YET RECOMMENDED to trigger release Build App until remaining source/performance and regression work is completed, then hosted QC passes. No Build/Release has been triggered for current Statistics source.
 
 ## Current App UI correction — compact modal overlays implemented, validation pending
 
