@@ -1,18 +1,20 @@
-## CURRENT CHECKPOINT — BUILD #148 FAILED / CURSOR HIT-AREA EXPANSION COMMITTED / RETRY PRE-TRIGGER — 2026-11-11
+## CURRENT CHECKPOINT — CURSOR READOUT PINNED / PRE-BUILD #149 — 2026-11-11
 
-**Failed run:** Build #148 / Actions run 42946808657, job 130281466870, source 8662d7d0f4b8a67521e0a80c7fdd95656cc84235.
+**Latest repair:** App commit f56b2a9a4893a1a0810cfdfb38524fd79df87d05 moves selected _sharedCursorReadout into a conditional Scaffold.bottomNavigationBar, outside the lazily built ListView. When a chart time is selected, the six-metric selected-time panel remains mounted/visible while the user scrolls among charts; initial help text remains inside the ListView until selection. Existing keyed Listener, tap-up and horizontal drag cursor handlers remain. The regression test still taps the Peltier lane after scrolling and expects Waktu dipilih.
 
-**Results:** steps 1–12 passed; analyzer 23 info, zero warnings/errors. Flutter tests 165 passed / 1 failed (Statistics cursor readout). LED width and all previous #146/147 repairs now pass. Steps 14–21 skipped; no package/Release output.
+**Failure chain:** #144 analyzer failure (12 errors/3 warnings); #145 analyzer nullable-double failure (1 error/1 warning); #146 analyzer passed but Flutter 161/5; #147 Flutter 164/2; #148 Flutter 165/1 (only selected cursor readout absent). All #144–#148 runs are terminal failures; none produced APK/source/Release. Build #143 remains the latest verified package.
 
-**Cursor follow-up:** #147 added keyed Listener pointer-down update; #148 confirmed 312dp LED test passes but cursor label is still absent. New source commit 98dd3657d225292a1d1f395693ad7f02d65b240d wraps the timeline in SizedBox.expand and adds GestureDetector onTapUp update while retaining Listener onPointerDown and horizontal drag. Read-back only; hosted validation pending.
+**Root cause:** readout was an early child in the ListView. Scrolling to the later Peltier lane could evict that readout from the lazily built list. The selected-time label was therefore not persistent in the widget tree. New bottomNavigationBar positioning addresses this and preserves the live interaction assertion. Patch has not yet been hosted-validated.
 
-**Earlier cursor commits:** Listener 2963faaf8052aa3cca791a0f66d43f0d13800c87; widget test 8ba15dd2647f96a407efda82ae8ae2ec0e0bc676. Current next run must prove pointer interaction.
+**Preflight:** source main before this checkpoint f56b2a9a4893a1a0810cfdfb38524fd79df87d05; workflow blob 9dc1e61ba49f19cad4edbb99a832d5333d9f0f12; issue #33 exact OPEN; no active run, no open PR; tag/Release still Build #143. VersionName remains exact.
 
-**Risks:** per-one-second full summary recompute; unbounded/unbatched SQLite queue; long-session CPU/memory/backpressure; animation lifecycle/60–120-Hz stress tests.
+**Remaining risk register:** full-session summary recompute per one-second refresh, unbounded/unbatched SQLite write queue, long-session CPU/memory/backpressure, animation lifecycle and 60–120-Hz stress tests. These are not covered by source-contract tests and must remain explicit.
 
-**Next:** fresh preflight then one guarded retry. No gate weakening.
+**Next:** one guarded #149 trigger after fresh preflight; follow all original gates, stop on failure, do not duplicate. No Firmware/BIN/Firebase/OTA/flash/device actions.
 
 ---
+## HISTORICAL CHECKPOINT — BUILD #148 FAILED / CURSOR REPAIR — 2026-11-11
+
 ## HISTORICAL CHECKPOINT — BUILD #148 ACTIVE / FLUTTER SETUP — 2026-11-11
 
 ## HISTORICAL CHECKPOINT — BUILD #147 FAILED / CURSOR POINTER FIX — 2026-11-11
