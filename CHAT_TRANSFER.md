@@ -27,6 +27,10 @@
 
 **Repository branch observation:** the live branch inventory also lists `diag/latest-stable-v16`, `diagnostic/v1.6-heap-check`, `fix/adaptive-power-sequencing`, and `tmp-jexfyz-v5-test` in addition to `main`. No branch was deleted or changed in Diskusi; treat the earlier "directory selain main" wording as unresolved until explicitly scoped to these remote branches.
 
+**Owner UI request — 2026-11-11 (Diskusi! / screenshot reviewed):** owner supplied a 691×1536 screenshot and reports the Peltier safety popup is still too tall/narrow and typographically oversized; asks for a shorter, wider card. Source on current main (same executable source as Build #149) uses 20/15/14 dp type and AlertDialog 30-dp horizontal insets, with outer max width 340 dp. Proposed target is 304–312 dp effective width, approx. 132–142 dp height, 18/14/14 dp typography, tighter vertical padding, and unchanged ≥48-dp action targets, fan-first safety and ACK sequence.
+- Color Picker source has 36 hue-ordered presets with both EN/ID keys, but owner asks for more colors and accurate names. Proposed target: 60 curated presets (24 additions), keeping six columns, 48-dp targets, 32-dp swatches and internal scroll. Correct mismatches against exact RGB, including #FF6347 Tomato (not Coral), #FFD700 Gold (not Golden Yellow), #7FFF00 Chartreuse (not Lime), #FF1493 Deep Pink (not Fuchsia), and #FF4500 Orange Red (not Vermilion); all display/tooltip/semantics names must share localized EN/ID keys. Full recommended palette starters and layout acceptance are recorded in DESIGN_NOTES.md.
+- **Current decision status:** requirements recorded, design proposal pending owner acceptance; not implemented. No source/tests/config/workflow/build/Release/device operation occurred. Next safe step: owner authorizes scoped implementation with `Eksekusi Full!`; new APK remains separately gated by `Eksekusi Build App!`. Build #149 field installation/visual acceptance remains pending.
+
 
 ---
 ## HISTORICAL CHECKPOINT — BUILD #149 ANDROID GATE PASSED / APK BUILD ACTIVE — 2026-11-11
