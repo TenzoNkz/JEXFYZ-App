@@ -1,21 +1,20 @@
-## CURRENT CHECKPOINT — BUILD #144 FAILED / APP REPAIR COMMITTED / RETRY PRE-TRIGGER — 2026-11-11
+## CURRENT CHECKPOINT — BUILD #145 ACTIVE / FLUTTER SETUP — 2026-11-11
 
-**Failed run:** Build #144 / Actions run 42943589237, job 130270923510, immutable source `e1d624bc0990ed3552ebbefaac1164cf025b794f`; terminal failure at step 12 analyzer.
+**Run:** [Build #145 / Actions run 42944293567](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42944293567), job 130273243595, attempt 1.
 
-**Results:** steps 1–11 passed; step 12 failed with 40 analyzer findings (12 errors, 3 warnings, 25 infos); steps 13–21 skipped. No APK/source/Release asset from #144. Existing #143 Release remains unchanged.
+**Immutable source:** `264469a80b49f70a09f2d705b6ad339ae3ba5fe4`. Includes source repairs `80b8874c9d851d1422009cfdbb85f33eec74f8b2` and `1e04495416426ea5f4b3c9280704b1deee9a821c`.
 
-**Root cause:** in `lib/usage_statistics.dart`, helper methods `_setChartCursor` and `_sharedCursorReadout` were mistakenly placed within `_messageState`'s named-parameter section. This broke the method signature and caused cascaded errors including unknown `action`, unavailable helper methods, parser/private-parameter errors. `_AnimatedUsageTimeline` was also called with a key but its constructor had no `super.key`. Analyzer additionally found an unused `previousY` and unnecessary `referenceValue!`.
+**Current status:** runner steps 1–3 successful; step 4 Set up Flutter in progress; gates 5–21 pending. No APK/source/Release artifact yet.
 
-**Repairs committed/read back:**
-- `80b8874c9d851d1422009cfdbb85f33eec74f8b2`: restore correct `_messageState` signature and move cursor helpers into state-class scope; add `super.key` to timeline widget; remove the unused local and redundant assertion.
-- `1e04495416426ea5f4b3c9280704b1deee9a821c`: remove redundant physics/scheduler imports from main.dart.
-- Structural read-back confirms one helper declaration each, correct parameter scope, timeline key forwarding and warning-pattern removal. Hosted validation is still pending; no local Flutter toolchain.
+**Previous #144:** terminal failure at Dart analyzer (12 errors, 3 warnings, 25 info findings); no tests/Android/build/Release steps ran. Root cause and exact repairs are recorded above.
 
-**Retry:** original explicit `Eksekusi Build App!` remains the authorization for one concrete App repair/retry. Re-check latest main, #144 terminal, no active run/PR, workflow guard, issue #33 exact OPEN, and Android versionName; then emit one guarded event only.
+**Remaining risks:** full-summary recomputation per one-second chart batch; unbounded/unbatched recorder write queue; long-session CPU/memory/backpressure; animation lifecycle/60–120-Hz tests.
 
-**Still-open risk register:** full session summary recomputed per one-second UI batch; SQLite write queue unbounded/unbatched; long-session CPU/memory/backpressure and animation lifecycle/60–120-Hz stress coverage incomplete. No waiver or inference of validation.
+**Next:** monitor only #145; verify analyzer first, then Flutter suite and the remaining release gates. Keep known risks explicit; no Firmware/BIN/Firebase/OTA/flash/device activity.
 
 ---
+## HISTORICAL CHECKPOINT — BUILD #144 FAILED / APP REPAIR COMMITTED — 2026-11-11
+
 ## HISTORICAL CHECKPOINT — BUILD #144 ACTIVE / INITIAL SETUP — 2026-11-11
 
 ## HISTORICAL CHECKPOINT — NEXT GUARDED APP BUILD AUTHORIZED / PRE-TRIGGER — 2026-11-11
