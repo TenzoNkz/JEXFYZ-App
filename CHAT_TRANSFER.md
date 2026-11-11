@@ -1,20 +1,20 @@
-## CURRENT CHECKPOINT — BUILD #147 ACTIVE / FLUTTER SETUP — 2026-11-11
+## CURRENT CHECKPOINT — BUILD #147 FAILED / CURSOR POINTER FIX COMMITTED / RETRY PRE-TRIGGER — 2026-11-11
 
-**Run:** [Build #147 / Actions run 42946048711](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42946048711), job 130278994451, workflow 374946166, issue event, attempt 1.
+**Failed run:** Build #147 / Actions run 42946048711, job 130278994451, immutable source ad21a36ab496e5323fa35ba090121eda359107a4.
 
-**Immutable source:** ad21a36ab496e5323fa35ba090121eda359107a4. Includes the Build #146 repair set: integer LED height rounding; Ticker/vsync animation contract; fully-visible Peltier timeline cursor tap; compact LED/Peltier UI test contracts.
+**Results:** steps 1–12 passed; analyzer 23 infos, zero warnings/errors. Flutter tests 164 passed / 2 failed. Steps 14–21 skipped; no package/Release output. Build #143 remains latest verified package.
 
-**Trigger:** issue #33 exact title/token was closed/reopened once; exactly one #147 run created. No duplicate trigger.
+**Remaining failures:** (1) LED source-contract test expected old maxWidth 420 instead of current compact 312; updated test. (2) Statistics cursor did not update from taps even after lane visibility was ensured. App source now wraps each timeline lane in keyed opaque Listener and sets shared cursor from onPointerDown, preserving GestureDetector horizontal drag. Widget test targets the Listener key.
 
-**Initial status:** steps 1–3 success; step 4 Flutter setup in progress; later gates pending. No APK/source or Release asset.
+**Commits:** source Listener fix 2963faaf8052aa3cca791a0f66d43f0d13800c87; LED width test 269270634c8225125a0c78f5148f373fb7f72005; cursor widget test 8ba15dd2647f96a407efda82ae8ae2ec0e0bc676; cleanup commits 01d43a2803310aa322a8a59e21f96b621203bc54 and 4d36b77ba4e3973162433ac5107d63cd1959264f. Hosted validation is still pending.
 
-**Prior #146:** analyzer 23 infos, zero warnings/errors; Flutter tests 161 passed / 5 failed. No downstream Android/APK/Release work.
+**Open risk register:** full selected-session summary recompute each one-second batch; unbounded/unbatched SQLite queue; long-session CPU/memory/backpressure; animation lifecycle/60–120-Hz testing.
 
-**Open risks:** full-session analytics summary recompute per one-second refresh; unbounded/unbatched SQLite write queue; long-session CPU/memory/backpressure; animation lifecycle/60–120-Hz stress coverage.
-
-**Next:** follow only run 42946048711 and verify analyzer, full Flutter suite and every original release gate. No Firmware/BIN/Firebase/OTA/flash/device actions.
+**Next:** fresh preflight, then one guarded retry. Keep all QC gates.
 
 ---
+## HISTORICAL CHECKPOINT — BUILD #147 ACTIVE / FLUTTER SETUP — 2026-11-11
+
 ## HISTORICAL CHECKPOINT — BUILD #147 PRE-TRIGGER READY — 2026-11-11
 
 **Current main before this checkpoint:** 245f9870f7bd75b1c7f18827a4f4fb6ae5588b4b. Latest executable App/test commit: b1609b01d4dee470b96e2030cb5583df1efc1351; App height rounding: 4028949dca6c2f5ced55f54861b6c5197426c1dd; Statistics test updates: fb845d88567503de4a78668c2b6b08eeb61de5e5.
