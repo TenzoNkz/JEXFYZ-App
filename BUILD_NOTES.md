@@ -1,3 +1,12 @@
+## Build #149 — Android gate passed; APK build active (2026-11-11)
+
+- Run 42967289995, job 130347345586, source SHA 0507e3e11b67b8f8d042e49b74cc14a53bfc4f21.
+- Steps 1–14 success, including analyzer, Flutter tests and Android Gradle gate. Step 15 release APK build in_progress; steps 16–21 pending. No release asset yet.
+- Pinned cursor readout panel and its existing tapped-Peltier-lane widget regression are included in passing Flutter tests.
+- Open performance risks remain: full summary recompute per 1Hz flush; unbounded SQLite queue/backpressure; long-session CPU/memory and animation lifecycle/60–120-Hz stress.
+- Preserve Android versionName Telegram @horizontalzzz; no Firmware/BIN/Firebase/OTA/flash/device operations.
+
+---
 ## Active guarded attempt — Build #149 (2026-11-11)
 
 - Run 42967289995, job 130347345586, source SHA 0507e3e11b67b8f8d042e49b74cc14a53bfc4f21, issue event, attempt 1.
