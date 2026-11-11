@@ -10,16 +10,17 @@
 - **Field evidence UNVERIFIED:** installation identity, OEM screenshots/layout at 350-dp/420-dp, physical BLE lifecycle, Usage Statistics real sensor/soak/storage behavior, cooling thermal/electrical performance, Firmware V7.1 source-to-BIN identity, physical OTA/reboot and recovery. No Firmware/device operation was performed.
 
 ---
-## Current App Statistics design request — animated diagrams / implementation pending
+## Current App Statistics implementation — hosted QC not yet ready (2026-11-11)
 
-- **Owner direction (2026-11-10):** redesign Usage Statistics as a professional, smoothly animated multi-chart screen. “AI mode” is understood as the existing Adaptive Mode / Mode Adaptif feature.
-- **Current source finding:** Battery/Hotside observations are persisted at about 1 Hz, but the temperature painter uses step segments and has no animation. The page waits 450 ms after recorder notifications, reloads the selected SQLite session and recomputes summary. Operating Profile displays only three compact lanes (Voltage, Adaptive, Fan Speed).
-- **Missing metric:** Peltier ON/OFF is not currently persisted as a chart event. The recorder accepts only Voltage, Adaptive and Fan Speed; Fan OFF is represented as speed 0%. Add Peltier state from authoritative PELTIER telemetry plus a full-sync baseline; never infer it from ACK.
-- **Design target:** session overview + two analog temperature charts + four operating diagrams (Voltage 5/9/12V; Adaptive ON/OFF; Peltier ON/OFF; Fan Speed 0–100%). Use a shared elapsed-session axis/crosshair and separate legends/scales. Preserve Hotside limit, accurate Min/Avg/Max, state durations, gaps and session boundaries.
-- **Animation truth:** keep raw sensor sampling around 1 Hz; animate display on vsync at 60/120 Hz (16.7/8.3 ms frame cadence), not 1-ms polling or synthetic samples. Analog traces may interpolate visually without overshoot; discrete Voltage/Adaptive/Peltier remain step charts. Never bridge gaps/sessions.
-- **Performance direction:** avoid re-querying the full SQLite session after each 450-ms debounce. Use incremental in-memory live deltas while persisting asynchronously; decimate long chart paths while preserving gaps/extrema and full-resolution analytics. Stress-test serialized write queue and long sessions.
-- **Scope/status:** design recorded in APP_NOTES.md and DESIGN_NOTES.md; source/tests unchanged for this request. Static-source evidence only. Implementation requires explicit Eksekusi Full!; App hosted QC/package requires separate Eksekusi Build App!.
-- **Build #143 remains latest verified APK** and does not contain the compact modal source updates or this Statistics redesign.
+- **Owner direction:** professional animated Usage Statistics with a diagram for every tracked parameter. “AI mode” means the existing Adaptive Mode.
+- **Source:** implemented in `lib/usage_statistics.dart`, with Peltier full-sync baseline/authoritative telemetry capture in `lib/main.dart`; regression source in `test/usage_statistics_test.dart`. Latest pre-documentation source HEAD: `e1b43200d276808fa5b37612d32f0f71f4ea1420`.
+- **Presentation:** two analog temperature charts plus four operating diagrams: Voltage 5/9/12V, Adaptive ON/OFF, Peltier ON/OFF, Fan Speed 0–100%. One synchronized elapsed-time cursor reads all six values.
+- **Motion/data:** approximately 1-Hz raw Battery/Hotside capture remains. Animated chart interpolation uses Flutter vsync; live deltas are coalesced around 16 ms. Discrete state values remain stepped. HOT heartbeat limits session coverage; invalid samples and disconnected/stale regions remain gaps. Long temperature paths are decimated for display while analytics use full data.
+- **Remaining source/performance gap:** each live batch still recomputes the complete selected-session in-memory analytics summary; write queue remains unbounded/unbatched. No long-session CPU/memory/backpressure soak or 60/120-Hz/pause/dispose animation tests have run. Address this in a final Eksekusi Full! before release packaging.
+- **Validation:** no Flutter/Dart/Gradle toolchain is available locally; formatter, targeted/full Flutter tests, analyzer, Android gate and real screenshots are NOT RUN. A balanced delimiter check is STATIC SOURCE CHECK only. Visual outcome is VISUAL NOT VERIFIED.
+- **Release distinction:** Build #143 / run 42783474515 / source `121ef9e0f5ed6a0003837d32e4c8b1701f38631a` remains the latest verified APK and does not contain these Statistics changes. Current `jexfyz-latest` tag/Release ID 403010611 still targets that older SHA.
+- **Decision in Diskusi:** NOT YET RECOMMENDED to trigger the release Build App until the remaining incremental-analytics/performance and animation-lifecycle regression work is completed. No Build/Release has been triggered for current Statistics source.
+- **Next:** `Lanjut Eksekusi Full!` to close those code/test gaps; then a separate owner `Eksekusi Build App!` for guarded hosted analyzer/test/Android/signing/package gates. No Firmware/BIN/Firebase/OTA/flash/device permission is implied.
 
 ## Current App UI correction — compact modal overlays implemented, validation pending
 
