@@ -2406,3 +2406,10 @@
 - **Last completed gate:** none (runner/job setup in progress). **Remaining:** checkout/toolchain, signing-secrets preparation, App security/architecture audit, dependencies, analyzer, Flutter tests, Android Gradle gate, obfuscated APK build, V1/V2/V3 and production certificate verification, source ZIP, Release/tag parity, downloaded checksum/identity verification.
 - **No retries** are authorized or attempted. If a real gate fails, inspect its step/log and repair only the App-scope root cause; do not weaken checks.
 - **Evidence boundary:** CI is pending. No Firmware compile, BIN generation/publication, Firebase change, OTA, flash, physical device/NVS/rail/LED/BLE test or OEM visual acceptance was performed or inferred.
+
+### BUILD #150 progress update — runner setup / Flutter installation (2026-11-12)
+
+- Run `43080229957` remains `in_progress`; immutable run `head_sha` remains `9245e142f4ea0e19e5f49e3ec1e1d80db2adf65c` despite subsequent documentation-only commits on live `main`.
+- Job `130730553031`: step 1 Set up job = success; step 2 Checkout repository = success; step 3 Set up Java 17 = success; step 4 Set up Flutter = in progress. Steps 5–21 remain pending at this snapshot.
+- Log archive endpoint returned BlobNotFound while the job is actively running; this is an unavailable live log snapshot, not a failed step. Live job-step metadata is the evidence source for this update.
+- No analyzer/test/Android/package/release gate has completed. No retries or duplicate triggers. Continue the same run.
