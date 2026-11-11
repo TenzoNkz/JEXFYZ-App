@@ -20,4 +20,4 @@ Updated: 2026-11-11 (Asia/Jakarta).
 
 ## Next direction
 
-Build #149 App package is released. Next: owner installation and separate App field acceptance. Do not infer Firmware/device authorization from CI.
+Immediate App task: owner-requested Peltier safety popup proportion refinement and LED Color Picker expansion/name correction; see `DESIGN_NOTES.md`. Current proposal is discussion-only, not implemented. After owner issues `Eksekusi Full!`, update only the scoped App source/tests/docs; a new package requires separate `Eksekusi Build App!`. Build #149 installation/OEM field acceptance remains pending afterward. Do not infer Firmware/device authorization from CI.
