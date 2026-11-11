@@ -112,44 +112,30 @@ Purpose: canonical current App/UI/BLE/telemetry contract. Current source defines
 - Validation remains **STATIC SOURCE CHECK / FLUTTER VALIDATION NOT RUN**. The source and regression test were committed and read back from `main`; Flutter/Dart/Gradle/ADB are unavailable here, so formatter, focused test, full suite, analyzer, screenshot, physical-device and App Build results are not claimed.
 - Live tag `jexfyz-latest` resolves to source `5201a3e07f36305ffe3882a1b965b9e7414cd71a`; the Usage Statistics source and regression test were added to `main` after that package tag. Usage Statistics is therefore **not included in the currently tagged package**.
 
-### Owner follow-up — professional animated multi-metric diagrams (2026-11-10)
+### Owner follow-up — professional animated multi-metric diagrams (2026-11-10 to 2026-11-11)
 
-**Owner request / current mode:** Diskusi!. The owner wants Usage Statistics to look more professional, with smooth transitions and a diagram for every tracked operating parameter, explicitly including Voltage and the feature they referred to as “AI mode”. Treat “AI mode” as the existing **Adaptive Mode / Mode Adaptif** label unless the owner corrects it. This is a design requirement/proposal only; executable source and tests are unchanged in this discussion.
+**Status: SOURCE IMPLEMENTED / PRE-BUILD REVIEW INCOMPLETE / NOT RELEASED.** The owner requested a more professional Usage Statistics page, smooth transitions and a diagram for each tracked operating value. “AI mode” maps to the existing **Adaptive Mode / Mode Adaptif** feature. Implementation is committed on `main`; hosted analyzer, Flutter tests, Android gate and APK Build have not run for this source.
 
-**Live source findings (STATIC SOURCE CHECK, main at 83e73d6e2a39ad732d261a75c3b33e54e8718bef):**
-- Battery and Hotside temperature observations are persisted every ~1 second while a synchronized, active cooler session is receiving the relevant service telemetry. The recorder serializes SQLite writes and updates its revision notifier.
-- The temperature painter currently builds a step-shaped path by drawing horizontally then vertically between consecutive observations; it has no animation controller or tween. The graph is therefore not visually interpolating between samples.
-- The page debounces a recorder revision for 450 ms, then re-queries the session list and entire selected-session snapshot from SQLite and recomputes analytics. This is not a frame-smooth live-chart pipeline and can become more expensive as a session grows.
-- The Operating Profile currently renders three short 28-dp lanes: Voltage (5V/9V/12V), Adaptive ON/OFF and Fan Speed (%). These are timeline bars rather than full chart panels with a shared interactive cursor.
-- The state recorder accepts only voltage, adaptive and fan_speed. The active-session boundary is correctly based on authoritative FAN || PELTIER, but **Peltier ON/OFF is not persisted as a chart event yet**. Fan OFF is currently encoded as Fan Speed 0%.
-- The current page already preserves invalid-sensor gaps, separate session boundaries, Hotside limit reference, duration-weighted temperature averages, Voltage time-per-rail, Adaptive ON duration and Fan average/maximum.
+**Implemented in live App source:**
+- `lib/main.dart`: captures Peltier baseline from the synchronized full-session state and records only telemetry-confirmed `PELTIER` events. No command ACK is used as physical-state evidence.
+- `lib/usage_statistics.dart`: adds Peltier state events/duration, a live telemetry-delta stream, six-metric cursor readout, two animated temperature charts, discrete Voltage/Adaptive/Peltier timelines and a Fan Speed 0–100% area/step chart.
+- Temperature and Fan Speed presentation tweens use Flutter `AnimationController`/vsync; there is no 1-ms polling loop. Live deltas are coalesced at about 16 ms for the page; raw Battery/Hotside observations remain around 1 Hz.
+- Long temperature paths use extrema/gap-aware render decimation while summaries and stored observations remain full-resolution. Cursor readout uses the same elapsed timestamp across Battery, Hotside, Voltage, Adaptive, Peltier and Fan Speed.
+- Live session coverage is capped by the latest fresh Firmware HOT heartbeat. Battery phone samples cannot extend a P1 operating-session timeline after HOT becomes stale. Invalid sensor samples and session boundaries remain explicit chart gaps.
+- `test/usage_statistics_test.dart`: adds coverage for Peltier state/duration and exact transition boundaries, HOT-coverage expiry, bounded interpolation, render decimation/gap retention, Peltier chart presence and the synchronized chart cursor at compact widths.
 
-**Proposed presentation hierarchy:**
-1. Compact session overview: LIVE/completed state, elapsed cooler-active duration, last sample time and observed-data coverage.
-2. Two separate analog trend diagrams: Phone Battery Temperature (°C) and Hotside Temperature (°C), each with current value, Min/Avg/Max and a synchronized elapsed-time axis. Keep the Hotside safety-limit reference line.
-3. Four aligned operating-state diagrams, each with its own semantic scale and legend:
-   - Voltage rail: 5V / 9V / 12V stepped state chart; include duration at each rail.
-   - Adaptive Mode: ON/OFF stepped state chart; include ON duration and run percentage.
-   - Peltier Switch: ON/OFF stepped state chart; add a recorder/state event from authoritative PELTIER telemetry and seed the session baseline from the completed full sync. Never infer state from a command ACK.
-   - Fan Speed: 0–100% time-series/area chart; 0% is explicitly Fan OFF. Include average and peak.
-4. Use one shared elapsed-session x-axis and a synchronized crosshair/readout so a selected time shows Battery, Hotside, Voltage, Adaptive, Peltier and Fan Speed together. Preserve units and separate y-scales; never put voltage, temperature, percentages and Boolean states on one numeric axis.
+**Current source evidence at latest pre-documentation HEAD `e1b43200d276808fa5b37612d32f0f71f4ea1420`:** `lib/usage_statistics.dart` blob `2c175ba727b5d06137b6e69fa8151f99c833b56c`; `lib/main.dart` blob `56e71dcaa482cabddd141cd3ae5c6cf28437ada7`; `test/usage_statistics_test.dart` blob `e99b1bcab8ad7e0df4fb494eeb6a90306c480524`. This HEAD is newer than Build #143 and is NOT in the current `jexfyz-latest` APK/source ZIP.
 
-**Motion / sampling truth:**
-- Raw temperature capture remains about **1 sample per second**; do not invent or persist synthetic millisecond measurements. “Smooth every millisecond” should mean frame-synchronized presentation: animate on Flutter's vsync (normally about 16.7 ms at 60 Hz or 8.3 ms at 120 Hz), not a 1 ms timer or 1000 database writes per second.
-- For temperature and Fan Speed, animate the visual transition toward each new authoritative sample using timestamp-aware interpolation, with no overshoot beyond the observed values. Keep exact raw sample markers/readouts and compute min/max/average from persisted observations.
-- For Voltage, Adaptive and Peltier, retain discrete stepped transitions. Animate the cursor/indicator or a restrained short transition, but do not interpolate 5V to 9V as a fictitious 7V or ON to OFF as a fractional state.
-- Never smooth across invalid sensor gaps, stale telemetry, disconnects or separate cooling sessions. A gap must visibly break the line/state coverage.
-- Use a lightweight in-memory live model/delta stream while the page is open instead of re-querying and sorting the entire SQLite session on every UI refresh. Keep SQLite persistence serialized and asynchronous; decimate points for rendering on long sessions while preserving gaps, extrema and full-resolution persisted analytics. Add bounded queue/backpressure and long-session soak coverage before increasing write frequency.
+**Remaining pre-build concerns:**
+- The live page avoids a full SQLite query on each recorder event, but `_flushLiveUpdates` still recomputes `UsageStatsAnalytics.summarize` over the selected in-memory session after each live batch. This is not yet a true incremental analytics accumulator; CPU/memory cost on long sessions remains unmeasured.
+- The serialized SQLite write queue is still not explicitly bounded/coalesced or batch-written. No sustained telemetry/storage-pressure soak is available.
+- Current tests cover interpolation bounds, coverage expiry, decimation, Peltier and cursor behavior, but do not yet establish 60/120-Hz frame progression, animation lifecycle pause/dispose, bounded-queue backpressure or long-session performance.
+- Flutter/Dart are not installed in the active environment. `dart format`, targeted Flutter tests, full `flutter test`, `flutter analyze`, Android Gradle and screenshot capture are BLOCKED / NOT RUN. Delimiter/source inspection is not a compile/test pass.
+- Actual Android screenshots remain VISUAL NOT VERIFIED (350-dp/420-dp, Light/Dark and English/Indonesian).
 
-**Regression and acceptance requirements:**
-- Unit tests for Peltier session baseline/events/duration, Voltage and Adaptive durations, Fan OFF=0, gaps, session boundaries, timestamp-weighted summaries and no fictitious state interpolation.
-- Animation/widget tests for 60-Hz frame progression, 120-Hz progression where practical, stable final value, bounded interpolation/no overshoot, pause/dispose behavior, and no line continuity across gaps.
-- Test long runs/high point counts, decimated rendering while keeping full-resolution summary accuracy, and SQLite write/query pressure.
-- Visual review at 350-dp/420-dp, Light/Dark, English/Indonesian and long session labels. Actual screenshots are required before VISUAL PASS; source review/widget tests alone are not visual evidence.
+**Build readiness decision (Diskusi, 2026-11-11): NOT YET RECOMMENDED for release Build App.** Complete the incremental analytics/performance and animation-lifecycle regression pass under a new `Eksekusi Full!`, then use separate `Eksekusi Build App!` for hosted QC and packaging. The hosted Build workflow remains the mandatory analyzer/test/Android/signing/release gate; no Build was triggered by this audit.
 
-**Authorization / next action:** Diskusi! permits this design and documentation update only. Source/test implementation requires a new explicit Eksekusi Full!; hosted App QC/package requires separate Eksekusi Build App!. No Firmware, BIN, Firebase, OTA or device change is requested or authorized by this record.
-
-
+**Protected scope:** App only. BLE/P1 identifiers/protocol, firmware, sampling rate, Android `versionName`, safety gates and release workflow remain unchanged. No Firmware compile, BIN, Firebase, OTA, flash or device operation occurred.
 ## Floating Monitor
 
 - Exactly six metrics: B/H/V/A/P/F = Battery temperature, Hotside, Voltage, Adaptive, Peltier, Fan. F is Fan/Kipas, not FPS. Fan shows live PWM speed when running, localized OFF/MATI when off, and -- when disconnected.
