@@ -2445,24 +2445,28 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
             height: lane == 'fan_speed' ? 54 : 34,
             width: double.infinity,
             child: LayoutBuilder(
-              builder: (context, constraints) => GestureDetector(
+              builder: (context, constraints) => Listener(
+                key: ValueKey<String>('usage-profile-timeline-hit-area-$lane'),
                 behavior: HitTestBehavior.opaque,
-                onTapDown: (details) => _setChartCursor(
-                  details.localPosition.dx,
+                onPointerDown: (event) => _setChartCursor(
+                  event.localPosition.dx,
                   constraints.maxWidth,
                 ),
-                onHorizontalDragUpdate: (details) => _setChartCursor(
-                  details.localPosition.dx,
-                  constraints.maxWidth,
-                ),
-                child: _AnimatedUsageTimeline(
+                child: GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onHorizontalDragUpdate: (details) => _setChartCursor(
+                    details.localPosition.dx,
+                    constraints.maxWidth,
+                  ),
+                  child: _AnimatedUsageTimeline(
                   key: ValueKey<String>('usage-profile-timeline-$lane'),
                   segments: segments,
                   fromMs: _snapshot!.fromMs,
                   toMs: _snapshot!.toMs,
                   lane: lane,
                   scheme: scheme,
-                  cursorTimestampMs: _selectedTimestampMs,
+                    cursorTimestampMs: _selectedTimestampMs,
+                  ),
                 ),
               ),
             ),
