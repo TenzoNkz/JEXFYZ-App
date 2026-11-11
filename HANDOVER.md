@@ -2,22 +2,21 @@
 
 Updated: 2026-11-12 (Asia/Jakarta).
 
-## Active source candidate — Firmware V7.2 + App Lock Voltage
+## Active operation — guarded App Build #151
 
 - Repository: TenzoNkz/JEXFYZ-App, branch main.
-- Implemented source scope: one-way Touch cycle based on actual rail (5V→9V→12V→5V); persistent 5V Lock Voltage in ESP32 Preferences key vLock5V; central 5V rail ceiling; Adaptive forced OFF / no reactivation while locked; safe handoff preserving existing 200ms break-before-make and 1s settle guard; NVS fail-closed semantics and retry; additive P1 command/state; Settings toggle and locked Voltage/Adaptive UI; nonblocking two-red-pulse refusal feedback with OTA/NTC/Hotside priority; source regression contracts.
-- Source files: firmware/JEXFYZ-V7.2.ino, lib/main.dart, lib/floating_monitor.dart, test/firmware_qc_contract_test.dart, test/firmware_touch_adaptive_sync_test.dart. The prior V7.1 sketch is removed by the versioned rename. Implementation commits 876ff6527c973d963df49fff1e37242cc302667b and 30146d51c2421af55e958e64b735c89576d8cdce; current main HEAD 30146d51c2421af55e958e64b735c89576d8cdce. current Firmware blob 140e758e7101cadc3ccc58cc5c52e49534b0032c. App main blob eb70fcb9fdf6c13105fef6b64a0b402c8fac8eb3. Settings UI blob 5a1e8b3118fc46f3b9a0cb470aaefc11779a70e7. QC contract blob 485c2dc79cdd537f8f523db5bc4c722a3a68ebaf. Touch contract blob f177d0c724b0275849e126d3edc349eaf4a05471.
-- Lock persistence contract: ON activates the runtime ceiling before NVS I/O and handoff; NVS putBool length + readback are required for saved=ON. Failed ON stays locked for the session and can retry; failed OFF remains locked. An already-persisted same-state command does not cause another NVS write. Unlock does not restore a previous rail or restart Adaptive.
-- BLE: VOLTAGE_LOCK:ON|OFF; VOLTAGE_LOCK and VOLTAGE_LOCK_SAVED telemetry. Actual VOLTAGE:5V completion is separate from Lock ACK.
-- Security caveat remains: Just Works + SYNC_READY is not official-App identity. Another bonded BLE client may still send unlock; BLE App authorization remains a separate blocked project.
+- Run #151: Actions run `43080954412`, workflow 374946166, issue event, attempt 1; job `130733048413`; source SHA `e383924067b7ab2da27f2e41f21232cfb7144ec0`. Job is active; initial observed state was step 1 Set up job. Inspect this run only; do not duplicate.
+- The run includes App repair commit `4368c9b81741690cfbcaa30ab00df6438e61d40f`, restoring `await Navigator.push<void>(` in `lib/main.dart::_openSettings()`. The `onVoltageLockChanged: _setVoltageLock` callback is retained.
+- Previous Build #150 / run `43080229957` failed at Dart analyzer (syntax regression in that same method); all later gates were skipped and no artifact/release was produced. Exact diagnostics and repair record are in APP_BUILD_REPORT.md.
+- Guarded issue #33 was verified owner/title/token exact and closed/reopened once for #151. Workflow remains issue-only and unchanged; no push/PR release trigger.
+- Latest actual Release remains Build #149 / source `0507e3e11b67b8f8d042e49b74cc14a53bfc4f21`. Do not call #151 successful until all 21 workflow gates, source/tag parity and downloaded asset checks pass.
+- Android Gradle versionName `Telegram @horizontalzzz` is unchanged.
 
-## Release and validation boundaries
+## Boundaries / not verified
 
-- Latest published App remains Build #149 / Actions run 42967289995. It does not contain this new App source.
-- Flutter/Dart formatting, focused/full tests, analyzer and hosted CI were NOT RUN for this change. Static source contract tests were updated only.
-- Firmware V7.2 compilation, BIN, Firebase, OTA, flash, device/NVS/rail/LED testing were NOT RUN.
-- No new App Build/APK/Release was triggered. No hardware/device action was taken.
+- No Firmware compile, BIN generation/publication, Firebase changes, OTA, flash or device operations.
+- Firmware V7.2 compile/BIN and NVS/rail/LED acceptance remain NOT RUN. Physical BLE, thermal/electrical cooling and OEM screenshots remain UNVERIFIED.
 
-## Next direction
+## Next action
 
-Review the new commit/source readback first. Then obtain a separate owner Eksekusi Build App! for hosted App QC/package. Firmware compilation and hardware/NVS/rail acceptance must be separately performed/authorized.
+Inspect run `43080954412` / job `130733048413`, especially analyzer and full Flutter test results, then continue only the same run through all Android/signing/release gates.
