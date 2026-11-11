@@ -1,36 +1,21 @@
-## CURRENT CHECKPOINT — USAGE STATISTICS ANIMATED MULTI-CHART REDESIGN / DISKUSI — 2026-11-10
+## CURRENT CHECKPOINT — USAGE STATISTICS IMPLEMENTED / PRE-BUILD DISKUSI — 2026-11-11
 
-**Mode / authorization:** owner selected `Diskusi!`. This is a design/source review plus documentation-only checkpoint. No executable source, test, configuration, workflow, Build/Release, Firmware, BIN, Firebase, OTA, flashing or device operation was changed/run for this Statistics request.
+**Mode:** owner asked `Diskusi!` whether the current work is ready for `Eksekusi Build App!`. This audit is read-only for executable source, tests, workflow and release. Only project-memory documentation was updated. No test/build/Actions trigger occurred.
 
-**Release/source baseline:** Build #143 remains the latest verified App package (run 42783474515; exact package source/tag target `121ef9e0f5ed6a0003837d32e4c8b1701f38631a`). The compact Peltier/Color Picker source changes from the previous interaction are committed on main but are not part of Build #143 and remain unbuilt. The statistics chart redesign below is not implemented.
+**Current source at start of this checkpoint:** main `e1b43200d276808fa5b37612d32f0f71f4ea1420`; `lib/usage_statistics.dart` blob `2c175ba727b5d06137b6e69fa8151f99c833b56c`; `lib/main.dart` blob `56e71dcaa482cabddd141cd3ae5c6cf28437ada7`; `test/usage_statistics_test.dart` blob `e99b1bcab8ad7e0df4fb494eeb6a90306c480524`. Latest code commit before this audit was the owner-authored cursor freshness test `e1b43200d276808fa5b37612d32f0f71f4ea1420`.
 
-**Live source evidence at start of this discussion:** `main` was `83e73d6e2a39ad732d261a75c3b33e54e8718bef`. `lib/usage_statistics.dart` blob `d5f3470350f8b3f4c485bf4b809d0578ae94a167`; `lib/main.dart` blob `6fc50bf1812575f1502d433499270bc0cad8c14f`; `test/usage_statistics_test.dart` blob `43bbc7179842c6df52c1814da11eeb8148037a13`.
-- Battery/Hotside are captured around 1 Hz while synchronized cooler-active telemetry is received and the current recorder writes each observation.
-- Temperature chart path currently draws a step shape and has no animation controller/tween.
-- Recorder changes are debounced for 450 ms; each reload queries the full session list/snapshot from SQLite and recomputes analytics.
-- Current profile plots are three compact timeline lanes: Voltage, Adaptive and Fan Speed. The existing page has no Peltier ON/OFF history lane: although PELTIER telemetry contributes to session active/inactive gating, `recordState` currently only stores Voltage, Adaptive and Fan Speed. Fan OFF is represented as Fan Speed 0%.
-- Current analytics already include duration-weighted temperature summary and time totals for Voltage/Adaptive/Fan Speed.
+**Implemented Statistics scope:** six diagrams (Battery °C, Hotside °C, Voltage 5/9/12V, Adaptive ON/OFF, Peltier ON/OFF, Fan Speed 0–100%); shared elapsed-time crosshair/readout; Flutter-vsync analog animation; discrete state charts; Peltier baseline from completed P1 sync plus telemetry-confirmed event recording; HOT-heartbeat session-coverage bound; 1-Hz raw sensing; gap/extrema-preserving display decimation; 16-ms in-memory live-delta batching. Regression source covers Peltier duration/transition, HOT coverage, interpolation bounds, decimation/gaps, compact 350/420 dp chart rendering and shared cursor.
 
-**Owner design direction recorded:**
-1. Session overview: LIVE/completed, cooler-active elapsed duration, last sample and observed-data coverage.
-2. Separate Phone Battery Temperature and Hotside °C trend charts with current reading, Min/Avg/Max, Hotside safety-limit reference and visible gaps.
-3. Four synchronized operating diagrams: Voltage 5V/9V/12V step chart; Adaptive Mode ON/OFF step chart; Peltier ON/OFF step chart; Fan Speed 0–100% trace (0% means Fan OFF).
-4. Shared elapsed-session time axis and crosshair/tooltip that reads all metrics at the same timestamp; separate units/scales and legends.
+**Build readiness:** **NOT YET RECOMMENDED** to start release Build App. The page consumes incremental live event deltas without re-querying SQLite for each update, but `_flushLiveUpdates` still recomputes the entire selected-session analytics summary on every live batch. The recorder write queue is still unbounded/unbatched. Long-session CPU/memory, queue/backpressure and animation 60/120-Hz/pause/dispose tests remain outstanding. These gaps need a final App-only `Eksekusi Full!` first.
 
-**Motion and truth constraints:**
-- Raw temperature remains about one sample/second. “Smooth every millisecond” means frame-synchronized rendering (about 16.7 ms at 60 Hz / 8.3 ms at 120 Hz), not 1-ms timers, 1000 DB writes/sec or synthetic measurements.
-- Temperature/Fan Speed may use timestamp-aware display interpolation with no overshoot. Preserve raw observed points and compute summaries from actual samples.
-- Voltage, Adaptive and Peltier remain discrete step charts; never show invented intermediate states such as 7V between 5V/9V or fractional ON/OFF.
-- Never interpolate across invalid/stale/disconnected gaps or sessions.
-- Prefer an incremental in-memory live delta model while the page is open; persist asynchronously to SQLite. Decimate long plot paths with gap/extrema preservation while keeping full-resolution persisted analytics. Validate queue/backpressure and long-session performance.
+**Validation/evidence:** lexical delimiter inspection is STATIC SOURCE CHECK only. Flutter/Dart/Gradle are absent locally; formatter, focused/full Flutter tests, analyzer and Android gate are BLOCKED / NOT RUN. Screenshots/device visual acceptance remain VISUAL NOT VERIFIED. Build #143 (run 42783474515) is still the latest verified package; exact source/tag/release target `121ef9e0f5ed6a0003837d32e4c8b1701f38631a` does not include Statistics or the compact modal source changes.
 
-**Regression/visual acceptance:** Peltier baseline/event/duration tests; state-duration and no-fictitious-interpolation tests; 60/120-Hz animation progression/no-overshoot/lifecycle tests; large-session decimation and write/query pressure; 350-dp/420-dp, Light/Dark, English/Indonesian and actual screenshot review. Visual status remains VISUAL NOT VERIFIED until real App screenshots are inspected.
+**Guarded trigger state:** workflow blob `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12`, issue-only opened/reopened trigger, exact title `JE X FYZ — EKSEKUSI BUILD APP TRIGGER` and token `JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1`. Owner issue #33 is open with exact title/token. Latest Actions run #143 is completed success; no active run was seen. A fresh trigger event would require close/reopen during separately authorized Build App mode. No trigger is authorized by this Diskusi.
 
-**Documentation updated:** `APP_NOTES.md` and `DESIGN_NOTES.md` now contain this design and the live-source gaps. No source/test implementation occurred. The durable documentation/checkpoint writes will be verified against the final main HEAD.
-
-**Exact next action:** owner may issue `Eksekusi Full!` to implement the Statistics redesign in App source/tests only. Include Peltier telemetry-event capture and incremental live chart handling without changing Firmware. After source/tests, separate `Eksekusi Build App!` is required for hosted QC and packaging. No device/Firmware/BIN/OTA action is implied.
+**Exact next action:** `Lanjut Eksekusi Full!` (recommended, not yet authorized) to implement incremental analytics/queue safeguards and animation lifecycle regression coverage. Only after that should the owner issue separate `Eksekusi Build App!` for hosted QC/package. No Firmware, BIN, Firebase, OTA, flash or device operation is implied.
 
 ---
+
 
 ## PRIOR CHECKPOINT — COMPACT MODAL OVERLAYS IMPLEMENTED / LOCAL VALIDATION BLOCKED — 2026-11-10
 
