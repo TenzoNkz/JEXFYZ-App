@@ -1,3 +1,14 @@
+## BUILD #145 ACTIVE — FLUTTER SETUP — 2026-11-11
+
+- **Run/job/source:** [Build #145 / Actions run 42944293567](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42944293567), job 130273243595, workflow 374946166, issue event, attempt 1; immutable checkout `264469a80b49f70a09f2d705b6ad339ae3ba5fe4`.
+- **Retry reason:** #144 failed the Dart analyzer because cursor helper functions were inside the `_messageState` parameter list and `_AnimatedUsageTimeline` lacked key forwarding. Repairs were committed as `80b8874c9d851d1422009cfdbb85f33eec74f8b2` and `1e04495416426ea5f4b3c9280704b1deee9a821c`; structure read-back passed, hosted validation pending.
+- **Current status:** run/job `in_progress`; steps 1–3 success; step 4 `Set up Flutter` in progress; remaining gates pending. No APK/source artifact or Release mutation yet.
+- **Previous attempt:** Build #144 / run 42943589237 terminal failure at analyzer (12 errors, 3 warnings, 25 infos). Steps 13–21 skipped. No #144 asset/Release output; #143 package remains current verified Release until #145 fully succeeds.
+- **Known risk register:** analytics full selected-session summary recomputation per one-second batch; SQLite write queue remains unbounded/unbatched; long-session CPU/memory/backpressure and animation lifecycle/60–120-Hz stress tests remain open. Preserve these limitations even if #145 gates pass.
+- **Disposition:** ACTIVE — continue only run 42944293567. Do not issue a duplicate trigger.
+
+---
+
 ## BUILD #144 TERMINAL FAILURE — DART ANALYZER — 2026-11-11
 
 - **Run/job/source:** [Build #144 / Actions run 42943589237](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42943589237), job 130270923510; immutable source `e1d624bc0990ed3552ebbefaac1164cf025b794f`.
