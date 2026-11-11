@@ -1,4 +1,17 @@
-## CURRENT CHECKPOINT — STATISTICS DIAGRAM REFRESH AT 1 HZ — 2026-11-11
+## CURRENT CHECKPOINT — NEXT GUARDED APP BUILD AUTHORIZED / PRE-TRIGGER — 2026-11-11
+
+**Mode:** owner explicitly commanded `Eksekusi Build App!` for the latest App source. Continue the guarded App Build/QC path only.
+
+**Candidate:** main before this checkpoint `18787069be826cad3027dc1a1eb9952cfaf92641`; latest executable source/test commit `33fe9a545d7a8594e6e3a5119d3b1f564a93d868`. This source is newer than Build #143 and includes compact Peltier/LED overlays, six-metric Usage Statistics and one-second page-level diagram batch refresh.
+
+**Known gaps must remain visible:** selected-session summary is fully recomputed on each one-second refresh; serialized SQLite write queue remains unbounded/unbatched; long-session CPU/memory/backpressure and animation lifecycle/60–120-Hz tests are not yet complete. Hosted tests/analyzer have not run on this source. Owner has now authorized the guarded QC/build attempt; this does not waive any gate or prove these performance properties.
+
+**Preflight:** workflow blob `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12`, issue-only trigger and exact guard. Issue #33 OPEN; exact title/body token match. No active Actions run, no open PR. Latest published package is Build #143 at source/tag `121ef9e0f5ed6a0003837d32e4c8b1701f38631a`.
+
+**Action:** create one checkpointed issue #33 close/reopen event, verify exactly one new run and immutable source SHA, then follow every required gate. Stop at the first real failure and repair only the App-scope root cause. Preserve Android `versionName "Telegram @horizontalzzz"`. No Firmware/BIN/Firebase/OTA/flash/device actions.
+
+---
+## HISTORICAL CHECKPOINT — STATISTICS DIAGRAM REFRESH AT 1 HZ — 2026-11-11
 
 **Mode:** owner authorized `Eksekusi Full!` for the Statistics refresh adjustment.
 
