@@ -21,6 +21,13 @@
 
 **Next action:** owner downloads/installs Build #149 and performs separate App field acceptance. Do not infer Firmware/device authorization.
 
+**Live recovery verification — 2026-11-11 (Asia/Jakarta):** pre-checkpoint audit HEAD `1e6a7d241a7453e9e943c3e7f60ed9bad7b8d3f4`. Compared with immutable Build #149 source `0507e3e11b67b8f8d042e49b74cc14a53bfc4f21`, main was 16 commits ahead / 0 behind; the entire comparison changes only six Markdown files: `APP_BUILD_REPORT.md`, `APP_NOTES.md`, `BUILD_NOTES.md`, `CHAT_TRANSFER.md`, `HANDOVER.md`, and `PROJECT_STATE.md`. No source, tests, config or workflow changed. Recursive tree: 131 entries, 50 Markdown files, `truncated=false`. Build #149 run/job remain completed success; workflow steps 1–21 and cleanup 39–43 all succeeded; the live Release and `jexfyz-latest` tag still target the exact Build #149 source SHA. No open PRs.
+
+**Documentation correction in this Diskusi:** `APP_NOTES.md` had stale Build #131 "latest release" and "not validated" statements. Its current release/evidence summary now points to Build #149 and Build #143 CI evidence; actual device/OEM acceptance remains explicitly pending. Documentation-only commit: `1e6a7d241a7453e9e943c3e7f60ed9bad7b8d3f4`.
+
+**Repository branch observation:** the live branch inventory also lists `diag/latest-stable-v16`, `diagnostic/v1.6-heap-check`, `fix/adaptive-power-sequencing`, and `tmp-jexfyz-v5-test` in addition to `main`. No branch was deleted or changed in Diskusi; treat the earlier "directory selain main" wording as unresolved until explicitly scoped to these remote branches.
+
+
 ---
 ## HISTORICAL CHECKPOINT — BUILD #149 ANDROID GATE PASSED / APK BUILD ACTIVE — 2026-11-11
 
