@@ -1,20 +1,17 @@
-## CURRENT CHECKPOINT — FIRMWARE V7.2 SOURCE IMPLEMENTED / VALIDATION PENDING — 2026-11-12
+## CURRENT CHECKPOINT — BUILD #150 ACTIVE / RUNNER SETUP — 2026-11-12
 
-Repository: TenzoNkz/JEXFYZ-App, branch main. Baseline before this source change: 2da154fdb18f3342ec06b74619637c836a85ff5d.
+**Mode and scope:** owner-authorized `Eksekusi Build App!`; guarded App Build/QC/release only. Firmware compilation, BIN/Firebase/OTA/flash/device work are excluded.
 
-Implemented source scope: one-way physical Touch cycle (actual rail V5→V9→V12→V5) and persistent 5V Lock Voltage, together with additive BLE P1 state/command, Flutter Settings toggle, bilingual locked Voltage/Adaptive presentation, NVS failure/retry status, red two-pulse rejection feedback and source-contract tests.
+- **Live main at trigger:** `9245e142f4ea0e19e5f49e3ec1e1d80db2adf65c`. Run #150 checks out this exact source SHA; Android `versionName "Telegram @horizontalzzz"` is preserved.
+- **Attempt:** Build #150 / Actions run `43080229957`, workflow `374946166`, attempt 1, issue event from #33, build job `130730553031`. The issue was closed/reopened exactly once using the exact owner/title/body-token guard. No duplicate or retry.
+- **Current state:** job `in_progress`, step 1 `Set up job`. No workflow gate completed yet. Last completed gate: none. Remaining: checkout/toolchain, signing preparation, security/architecture audit, dependencies, analyzer, Flutter suite, Android Gradle, obfuscated APK, V1/V2/V3 + certificate, matching source ZIP, Release/tag exact SHA parity, downloaded asset checksum/identity verification.
+- **Previous Release remains Build #149:** tag/Release `jexfyz-latest` target `0507e3e11b67b8f8d042e49b74cc14a53bfc4f21`; old APK/source pair remains until Build #150 passes all gates and publishes.
+- **Workflow:** `.github/workflows/jexfyz-app-build-trigger.yml` unchanged, blob `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12`; issue-only opened/reopened trigger, owner/title/token guard intact, no push/PR release path.
+- **Scope evidence:** current source includes the new App Lock Voltage/P1/UI and tests associated with Firmware V7.2. The workflow packages App source only; Firmware is not compiled or published.
+- **Not performed:** Firmware compile, BIN/Firebase/OTA/flash, physical BLE/device/NVS/rail/LED testing, or OEM screenshots. These remain separate validations.
+- **Next safe action:** continue inspecting run `43080229957` / job `130730553031`; no new trigger. Detailed attempt evidence is appended in `APP_BUILD_REPORT.md`.
 
-Source paths: firmware/JEXFYZ-V7.2.ino (FW_VERSION="V7.2"); lib/main.dart; lib/floating_monitor.dart; test/firmware_qc_contract_test.dart; test/firmware_touch_adaptive_sync_test.dart. The V7.1 active sketch is removed by the versioned rename. Current Firmware blob 140e758e7101cadc3ccc58cc5c52e49534b0032c. App main blob eb70fcb9fdf6c13105fef6b64a0b402c8fac8eb3. Settings UI blob 5a1e8b3118fc46f3b9a0cb470aaefc11779a70e7. QC contract blob 485c2dc79cdd537f8f523db5bc4c722a3a68ebaf. Touch contract blob f177d0c724b0275849e126d3edc349eaf4a05471. Implementation commits: 876ff6527c973d963df49fff1e37242cc302667b (V7.2 source) and 30146d51c2421af55e958e64b735c89576d8cdce (OTA LED-priority correction + final checkpoint). Current main HEAD: 30146d51c2421af55e958e64b735c89576d8cdce.
-
-Behavioral contract: Lock ON imposes a firmware-side 5V ceiling; safe handoff uses the existing selector pipeline; in-flight transitions are retargeted without restarting the 200ms deadtime; Adaptive is forced OFF and blocked from reactivation while locked, including after reboot. OFF requires successful NVS write/readback; unlock leaves V5 and Adaptive OFF. Missing vLock5V key on V7.1 upgrade defaults OFF. Failed ON remains runtime-locked but unsaved; failed OFF remains locked. Touch sequence derives from actual currentVoltage.
-
-P1: VOLTAGE_LOCK:ON|OFF; full-sync/live state VOLTAGE_LOCK and VOLTAGE_LOCK_SAVED. Actual rail completion is still reported separately by VOLTAGE. UUID/framing unchanged.
-
-Security limitation: existing BLE Just Works + SYNC_READY does not authenticate the official App. A bonded/manual client may still send VOLTAGE_LOCK:OFF. App-only authorization remains BLOCKED; do not describe the Lock toggle as cryptographically App-only.
-
-Validation not performed: Flutter/Dart formatting, tests, analyzer and hosted CI are NOT RUN; Arduino-ESP32 Core 3.3.7 compilation, BIN generation/publication, Firebase, OTA, flash, device, NVS power-cycle, physical LED/rail and OEM screenshot checks are NOT RUN. No App Build/release was authorized. Build #149 remains latest released App package and does not include the new source.
-
-Next: run independent source/readback review; then owner must separately issue Eksekusi Build App! for hosted App QC/package and separately compile Firmware with the approved Arduino Core. Never infer hardware validation from source checks.
+---
 
 ## CURRENT CHECKPOINT — BUILD #149 COMPLETED / RELEASE VERIFIED — 2026-11-11
 
