@@ -1,3 +1,17 @@
+## Current verified App release — Build #149 SUCCESS (2026-11-11)
+
+- **Run:** 42967289995, job 130347345586, source SHA 0507e3e11b67b8f8d042e49b74cc14a53bfc4f21. All 21 required steps and cleanup 39–43 succeeded.
+- **Validation:** security/architecture audit passed; analyzer 23 infos, zero warnings/errors; Flutter tests 166/166 passed; Android Gradle gate BUILD SUCCESSFUL in 3m04. Native app JUnit compile/test tasks were NO-SOURCE.
+- **Cursor fix:** the selected-time readout now remains visible in Scaffold.bottomNavigationBar after scrolling/tapping the Peltier timeline. The widget test for Waktu dipilih passed.
+- **APK:** JEXFYZ-release.apk, 55,881,819 bytes; SHA-256 84a9165f67420e99d6ae7585340e0ef7e29e80de1d413fbc9c7352866d0670d5; download https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-release.apk.
+- **Source ZIP:** JEXFYZ-corresponding-source.zip, 2,918,953 bytes; SHA-256 521a06c1f804a3f04a9b0f7165796e806c60bbd9e027c9986ff91e5f2e326782; download https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-corresponding-source.zip.
+- Release ID 403010611, tag jexfyz-latest targets the exact tested SHA. Exactly one APK plus one source ZIP. Gate 21 download/checksum/source marker/ZIP integrity/downloaded APK signature verification passed.
+- Production certificate: RSA 4096; DN CN=JE X FYZ, OU=JE X FYZ, O=JE X FYZ, L=Indonesia, ST=Central Java, C=ID; SHA-256 dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0. V1/V2/V3 all verified on original/downloaded APK.
+- Android versionName "Telegram @horizontalzzz" preserved; app version 1.0.0+3.
+- Warnings: native Android JUnit tasks NO-SOURCE; Kotlin 2.2.20 compatibility/Built-in Kotlin warning; Gradle 10 deprecations; native ELF DWARF debugging symbols; jarsigner trust-chain/META-INF warnings although pinned certificate and apksigner schemes passed; cache writes denied; 29 package updates constrained.
+- Open performance gaps: full summary recomputed per one-second flush, unbounded SQLite write queue, long-session CPU/memory/backpressure, animation lifecycle and 60–120-Hz stress tests. No field/device/Firmware validation inferred.
+
+---
 ## Build #149 — Android gate passed; APK build active (2026-11-11)
 
 - Run 42967289995, job 130347345586, source SHA 0507e3e11b67b8f8d042e49b74cc14a53bfc4f21.
