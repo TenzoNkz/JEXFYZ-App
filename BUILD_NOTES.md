@@ -1,3 +1,12 @@
+## Build #148 cursor widget test still failing — hit-area expansion committed (2026-11-11)
+
+- Run 42946808657, job 130281466870, source 8662d7d0f4b8a67521e0a80c7fdd95656cc84235. Analyzer 23 infos, zero warnings/errors; Flutter 165 passed / 1 failed; Android/release skipped.
+- LED 312dp contract and all earlier #146/147 test repairs pass. Only cursor readout test remains.
+- Follow-up commit 98dd3657d225292a1d1f395693ad7f02d65b240d expands the lane using SizedBox.expand and adds onTapUp update, retaining keyed Listener onPointerDown and horizontal drag. Hosted validation pending.
+- Cursor Listener source 2963faaf8052aa3cca791a0f66d43f0d13800c87; test key 8ba15dd2647f96a407efda82ae8ae2ec0e0bc676. Do not claim cursor fix passes before next workflow.
+- Risks remain: full summary recompute every 1Hz batch, unbounded recorder queue, long-session CPU/memory/backpressure, animation lifecycle/60–120-Hz tests.
+
+---
 ## Active App QC — Build #148 (2026-11-11)
 
 - Run 42946808657, job 130281466870, source SHA 8662d7d0f4b8a67521e0a80c7fdd95656cc84235.
