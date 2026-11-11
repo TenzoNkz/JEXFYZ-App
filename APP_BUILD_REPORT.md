@@ -1,4 +1,25 @@
-## BUILD #147 ACTIVE — FLUTTER SETUP — 2026-11-11
+## BUILD #147 TERMINAL FAILURE — TWO REMAINING FLUTTER TESTS — 2026-11-11
+
+- **Run/job/source:** [Build #147 / Actions run 42946048711](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42946048711), job 130278994451; immutable source ad21a36ab496e5323fa35ba090121eda359107a4.
+- **Passed:** steps 1–12 including analyzer, with 23 info-level findings and zero warnings/errors. The fixes from #146 made the following tests pass: LED height precision, Statistics vsync animation contract, compact LED layout values and compact Peltier layout values.
+- **Failed:** step 13 Flutter suite: **164 passed / 2 failed**. All Android/release steps 14–21 skipped. No #147 APK/source/Release output.
+- **Remaining failures:**
+  1. LED overlay test retained one obsolete source contract expecting maxWidth 420, while current compact panel intentionally uses maxWidth 312. Test is updated to assert the actual 312-dp bound.
+  2. Statistics shared cursor still did not show "Waktu dipilih" after ensuring the short chart child was visible and tapping its center. To make pointer delivery deterministic at the actual hit region, App source now adds a keyed opaque Listener around the full timeline lane and updates the shared cursor onPointerDown; the GestureDetector remains for horizontal dragging. The widget test taps the explicit Listener hit-area key instead of the CustomPaint child.
+- **Source fix:** commit `2963faaf8052aa3cca791a0f66d43f0d13800c87` adds the keyed timeline pointer Listener and preserves horizontal drag updates.
+- **Test fixes:** `269270634c8225125a0c78f5148f373fb7f72005` changes LED max-width source contract to 312; `8ba15dd2647f96a407efda82ae8ae2ec0e0bc676` uses the Listener hit area in the cursor widget test. Follow-up style/unused-local cleanup: `01d43a2803310aa322a8a59e21f96b621203bc54` and `4d36b77ba4e3973162433ac5107d63cd1959264f`.
+- **Validation boundary:** pointer Listener and cursor update are source/read-back changes only; next hosted run must prove that the interaction works. Do not claim the cursor fix is validated yet.
+- **Disposition:** #147 FAILED at Flutter test gate; no package/Release. Build #143 remains latest verified Release.
+
+---
+## NEXT GUARDED RETRY — POST-#147 CURSOR POINTER FIX PRE-TRIGGER — 2026-11-11
+
+- Candidate main before the next docs checkpoint: `4d36b77ba4e3973162433ac5107d63cd1959264f`; latest pointer-source commit `2963faaf8052aa3cca791a0f66d43f0d13800c87`.
+- Original explicit owner `Eksekusi Build App!` remains authorization for this concrete App repair/retry. Before one issue #33 close/reopen, confirm #147 terminal, no active/queued run, no open PR, exact trigger guard/workflow and unchanged Android versionName.
+- Known performance gaps remain: selected-session summary recomputation per 1-second batch; unbounded/unbatched SQLite queue; long-session CPU/memory/backpressure; animation lifecycle and 60–120-Hz stress tests. Keep these separate from CI results.
+
+---
+## HISTORICAL BUILD #147 ACTIVE — FLUTTER SETUP — 2026-11-11
 
 - **Run/job/source:** [Build #147 / Actions run 42946048711](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42946048711), job 130278994451, workflow 374946166, issue event, attempt 1; immutable checkout SHA ad21a36ab496e5323fa35ba090121eda359107a4.
 - **Trigger:** issue #33 exact guarded title/body was closed/reopened once under the owner's explicit Build App command. Exactly one new #147 run was observed.
