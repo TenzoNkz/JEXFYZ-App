@@ -1,3 +1,16 @@
+## BUILD #149 ACTIVE — FLUTTER TOOLCHAIN SETUP — 2026-11-11
+
+- **Run/job/source:** Build #149 / Actions run 42967289995, workflow 374946166, issue event, attempt 1; job build / 130347345586; immutable source SHA 0507e3e11b67b8f8d042e49b74cc14a53bfc4f21.
+- **Trigger:** issue #33 exact guarded title/body; closed/reopened once after preflight. Exactly one #149 run appeared. Issue remains OPEN. Workflow guard remains issue-only; no push/PR bypass.
+- **Initial status:** job in_progress. Steps 1–3 Set up job, Checkout repository and Set up Java 17 succeeded; step 4 Set up Flutter is in_progress. Steps 5–21 pending. No artifacts or new Release asset yet.
+- **Included cursor repair:** latest App source commit f56b2a9a4893a1a0810cfdfb38524fd79df87d05 moves selected Statistics readout into conditional Scaffold.bottomNavigationBar, outside the lazy ListView. Existing interaction and widget assertion remain. This is the key validation target in #149.
+- **Previous attempts:** #144 analyzer failed (12 errors/3 warnings); #145 analyzer nullable-double failure; #146 Flutter 161/5; #147 Flutter 164/2; #148 Flutter 165/1 cursor-readout failure. None produced a package; Build #143 remains release baseline.
+- **Open risk register:** full selected-session summary recomputation each one-second flush; unbounded/unbatched SQLite write queue; long-session CPU/memory/backpressure; animation lifecycle and 60–120-Hz stress coverage. These are not closed by ordinary analyzer/widget coverage and must remain explicit.
+- **Protected contract:** Android versionName Telegram @horizontalzzz preserved. App-only build scope; no Firmware/BIN/Firebase/OTA/flash/device operations.
+- **Disposition:** ACTIVE — continue only run 42967289995. Do not create another trigger. Stop and inspect any failing required gate; never weaken checks.
+
+---
+
 ## BUILD #148 TERMINAL FAILURE — STATISTICS CURSOR READOUT — 2026-11-11
 
 - **Run/job/source:** [Build #148 / Actions run 42946808657](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42946808657), job 130281466870; immutable source 8662d7d0f4b8a67521e0a80c7fdd95656cc84235.
