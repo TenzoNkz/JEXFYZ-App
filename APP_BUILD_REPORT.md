@@ -1,4 +1,15 @@
-## PRE-TRIGGER CHECKPOINT — NEXT GUARDED APP BUILD REQUESTED — 2026-11-11
+## BUILD #144 ACTIVE — INITIAL RUNNER SETUP — 2026-11-11
+
+- **Run/job/source:** [Build #144 / run 42943589237](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42943589237), workflow 374946166, issue event, attempt 1; job build / 130270923510; immutable checkout SHA `e1d624bc0990ed3552ebbefaac1164cf025b794f`.
+- **Trigger:** issue #33 exact guarded title/body; closed/reopened once under the explicit owner command. Exactly one #144 run appeared. Workflow remains issue-only and unchanged; no duplicate trigger.
+- **Initial status:** run `in_progress`; job `in_progress`, step 1 Set up job is active. Steps 2–21 not yet reported. No artifacts or #144 Release asset yet.
+- **Candidate source:** latest executable App/test commit before docs checkpoint is `33fe9a545d7a8594e6e3a5119d3b1f564a93d868`. The checkout includes this source plus documentation checkpoint; versionName remains `Telegram @horizontalzzz`.
+- **Known risk register unchanged:** full session summary recomputed per one-second batch; unbounded/unbatched SQLite write queue; long-session CPU/memory/backpressure and animation lifecycle/60–120-Hz stress coverage outstanding. They must be reported separately even if the workflow gates pass.
+- **Disposition:** ACTIVE — continue only run 42943589237. Do not start another build. Any failed required step must be inspected and repaired at its App-scope root cause; never bypass/loosen gates.
+
+---
+
+## HISTORICAL PRE-TRIGGER CHECKPOINT — NEXT GUARDED APP BUILD REQUESTED — 2026-11-11
 
 - **Owner authorization:** explicit `Eksekusi Build App!` received for the current App candidate. No prior build is active; one guarded issue #33 reopen event is authorized. This is a Build/QC attempt, not a waiver of validation gates.
 - **Candidate main before this checkpoint:** `18787069be826cad3027dc1a1eb9952cfaf92641`; latest executable source/test commit `33fe9a545d7a8594e6e3a5119d3b1f564a93d868`. Code includes compact Peltier/LED overlays; six-metric Usage Statistics with Peltier telemetry, synchronized cursor, temperature interpolation, discrete state lanes and one-second page-level chart refresh. Source changes since #143 include 143 additions / 107 deletions in `lib/main.dart`, 885 additions / 48 deletions in `lib/usage_statistics.dart`, and new regression coverage in `test/usage_statistics_test.dart` and `test/widget_test.dart`.
