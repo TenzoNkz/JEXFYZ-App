@@ -1,3 +1,12 @@
+## Build #145 analyzer failure — follow-up nullable-field fix committed (2026-11-11)
+
+- Run 42944293567, job 130273243595, source `264469a80b49f70a09f2d705b6ad339ae3ba5fe4`. Steps 1–11 passed, step 12 failed with 1 error, 1 warning, 23 infos; downstream gates skipped.
+- #144 structural errors (helper method scope, action parameter, cursor methods and timeline key) are now resolved in the #145 analyzer log.
+- Remaining error: class painter field `referenceValue` did not flow-promote through the field null check before passing to `yFor(double)`. Warning: unnecessary `path!` in the else branch after a branch predicate already establishes non-null.
+- Fix commit `250d2a031667c0b7ceab98e3077a35a97408d8ce`: local alias `reference` is null-checked then passed to `yFor`; redundant path assertion removed. Read-back verified; no hosted revalidation yet.
+- A new guarded retry is authorized by the original Build App command after current preflight. Keep all original gates and risk register.
+
+---
 ## Active validation — Build #145 (2026-11-11)
 
 - Run 42944293567, job 130273243595, immutable source `264469a80b49f70a09f2d705b6ad339ae3ba5fe4`; issue-triggered attempt 1.
