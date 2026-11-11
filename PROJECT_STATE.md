@@ -1,4 +1,16 @@
-## Current App candidate — cursor readout pinned; hosted QC pending (2026-11-11)
+## Current App QC — Build #149 active (2026-11-11)
+
+- **Run:** 42967289995, job 130347345586, workflow 374946166, issue event, attempt 1; immutable source SHA 0507e3e11b67b8f8d042e49b74cc14a53bfc4f21.
+- **Trigger:** issue #33 exact guard closed/reopened once; exactly one run created. No duplicate.
+- **Initial status:** steps 1–3 passed; step 4 Flutter setup in progress; steps 5–21 pending. No artifact/Release yet.
+- **Candidate fix:** selected Statistics cursor readout is now pinned in Scaffold.bottomNavigationBar rather than the lazily built ListView. This should keep the selected-time text mounted when Peltier lane is far down the list; existing tap test remains.
+- **Prior failures:** #144/#145 analyzer; #146 161/5 tests; #147 164/2; #148 165/1. No candidate release.
+- **Risks still open:** selected-session summary recomputation each second, unbounded SQLite write queue, long-session CPU/memory/backpressure, animation lifecycle/60–120-Hz stress tests.
+- Preserve Android versionName Telegram @horizontalzzz; App-only scope.
+
+---
+## HISTORICAL App candidate — cursor readout pinned; pre-build QC pending (2026-11-11)
+
 
 - **Latest executable App source:** f56b2a9a4893a1a0810cfdfb38524fd79df87d05. Moves selected Statistics cursor readout to conditional Scaffold.bottomNavigationBar so it remains mounted/visible when the user scrolls to lower chart lanes. Initial hint remains in ListView when no selected timestamp. Listener/tap-up/drag cursor handlers and existing Peltier-lane widget regression are retained.
 - **Build failures:** #144 analyzer 12 errors/3 warnings; #145 analyzer one nullable-double error; #146 analyzer passed, Flutter 161/5; #147 analyzer passed, Flutter 164/2; #148 analyzer passed, Flutter 165/1 (only selected-time readout not found). No later gate/package/release from these attempts.
