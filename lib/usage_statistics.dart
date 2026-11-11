@@ -2707,12 +2707,13 @@ class _UsageLinePainter extends CustomPainter {
               plot.height;
     }
 
-    if (referenceValue != null) {
+    final reference = referenceValue;
+    if (reference != null) {
       final referencePaint = Paint()
         ..color = Colors.deepOrange.withValues(alpha: 0.75)
         ..strokeWidth = 1
         ..style = PaintingStyle.stroke;
-      final y = yFor(referenceValue);
+      final y = yFor(reference);
       for (var x = plot.left; x < plot.right; x += 7) {
         canvas.drawLine(
           Offset(x, y),
@@ -2756,7 +2757,7 @@ class _UsageLinePainter extends CustomPainter {
         pathSession = point.sessionId;
         drawn = false;
       } else {
-        path!.lineTo(x, y);
+        path.lineTo(x, y);
         drawn = true;
       }
     }
