@@ -1,4 +1,17 @@
-## Current verified App release — Build #149 SUCCESS (2026-11-11)
+## Current verified App release — Build #151 SUCCESS (2026-11-12)
+
+- **Run:** [43080954412](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/43080954412), job 130733048413, attempt 1, source SHA `e383924067b7ab2da27f2e41f21232cfb7144ec0`. All workflow steps 1–21 and cleanup 39–43 passed.
+- **Validation:** security/architecture audit passed; Dart analyzer **23 infos, 0 warnings/errors**; Flutter suite **171/171 passed**; Android Gradle gate **BUILD SUCCESSFUL in 3m01**. Native Android app JUnit compile/test tasks were `NO-SOURCE`; no Android native JUnit test cases executed.
+- **APK:** `JEXFYZ-release.apk`, release/obfuscated with `--obfuscate --split-debug-info=build/symbols`; **55,881,819 bytes**; SHA-256 `4e69ee9bdbc716fc7dfe9679fd630e5ddde8694c61a5b618450026eae83f0935`. [Download APK](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-release.apk).
+- **Source ZIP:** `JEXFYZ-corresponding-source.zip`; **2,923,217 bytes**; SHA-256 `2ad9f745196665e667fdff02ae0d92900665667ee2358f57d14b7e0da0273ac1`. [Download corresponding source](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-corresponding-source.zip).
+- **Release parity:** Release ID 403010611 and tag `jexfyz-latest` target exact source SHA `e383924067b7ab2da27f2e41f21232cfb7144ec0`. Exactly one APK + one matching ZIP; downloaded bytes, both SHA-256 values, ZIP integrity and embedded source marker were verified.
+- **Signing:** V1/V2/V3 verified on original and downloaded APK; one signer; RSA 4096; JE X FYZ DN; pinned cert SHA-256 `dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0`. Android `versionName "Telegram @horizontalzzz"` unchanged; app version 1.0.0+3.
+- **Warnings:** native Android JUnit `NO-SOURCE`; Kotlin 2.2.20 future compatibility warning; Gradle 10/plugin deprecations; native ELF DWARF debug info; self-signed/PKIX/no-timestamp jarsigner warnings despite successful pinned-cert and V1/V2/V3 checks. CI does not establish device acceptance.
+- **Scope boundary:** Build #151 proves hosted App QC and release only. Firmware compile/BIN/Firebase/OTA/flash, physical BLE/device/NVS/rail/LED, thermal/electrical and owner/OEM visual acceptance remain NOT RUN / UNVERIFIED.
+
+---
+
+## Previous verified App release — Build #149 SUCCESS (2026-11-11)
 
 - **Run:** 42967289995, job 130347345586, source SHA 0507e3e11b67b8f8d042e49b74cc14a53bfc4f21. All 21 required steps and cleanup 39–43 succeeded.
 - **Validation:** security/architecture audit passed; analyzer 23 infos, zero warnings/errors; Flutter tests 166/166 passed; Android Gradle gate BUILD SUCCESSFUL in 3m04. Native app JUnit compile/test tasks were NO-SOURCE.
