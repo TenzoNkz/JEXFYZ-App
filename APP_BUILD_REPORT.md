@@ -1,4 +1,16 @@
-## BUILD #143 PROGRESS — FLUTTER TEST GATE PASSED; ANDROID GATE ACTIVE — 2026-11-10
+## PRE-TRIGGER CHECKPOINT — NEXT GUARDED APP BUILD REQUESTED — 2026-11-11
+
+- **Owner authorization:** explicit `Eksekusi Build App!` received for the current App candidate. No prior build is active; one guarded issue #33 reopen event is authorized. This is a Build/QC attempt, not a waiver of validation gates.
+- **Candidate main before this checkpoint:** `18787069be826cad3027dc1a1eb9952cfaf92641`; latest executable source/test commit `33fe9a545d7a8594e6e3a5119d3b1f564a93d868`. Code includes compact Peltier/LED overlays; six-metric Usage Statistics with Peltier telemetry, synchronized cursor, temperature interpolation, discrete state lanes and one-second page-level chart refresh. Source changes since #143 include 143 additions / 107 deletions in `lib/main.dart`, 885 additions / 48 deletions in `lib/usage_statistics.dart`, and new regression coverage in `test/usage_statistics_test.dart` and `test/widget_test.dart`.
+- **Current known pre-build risks from handover:** one-second UI batch still recomputes the complete selected-session analytics summary; SQLite serialized write queue remains unbounded/unbatched; long-session CPU/memory/backpressure, animation lifecycle and 60–120-Hz tests are still outstanding. The current environment has no Flutter/Dart/Gradle toolchain; local formatting/analyzer/test execution is unavailable. Owner explicitly requested the guarded Build App attempt now; do not claim these separate stress/performance areas have been independently proven.
+- **Required hosted gates remain unchanged:** security/architecture audit, Dart analyzer, full Flutter suite, Android Gradle gate, obfuscated APK, V1/V2/V3 plus pinned production certificate, corresponding source archive, guarded Release/tag provenance, downloaded package checksum and signature verification. Any failed gate stops publication. Do not weaken tests or bypass workflow controls.
+- **Preflight evidence:** workflow blob `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12`, exact issue-only owner/title/body-token guard; issue #33 is OPEN with title `JE X FYZ — EKSEKUSI BUILD APP TRIGGER` and body `JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1`; no active Actions run; no open PR. Latest published Release remains Build #143 / tag SHA `121ef9e0f5ed6a0003837d32e4c8b1701f38631a`.
+- **Protected identity:** Android Gradle `versionName "Telegram @horizontalzzz"` is unchanged. Do not touch Firmware, BIN, Firebase, OTA, flashing or physical devices.
+- **Disposition before trigger:** PRE-TRIGGER / READY TO EMIT ONE GUARDED REOPEN EVENT under explicit owner command. Record the resulting immutable SHA and run/job IDs immediately after creation.
+
+---
+
+## HISTORICAL BUILD #143 PROGRESS — FLUTTER TEST GATE PASSED; ANDROID GATE ACTIVE — 2026-11-10
 
 - **Run/job/source:** run `42783474515`, job `129718855331`, immutable source `121ef9e0f5ed6a0003837d32e4c8b1701f38631a`.
 - **Passed:** steps 1–13 all `success`, including toolchain, signing prep, App security/architecture audit, dependencies, Dart analyzer and full Flutter test gate. The #142 keyed elapsed-header finder repair is now past the hosted test gate.
