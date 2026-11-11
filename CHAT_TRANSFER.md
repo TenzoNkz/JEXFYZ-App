@@ -1,3 +1,20 @@
+## CURRENT CHECKPOINT — BUILD #146 FAILED / FIVE TESTS REPAIRED / RETRY PRE-TRIGGER — 2026-11-11
+
+**Failed run:** Build #146 / [Actions run 42944693211](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42944693211), job 130274555621, immutable source d5bc688cc14243cd944f2d8d653bbcb59d2805fe.
+
+**Results:** steps 1–12 passed; Dart analyzer 23 infos, 0 warnings/errors. Step 13 Flutter suite failed 161 passed / 5 failed. Steps 14–21 skipped; no #146 APK/source/Release output. Build #143 remains latest verified package.
+
+**Five test repairs committed:**
+- LED picker height rounds to logical pixels: 4028949dca6c2f5ced55f54861b6c5197426c1dd.
+- Statistics contract now checks vsync/Ticker animation rather than obsolete fixed 16-ms timer, and Peltier cursor test ensures whole lane visible before center tap: fb845d88567503de4a78668c2b6b08eeb61de5e5.
+- LED overlay and Peltier safety tests now check current compact dimensions/font sizes while retaining touch/anchor/action safety requirements: b1609b01d4dee470b96e2030cb5583df1efc1351.
+- These are source/test changes only; hosted validation pending.
+
+**Open risk register:** full-session summary recomputation per one-second batch; unbounded/unbatched SQLite queue; long-session CPU/memory/backpressure; animation lifecycle and 60–120-Hz stress tests.
+
+**Next:** fresh preflight, then one guarded issue #33 retry. Never bypass analyzer/tests. Preserve versionName and App-only boundary.
+
+---
 ## CURRENT CHECKPOINT — BUILD #146 ACTIVE / RUNNER SETUP — 2026-11-11
 
 **Run:** [Build #146 / Actions run 42944693211](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42944693211), job 130274555621, attempt 1.
