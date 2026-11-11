@@ -2474,3 +2474,10 @@
 ### BUILD #151 status correction — Flutter test gate completed (2026-11-12)
 
 - A fresher Actions job-step snapshot supersedes the immediately preceding in-progress observation: step 13 `Run Flutter tests` is now `completed/success`; step 14 `Run Android unit-test gate` is `in_progress`. This is the authoritative current progression. No test count is asserted until logs are readable.
+
+### BUILD #151 progress update — Android Gradle gate passed / release APK build active (2026-11-12)
+
+- Run `43080954412`, source `e383924067b7ab2da27f2e41f21232cfb7144ec0`, job `130733048413` remains in progress.
+- Step 14 `Run Android unit-test gate` completed with conclusion `success`. Step 15 `Build latest release APK` is now `in_progress`. The native Gradle log is not yet available, so whether Android JUnit sub-tasks executed tests versus NO-SOURCE is not stated at this point.
+- Latest step snapshot: 1:Set up job=completed/success; 2:Checkout repository=completed/success; 3:Set up Java 17=completed/success; 4:Set up Flutter=completed/success; 5:Set up Gradle=completed/success; 6:Verify toolchain=completed/success; 7:Prepare Flutter local.properties=completed/success; 8:Prepare production release signing=completed/success; 9:Restore Gradle wrapper if missing=completed/success; 10:JE X FYZ security and architecture audit=completed/success; 11:Install dependencies=completed/success; 12:Analyze Dart code=completed/success; 13:Run Flutter tests=completed/success; 14:Run Android unit-test gate=completed/success; 15:Build latest release APK=in_progress; 16:Enforce V1/V2/V3 APK signing=pending; 17:Verify APK signature=pending; 18:Prepare release APK filename=pending; 19:Package corresponding source archive=pending; 20:Publish APK and corresponding source to GitHub Release=pending; 21:Verify downloaded GitHub Release asset=pending; 39:Post Set up Gradle=pending; 40:Post Set up Flutter=pending; 41:Post Set up Java 17=pending; 42:Post Checkout repository=pending.
+- Steps 16–21 (V1/V2/V3 signing, certificate, source ZIP, Release publish and downloaded-asset verification) are pending. No new Release asset has yet been confirmed. No further trigger.
