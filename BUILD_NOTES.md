@@ -1,4 +1,13 @@
-## Build #147 pre-trigger ready — Build #146 Flutter tests repaired (2026-11-11)
+## Active App QC — Build #147 (2026-11-11)
+
+- Run 42946048711, job 130278994451, source SHA ad21a36ab496e5323fa35ba090121eda359107a4, issue-triggered attempt 1.
+- Steps 1–3 passed; step 4 Flutter setup in progress; later gates pending. No artifact.
+- Includes Build #146 repair commits: 4028949dca6c2f5ced55f54861b6c5197426c1dd; fb845d88567503de4a78668c2b6b08eeb61de5e5; b1609b01d4dee470b96e2030cb5583df1efc1351.
+- #146 analyzer passed 23 info only; Flutter failed 161/5. Steps 14–21 skipped; no Release mutation.
+- Risks remain: full summary recompute each 1Hz batch; unbounded/unbatched SQLite queue; long-session CPU/memory/backpressure; animation lifecycle and 60–120-Hz stress tests.
+
+---
+## HISTORICAL Build #147 pre-trigger ready — Build #146 Flutter tests repaired (2026-11-11)
 
 - Candidate main before this checkpoint: 245f9870f7bd75b1c7f18827a4f4fb6ae5588b4b; latest executable code/test commit b1609b01d4dee470b96e2030cb5583df1efc1351.
 - #146 run 42944693211/job 130274555621: analyzer 23 infos, zero warnings/errors; Flutter suite 161 passed / 5 failed; Android/build/signing/source/Release/download skipped. No #146 artifact.
