@@ -2,19 +2,18 @@
 
 Updated: 2026-11-11 (Asia/Jakarta).
 
-## Current App candidate — cursor readout pinned; hosted QC pending
+## Active App Build #149
 
-- Latest executable source: f56b2a9a4893a1a0810cfdfb38524fd79df87d05.
-- Statistics selected-time readout is moved to a conditional pinned Scaffold.bottomNavigationBar. It remains mounted when the selected Peltier lane is far down the lazy ListView. Default prompt remains within the ListView before selection. Listener, tap-up and drag cursor callbacks remain; existing widget test taps the scrolled Peltier lane and expects Waktu dipilih.
-- Build #144 failed analyzer (12 errors, 3 warnings); #145 failed analyzer (one nullable-double type error); #146 analyzer passed but Flutter tests 161/5; #147 analyzer passed, tests 164/2; #148 analyzer passed, tests 165/1 (cursor readout only). All are terminal, no package/release.
-- Readout root cause was structural: its location inside a lazily built ListView could cause it to be unmounted when scrolling to a later chart. The pinned bottom panel fixes placement; hosted validation still required.
-- No active run or open PR at preflight; issue #33 exact open; workflow issue-only unchanged. Release baseline remains Build #143.
-- Performance gaps remain: full summary recompute each second, unbounded/unbatched SQLite queue, long-session CPU/memory/backpressure and animation lifecycle/60–120-Hz tests. These must not be claimed validated.
-- Preserve Android versionName "Telegram @horizontalzzz". App-only scope.
+- Run 42967289995, workflow 374946166, issue event, attempt 1; job 130347345586.
+- Immutable source SHA 0507e3e11b67b8f8d042e49b74cc14a53bfc4f21; latest executable App repair f56b2a9a4893a1a0810cfdfb38524fd79df87d05.
+- Issue #33 exact guarded title/token was closed/reopened once; exactly one run exists.
+- Initial runner status: steps 1–3 successful, step 4 Set up Flutter in progress; steps 5–21 pending. No artifact yet.
+- Validation target: selected Statistics cursor readout is pinned in Scaffold.bottomNavigationBar so it remains present when lower Peltier lane is tapped in the scrolled ListView. Existing Waktu dipilih widget assertion remains.
+- Earlier #144–#148 failed before packaging. No new artifact; Build #143 remains latest verified Release.
+- Performance gaps remain: full summary recompute each second, unbounded SQLite queue/backpressure, long-session CPU/memory and animation lifecycle/60–120-Hz stress tests.
+- Preserve versionName Telegram @horizontalzzz. No Firmware/BIN/Firebase/OTA/flash/device actions.
 
-## Latest verified release — Build #143
+## Last verified release — Build #143
 
 - Run 42783474515, job 129718855331, source/tag 121ef9e0f5ed6a0003837d32e4c8b1701f38631a. All 21 gates passed.
-- Analyzer 25 info only, Flutter 159/159, Android task NO-SOURCE caveat; V1/V2/V3 signing, pinned certificate, source ZIP and downloaded Release checks passed.
-- #143 predates the current Statistics and compact modal changes.
-
+- Analyzer 25 info only; Flutter 159/159; Android task NO-SOURCE caveat; signing/source/Release/download verification passed.
