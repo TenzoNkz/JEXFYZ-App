@@ -1,18 +1,22 @@
-## CURRENT CHECKPOINT — BUILD #147 FAILED / CURSOR POINTER FIX COMMITTED / RETRY PRE-TRIGGER — 2026-11-11
+## CURRENT CHECKPOINT — BUILD #148 ACTIVE / FLUTTER SETUP — 2026-11-11
 
-**Failed run:** Build #147 / Actions run 42946048711, job 130278994451, immutable source ad21a36ab496e5323fa35ba090121eda359107a4.
+**Run:** [Build #148 / Actions run 42946808657](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42946808657), job 130281466870, workflow 374946166, issue event, attempt 1.
 
-**Results:** steps 1–12 passed; analyzer 23 infos, zero warnings/errors. Flutter tests 164 passed / 2 failed. Steps 14–21 skipped; no package/Release output. Build #143 remains latest verified package.
+**Immutable source:** 8662d7d0f4b8a67521e0a80c7fdd95656cc84235.
 
-**Remaining failures:** (1) LED source-contract test expected old maxWidth 420 instead of current compact 312; updated test. (2) Statistics cursor did not update from taps even after lane visibility was ensured. App source now wraps each timeline lane in keyed opaque Listener and sets shared cursor from onPointerDown, preserving GestureDetector horizontal drag. Widget test targets the Listener key.
+**Included repairs:** 312dp LED contract; keyed opaque timeline Listener updates cursor on pointer-down; horizontal drag stays enabled. Prior fixes for height rounding, vsync animation assertion, compact LED/Peltier contracts and visible lane are retained.
 
-**Commits:** source Listener fix 2963faaf8052aa3cca791a0f66d43f0d13800c87; LED width test 269270634c8225125a0c78f5148f373fb7f72005; cursor widget test 8ba15dd2647f96a407efda82ae8ae2ec0e0bc676; cleanup commits 01d43a2803310aa322a8a59e21f96b621203bc54 and 4d36b77ba4e3973162433ac5107d63cd1959264f. Hosted validation is still pending.
+**Initial status:** steps 1–3 success; step 4 Flutter setup in progress; steps 5–21 pending. No artifact/Release update.
 
-**Open risk register:** full selected-session summary recompute each one-second batch; unbounded/unbatched SQLite queue; long-session CPU/memory/backpressure; animation lifecycle/60–120-Hz testing.
+**Previous #147:** analyzer 23 infos/zero warnings/errors; Flutter 164 passed / 2 failed; no Android/APK/Release gate execution.
 
-**Next:** fresh preflight, then one guarded retry. Keep all QC gates.
+**Open risks:** full-session summary recompute per one-second batch; unbounded/unbatched SQLite queue; long-session CPU/memory/backpressure; animation lifecycle/60–120-Hz tests.
+
+**Next:** continue only #148; no duplicate triggers. Preserve original gates and App-only boundary.
 
 ---
+## HISTORICAL CHECKPOINT — BUILD #147 FAILED / CURSOR POINTER FIX — 2026-11-11
+
 ## HISTORICAL CHECKPOINT — BUILD #147 ACTIVE / FLUTTER SETUP — 2026-11-11
 
 ## HISTORICAL CHECKPOINT — BUILD #147 PRE-TRIGGER READY — 2026-11-11
