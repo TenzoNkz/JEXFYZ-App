@@ -1,16 +1,16 @@
-## CURRENT CHECKPOINT — BUILD #151 ACTIVE / GUARDED APP QC — 2026-11-12
+## CURRENT CHECKPOINT — BUILD #151 ACTIVE / GRADLE SETUP — 2026-11-12
 
-**Mode:** owner-authorized `Eksekusi Build App!`; App Build/QC/release only. No Firmware compilation, BIN/Firebase/OTA/flash or device operations.
+**Mode:** owner-authorized `Eksekusi Build App!`; guarded App Build/QC/release only. No Firmware compile, BIN/Firebase/OTA/flash or device operations.
 
-- **Current attempt:** Build #151 / Actions run `43080954412`, workflow `374946166`, attempt 1, issue event #33, job `130733048413`. Issue #33 was closed/reopened exactly once with owner/title/body-token guard. It remains OPEN. No duplicate trigger.
-- **Build source:** immutable run SHA `e383924067b7ab2da27f2e41f21232cfb7144ec0` (main HEAD at trigger). It includes repair commit `4368c9b81741690cfbcaa30ab00df6438e61d40f` restoring the missing `await Navigator.push<void>(` line inside `_openSettings()`; the Lock Voltage callback is preserved. Later documentation-only checkpoint commits do not change this run source.
-- **Prior attempt:** Build #150 / run `43080229957` failed at Dart analyzer due the missing Navigator call. Failure and exact log evidence are preserved in `APP_BUILD_REPORT.md`; its source was not silently rewritten as success. One source repair was committed before this guarded retry.
-- **Current run state:** job `130733048413` `in_progress`, initial snapshot step 1 Set up job. No validation gate has passed on #151 yet. Continue inspecting its live jobs/steps/logs only.
-- **Latest published artifact before #151 completion:** Build #149; `jexfyz-latest` still targets `0507e3e11b67b8f8d042e49b74cc14a53bfc4f21`. It remains the only verified Release until #151 passes all gates. Android Gradle `versionName "Telegram @horizontalzzz"` is unchanged.
-- **Workflow:** unchanged blob `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12`; issue-only opened/reopened trigger and owner/title/token condition; no push/PR release path.
-- **Remaining:** Java/Flutter/Gradle setup, secrets, App audit, dependencies, analyzer, full Flutter tests, Android Gradle gate, obfuscated APK, V1/V2/V3/cert, corresponding source ZIP, Release/tag parity, downloaded hashes/source marker/ZIP/signature verification.
-- **Not performed:** Firmware compile, BIN generation/publication, Firebase, OTA, flash, physical BLE/device/NVS/rail/LED, OEM screenshot or cooling/thermal/electrical validation.
-- **Next:** monitor run `43080954412` / job `130733048413`; no further trigger while active.
+- **Run/job:** Build #151 / Actions run `43080954412`, workflow `374946166`, issue #33, attempt 1, job `130733048413`. One guarded issue close/reopen created this run; no duplicate.
+- **Immutable source:** `e383924067b7ab2da27f2e41f21232cfb7144ec0`; it contains the repaired `_openSettings()` call from commit `4368c9b81741690cfbcaa30ab00df6438e61d40f`. Later documentation-only checkpoint commits do not change this run source.
+- **Current step snapshot:** 1:Set up job=completed/success; 2:Checkout repository=completed/success; 3:Set up Java 17=completed/success; 4:Set up Flutter=completed/success; 5:Set up Gradle=completed/success; 6:Verify toolchain=completed/success; 7:Prepare Flutter local.properties=completed/success; 8:Prepare production release signing=completed/success; 9:Restore Gradle wrapper if missing=completed/success; 10:JE X FYZ security and architecture audit=completed/success; 11:Install dependencies=completed/success; 12:Analyze Dart code=in_progress; 13:Run Flutter tests=pending; 14:Run Android unit-test gate=pending; 15:Build latest release APK=pending; 16:Enforce V1/V2/V3 APK signing=pending; 17:Verify APK signature=pending; 18:Prepare release APK filename=pending; 19:Package corresponding source archive=pending; 20:Publish APK and corresponding source to GitHub Release=pending; 21:Verify downloaded GitHub Release asset=pending; 39:Post Set up Gradle=pending; 40:Post Set up Flutter=pending; 41:Post Set up Java 17=pending; 42:Post Checkout repository=pending.
+- **Passed:** 1 runner; 2 checkout; 3 Java 17; 4 Flutter 3.47.2. **In progress:** 5 Gradle 9.3.1. **Pending:** toolchain verification, local.properties, secrets, wrapper, App security audit, pub get, analyzer, full Flutter tests, Android Gradle gate, obfuscated APK, V1/V2/V3/certificate, corresponding ZIP, Release/tag parity and downloaded asset checks.
+- **Previous failed attempt preserved:** Build #150 / run `43080229957` failed analyzer due the missing Navigator call; no tests or artifacts. Failure evidence and the single repair are recorded in APP_BUILD_REPORT.md.
+- **Latest actual Release remains #149** until all #151 gates succeed. Tag `jexfyz-latest` still points to `0507e3e11b67b8f8d042e49b74cc14a53bfc4f21`. Android `versionName "Telegram @horizontalzzz"` unchanged.
+- Workflow unchanged blob `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12`; issue-only guard intact. No additional trigger while #151 is active.
+- No Firmware/BIN/Firebase/OTA/flash/physical BLE/device/NVS/rail/LED or OEM screenshot testing.
+- **Next:** monitor run `43080954412` / job `130733048413` only.
 
 ---
 
