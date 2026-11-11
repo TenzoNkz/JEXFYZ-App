@@ -1623,9 +1623,9 @@ void main() {
     expect(repaint, isNot(contains('oldDelegate.warning != warning')));
   });
 
-  test('LED palette exposes current RGB colors', () {
-    expect(ledColorPalette, hasLength(36));
-    expect(ledColorPalette.first, '#FF1744');
+  test('LED palette exposes the current 60 RGB colors', () {
+    expect(ledColorPalette, hasLength(60));
+    expect(ledColorPalette.first, '#800000');
     expect(ledColorPalette.last, '#FFFFFF');
     expect(ledColorPalette, contains('#FFFFFF'));
     expect(ledColorPalette, isNot(contains('#000000')));
@@ -1716,11 +1716,11 @@ void main() {
         inInclusiveRange(1600, 2400));
   });
 
-  test('LED color palette has 36 hue-ordered presets with localized names', () {
-    expect(ledColorPalette, hasLength(36));
+  test('LED color palette has 60 hue-ordered presets with localized names', () {
+    expect(ledColorPalette, hasLength(60));
     expect(ledColorDisplayName('#FF1744', AppLanguage.english), 'Candy Red');
     expect(ledColorDisplayName('#FF1744', AppLanguage.indonesia), 'Merah Permen');
-    expect(ledColorDisplayName('#A85D32', AppLanguage.indonesia), 'Cokelat');
+    expect(ledColorDisplayName('#A85D32', AppLanguage.indonesia), 'Kayu Manis');
     expect(ledColorDisplayName('#FFFFFF', AppLanguage.english), 'White');
     expect(ledColorDisplayName('#FF0000', AppLanguage.english), 'Red');
     expect(ledColorDisplayName('#00FFFF', AppLanguage.english), 'Cyan');
