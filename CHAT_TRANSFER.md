@@ -15,7 +15,7 @@
 **Next:** fresh preflight, then one guarded issue #33 retry. Never bypass analyzer/tests. Preserve versionName and App-only boundary.
 
 ---
-## CURRENT CHECKPOINT — BUILD #146 ACTIVE / RUNNER SETUP — 2026-11-11
+## HISTORICAL CHECKPOINT — BUILD #146 ACTIVE / RUNNER SETUP — 2026-11-11
 
 **Run:** [Build #146 / Actions run 42944693211](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42944693211), job 130274555621, attempt 1.
 
