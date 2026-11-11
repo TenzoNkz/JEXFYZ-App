@@ -1782,6 +1782,25 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
           ),
         ],
       ),
+      // Keep the shared cursor values mounted and visible even when the selected
+      // chart lane is near the end of the lazily built ListView.
+      bottomNavigationBar: summary != null && _selectedTimestampMs != null
+          ? SafeArea(
+              top: false,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(14, 0, 14, 8),
+                child: Material(
+                  color: scheme.surfaceContainerHigh,
+                  elevation: 3,
+                  borderRadius: BorderRadius.circular(14),
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(12, 10, 12, 4),
+                    child: _sharedCursorReadout(summary, language, scheme),
+                  ),
+                ),
+              ),
+            )
+          : null,
       body: RefreshIndicator(
         onRefresh: _load,
         child: ListView(
@@ -1862,7 +1881,8 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
                 scheme,
               )
             else ...[
-              _sharedCursorReadout(summary, language, scheme),
+              if (_selectedTimestampMs == null)
+                _sharedCursorReadout(summary, language, scheme),
               _temperatureSection(
                 title: JexText.phrase(
                   'Phone Battery Temperature',
