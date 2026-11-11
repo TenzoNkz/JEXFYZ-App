@@ -1,3 +1,11 @@
+## Active App QC — Build #146 (2026-11-11)
+
+- Run 42944693211, job 130274555621, source SHA `d5bc688cc14243cd944f2d8d653bbcb59d2805fe`. Steps 1–2 success; step 3 Java setup in progress.
+- Includes repairs for #144 helper/method scope, timeline widget key, imports and #145 nullability/path assertion.
+- #144 ended at analyzer (12 errors, 3 warnings); #145 ended at analyzer (1 error, 1 warning). Neither reached Flutter tests/Android/APK/Release.
+- Existing performance risks remain: full selected-session summary recomputation every one-second batch, unbounded/unbatched recorder queue, long-session CPU/memory/backpressure, animation lifecycle/60–120-Hz tests.
+
+---
 ## Build #145 analyzer failure — follow-up nullable-field fix committed (2026-11-11)
 
 - Run 42944293567, job 130273243595, source `264469a80b49f70a09f2d705b6ad339ae3ba5fe4`. Steps 1–11 passed, step 12 failed with 1 error, 1 warning, 23 infos; downstream gates skipped.
