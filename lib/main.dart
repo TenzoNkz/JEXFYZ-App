@@ -1526,7 +1526,7 @@ class _JexLedStripPainter extends CustomPainter {
 
 double jexLedColorPickerMaxHeight(double availableHeight) {
   if (!availableHeight.isFinite || availableHeight <= 0) return 0;
-  return math.min(308.0, availableHeight * .82).toDouble();
+  return math.min(308.0, availableHeight * .82).roundToDouble();
 }
 
 class _JexColorPickerCard extends StatefulWidget {
