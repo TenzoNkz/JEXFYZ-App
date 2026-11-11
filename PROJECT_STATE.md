@@ -10,6 +10,14 @@
 - **Performance gaps remain OPEN:** full selected-session analytics recomputed each one-second batch; unbounded/unbatched SQLite write queue; long-session CPU/memory/backpressure and animation lifecycle/60–120-Hz stress tests. Do not infer these are validated by normal CI.
 - **Field evidence UNVERIFIED:** owner install identity, OEM visuals at 350-dp/420-dp, physical BLE, real Usage Statistics telemetry/soak, cooling thermal/electrical performance, Firmware/BIN/OTA. No Firmware/device operations were performed.
 
+## Current UI follow-up — owner request 2026-11-11 (Diskusi only)
+
+- Owner screenshot review: Peltier safety dialog still feels too tall/narrow with oversized text. Live source currently uses 20/15/14 dp typography and 30-dp horizontal AlertDialog insets; propose 304–312 dp effective width, roughly 132–142 dp target height, title/body 18/14 dp, action 14 dp, tighter vertical padding and unchanged 48-dp minimum action height.
+- LED Color Picker currently has 36 named EN/ID presets. Owner requests more options and accurate names. Recommendation: 60 unique curated colors total, six-column scrollable grid unchanged, plus 24 balanced tones. Correct mismatches by matching names to exact RGB (e.g. #FF6347 Tomato, #FFD700 Gold, #7FFF00 Chartreuse, #FF1493 Deep Pink).
+- The exact proposed layout/palette and acceptance matrix are in DESIGN_NOTES.md. These are discussion recommendations only; no source/test/config/workflow/build/Release/device operation was performed. Await explicit Eksekusi Full! before implementation. A new APK requires separate Eksekusi Build App!.
+- Build #149 installation/OEM field acceptance and the existing Statistics/SQLite/animation performance risks remain open.
+
+
 ---
 ## HISTORICAL App QC — Build #149 APK build active — 2026-11-11
 
