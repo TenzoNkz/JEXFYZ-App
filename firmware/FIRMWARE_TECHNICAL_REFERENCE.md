@@ -6,7 +6,7 @@ Last reconciled: 2026-10-23 (Asia/Jakarta). Source identity and behavior are rec
 
 - Active source: firmware/JEXFYZ-V7.2.ino.
 - Embedded version: FW_VERSION="V7.2".
-- Current source blob: f1eb83d5605691040fdc9d7f64fee5c4a0bfbf52.
+- Current source blob: 140e758e7101cadc3ccc58cc5c52e49534b0032c.
 - The owner-reported V7.1 compile/Online OTA applies to the previous revision and is not evidence for V7.2. V7.2 compilation, BIN provenance, installation and physical behavior remain UNVERIFIED.
 - Target toolchain: ESP32-C3 Super Mini / ESP32-C3 Dev Module; Arduino-ESP32 Core 3.3.7.
 - Build #124 is Android App release evidence only, not a Firmware compile.

@@ -10,7 +10,7 @@ Last reconciled: 2026-10-21 (Asia/Jakarta). This is the canonical incident recor
 
 ## Historical OTA correction retained in current V7.2 source
 
-- The correction originated in the then-current V6.3 source and remains present in active `firmware/JEXFYZ-V7.2.ino` (current blob `f1eb83d5605691040fdc9d7f64fee5c4a0bfbf52`). V7.2 does not modify OTA transport; V7.1 is the preceding source checkpoint and V7.0/V6.7/V6.9 are historical.
+- The correction originated in the then-current V6.3 source and remains present in active `firmware/JEXFYZ-V7.2.ino` (current blob `140e758e7101cadc3ccc58cc5c52e49534b0032c`). V7.2 does not modify OTA transport; V7.1 is the preceding source checkpoint and V7.0/V6.7/V6.9 are historical.
 - Restored `cloudClient.setInsecure()` for the Online OTA client.
 - Removed the embedded CA PEM, `setCACert()`, `configTime()`, `TIME_SYNCING`, epoch-validity condition and OTA-only 20-second NTP time gate.
 - Flow is Wi-Fi success → blue feedback → `prepareOnlineOtaDownload()` → GitHub GET attempt.

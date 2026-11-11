@@ -4,7 +4,7 @@ Last reconciled: 2026-10-23 (Asia/Jakarta). This is the current rail/transition 
 
 ## Current source and evidence
 
-- Active Firmware source: firmware/JEXFYZ-V7.2.ino, FW_VERSION="V7.2", blob f1eb83d5605691040fdc9d7f64fee5c4a0bfbf52.
+- Active Firmware source: firmware/JEXFYZ-V7.2.ino, FW_VERSION="V7.2", blob 140e758e7101cadc3ccc58cc5c52e49534b0032c.
 - The V7.1 owner-reported compile/Online OTA is historical; it does not validate V7.2. The existing voltage-transition/Peltier soft-start contract below remains required.
 - V7.2 adds a persistent V5 lock. Lock ON retargets an in-flight transition to V5 without resetting voltageTransitionAt, rechecks the lock before selector assertion and keeps the loop enforcing a V5 endpoint. The lock command does not manipulate selector GPIO directly.
 - V7.2 source was not compiled, and no BIN/Firebase/OTA/flash/device operation or physical power/rail test was performed.

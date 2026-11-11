@@ -611,6 +611,7 @@ void main() {
     expect(flash, isNonNegative);
     expect(adaptiveResume, greaterThan(flash));
     expect(led, contains('if (rejectionPreempted) voltageLockRejectionFlashActive = false;'));
+    expect(led, contains('onlineOtaStartPending'));
     expect(led, contains('!ntcValid || hotsideProtectionActiveNow()'));
   });
 

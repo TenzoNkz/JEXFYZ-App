@@ -24,7 +24,7 @@ Change protected OTA only for a demonstrated defect after discussion and explici
 
 ## Current Firmware baseline pointer
 
-- Active editable source: firmware/JEXFYZ-V7.2.ino, FW_VERSION="V7.2", source blob f1eb83d5605691040fdc9d7f64fee5c4a0bfbf52.
+- Active editable source: firmware/JEXFYZ-V7.2.ino, FW_VERSION="V7.2", source blob 140e758e7101cadc3ccc58cc5c52e49534b0032c.
 - V7.2 changes Lock Voltage and Touch progression only. OTA state machines, radio handoff, URL validation, TLS choice, download checks, Update lifecycle, result/recovery and App disconnect/reconnect flow are unchanged. The previous V7.1 owner-reported compile/Online OTA remains historical, not evidence for V7.2.
 - Build #124 is App-only CI evidence; it does not validate Firmware compilation or field OTA behavior.
 - Current Firmware's Online OTA path uses cloudClient.setInsecure(). TLS transport is encrypted, but server certificate identity is not authenticated. The CA certificate and OTA-only NTP/TIME_SYNCING gate are absent. Do not silently restore that path or conceal the security trade-off.

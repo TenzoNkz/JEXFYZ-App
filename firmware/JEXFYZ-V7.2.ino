@@ -1715,7 +1715,7 @@ static void renderCustomLedFrame(uint32_t now) {
 
 static void triggerVoltageLockRejectionFlash() {
   if (voltageLockRejectionFlashActive ||
-      otaActive || bootApClientSafe ||
+      otaActive || onlineOtaStartPending || bootApClientSafe ||
       otaState == OtaState::LOCAL_UPLOAD ||
       otaState == OtaState::CLOUD_CONNECTING ||
       otaState == OtaState::CLOUD_DOWNLOADING ||
@@ -1737,7 +1737,7 @@ static void processLeds() {
   // Safety/OTA indications cancel, rather than queue, a lower-priority rejection flash.
   const bool rejectionPreempted =
       localOtaResultIndicatorActive || onlineResultIndicatorActive ||
-      otaActive || bootApClientSafe ||
+      otaActive || onlineOtaStartPending || bootApClientSafe ||
       otaState == OtaState::LOCAL_UPLOAD ||
       otaState == OtaState::CLOUD_CONNECTING ||
       otaState == OtaState::CLOUD_DOWNLOADING ||

@@ -6,7 +6,7 @@ Durable hardware/user requirements live here. The source-level architecture and 
 
 - Owner reports the sold/shipped unit uses App Build #124 and Firmware V7.1, compiled and updated through Online OTA. This is USER-REPORTED.
 - The App package is independently evidenced by Actions run 39386733061, packaged source 7d4e7262c6a3474eefa8ccb58b08f070df3ac15a. This does not independently verify Firmware compilation, source-to-BIN identity, installed version, physical OTA/reboot, BLE recovery or electrical/thermal behavior.
-- Active editable Firmware source on main: firmware/JEXFYZ-V7.2.ino; FW_VERSION="V7.2"; source blob f1eb83d5605691040fdc9d7f64fee5c4a0bfbf52. This is source-only evidence; V7.2 has not been compiled or installed. The V7.1 shipped-unit report remains historical USER-REPORTED evidence.
+- Active editable Firmware source on main: firmware/JEXFYZ-V7.2.ino; FW_VERSION="V7.2"; source blob 140e758e7101cadc3ccc58cc5c52e49534b0032c. This is source-only evidence; V7.2 has not been compiled or installed. The V7.1 shipped-unit report remains historical USER-REPORTED evidence.
 - The unit is not available for routine physical repair. Avoid discretionary release/update risk.
 
 ## BLE authorization — BLOCKED / NOT IMPLEMENTED
@@ -141,7 +141,7 @@ Durable hardware/user requirements live here. The source-level architecture and 
 - Static test presence does not prove execution. The V7.1 contract tests are not independently run by this docs rework; there was no Firmware compile, BIN generation/publication, Firebase update, physical OTA, flash or device operation.
 ### V7.2 implementation checkpoint — persistent Lock Voltage + Touch cycle (2026-11-12)
 
-- Source: firmware/JEXFYZ-V7.2.ino, FW_VERSION="V7.2", blob f1eb83d5605691040fdc9d7f64fee5c4a0bfbf52. The V7.1 sketch is removed from the active tree; exactly one active versioned .ino remains.
+- Source: firmware/JEXFYZ-V7.2.ino, FW_VERSION="V7.2", blob 140e758e7101cadc3ccc58cc5c52e49534b0032c. The V7.1 sketch is removed from the active tree; exactly one active versioned .ino remains.
 - Lock state is Firmware-owned. Preferences namespace "jexfyz", key "vLock5V". Missing key defaults OFF for V7.1 upgrades. Runtime interlock activates before ON persistence/handoff. Persisted state is confirmed only after putBool returns sizeof(bool) and readback matches.
 - NVS ON failure leaves runtime locked and saved=OFF, with retry supported. NVS OFF failure keeps runtime lock active. Repeating an already-saved state avoids unnecessary flash writes; repeated ON after a failed save retries NVS.
 - Lock ON centrally rejects every request above 5V, rechecks at the final selector boundary, redirects an in-flight transition without resetting its 200ms timestamp, forces Adaptive OFF and keeps it OFF until unlock. Unlock leaves V5 and Adaptive OFF.

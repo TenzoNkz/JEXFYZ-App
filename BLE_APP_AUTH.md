@@ -13,7 +13,7 @@ Checkpoint date: 2026-10-20 (Asia/Jakarta). Baseline source parent: `14e90e7e26b
 
 ## Live source findings
 
-Firmware source: `firmware/JEXFYZ-V7.2.ino`, blob `f1eb83d5605691040fdc9d7f64fee5c4a0bfbf52`. V7.2 adds P1 command VOLTAGE_LOCK:ON|OFF and VOLTAGE_LOCK / VOLTAGE_LOCK_SAVED telemetry, but does not implement cryptographic App authorization. The Just Works + SYNC_READY identity limitation remains unchanged.
+Firmware source: `firmware/JEXFYZ-V7.2.ino`, blob `140e758e7101cadc3ccc58cc5c52e49534b0032c`. V7.2 adds P1 command VOLTAGE_LOCK:ON|OFF and VOLTAGE_LOCK / VOLTAGE_LOCK_SAVED telemetry, but does not implement cryptographic App authorization. The Just Works + SYNC_READY identity limitation remains unchanged.
 
 - RX writes are configured as encrypted and bonded, but pairing uses Just Works and does not provide MITM identity assurance.
 - `dispatchBleLine()` gates normal commands on `bleCommandGateOpen`; `SYNC_READY` itself opens that gate.
