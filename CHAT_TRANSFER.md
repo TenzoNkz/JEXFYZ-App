@@ -1,22 +1,18 @@
-## CURRENT CHECKPOINT — BUILD #149 ACTIVE / FLUTTER SETUP — 2026-11-11
+## CURRENT CHECKPOINT — BUILD #149 ANDROID GATE PASSED / APK BUILD ACTIVE — 2026-11-11
 
-**Run:** Build #149 / Actions run 42967289995, workflow 374946166, issue event, attempt 1. Job build / 130347345586.
+**Run:** 42967289995; job 130347345586; immutable source 0507e3e11b67b8f8d042e49b74cc14a53bfc4f21.
 
-**Immutable source SHA:** 0507e3e11b67b8f8d042e49b74cc14a53bfc4f21. Latest executable App source commit includes cursor panel repair f56b2a9a4893a1a0810cfdfb38524fd79df87d05.
+**Passed:** steps 1–14, including analyzer, full Flutter test suite and Android Gradle gate. The cursor readout pinned panel is included in this checkout and its existing widget regression is within the successful Flutter gate.
 
-**Trigger:** issue #33 exact guarded title/token closed/reopened once; exactly one #149 run exists; issue remains OPEN. No duplicate trigger.
+**Current:** step 15 Build latest release APK is in_progress. Steps 16–21 pending. No artifact/new Release asset yet. Live log archive is not available while build step is active; exact analyzer info count and Flutter test count are not asserted here.
 
-**Initial status:** run/job in_progress. Steps 1–3 success (job setup, checkout, Java 17); step 4 Set up Flutter in_progress; steps 5–21 pending. No APK/source artifact yet.
+**Open risks:** summary recompute each one-second refresh, unbounded/unbatched SQLite write queue, long-session CPU/memory/backpressure and animation lifecycle/60–120-Hz stress tests. These remain explicit.
 
-**Validation target:** keep selected Statistics cursor readout visible in Scaffold.bottomNavigationBar after tapping Peltier lane while scrolled deep into the ListView. The existing widget test still asserts Waktu dipilih; test is not weakened.
-
-**History:** #144 analyzer 12 errors/3 warnings; #145 analyzer nullable-double failure; #146 Flutter 161/5; #147 Flutter 164/2; #148 Flutter 165/1. None published; #143 is still latest verified release.
-
-**Known gaps:** full-session summary recompute per 1Hz update; unbounded/unbatched SQLite write queue; long-session CPU/memory/backpressure; animation lifecycle/60–120-Hz tests.
-
-**Next:** monitor only run 42967289995 and record exact gate results. Preserve versionName and original workflow gates. No Firmware/BIN/Firebase/OTA/flash/device operations.
+**Next:** monitor only run 42967289995 through build, signature/certificate, source ZIP, Release/tag and download checks. No duplicate trigger. Preserve versionName. No Firmware/BIN/Firebase/OTA/flash/device actions.
 
 ---
+## HISTORICAL CHECKPOINT — BUILD #149 ACTIVE / INITIAL RUNNER SETUP — 2026-11-11
+
 ## HISTORICAL CHECKPOINT — CURSOR READOUT PINNED / PRE-BUILD #149 — 2026-11-11
 
 ## HISTORICAL CHECKPOINT — BUILD #148 FAILED / CURSOR REPAIR — 2026-11-11
