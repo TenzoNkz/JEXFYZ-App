@@ -1,4 +1,14 @@
-## Current App candidate — Build #147 pre-trigger ready (2026-11-11)
+## Current App QC — Build #147 active (2026-11-11)
+
+- **Run:** 42946048711, job 130278994451, workflow 374946166, issue event, attempt 1; immutable source SHA ad21a36ab496e5323fa35ba090121eda359107a4.
+- **Status:** steps 1–3 success; step 4 Flutter setup in progress; later gates pending. No artifact yet.
+- **Included repairs:** LED picker max height rounds to integer logical pixels; Statistics contract checks Flutter Ticker/vsync instead of a fixed 16ms timer; cursor test ensures Peltier lane is fully visible before center tap; LED/Peltier UI contracts target current compact sizes.
+- **Prior #146:** analyzer passed (23 info, zero warning/error); Flutter 161/5; downstream Android/Release steps skipped, no package.
+- **Known gaps remain:** full summary recomputation per 1Hz UI batch; unbounded/unbatched SQLite queue; long-session CPU/memory/backpressure; animation lifecycle/60–120-Hz tests.
+- Preserve Android versionName "Telegram @horizontalzzz"; no Firmware/BIN/Firebase/OTA/flash/device operation.
+
+---
+## HISTORICAL App candidate — Build #147 pre-trigger ready (2026-11-11)
 
 - Main before this checkpoint: 245f9870f7bd75b1c7f18827a4f4fb6ae5588b4b; latest executable App/test commit b1609b01d4dee470b96e2030cb5583df1efc1351. Includes rounded LED height and compact-picker/Peltier/Statistics cursor/animation contract updates.
 - Build #146: analyzer passed (23 infos, zero warnings/errors); Flutter test 161 passed / 5 failed; steps 14–21 skipped; no artifact or Release mutation.
