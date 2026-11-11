@@ -2326,3 +2326,22 @@
 - **Next disposition:** Build App package is ready for owner download/install and separate field acceptance. Keep Firmware/BIN/OTA/device tasks out of this App Build checkpoint.
 
 ---
+
+
+
+## BUILD #144–#148 VALIDATION SEQUENCE — CURSOR READOUT REPAIR — 2026-11-11
+
+- **Current release baseline:** Build #143 / run 42783474515 remains the latest verified package, source/tag 121ef9e0f5ed6a0003837d32e4c8b1701f38631a. No subsequent run reached APK/signing/source/release stages; Release contents remain unchanged.
+- **Build #144:** run 42943589237, job 130270923510, source e1d624bc0990ed3552ebbefaac1164cf025b794f. Steps 1–11 passed; Dart analyzer failed with 12 errors, 3 warnings and 25 infos in lib/usage_statistics.dart, primarily malformed helper/method scope and invalid named-parameter syntax around _messageState, _sharedCursorReadout and _setChartCursor. Flutter/Android/build/release gates skipped.
+- **Build #145:** run 42944293567, job 130273243595, source 264469a80b49f70a09f2d705b6ad339ae3ba5fe4. Earlier parser/scope issues were repaired; analyzer then failed on one nullable-double argument type mismatch in lib/usage_statistics.dart (double? passed to double) plus one redundant non-null assertion warning. Downstream gates skipped.
+- **Build #146:** run 42944693211, job 130274555621, source d5bc688cc14243cd944f2d8d653bbcb59d2805fe. Analyzer passed (23 info, zero warning/error); Flutter tests 161 passed / 5 failed. Failures: fractional LED max-height rounding expectation; obsolete fixed-16ms animation expectation despite Ticker/vsync animation; stale LED overlay source-contract font/width checks; stale Peltier safety-dialog source-contract font/dimension checks; and selected-time cursor text absent after tapping the Peltier lane. No downstream package/release.
+- **Build #147:** run 42946048711, job 130278994451, source ad21a36ab496e5323fa35ba090121eda359107a4. Analyzer passed (23 infos, zero warnings/errors); Flutter tests 164 passed / 2 failed. Remaining failures: stale LED maxWidth expectation 420 vs actual 312, and selected-time cursor readout missing after lane tap. No downstream package/release.
+- **Build #148:** run 42946808657, job 130281466870, source 8662d7d0f4b8a67521e0a80c7fdd95656cc84235. Analyzer passed (23 infos, zero warnings/errors); Flutter tests 165 passed / 1 failed. LED compact panel and earlier repairs passed; only the selected-time cursor readout was not found after tapping the Peltier lane. No Android/build/release gates; no #148 asset.
+- **Cursor interaction iterations:** keyed Listener pointer-down path and expanded SizedBox/GestureDetector tap-up path were added in commits 2963faaf8052aa3cca791a0f66d43f0d13800c87 and 98dd3657d225292a1d1f395693ad7f02d65b240d; cursor regression test uses the keyed hit area.
+- **Structural readout root cause identified:** _sharedCursorReadout was a child inside the lazily built ListView. Scrolling to the Peltier lane can evict that earlier child from the widget tree, so its selected-time label is not kept visible/findable even after a chart interaction. This made the shared readout position non-persistent when the user is inspecting lower charts.
+- **App fix:** commit f56b2a9a4893a1a0810cfdfb38524fd79df87d05 moves the selected-state readout to a conditional Scaffold.bottomNavigationBar with safe-area padding and a surface card. The initial instruction remains in the ListView only while no time is selected. Existing Listener/tap-up/drag handlers are preserved. The existing widget regression still taps the scrolled Peltier lane and expects Waktu dipilih; this fix is NOT YET HOSTED-VALIDATED.
+- **Preflight for next run:** latest source main before docs checkpoint is f56b2a9a4893a1a0810cfdfb38524fd79df87d05; issue #33 exact OPEN, workflow remains guarded issue-only, no active run or open PR. Preserve Android versionName Telegram @horizontalzzz.
+- **Known performance/test gaps remain:** full selected-session summary recomputation each one-second flush; unbounded/unbatched SQLite write queue; long-session CPU/memory/backpressure; animation lifecycle and 60–120-Hz stress coverage. They remain open even if the upcoming workflow passes.
+- **Disposition:** all #144–#148 failed before package publication. Do not claim the newer source is released until every workflow gate and downloaded asset check passes.
+
+---
