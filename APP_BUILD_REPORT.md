@@ -1,4 +1,28 @@
-## BUILD #146 ACTIVE — RUNNER SETUP — 2026-11-11
+## BUILD #146 TERMINAL FAILURE — FLUTTER TEST CONTRACTS / CURSOR HIT TARGET — 2026-11-11
+
+- **Run/job/source:** [Build #146 / Actions run 42944693211](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42944693211), job 130274555621; immutable source d5bc688cc14243cd944f2d8d653bbcb59d2805fe.
+- **Passed:** steps 1–12, including security/architecture audit, dependencies and Dart analyzer. Analyzer completed with 23 info-level findings, zero warnings and zero errors. The #144 method-scope/key repairs and #145 nullable-field fix cleared analyzer.
+- **Failed:** step 13 Flutter suite: 161 passed / 5 failed. Android step 14 and APK/signing/source/Release/download steps 15–21 were skipped. No #146 APK/source artifact or Release mutation.
+- **Five failures and diagnosis:**
+  1. LED height helper test expected exact 246.0; binary double arithmetic returned 245.99999999999997. Source now rounds the bounded 82%-height result to an integer logical pixel.
+  2. SQLite/local-storage source contract still expected a fixed 16-ms duration despite chart animation being Ticker/vsync-based. Test now asserts SingleTickerProviderStateMixin, vsync: this, AnimationController and actual 320/280-ms transitions; the separate one-second diagram refresh contract remains.
+  3. LED overlay contract still expected old heading/grid values (22sp and 42dp). Current compact picker uses a 19sp heading, 14sp action/name text and 48dp swatch rows with a 48dp header. Test now checks current layout and retains anchoring, no outside dismiss, explicit Select/Cancel, draft selection and accessibility/touch-target contracts.
+  4. Shared Statistics cursor test used scrollUntilVisible, which could leave the 34dp timeline only partially visible; tapping its finder center could miss the hit region. Test now ensures the whole Peltier lane is in view before tapping the chart center and pumping the gesture.
+  5. Peltier safety contract still asserted previous 24/17sp and 86x48/142x50 targets. Current compact dialog uses 20sp title, 15sp body, 14sp actions, with 72x48 and 128x48 minimum touch targets. Test now scopes to _togglePeltier and checks the current layout plus barrier behavior.
+- **App patch:** lib/main.dart commit 4028949dca6c2f5ced55f54861b6c5197426c1dd rounds the compact color-picker max height to whole logical pixels. No Peltier/LED styling was increased or safety behavior changed.
+- **Test repairs:** test/usage_statistics_test.dart commit fb845d88567503de4a78668c2b6b08eeb61de5e5 replaces stale animation-timer assertion with the actual vsync contract and makes cursor hit-target visibility deterministic; test/widget_test.dart commit b1609b01d4dee470b96e2030cb5583df1efc1351 aligns old LED/Peltier static contracts with current compact source.
+- **Validation boundary:** patches have source-level/read-back verification only. New hosted run must prove analyzer, Flutter suite and all later gates. Do not treat the cursor test fix as a demonstrated production issue fix without the next hosted result.
+- **Disposition:** #146 FAILED at Flutter test gate. No package/Release. Build #143 remains latest verified Release.
+
+---
+## NEXT GUARDED RETRY — POST-#146 TEST REPAIR PRE-TRIGGER — 2026-11-11
+
+- Candidate now includes rounded LED height plus refreshed LED/Peltier/Statistics contracts and deterministic cursor lane test. Candidate main SHA before the next docs checkpoint: b1609b01d4dee470b96e2030cb5583df1efc1351.
+- Original explicit owner Eksekusi Build App! remains authorization for this concrete App repair/retry. Before one issue #33 close/reopen, verify #146 terminal, no active/queued run, no open PR, exact guard/workflow unchanged and Android versionName preserved.
+- Known open performance gaps remain: full-session summary recomputation each one-second batch; unbounded/unbatched SQLite queue; long-session CPU/memory/backpressure; animation lifecycle and 60–120-Hz stress coverage. Keep these in the final report even if normal CI passes.
+
+---
+## HISTORICAL BUILD #146 ACTIVE — RUNNER SETUP — 2026-11-11
 
 - **Run/job/source:** [Build #146 / Actions run 42944693211](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42944693211), job 130274555621, workflow 374946166, issue event, attempt 1; immutable checkout `d5bc688cc14243cd944f2d8d653bbcb59d2805fe`.
 - **Retry basis:** #145's sole analyzer error (nullable painter field) and one redundant path assertion were fixed in `250d2a031667c0b7ceab98e3077a35a97408d8ce`; the earlier #144 structural issues were fixed in `80b8874c9d851d1422009cfdbb85f33eec74f8b2` and `1e04495416426ea5f4b3c9280704b1deee9a821c`. Latest source read-back verified.
