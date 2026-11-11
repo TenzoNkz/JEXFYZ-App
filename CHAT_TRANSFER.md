@@ -1,18 +1,18 @@
-## CURRENT CHECKPOINT — BUILD #145 ACTIVE / FLUTTER SETUP — 2026-11-11
+## CURRENT CHECKPOINT — BUILD #145 FAILED / NULLABILITY FIX COMMITTED / RETRY PRE-TRIGGER — 2026-11-11
 
-**Run:** [Build #145 / Actions run 42944293567](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42944293567), job 130273243595, attempt 1.
+**Failed run:** Build #145 / Actions run 42944293567, job 130273243595, immutable source `264469a80b49f70a09f2d705b6ad339ae3ba5fe4`. Steps 1–11 passed; step 12 failed with 1 error, 1 warning and 23 infos; steps 13–21 skipped. No package/Release output.
 
-**Immutable source:** `264469a80b49f70a09f2d705b6ad339ae3ba5fe4`. Includes source repairs `80b8874c9d851d1422009cfdbb85f33eec74f8b2` and `1e04495416426ea5f4b3c9280704b1deee9a821c`.
+**What was fixed from #144:** #144's malformed `_messageState` helper scope, undefined `action`, unavailable cursor helpers and missing timeline key no longer appear in #145 analyzer output.
 
-**Current status:** runner steps 1–3 successful; step 4 Set up Flutter in progress; gates 5–21 pending. No APK/source/Release artifact yet.
+**Remaining #145 diagnostic:** painter field `referenceValue` remained nullable when passed to `yFor(double)`; redundant `path!` assertion also warned. Repair commit `250d2a031667c0b7ceab98e3077a35a97408d8ce` promotes a local nullable-field copy after checking it, and removes `path!`. Source read-back verified. Hosted validation pending.
 
-**Previous #144:** terminal failure at Dart analyzer (12 errors, 3 warnings, 25 info findings); no tests/Android/build/Release steps ran. Root cause and exact repairs are recorded above.
+**Combined repair history:** `80b8874c9d851d1422009cfdbb85f33eec74f8b2`, `1e04495416426ea5f4b3c9280704b1deee9a821c`, `250d2a031667c0b7ceab98e3077a35a97408d8ce`.
 
-**Remaining risks:** full-summary recomputation per one-second chart batch; unbounded/unbatched recorder write queue; long-session CPU/memory/backpressure; animation lifecycle/60–120-Hz tests.
-
-**Next:** monitor only #145; verify analyzer first, then Flutter suite and the remaining release gates. Keep known risks explicit; no Firmware/BIN/Firebase/OTA/flash/device activity.
+**Next:** fresh preflight, then one guarded retry for the nullable-flow patch. No weakening of analyzer/test gates. Keep unbounded queue/backpressure and animation lifecycle/60–120-Hz risks visible.
 
 ---
+## HISTORICAL CHECKPOINT — BUILD #145 ACTIVE / FLUTTER SETUP — 2026-11-11
+
 ## HISTORICAL CHECKPOINT — BUILD #144 FAILED / APP REPAIR COMMITTED — 2026-11-11
 
 ## HISTORICAL CHECKPOINT — BUILD #144 ACTIVE / INITIAL SETUP — 2026-11-11
