@@ -1,15 +1,16 @@
-## CURRENT CHECKPOINT — BUILD #150 ACTIVE / RUNNER SETUP — 2026-11-12
+## CURRENT CHECKPOINT — BUILD #150 ACTIVE / FLUTTER SETUP — 2026-11-12
 
 **Mode and scope:** owner-authorized `Eksekusi Build App!`; guarded App Build/QC/release only. Firmware compilation, BIN/Firebase/OTA/flash/device work are excluded.
 
-- **Live main at trigger:** `9245e142f4ea0e19e5f49e3ec1e1d80db2adf65c`. Run #150 checks out this exact source SHA; Android `versionName "Telegram @horizontalzzz"` is preserved.
-- **Attempt:** Build #150 / Actions run `43080229957`, workflow `374946166`, attempt 1, issue event from #33, build job `130730553031`. The issue was closed/reopened exactly once using the exact owner/title/body-token guard. No duplicate or retry.
-- **Current state:** job `in_progress`, step 1 `Set up job`. No workflow gate completed yet. Last completed gate: none. Remaining: checkout/toolchain, signing preparation, security/architecture audit, dependencies, analyzer, Flutter suite, Android Gradle, obfuscated APK, V1/V2/V3 + certificate, matching source ZIP, Release/tag exact SHA parity, downloaded asset checksum/identity verification.
-- **Previous Release remains Build #149:** tag/Release `jexfyz-latest` target `0507e3e11b67b8f8d042e49b74cc14a53bfc4f21`; old APK/source pair remains until Build #150 passes all gates and publishes.
-- **Workflow:** `.github/workflows/jexfyz-app-build-trigger.yml` unchanged, blob `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12`; issue-only opened/reopened trigger, owner/title/token guard intact, no push/PR release path.
-- **Scope evidence:** current source includes the new App Lock Voltage/P1/UI and tests associated with Firmware V7.2. The workflow packages App source only; Firmware is not compiled or published.
-- **Not performed:** Firmware compile, BIN/Firebase/OTA/flash, physical BLE/device/NVS/rail/LED testing, or OEM screenshots. These remain separate validations.
-- **Next safe action:** continue inspecting run `43080229957` / job `130730553031`; no new trigger. Detailed attempt evidence is appended in `APP_BUILD_REPORT.md`.
+- **Run:** Build #150 / Actions run `43080229957`, workflow `374946166`, attempt 1, issue event #33, build job `130730553031`. The issue was closed/reopened exactly once with the exact owner/title/token guard; no retry or duplicate.
+- **Immutable tested source:** `9245e142f4ea0e19e5f49e3ec1e1d80db2adf65c`; run metadata still reports this exact SHA. Later commits on live `main` are documentation checkpoints only and are not part of this build source.
+- **Completed steps:** 1 Set up job; 2 Checkout repository; 3 Set up Java 17 — all success. **Current:** step 4 Set up Flutter — in progress. Steps 5–21 pending. Last completed gate: runner initialized, intended source checked out, Java 17 installed. Analyzer/tests/package/release gates have not run yet.
+- **Prior published Release:** Build #149; `jexfyz-latest` still targets `0507e3e11b67b8f8d042e49b74cc14a53bfc4f21` until this attempt passes every gate and publishes. Exact Android Gradle `versionName "Telegram @horizontalzzz"` is preserved.
+- **Workflow unchanged:** blob `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12`; issue-only opened/reopened trigger and owner/title/token guard remain intact; no push/PR release path.
+- **Log access:** running-job log archive currently returned BlobNotFound; job-step API is available and confirms the states above. This is not classified as a failure.
+- **Remaining:** Flutter/Gradle toolchain setup, signing setup, security/architecture audit, dependencies, analyzer, full Flutter suite, Android Gradle, obfuscated APK, V1/V2/V3 and certificate, matching ZIP, Release/tag parity and downloaded asset verification.
+- **Separate evidence boundary:** no Firmware compile, BIN/Firebase/OTA/flash, physical BLE/device/NVS/rail/LED test or OEM screenshot work has occurred.
+- **Next:** continue observing run `43080229957` / job `130730553031` only.
 
 ---
 
