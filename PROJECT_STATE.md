@@ -1,4 +1,14 @@
-## Current App candidate — guarded Build App requested (2026-11-11)
+## Current App QC — Build #144 active (2026-11-11)
+
+- **Run:** 42943589237, job 130270923510, workflow 374946166, issue event, attempt 1; immutable source SHA `e1d624bc0990ed3552ebbefaac1164cf025b794f`.
+- **Trigger:** issue #33 exact guard was closed/reopened once; exactly one new run created. No active duplicate.
+- **Initial status:** step 1 Set up job is in progress; steps 2–21 not yet reported. No artifact/new Release yet.
+- **Executable App source:** latest implementation/test commit `33fe9a545d7a8594e6e3a5119d3b1f564a93d868`; Build #144 includes compact overlays and the new six-metric Statistics changes.
+- **Unclosed performance/test risks:** selected-session summary recomputation per one-second batch; unbounded/unbatched SQLite write queue; long-session CPU/memory/backpressure; animation lifecycle/60–120-Hz stress testing. Keep separate from workflow gate results.
+- Preserve `versionName "Telegram @horizontalzzz"`; no Firmware, BIN, Firebase, OTA, flash or physical-device operation.
+
+---
+## HISTORICAL App candidate — guarded Build App requested (2026-11-11)
 
 - **Owner command:** explicit `Eksekusi Build App!` authorizes one new guarded App Build/QC attempt for current source. This does not waive checks or authorize other subsystem/device operations.
 - **Candidate main before documentation checkpoint:** `18787069be826cad3027dc1a1eb9952cfaf92641`; latest executable source/test commit `33fe9a545d7a8594e6e3a5119d3b1f564a93d868`.
