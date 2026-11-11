@@ -1,3 +1,13 @@
+## Active guarded attempt — Build #149 (2026-11-11)
+
+- Run 42967289995, job 130347345586, source SHA 0507e3e11b67b8f8d042e49b74cc14a53bfc4f21, issue event, attempt 1.
+- Issue #33 exact guarded trigger closed/reopened once. One run exists.
+- Initial steps 1–3 passed; Flutter setup step 4 in progress; no analyzer/test results or artifacts yet.
+- Source includes pinned Statistics selected-cursor readout repair f56b2a9a4893a1a0810cfdfb38524fd79df87d05; existing widget test still validates Waktu dipilih after tapping Peltier lane while scrolled.
+- #144–#148 failed before packaging; Build #143 remains latest Release. Performance risks remain: full-session recompute per 1Hz flush; unbounded SQLite queue/backpressure; long-session CPU/memory; animation lifecycle/60–120-Hz stress.
+- Keep all workflow gates and Android versionName Telegram @horizontalzzz; App-only scope.
+
+---
 ## Build #144–#148 failure summary and cursor repair — pre-build #149 (2026-11-11)
 
 - #144 run 42943589237/job 130270923510/source e1d624bc0990ed3552ebbefaac1164cf025b794f: analyzer failed with 12 errors, 3 warnings and 25 infos; malformed helper/method scope/named arguments in usage_statistics.dart.
