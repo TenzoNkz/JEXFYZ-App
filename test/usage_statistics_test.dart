@@ -595,8 +595,6 @@ void main() {
       ]) {
         expect(find.byKey(key), findsOneWidget);
       }
-      final peltierChart =
-          find.byKey(const ValueKey<String>('usage-profile-timeline-peltier'));
       final peltierHitArea =
           find.byKey(const ValueKey<String>('usage-profile-timeline-hit-area-peltier'));
       await tester.scrollUntilVisible(
