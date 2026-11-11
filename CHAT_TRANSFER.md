@@ -1,16 +1,16 @@
-## CURRENT CHECKPOINT — BUILD #150 ACTIVE / FLUTTER SETUP — 2026-11-12
+## CURRENT CHECKPOINT — BUILD #150 ACTIVE / GRADLE SETUP — 2026-11-12
 
-**Mode and scope:** owner-authorized `Eksekusi Build App!`; guarded App Build/QC/release only. Firmware compilation, BIN/Firebase/OTA/flash/device work are excluded.
+**Mode and scope:** owner-authorized `Eksekusi Build App!`; guarded App Build/QC/release only. Firmware compile, BIN/Firebase/OTA/flash/device operations are excluded.
 
-- **Run:** Build #150 / Actions run `43080229957`, workflow `374946166`, attempt 1, issue event #33, build job `130730553031`. The issue was closed/reopened exactly once with the exact owner/title/token guard; no retry or duplicate.
-- **Immutable tested source:** `9245e142f4ea0e19e5f49e3ec1e1d80db2adf65c`; run metadata still reports this exact SHA. Later commits on live `main` are documentation checkpoints only and are not part of this build source.
-- **Completed steps:** 1 Set up job; 2 Checkout repository; 3 Set up Java 17 — all success. **Current:** step 4 Set up Flutter — in progress. Steps 5–21 pending. Last completed gate: runner initialized, intended source checked out, Java 17 installed. Analyzer/tests/package/release gates have not run yet.
-- **Prior published Release:** Build #149; `jexfyz-latest` still targets `0507e3e11b67b8f8d042e49b74cc14a53bfc4f21` until this attempt passes every gate and publishes. Exact Android Gradle `versionName "Telegram @horizontalzzz"` is preserved.
-- **Workflow unchanged:** blob `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12`; issue-only opened/reopened trigger and owner/title/token guard remain intact; no push/PR release path.
-- **Log access:** running-job log archive currently returned BlobNotFound; job-step API is available and confirms the states above. This is not classified as a failure.
-- **Remaining:** Flutter/Gradle toolchain setup, signing setup, security/architecture audit, dependencies, analyzer, full Flutter suite, Android Gradle, obfuscated APK, V1/V2/V3 and certificate, matching ZIP, Release/tag parity and downloaded asset verification.
-- **Separate evidence boundary:** no Firmware compile, BIN/Firebase/OTA/flash, physical BLE/device/NVS/rail/LED test or OEM screenshot work has occurred.
-- **Next:** continue observing run `43080229957` / job `130730553031` only.
+- **Run:** Build #150 / Actions run `43080229957`, workflow `374946166`, attempt 1, issue #33, job `130730553031`. Issue guard was executed once; no duplicate/retry.
+- **Immutable source SHA:** `9245e142f4ea0e19e5f49e3ec1e1d80db2adf65c`; run continues to report this SHA. Subsequent `main` changes are documentation-only checkpoint/ledger commits.
+- **Step state:** 1:Set up job=completed/success; 2:Checkout repository=completed/success; 3:Set up Java 17=completed/success; 4:Set up Flutter=completed/success; 5:Set up Gradle=completed/success; 6:Verify toolchain=completed/success; 7:Prepare Flutter local.properties=completed/success; 8:Prepare production release signing=completed/success; 9:Restore Gradle wrapper if missing=completed/success; 10:JE X FYZ security and architecture audit=completed/success; 11:Install dependencies=completed/success; 12:Analyze Dart code=completed/failure; 13:Run Flutter tests=completed/skipped; 14:Run Android unit-test gate=completed/skipped; 15:Build latest release APK=completed/skipped; 16:Enforce V1/V2/V3 APK signing=completed/skipped; 17:Verify APK signature=completed/skipped; 18:Prepare release APK filename=completed/skipped; 19:Package corresponding source archive=completed/skipped; 20:Publish APK and corresponding source to GitHub Release=completed/skipped; 21:Verify downloaded GitHub Release asset=completed/skipped; 39:Post Set up Gradle=completed/success; 40:Post Set up Flutter=completed/success; 41:Post Set up Java 17=completed/success; 42:Post Checkout repository=completed/success; 43:Complete job=completed/success.
+- **Completed:** 1 Set up job; 2 Checkout repository; 3 Set up Java 17; 4 Set up Flutter — all success. **Current:** 5 Set up Gradle 9.3.1 — in progress. Remaining: toolchain verification; Flutter local.properties; release signing setup; wrapper; security/architecture audit; dependencies; analyzer; full Flutter suite; Android Gradle gate; obfuscated APK; V1/V2/V3 + pinned cert; source ZIP; Release/tag parity; downloaded asset checksum/identity.
+- **Latest Release remains Build #149** until Build #150 completes all gates: `jexfyz-latest` currently targets source `0507e3e11b67b8f8d042e49b74cc14a53bfc4f21`. Android `versionName "Telegram @horizontalzzz"` remains exact.
+- Workflow blob unchanged `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12`; issue-only, guarded; no push/PR release trigger.
+- No log archive yet for the active job; steps are confirmed through live Actions job metadata. No failures/retries/repairs.
+- No Firmware compile, BIN, Firebase, OTA, flash, physical BLE/device/NVS/rail/LED or OEM screenshot tests were performed.
+- **Next:** continue monitoring run `43080229957` / job `130730553031` only.
 
 ---
 
