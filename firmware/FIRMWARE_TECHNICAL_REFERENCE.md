@@ -1,6 +1,6 @@
 # JE X FYZ — Firmware Technical Reference
 
-Last reconciled: 2026-10-23 (Asia/Jakarta). Source identity and behavior are rechecked against live main before every task. This is the current technical reference; previous-version algorithms belong in CHANGELOG.md.
+Last reconciled: 2026-11-12 (Asia/Jakarta). Source identity and behavior are rechecked against live main before every task. This is the current technical reference; previous-version algorithms belong in CHANGELOG.md.
 
 ## Current source and evidence
 
@@ -58,7 +58,7 @@ See VOLTAGE_TRANSITION_MEMORY.md for the two separate reset incidents and full s
 - Adaptive Fan target uses floor(hotsideC) and delta = hotLimit − temperatureCategoryC. Delta ≤2°C→100%, 3–4→90%, 5–6→80%, 7–8→70%, 9–10→60%, ≥11→50%. At limit 40°C: 40/39/38→100%, 37/36→90%, 35/34→80%, 33/32→70%, 31/30→60%, ≤29→50%.
 - Fan target ramps in 10-point steps: +10 points per second; −10 points per ten seconds. Direction changes start a fresh clock. Adaptive at 5 V/9 V remains Fan 100%.
 - Raw-decimal safety is separate: at/above the configured limit, Fan 100% immediately and the existing safety supervisor shuts Peltier OFF.
-- Rapid Hotside-rise/rate-of-rise shutdown with manual re-arm is NOT IMPLEMENTED in V7.1.
+- Rapid Hotside-rise/rate-of-rise shutdown with manual re-arm is NOT IMPLEMENTED in V7.2.
 
 ## Touch, LEDs and persisted data
 
@@ -87,4 +87,5 @@ Static source contracts can verify strings, constants and code ordering. They do
 - Touch single tap advances from actual currentVoltage as V5→V9→V12→V5. The old direction flag is removed.
 - VOLTAGE_LOCK:ON|OFF is additive P1 using existing UUID/framing. VOLTAGE_LOCK and VOLTAGE_LOCK_SAVED are state telemetry. ACK/persistence does not replace actual VOLTAGE transition telemetry.
 - Denial feedback is a nonblocking two-pulse red LED state machine; OTA/Hotside/NTC safety overrides it.
-- This source description is not Arduino compile, BIN, NVS power-cycle, physical LED, rail/thermal or BLE validation.
+- This source description is not Arduino compile, BIN, NVS power-cycle, physical LED, rail/thermal or BLE validation. The opening source comment still says `V7.1 Firmware` although `FW_VERSION` is `V7.2`; this is a non-functional documentation mismatch to correct in an authorized source edit.
+- Build #151 / run `43080954412` passed the hosted Flutter suite 171/171, including V7.2 source-contract tests against the same Firmware blob SHA. These Dart tests do not compile or run the Arduino sketch.
