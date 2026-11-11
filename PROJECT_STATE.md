@@ -1,13 +1,16 @@
-## Current App QC — Build #148 active (2026-11-11)
+## Current App candidate — Build #148 cursor test failure; expanded tap target committed (2026-11-11)
 
-- **Run:** 42946808657, job 130281466870, workflow 374946166, issue event, attempt 1; immutable source SHA 8662d7d0f4b8a67521e0a80c7fdd95656cc84235.
-- **Status:** steps 1–3 success; step 4 Flutter setup in progress; 5–21 pending. No artifact.
-- **Included repair:** compact LED contract 312dp; Statistics uses keyed opaque Listener for cursor pointer-down and retains horizontal drag. Widget test targets that hit-area key. Previous #146 test corrections remain.
-- **Prior #147:** analyzer 23 infos, zero warnings/errors; Flutter 164/2; later gates skipped, no package.
-- **Known gaps:** full summary recomputation each second; unbounded/unbatched SQLite queue; long-session CPU/memory/backpressure; animation lifecycle/60–120-Hz tests.
+- **Build #148:** run 42946808657, job 130281466870, source 8662d7d0f4b8a67521e0a80c7fdd95656cc84235. Steps 1–12 passed; analyzer 23 info, zero warnings/errors; Flutter 165 passed / 1 failed (shared Statistics cursor text absent); downstream Android/Release skipped. No package.
+- **Confirmed improvements:** LED 312dp panel contract and all earlier five Build #146 tests passed in #147/#148. Only cursor widget interaction remains.
+- **Follow-up source:** 98dd3657d225292a1d1f395693ad7f02d65b240d adds SizedBox.expand around timeline and onTapUp update; Listener pointer-down and horizontal drag remain. Hosted validation pending.
+- **Earlier cursor source/test:** 2963faaf8052aa3cca791a0f66d43f0d13800c87 and 8ba15dd2647f96a407efda82ae8ae2ec0e0bc676.
+- **Retry:** original explicit Build App authorization remains; confirm no active runs/PR and exact issue #33 guard before one retry.
+- **Known gaps:** full summary recompute per 1Hz batch; unbounded/unbatched SQLite queue; long-session CPU/memory/backpressure; animation lifecycle/60–120-Hz tests.
 - Preserve Android versionName "Telegram @horizontalzzz"; no Firmware/BIN/Firebase/OTA/flash/device operation.
 
 ---
+## HISTORICAL App QC — Build #148 active / Flutter test failure — 2026-11-11
+
 ## HISTORICAL App candidate — Build #147 two test failures repaired — 2026-11-11
 
 ## HISTORICAL App QC — Build #147 active / Flutter test gate — 2026-11-11
