@@ -1,18 +1,24 @@
-## CURRENT CHECKPOINT — CURSOR READOUT PINNED / PRE-BUILD #149 — 2026-11-11
+## CURRENT CHECKPOINT — BUILD #149 ACTIVE / FLUTTER SETUP — 2026-11-11
 
-**Latest repair:** App commit f56b2a9a4893a1a0810cfdfb38524fd79df87d05 moves selected _sharedCursorReadout into a conditional Scaffold.bottomNavigationBar, outside the lazily built ListView. When a chart time is selected, the six-metric selected-time panel remains mounted/visible while the user scrolls among charts; initial help text remains inside the ListView until selection. Existing keyed Listener, tap-up and horizontal drag cursor handlers remain. The regression test still taps the Peltier lane after scrolling and expects Waktu dipilih.
+**Run:** Build #149 / Actions run 42967289995, workflow 374946166, issue event, attempt 1. Job build / 130347345586.
 
-**Failure chain:** #144 analyzer failure (12 errors/3 warnings); #145 analyzer nullable-double failure (1 error/1 warning); #146 analyzer passed but Flutter 161/5; #147 Flutter 164/2; #148 Flutter 165/1 (only selected cursor readout absent). All #144–#148 runs are terminal failures; none produced APK/source/Release. Build #143 remains the latest verified package.
+**Immutable source SHA:** 0507e3e11b67b8f8d042e49b74cc14a53bfc4f21. Latest executable App source commit includes cursor panel repair f56b2a9a4893a1a0810cfdfb38524fd79df87d05.
 
-**Root cause:** readout was an early child in the ListView. Scrolling to the later Peltier lane could evict that readout from the lazily built list. The selected-time label was therefore not persistent in the widget tree. New bottomNavigationBar positioning addresses this and preserves the live interaction assertion. Patch has not yet been hosted-validated.
+**Trigger:** issue #33 exact guarded title/token closed/reopened once; exactly one #149 run exists; issue remains OPEN. No duplicate trigger.
 
-**Preflight:** source main before this checkpoint f56b2a9a4893a1a0810cfdfb38524fd79df87d05; workflow blob 9dc1e61ba49f19cad4edbb99a832d5333d9f0f12; issue #33 exact OPEN; no active run, no open PR; tag/Release still Build #143. VersionName remains exact.
+**Initial status:** run/job in_progress. Steps 1–3 success (job setup, checkout, Java 17); step 4 Set up Flutter in_progress; steps 5–21 pending. No APK/source artifact yet.
 
-**Remaining risk register:** full-session summary recompute per one-second refresh, unbounded/unbatched SQLite write queue, long-session CPU/memory/backpressure, animation lifecycle and 60–120-Hz stress tests. These are not covered by source-contract tests and must remain explicit.
+**Validation target:** keep selected Statistics cursor readout visible in Scaffold.bottomNavigationBar after tapping Peltier lane while scrolled deep into the ListView. The existing widget test still asserts Waktu dipilih; test is not weakened.
 
-**Next:** one guarded #149 trigger after fresh preflight; follow all original gates, stop on failure, do not duplicate. No Firmware/BIN/Firebase/OTA/flash/device actions.
+**History:** #144 analyzer 12 errors/3 warnings; #145 analyzer nullable-double failure; #146 Flutter 161/5; #147 Flutter 164/2; #148 Flutter 165/1. None published; #143 is still latest verified release.
+
+**Known gaps:** full-session summary recompute per 1Hz update; unbounded/unbatched SQLite write queue; long-session CPU/memory/backpressure; animation lifecycle/60–120-Hz tests.
+
+**Next:** monitor only run 42967289995 and record exact gate results. Preserve versionName and original workflow gates. No Firmware/BIN/Firebase/OTA/flash/device operations.
 
 ---
+## HISTORICAL CHECKPOINT — CURSOR READOUT PINNED / PRE-BUILD #149 — 2026-11-11
+
 ## HISTORICAL CHECKPOINT — BUILD #148 FAILED / CURSOR REPAIR — 2026-11-11
 
 ## HISTORICAL CHECKPOINT — BUILD #148 ACTIVE / FLUTTER SETUP — 2026-11-11
