@@ -2456,3 +2456,10 @@
 - **Remaining gates:** checkout/toolchain/signing; security/architecture audit; dependencies; analyzer; full Flutter tests; Android Gradle gate; obfuscated APK; V1/V2/V3 + pinned certificate; matching source ZIP; exact Release/tag/source SHA; downloaded asset digest, source marker, ZIP and APK signature checks.
 - **No Firmware compile, BIN/Firebase/OTA/flash/device/BLE/NVS/rail/LED or OEM screenshot work.**
 - **Next:** inspect only run `43080954412` / job `130733048413`; no further trigger while active.
+
+### BUILD #151 progress update — Flutter setup passed / Gradle setup active (2026-11-12)
+
+- Run `43080954412`, immutable source SHA `e383924067b7ab2da27f2e41f21232cfb7144ec0`, job `130733048413` remains in progress.
+- Latest job step snapshot: 1:Set up job=completed/success; 2:Checkout repository=completed/success; 3:Set up Java 17=completed/success; 4:Set up Flutter=completed/success; 5:Set up Gradle=completed/success; 6:Verify toolchain=completed/success; 7:Prepare Flutter local.properties=completed/success; 8:Prepare production release signing=completed/success; 9:Restore Gradle wrapper if missing=completed/success; 10:JE X FYZ security and architecture audit=completed/success; 11:Install dependencies=completed/success; 12:Analyze Dart code=in_progress; 13:Run Flutter tests=pending; 14:Run Android unit-test gate=pending; 15:Build latest release APK=pending; 16:Enforce V1/V2/V3 APK signing=pending; 17:Verify APK signature=pending; 18:Prepare release APK filename=pending; 19:Package corresponding source archive=pending; 20:Publish APK and corresponding source to GitHub Release=pending; 21:Verify downloaded GitHub Release asset=pending; 39:Post Set up Gradle=pending; 40:Post Set up Flutter=pending; 41:Post Set up Java 17=pending; 42:Post Checkout repository=pending.
+- Steps 1–4 (runner setup, checkout, Java 17, Flutter 3.47.2) all succeeded. Step 5 Set up Gradle 9.3.1 is in progress. Toolchain verification and every quality/package/release gate remain pending.
+- No failure evidence, source repair, retry or second trigger. Continue this run only.
