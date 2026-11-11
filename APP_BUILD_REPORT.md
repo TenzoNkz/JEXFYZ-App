@@ -2358,3 +2358,15 @@
 - **Disposition:** all #144–#148 failed before package publication. Do not claim the newer source is released until every workflow gate and downloaded asset check passes.
 
 ---
+
+
+## BUILD #149 PROGRESS — ANDROID GATE PASSED / APK BUILD ACTIVE — 2026-11-11
+
+- Run 42967289995, job 130347345586, immutable source 0507e3e11b67b8f8d042e49b74cc14a53bfc4f21.
+- Steps 1–14 passed, including App security/architecture audit, dependencies, Dart analyzer, Flutter test suite and Android Gradle gate.
+- Step 15 Build latest release APK is in_progress; steps 16–21 are pending. No artifact or new Release asset yet.
+- Job log archive is not available while the current step is active; exact analyzer diagnostic count and Flutter test count are not asserted here. Step conclusions are taken from live Actions job metadata.
+- Cursor readout pinned-panel change remains the critical widget regression covered by the successful Flutter gate. The full-session recomputation/write-queue/backpressure and animation-lifecycle stress risks remain open.
+- Continue only run 42967289995. No duplicate trigger. Preserve versionName Telegram @horizontalzzz.
+
+---
