@@ -1,3 +1,12 @@
+## Build #147 Flutter suite — two remaining tests repaired (2026-11-11)
+
+- Run 42946048711, job 130278994451, source ad21a36ab496e5323fa35ba090121eda359107a4. Analyzer 23 info, zero warnings/errors; Flutter tests 164 passed / 2 failed; downstream Android/Release skipped.
+- LED contract failure: old expected maxWidth 420; current compact panel maxWidth 312. Test now checks 312.
+- Statistics cursor failure: pointer on CustomPaint child did not update selected-time readout. App source commit 2963faaf8052aa3cca791a0f66d43f0d13800c87 adds keyed opaque Listener over the lane, sets cursor onPointerDown, and keeps horizontal drag updates in GestureDetector. Test targets Listener key in commit 8ba15dd2647f96a407efda82ae8ae2ec0e0bc676.
+- Follow-up formatting/test cleanup commits: 01d43a2803310aa322a8a59e21f96b621203bc54 and 4d36b77ba4e3973162433ac5107d63cd1959264f. Hosted validation pending.
+- Risk register remains: full summary recompute each 1Hz flush; unbounded/unbatched SQLite queue; long-session CPU/memory/backpressure; animation lifecycle/60–120-Hz tests.
+
+---
 ## Active App QC — Build #147 (2026-11-11)
 
 - Run 42946048711, job 130278994451, source SHA ad21a36ab496e5323fa35ba090121eda359107a4, issue-triggered attempt 1.
