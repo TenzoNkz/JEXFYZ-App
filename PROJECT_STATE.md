@@ -1,13 +1,15 @@
-## Current App candidate — Build #147 two test failures repaired; hosted retry pending (2026-11-11)
+## Current App QC — Build #148 active (2026-11-11)
 
-- **Build #147:** run 42946048711, job 130278994451, source ad21a36ab496e5323fa35ba090121eda359107a4. Analyzer passed (23 info, zero warnings/errors); Flutter suite 164 passed / 2 failed; Android/release gates skipped. No package.
-- **Remaining findings:** old LED source contract still expected 420dp max width although current panel width is 312dp; updated to 312. Statistics cursor remained unchanged after tap even once child was visible; source now uses an explicit keyed opaque Listener for pointer-down while preserving horizontal drag.
-- **Commits:** pointer Listener source 2963faaf8052aa3cca791a0f66d43f0d13800c87; LED max-width contract 269270634c8225125a0c78f5148f373fb7f72005; cursor interaction test 8ba15dd2647f96a407efda82ae8ae2ec0e0bc676; cleanup 01d43a2803310aa322a8a59e21f96b621203bc54 and 4d36b77ba4e3973162433ac5107d63cd1959264f. Read-back verified; hosted validation pending.
-- **Retry:** original Build App authorization remains valid for concrete App repairs. Verify #147 terminal, no active jobs/PR, exact issue #33/workflow and preserved versionName before one guarded retry.
-- **Known performance gaps:** full summary recompute per second; unbounded/unbatched SQLite queue; long-session CPU/memory/backpressure; animation lifecycle and 60–120-Hz tests.
-- No Firmware/BIN/Firebase/OTA/flash/device operation.
+- **Run:** 42946808657, job 130281466870, workflow 374946166, issue event, attempt 1; immutable source SHA 8662d7d0f4b8a67521e0a80c7fdd95656cc84235.
+- **Status:** steps 1–3 success; step 4 Flutter setup in progress; 5–21 pending. No artifact.
+- **Included repair:** compact LED contract 312dp; Statistics uses keyed opaque Listener for cursor pointer-down and retains horizontal drag. Widget test targets that hit-area key. Previous #146 test corrections remain.
+- **Prior #147:** analyzer 23 infos, zero warnings/errors; Flutter 164/2; later gates skipped, no package.
+- **Known gaps:** full summary recomputation each second; unbounded/unbatched SQLite queue; long-session CPU/memory/backpressure; animation lifecycle/60–120-Hz tests.
+- Preserve Android versionName "Telegram @horizontalzzz"; no Firmware/BIN/Firebase/OTA/flash/device operation.
 
 ---
+## HISTORICAL App candidate — Build #147 two test failures repaired — 2026-11-11
+
 ## HISTORICAL App QC — Build #147 active / Flutter test gate — 2026-11-11
 
 ## HISTORICAL App candidate — Build #147 pre-trigger ready (2026-11-11)
