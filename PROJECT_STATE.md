@@ -1,4 +1,15 @@
-## Current App candidate — Build #146 Flutter test failures repaired; hosted retry pending (2026-11-11)
+## Current App candidate — Build #147 pre-trigger ready (2026-11-11)
+
+- Main before this checkpoint: 245f9870f7bd75b1c7f18827a4f4fb6ae5588b4b; latest executable App/test commit b1609b01d4dee470b96e2030cb5583df1efc1351. Includes rounded LED height and compact-picker/Peltier/Statistics cursor/animation contract updates.
+- Build #146: analyzer passed (23 infos, zero warnings/errors); Flutter test 161 passed / 5 failed; steps 14–21 skipped; no artifact or Release mutation.
+- Fixes in current candidate: integer logical-pixel max height, Ticker/vsync animation assertions, ensure full cursor lane visibility before tap, current 19/14sp LED and 20/15/14sp Peltier compact UI contracts.
+- Preflight: no active/queued Actions runs, no open PR, issue #33 exact OPEN, workflow blob unchanged issue-only guard, full tree 131 entries, Android versionName preserved. Latest release still Build #143.
+- Exactly one guarded retry is authorized by the original explicit Build App command. Next run must prove all original gates.
+- Known performance gaps persist: full-summary recompute each second; unbounded/unbatched SQLite queue; long-session CPU/memory/backpressure; animation lifecycle/60–120-Hz stress coverage.
+- No Firmware/BIN/Firebase/OTA/flash/device operation.
+
+---
+## HISTORICAL App candidate — Build #146 Flutter test failures repaired; hosted retry pending (2026-11-11)
 
 - Build #146: run 42944693211, job 130274555621, source d5bc688cc14243cd944f2d8d653bbcb59d2805fe. Steps 1–12 passed; analyzer 23 info, 0 warnings/errors. Flutter tests 161 passed / 5 failed; Android/build/release steps skipped. No #146 package.
 - Test findings/fixes: (1) fractional max-height double precision fixed by round-to-logical-pixel; (2) animation source test now asserts vsync/Ticker rather than a removed 16ms timer; (3) old LED overlay contracts now match 19/14sp + 48dp compact swatches; (4) Peltier dialog contract now matches 20/15/14sp and 72x48/128x48 targets; (5) cursor tap test fully ensures Peltier lane visible before center tap.
