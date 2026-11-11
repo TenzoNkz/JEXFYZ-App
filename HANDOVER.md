@@ -2,16 +2,22 @@
 
 Updated: 2026-11-11 (Asia/Jakarta).
 
-## Active App Build #149 — APK build
+## Latest verified App package — Build #149
 
-- Run 42967289995, workflow 374946166, issue event, attempt 1; job 130347345586; immutable source SHA 0507e3e11b67b8f8d042e49b74cc14a53bfc4f21.
-- Steps 1–14 successful, including security/architecture audit, dependencies, analyzer, full Flutter tests and Android Gradle gate.
-- Step 15 Build latest release APK is in progress; steps 16–21 pending. No new package/artifact/Release asset yet.
-- Cursor readout moved to a persistent Scaffold bottomNavigationBar and the existing Peltier-lane widget interaction regression is included in the passing Flutter suite.
-- Keep performance risks visible: full session-summary recompute per second, unbounded SQLite queue/backpressure, long-session CPU/memory, animation lifecycle/60–120-Hz tests.
-- Preserve versionName Telegram @horizontalzzz. App-only scope; no Firmware/BIN/Firebase/OTA/flash/device actions.
+- Actions run 42967289995, workflow 374946166, attempt 1; job 130347345586; final conclusion success. All 21 required gates and post-job cleanup 39–43 passed.
+- Exact build/release source SHA: 0507e3e11b67b8f8d042e49b74cc14a53bfc4f21; jexfyz-latest tag and Release ID 403010611 point to this exact SHA. Current main includes later documentation-only commits.
+- Analyzer: 23 info-level findings, zero warnings/errors. Flutter tests 166/166 passed, including selected Statistics cursor readout after tapping Peltier lane while scrolled. Android Gradle gate succeeded, but :app:testDebugUnitTest and app JUnit compile/test tasks were NO-SOURCE; no native Android app JUnit tests ran.
+- APK built using Flutter --obfuscate --split-debug-info=build/symbols. Production certificate SHA-256 dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0 (RSA 4096, JE X FYZ DN); V1/V2/V3 all verified on original and downloaded APK.
+- **APK:** https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-release.apk — 55,881,819 bytes; SHA-256 84a9165f67420e99d6ae7585340e0ef7e29e80de1d413fbc9c7352866d0670d5.
+- **Source ZIP:** https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-corresponding-source.zip — 2,918,953 bytes; SHA-256 521a06c1f804a3f04a9b0f7165796e806c60bbd9e027c9986ff91e5f2e326782. Exactly one APK and one corresponding ZIP in Release; downloaded checksums, ZIP/source marker and downloaded APK signatures/cert passed.
+- Android versionName "Telegram @horizontalzzz" preserved; Release app version 1.0.0+3.
 
-## Latest verified release — Build #143
+## Warnings and open validation
 
-- Run 42783474515, job 129718855331, source/tag 121ef9e0f5ed6a0003837d32e4c8b1701f38631a. All 21 gates passed.
-- Analyzer 25 infos, Flutter 159/159; Android task NO-SOURCE caveat; V1/V2/V3, certificate, source ZIP and downloaded Release checks passed.
+- Kotlin 2.2.20 compatibility/Built-in Kotlin migration advisory; Gradle 10 deprecations; native ELF DWARF debug data remains despite Dart obfuscation; jarsigner PKIX trust-chain and META-INF notices even though expected cert fingerprint and V1/V2/V3 passed; cache writes denied by token permissions; 29 package updates outside constraints.
+- The normal suite did not close the performance risks: full summary recompute per one-second batch, unbounded/unbatched SQLite recorder queue, long-session CPU/memory/backpressure, animation lifecycle/60–120-Hz tests.
+- Physical installation, OEM visuals, 350-dp/420-dp field layout, BLE runtime, real sensor Statistics soak, thermal/electrical cooling, Firmware/BIN/Firebase/OTA/flash remain unverified.
+
+## Next direction
+
+Build #149 App package is released. Next: owner installation and separate App field acceptance. Do not infer Firmware/device authorization from CI.
