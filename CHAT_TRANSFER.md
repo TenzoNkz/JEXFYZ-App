@@ -1,18 +1,23 @@
-## CURRENT CHECKPOINT — BUILD #144 ACTIVE / INITIAL SETUP — 2026-11-11
+## CURRENT CHECKPOINT — BUILD #144 FAILED / APP REPAIR COMMITTED / RETRY PRE-TRIGGER — 2026-11-11
 
-**Run:** [Build #144 / Actions run 42943589237](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42943589237), workflow 374946166, issue event, attempt 1. Job build / 130270923510.
+**Failed run:** Build #144 / Actions run 42943589237, job 130270923510, immutable source `e1d624bc0990ed3552ebbefaac1164cf025b794f`; terminal failure at step 12 analyzer.
 
-**Immutable source SHA:** `e1d624bc0990ed3552ebbefaac1164cf025b794f`. Latest executable App/test source in this checkout: `33fe9a545d7a8594e6e3a5119d3b1f564a93d868`; later commit(s) are documentation-only.
+**Results:** steps 1–11 passed; step 12 failed with 40 analyzer findings (12 errors, 3 warnings, 25 infos); steps 13–21 skipped. No APK/source/Release asset from #144. Existing #143 Release remains unchanged.
 
-**Trigger:** issue #33 exact title/token was closed/reopened once under explicit user command. Exactly one new run exists; issue remains OPEN. No active duplicate trigger.
+**Root cause:** in `lib/usage_statistics.dart`, helper methods `_setChartCursor` and `_sharedCursorReadout` were mistakenly placed within `_messageState`'s named-parameter section. This broke the method signature and caused cascaded errors including unknown `action`, unavailable helper methods, parser/private-parameter errors. `_AnimatedUsageTimeline` was also called with a key but its constructor had no `super.key`. Analyzer additionally found an unused `previousY` and unnecessary `referenceValue!`.
 
-**Initial state:** run and job `in_progress`; step 1 Set up job is active; steps 2–21 not yet reported. No APK/source artifact or new Release asset yet.
+**Repairs committed/read back:**
+- `80b8874c9d851d1422009cfdbb85f33eec74f8b2`: restore correct `_messageState` signature and move cursor helpers into state-class scope; add `super.key` to timeline widget; remove the unused local and redundant assertion.
+- `1e04495416426ea5f4b3c9280704b1deee9a821c`: remove redundant physics/scheduler imports from main.dart.
+- Structural read-back confirms one helper declaration each, correct parameter scope, timeline key forwarding and warning-pattern removal. Hosted validation is still pending; no local Flutter toolchain.
 
-**Known risks to retain:** full-session summary recompute per one-second batch, unbounded/unbatched SQLite write queue, long-session CPU/memory/backpressure, and animation lifecycle/60–120-Hz stress tests remain incomplete. This hosted build is validation, not proof of those missing performance/field tests.
+**Retry:** original explicit `Eksekusi Build App!` remains the authorization for one concrete App repair/retry. Re-check latest main, #144 terminal, no active run/PR, workflow guard, issue #33 exact OPEN, and Android versionName; then emit one guarded event only.
 
-**Next:** monitor only run 42943589237; analyze actual job steps/logs; update this checkpoint at meaningful gate transitions. Preserve versionName and all security/release gates. No Firmware/BIN/Firebase/OTA/flash/device actions.
+**Still-open risk register:** full session summary recomputed per one-second UI batch; SQLite write queue unbounded/unbatched; long-session CPU/memory/backpressure and animation lifecycle/60–120-Hz stress coverage incomplete. No waiver or inference of validation.
 
 ---
+## HISTORICAL CHECKPOINT — BUILD #144 ACTIVE / INITIAL SETUP — 2026-11-11
+
 ## HISTORICAL CHECKPOINT — NEXT GUARDED APP BUILD AUTHORIZED / PRE-TRIGGER — 2026-11-11
 
 ## HISTORICAL CHECKPOINT — STATISTICS DIAGRAM REFRESH AT 1 HZ — 2026-11-11
