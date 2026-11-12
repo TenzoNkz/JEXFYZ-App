@@ -1,4 +1,25 @@
-## Current verified App release — Build #151 SUCCESS (2026-11-12)
+## Current verified App release — Build #153 SUCCESS (2026-11-12)
+
+- **Run:** [43145542329](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/43145542329), job 130942369953, attempt 1, immutable source SHA `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e`. All required workflow steps 1–21 and cleanup 39–43 passed.
+- **Validation:** security/architecture audit passed; Dart analyzer **23 infos, 0 warnings/errors**; Flutter suite **176/176 passed**; Android Gradle gate **BUILD SUCCESSFUL in 3m41**. Native Android JUnit compile/process/test tasks were `NO-SOURCE`; no native Android JUnit test cases ran.
+- **APK:** `JEXFYZ-release.apk`, built with `--obfuscate --split-debug-info=build/symbols`; **55,996,507 bytes**; SHA-256 `d956959414eb085e1779c30bf035a0bbc64d18330e19b85251cc0ead90f5661c`. [Download APK](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-release.apk).
+- **Source ZIP:** `JEXFYZ-corresponding-source.zip`; **2,929,311 bytes**; SHA-256 `87808fe37f31e7fec589477a3c658a2f10fa06362bd72b173eeada95d3b03604`. [Download corresponding source](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-corresponding-source.zip).
+- **Release parity:** Release ID 403010611 and tag `jexfyz-latest` point to exact source SHA `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e`. Exactly one APK + one matching source ZIP; downloaded checksums, ZIP integrity and source marker verified.
+- **Signing:** V1/V2/V3 verified on generated and downloaded APK; exactly one signer; RSA 4096; JE X FYZ DN; pinned certificate SHA-256 `dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0`. Android `versionName "Telegram @horizontalzzz"` unchanged; App version 1.0.0+3.
+- **Warnings retained:** Kotlin 2.2.20 future compatibility; Gradle 10/plugin deprecations; native ELF DWARF debugging information; self-signed PKIX trust-chain/no-timestamp `jarsigner` warnings even though pinned certificate and V1/V2/V3 checks passed. Do not imply public CA trust.
+- **Scope boundary:** Build #153 proves hosted App QC/release only. Firmware compile/BIN/Firebase/OTA/flash, physical BLE/device/NVS/rail/LED, thermal/electrical cooling and owner/OEM visual acceptance remain NOT RUN / UNVERIFIED.
+
+---
+
+## Build #152 — Flutter test gate failure (2026-11-12)
+
+- Run `43144337555`, job 130938510090, tested source `04ec48a53bef308f0817470d2d758697a1592cc4`. Analyzer passed; Flutter suite reported **171 passed / 5 failed**; Android/ APK/Release steps skipped; no artifact.
+- Five issues were three stale source-contract assertions, one localization-copy assertion in the wrong file/casing, and one Statistics widget test that had no isolated viewport. Three test-only repairs were committed and then all **176/176** tests passed in Build #153.
+- Do not rewrite Build #152 as success. Exact diagnostics and repair hashes are preserved in APP_BUILD_REPORT.md.
+
+---
+
+## Previous verified App release — Build #151 SUCCESS (2026-11-12)
 
 - **Run:** [43080954412](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/43080954412), job 130733048413, attempt 1, source SHA `e383924067b7ab2da27f2e41f21232cfb7144ec0`. All workflow steps 1–21 and cleanup 39–43 passed.
 - **Validation:** security/architecture audit passed; Dart analyzer **23 infos, 0 warnings/errors**; Flutter suite **171/171 passed**; Android Gradle gate **BUILD SUCCESSFUL in 3m01**. Native Android app JUnit compile/test tasks were `NO-SOURCE`; no Android native JUnit test cases executed.
