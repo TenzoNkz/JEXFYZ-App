@@ -2,17 +2,17 @@
 
 **Audit date:** 2026-11-12 (Asia/Jakarta)  
 **Mode:** `@Thinking Diskusi!` — static source/repository analysis only.  
-**Disposition:** **NOT READY FOR NEXT BUILD.** This is not a claim that the App is broken; it means known pre-build risks and the gap between current source and last tested/released source must be closed before packaging.
+**Disposition:** **READY FOR GUARDED APP BUILD QC — NOT RELEASE-ACCEPTED.** Source-level P1 remediations and regression tests are committed. Flutter/Dart are unavailable in this runtime, so current tests, formatter and analyzer have not run; the guarded workflow must validate the exact source SHA next. Visual/device acceptance remains separate and unverified.
 
 ## 1. Baseline and evidence
 
 - **Repository:** `TenzoNkz/JEXFYZ-App`, branch `main`.
-- **Audited branch HEAD:** `4d02fbf705a85820a4ea1e530d167ebb53ab3a68` (documentation checkpoint). The latest executable App/test state is source commit `1cae4cfc061328b3b2b8bed96987c410f37373f2` plus regression test commit `96301aec962739c39518e84f38cd4294d975595f`.
-- **Source-audit snapshot:** HEAD `4d02fbf705a85820a4ea1e530d167ebb53ab3a68`, 131 tree entries, not truncated. The audit report and continuation metadata were saved in documentation-only commits after this source snapshot. The current repository tree contains 132 entries (one new audit Markdown file), not truncated. All post-audit commits changed documentation only; no executable source, tests, configuration, workflow, Firmware or Release assets changed. No test execution or build was performed.
-- **Current executable surface:** 7 Dart library files; 9 test files. Main App implementation is concentrated in `lib/main.dart` (10,632 lines / ~390 KB), followed by `lib/usage_statistics.dart` (3,179 lines / ~103 KB), `lib/floating_monitor.dart` (1,788 lines / ~65 KB) and `lib/app_settings.dart` (1,678 lines / ~63 KB).
-- **Tests in current main:** 179 test declarations — 166 unit/source-contract and 13 widget tests. This is a source inventory, not a passing result. The 3 tests added after Build #153 have not been executed on current main.
+- **Audited baseline:** executable source snapshot `4d02fbf705a85820a4ea1e530d167ebb53ab3a68`. **Current source HEAD:** `aa58a2f14354692a1dbcebfcb70436deb3aabf06`; recursive tree has 132 entries and is not truncated. Source remediation commits are `5763b08f8b37fccafd2ac2403a51b26ad0be4b41`, `b1275d278ca0b0d2765174364250873044a943d1` and `aa58a2f14354692a1dbcebfcb70436deb3aabf06`.
+- **Audit progression:** the initial static audit was performed on executable snapshot `4d02fbf705a85820a4ea1e530d167ebb53ab3a68`. Three subsequent source commits addressed P1 findings; current source is `aa58a2f14354692a1dbcebfcb70436deb3aabf06`. Current recursive tree has 132 entries, not truncated.
+- **Current executable surface:** 7 Dart library files; 9 test files. Main implementation is concentrated in `lib/main.dart` (10,563 lines / ~387 KB), `lib/usage_statistics.dart` (3,298 lines / ~106 KB), `lib/floating_monitor.dart` (1,808 lines / ~65 KB) and `lib/app_settings.dart`.
+- **Tests in current main:** 184 declarations — 171 unit/source-contract and 13 widget tests. This is an inventory only, not a passing result. All current-main tests remain **NOT RUN**.
 - **Latest verified package:** Build #153 / Actions run `43145542329`, tested source SHA `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e`, Release ID `403010611`, tag `jexfyz-latest`. Build #153 reported 176/176 Flutter tests, analyzer 23 info / 0 warnings / 0 errors, and Android Gradle success. Its native Android JUnit tasks were NO-SOURCE; no native Android JUnit test cases ran.
-- **Source/release gap at source-audit snapshot:** `4d02fbf...` was 47 commits ahead / 0 behind Build #153 with 13 changed paths (8 Markdown and 5 App/test paths). Following documentation-only audit/checkpoint updates, current `main` is 50 commits ahead / 0 behind with 16 changed paths (11 Markdown and 5 App/test paths). The additional post-audit differences are documentation only. Current Settings/About, Peltier dialog and Temperature-tab changes are not in the Build #153 APK. Release #153 is still the latest package.
+- **Source/release gap:** current `main` is 55 commits ahead / 0 behind Build #153. GitHub compare reports 18 changed paths (11 Markdown, 4 Dart source and 3 test files). Current Settings/About, Statistics, Peltier, Temperature, Home hit-target, polling and integrity-screen fixes are not in Build #153 APK. Release #153 remains the latest package.
 - **CI state at audit:** latest run #153 is completed SUCCESS; no active run or open PR. Release tag still resolves to the Build #153 source SHA. No build trigger was sent.
 
 Evidence is classified as **STATIC SOURCE CHECK** unless explicitly stated otherwise. Source inspection does not prove runtime behavior, performance or visual acceptance.
@@ -27,72 +27,64 @@ Evidence is classified as **STATIC SOURCE CHECK** unless explicitly stated other
 6. **Current Settings refinement:** one-line Settings rows, useful right-side values, concise Lock Voltage status, boxed About credits and removal of Diagnostics are already in source. This was source-read-back only and remains unrendered.
 7. **Safety and prior fixes:** Peltier prerequisite remains centered and non-scrollable, requires successful `FAN:ON` ACK before `PELTIER:ON`, and Cancel is command-free. Temperature global reset UI remains removed. Device Diagnostics remains removed.
 
-## 3. P1 — close before the next App Build
+## 3. P1 remediation — source implemented; QC evidence pending
 
-### P1.0 — Usage Statistics selected-time dock expands to almost the full screen
+### P1.0 — Usage Statistics selected-time dock
 
-**Owner evidence:** the supplied 720×1600 Android screenshots show a normal graph-first Statistics page, then after tapping a timeline the selected-time readout appears as a dark surface occupying almost the entire remaining viewport. The six values are grouped in the first ~200 px of that surface; most of the surface is empty and the charts are obscured. This is a visible primary-task/layout failure (**SCREENSHOT REVIEWED**, owner-provided, dark theme).
+**Status: SOURCE FIX IMPLEMENTED / HEIGHT REGRESSION ADDED / TEST NOT RUN / VISUAL NOT VERIFIED.**
 
-**Source evidence:** in `lib/usage_statistics.dart`, `UsageStatisticsPage._buildForLanguage()` mounts the selected-time readout in `Scaffold.bottomNavigationBar`. `_sharedCursorReadout()` returns an outer `Column` without specifying `mainAxisSize`; Flutter's default is `MainAxisSize.max`. In the bottom slot's bounded vertical constraints this can expand the dock to the available height, matching the screenshot. The `lib/usage_statistics.dart` blob at Build #153 source SHA `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e` is identical to current main blob `a73ae319dc45ff5ce0812c58d2e8525f1aaf9937`, so the released Build #153 contains the same layout implementation.
+- The selected-time readout remains in `Scaffold.bottomNavigationBar`; its outer `Column` now uses `MainAxisSize.min`, and the dock has stable key `usage-selected-time-dock`.
+- All six selected-time values, elapsed time, SafeArea, existing 48×48 dp clear target and chart/timeline interactions are retained.
+- Widget test now asserts the dock measures no more than 200 dp at normal text scale and disappears after Clear.
+- The owner screenshot established the old layout defect. The correction is source-read-back/static evidence until a new APK is rendered on Android.
 
-**Root-cause confidence:** high, source-derived; no Flutter reproduction or modified widget test has been executed yet. The screenshot establishes the symptom; it does not independently prove the exact RenderObject constraint path.
+### P1.1 — Usage Statistics long-session cost and write backpressure
 
-**Smallest safe correction:** give the outer readout `Column` `mainAxisSize: MainAxisSize.min` so the sticky dock takes only its content height. Keep `Scaffold.bottomNavigationBar`, SafeArea bottom-inset handling, the selected elapsed time, all six synchronized values, the existing 48×48 dp clear-selection target and the graph/timeline interaction. Add a compact height guard only if a widget test shows that `MainAxisSize.min` alone is insufficient; do not replace the dock with a full-screen modal or remove the selected-time feature.
+**Status: SOURCE OPTIMIZED / SYNTHETIC LONG-HISTORY TEST ADDED / DEVICE SOAK NOT RUN.**
 
-**Missing regression:** the current widget test taps the Peltier timeline and checks that “Waktu dipilih” and the 48×48 dp clear button appear, but it never asserts the dock's actual height. Add a behavioral assertion that the selected dock remains content-sized (target ≤200 dp at the tested normal text scale) and within the viewport. Exercise 350-dp/420-dp widths, EN/ID, Light/Dark, selection and clear. Also confirm chart content remains visible/scrollable and all six values remain correct.
+- `UsageStatsWriteQueue` serializes writes with a maximum of 64 scheduled operations and waits for capacity instead of intentionally discarding accepted work. Write failures remain visible through `lastWriteError`.
+- Temperature sample persistence and its session freshness update now share one SQLite transaction. Hotside alone updates P1 `last_seen_at_ms`; phone Battery updates only its own freshness. Null samples remain explicit gaps. Database schema/version 2, retention and raw 1-Hz capture are unchanged.
+- Live updates are coalesced per one-second flush. A selected-session event identity set de-duplicates updates; sorted merge avoids rescanning existing events per addition; analytics summary is calculated once per flush batch.
+- Analytics indexes events by session/metric in one pass, sorts only when a group is not already chronological, uses binary search for selected-time temperature lookup, and caches decimated chart points in the summary.
+- Regression tests construct 12,000 Battery and 12,000 Hotside observations, assert raw points remain present and chart output is bounded to 1,600 points per sensor, and exercise queue capacity/FIFO completion.
+- **Remaining evidence gap:** one selected-session summary/chart-decimation pass still runs per one-second diagram refresh. This is not a fully incremental accumulator. No Android CPU/memory soak or sustained SQLite backlog measurement has run. Validate 1-hour/8-hour/longer sessions before final product acceptance.
 
-**Evidence boundary:** source/static analysis and owner screenshot review only. No source/test change, Flutter execution, new APK or device validation occurred.
+### P1.2 — Native status polling overlap
 
-### P1.1 — Usage Statistics long-session cost and backpressure
+**Status: SOURCE GUARD IMPLEMENTED / REGRESSION SOURCE ADDED / DEVICE VERIFICATION NOT RUN.**
 
-**Evidence in source**
-- `UsageStatisticsRecorder._enqueue()` appends every SQLite operation to a single Future chain without a queue bound, coalescing policy or backpressure signal.
-- `_flushLiveUpdates()` merges the new updates into the selected session's full event list, scans existing events with `.any()` for each incoming event, sorts the merged list, then calls `UsageStatsAnalytics.summarize()` over the full snapshot every one-second refresh.
-- Existing project notes already identify long-session CPU/memory, queue backpressure and 60/120-Hz animation lifecycle as unverified.
-
-**Risk:** O(n²)-like duplicate checking in each batch plus repeated full-session summarize/sort can progressively cost more as a session grows. Slow storage can grow the queued Future chain. This is a source-derived performance risk, not a reproduced field failure.
-
-**Remediation direction:** use a keyed event identity set/map for batch de-duplication; maintain incremental summary state where mathematically safe; bound/coalesce queued writes without dropping raw sensor observations or falsifying gaps; expose persistent write failure clearly; preserve the local SQLite schema/retention and P1 coverage semantics. Add synthetic long-session tests and measure memory/CPU and write-queue depth before/after.
-
-### P1.2 — Native status polling can overlap
-
-**Evidence in source**
-- `_ConnectionSheetContentState` starts a 650-ms periodic timer. Each refresh requests adapter state, multiple permission statuses, Android SDK level and location-service state. There is no explicit in-flight/coalescing guard in `_refreshStatus()`.
-- Floating Monitor starts a 300-ms runtime timer while enabled/connected. Each pass checks overlay permission and requests native runtime state; `_syncRuntimeState()` has no explicit in-flight guard.
-- The project comments describe Floating Monitor reconciliation as low-frequency, but 300 ms is approximately 3.3 cycles per second.
-
-**Risk:** slow MethodChannel/plugin responses can overlap; older results may arrive after newer state, cause redundant rebuilds, or increase bridge/battery work. This was not profiled or reproduced on an OEM device.
-
-**Remediation direction:** add single-flight/coalescing guards and lifecycle-aware refresh; use adapter streams/native events where available; otherwise use a lower bounded interval and immediate refresh only on open/resume/user action. Retain permission revocation detection and overlay-attachment recovery. Add deterministic tests for delayed/out-of-order responses and ensure disposal cancels all work.
+- Connection sheet status refresh is single-flight, runs every 3 seconds while active, refreshes immediately on open/resume, and cancels its timer while backgrounded/disposed.
+- Floating Monitor reconciliation is single-flight, runs every 3 seconds while enabled/connected, and pauses in the background; resume restarts the timer and performs one immediate check.
+- The 300-ms interval remains only in the bounded, maximum-2-second Android overlay-permission return flow. It is not a permanent poll.
+- Source-contract tests cover cadence, guards and lifecycle. Slow/out-of-order MethodChannel responses, permission revocation and OEM overlay recovery still require device validation.
 
 ### P1.3 — Home and Temperature touch targets
 
-**Evidence in source**
-- Home Bluetooth and Settings IconButtons constrain their targets to 36×36 dp.
-- Home tab row is 42 dp high.
-- Temperature +/- buttons draw and hit-test at 34×34 dp.
-- Connection sheet's 40–42 dp controls are a documented legacy exception; do not make them smaller.
+**Status: SOURCE IMPLEMENTED / REGRESSION SOURCE ADDED / DEVICE TOUCH TEST NOT RUN.**
 
-**Risk:** the visible glyph/button is compact but targets in Home and Temperature are below the 48×48 dp target used by the current design/accessibility standard.
-
-**Remediation direction:** preserve the visible 25-dp icons and 34-dp stepper artwork, but give each a 48×48 dp hit surface with deliberate spacing. Increase the Home tab hit area to 48 dp without changing the 360-dp canvas or Home geometry beyond the required small vertical allowance. Test at 350/420 dp and inspect actual touch boundaries. Do not shrink the Connection legacy controls.
+- Home Bluetooth and Settings header actions now provide 48×48 dp hit surfaces while visible Phosphor artwork remains 25 dp.
+- Home tab strip height is 48 dp.
+- Temperature +/- retains 34×34 dp visible artwork inside a 48×48 dp Material/InkWell surface.
+- Existing Connection 40–42 dp legacy controls are unchanged.
+- Source-contract test checks dimensions. Actual Android touch boundaries and adjacent-control behavior require device QA.
 
 ### P1.4 — Tamper/integrity screen copy
 
-**Evidence in source**
-- `TamperScreen` displays a long wall of explicit Indonesian profanity via hard-coded `_insult()` widgets.
-- `test/widget_test.dart` deliberately asserts the “insult-only wall” behavior. This is an existing test contract, not accidental localization leakage.
-- The screen is entered when the native official-signature check returns false or cannot be confirmed.
+**Status: SOURCE IMPLEMENTED / WIDGET REGRESSION UPDATED / NATIVE SECURITY CONTRACT UNCHANGED.**
 
-**Risk:** an invalid signature, unexpected verification failure or unsupported build can expose abusive content rather than an actionable integrity explanation. This is inconsistent with a professional device-control product.
+- The profanity wall and `_insult()` presentation have been removed.
+- The screen now uses concise bilingual official-build verification failure copy, an explicit dark Material theme, instructions to install the official release, and the existing developer-contact action.
+- The widget test asserts Indonesian copy, CTA behavior, absence of profanity and the retained native developer-contact route.
+- Native signing-certificate verification, fail-closed routing and Android/native code were not modified. The new test is written but not run on current main.
 
-**Remediation direction:** replace the profanity with a neutral, localized “Official build verification failed” state, brief instructions to obtain/install the official signed release, and the existing developer-contact action. Preserve the fail-closed integrity gate and signing-certificate verification; never make failed verification launch the normal App. Update the explicit legacy test to assert the neutral integrity state.
+### P1.5 — Current-source execution evidence
 
-### P1.5 — Latest source has no execution evidence yet
+**Status: BLOCKED / NOT RUN LOCALLY; READY FOR GUARDED CI VALIDATION.**
 
-**Evidence:** current main contains 179 tests, while the latest verified Build #153 ran 176 tests against an older immutable SHA. No current-main formatter, analyzer, focused test, complete Flutter suite, APK, screenshot or device run has occurred.
-
-**Required before package:** run the entire current suite on the exact source SHA and inspect actual analyzer/test logs. Do not quote Build #153's 176/176 as proof of current main. Any new failure must be repaired at its root and rerun; never weaken a test to force success.
+- Current main contains 184 test declarations (171 unit/source-contract, 13 widget). They have not run in the current runtime because Flutter/Dart executables are unavailable.
+- Build #153's 176/176 result applies only to old immutable SHA `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e`, not current main.
+- Next evidence must come from the separate guarded App Build workflow on exact source SHA `aa58a2f14354692a1dbcebfcb70436deb3aabf06`. Fix any failure at root and rerun; do not weaken contracts.
+- The guarded workflow currently has no Dart formatter step. Formatter/lint policy remains a P2 follow-up and must not be reported as passed.
 
 ## 4. P2 — professional polish and maintainability
 
@@ -179,4 +171,4 @@ Do not ask Gemini to claim it inspected GitHub, executed Flutter tests, or saw a
 
 ---
 
-**Audit conclusion:** current App source is materially newer than Build #153 and has not been validated. Several measurable UX/performance/accessibility risks remain. The next operation should be a scoped `Eksekusi Full!` remediation pass, not Build App. This audit does not modify App/Firmware source, tests, build workflow or release artifacts.
+**Audit conclusion (updated 2026-11-12):** source remediation is implemented for the Statistics dock/data path, native polling overlap, Home/Temperature touch targets and TamperScreen presentation. The current 184-test suite, analyzer and formatter have not run here. The next operation may be the separate guarded `Eksekusi Build App!` QC on exact main SHA `aa58a2f14354692a1dbcebfcb70436deb3aabf06`. This means ready to execute QC, not a passed build, visual pass, device validation or release. One selected-session summary/decimation pass remains each second; long-session CPU/memory soak, formatter/lint standard and Android visual/touch acceptance remain explicit follow-up evidence.

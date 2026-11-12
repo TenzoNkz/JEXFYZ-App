@@ -1,3 +1,13 @@
+## 2026-11-12 — Usage Statistics and pre-build P1 remediation (source implemented; QC pending)
+
+- Fixed the selected-time Statistics dock using `MainAxisSize.min`; retained bottom SafeArea, six metrics and 48-dp Clear control. Added measured-height and clear-behavior regression.
+- Reduced temperature chart height to 160 dp, increased painter axis labels to 10 dp and tightened section spacing.
+- Optimized live analytics with grouped session/metric indexing, conditional sort for chronological events, event identity de-duplication, ordered merge, one summary per batch, cached decimated points and binary-search cursor lookup.
+- Combined temperature sample persistence and session freshness update into one SQLite transaction. Preserved schema v2, retention, raw 1-Hz samples, null gaps and HOT-only P1 freshness. Added serial capacity-64 write queue/backpressure and a 12k-per-sensor long-history/bounded-chart test.
+- Changed Connection/Floating Monitor polling to single-flight 3-second lifecycle-aware reconciliation. The short Android overlay permission-return retry remains bounded at 2 seconds.
+- Home header/tab and Temperature stepper hit surfaces are 48 dp with visible artwork preserved. TamperScreen profanity was replaced with neutral localized integrity copy and explicit dark theme; native signature fail-closed gate and developer-contact action remain.
+- Current suite has 184 declarations but has not run here. Flutter/Dart formatter, tests and analyzer are BLOCKED / NOT RUN. No App Build/Release or Android screenshot/device review occurred. Long-session CPU/memory soak and visual acceptance remain outstanding.
+
 ## 2026-11-12 — Professional Settings and About copy/layout (source implemented; not released)
 
 - Changed Settings rows to a one-line horizontal layout with a 13-dp title, optional right-aligned 11-dp value and chevron; minimum row height 48 dp.

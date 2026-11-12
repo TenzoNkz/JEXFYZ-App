@@ -44,27 +44,35 @@ This document stores owner-approved, screen-specific visual constraints, not a b
 
 ## Usage Statistics — implemented and included in Build #153 (2026-11-12)
 
-**Status: SOURCE INCLUDED IN BUILD #153 / VERIFIED CI / VISUAL NOT VERIFIED.** The hosted Build #153 Flutter suite passed 176/176 tests at immutable source SHA `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e`. Actual Android/OEM screenshots are still required before a visual pass.
+**Status: BUILD #153 HISTORICAL BASELINE; CURRENT MAIN HAS SOURCE FOLLOW-UPS / TESTS WRITTEN / TEST NOT RUN / VISUAL NOT VERIFIED.** Build #153's 176/176 result applies only to immutable source SHA `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e`, not current main.
 
 - **Six metric diagrams:** Phone Battery °C and Hotside °C remain separate measured temperature plots; Voltage (5V/9V/12V), Adaptive ON/OFF, Peltier ON/OFF and Fan Speed 0–100% remain four operating timelines, each with its own scale and semantics.
 - **Shared inspection:** one elapsed-session cursor synchronizes Battery, Hotside, Voltage, Adaptive, Peltier and Fan Speed. Preserve the selected time and unknown/gap values as `--`.
 - **Telemetry and continuity:** Peltier baseline is sourced from completed P1 full sync; later changes require authoritative PELTIER telemetry, not command ACK. Session coverage is bounded by fresh HOT heartbeat. Invalid sensor readings and session boundaries remain visible gaps; do not interpolate across gaps.
 - **Presentation:** graph-first composition; compact session metadata and cursor; concise last-sample metadata; detailed sampling/storage provenance behind an information affordance; secondary operating durations and Fan aggregates in collapsed details. Keep Min/Avg/Max, Observed coverage and the Hotside limit visible without discarding the useful aggregates.
-- **Capture/storage invariant:** this visual pass does not change one-second collection, raw observations, recorder behavior, SQLite schema, retention, analytics or persistence.
-- **Open performance risks:** live batches still recompute the selected-session analytics summary; serialized SQLite writes remain unbounded/unbatched. Long-session CPU/memory, queue backpressure and animation lifecycle/60–120-Hz stress remain unverified. Ordinary CI does not establish long-session soak performance.
-- **Regression evidence:** Build #153 hosted Flutter suite passed 176/176, including the current Statistics cursor/detail/provenance contracts. No local formatter, focused test, analyzer or Android rendering was run in this Diskusi.
+- **Capture/storage invariant:** one-second raw collection and explicit gap samples remain. SQLite schema/version 2 and retention remain. Current-main follow-up combines sample + session-freshness update in one transaction and adds a serial capacity-64 write queue with backpressure; no accepted observation is intentionally discarded.
+- **Current-main analytics path:** grouped session/metric event index; event identity de-duplication and sorted merge; one summary per live flush; skip per-metric sort when already chronological; binary-search cursor lookup; cached decimated chart points. One selected-session summary/chart-decimation pass still occurs each second. Long-session CPU/memory and queue-backlog soak remain NOT RUN.
+- **Current-main regression source:** selected dock height ≤200 dp plus clear behavior; 12k-per-sensor synthetic long-history with bounded chart rendering; queue capacity/FIFO; one-summary-per-batch, event identity and ordered merge. Current main has 184 declarations but they are NOT RUN. Formatter/analyzer and Android rendering are also NOT RUN.
 - **Visual acceptance:** **VISUAL NOT VERIFIED** until actual App screenshots are reviewed at 350-dp/420-dp, Light/Dark, English/Indonesian, portrait/constrained height, and representative active/completed/no-data/gap/long-session states.
 
 
-### Selected-time detail dock — owner screenshot defect (2026-11-12)
+### Selected-time detail dock — owner screenshot defect (fixed in current main source)
 
-**Status: OWNER SCREENSHOT REVIEWED / ROOT CAUSE HIGH-CONFIDENCE STATIC SOURCE ANALYSIS / FIX NOT IMPLEMENTED.** Tapping a chart timeline currently expands the selected-time surface to almost the entire remaining screen, leaving the six metrics near its top and hiding the graph.
+**Status: SOURCE FIX IMPLEMENTED / HEIGHT REGRESSION ADDED / TEST NOT RUN / VISUAL NOT VERIFIED.** Owner screenshot showed the selected-time surface expanding to nearly the entire viewport after chart interaction.
 
-- **Likely cause:** `UsageStatisticsPage._buildForLanguage()` mounts the dock as `Scaffold.bottomNavigationBar`; `_sharedCursorReadout()` returns an outer `Column` with the default `mainAxisSize: MainAxisSize.max`. Under bounded bottom-slot constraints this can expand vertically even though its children need only a compact height.
-- **Narrow proposed treatment:** set the outer readout Column to `mainAxisSize: MainAxisSize.min`. Keep the bottom dock, SafeArea bottom inset, selected elapsed time, Battery, Hotside, Voltage, Adaptive, Peltier, Fan Speed, 48×48 dp clear target and all cursor/timeline semantics. Do not change chart data, sampling, SQLite, telemetry or graph interaction.
-- **Regression required:** after tapping a timeline, assert the dock's measured height remains content-sized (target ≤200 dp at normal text scale), all six values and selected time remain visible, and chart content remains visible/scrollable. Test 350-dp/420-dp, EN/ID, Light/Dark, and clearing selection. Existing coverage checks the selected label and clear-target size, but not dock height.
-- **Source relationship:** the Statistics Dart file at Build #153 source `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e` is byte-identical to current main's source blob. The defect is therefore present in the last released implementation too.
-- **Evidence:** supplied Android screenshots reviewed; source inspection only. No fix or test execution has occurred. Selected-time interaction status is **VISUAL REJECT**; overall screen acceptance remains **VISUAL NOT VERIFIED** until corrected Android output is reviewed.
+- **Correction:** outer readout Column now uses `mainAxisSize: MainAxisSize.min`; the dock remains in `Scaffold.bottomNavigationBar` and retains SafeArea, six metrics, selected elapsed time and 48×48 dp Clear action.
+- **Regression:** current widget test asserts that the selected dock measures no more than 200 dp at normal text scale and disappears after Clear.
+- **Evidence:** source read-back/static contract only. No corrected APK has been rendered; actual Android visual acceptance remains **VISUAL NOT VERIFIED**.
+
+
+
+### Usage Statistics density and performance follow-up — current main
+
+- Temperature chart height is 160 dp (reduced from 170 dp); y-axis and elapsed-time painter labels use 10 dp. Battery/Hotside and Hotside/Activity section gaps are 18 dp. Min/Avg/Max/Observed, Hotside limit, four activity timelines and all aggregates remain.
+- Current live analytics uses one session/metric event index, event identity set, ordered merge and a single summary per one-second live batch. Event groups are sorted only when not already chronological. Decimated chart points are cached in the summary; cursor lookup uses binary search.
+- SQLite schema/version 2 and retention stay unchanged. Temperature sample insert + matching freshness update are one transaction. Serial capacity-64 write queue waits for capacity; write failure remains visible. Raw 1-Hz samples, explicit null gaps and HOT-only P1 coverage remain.
+- **Performance boundary:** current implementation still performs one full selected-session summary and chart-decimation pass per one-second refresh. This is a linear indexed pass rather than the earlier repeated filtering/sorting and per-update summarization. A long-duration Android CPU/memory soak has not been performed.
+- **Status:** SOURCE IMPLEMENTED / REGRESSION SOURCE UPDATED / NOT RUN / VISUAL NOT VERIFIED.
 
 
 ### Peltier safety popup — implemented in Build #153

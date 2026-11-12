@@ -17,14 +17,14 @@ Updated: 2026-11-12 (Asia/Jakarta).
 
 Build #153 proves hosted App CI/package/release only. No Firmware compilation, BIN generation/publication, Firebase modification, OTA, flashing, physical BLE/device/NVS/rail/LED testing, thermal/electrical cooling test, owner installation confirmation or OEM visual acceptance occurred. Firmware V7.2 compile/BIN and field validation remain separate.
 
-## Current App source change — not yet packaged
+## Current App source change — ready for guarded QC, not packaged
 
-- Settings source commit `1cae4cfc061328b3b2b8bed96987c410f37373f2`; regression test commit `96301aec962739c39518e84f38cd4294d975595f`.
-- Settings rows now use a single horizontal line with an optional right-side current value and 48-dp minimum height. Redundant Notifications count, Usage Statistics descriptor, About subtitle and unknown Firmware `V?` are hidden.
-- Lock Voltage has concise bilingual state-only copy; saved OFF has no redundant subtitle. Firmware state authority, switch and retry remain.
-- About page keeps all contributor credits in one compact card and removes the generic Special Thanks heading.
-- Diagnostics removal, fixed Peltier popup and Temperature reset-button removal remain. Source read-back/static checks passed. Tests were updated but not run because Flutter/Dart are unavailable. No Build App or screenshot validation occurred; visual status remains NOT VERIFIED.
+- Current main SHA `aa58a2f14354692a1dbcebfcb70436deb3aabf06`; tree 132 entries, not truncated.
+- Usage Statistics selected-time dock is content-sized; widget regression checks ≤200 dp and Clear behavior. Graphs are 160 dp, axis labels 10 dp, spacing is tighter. Analytics indexes events by session/metric, de-duplicates/merges sorted updates, summarizes once per batch, skips sort if chronological, caches decimated points and uses binary search for cursor. SQLite sample + freshness write is transactional; schema v2, raw 1-Hz data, gaps and HOT-only P1 freshness remain. Serial queue capacity64/backpressure.
+- Connection and Floating Monitor runtime polling are single-flight 3s/lifecycle-aware. Home header/tab and Temperature hit areas are 48 dp with artwork preserved. TamperScreen is neutral bilingual integrity copy in explicit dark theme; native signature fail-closed behavior remains unchanged.
+- Current source suite is 184 declarations (171 unit/source-contract +13 widget), written but not run. Flutter/Dart formatter, tests and analyzer are BLOCKED / NOT RUN in this runtime. Long-session CPU/memory soak and real Android visual/touch QA remain unverified. No Build App or screenshot validation has occurred.
+- Latest published package remains Build #153; current main is unbuilt.
 
 ## Next action
 
-Do NOT start Build App yet. The full static pre-build audit is recorded in `APP_PREBUILD_AUDIT.md`. The most immediate owner-reported defect is the Usage Statistics selected-time dock expanding to nearly full screen after chart tap; the likely fix is `mainAxisSize: MainAxisSize.min` on `_sharedCursorReadout()`'s outer Column, with a widget test asserting dock height. No source fix is committed yet. Use a separate `Eksekusi Full!` for that narrow repair before continuing the remaining P1 work. Several P1 findings remain: Statistics long-session/backpressure, overlapping native polling, undersized Home/Temperature touch targets, TamperScreen copy, and lack of current-source test execution. Use a separate `Eksekusi Full!` to remediate these with regression coverage. Build #153 remains the latest verified package; current main has not been packaged or visually verified.
+Issue a separate guarded `Eksekusi Build App!` on exact main SHA `aa58a2f14354692a1dbcebfcb70436deb3aabf06`. Validate the 184-test suite, analyzer, Android package/signing/checksums/source ZIP and Release identity. If a gate fails, return to `Eksekusi Full!` for root-cause repair. After successful packaging, install and inspect Usage Statistics at 350/420 dp, EN/ID, Light/Dark, including selected-time dock height/clear, graph/cursor, session variants and long history. Also recheck Connection/Floating polling, Home/Temperature touch surfaces, TamperScreen and earlier Settings/Peltier/Temperature changes. Visual acceptance remains NOT VERIFIED until actual screenshots are reviewed.

@@ -1,35 +1,42 @@
-## CURRENT CHECKPOINT — FULL APP PRE-BUILD AUDIT / NOT READY — 2026-11-12
+## CURRENT CHECKPOINT — USAGE STATISTICS REPAIRED / READY FOR GUARDED BUILD QC — 2026-11-12
 
-**Mode:** `@Thinking Diskusi!` — static App/repository analysis and documentation only. No executable source, tests, configuration, build workflow, Firmware, Actions, Release, Firebase, OTA, flashing or device operations were changed or run.
+**Mode:** `@Thinking Eksekusi Full!` — App source, regression tests and documentation only. No Build App, Actions execution, APK/Release, Firmware, Firebase, OTA, flashing, native Android code or device operation was performed.
 
-### Live repository and package state
+### Live branch and Release boundary
 
 - **Repository:** `TenzoNkz/JEXFYZ-App`, branch `main`.
-- **Executable source snapshot analyzed:** `4d02fbf705a85820a4ea1e530d167ebb53ab3a68` (131-entry tree). The subsequent audit/checkpoint commits were documentation only. The current recursive tree has 132 entries, not truncated; no App source, tests, configuration, workflow, Firmware or Release assets changed during this Diskusi.
-- **Latest executable App/test state:** Settings/About source `1cae4cfc061328b3b2b8bed96987c410f37373f2`; test additions `96301aec962739c39518e84f38cd4294d975595f`.
-- **Current verified package remains Build #153:** source `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e`, Actions run `43145542329`, Release ID `403010611`, tag `jexfyz-latest`. Current source is newer than the APK.
-- Actions latest #153 completed SUCCESS; no open PR or active run. No build trigger was sent.
+- **Current executable source/test HEAD:** `aa58a2f14354692a1dbcebfcb70436deb3aabf06`.
+- Recursive tree: 132 entries, `truncated=false`.
+- Remediation commits: `5763b08f8b37fccafd2ac2403a51b26ad0be4b41` (Statistics dock/analytics/storage + P1 touch/polling/integrity fixes), `b1275d278ca0b0d2765174364250873044a943d1` (Statistics chart density + integrity dark theme), and `aa58a2f14354692a1dbcebfcb70436deb3aabf06` (skip redundant sort for chronological live events).
+- Compared with Build #153, main is 55 commits ahead / 0 behind; 18 changed paths (11 Markdown, 4 Dart source, 3 test files).
+- **Build #153 remains the latest published package:** source `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e`, Actions run `43145542329`, Release ID `403010611`, tag `jexfyz-latest`. Current fixes are not in that APK.
 
-### Audit result
+### Usage Statistics — source implemented
 
-- Complete static inventory: 7 Dart library files, 9 test files, 179 test declarations (166 unit/source-contract and 13 widget tests). The latest source suite is **NOT RUN**; Build #153's 176/176 result applies only to its older source SHA.
-- Full findings and remediation priority are recorded in `APP_PREBUILD_AUDIT.md`.
-- **P1 not ready:** Usage Statistics full-session recompute + unbounded serialized write queue; overlapping 650-ms Connection and 300-ms Floating Monitor polling; 36/42/34-dp Home/Temperature hit targets; profane hard-coded TamperScreen copy with an explicit test contract; latest current-main tests not executed.
-- **New owner screenshot defect (2026-11-12):** Usage Statistics timeline tap expands the selected-time dock to almost the full screen. High-confidence source cause: `_sharedCursorReadout()` outer `Column` defaults to `MainAxisSize.max` inside `Scaffold.bottomNavigationBar`. Same `usage_statistics.dart` blob exists in Build #153 and current main. See `DESIGN_NOTES.md` and `APP_PREBUILD_AUDIT.md`. Proposed narrow fix is `mainAxisSize: MainAxisSize.min` plus a widget-height regression; no source change yet.
-- **P2:** no `analysis_options.yaml` although `flutter_lints` is declared; no formatter check in guarded workflow; monolithic main.dart; microtype (6.8–10.5 dp) and dialog/Floating presentation inconsistency; semantic token/contrast and fixed TextScaler accessibility review.
-- **Positive findings:** 354 localized keys, no duplicate keys or missing static `JexText.of` references; semantic telemetry colors and Phosphor icon family are coherent; current Settings one-line rows/About/Peltier/Temperature/Diagnostics changes are present in source.
-- **Evidence:** STATIC SOURCE CHECK only. No format/analyzer/test, screenshots, App Build, physical device or performance soak was run. No false claim of a clean or visually accepted App.
+- Selected-time dock now uses intrinsic content height via outer Column `MainAxisSize.min`; stable key supports measured-height regression. Bottom placement, SafeArea, six selected values and 48×48 dp Clear target remain. Test asserts dock ≤200 dp at normal text scale and removal after Clear.
+- Temperature charts are 160 dp high, axis painter labels 10 dp, and Hotside-to-Activity spacing is tighter. Battery/Hotside plots, four activity timelines, six-value cursor, Min/Avg/Max/Observed, Hotside limit, aggregates, provenance and data gaps remain.
+- Analytics groups events by session/metric, de-duplicates via event identity, merges ordered events, sorts only when needed, computes summary once per live batch, caches decimated chart points and uses binary search for cursor temperature.
+- SQLite sample + matching freshness update is transactional. Schema v2, retention, raw 1-Hz samples, null gaps and HOT-only P1 freshness remain. Serial local write queue has capacity 64 and backpressure; write failures remain visible.
+- **Remaining performance boundary:** one full selected-session summary/chart-decimation pass still runs per one-second refresh. No 1h/8h/long-session Android CPU/memory soak or sustained SQLite backlog measurement has run.
 
-### Required remediation order
+### Other P1 source remediation
 
-1. UX/accessibility: touch surfaces, Home microcopy hierarchy, neutral TamperScreen UX while preserving fail-closed signature check, modal/overlay consistency.
-2. Runtime/performance: single-flight/lifecycle-aware polling; bounded/coalesced Statistics writes and scalable summary/deduplication, with long-session tests.
-3. Code quality: formatter/lint baseline and current-source analyzer/test pass, without weakening contracts.
-4. Then guarded App Build, followed by actual screenshot/device visual acceptance. The precise matrix and exit conditions are in `APP_PREBUILD_AUDIT.md`.
+- Connection status refresh is single-flight, 3-second while active, immediate on open/resume and paused in background/dispose.
+- Floating Monitor runtime reconcile is single-flight, 3-second while enabled/connected, paused in background and checked immediately on resume. The 300-ms interval remains only in the bounded max-2-second overlay permission return flow.
+- Home header actions use 48×48 dp hit surfaces with 25-dp visible artwork; Home tab strip is 48 dp; Temperature +/- art remains 34 dp inside 48×48 dp tap areas. Existing Connection 40–42 dp legacy controls are unchanged.
+- TamperScreen now has concise bilingual official-build verification failure copy and an explicit dark theme while retaining developer contact. Native signature verification/fail-closed route is untouched.
+- Settings one-line rows, compact Lock Voltage, boxed About, Device Diagnostics removal, Peltier FAN-ACK gate and Temperature reset removal remain.
+
+### Regression inventory and validation boundary
+
+- Current suite: **184 declarations** (171 unit/source-contract + 13 widget). New cases cover 12k Battery + 12k Hotside long history and bounded chart points, queue capacity/FIFO, dock height/clear, polling guards, touch targets and neutral integrity UX.
+- Source read-back/static structural checks passed. Flutter/Dart are unavailable in this runtime; formatter, focused tests, analyzer and full suite are **BLOCKED / NOT RUN**. Written tests are not passing tests.
+- No Actions run, App Build, APK, Release, screenshot/device test or performance soak was started. Current visual status is **VISUAL NOT VERIFIED**.
+- Native Android code/Firmware/BIN, BLE/P1, Firmware safety, OTA, Firebase, notification IDs, SQLite schema/version, Android versionName and 360-dp DPI canvas were not changed.
 
 ### Exact next action
 
-Use a separate `Eksekusi Full!` first for the owner-reported Usage Statistics selected-time dock defect: compact the bottom readout using intrinsic content height and add the missing height regression at 350/420 dp, EN/ID and Light/Dark. The broader P1 audit items remain open. **Do not build yet.** Issue `Eksekusi Build App!` only after the P1 findings are fixed/dispositioned, current-source tests/analyzer/formatter are clean, and the pre-build criteria in `APP_PREBUILD_AUDIT.md` are met.
+**Siap Eksekusi Build App!** — run the separate guarded workflow on exact main SHA `aa58a2f14354692a1dbcebfcb70436deb3aabf06`. The workflow must validate all 184 current tests, analyzer, Android build, signing, checksums, source ZIP and Release identity. If a gate fails, return to `Eksekusi Full!` and fix the root cause. After a successful package, install and inspect Usage Statistics at 350/420 dp, EN/ID, Light/Dark; verify the compact selected-time dock, graphs/axis labels, chart cursor, and prior Settings/Peltier/Temperature/touch/integrity changes. This checkpoint does not trigger Build App.
 
 
 ---
