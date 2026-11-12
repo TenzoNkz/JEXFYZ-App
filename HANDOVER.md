@@ -17,6 +17,13 @@ Updated: 2026-11-12 (Asia/Jakarta).
 
 Build #153 proves hosted App CI/package/release only. No Firmware compilation, BIN generation/publication, Firebase modification, OTA, flashing, physical BLE/device/NVS/rail/LED testing, thermal/electrical cooling test, owner installation confirmation or OEM visual acceptance occurred. Firmware V7.2 compile/BIN and field validation remain separate.
 
+## Current App source change — not yet packaged
+
+- Main source commit `5296ba50f7fe0ba2c0ecff4e6112bed6e40dab2a` is newer than the Build #153 APK/Release.
+- Peltier prerequisite popup is centered/fixed and compact (296-dp max width), without a scroll/drag surface or inherited text decoration. FAN:ON ACK remains mandatory before PELTIER:ON.
+- Temperature tab's Reset Temperature Settings button, App handler and UI label have been removed. Protocol acknowledgement classification remains.
+- GitHub source read-back and static contract checks passed. Flutter/Dart formatter/tests/analyzer were not run because the toolchain is unavailable. No new Build App or physical/device validation occurred; visual result is NOT VERIFIED.
+
 ## Next action
 
-Install Build #153 and perform physical App/BLE/OEM visual acceptance: 350-dp/420-dp, Light/Dark, English/Indonesian, reconnect and Lock Voltage. Record actual results separately. Do not trigger another App Build unless App source changes.
+Issue a separate `Eksekusi Build App!` for the current main source, then install the newly produced APK and inspect actual Android screenshots of the Peltier popup and Temperature tab. Build #153 remains the latest published package until that guarded workflow completes. Firmware/BIN/Firebase/OTA/flash/device work remains separately gated.

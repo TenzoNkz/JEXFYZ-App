@@ -1,4 +1,17 @@
-## CURRENT CHECKPOINT — BUILD #153 SUCCESS / RELEASE VERIFIED — 2026-11-12
+## CURRENT APP SOURCE — POST-BUILD #153 UI FIX / NOT RELEASED — 2026-11-12
+
+- **Current main source:** commit `5296ba50f7fe0ba2c0ecff4e6112bed6e40dab2a`; App-only patch to the Peltier prerequisite popup and Temperature tab reset action.
+- **Peltier popup:** fixed centered card in the existing 360-dp master canvas; no scroll/drag surface or entrance slide; 296-dp max width, compact 20-dp radius/padding, explicit existing Roboto font and no text decoration. Responsive title/body/step typography; primary and Cancel targets remain 48 dp.
+- **Protected behavior:** the approval path still requires `FAN:ON` ACK before `PELTIER:ON`; Cancel/barrier dismissal are command-free. BLE/P1, telemetry, Firmware, thermal protection and Home geometry were not changed.
+- **Temperature tab:** the global reset button, App handler and unused EN/ID label were removed. Existing threshold adjusters remain; generic `RESET:TEMPERATURE` protocol/ACK classification remains intact.
+- **Changed executable files:** `lib/main.dart`, `lib/app_settings.dart`, `test/widget_test.dart`; subject notes and changelog updated. Compare to Build #153 source: 37 commits ahead / 0 behind, 11 paths total (8 Markdown, 3 App/test files). Recursive tree 131 entries, not truncated.
+- **Evidence:** STATIC SOURCE CHECK and committed GitHub read-back passed. Flutter/Dart absent in runtime; formatter, focused/full tests and analyzer BLOCKED / NOT RUN. No CI/build/release or screenshots of the modified source. **VISUAL NOT VERIFIED**.
+- **Latest package remains Build #153**, immutable source `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e`; the current UI patch is not in that APK. No Build App, Firmware/BIN, Firebase, OTA, flash or device operation occurred.
+- **Next action:** separate guarded `Eksekusi Build App!` for this App-only source SHA, followed by owner installation and screenshot acceptance at 350/420 dp, Light/Dark, EN/ID and constrained-height states.
+
+---
+
+## LATEST VERIFIED RELEASE BASELINE — BUILD #153 SUCCESS / RELEASE VERIFIED — 2026-11-12
 
 - **Repository:** TenzoNkz/JEXFYZ-App, branch main. Immutable tested source SHA: `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e`. The later commits on `main` are documentation/checkpoint updates only; no App/Firmware/workflow source has changed after the built SHA.
 - **Build:** Actions run `43145542329`, workflow 374946166, attempt 1, job 130942369953; completed SUCCESS. All required gates 1–21 and cleanup/post-job steps 39–43 passed.
