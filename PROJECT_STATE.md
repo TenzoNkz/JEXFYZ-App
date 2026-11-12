@@ -1,12 +1,12 @@
-## CURRENT APP QC — BUILD #157 ACTIVE / APK BUILD STARTED — 2026-11-12
+## CURRENT APP QC — BUILD #157 ACTIVE / RELEASE PUBLISHING — 2026-11-12
 
 - **Run:** Build #157 / Actions `43247876115`, job `131285336987`, attempt 1; immutable checkout SHA `10d106537e92060e0aac3fc17fd37f56e746bcd5`.
-- **Progress:** steps 1–14 SUCCESS, including analyzer, Flutter tests and Android Gradle unit-test gate. Step 15 APK build IN_PROGRESS; signing, cert verification, source ZIP and Release gates 16–21 pending. Continue this run only.
-- **Failure history:** #154 analyzer (6 errors), #155 tests (183/4), #156 tests (186/1) remain preserved. Their root causes and repairs are documented in APP_BUILD_REPORT.md.
-- **Preflight:** no queued/in-progress run or open PR; exact issue #33 guard; workflow unchanged; Release #153/tag/assets intact; one guarded close/reopen created #157.
-- **Counts pending:** exact analyzer infos, Flutter test total and native Android JUnit NO-SOURCE details require final log extraction.
-- **Formatter:** workflow has no formatter step; `dart format` remains NOT RUN / UNVERIFIED.
-- **Boundary:** App Build only; no Firmware/BIN/Firebase/OTA/flash/device/physical BLE/thermal/electrical/OEM visual operation.
+- **Progress:** steps 1–19 SUCCESS, including analyzer, Flutter tests, Android Gradle, obfuscated APK, V1/V2/V3 signing, signature/certificate verification, filename and source ZIP. Step 20 Release publish IN_PROGRESS; step 21 downloaded-asset verification pending. Continue this run only.
+- **Failure history:** #154 analyzer failure (6 errors), #155 tests (183/4), #156 tests (186/1) all remain preserved. Final #156 stale Home Notify assertion repaired by test-only commits `b007b56ab5ddf91546f86937be202978dc7fee3b` and `38212c3620aba6eb9fa5f6db41b43fdb777a9ddf`.
+- **Evidence pending:** exact analyzer/test counts, Android JUnit NO-SOURCE results, APK/ZIP hashes and sizes, certificate detail, live Release/tag parity and downloaded asset verification await terminal logs/API read-back.
+- **Release baseline:** Build #153 remains current live Release until Build #157 step 20 completes.
+- **Formatter:** no workflow formatter step; `dart format` NOT RUN / UNVERIFIED.
+- **Boundary:** App Build only. No Firmware/BIN/Firebase/OTA/flash/device/physical BLE/thermal/electrical/OEM visual operation.
 
 
 ---
