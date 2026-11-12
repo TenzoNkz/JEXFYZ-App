@@ -1,3 +1,10 @@
+## 2026-11-12 — Compact Settings, box About and remove Device Diagnostics (source implemented; not released)
+
+- Reduced the Settings Lock Voltage card dimensions/copy while preserving the Firmware-owned notifier, switch, retry behavior and existing BLE/P1 semantics.
+- Wrapped About/Tentang in its own single-row Card immediately below Firmware, retaining bilingual contributor details.
+- Removed Device Diagnostics from current main: menu item/page, copy-to-clipboard diagnostics action, diagnostic-only SettingsPage/Home route plumbing, localization and dedicated test. Telemetry required by other App surfaces remains.
+- Settings contract regression source now asserts compact Lock Voltage layout, About Card placement and Diagnostics removal. Flutter/Dart formatter, tests and analyzer have not run in this runtime; no App Build/Release or device screenshot review was triggered. Visual outcome remains NOT VERIFIED.
+
 ## 2026-11-12 — Fixed compact Peltier popup and removed Temperature reset action (source implemented; not released)
 
 - Peltier prerequisite popup is fixed and centered in the existing 360-dp canvas. Removed the scroll/drag surface and entrance slide; compacted the panel to 296-dp max width with tighter padding, typography and step tiles. Explicit theme Roboto and no text decoration prevent inherited underlines.

@@ -19,11 +19,11 @@ Build #153 proves hosted App CI/package/release only. No Firmware compilation, B
 
 ## Current App source change — not yet packaged
 
-- Main source commit `5296ba50f7fe0ba2c0ecff4e6112bed6e40dab2a` is newer than the Build #153 APK/Release.
-- Peltier prerequisite popup is centered/fixed and compact (296-dp max width), without a scroll/drag surface or inherited text decoration. FAN:ON ACK remains mandatory before PELTIER:ON.
-- Temperature tab's Reset Temperature Settings button, App handler and UI label have been removed. Protocol acknowledgement classification remains.
-- GitHub source read-back and static contract checks passed. Flutter/Dart formatter/tests/analyzer were not run because the toolchain is unavailable. No new Build App or physical/device validation occurred; visual result is NOT VERIFIED.
+- Current main source commit `0b888fc2902430ac67388a05d348f78bf8df5bbc` follows the Peltier/Temperature UI fix `5296ba50f7fe0ba2c0ecff4e6112bed6e40dab2a`.
+- Settings Lock Voltage card compacted (smaller icon and spacing, concise bilingual state copy); switch/retry and Firmware authority remain. About/Tentang is boxed in a standalone card beneath Firmware.
+- Device Diagnostics Settings row, page and clipboard report have been removed, along with diagnostic-only route fields, EN/ID labels and dedicated widget test. The rest of Settings order, compact theme and 360-dp canvas are unchanged.
+- Earlier Peltier popup fix and Temperature reset button removal remain in current source. Source read-back/static checks passed. Flutter/Dart formatter/tests/analyzer have not run; no hosted CI/build, APK or screenshot/device validation occurred. Visual outcome remains NOT VERIFIED.
 
 ## Next action
 
-Issue a separate `Eksekusi Build App!` for the current main source, then install the newly produced APK and inspect actual Android screenshots of the Peltier popup and Temperature tab. Build #153 remains the latest published package until that guarded workflow completes. Firmware/BIN/Firebase/OTA/flash/device work remains separately gated.
+Issue a separate guarded `Eksekusi Build App!` for current main source `0b888fc2902430ac67388a05d348f78bf8df5bbc`. After packaging, install it and inspect Settings at 350/420 dp, Light/Dark and EN/ID; confirm compact Lock Voltage, boxed About and complete Diagnostics removal. Recheck the prior Peltier popup and Temperature-tab fix. Build #153 remains the latest published package until the new guarded workflow succeeds. Firmware/BIN/Firebase/OTA/flash/device work remains separately gated.

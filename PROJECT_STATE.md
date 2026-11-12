@@ -1,13 +1,14 @@
-## CURRENT APP SOURCE — POST-BUILD #153 UI FIX / NOT RELEASED — 2026-11-12
+## CURRENT APP SOURCE — SETTINGS REFINEMENT / NOT RELEASED — 2026-11-12
 
-- **Current main source:** commit `5296ba50f7fe0ba2c0ecff4e6112bed6e40dab2a`; App-only patch to the Peltier prerequisite popup and Temperature tab reset action.
-- **Peltier popup:** fixed centered card in the existing 360-dp master canvas; no scroll/drag surface or entrance slide; 296-dp max width, compact 20-dp radius/padding, explicit existing Roboto font and no text decoration. Responsive title/body/step typography; primary and Cancel targets remain 48 dp.
-- **Protected behavior:** the approval path still requires `FAN:ON` ACK before `PELTIER:ON`; Cancel/barrier dismissal are command-free. BLE/P1, telemetry, Firmware, thermal protection and Home geometry were not changed.
-- **Temperature tab:** the global reset button, App handler and unused EN/ID label were removed. Existing threshold adjusters remain; generic `RESET:TEMPERATURE` protocol/ACK classification remains intact.
-- **Changed executable files:** `lib/main.dart`, `lib/app_settings.dart`, `test/widget_test.dart`; subject notes and changelog updated. Compare to Build #153 source: 37 commits ahead / 0 behind, 11 paths total (8 Markdown, 3 App/test files). Recursive tree 131 entries, not truncated.
-- **Evidence:** STATIC SOURCE CHECK and committed GitHub read-back passed. Flutter/Dart absent in runtime; formatter, focused/full tests and analyzer BLOCKED / NOT RUN. No CI/build/release or screenshots of the modified source. **VISUAL NOT VERIFIED**.
-- **Latest package remains Build #153**, immutable source `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e`; the current UI patch is not in that APK. No Build App, Firmware/BIN, Firebase, OTA, flash or device operation occurred.
-- **Next action:** separate guarded `Eksekusi Build App!` for this App-only source SHA, followed by owner installation and screenshot acceptance at 350/420 dp, Light/Dark, EN/ID and constrained-height states.
+- **Current main source:** `0b888fc2902430ac67388a05d348f78bf8df5bbc` (`fix(app): compact Settings and remove Device Diagnostics`), following the Peltier popup/Temperature reset fix at `5296ba50f7fe0ba2c0ecff4e6112bed6e40dab2a`.
+- **Settings refinement:** compact the Firmware-owned Lock Voltage card without reducing its switch/retry hit areas; short bilingual state copy and smaller 34-dp icon tile. About is now inside its own single-row Card beneath Firmware. General, Device, Usage Statistics and Firmware entries/order remain.
+- **Device Diagnostics:** removed from current App. Menu row, page class, manual clipboard action, diagnostic-only SettingsPage inputs/Home-to-Settings snapshot parameters, localization and its widget test are removed. Shared telemetry/BLE and physical state handling used by other features remain.
+- **Regression source:** Settings contract checks compact Lock Voltage structure, About card placement/credits and absence of the Diagnostics page/menu/localization. Existing About bilingual credit test remains.
+- **Source files:** `lib/floating_monitor.dart`, `lib/main.dart`, `lib/app_settings.dart`, `test/floating_monitor_layout_contract_test.dart`. Canonical UI notes/checkpoints are updated in the following documentation commit.
+- **Evidence:** source/read-back and static assertions only. Flutter/Dart are not installed in this runtime; formatter, focused tests, analyzer and full suite are BLOCKED / NOT RUN. No CI/App Build/APK/Release or actual screenshot rendering has occurred. **VISUAL NOT VERIFIED**.
+- **Latest package remains Build #153**, immutable source `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e`, Release ID `403010611`; the current main fixes are not in that APK. No Firmware/BIN, Firebase, OTA, flash or device operation occurred.
+- **Next action:** separate guarded `Eksekusi Build App!` for the current main source, then owner installation and screenshot acceptance for Settings/Lock Voltage/About at 350/420 dp, EN/ID and Light/Dark.
+
 
 ---
 

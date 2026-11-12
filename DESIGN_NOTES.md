@@ -63,12 +63,24 @@ This document stores owner-approved, screen-specific visual constraints, not a b
 - Amber indicates the missing Fan prerequisite; do not conflate it with red thermal/NTC fault or latch states. The visual redesign does not alter Firmware safety policy or BLE command semantics.
 - **Evidence:** source/test is included in Build #153 and hosted CI passed. Actual light/dark rendering, localized wrapping and touch-target screenshots remain **VISUAL NOT VERIFIED**.
 
-### Lock Voltage, Settings About and Device Diagnostics — implemented in Build #153
+### Build #153 baseline — Lock Voltage, About and Device Diagnostics (historical package behavior)
 
-- **Lock Voltage:** uses the existing centered blur/lock treatment on Voltage and Adaptive only when Firmware lock state is known and ON. Bluetooth-disconnected remains highest priority; existing Adaptive restrictions are preserved. Pending handoff copy must not claim 5V until actual VOLTAGE telemetry confirms it. The Firmware-owned setting card is first below the Settings AppBar; unknown/session/busy/save-failure/retry semantics remain.
-- **About / Tentang:** appears immediately after Firmware. Preserve the bilingual credits and exact handles: Horizon (@Horizontalzzz), FYZ (@FYZ737), Logos (@Logos3dMichael). Do not invent profile URLs or contributions beyond the approved role labels.
-- **Device Diagnostics:** opening-time snapshot only; show source-backed App/Firmware, BLE/P1, measurements, confirmed outputs, safety and Lock Voltage facts. Unknown stays `--`; no fabricated sample freshness, signal, health or uptime metrics. Copy Diagnostics is a manual, bilingual, redacted local action; no automatic upload.
-- **Evidence:** these App source and regression changes are included in the immutable Build #153 source and its 176-test hosted pass. Firmware V7.2 compilation/BIN/NVS and physical rail/Touch/LED behavior remain separate and unverified.
+- Build #153 included the Firmware-owned Lock Voltage card, About/Tentang contributor page and Device Diagnostics snapshot. The released APK remains immutable at source SHA `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e`.
+- **Lock Voltage contract:** centered blur/lock treatment on Voltage and Adaptive only when Firmware lock state is known and ON. Bluetooth-disconnected remains highest priority; existing Adaptive restrictions are preserved. Pending handoff copy must not claim 5V until actual VOLTAGE telemetry confirms it. Lock state, busy, NVS save-failure and retry semantics remain Firmware-owned.
+- **About / Tentang:** appears immediately after Firmware. Preserve bilingual credits and exact handles: Horizon (@Horizontalzzz), FYZ (@FYZ737), Logos (@Logos3dMichael). Do not invent profile URLs or contributions beyond approved role labels.
+- **Device Diagnostics:** this page existed in Build #153 as a source-backed opening-time snapshot with manual redacted copy. It was subsequently removed from current main by the owner's 2026-11-12 request; it must not be reintroduced without a new request.
+- **Evidence:** the above describes Build #153 package behavior only. Current main has subsequent Settings changes documented below.
+
+### Settings follow-up — compact Lock Voltage, remove Device Diagnostics, box About (source after Build #153)
+
+- **Owner screenshot issue:** Lock Voltage card was taller than adjacent Settings rows; About appeared as a bare row outside a card. Owner also explicitly requested that Device Diagnostics be removed.
+- **Lock Voltage card:** retain its first position below AppBar, existing ThemeData/card surface, Firmware-owned state model and tap behavior. Reduce the lock icon tile to 34×34 dp, tighten card padding to 11×7 dp, title/support copy to 12.5/10.5 dp and status strings to concise bilingual forms; use at most two lines. Do not reduce switch or retry targets, change Firmware authority, or alter Lock Voltage protocol behavior.
+- **About:** wrap the existing About row in its own single-row Card (no duplicate section heading) immediately below the Firmware card. Keep the existing credits and About page unchanged.
+- **Device Diagnostics:** remove the Settings menu row, `DeviceDiagnosticsPage`, the SettingsPage diagnostic-only constructor/state inputs, Home-to-Settings diagnostic snapshot plumbing, localization labels and the Diagnostics-specific widget test. Do not remove telemetry/state used by Home, Usage Statistics or other existing controls.
+- **Other Settings:** preserve General, Device (Bluetooth and Floating Monitor), Statistics (Usage Statistics), Firmware Update, order, compact theme, 360-dp canvas/DPI formula, safe areas, localization and Light/Dark roles. Section-label vertical spacing is slightly tightened; row tap geometry is retained.
+- **Acceptance:** Settings at 350-dp/420-dp; portrait and constrained height; EN/ID; Light/Dark; disconnected/unknown and connected Lock Voltage states including save-failure/retry. Verify About is visibly inside a card, and no Diagnostics item/page remains. Source-only evidence is not a visual pass.
+- **Status after source update:** STATIC SOURCE CHECK / GitHub read-back; tests/analyzer/build and actual Android screenshots not yet run. VISUAL NOT VERIFIED.
+
 
 ## Whole-App visual refinement — owner-approved direction, Phase 1 in Build #153
 
