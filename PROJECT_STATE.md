@@ -335,3 +335,14 @@
 - Copy/action correction required: displayed CTA currently says only “Turn on Fan” / “Nyalakan Kipas”, but approval then sends FAN:ON, awaits ACK, and sends PELTIER:ON. Proposed CTA accurately names both outputs. Preserve Fan-first ACK order; if Fan is not confirmed, Peltier must not be commanded.
 - Keep this amber informational prerequisite distinct from red thermal/NTC fault states. Cancel remains command-free; no Firmware safety policy, BLE/P1, command semantics, Home geometry, fixed-canvas transform or physical output behavior changes are included.
 - Discussion-only checkpoint: no App source/tests changed or run, no build/release and no Firmware/device operation. Next recommended direction remains a scoped `Eksekusi Full!` for App UI + regression tests only; this is not authorization.
+
+
+## Current Discussion — About Settings page and contributor credits (2026-11-12)
+
+- Owner explicitly requests an About entry below Firmware in Settings and supplies three contributor credits. This supersedes the earlier historical removal of About from Settings.
+- Recommended English copy: **JE Cooler** / **Special Thanks** / **App Development & Build — Horizon (@Horizontalzzz)** / **Design Inspiration — FYZ (@FYZ737)** / **3D Design & Printing — Logos (@Logos3dMichael)**.
+- Recommended Indonesian copy: **JE Cooler** / **Ucapan Terima Kasih** / **Pengembangan Aplikasi & Build — Horizon (@Horizontalzzz)** / **Inspirasi Desain — FYZ (@FYZ737)** / **Desain & Pencetakan 3D — Logos (@Logos3dMichael)**.
+- “Special Thanks” is the natural standalone heading; “Design Inspiration” corrects the initial phrase. “3D Design & Printing” assumes Logos contributed both design and printing; narrow it to printing-only wording if that assumption is incorrect.
+- Add About / Tentang immediately after Firmware in Settings; open a compact fixed-scale About page with a clear role/name/handle hierarchy. Preserve handles; do not invent profile URLs.
+- This is Discussion/design only. The existing test currently explicitly rejects About and must be revised during implementation. No executable source/tests, build, release, Firmware or device behavior changed or ran.
+- Next recommended mode: scoped `Eksekusi Full!` for the accumulated App UI tasks (Lock Voltage overlay/Settings placement, Peltier popup redesign, and About page) with focused regression tests. This is a recommendation, not authorization.
