@@ -2741,3 +2741,16 @@
 - **Post-fix local validation:** local Flutter/Dart unavailable; formatter/analyzer/tests were NOT RUN locally after the final test fix. Workflow has no Dart formatter step; `dart format` remains NOT RUN / UNVERIFIED.
 - **Retry disposition:** one new guarded retry is justified by the concrete final stale assertion repair. Before retry, confirm #156 terminal, zero queued/in-progress runs, no open PR, exact Issue #33 owner/title/token, workflow unchanged, Release #153/tag/assets intact, and Android versionName exact. Do not trigger until this preflight passes.
 - **Boundary:** no Firmware compile/BIN/Firebase/OTA/flash/device/physical BLE/NVS/rail/LED/thermal/electrical/OEM visual operation occurred.
+
+
+## BUILD #157 — GUARDED RETRY AFTER BUILD #156 FINAL TEST-CONTRACT REPAIR — ACTIVE — 2026-11-12
+
+- **Disposition:** ACTIVE, attempt 1. One guarded retry after the concrete stale Home Notify source-contract assertion repair; no blind/duplicate retry.
+- **Run/job/source:** Build #157 / Actions run `43247876115`, workflow `374946166`, issue event, attempt 1; build job `131285336987`; immutable checkout SHA `10d106537e92060e0aac3fc17fd37f56e746bcd5`. [Actions run](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/43247876115).
+- **Preserved attempts:** #154 analyzer FAILED (6 errors); #155 Flutter tests FAILED (183 passed / 4 failed); #156 Flutter tests FAILED (186 passed / 1 failed). Full diagnostics/repairs remain documented above; no prior failure is rewritten.
+- **Final #156 repair:** `test/widget_test.dart` test “Home Notify keeps a fixed-height left Row and scales wrapped copy to two lines” now counts exactly two literal 2-dp Home spacers before `_homeNotify()` and asserts no 3-dp spacer remains. Intermediate test commit `b007b56ab5ddf91546f86937be202978dc7fee3b` was corrected in final test commit `38212c3620aba6eb9fa5f6db41b43fdb777a9ddf`; final read-back matches.
+- **Retry preflight:** #156 terminal failure; zero queued/in-progress Actions runs; no open PR; issue #33 owner/title/token exact; workflow blob unchanged `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12`; Release ID `403010611` / tag `jexfyz-latest` remain Build #153 source `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e`, with one APK + one source ZIP and their prior verified hashes intact. Android `versionName "Telegram @horizontalzzz"` exact. Issue #33 was closed/reopened once; exactly one #157 run appeared.
+- **Initial live state:** run IN_PROGRESS. Steps 1 Set up job, 2 Checkout repository, 3 Set up Java 17 SUCCESS; step 4 Set up Flutter IN_PROGRESS; steps 5–21 pending. Continue this run only.
+- **Formatter caveat:** workflow has no Dart formatter step; `dart format` remains NOT RUN / UNVERIFIED. Local Flutter/Dart unavailable.
+- **Next:** inspect run `43247876115` / job `131285336987`; record only actual analyzer/test/Gradle/signing/source ZIP/Release/tag/downloaded asset evidence. No duplicate trigger while active.
+- **Boundary:** no Firmware compile/BIN/Firebase/OTA/flash/device/physical BLE/NVS/rail/LED/thermal/electrical/OEM visual operation occurred.
