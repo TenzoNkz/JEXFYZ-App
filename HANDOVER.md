@@ -44,3 +44,12 @@ Gemini review is now complete and cross-checked against live `main`: the alleged
 - Proposed treatment: custom JE X FYZ rounded safety card, theme-aware and responsive, warm amber fan prerequisite tile, concise title/explanation, visible Fan ON → Peltier ON sequence, full-width paired-action primary button and quieter Cancel below. Subtle fade/scale; no alarming red surface for a normal Fan-OFF prerequisite.
 - Correct action copy because approval sends FAN:ON → waits for ACK → PELTIER:ON, not just Fan ON. Preserve the existing sequence and failure gates exactly. Thermal/NTC faults remain distinct.
 - Requirements are recorded in DESIGN_NOTES.md, APP_NOTES.md and PROJECT_STATE.md. Diskusi only; no source/tests/build/release/Firmware/device work occurred. Next recommended action: scoped `Eksekusi Full!` for App-only implementation and regression tests; not yet authorized.
+
+
+## Discussion checkpoint — About page credits (2026-11-12)
+
+- Add an About / Tentang entry directly below Firmware in Settings, opening an About subpage.
+- Bilingual content is fixed in APP_NOTES.md and DESIGN_NOTES.md: JE Cooler; Special Thanks / Ucapan Terima Kasih; App Development & Build / Pengembangan Aplikasi & Build — Horizon (@Horizontalzzz); Design Inspiration / Inspirasi Desain — FYZ (@FYZ737); 3D Design & Printing / Desain & Pencetakan 3D — Logos (@Logos3dMichael).
+- The earlier About removal is historical and explicitly superseded. The source-contract test currently asserts About is absent; reverse those checks and add positive/order/localization/layout coverage under authorized implementation.
+- Keep handles exactly as written and do not fabricate links. “3D Design & Printing” assumes both activities; use “3D Printing” / “Pencetakan 3D” for print-only responsibility.
+- Discussion only; no source/test/build/release/Firmware/device action. Recommended next mode: `Eksekusi Full!` for App UI + regression tests across the accumulated UI requests; not yet authorized.
