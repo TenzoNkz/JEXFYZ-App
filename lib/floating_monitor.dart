@@ -791,12 +791,12 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
                           ButtonSegment<FloatingBackgroundColor>(
                             value: FloatingBackgroundColor.black,
                             label: Text(JexText.of('black', lang)),
-                            icon: const Icon(Icons.dark_mode_outlined),
+                            icon: const Icon(PhosphorIconsRegular.moon),
                           ),
                           ButtonSegment<FloatingBackgroundColor>(
                             value: FloatingBackgroundColor.white,
                             label: Text(JexText.of('white', lang)),
-                            icon: const Icon(Icons.light_mode_outlined),
+                            icon: const Icon(PhosphorIconsRegular.sun),
                           ),
                         ],
                         selected: <FloatingBackgroundColor>{config.backgroundColor},
