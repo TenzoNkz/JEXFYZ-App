@@ -7151,7 +7151,8 @@ void _handleAckLine(String line) {
             diagnosticPeltierOn: peltierOn,
             diagnosticAdaptiveOn: adaptiveOn,
             diagnosticSafetySummary: connected && fullSyncReceived
-                ? (safetyReason.trim().toUpperCase() == 'NONE'
+                ? (safety.trim().toUpperCase() == 'OK' &&
+                        safetyReason.trim().toUpperCase() == 'NONE'
                     ? JexText.phrase('No active safety warning.', 'Tidak ada peringatan keselamatan aktif.')
                     : _friendlyReason(safetyReason))
                 : '--',
