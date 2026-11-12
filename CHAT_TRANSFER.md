@@ -1,24 +1,23 @@
-## CURRENT CHECKPOINT — BUILD #156 ACTIVE / JAVA SETUP — 2026-11-12
+## CURRENT CHECKPOINT — BUILD #156 ACTIVE / ANALYZER RUNNING — 2026-11-12
 
 **Mode:** `@Thinking Eksekusi Build App!` — guarded App Build/QC/release only.
 
-### Previous attempts
+### Previous failures and repairs
 
-- Build #154 / run `43243342029` remains FAILED at analyzer (six errors); source repairs: missing Flutter services import and valid Roboto textTheme application.
-- Build #155 / run `43244335274`, job `131272831810`, source `63ab4e8167cd099a30ad4ca8cd8cfb52d0c098`, remains FAILED at Flutter tests **183 passed / 4 failed**. Analyzer passed (23 info, zero warning/error); downstream gates skipped; no artifact/Release change.
-- Root cause fixes are committed/read back: `9f1130642666801799cd7547dc907ec50cc55bf5` (two Home gaps 3→2 dp, preserve 420 canvas/7×45-dp rows/44-dp NOTIFY), `53ebaecb6722e4335e6c20ead419fea96ee1b0e9` (Tamper and Home test scopes plus DPR3), `d00cef194cc27e65085234955b2eda60faa3aba8` (current bilingual V7.2+ copy contract).
+- Build #154 / run `43243342029`: terminal analyzer failure, six errors; missing Flutter services import and invalid Tamper theme `copyWith(fontFamily:)` repaired in two App commits.
+- Build #155 / run `43244335274`: terminal Flutter test failure, 183 pass / 4 fail. Analyzer passed (23 infos, 0 warnings/errors). Four causes were triaged and fixed in commits `9f1130642666801799cd7547dc907ec50cc55bf5` (two Home spacings 3→2 dp, preserve 420 canvas/7×45-dp rows/44-dp NOTIFY), `53ebaecb6722e4335e6c20ead419fea96ee1b0e9` (Tamper/Home test ownership and DPR3 fixture), and `d00cef194cc27e65085234955b2eda60faa3aba8` (current bilingual V7.2+ text assertion).
+- All previous failures remain preserved. Build #153 is latest published release until #156 succeeds.
 
 ### Current guarded retry — Build #156
 
 - Run `43246666829`, workflow 374946166, issue event, attempt 1, job `131281061201`; immutable checkout SHA `c180f2bb18b3361ecd02fff2503b06043f0d22e0`. [Actions run](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/43246666829).
-- Initial status: IN_PROGRESS. Steps 1 Set up job and 2 Checkout repository SUCCESS; step 3 Set up Java 17 IN_PROGRESS. Gates 4–21 pending. Continue this run only.
-- Retry preflight: #155 terminal; zero queued/in-progress run; no open PR; issue #33 exact owner/title/body token; workflow unchanged blob `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12`; Release #153 tag/hash/assets intact. Issue #33 closed/reopened once; exactly one #156 run.
-- Android `versionName "Telegram @horizontalzzz"` remains exact.
-- **Formatter caveat:** no Dart formatter step exists; `dart format` remains NOT RUN / UNVERIFIED.
+- Steps 1–11 SUCCESS. Step 12 `Analyze Dart code` IN_PROGRESS. Steps 13–21 pending. Continue this run only; no second trigger.
+- Preflight: #155 terminal; zero queued/in-progress runs; no open PR; exact issue #33 owner/title/body-token; workflow unchanged; Release #153 target/hash/assets intact. Issue #33 closed/reopened once.
+- Formatter remains NOT RUN / UNVERIFIED because the guarded workflow has no format step.
 
 ### Next
 
-Inspect only run `43246666829` / job `131281061201`; do not trigger another run while active. Record analyzer, tests, Gradle, APK signing, source ZIP, Release/tag and downloaded-asset verification only when observed. Build CI does not prove Firmware/BIN/Firebase/OTA/flash, physical BLE/device or thermal/electrical/OEM visual acceptance.
+Inspect actual analyzer result/log, then Flutter tests, Gradle, APK/signing, source ZIP, Release/tag and downloaded-asset verification. No Firmware/BIN/Firebase/OTA/flash/device/BLE/thermal/electrical/OEM visual operations.
 
 ---
 
