@@ -2012,7 +2012,7 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
       child: Row(
         children: [
           Icon(
-            Icons.timelapse,
+            PhosphorIconsRegular.clockCounterClockwise,
             color: active ? scheme.primary : scheme.onSurfaceVariant,
             size: 20,
           ),
@@ -2101,7 +2101,7 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(Icons.query_stats, size: 36, color: scheme.onSurfaceVariant),
+          Icon(PhosphorIconsRegular.chartLineUp, size: 36, color: scheme.onSurfaceVariant),
           const SizedBox(height: 14),
           Text(
             title,
