@@ -2706,3 +2706,17 @@
 - **Validation:** no local Flutter/Dart toolchain is present; formatter/analyzer/test after repair are NOT RUN locally. The guarded workflow still has no formatter step; `dart format` remains NOT RUN / UNVERIFIED. Hosted retry is needed to validate this patch.
 - **Retry disposition:** one further guarded retry is justified after fresh preflight. Verify #155 terminal, zero queued/in-progress runs, no open PR, exact Issue #33 owner/title/body token, unchanged workflow blob, current Release/tag still Build #153, and Android `versionName "Telegram @horizontalzzz"`. Do not weaken any test or gate.
 - **Boundary:** no Firmware compilation/BIN, Firebase, OTA, flashing, device/physical BLE/NVS/rail/LED, thermal/electrical cooling or OEM visual test occurred.
+
+
+## BUILD #156 — GUARDED RETRY AFTER BUILD #155 HOME/UI TEST REPAIRS — ACTIVE — 2026-11-12
+
+- **Disposition:** ACTIVE, attempt 1. One guarded retry after the concrete Home layout and test-contract repairs; no blind/duplicate retry.
+- **Run/job/source:** Build #156 / Actions run `43246666829`, workflow `374946166`, issue event, attempt 1; build job `131281061201`; immutable checkout SHA `c180f2bb18b3361ecd02fff2503b06043f0d22e0`. [Actions run](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/43246666829).
+- **Preserved failed attempts:** Build #154 / `43243342029` remains FAILED at analyzer (6 errors); Build #155 / `43244335274` remains FAILED at Flutter tests (183 pass / 4 fail). Their detailed findings are preserved above. Build #155 analyzer passed with 23 infos, zero warnings/errors; its four test causes were fixed and re-read.
+- **Repairs in checkout:** Home gaps 3→2 dp in `lib/main.dart`; test scope corrections in `test/widget_test.dart` (TamperApp theme ownership, Home header target locator, dashboard DPR3); current V7.2+ bilingual copy assertion in `test/firmware_qc_contract_test.dart`. Exact repair commits: `9f1130642666801799cd7547dc907ec50cc55bf5`, `53ebaecb6722e4335e6c20ead419fea96ee1b0e9`, `d00cef194cc27e65085234955b2eda60faa3aba8`.
+- **Retry preflight:** #155 terminal failure; no queued/in-progress run and no open PR; Issue #33 exact owner/title/token; workflow blob unchanged `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12`; Release ID `403010611` and tag `jexfyz-latest` still on Build #153 source `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e`, with the original one-APK/one-source-ZIP pair intact. Issue #33 was closed/reopened once; exactly one #156 run appeared.
+- **Initial live state:** run IN_PROGRESS. Steps 1 Set up job and 2 Checkout repository completed SUCCESS; step 3 Set up Java 17 IN_PROGRESS. Steps 4–21 pending; cleanup/post-job steps not started. Continue this run only.
+- **Workflow/version:** current guarded workflow remains issue.opened/reopened only, exact owner/title/body-token job gate, no push/PR release trigger. Android Gradle `versionName "Telegram @horizontalzzz"` preserved.
+- **Formatter caveat:** workflow has no Dart formatter step; `dart format` remains NOT RUN / UNVERIFIED. Local Flutter/Dart remains unavailable.
+- **Next:** inspect run `43246666829` / job `131281061201`; record only actual analyzer/test/Gradle/package/signing/Release/downloaded asset results. No duplicate trigger while active.
+- **Boundary:** no Firmware compilation/BIN/Firebase/OTA/flash/device/physical BLE/NVS/rail/LED/thermal/electrical/OEM visual operation occurred.
