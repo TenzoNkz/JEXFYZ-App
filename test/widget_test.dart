@@ -759,14 +759,19 @@ void main() {
     }
 
     final screenSource = File('lib/main.dart').readAsStringSync();
+    final tamperAppStart = screenSource.indexOf('class TamperApp extends StatelessWidget {');
     final screenStart = screenSource.indexOf('class TamperScreen extends StatelessWidget {');
     final screenEnd = screenSource.indexOf('\nclass JeCoolerApp extends StatelessWidget {', screenStart);
-    expect(screenStart, isNonNegative);
+    expect(tamperAppStart, isNonNegative);
+    expect(screenStart, greaterThan(tamperAppStart));
     expect(screenEnd, greaterThan(screenStart));
+    final appContract = screenSource.substring(tamperAppStart, screenStart).toLowerCase();
     final screenContract = screenSource.substring(screenStart, screenEnd).toLowerCase();
+    expect(appContract, contains('themedata.dark(usematerial3: true)'));
+    expect(appContract, contains("texttheme.apply(fontfamily: 'roboto')"));
+    expect(appContract, contains("primarytexttheme.apply(fontfamily: 'roboto')"));
     expect(screenContract, contains('official build verification failed'));
     expect(screenContract, contains('verifikasi build resmi gagal'));
-    expect(screenContract, contains('themedata.dark(usematerial3: true)'));
     expect(screenContract, contains('opendevelopercontact'));
     expect(screenContract, isNot(contains('_insult(')));
 
@@ -843,7 +848,7 @@ void main() {
     // Use a tall portrait viewport so the fixed Home canvas and production submenu render
     // without test-only overflow. This is a UI layout guard, not device-runtime validation.
     tester.view.physicalSize = const Size(1080, 3200);
-    tester.view.devicePixelRatio = 1.0;
+    tester.view.devicePixelRatio = 3.0;
     addTearDown(() {
       tester.view.resetPhysicalSize();
       tester.view.resetDevicePixelRatio();
@@ -2658,16 +2663,27 @@ void main() {
 
   test('Home controls keep compact visuals inside 48-dp touch targets', () {
     final source = File('lib/main.dart').readAsStringSync();
-    final headerStart = source.indexOf('SizedBox(\n              height: 48,');
-    final headerEnd = source.indexOf('const SizedBox(height: 3),', headerStart);
+    final homeStart = source.indexOf('Widget _buildHomeArea(double height) {');
+    final homeEnd = source.indexOf('Widget _tab(String title, int index) {', homeStart);
+    expect(homeStart, isNonNegative);
+    expect(homeEnd, greaterThan(homeStart));
+    final home = source.substring(homeStart, homeEnd);
+    final headerHeight = home.indexOf('height: 48,');
+    final headerStart = home.lastIndexOf('SizedBox(', headerHeight);
+    final headerEnd = home.indexOf('const SizedBox(height: 2),', headerHeight);
+    expect(headerHeight, isNonNegative);
     expect(headerStart, isNonNegative);
     expect(headerEnd, greaterThan(headerStart));
-    final header = source.substring(headerStart, headerEnd);
-    expect(header, contains('tightFor(width: 48, height: 48)'));
+    final header = home.substring(headerStart, headerEnd);
+    final targetConstraints =
+        RegExp(r'constraints: const BoxConstraints\.tightFor\(width: 48, height: 48\)');
+    expect(targetConstraints.allMatches(header).length, 2);
     expect(header, contains('size: 25'));
 
-    final tabStart = source.indexOf("SizedBox(\n                                    height: 48,");
-    expect(tabStart, isNonNegative);
+    final dashboardStart = source.indexOf('const homeHeight = 420.0;');
+    final tabHeight = source.indexOf('height: 48,', dashboardStart);
+    expect(dashboardStart, isNonNegative);
+    expect(tabHeight, greaterThan(dashboardStart));
     final temperatureStart = source.indexOf('Widget _temperatureButton(');
     final temperatureEnd = source.indexOf('Widget _lockedZoneRow(', temperatureStart);
     expect(temperatureStart, isNonNegative);
@@ -2678,7 +2694,6 @@ void main() {
     expect(temperatureButton, contains('width: 34'));
     expect(temperatureButton, contains('height: 34'));
   });
-
   test('Connection status polling is lifecycle-aware and prevents overlapping native reads', () {
     final source = File('lib/main.dart').readAsStringSync();
     final start = source.indexOf('class _ConnectionSheetContentState');
