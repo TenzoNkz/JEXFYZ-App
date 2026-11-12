@@ -641,6 +641,11 @@ void main() {
       await tester.tap(peltierHitArea);
       await tester.pump();
       expect(find.text('Waktu dipilih'), findsOneWidget);
+      final clearCursor = find.byTooltip('Hapus waktu pilihan');
+      expect(clearCursor, findsOneWidget);
+      final clearCursorSize = tester.getSize(clearCursor);
+      expect(clearCursorSize.width, greaterThanOrEqualTo(48));
+      expect(clearCursorSize.height, greaterThanOrEqualTo(48));
       expect(tester.takeException(), isNull);
 
       await pumpAtWidth(420, ThemeData.dark(useMaterial3: true));
