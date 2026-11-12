@@ -1,30 +1,25 @@
-## CURRENT CHECKPOINT — BUILD #154 ANALYZER FAILURE REPAIRED / RETRY PREFLIGHT — 2026-11-12
+## CURRENT CHECKPOINT — BUILD #155 ACTIVE / FLUTTER SETUP — 2026-11-12
 
 **Mode:** `@Thinking Eksekusi Build App!` — guarded App Build/QC/release only.
 
-### Build #154 terminal result
+### Previous attempt and repair
 
-- Run [43243342029](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/43243342029), workflow 374946166, attempt 1, job 131269364235; immutable checkout SHA `dd7e75f1597e14c3d929b1ca78825dc806aef25d`.
-- **FAILED at gate 12 `Analyze Dart code`.** Steps 1–11 succeeded; 13–21 skipped; cleanup 39–43 succeeded. No APK/source ZIP, no Release/tag mutation. Build #153 remains the latest release.
-- Analyzer: 29 issues = **6 errors, 0 warnings, 23 infos**. Five MethodChannel cascade errors were caused by missing `package:flutter/services.dart` in `lib/floating_monitor.dart`; one error was unsupported `fontFamily` on `ThemeData.copyWith` in `lib/main.dart:4181`. The 23 deprecation infos were not fatal under `--no-fatal-infos`.
+- Build #154 / run `43243342029` / job `131269364235` / source `dd7e75f1597e14c3d929b1ca78825dc806aef25d` is terminal FAILED at analyzer: 6 errors, 0 warnings, 23 info deprecations. Gates 13–21 skipped; no artifacts/Release mutation.
+- Root causes were missing `package:flutter/services.dart` in `lib/floating_monitor.dart` (MethodChannel) and unsupported `fontFamily` argument to `ThemeData.copyWith` in `lib/main.dart`.
+- Repairs: `7b852bde09cac3c0f0c86cbe1fa4b28e994ea840` (services import) and `e2aa22b8d64016ab686009ecd2fc57f2ef330ec5` (Roboto applied through textTheme/primaryTextTheme). Read-back confirms exactly two Dart source paths changed.
 
-### Concrete repair/read-back
+### Current retry — Build #155
 
-- `7b852bde09cac3c0f0c86cbe1fa4b28e994ea840`: added `package:flutter/services.dart` to Floating Monitor imports, restoring the existing MethodChannel references.
-- `e2aa22b8d64016ab686009ecd2fc57f2ef330ec5`: preserved Roboto on TamperApp through `textTheme.apply` and `primaryTextTheme.apply`, rather than the unsupported `ThemeData.copyWith(fontFamily: ...)`.
-- Diff from failed checkout to repair head changes exactly two executable paths: `lib/floating_monitor.dart` and `lib/main.dart`. Read-back confirms both corrections. No native/BLE/P1/telemetry/safety/workflow changes.
-- No local Dart/Flutter execution after repair. Formatter remains NOT RUN / UNVERIFIED because the existing workflow has no formatter step; do not report it as passed.
+- Run `43244335274`, workflow 374946166, issue event, attempt 1, job `131272831810`; immutable checkout SHA `63ab4e8167cd099a30ad6a4ca8cd8cfb52d0c098`. [Actions run](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/43244335274).
+- Initial state: IN_PROGRESS. Steps 1–3 succeeded; step 4 Set up Flutter is in progress. Remaining gates pending. Continue only this run.
+- Triggered one time after fresh preflight: #154 terminal, zero queued/in-progress runs, no open PR, Issue #33 exact owner/title/token, workflow unchanged, Release #153 target/hash intact. Issue #33 closed/reopened once.
+- Workflow blob `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12` remains issue opened/reopened only with owner/title/token guard; no push/PR release path.
+- **Formatter caveat:** no Dart formatter step exists in the workflow. `dart format` remains NOT RUN / UNVERIFIED.
+- Build #153 remains the published Release baseline (ID 403010611, tag `jexfyz-latest`, old source `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e`) until #155 passes publication.
 
-### Retry preflight
+### Next
 
-- Current repaired source HEAD: `e2aa22b8d64016ab686009ecd2fc57f2ef330ec5` before this documentation checkpoint; source fix is the exact two-file patch above.
-- #154 is terminal FAILED; this failure is preserved in `APP_BUILD_REPORT.md`. No duplicate/active run.
-- Issue #33 remains the exact owner/title/token guard. The release baseline remains Build #153 / Release 403010611 / tag `jexfyz-latest` at source `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e`.
-- **Next:** run a fresh preflight, then one guarded retry authorized by the owner's original Build App command and concrete repair. Do not trigger while any other run is active; inspect only the resulting run.
-
-### Boundaries
-
-No Firmware compilation/BIN, Firebase, OTA, flashing, device, BLE/NVS/rail/LED, cooling/electrical or OEM visual test was performed. These remain separately NOT RUN / UNVERIFIED.
+Inspect only run `43244335274` / job `131272831810`; preserve any failure and retry only after a concrete repair. CI proves App scope only; Firmware/BIN/Firebase/OTA/flash, physical BLE/device, NVS/rail/LED, thermal/electrical and OEM visual acceptance remain separate and NOT RUN / UNVERIFIED.
 
 ---
 
