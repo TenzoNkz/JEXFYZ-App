@@ -4,16 +4,13 @@ Updated: 2026-11-12 (Asia/Jakarta).
 
 ## Active App Build — Build #153
 
-- Actions run [43145542329](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/43145542329), workflow 374946166, attempt 1, job 130942369953; source SHA `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e`. Initial job status steps 1–2 success, step 3 Java 17 setup in progress.
-- Build #153 is the one guarded retry after the three test-only repairs to Build #152 failures. It corrects Home NOTIFY source-contract assertions, isolates Statistics test viewport, and aligns Diagnostics localization/casing. No production App/Firmware/workflow source changed.
-- Build #152 / run 43144337555 remains failed at Flutter tests (171 pass / 5 fail); no artifact. Details preserved in APP_BUILD_REPORT.md.
-- Latest Release is still Build #151, Release ID 403010611/tag `jexfyz-latest`, source `e383924067b7ab2da27f2e41f21232cfb7144ec0` until #153 completes all gates.
+- Run [43145542329](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/43145542329), job 130942369953, attempt 1; source SHA `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e`.
+- Steps 1–13 passed, including analyzer and all Flutter tests after the Build #152 test-only repairs. Step 14 `Run Android unit-test gate` started at `2026-11-12T03:05:02Z` and remains active at last inspection. Steps 15–21 pending.
+- Exactly one active run; no queued runs. Log archive cannot be downloaded during the active job; no pass/fail is inferred for Android Gradle yet. Do not duplicate the run.
+- Build #152 remains historical FAILED (171 passed / 5 failed); exact failures and repairs preserved in APP_BUILD_REPORT.md.
+- Latest published App release remains Build #151 / Release ID 403010611 / tag `jexfyz-latest` on source SHA `e383924067b7ab2da27f2e41f21232cfb7144ec0`.
 - Android `versionName "Telegram @horizontalzzz"` unchanged.
 
-## Boundaries
+## Boundaries / next action
 
-No Firmware compile/BIN/Firebase/OTA/flash/device/BLE/NVS/rail/LED/cooling/electrical/OEM screenshot work.
-
-## Next action
-
-Continue inspecting run `43145542329` through analyzer, Flutter suite, Android gate, signing, matching source archive, Release/tag parity and downloaded asset verification. No additional trigger while active.
+No Firmware compile/BIN/Firebase/OTA/flash/device/BLE/NVS/rail/LED/cooling/electrical/OEM screenshot work. Continue inspecting run 43145542329 only; no extra trigger while active.
