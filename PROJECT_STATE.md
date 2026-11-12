@@ -1,12 +1,13 @@
-## CURRENT CHECKPOINT — BUILD #152 ACTIVE / GUARDED APP QC — 2026-11-12
+## CURRENT CHECKPOINT — BUILD #152 FAILED / APP TEST REPAIR — 2026-11-12
 
-- **Repository:** TenzoNkz/JEXFYZ-App, branch main. Immutable source at trigger: `04ec48a53bef308f0817470d2d758697a1592cc4`.
-- **Current build:** Build #152 / Actions run `43144337555`, workflow 374946166, attempt 1, issue #33, job `130938510090`. First observation: step 1 Set up job in progress. No gate completed yet.
-- **Change scope vs Build #151 source `e383924067b7ab2da27f2e41f21232cfb7144ec0`:** seven App/test paths changed; 4 Dart source + 3 test files. Implemented Lock Voltage overlay/Settings card priority, custom Peltier safety prompt, About credits, Device Diagnostics snapshot, simplified Usage Statistics, Phosphor icons and Home NOTIFY readability. No Firmware source or workflow changed.
-- **Prior Build #151 remains the latest verified Release while #152 is active:** Release ID 403010611, tag `jexfyz-latest` targets `e383924067b7ab2da27f2e41f21232cfb7144ec0`. Build #152 must pass all gates before claiming updated Release.
-- **Android contract:** Gradle `versionName "Telegram @horizontalzzz"` remains unchanged.
-- **No Firmware compile/BIN/Firebase/OTA/flash/device/BLE/NVS/rail/LED or OEM visual validation.**
-- **Next:** inspect Build #152 through all QC and release gates; no duplicate trigger.
+- **Repository:** TenzoNkz/JEXFYZ-App, branch main. Build #152 tested source SHA `04ec48a53bef308f0817470d2d758697a1592cc4`; current main includes only the failure-ledger documentation commit after the run.
+- **Run:** Actions `43144337555`, job `130938510090`, attempt 1, terminal failure. Steps 1–12 passed including analyzer. Step 13 Flutter tests failed **171 passed / 5 failed**. Steps 14–21 skipped. No new artifact.
+- **Failures:** two stale Home NOTIFY source assertions (incorrect method end anchor; outdated font-size source expression); one Statistics last-sample test with a zero-size test viewport (fixture's pure analytics timestamp assertion passes); Diagnostics localization copy asserted against the wrong source file; stale expected casing of DISCONNECTED.
+- **Repair plan:** test-only corrections; explicitly isolate the Statistics widget viewport, preserve an actual visible-label assertion, correct source anchors/expressions and localization expectation. No production source behavior is to be changed unless the Statistics UI check then demonstrates a real defect. Full hosted test suite remains mandatory.
+- **Latest verified App release remains Build #151**, Release ID 403010611/tag `jexfyz-latest` on source `e383924067b7ab2da27f2e41f21232cfb7144ec0`. No Build #152 artifact.
+- Android `versionName "Telegram @horizontalzzz"` unchanged.
+- Firmware V7.2 compile/BIN, Firebase/OTA/flash, device/BLE/NVS/rail/LED, thermal/electrical, OEM screenshots and owner installation are separate and NOT RUN / UNVERIFIED.
+- **Next:** scoped test repairs, verify, then one guarded App build retry after clean preflight.
 
 ---
 
