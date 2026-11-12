@@ -638,7 +638,8 @@ void main() {
     expect(source, contains('voltageLockKnown && voltageLockActive'));
     expect(source, contains("enabled ? 'VOLTAGE_LOCK:ON' : 'VOLTAGE_LOCK:OFF'"));
     expect(settings, contains('voltageLockSettingsNotifier'));
-    expect(settings, contains('Lock Voltage requires Firmware V7.2 or newer.'));
+    expect(settings, contains("'Firmware V7.2+ required'"));
+    expect(settings, contains("'Perlu Firmware V7.2+'"));
     expect(settings, contains('onVoltageLockChanged(value)'));
     expect(source, contains('_publishVoltageLockSettings();'));
     expect(source, contains('voltageLockKnown = false;'));
