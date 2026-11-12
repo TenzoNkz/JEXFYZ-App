@@ -1,3 +1,11 @@
+## Build #154 analyzer result and source repair — 2026-11-12
+
+The first explicit owner-authorized guarded App Build attempt used checkout SHA `dd7e75f1597e14c3d929b1ca78825dc806aef25d` and failed at the Dart analyzer. Exact output: 29 issues, consisting of six errors, zero warnings and 23 non-fatal deprecation infos. Five diagnostics were cascading missing-`MethodChannel` errors caused by the absent `package:flutter/services.dart` import in `lib/floating_monitor.dart`; the sixth was `fontFamily` supplied to unsupported `ThemeData.copyWith` in `lib/main.dart`. Tests and all downstream packaging/release gates were skipped; no Release mutation occurred.
+
+Repairs were committed and read back: `7b852bde09cac3c0f0c86cbe1fa4b28e994ea840` adds the services import; `e2aa22b8d64016ab686009ecd2fc57f2ef330ec5` preserves Roboto by applying it to `textTheme` and `primaryTextTheme`. No post-repair formatter/analyzer/Flutter test has run locally. The current guarded workflow lacks a formatter step; formatting remains NOT RUN / UNVERIFIED. The concrete analyzer repair justifies one guarded retry after fresh preflight; all existing workflow checks remain intact.
+
+---
+
 ## Disposition update — explicit Build #154 authorization — 2026-11-12
 
 The earlier HOLD was the pre-trigger recommendation made during the preceding Full/source-audit session, when no Build App authorization existed. The owner has now explicitly issued `@Thinking Eksekusi Build App!`. The existing guarded workflow was invoked once through issue #33, creating Build #154 / run 43243342029 / job 131269364235 on immutable checkout SHA dd7e75f1597e14c3d929b1ca78825dc806aef25d. The original HOLD is retained as historical context; it is not the current run state.
