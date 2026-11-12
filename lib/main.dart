@@ -7193,27 +7193,8 @@ void _handleAckLine(String line) {
           compactUi: true,
           child: SettingsPage(
             currentFirmwareVersion: firmwareVersion,
-            currentAppVersion: appVersion,
             coolerId: device?.remoteId.toString() ?? knownCoolerRemoteIdNotifier.value,
             hotLimit: hotLimit,
-            deviceConnected: connected,
-            p1SessionReady: connected && dashboardReady && fullSyncReceived && _bleReady && _bleSessionReady && protocolValid,
-            runtimeOutputsKnown: runtimeOutputsKnown,
-            diagnosticVoltage: connected && fullSyncReceived ? voltage : '--',
-            diagnosticBatteryTemperature: connected && fullSyncReceived && phoneBatteryValid ? phoneBatteryTemp : '--',
-            diagnosticHotsideTemperature: connected && fullSyncReceived ? hotsideTemp : '--',
-            diagnosticFanOn: fanOn,
-            diagnosticPeltierOn: peltierOn,
-            diagnosticAdaptiveOn: adaptiveOn,
-            diagnosticSafetySummary: connected && fullSyncReceived
-                ? (safety.trim().toUpperCase() == 'OK' &&
-                        safetyReason.trim().toUpperCase() == 'NONE'
-                    ? JexText.phrase('No active safety warning.', 'Tidak ada peringatan keselamatan aktif.')
-                    : _friendlyReason(safetyReason))
-                : '--',
-            diagnosticVoltageLockKnown: voltageLockKnown,
-            diagnosticVoltageLockActive: voltageLockActive,
-            diagnosticVoltageLockSaved: voltageLockSaved,
             onOpenFirmwareUpdate: _openFirmwareSettings,
             onVoltageLockChanged: _setVoltageLock,
           ),

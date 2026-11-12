@@ -418,7 +418,7 @@ void main() {
     expect(native, isNot(contains('Gravity.CENTER_HORIZONTAL')));
   });
 
-  test('Settings puts Lock Voltage first and About directly after Firmware with bilingual credits', () {
+  test('Settings keeps Lock Voltage compact, removes Diagnostics, and boxes About', () {
     final settingsSource = File('lib/floating_monitor.dart').readAsStringSync();
     final localizationSource = File('lib/app_settings.dart').readAsStringSync();
     final settingsStart = settingsSource.indexOf('class SettingsPage extends StatelessWidget');
@@ -431,17 +431,28 @@ void main() {
     final generalSection = settingsPage.indexOf("JexText.of('general', language)");
     expect(lockCard, isNonNegative);
     expect(generalSection, greaterThan(lockCard));
-    expect(settingsPage, contains('DeviceDiagnosticsPage('));
+    expect(settingsPage, isNot(contains('DeviceDiagnosticsPage')));
+    expect(settingsPage, isNot(contains('deviceDiagnostics')));
     expect(settingsPage, contains('PhosphorIconsRegular.chartLineUp'));
-    expect(settingsPage, contains('PhosphorIconsRegular.info'));
+
+    final lockStart = settingsSource.indexOf('Widget _voltageLockSettingRow(');
+    final lockEnd = settingsSource.indexOf('Widget _section(', lockStart);
+    final lockLayout = settingsSource.substring(lockStart, lockEnd);
+    expect(lockLayout, contains('width: 34'));
+    expect(lockLayout, contains('height: 34'));
+    expect(lockLayout, contains('fontSize: 12.5'));
+    expect(lockLayout, contains('fontSize: 10.5'));
+    expect(lockLayout, contains('maxLines: 2'));
 
     final firmwareSection = settingsPage.indexOf("JexText.of('firmwareSection', language)");
     final aboutRow = settingsPage.indexOf("JexText.of('about', language)");
+    final aboutCard = settingsPage.indexOf('Card(\n                margin: const EdgeInsets.only(top: 8)');
     expect(firmwareSection, isNonNegative);
-    expect(aboutRow, greaterThan(firmwareSection));
+    expect(aboutCard, greaterThan(firmwareSection));
+    expect(aboutRow, greaterThan(aboutCard));
 
     expect(settingsSource, contains('class AboutSettingsPage'));
-    expect(settingsSource, contains('class DeviceDiagnosticsPage'));
+    expect(settingsSource, isNot(contains('class DeviceDiagnosticsPage')));
     expect(settingsSource, contains('App Development & Build'));
     expect(settingsSource, contains('Design Inspiration'));
     expect(settingsSource, contains('3D Design & Printing'));
@@ -449,16 +460,8 @@ void main() {
     expect(settingsSource, contains('@FYZ737'));
     expect(settingsSource, contains('@Logos3dMichael'));
     expect(localizationSource, contains("'about': {"));
-    expect(localizationSource, contains("'deviceDiagnostics': {"));
+    expect(localizationSource, isNot(contains("'deviceDiagnostics': {")));
     expect(localizationSource, contains("'peltierFanRequiredTitle': {"));
-    final diagnosticsStart = settingsSource.indexOf('class DeviceDiagnosticsPage');
-    final diagnosticsPage = settingsSource.substring(diagnosticsStart);
-    expect(diagnosticsPage, contains('Copy diagnostics'));
-    expect(localizationSource, contains('Device and safety snapshot'));
-    expect(diagnosticsPage, contains('runtimeOutputsKnown ?'));
-    expect(diagnosticsPage, contains("voltageLockActive && !voltageLockSaved"));
-    expect(diagnosticsPage, isNot(contains('coolerId')));
-    expect(diagnosticsPage, isNot(contains('BluetoothDevice')));
   });
 
   testWidgets('About page renders the exact contributor credits in both languages', (tester) async {
@@ -499,41 +502,5 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets('Device Diagnostics keeps unknown values unknown and offers a manual copy action', (tester) async {
-    final previousLanguage = appLanguageNotifier.value;
-    addTearDown(() => appLanguageNotifier.value = previousLanguage);
-    appLanguageNotifier.value = AppLanguage.english;
-
-    await tester.pumpWidget(
-      MaterialApp(
-        theme: ThemeData.light(useMaterial3: true),
-        home: const DeviceDiagnosticsPage(
-          appVersion: '1.0.0+3',
-          firmwareVersion: 'V?',
-          bluetoothConnected: false,
-          p1SessionReady: false,
-          runtimeOutputsKnown: false,
-          voltage: '--',
-          batteryTemperature: '--',
-          hotsideTemperature: '--',
-          fanOn: false,
-          peltierOn: false,
-          adaptiveOn: false,
-          safetySummary: '--',
-          voltageLockKnown: false,
-          voltageLockActive: false,
-          voltageLockSaved: false,
-        ),
-      ),
-    );
-    await tester.pumpAndSettle();
-
-    expect(find.text('Device Diagnostics'), findsOneWidget);
-    expect(find.text('1.0.0+3'), findsOneWidget);
-    expect(find.text('Copy diagnostics'), findsOneWidget);
-    expect(find.text('DISCONNECTED'), findsOneWidget);
-    expect(find.text('ON'), findsNothing);
-    expect(tester.takeException(), isNull);
-  });
 
 }
