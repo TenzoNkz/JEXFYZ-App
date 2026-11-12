@@ -2720,3 +2720,11 @@
 - **Formatter caveat:** workflow has no Dart formatter step; `dart format` remains NOT RUN / UNVERIFIED. Local Flutter/Dart remains unavailable.
 - **Next:** inspect run `43246666829` / job `131281061201`; record only actual analyzer/test/Gradle/package/signing/Release/downloaded asset results. No duplicate trigger while active.
 - **Boundary:** no Firmware compilation/BIN/Firebase/OTA/flash/device/physical BLE/NVS/rail/LED/thermal/electrical/OEM visual operation occurred.
+
+
+### BUILD #156 progress update — toolchain/audit passed / analyzer active (2026-11-12)
+
+- Run `43246666829` / job `131281061201`, immutable checkout SHA `c180f2bb18b3361ecd02fff2503b06043f0d22e0`, attempt 1.
+- Steps 1–11 completed SUCCESS: runner, checkout, Java 17, Flutter 3.47.2, Gradle 9.3.1, toolchain verification, Flutter local.properties, production signing preparation, wrapper recovery, JE X FYZ security/architecture audit and dependency installation.
+- Step 12 `Analyze Dart code` is IN_PROGRESS. Steps 13–21 remain pending. Analyzer count/result not asserted until actual step completion/logs.
+- No duplicate trigger; continue #156 only. Release baseline remains Build #153 / Release 403010611 / tag `jexfyz-latest` at old source SHA `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e`.
