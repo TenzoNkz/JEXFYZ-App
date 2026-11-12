@@ -8,6 +8,7 @@ import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:phosphor_icons/phosphor_icons.dart';
 import 'package:path/path.dart' as p;
 import 'package:sqflite/sqflite.dart';
 
@@ -1772,13 +1773,18 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
         )),
         actions: [
           IconButton(
+            tooltip: JexText.phrase('Statistics information', 'Informasi statistik', language),
+            onPressed: _showDataInfo,
+            icon: const Icon(PhosphorIconsRegular.info),
+          ),
+          IconButton(
             tooltip: JexText.phrase(
               'Clear statistics',
               'Hapus statistik',
               language,
             ),
             onPressed: coolerAvailable ? _clearHistory : null,
-            icon: const Icon(Icons.delete_outline),
+            icon: const Icon(PhosphorIconsRegular.trash),
           ),
         ],
       ),
@@ -1881,8 +1887,6 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
                 scheme,
               )
             else ...[
-              if (_selectedTimestampMs == null)
-                _sharedCursorReadout(summary, language, scheme),
               _temperatureSection(
                 title: JexText.phrase(
                   'Phone Battery Temperature',
@@ -1910,26 +1914,18 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
               const SizedBox(height: 22),
               _profileSection(summary, language, scheme),
               const SizedBox(height: 12),
-              Text(
-                JexText.phrase(
-                  'Battery and Hotside are sampled every second during confirmed cooler operation. Missing or invalid sensor readings remain gaps.',
-                  'Suhu Battery dan Hotside direkam setiap detik selama cooler benar-benar beroperasi. Pembacaan sensor yang hilang atau tidak valid tetap menjadi celah.',
-                  language,
+              Align(
+                alignment: Alignment.centerRight,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 2),
+                  child: Text(
+                    JexText.phrase('Last sample · ', 'Sampel terakhir · ', language) +
+                        _formatLastSample(_snapshot, language),
+                    style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                          color: scheme.onSurfaceVariant,
+                        ),
+                  ),
                 ),
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: scheme.onSurfaceVariant,
-                    ),
-              ),
-              Text(
-                JexText.phrase(
-                  'Stored locally on this phone. Last valid sample: ',
-                  'Disimpan lokal di ponsel ini. Sampel valid terakhir: ',
-                  language,
-                ) +
-                    _formatLastSample(_snapshot, language),
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: scheme.onSurfaceVariant,
-                    ),
               ),
             ],
             if (_loading && summary != null) ...[
@@ -1939,6 +1935,36 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
           ],
         ),
       ),
+    );
+  }
+
+  void _showDataInfo() {
+    final language = appLanguageNotifier.value;
+    showDialog<void>(
+      context: context,
+      builder: (dialogContext) {
+        final scheme = Theme.of(dialogContext).colorScheme;
+        return AlertDialog(
+          title: Text(JexText.phrase('About this history', 'Tentang riwayat ini', language)),
+          content: Text(
+            JexText.phrase(
+              'Battery and Hotside are sampled once per second during confirmed cooler operation. Missing or invalid readings remain visible gaps. History is stored locally on this phone.',
+              'Battery dan Hotside direkam setiap detik saat operasi cooler terkonfirmasi. Pembacaan yang hilang atau tidak valid tetap ditampilkan sebagai celah. Riwayat disimpan secara lokal di ponsel ini.',
+              language,
+            ),
+            style: Theme.of(dialogContext).textTheme.bodyMedium?.copyWith(
+              color: scheme.onSurfaceVariant,
+              height: 1.4,
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(dialogContext),
+              child: Text(JexText.of('close', language)),
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -2123,19 +2149,7 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
     final timestamp = _selectedTimestampMs;
     final snapshot = _snapshot;
     if (timestamp == null || snapshot == null) {
-      return Padding(
-        padding: const EdgeInsets.only(bottom: 8),
-        child: Text(
-          JexText.phrase(
-            'Touch any chart to inspect all metrics at the same time.',
-            'Sentuh grafik untuk melihat semua metrik pada waktu yang sama.',
-            language,
-          ),
-          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: scheme.onSurfaceVariant,
-              ),
-        ),
-      );
+      return const SizedBox.shrink();
     }
 
     final voltage = UsageStatsAnalytics.stateAt(summary.voltageSegments, timestamp);
@@ -2149,14 +2163,23 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(label, style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                color: scheme.onSurfaceVariant,
-              )),
-              Text(value, maxLines: 1, overflow: TextOverflow.ellipsis,
+              Text(
+                label,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                  color: scheme.onSurfaceVariant,
+                ),
+              ),
+              Text(
+                value,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
                 style: Theme.of(context).textTheme.labelLarge?.copyWith(
                   fontWeight: FontWeight.w700,
                   fontFeatures: const [FontFeature.tabularFigures()],
-                )),
+                ),
+              ),
             ],
           ),
         );
@@ -2165,43 +2188,47 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(JexText.phrase('Selected time', 'Waktu dipilih', language),
-              style: Theme.of(context).textTheme.labelMedium),
-            Text(_axisTime(timestamp, snapshot.fromMs),
+            Text(
+              JexText.phrase('Selected time', 'Waktu dipilih', language),
+              style: Theme.of(context).textTheme.labelMedium,
+            ),
+            const Spacer(),
+            Text(
+              _axisTime(timestamp, snapshot.fromMs),
               style: Theme.of(context).textTheme.labelMedium?.copyWith(
                 fontWeight: FontWeight.w700,
                 fontFeatures: const [FontFeature.tabularFigures()],
-              )),
+              ),
+            ),
+            const SizedBox(width: 2),
+            IconButton(
+              tooltip: JexText.phrase('Clear selected time', 'Hapus waktu pilihan', language),
+              visualDensity: VisualDensity.compact,
+              constraints: const BoxConstraints.tightFor(width: 36, height: 36),
+              padding: EdgeInsets.zero,
+              onPressed: () => setState(() => _selectedTimestampMs = null),
+              icon: const Icon(PhosphorIconsRegular.x, size: 17),
+            ),
           ],
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 5),
         Row(children: [
           metric(JexText.phrase('Battery', 'Baterai HP', language), _formatTemperature(battery)),
-          metric(JexText.phrase('Hotside', 'Hotside', language), _formatTemperature(hotside)),
+          metric('Hotside', _formatTemperature(hotside)),
           metric(JexText.phrase('Voltage', 'Tegangan', language), voltage?.textValue ?? '--'),
         ]),
-        const SizedBox(height: 7),
+        const SizedBox(height: 5),
         Row(children: [
-          metric(JexText.phrase('Adaptive', 'Mode Adaptif', language), adaptive?.textValue ?? '--'),
-          metric(JexText.phrase('Peltier', 'Peltier', language), peltier?.textValue ?? '--'),
+          metric(JexText.phrase('Adaptive', 'Adaptif', language), adaptive?.textValue ?? '--'),
+          metric('Peltier', peltier?.textValue ?? '--'),
           metric(JexText.phrase('Fan Speed', 'Kecepatan Kipas', language), fan?.numberValue == null
               ? '--'
               : fan!.numberValue!.toStringAsFixed(0) + '%'),
         ]),
-        const SizedBox(height: 8),
-        Align(
-          alignment: Alignment.centerRight,
-          child: TextButton(
-            onPressed: () => setState(() => _selectedTimestampMs = null),
-            child: Text(JexText.phrase('Clear cursor', 'Hapus kursor', language)),
-          ),
-        ),
       ],
     );
   }
-
 
   Widget _temperatureSection({
     required String title,
@@ -2220,7 +2247,12 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Expanded(child: Text(title, style: Theme.of(context).textTheme.titleMedium)),
+            Expanded(
+              child: Text(
+                title,
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+            ),
             Text(
               _formatTemperature(
                 UsageStatsAnalytics.temperatureAt(
@@ -2229,50 +2261,58 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
                 ),
               ),
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    color: color,
-                    fontWeight: FontWeight.w800,
-                    fontFeatures: const [FontFeature.tabularFigures()],
-                  ),
+                color: color,
+                fontWeight: FontWeight.w800,
+                fontFeatures: const [FontFeature.tabularFigures()],
+              ),
             ),
           ],
         ),
         if (referenceValue != null) ...[
           const SizedBox(height: 2),
           Text(
-            JexText.phrase('Current limit: ', 'Batas saat ini: ', language) +
+            JexText.phrase('Limit · ', 'Batas · ', language) +
                 referenceValue.toStringAsFixed(0) +
                 '°C',
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: scheme.onSurfaceVariant,
-                ),
+            style: Theme.of(context).textTheme.labelSmall?.copyWith(
+              color: scheme.onSurfaceVariant,
+            ),
           ),
         ],
-        const SizedBox(height: 8),
+        const SizedBox(height: 7),
         SizedBox(
           height: 170,
           width: double.infinity,
           child: hasData
               ? LayoutBuilder(
-                  builder: (context, constraints) => GestureDetector(
-                    behavior: HitTestBehavior.opaque,
-                    onTapDown: (details) => _setChartCursor(
-                      details.localPosition.dx,
-                      constraints.maxWidth,
+                  builder: (context, constraints) => Semantics(
+                    label: title,
+                    hint: JexText.phrase(
+                      'Tap or drag to inspect all metrics at the selected time.',
+                      'Sentuh atau geser untuk memeriksa semua metrik pada waktu pilihan.',
+                      language,
                     ),
-                    onHorizontalDragUpdate: (details) => _setChartCursor(
-                      details.localPosition.dx,
-                      constraints.maxWidth,
-                    ),
-                    child: _AnimatedUsageLineChart(
-                      key: ValueKey<String>('usage-temperature-chart-$metricKey'),
-                      points: UsageStatsAnalytics.decimatePoints(summary.points),
-                      fromMs: _snapshot!.fromMs,
-                      toMs: _snapshot!.toMs,
-                      color: color,
-                      gridColor: scheme.outlineVariant,
-                      labelColor: scheme.onSurfaceVariant,
-                      referenceValue: referenceValue,
-                      cursorTimestampMs: _selectedTimestampMs,
+                    child: GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onTapDown: (details) => _setChartCursor(
+                        details.localPosition.dx,
+                        constraints.maxWidth,
+                      ),
+                      onHorizontalDragUpdate: (details) => _setChartCursor(
+                        details.localPosition.dx,
+                        constraints.maxWidth,
+                      ),
+                      child: _AnimatedUsageLineChart(
+                        key: ValueKey<String>('usage-temperature-chart-$metricKey'),
+                        points: UsageStatsAnalytics.decimatePoints(summary.points),
+                        fromMs: _snapshot!.fromMs,
+                        toMs: _snapshot!.toMs,
+                        color: color,
+                        gridColor: scheme.outlineVariant,
+                        labelColor: scheme.onSurfaceVariant,
+                        referenceValue: referenceValue,
+                        cursorTimestampMs: _selectedTimestampMs,
+                      ),
                     ),
                   ),
                 )
@@ -2284,46 +2324,23 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
                       language,
                     ),
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: scheme.onSurfaceVariant,
-                        ),
+                      color: scheme.onSurfaceVariant,
+                    ),
                   ),
                 ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 7),
         Row(
           children: [
-            Expanded(
-              child: _summaryValue(
-                JexText.phrase('Min', 'Min', language),
-                _formatTemperature(summary.minimum),
-              ),
-            ),
-            Expanded(
-              child: _summaryValue(
-                JexText.phrase('Average', 'Rata-rata', language),
-                _formatTemperature(summary.average),
-              ),
-            ),
-            Expanded(
-              child: _summaryValue(
-                JexText.phrase('Max', 'Maks', language),
-                _formatTemperature(summary.maximum),
-              ),
-            ),
+            Expanded(child: _summaryValue(JexText.phrase('Min', 'Min', language), _formatTemperature(summary.minimum))),
+            Expanded(child: _summaryValue(JexText.phrase('Avg', 'Rata-rata', language), _formatTemperature(summary.average))),
+            Expanded(child: _summaryValue(JexText.phrase('Max', 'Maks', language), _formatTemperature(summary.maximum))),
+            Expanded(child: _summaryValue(JexText.phrase('Observed', 'Terpantau', language), _formatDuration(summary.observedMs))),
           ],
-        ),
-        const SizedBox(height: 3),
-        Text(
-          JexText.phrase('Observed: ', 'Terpantau: ', language) +
-              _formatDuration(summary.observedMs),
-          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: scheme.onSurfaceVariant,
-              ),
         ),
       ],
     );
   }
-
   Widget _profileSection(
     UsageStatsSummary summary,
     AppLanguage language,
@@ -2334,13 +2351,14 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
         rail + '  ' + _formatDuration(summary.voltageDurationMs[rail] ?? 0),
     ];
     final adaptiveLabel =
-        JexText.phrase('Adaptive ON: ', 'Adaptif AKTIF: ', language) +
+        JexText.phrase('Adaptive ON · ', 'Adaptif AKTIF · ', language) +
             _formatDuration(summary.adaptiveOnDurationMs);
     final peltierLabel =
-        JexText.phrase('Peltier ON: ', 'Peltier AKTIF: ', language) +
+        JexText.phrase('Peltier ON · ', 'Peltier AKTIF · ', language) +
             _formatDuration(summary.peltierOnDurationMs);
     final fanAverage = summary.fanSpeedAverage;
     final fanMaximum = summary.fanSpeedMaximum;
+
     String latestText(List<UsageStateSegment> values, {bool percentage = false}) {
       if (values.isEmpty) return '--';
       final latest = values.last;
@@ -2355,10 +2373,10 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          JexText.phrase('Operating Profile', 'Riwayat Operasi', language),
+          JexText.phrase('Activity', 'Aktivitas', language),
           style: Theme.of(context).textTheme.titleMedium,
         ),
-        const SizedBox(height: 9),
+        const SizedBox(height: 7),
         _timelineLane(
           JexText.phrase('Voltage', 'Tegangan', language),
           summary.voltageSegments,
@@ -2367,14 +2385,14 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
           currentValue: latestText(summary.voltageSegments),
         ),
         _timelineLane(
-          JexText.phrase('Adaptive Mode', 'Mode Adaptif', language),
+          JexText.phrase('Adaptive', 'Adaptif', language),
           summary.adaptiveSegments,
           scheme,
           lane: 'adaptive',
           currentValue: latestText(summary.adaptiveSegments),
         ),
         _timelineLane(
-          JexText.phrase('Peltier Switch', 'Sakelar Peltier', language),
+          JexText.phrase('Peltier', 'Peltier', language),
           summary.peltierSegments,
           scheme,
           lane: 'peltier',
@@ -2387,53 +2405,70 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
           lane: 'fan_speed',
           currentValue: latestText(summary.fanSpeedSegments, percentage: true),
         ),
-        const SizedBox(height: 4),
+        const SizedBox(height: 3),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
               _axisTime(_snapshot!.fromMs, _snapshot!.fromMs),
               style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                    color: scheme.onSurfaceVariant,
-                  ),
+                color: scheme.onSurfaceVariant,
+                fontFeatures: const [FontFeature.tabularFigures()],
+              ),
             ),
             Text(
               _axisTime(_snapshot!.toMs, _snapshot!.fromMs),
               style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                    color: scheme.onSurfaceVariant,
-                  ),
+                color: scheme.onSurfaceVariant,
+                fontFeatures: const [FontFeature.tabularFigures()],
+              ),
             ),
           ],
         ),
-        const SizedBox(height: 9),
-        Wrap(
-          spacing: 12,
-          runSpacing: 6,
-          children: [
-            for (final label in voltageLabels)
-              Text(label, style: Theme.of(context).textTheme.bodySmall),
-            Text(adaptiveLabel, style: Theme.of(context).textTheme.bodySmall),
-            Text(peltierLabel, style: Theme.of(context).textTheme.bodySmall),
-            Text(
-              JexText.phrase('Fan average: ', 'Rata-rata kipas: ', language) +
-                  (fanAverage == null
-                      ? '--'
-                      : fanAverage.toStringAsFixed(0) + '%'),
-              style: Theme.of(context).textTheme.bodySmall,
+        Theme(
+          data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+          child: ExpansionTile(
+            key: const ValueKey<String>('usage-profile-details'),
+            tilePadding: EdgeInsets.zero,
+            childrenPadding: const EdgeInsets.only(bottom: 4),
+            visualDensity: VisualDensity.compact,
+            title: Text(
+              JexText.phrase('More details', 'Rincian', language),
+              style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                color: scheme.onSurfaceVariant,
+                fontWeight: FontWeight.w700,
+              ),
             ),
-            Text(
-              JexText.phrase('Fan max: ', 'Kipas maks: ', language) +
-                  (fanMaximum == null
-                      ? '--'
-                      : fanMaximum.toStringAsFixed(0) + '%'),
-              style: Theme.of(context).textTheme.bodySmall,
-            ),
-          ],
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(bottom: 6),
+                child: Wrap(
+                  spacing: 14,
+                  runSpacing: 8,
+                  children: [
+                    for (final label in voltageLabels)
+                      Text(label, style: Theme.of(context).textTheme.bodySmall),
+                    Text(adaptiveLabel, style: Theme.of(context).textTheme.bodySmall),
+                    Text(peltierLabel, style: Theme.of(context).textTheme.bodySmall),
+                    Text(
+                      JexText.phrase('Fan average · ', 'Rata-rata kipas · ', language) +
+                          (fanAverage == null ? '--' : fanAverage.toStringAsFixed(0) + '%'),
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                    Text(
+                      JexText.phrase('Fan max · ', 'Kipas maks · ', language) +
+                          (fanMaximum == null ? '--' : fanMaximum.toStringAsFixed(0) + '%'),
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ],
     );
   }
-
   Widget _timelineLane(
     String label,
     List<UsageStateSegment> segments,
@@ -2740,7 +2775,7 @@ class _UsageLinePainter extends CustomPainter {
     final reference = referenceValue;
     if (reference != null) {
       final referencePaint = Paint()
-        ..color = Colors.deepOrange.withValues(alpha: 0.75)
+        ..color = color.withValues(alpha: 0.78)
         ..strokeWidth = 1
         ..style = PaintingStyle.stroke;
       final y = yFor(reference);
