@@ -182,6 +182,21 @@ UsageStatsSnapshot _sampleSnapshot() {
 
 void main() {
   group('Usage Statistics analytics', () {
+    test('temperature axis ticks keep narrow ranges distinct', () {
+      const tickStep = 2 / 3;
+      final labels = <String>[
+        formatUsageAxisTick(43.5, tickStep),
+        formatUsageAxisTick(42.833333, tickStep),
+        formatUsageAxisTick(42.166667, tickStep),
+        formatUsageAxisTick(41.5, tickStep),
+      ];
+
+      expect(labels, <String>['43.5', '42.8', '42.2', '41.5']);
+      expect(labels.toSet(), hasLength(4));
+      expect(formatUsageAxisTick(46, 2), '46');
+      expect(formatUsageAxisTick(0.234, 0.01), '0.23');
+    });
+
     test('active state follows authoritative physical outputs, not connection or Adaptive', () {
       expect(usageCoolerIsActive(fanOn: false, peltierOn: false), isFalse);
       expect(usageCoolerIsActive(fanOn: true, peltierOn: false), isTrue);

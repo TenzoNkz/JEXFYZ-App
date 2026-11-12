@@ -28,6 +28,20 @@ double usageInterpolate(double? from, double? to, double progress) {
   return from + (to - from) * fraction;
 }
 
+String formatUsageAxisTick(double value, double tickStep) {
+  final step = tickStep.abs();
+  final decimals = step >= 1
+      ? 0
+      : step >= 0.1
+          ? 1
+          : step >= 0.01
+              ? 2
+              : step >= 0.001
+                  ? 3
+                  : 4;
+  return value.toStringAsFixed(decimals);
+}
+
 String formatUsageElapsed(int milliseconds) {
   final totalSeconds = math.max(0, milliseconds ~/ 1000).toInt();
   final hours = totalSeconds ~/ 3600;
@@ -2871,13 +2885,17 @@ class _UsageLinePainter extends CustomPainter {
       ..color = gridColor
       ..strokeWidth = 0.7;
     final textStyle = TextStyle(color: labelColor, fontSize: 10);
+    final tickStep = (maxValue - minValue) / 3;
     for (var index = 0; index <= 3; index++) {
       final fraction = index / 3;
       final y = plot.top + plot.height * fraction;
       canvas.drawLine(Offset(plot.left, y), Offset(plot.right, y), gridPaint);
       final value = maxValue - (maxValue - minValue) * fraction;
       final text = TextPainter(
-        text: TextSpan(text: value.toStringAsFixed(0), style: textStyle),
+        text: TextSpan(
+          text: formatUsageAxisTick(value, tickStep),
+          style: textStyle,
+        ),
         textDirection: TextDirection.ltr,
       )..layout(maxWidth: left - 5);
       text.paint(canvas, Offset(0, y - text.height / 2));
