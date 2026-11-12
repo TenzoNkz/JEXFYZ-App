@@ -10,7 +10,7 @@
 
 ### Current guarded retry — Build #155
 
-- Run `43244335274`, workflow 374946166, issue event, attempt 1, job `131272831810`; immutable checkout SHA `63ab4e8167cd099a30ad4d4c`. [Actions run](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/43244335274).
+- Run `43244335274`, workflow 374946166, issue event, attempt 1, job `131272831810`; immutable checkout SHA `63ab4e8167cd099a30ad6a4ca8cd8cfb52d0c098`. [Actions run](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/43244335274).
 - **Progress:** steps 1–12 SUCCESS, including security/architecture audit, dependencies and analyzer. Step 13 `flutter test` is IN_PROGRESS. Steps 14–21 are pending.
 - Exact analyzer info count and test count are pending terminal logs. Active job log archive is not downloadable while the job is running; do not invent counts.
 - No duplicate trigger; continue run #155 only. Release baseline remains Build #153 / Release 403010611 / tag `jexfyz-latest`, source `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e`.
