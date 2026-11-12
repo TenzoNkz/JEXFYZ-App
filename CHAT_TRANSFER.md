@@ -15,6 +15,7 @@
 - Complete static inventory: 7 Dart library files, 9 test files, 179 test declarations (166 unit/source-contract and 13 widget tests). The latest source suite is **NOT RUN**; Build #153's 176/176 result applies only to its older source SHA.
 - Full findings and remediation priority are recorded in `APP_PREBUILD_AUDIT.md`.
 - **P1 not ready:** Usage Statistics full-session recompute + unbounded serialized write queue; overlapping 650-ms Connection and 300-ms Floating Monitor polling; 36/42/34-dp Home/Temperature hit targets; profane hard-coded TamperScreen copy with an explicit test contract; latest current-main tests not executed.
+- **New owner screenshot defect (2026-11-12):** Usage Statistics timeline tap expands the selected-time dock to almost the full screen. High-confidence source cause: `_sharedCursorReadout()` outer `Column` defaults to `MainAxisSize.max` inside `Scaffold.bottomNavigationBar`. Same `usage_statistics.dart` blob exists in Build #153 and current main. See `DESIGN_NOTES.md` and `APP_PREBUILD_AUDIT.md`. Proposed narrow fix is `mainAxisSize: MainAxisSize.min` plus a widget-height regression; no source change yet.
 - **P2:** no `analysis_options.yaml` although `flutter_lints` is declared; no formatter check in guarded workflow; monolithic main.dart; microtype (6.8–10.5 dp) and dialog/Floating presentation inconsistency; semantic token/contrast and fixed TextScaler accessibility review.
 - **Positive findings:** 354 localized keys, no duplicate keys or missing static `JexText.of` references; semantic telemetry colors and Phosphor icon family are coherent; current Settings one-line rows/About/Peltier/Temperature/Diagnostics changes are present in source.
 - **Evidence:** STATIC SOURCE CHECK only. No format/analyzer/test, screenshots, App Build, physical device or performance soak was run. No false claim of a clean or visually accepted App.
@@ -28,7 +29,7 @@
 
 ### Exact next action
 
-Use a separate `Eksekusi Full!` for the P1 remediation and matching tests. **Do not build yet.** Issue `Eksekusi Build App!` only after the P1 findings are fixed/dispositioned, current-source tests/analyzer/formatter are clean, and the pre-build criteria in `APP_PREBUILD_AUDIT.md` are met.
+Use a separate `Eksekusi Full!` first for the owner-reported Usage Statistics selected-time dock defect: compact the bottom readout using intrinsic content height and add the missing height regression at 350/420 dp, EN/ID and Light/Dark. The broader P1 audit items remain open. **Do not build yet.** Issue `Eksekusi Build App!` only after the P1 findings are fixed/dispositioned, current-source tests/analyzer/formatter are clean, and the pre-build criteria in `APP_PREBUILD_AUDIT.md` are met.
 
 
 ---

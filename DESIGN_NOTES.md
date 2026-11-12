@@ -55,6 +55,18 @@ This document stores owner-approved, screen-specific visual constraints, not a b
 - **Regression evidence:** Build #153 hosted Flutter suite passed 176/176, including the current Statistics cursor/detail/provenance contracts. No local formatter, focused test, analyzer or Android rendering was run in this Diskusi.
 - **Visual acceptance:** **VISUAL NOT VERIFIED** until actual App screenshots are reviewed at 350-dp/420-dp, Light/Dark, English/Indonesian, portrait/constrained height, and representative active/completed/no-data/gap/long-session states.
 
+
+### Selected-time detail dock — owner screenshot defect (2026-11-12)
+
+**Status: OWNER SCREENSHOT REVIEWED / ROOT CAUSE HIGH-CONFIDENCE STATIC SOURCE ANALYSIS / FIX NOT IMPLEMENTED.** Tapping a chart timeline currently expands the selected-time surface to almost the entire remaining screen, leaving the six metrics near its top and hiding the graph.
+
+- **Likely cause:** `UsageStatisticsPage._buildForLanguage()` mounts the dock as `Scaffold.bottomNavigationBar`; `_sharedCursorReadout()` returns an outer `Column` with the default `mainAxisSize: MainAxisSize.max`. Under bounded bottom-slot constraints this can expand vertically even though its children need only a compact height.
+- **Narrow proposed treatment:** set the outer readout Column to `mainAxisSize: MainAxisSize.min`. Keep the bottom dock, SafeArea bottom inset, selected elapsed time, Battery, Hotside, Voltage, Adaptive, Peltier, Fan Speed, 48×48 dp clear target and all cursor/timeline semantics. Do not change chart data, sampling, SQLite, telemetry or graph interaction.
+- **Regression required:** after tapping a timeline, assert the dock's measured height remains content-sized (target ≤200 dp at normal text scale), all six values and selected time remain visible, and chart content remains visible/scrollable. Test 350-dp/420-dp, EN/ID, Light/Dark, and clearing selection. Existing coverage checks the selected label and clear-target size, but not dock height.
+- **Source relationship:** the Statistics Dart file at Build #153 source `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e` is byte-identical to current main's source blob. The defect is therefore present in the last released implementation too.
+- **Evidence:** supplied Android screenshots reviewed; source inspection only. No fix or test execution has occurred. Selected-time interaction status is **VISUAL REJECT**; overall screen acceptance remains **VISUAL NOT VERIFIED** until corrected Android output is reviewed.
+
+
 ### Peltier safety popup — implemented in Build #153
 
 - The Fan-OFF → user requests Peltier-ON path now uses a custom JE Cooler amber prerequisite card inside the existing `showGeneralDialog` / fixed-canvas route; it no longer uses the stock AlertDialog composition.

@@ -29,6 +29,20 @@ Evidence is classified as **STATIC SOURCE CHECK** unless explicitly stated other
 
 ## 3. P1 — close before the next App Build
 
+### P1.0 — Usage Statistics selected-time dock expands to almost the full screen
+
+**Owner evidence:** the supplied 720×1600 Android screenshots show a normal graph-first Statistics page, then after tapping a timeline the selected-time readout appears as a dark surface occupying almost the entire remaining viewport. The six values are grouped in the first ~200 px of that surface; most of the surface is empty and the charts are obscured. This is a visible primary-task/layout failure (**SCREENSHOT REVIEWED**, owner-provided, dark theme).
+
+**Source evidence:** in `lib/usage_statistics.dart`, `UsageStatisticsPage._buildForLanguage()` mounts the selected-time readout in `Scaffold.bottomNavigationBar`. `_sharedCursorReadout()` returns an outer `Column` without specifying `mainAxisSize`; Flutter's default is `MainAxisSize.max`. In the bottom slot's bounded vertical constraints this can expand the dock to the available height, matching the screenshot. The `lib/usage_statistics.dart` blob at Build #153 source SHA `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e` is identical to current main blob `a73ae319dc45ff5ce0812c58d2e8525f1aaf9937`, so the released Build #153 contains the same layout implementation.
+
+**Root-cause confidence:** high, source-derived; no Flutter reproduction or modified widget test has been executed yet. The screenshot establishes the symptom; it does not independently prove the exact RenderObject constraint path.
+
+**Smallest safe correction:** give the outer readout `Column` `mainAxisSize: MainAxisSize.min` so the sticky dock takes only its content height. Keep `Scaffold.bottomNavigationBar`, SafeArea bottom-inset handling, the selected elapsed time, all six synchronized values, the existing 48×48 dp clear-selection target and the graph/timeline interaction. Add a compact height guard only if a widget test shows that `MainAxisSize.min` alone is insufficient; do not replace the dock with a full-screen modal or remove the selected-time feature.
+
+**Missing regression:** the current widget test taps the Peltier timeline and checks that “Waktu dipilih” and the 48×48 dp clear button appear, but it never asserts the dock's actual height. Add a behavioral assertion that the selected dock remains content-sized (target ≤200 dp at the tested normal text scale) and within the viewport. Exercise 350-dp/420-dp widths, EN/ID, Light/Dark, selection and clear. Also confirm chart content remains visible/scrollable and all six values remain correct.
+
+**Evidence boundary:** source/static analysis and owner screenshot review only. No source/test change, Flutter execution, new APK or device validation occurred.
+
 ### P1.1 — Usage Statistics long-session cost and backpressure
 
 **Evidence in source**
