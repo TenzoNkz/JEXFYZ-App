@@ -579,7 +579,7 @@ void main() {
         expect(find.byKey(key), findsOneWidget);
       }
 
-      final profileHeadingLight = find.text('Riwayat Operasi');
+      final profileHeadingLight = find.text('Aktivitas');
       await tester.scrollUntilVisible(
         profileHeadingLight,
         240,
@@ -587,6 +587,12 @@ void main() {
       );
       await tester.pumpAndSettle();
       expect(profileHeadingLight, findsOneWidget);
+      expect(find.text('Rincian'), findsOneWidget);
+      expect(find.textContaining('Rata-rata kipas'), findsNothing);
+      expect(find.textContaining('Touch any chart'), findsNothing);
+      await tester.tap(find.text('Rincian'));
+      await tester.pumpAndSettle();
+      expect(find.textContaining('Rata-rata kipas'), findsOneWidget);
       for (final key in <Key>[
         const ValueKey<String>('usage-profile-timeline-voltage'),
         const ValueKey<String>('usage-profile-timeline-adaptive'),
@@ -617,7 +623,7 @@ void main() {
       expect(find.text('24H'), findsNothing);
       expect(find.text('7D'), findsNothing);
       expect(find.text('Sesi pendinginan selesai'), findsOneWidget);
-      final profileHeadingDark = find.text('Riwayat Operasi');
+      final profileHeadingDark = find.text('Aktivitas');
       await tester.scrollUntilVisible(
         profileHeadingDark,
         240,
@@ -697,7 +703,7 @@ void main() {
         await tester.pumpAndSettle();
 
         final lastValidSample = find.textContaining(
-          'Stored locally on this phone. Last valid sample: 04:00',
+          'Last sample · 04:00',
         );
         await tester.scrollUntilVisible(
           lastValidSample,
