@@ -9522,7 +9522,7 @@ void _handleAckLine(String line) {
                 ],
               ),
             ),
-            const SizedBox(height: 3),
+            const SizedBox(height: 2),
             Expanded(
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -9636,7 +9636,7 @@ void _handleAckLine(String line) {
                 ],
               ),
             ),
-            const SizedBox(height: 3),
+            const SizedBox(height: 2),
             _homeNotify(),
           ],
         ),
