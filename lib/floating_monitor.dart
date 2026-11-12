@@ -1085,7 +1085,7 @@ class SettingsPage extends StatelessWidget {
                   context,
                   PhosphorIconsRegular.bell,
                   JexText.of('notifications', language),
-                  '3',
+                  '',
                   () => Navigator.of(context).push(
                     MaterialPageRoute<void>(
                       builder: (_) => const JexFixedScalePage(compactUi: true, child: NotificationsSettingsPage()),
@@ -1133,11 +1133,7 @@ class SettingsPage extends StatelessWidget {
                       'Statistik Penggunaan',
                       language,
                     ),
-                    JexText.phrase(
-                      'Temperature and operating history',
-                      'Riwayat suhu dan operasi',
-                      language,
-                    ),
+                    '',
                     () => Navigator.of(context).push(
                       MaterialPageRoute<void>(
                         builder: (_) => JexFixedScalePage(
@@ -1153,8 +1149,15 @@ class SettingsPage extends StatelessWidget {
                 ],
               ),
               _section(context, JexText.of('firmwareSection', language), [
-                _item(context, PhosphorIconsRegular.uploadSimple, JexText.of('firmwareUpdate', language),
-                    currentFirmwareVersion, () => unawaited(onOpenFirmwareUpdate())),
+                _item(
+                  context,
+                  PhosphorIconsRegular.uploadSimple,
+                  JexText.of('firmwareUpdate', language),
+                  currentFirmwareVersion.trim().isEmpty || currentFirmwareVersion.trim() == 'V?'
+                      ? ''
+                      : currentFirmwareVersion.trim(),
+                  () => unawaited(onOpenFirmwareUpdate()),
+                ),
               ]),
               Card(
                 margin: const EdgeInsets.only(top: 8),
@@ -1164,7 +1167,7 @@ class SettingsPage extends StatelessWidget {
                   context,
                   PhosphorIconsRegular.info,
                   JexText.of('about', language),
-                  'JE Cooler',
+                  '',
                   () => Navigator.of(context).push(
                     MaterialPageRoute<void>(
                       builder: (_) => const JexFixedScalePage(
@@ -1190,43 +1193,39 @@ class SettingsPage extends StatelessWidget {
     VoltageLockSettingsState state,
   ) {
     final scheme = Theme.of(context).colorScheme;
-    final String subtitle;
+    final String? subtitle;
     if (!state.sessionReady) {
       subtitle = JexText.phrase(
-        'Connect to view lock status.',
-        'Hubungkan untuk melihat status kunci.',
+        'Not synchronized',
+        'Belum tersinkron',
         language,
       );
     } else if (!state.known) {
       subtitle = JexText.phrase(
-        'Requires Firmware V7.2+.',
-        'Memerlukan Firmware V7.2+.',
+        'Firmware V7.2+ required',
+        'Perlu Firmware V7.2+',
         language,
       );
     } else if (!state.saved) {
       subtitle = JexText.phrase(
-        'Active this session; not saved.',
-        'Aktif sementara; belum tersimpan.',
+        'Active · not saved',
+        'Aktif · belum tersimpan',
         language,
       );
     } else if (state.active) {
       subtitle = JexText.phrase(
-        '5V only; Adaptive remains OFF.',
-        '5V saja; Adaptive tetap MATI.',
+        '5V limit · Adaptive OFF',
+        'Batas 5V · Adaptive MATI',
         language,
       );
     } else {
-      subtitle = JexText.phrase(
-        'Manual 5V / 9V / 12V available.',
-        'Pilihan manual 5V / 9V / 12V tersedia.',
-        language,
-      );
+      subtitle = null;
     }
 
     Widget trailing;
     if (!state.known) {
       trailing = Tooltip(
-        message: subtitle,
+        message: subtitle ?? JexText.phrase('Lock Voltage', 'Kunci Tegangan', language),
         child: Icon(
           state.sessionReady
               ? PhosphorIconsRegular.info
@@ -1307,16 +1306,17 @@ class SettingsPage extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 2),
-                Text(
-                  subtitle,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    color: scheme.onSurfaceVariant,
-                    fontSize: 10.5,
-                    height: 1.2,
+                if (subtitle != null)
+                  Text(
+                    subtitle,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color: scheme.onSurfaceVariant,
+                      fontSize: 10.5,
+                      height: 1.2,
+                    ),
                   ),
-                ),
               ],
             ),
           ),
@@ -1352,53 +1352,68 @@ class SettingsPage extends StatelessWidget {
     );
   }
 
-  Widget _item(BuildContext context, IconData icon, String title, String summary, VoidCallback onTap) {
+  Widget _item(
+    BuildContext context,
+    IconData icon,
+    String title,
+    String summary,
+    VoidCallback onTap,
+  ) {
     final scheme = Theme.of(context).colorScheme;
     return Material(
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-          child: Row(
-            children: [
-              JexAnimatedGlyph(
-                icon: icon,
-                size: 19,
-                color: scheme.onSurfaceVariant,
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      title,
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(minHeight: 48),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                JexAnimatedGlyph(
+                  icon: icon,
+                  size: 19,
+                  color: scheme.onSurfaceVariant,
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    title,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color: scheme.onSurface,
+                      fontSize: 13,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+                if (summary.trim().isNotEmpty) ...[
+                  const SizedBox(width: 10),
+                  ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 88),
+                    child: Text(
+                      summary,
+                      textAlign: TextAlign.end,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                       style: TextStyle(
-                        color: scheme.onSurface,
-                        fontSize: 13,
-                        fontWeight: FontWeight.w700,
+                        color: scheme.onSurfaceVariant,
+                        fontSize: 11,
+                        fontWeight: FontWeight.w500,
                       ),
                     ),
-                    if (summary.trim().isNotEmpty) ...[
-                      const SizedBox(height: 2),
-                      Text(
-                        summary,
-                        style: TextStyle(
-                          color: scheme.onSurfaceVariant,
-                          fontSize: 11,
-                        ),
-                      ),
-                    ],
-                  ],
+                  ),
+                ],
+                const SizedBox(width: 8),
+                JexAnimatedGlyph(
+                  icon: PhosphorIconsRegular.caretRight,
+                  size: 16,
+                  color: scheme.onSurfaceVariant,
                 ),
-              ),
-              JexAnimatedGlyph(
-                icon: PhosphorIconsRegular.caretRight,
-                size: 16,
-                color: scheme.onSurfaceVariant,
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -1406,7 +1421,7 @@ class SettingsPage extends StatelessWidget {
   }
 }
 
-// About restores the owner-requested contributor credits in a quiet, single-column layout.
+// About page with concise contributor credits.
 class AboutSettingsPage extends StatelessWidget {
   const AboutSettingsPage({super.key});
 
@@ -1419,7 +1434,7 @@ class AboutSettingsPage extends StatelessWidget {
   }) {
     final scheme = Theme.of(context).colorScheme;
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 13),
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -1428,30 +1443,29 @@ class AboutSettingsPage extends StatelessWidget {
             style: TextStyle(
               color: scheme.onSurfaceVariant,
               fontSize: 10,
-              fontWeight: FontWeight.w700,
-              letterSpacing: .55,
+              fontWeight: FontWeight.w600,
             ),
           ),
-          const SizedBox(height: 5),
+          const SizedBox(height: 3),
           Text(
             name,
             style: TextStyle(
               color: scheme.onSurface,
-              fontSize: 16,
-              fontWeight: FontWeight.w800,
+              fontSize: 14,
+              fontWeight: FontWeight.w700,
             ),
           ),
-          const SizedBox(height: 2),
+          const SizedBox(height: 1),
           Text(
             handle,
             style: TextStyle(
               color: scheme.onSurfaceVariant,
-              fontSize: 12,
+              fontSize: 11,
               fontWeight: FontWeight.w500,
             ),
           ),
           if (!last) ...[
-            const SizedBox(height: 12),
+            const SizedBox(height: 9),
             Divider(height: 1, color: scheme.outlineVariant),
           ],
         ],
@@ -1468,45 +1482,46 @@ class AboutSettingsPage extends StatelessWidget {
         return Scaffold(
           appBar: AppBar(title: Text(JexText.of('about', language))),
           body: ListView(
-            padding: const EdgeInsets.fromLTRB(20, 22, 20, 32),
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
             children: [
               Text(
                 'JE Cooler',
-                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(
                   color: scheme.onSurface,
-                  fontWeight: FontWeight.w900,
-                  letterSpacing: -.35,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: -.2,
                 ),
               ),
-              const SizedBox(height: 7),
-              Text(
-                JexText.phrase('Special Thanks', 'Ucapan Terima Kasih', language),
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  color: scheme.onSurfaceVariant,
-                  fontWeight: FontWeight.w600,
+              const SizedBox(height: 12),
+              Card(
+                margin: EdgeInsets.zero,
+                elevation: 0,
+                clipBehavior: Clip.antiAlias,
+                child: Column(
+                  children: [
+                    _credit(
+                      context,
+                      role: JexText.phrase('App Development & Build', 'Pengembangan Aplikasi & Build', language),
+                      name: 'Horizon',
+                      handle: '@Horizontalzzz',
+                      last: false,
+                    ),
+                    _credit(
+                      context,
+                      role: JexText.phrase('Design Inspiration', 'Inspirasi Desain', language),
+                      name: 'FYZ',
+                      handle: '@FYZ737',
+                      last: false,
+                    ),
+                    _credit(
+                      context,
+                      role: JexText.phrase('3D Design & Printing', 'Desain & Pencetakan 3D', language),
+                      name: 'Logos',
+                      handle: '@Logos3dMichael',
+                      last: true,
+                    ),
+                  ],
                 ),
-              ),
-              const SizedBox(height: 17),
-              _credit(
-                context,
-                role: JexText.phrase('App Development & Build', 'Pengembangan Aplikasi & Build', language),
-                name: 'Horizon',
-                handle: '@Horizontalzzz',
-                last: false,
-              ),
-              _credit(
-                context,
-                role: JexText.phrase('Design Inspiration', 'Inspirasi Desain', language),
-                name: 'FYZ',
-                handle: '@FYZ737',
-                last: false,
-              ),
-              _credit(
-                context,
-                role: JexText.phrase('3D Design & Printing', 'Desain & Pencetakan 3D', language),
-                name: 'Logos',
-                handle: '@Logos3dMichael',
-                last: true,
               ),
             ],
           ),

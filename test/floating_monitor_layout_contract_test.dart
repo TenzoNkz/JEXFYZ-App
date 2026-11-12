@@ -418,7 +418,7 @@ void main() {
     expect(native, isNot(contains('Gravity.CENTER_HORIZONTAL')));
   });
 
-  test('Settings keeps Lock Voltage compact, removes Diagnostics, and boxes About', () {
+  test('Settings uses concise horizontal rows and meaningful values', () {
     final settingsSource = File('lib/floating_monitor.dart').readAsStringSync();
     final localizationSource = File('lib/app_settings.dart').readAsStringSync();
     final settingsStart = settingsSource.indexOf('class SettingsPage extends StatelessWidget');
@@ -433,7 +433,6 @@ void main() {
     expect(generalSection, greaterThan(lockCard));
     expect(settingsPage, isNot(contains('DeviceDiagnosticsPage')));
     expect(settingsPage, isNot(contains('deviceDiagnostics')));
-    expect(settingsPage, contains('PhosphorIconsRegular.chartLineUp'));
 
     final lockStart = settingsSource.indexOf('Widget _voltageLockSettingRow(');
     final lockEnd = settingsSource.indexOf('Widget _section(', lockStart);
@@ -442,7 +441,9 @@ void main() {
     expect(lockLayout, contains('height: 34'));
     expect(lockLayout, contains('fontSize: 12.5'));
     expect(lockLayout, contains('fontSize: 10.5'));
-    expect(lockLayout, contains('maxLines: 2'));
+    expect(lockLayout, contains('final String? subtitle;'));
+    expect(lockLayout, contains('subtitle = null;'));
+    expect(lockLayout, contains('if (subtitle != null)'));
 
     final firmwareSection = settingsPage.indexOf("JexText.of('firmwareSection', language)");
     final aboutRow = settingsPage.indexOf("JexText.of('about', language)");
@@ -450,6 +451,23 @@ void main() {
     expect(firmwareSection, isNonNegative);
     expect(aboutCard, greaterThan(firmwareSection));
     expect(aboutRow, greaterThan(aboutCard));
+    expect(settingsPage, contains("currentFirmwareVersion.trim() == 'V?'"));
+
+    final itemStart = settingsSource.indexOf('Widget _item(');
+    final itemEnd = settingsSource.indexOf('\n  }\n}', itemStart);
+    expect(itemStart, isNonNegative);
+    expect(itemEnd, greaterThan(itemStart));
+    final itemLayout = settingsSource.substring(itemStart, itemEnd);
+    expect(itemLayout, contains('BoxConstraints(minHeight: 48)'));
+    expect(itemLayout, contains('maxLines: 1'));
+    expect(itemLayout, contains('textAlign: TextAlign.end'));
+    expect(itemLayout, contains('maxWidth: 88'));
+    expect(itemLayout, contains('ConstrainedBox('));
+
+    // Nonessential descriptors/counters are intentionally absent from Settings.
+    expect(settingsPage, isNot(contains("'3'")));
+    expect(settingsPage, isNot(contains('Temperature and operating history')));
+    expect(settingsPage, isNot(contains("'JE Cooler'")));
 
     expect(settingsSource, contains('class AboutSettingsPage'));
     expect(settingsSource, isNot(contains('class DeviceDiagnosticsPage')));
@@ -478,7 +496,8 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('JE Cooler'), findsOneWidget);
-    expect(find.text('Special Thanks'), findsOneWidget);
+    expect(find.text('Special Thanks'), findsNothing);
+    expect(find.byType(Card), findsOneWidget);
     expect(find.text('App Development & Build'), findsOneWidget);
     expect(find.text('Horizon'), findsOneWidget);
     expect(find.text('@Horizontalzzz'), findsOneWidget);
@@ -492,13 +511,75 @@ void main() {
     appLanguageNotifier.value = AppLanguage.indonesia;
     await tester.pumpAndSettle();
     expect(find.text('Tentang'), findsOneWidget);
-    expect(find.text('Ucapan Terima Kasih'), findsOneWidget);
+    expect(find.text('Ucapan Terima Kasih'), findsNothing);
     expect(find.text('Pengembangan Aplikasi & Build'), findsOneWidget);
     expect(find.text('Inspirasi Desain'), findsOneWidget);
     expect(find.text('Desain & Pencetakan 3D'), findsOneWidget);
     expect(find.text('@Horizontalzzz'), findsOneWidget);
     expect(find.text('@FYZ737'), findsOneWidget);
     expect(find.text('@Logos3dMichael'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
+
+  testWidgets('Settings values share one line and redundant copy is absent', (tester) async {
+    final previousLanguage = appLanguageNotifier.value;
+    final previousTheme = appThemeNotifier.value;
+    final previousAutoConnect = appAutoConnectNotifier.value;
+    final previousLock = voltageLockSettingsNotifier.value;
+    addTearDown(() {
+      appLanguageNotifier.value = previousLanguage;
+      appThemeNotifier.value = previousTheme;
+      appAutoConnectNotifier.value = previousAutoConnect;
+      voltageLockSettingsNotifier.value = previousLock;
+    });
+    appLanguageNotifier.value = AppLanguage.english;
+    appThemeNotifier.value = AppThemePreset.dark;
+    appAutoConnectNotifier.value = false;
+    voltageLockSettingsNotifier.value = const VoltageLockSettingsState();
+
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: ThemeData.dark(useMaterial3: true),
+        home: SettingsPage(
+          currentFirmwareVersion: 'V?',
+          onOpenFirmwareUpdate: () async {},
+          onVoltageLockChanged: (_) async {},
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Language'), findsOneWidget);
+    expect(find.text('English'), findsOneWidget);
+    final languageCenter = tester.getCenter(find.text('Language'));
+    final languageValueCenter = tester.getCenter(find.text('English'));
+    expect((languageCenter.dy - languageValueCenter.dy).abs(), lessThan(3));
+
+    expect(find.text('Notifications'), findsOneWidget);
+    expect(find.text('3'), findsNothing);
+    expect(find.text('Temperature and operating history'), findsNothing);
+    expect(find.text('JE Cooler'), findsNothing);
+    expect(find.text('V?'), findsNothing);
+    expect(find.text('Manual'), findsOneWidget);
+    expect(find.text('OFF'), findsOneWidget);
+    expect(find.text('About'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('Settings shows a known Firmware version as the right-side value', (tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: ThemeData.dark(useMaterial3: true),
+        home: SettingsPage(
+          currentFirmwareVersion: 'V7.2',
+          onOpenFirmwareUpdate: () async {},
+          onVoltageLockChanged: (_) async {},
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(find.text('V7.2'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 
