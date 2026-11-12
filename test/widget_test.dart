@@ -65,6 +65,21 @@ void main() {
     expect(app, contains('jexIconAnimationPermitted'));
   });
 
+  test('Home NOTIFY preserves readable text inside its fixed 44dp geometry', () {
+    final source = File('lib/main.dart').readAsStringSync();
+    final start = source.indexOf('Widget _homeNotify()');
+    final end = source.indexOf('Widget _homeMetric(', start);
+    expect(start, isNonNegative);
+    expect(end, greaterThan(start));
+    final notify = source.substring(start, end);
+    expect(notify, contains('height: 44'));
+    expect(notify, contains('fontSize: 9.5'));
+    expect(notify, contains('final fontSize = wraps ? 9.5 : 10.5;'));
+    expect(notify, contains('maxLines: 2'));
+    expect(notify, contains('overflow: TextOverflow.ellipsis'));
+    expect(notify, isNot(contains('while (fontSize >')));
+  });
+
   test('Display-menu lock policy preserves disconnected and Adaptive priority and limits Lock Voltage scope', () {
     for (var tab = 0; tab < 5; tab++) {
       expect(
@@ -292,6 +307,7 @@ void main() {
     final dialog = source.substring(start, end);
     expect(dialog, contains('showGeneralDialog<bool>('));
     expect(dialog, contains('borderRadius: BorderRadius.circular(24)'));
+    expect(dialog, contains('BoxConstraints(maxWidth: 312)'));
     expect(dialog, contains('Color(0xFFD69A38)'));
     expect(dialog, contains('peltierFanRequiredTitle'));
     expect(dialog, contains('peltierCoolingPrerequisite'));
