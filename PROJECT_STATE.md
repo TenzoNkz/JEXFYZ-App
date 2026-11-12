@@ -326,3 +326,12 @@
 - Design contract recorded in `APP_NOTES.md`: a synchronized Lock Voltage ON should invoke the overlay on Voltage (tab 0) and Adaptive (tab 2) only. Keep Control, LED, and Temperature available for Lock Voltage alone; existing Adaptive-active/transitioning and Bluetooth-disconnected gates retain their current scope/priority. Voltage copy must distinguish pending safe handoff from confirmed 5V using actual Firmware voltage telemetry.
 - Settings contract: show Kunci Tegangan as the first dedicated card directly below the Settings AppBar and before UMUM; retain the Firmware-owned notifier, unknown/disconnected state, busy state, persistence warning and retry.
 - This is a Discussion/design checkpoint only. No executable source/tests or app package changed; no formatter, tests, analyzer, build, release, Firmware compile, OTA or device operation was run. Next recommended mode: `Eksekusi Full!` for the App-only UI/test implementation. This is a recommendation, not authorization.
+
+
+## Current Discussion — Peltier safety popup visual redesign (2026-11-12)
+
+- Owner says the existing Peltier safety popup still feels rigid. Source review confirms that the 2026-11-11 compacting pass retained a stock `AlertDialog`; it changed sizing/typography rather than the visual composition.
+- Proposed App-only redesign is recorded in `DESIGN_NOTES.md` and `APP_NOTES.md`: custom JE X FYZ safety card inside the existing general-dialog/fixed-canvas route; restrained amber prerequisite icon; concise title/explanation; two-step Fan ON → Peltier ON visual; full-width paired-action button and quieter Cancel below; responsive 300–312-dp width, natural/scrollable height, theme-aware surface and subtle fade/scale transition.
+- Copy/action correction required: displayed CTA currently says only “Turn on Fan” / “Nyalakan Kipas”, but approval then sends FAN:ON, awaits ACK, and sends PELTIER:ON. Proposed CTA accurately names both outputs. Preserve Fan-first ACK order; if Fan is not confirmed, Peltier must not be commanded.
+- Keep this amber informational prerequisite distinct from red thermal/NTC fault states. Cancel remains command-free; no Firmware safety policy, BLE/P1, command semantics, Home geometry, fixed-canvas transform or physical output behavior changes are included.
+- Discussion-only checkpoint: no App source/tests changed or run, no build/release and no Firmware/device operation. Next recommended direction remains a scoped `Eksekusi Full!` for App UI + regression tests only; this is not authorization.
