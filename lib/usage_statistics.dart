@@ -1439,18 +1439,40 @@ class UsageStatisticsRecorder {
           reason: 'stale_p1',
         );
         _sessionEndedAtMs = cutoff;
+        final gapEvents = <UsageStatsEvent>[
+          UsageStatsEvent(
+            sessionId: sessionId,
+            timestampMs: cutoff,
+            metric: 'hotside',
+            numberValue: null,
+            textValue: null,
+          ),
+        ];
+        final batteryLastSeen = _lastSensorSeenMs['battery'];
+        if (batteryLastSeen != null &&
+            cutoff - batteryLastSeen >
+                const Duration(milliseconds: 2500).inMilliseconds) {
+          final batteryGapAt = batteryLastSeen +
+              const Duration(milliseconds: 1500).inMilliseconds;
+          await _store.recordTemperatureSample(
+            sessionId: sessionId,
+            timestampMs: batteryGapAt,
+            metric: 'battery',
+            value: null,
+          );
+          _temperatures['battery'] = null;
+          gapEvents.add(UsageStatsEvent(
+            sessionId: sessionId,
+            timestampMs: batteryGapAt,
+            metric: 'battery',
+            numberValue: null,
+            textValue: null,
+          ));
+        }
         _publishLiveUpdate(
           timestampMs: cutoff,
           endedAtMs: cutoff,
-          events: [
-            UsageStatsEvent(
-              sessionId: sessionId,
-              timestampMs: cutoff,
-              metric: 'hotside',
-              numberValue: null,
-              textValue: null,
-            ),
-          ],
+          events: gapEvents,
         );
         _p1FreshnessTimer?.cancel();
         _p1FreshnessTimer = null;
@@ -1522,30 +1544,30 @@ class UsageStatisticsRecorder {
 
         final now = DateTime.now().millisecondsSinceEpoch;
         final previous = _states[metric];
-      if (previous == canonical) {
-        _notifyChanged();
-        return;
-      }
+        if (previous == canonical) {
+          _notifyChanged();
+          return;
+        }
 
-      final numeric = canonical is num ? canonical.toDouble() : null;
-      final text = canonical is String ? canonical : null;
-      await _store.recordEvent(
-        sessionId: sessionId,
-        timestampMs: now,
-        metric: metric,
-        numberValue: numeric,
-        textValue: text,
-      );
-      _states[metric] = canonical;
-      _publishLiveUpdate(timestampMs: now, events: [
-        UsageStatsEvent(
+        final numeric = canonical is num ? canonical.toDouble() : null;
+        final text = canonical is String ? canonical : null;
+        await _store.recordEvent(
           sessionId: sessionId,
           timestampMs: now,
           metric: metric,
           numberValue: numeric,
           textValue: text,
-        ),
-      ]);
+        );
+        _states[metric] = canonical;
+        _publishLiveUpdate(timestampMs: now, events: [
+          UsageStatsEvent(
+            sessionId: sessionId,
+            timestampMs: now,
+            metric: metric,
+            numberValue: numeric,
+            textValue: text,
+          ),
+        ]);
         _notifyChanged();
       },
       allowReservedCapacity: metric != 'fan_speed',
