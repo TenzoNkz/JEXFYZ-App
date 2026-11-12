@@ -1,16 +1,16 @@
 # JE Cooler App — Full Pre-Build Audit
 
 **Audit date:** 2026-11-12 (Asia/Jakarta)  
-**Mode:** `@Thinking Diskusi!` — static source/repository analysis only.  
-**Disposition:** **HOLD BEFORE GUARDED APP BUILD QC — two Statistics boundedness edge cases require source/test follow-up or explicit engineering disposition.** Existing P1 remediations are implemented, but static inspection found that the capacity-64 writer does not account for unawaited producer Futures waiting outside its admitted-operation count, and gap-heavy chart decimation can exceed its nominal 1,600-point target. The 185-test current suite, formatter and analyzer remain NOT RUN; the guarded workflow also has no formatter check. Visual/device acceptance remains separate and unverified.
+**Mode:** `@Thinking Eksekusi Full!` — App source, regression tests and documentation only; no Build/Release, workflow trigger, Firmware or device operation.  
+**Disposition:** **HOLD BEFORE GUARDED APP BUILD QC — both Statistics boundedness source findings have been remediated and regression source added, but no Dart/Flutter execution or formatter evidence exists.** The writer now has a hard 72-operation ceiling with immediate visible rejection for excess submissions, and decimation enforces the render-point budget while carrying gap boundaries forward. The 186-test current suite, formatter and analyzer remain NOT RUN; the guarded workflow has no formatter step. Long-session performance and visual/device acceptance remain unverified.
 
 ## 1. Baseline and evidence
 
 - **Repository:** `TenzoNkz/JEXFYZ-App`, branch `main`.
-- **Audited baseline:** executable source snapshot `4d02fbf705a85820a4ea1e530d167ebb53ab3a68`. **Current repository tree:** 132 entries, recursive listing not truncated. Documentation-only checkpoint commits follow this executable source snapshot. **Current executable source/test HEAD:** `a963f8bd100f7f2c41f720933ade2cd586145270`. Source remediation commits are `5763b08f8b37fccafd2ac2403a51b26ad0be4b41`, `b1275d278ca0b0d2765174364250873044a943d1`, `aa58a2f14354692a1dbcebfcb70436deb3aabf06` and `a963f8bd100f7f2c41f720933ade2cd586145270`.
+- **Audited baseline:** executable source snapshot `4d02fbf705a85820a4ea1e530d167ebb53ab3a68`. **Current repository tree:** 132 entries, recursive listing not truncated. Documentation-only checkpoint commits follow this executable source snapshot. **Current source/test code checkpoint:** `cc6ce0263d7086296013d518895073c3dce58aff` (latest code/test commit before these documentation updates); `lib/usage_statistics.dart` blob `4759ace8a9e7fdf5cbdfe5aea4ff6f284571299a`, `test/usage_statistics_test.dart` blob `8bcc06fc714a071138fc20fb6f54179debc7f04c`. Source remediation commits are `5763b08f8b37fccafd2ac2403a51b26ad0be4b41`, `b1275d278ca0b0d2765174364250873044a943d1`, `aa58a2f14354692a1dbcebfcb70436deb3aabf06` and `a963f8bd100f7f2c41f720933ade2cd586145270`.
 - **Audit progression:** the initial static audit was performed on executable snapshot `4d02fbf705a85820a4ea1e530d167ebb53ab3a68`. Four subsequent source commits addressed P1 findings; current executable source is `a963f8bd100f7f2c41f720933ade2cd586145270`. Current recursive tree has 132 entries, not truncated.
 - **Current executable surface:** 7 Dart library files; 9 test files. Main implementation is concentrated in `lib/main.dart` (10,563 lines / ~387 KB), `lib/usage_statistics.dart` (3,298 lines / ~106 KB), `lib/floating_monitor.dart` (1,808 lines / ~65 KB) and `lib/app_settings.dart`.
-- **Tests in current main:** 185 declarations — 172 unit/source-contract and 13 widget tests. This is an inventory only, not a passing result. All current-main tests remain **NOT RUN**.
+- **Tests in current main:** 186 declarations — 173 unit/source-contract and 13 widget tests. This is an inventory only, not a passing result. All current-main tests remain **NOT RUN**.
 - **Latest verified package:** Build #153 / Actions run `43145542329`, tested source SHA `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e`, Release ID `403010611`, tag `jexfyz-latest`. Build #153 reported 176/176 Flutter tests, analyzer 23 info / 0 warnings / 0 errors, and Android Gradle success. Its native Android JUnit tasks were NO-SOURCE; no native Android JUnit test cases ran.
 - **Source/release gap:** current `main` is 57 commits ahead / 0 behind Build #153. GitHub compare reports 18 changed paths (11 Markdown, 4 Dart source and 3 test files). Current Settings/About, Statistics, Peltier, Temperature, Home hit-target, polling and integrity-screen fixes are not in Build #153 APK. Release #153 remains the latest package.
 - **CI state at audit:** latest run #153 is completed SUCCESS; no active run or open PR. Release tag still resolves to the Build #153 source SHA. No build trigger was sent.
@@ -42,11 +42,11 @@ Evidence is classified as **STATIC SOURCE CHECK** unless explicitly stated other
 
 **Status: SOURCE OPTIMIZED / SYNTHETIC LONG-HISTORY TEST ADDED / DEVICE SOAK NOT RUN.**
 
-- `UsageStatsWriteQueue` serializes writes with a maximum of 64 scheduled operations and waits for capacity instead of intentionally discarding accepted work. Write failures remain visible through `lastWriteError`.
+- `UsageStatsWriteQueue` serializes accepted writes FIFO with 64 normal slots plus 8 reserved control slots (72 total). Producer submissions do not wait for admission. Excess submissions are rejected immediately, counted and surfaced through `lastWriteError`; accepted operations are not evicted. Clear History propagates rejection to its UI error handler.
 - Temperature sample persistence and its session freshness update now share one SQLite transaction. Hotside alone updates P1 `last_seen_at_ms`; phone Battery updates only its own freshness. Null samples remain explicit gaps. Database schema/version 2, retention and raw 1-Hz capture are unchanged.
 - Live updates are coalesced per one-second flush. A selected-session event identity set de-duplicates updates; sorted merge avoids rescanning existing events per addition; analytics summary is calculated once per flush batch.
 - Analytics indexes events by session/metric in one pass, sorts only when a group is not already chronological, uses binary search for selected-time temperature lookup, and caches decimated chart points in the summary.
-- Regression tests construct 12,000 Battery and 12,000 Hotside observations, assert raw points remain present and chart output is bounded to 1,600 points per sensor, and exercise queue capacity/FIFO completion.
+- Regression tests construct 12,000 Battery and 12,000 Hotside observations, assert raw points remain present and chart output is bounded to 1,600 points per sensor, and now add a 24,000-point alternating-null/gap-heavy decimation fixture plus fire-and-forget queue admission/reserve/rejection/FIFO/Clear-error coverage. These tests are written but NOT RUN.
 - **Remaining evidence gap:** one selected-session summary/chart-decimation pass still runs per one-second diagram refresh. This is not a fully incremental accumulator. No Android CPU/memory soak or sustained SQLite backlog measurement has run. Validate 1-hour/8-hour/longer sessions before final product acceptance.
 
 ### P1.2 — Native status polling overlap
@@ -81,36 +81,40 @@ Evidence is classified as **STATIC SOURCE CHECK** unless explicitly stated other
 
 **Status: BLOCKED / NOT RUN LOCALLY; READY FOR GUARDED CI VALIDATION.**
 
-- Current main contains 185 test declarations (172 unit/source-contract, 13 widget). They have not run in the current runtime because Flutter/Dart executables are unavailable.
+- Current main contains 186 test declarations (173 unit/source-contract, 13 widget). They have not run in the current runtime because Flutter/Dart executables are unavailable.
 - Build #153's 176/176 result applies only to old immutable SHA `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e`, not current main.
 - Next evidence must come from the separate guarded App Build workflow on exact source SHA `a963f8bd100f7f2c41f720933ade2cd586145270`. Fix any failure at root and rerun; do not weaken contracts.
 - The guarded workflow currently has no Dart formatter step. Formatter/lint policy remains a P2 follow-up and must not be reported as passed.
 
 ## 4. P2 — professional polish and maintainability
 
-### P2.7 — Statistics writer admission is not an end-to-end backlog bound
+### P2.7 — Statistics writer admission and fire-and-forget producer bound
 
-**Status: STATIC SOURCE RISK / NOT OBSERVED AT RUNTIME / REGRESSION INCOMPLETE.**
+**Status: SOURCE REMEDIATION IMPLEMENTED / REGRESSION SOURCE ADDED / RUNTIME NOT RUN.**
 
-- UsageStatsWriteQueue.enqueue() waits while _pendingOperations >= maxPendingOperations, then increments the admitted count and schedules the operation on _tail. This bounds operations admitted to the serial queue.
-- The recorder returns the queue Future, but production call sites in lib/main.dart use unawaited() for HOT/Battery samples and state updates. When storage remains slower than producers, each caller can remain suspended awaiting queue admission outside pendingOperations; the counter/test therefore does not establish a hard bound on all waiting producer Futures or memory.
-- Existing test "usage history write queue applies backpressure without dropping accepted work" creates 12 calls against capacity 4, checks only pendingOperations <= 4, and awaits all Futures. It does not assert the number of blocked submitters or model fire-and-forget production call sites.
-- **Follow-up:** test delayed writer + sustained unawaited submissions, expose/measure admitted and waiting work, and select a bounded-ingress policy. Do not block BLE parsing, silently drop accepted samples, alter the 1-Hz raw capture contract or claim losslessness under indefinite storage failure. The unavoidable trade-off between bounded memory, nonblocking producers and lossless indefinite buffering must be made explicit.
+- UsageStatsWriteQueue no longer waits for queue admission. It accepts FIFO work up to 64 normal pending operations; session lifecycle and Voltage/Adaptive/Peltier control operations may use 8 additional reserved slots (72 total). Fan Speed and raw temperature producers use the normal ceiling.
+- A submission beyond its applicable ceiling is rejected synchronously, increments rejectedOperations and reports a StateError through lastWriteError. Accepted work is never evicted to make room. This removes the unbounded chain of suspended producer Futures created when main.dart uses unawaited() calls.
+- Overload is an explicit availability-versus-history trade-off: excess incoming records are not accepted and the Statistics page displays a persistent bilingual warning. The design does not claim lossless indefinite buffering under a permanently stalled store. Clear History uses failOnReject and reaches the existing UI error handler instead of appearing successful.
+- P1 freshness is based on actual HOT receipt time, not SQLite write progress. A slow/rejected history write cannot falsely stale a live P1 session. Explicit null sample gaps are written on recovery or close; both sensor segments are handled when a session ends, including the HOT-stale path.
+- Regression source now models a held writer and fire-and-forget submissions, asserts bounded capacity plus reserve, explicit rejection, FIFO for accepted operations and error propagation. It does not replace a sustained SQLite/device storage-pressure soak.
+- **Remaining evidence gap:** all Dart tests/analyzer/formatter are NOT RUN; 1-hour/8-hour backlog drain rate, rejection frequency, CPU/memory and data completeness under real device storage pressure remain unmeasured.
 
-### P2.8 — Chart decimation can exceed its nominal max under dense gaps
+### P2.8 — Chart decimation hard cap under dense invalid/gap data
 
-**Status: STATIC SOURCE EDGE CASE / NOT COVERED BY CURRENT LONG-HISTORY TEST.**
+**Status: SOURCE REMEDIATION IMPLEMENTED / INVALID-HEAVY REGRESSION SOURCE ADDED / RUNTIME NOT RUN.**
 
-- decimatePoints(maxPoints: 1600) selects bucket endpoints/extrema and also adds every point whose value is null or whose breakBefore is true. This correctly protects data gaps, but a gap-heavy history can produce output greater than maxPoints.
-- The current 12,000-per-sensor regression uses mostly continuous valid observations and asserts output <= 1,600; it does not exercise thousands of nulls, alternating valid/invalid observations or dense session boundaries.
-- **Follow-up:** add invalid-heavy and alternating-gap fixtures. Design a segment-aware representation/reduction that never draws a line across an invalid interval and either enforces a hard render budget or documents and tests a justified upper bound. Do not discard raw SQLite observations or erase the fact that a gap occurred.
+- decimatePoints(maxPoints) now selects at most four representatives per bucket (endpoints/minimum/maximum) and returns no more than maxPoints, including small budgets below four.
+- Null/breakBefore points that are not retained are represented by breakBefore=true on the next retained valid point. This preserves visual discontinuities without requiring every gap marker to consume a render slot. The painter therefore starts a new path and does not connect across a discarded invalid interval.
+- Raw SQLite samples, session data and full-resolution summary/statistics inputs are not decimated or deleted; only the rendered chart-point list is reduced.
+- Regression source creates 24,000 alternating valid/null points plus periodic explicit boundaries and session changes, checks budgets 1/2/3/7/8/1599/1600 and verifies no retained line bridges a skipped gap.
+- **Remaining evidence gap:** the Dart test is written but NOT RUN. Large-history UI frame time, allocation, chart rendering and long-session memory need device/Flutter validation.
 
 ### P2.9 — Formatting is not a guarded workflow gate
 
-**Status: NOT RUN / NOT ENFORCED BY CURRENT WORKFLOW.**
+**Status: BLOCKED / NOT RUN / NOT ENFORCED BY CURRENT WORKFLOW.**
 
 - The current workflow runs flutter analyze --no-fatal-infos, flutter test, Android Gradle and release signing/package gates; no dart format --output=none --set-exit-if-changed step exists.
-- A successful guarded Build App therefore will not prove Dart formatting. The changed Dart files still need explicit formatting/check evidence or a separately approved formatter gate.
+- A successful guarded Build App therefore will not prove Dart formatting. Dart is unavailable in the current runtime and the changed files have not been formatted or checked. The changed Dart files still need explicit formatting/check evidence or a separately approved formatter gate.
 
 
 ### P2.1 — Typography and microcopy hierarchy
@@ -155,7 +159,7 @@ Static source inventory found 71 distinct literal `Color(0x...)` values, 13 dist
 
 Home and fixed-canvas routes use `TextScaler.noScaling` to preserve the established physical-size/DPI contract. Treat this as a known accessibility limitation, not as proof of large-text support. It must not be silently removed or changed during a visual sweep.
 
-There are no screenshot/golden or `integration_test` assets in the current test tree. Only 13 of 185 tests are widget tests; actual visual acceptance is still a manual/device gate. Capture matched 350/420-dp, EN/ID, Light/Dark screenshots at the exact tested source SHA.
+There are no screenshot/golden or `integration_test` assets in the current test tree. Only 13 of 186 tests are widget tests; actual visual acceptance is still a manual/device gate. Capture matched 350/420-dp, EN/ID, Light/Dark screenshots at the exact tested source SHA.
 
 ## 5. Design direction for the whole App
 
@@ -169,14 +173,14 @@ There are no screenshot/golden or `integration_test` assets in the current test 
 ## 6. Pre-build remediation sequence
 
 1. **Pass A — UX and accessibility:** neutral integrity screen copy while retaining the fail-closed gate; 48-dp touch surfaces for Home header/tabs/Temperature +/-; review microtext and dialog consistency.
-2. **Pass B — runtime efficiency:** remove overlapping Connection/Floating polling, add lifecycle/in-flight controls, bound/coalesce the Statistics writer and reduce per-second full-history recomputation without losing raw data/gaps.
-3. **Pass C — code quality:** format all changed Dart files, configure/verify lint policy, review analyzer infos, strengthen tests for timers, long-session storage/backpressure, tap targets, EN/ID, unknown/disconnected states and cancellation.
+2. **Pass B — runtime efficiency:** remove overlapping Connection/Floating polling, add lifecycle/in-flight controls, bound Statistics writer admission without blocking BLE producers, preserve explicit raw-data gaps, and continue to assess per-second full-history recomputation.
+3. **Pass C — code quality:** explicitly format all changed Dart files, configure/verify lint policy, review analyzer infos, run the new bounded-ingress and dense-gap regressions plus long-session storage/backpressure, tap-target, EN/ID, unknown/disconnected-state and cancellation tests.
 4. **Pass D — guarded App validation:** build only after Passes A–C and current-main tests are clean. Then inspect real screenshots and device behavior; a successful APK build alone is not visual or physical acceptance.
 
 ## 7. Definition of “ready to build”
 
 - All accepted P1 findings and the two Statistics boundedness edge cases are fixed or explicitly dispositioned; no silent deferrals.
-- Formatter is clean through an explicit formatter run or enforced formatter gate; analyzer has no errors/warnings and the info baseline is reviewed.
+- Formatter is clean through an explicit formatter run or enforced formatter gate; analyzer has no errors/warnings and the info baseline is reviewed. None of these current-source results is available yet.
 - All tests on the exact current SHA pass, with delayed-writer/unawaited-submitter, invalid-heavy gap decimation, long-session and polling-overlap cases included.
 - No accidental change to BLE P1, telemetry authority, Firmware safety, OTA, persisted schemas, Android `versionName "Telegram @horizontalzzz"`, theme/localization or 360-dp canvas.
 - Actual screenshot matrix is prepared for Home, Settings, Bluetooth/Connection, Floating Monitor, Usage Statistics, Voltage/Control/Adaptive/LED/Temperature tabs, Peltier dialog, LED picker and Firmware dialog at 350/420 dp, EN/ID and Light/Dark. Include constrained height and disconnected/unknown/locked/error states.
@@ -196,4 +200,4 @@ Do not ask Gemini to claim it inspected GitHub, executed Flutter tests, or saw a
 
 ---
 
-**Audit conclusion (updated 2026-11-12):** the selected-time dock, analytics indexing/merge, transactional sample/freshness writes, polling overlap, Home/Temperature touch targets and integrity-screen presentation are source-implemented. A further static review identified two open Statistics boundedness edge cases: the capacity-64 admitted-operation counter does not cover suspended producer Futures created by unawaited call sites, and invalid-heavy/gap-heavy decimation can exceed the nominal 1,600-point target. Current 185 tests, formatter and analyzer have not run on this SHA; the build workflow contains no formatter gate. **Disposition: HOLD guarded Build QC until these findings are fixed or explicitly dispositioned and the formatter requirement is evidenced.** Next source target remains a963f8bd100f7f2c41f720933ade2cd586145270; no Build App/Actions trigger was sent. Full-session summary/decimation still occurs once per second; long-session CPU/memory soak and Android visual/touch acceptance remain unverified.
+**Audit conclusion (updated 2026-11-12):** source remediation now resolves both identified Statistics boundedness issues at the code level: producer admission is capped at 64 normal + 8 reserved operations with explicit rejection, P1 freshness is receipt-based, session-close gaps remain explicit, and rendered decimation is hard-capped with gap-boundary propagation. The current source/test revision has 186 written test declarations, but none has run here; formatter and analyzer are also NOT RUN, and the guarded workflow has no formatter gate. **Disposition: HOLD guarded Build QC until Dart formatting and exact-source Flutter tests/analyzer are evidenced.** No Build App/Actions trigger was sent. Full-session summary/decimation still occurs once per second; long-session CPU/memory soak and Android visual/touch acceptance remain unverified.
