@@ -1,16 +1,14 @@
-## CURRENT CHECKPOINT — BUILD #152 ACTIVE / GUARDED APP QC — 2026-11-12
+## CURRENT CHECKPOINT — BUILD #152 ACTIVE / DEPENDENCY INSTALL — 2026-11-12
 
-**Mode:** owner-authorized `Eksekusi Build App!`; guarded App Build/QC/release only. Firmware compile, BIN/Firebase/OTA/flash/device operations are excluded.
+**Mode:** owner-authorized `Eksekusi Build App!`; App Build/QC/release only. Firmware/BIN/Firebase/OTA/flash/device operations excluded.
 
-- **Run/job:** Build #152 / Actions run `43144337555`, workflow `374946166`, attempt 1, event `issues`, issue #33, build job `130938510090`. Issue #33 was owner/title/token validated and closed/reopened exactly once. No duplicate trigger.
-- **Immutable build source SHA:** `04ec48a53bef308f0817470d2d758697a1592cc4`, exact main HEAD at trigger. This includes seven changed App/test paths since Build #151 source `e383924067b7ab2da27f2e41f21232cfb7144ec0`: four Dart source files and three regression test files. No Firmware or workflow source changed.
-- **Source scope:** Lock Voltage overlay/Settings placement, custom Peltier prerequisite card, bilingual About credits, Device Diagnostics snapshot/copy, simplified Usage Statistics diagrams/details (six metrics/cursor/aggregates retained), icon consistency and Home NOTIFY readability. Peltier Fan ACK-before-Peltier command sequencing remains in source.
-- **Previous verified Release:** Build #151, Release ID 403010611, tag `jexfyz-latest` still at SHA `e383924067b7ab2da27f2e41f21232cfb7144ec0`; this remains latest published package until #152 passes all gates. Android `versionName "Telegram @horizontalzzz"` remains exact.
-- **Current state:** run is `in_progress`; first job snapshot: step 1 `Set up job` in progress. No analyzer/test/build/release gate completed yet.
-- **Workflow:** unchanged blob `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12`; issues-open/reopened only; repository-owner/title/body-token guard intact; no push/PR path.
-- **Remaining:** Java/Flutter/Gradle setup, signing, security/architecture audit, dependencies, analyzer, full Flutter suite, Android gate, obfuscated APK, signing/certificate, source ZIP, Release/tag parity and downloaded asset verification.
-- **Not performed:** Firmware compile/BIN, Firebase, OTA, flash, physical BLE/device/NVS/rail/LED, thermal/electrical tests or OEM screenshots.
-- **Next:** continue only run `43144337555` / job `130938510090`; do not trigger another build while active.
+- **Run/job/source:** Build #152 / Actions run `43144337555`, workflow 374946166, attempt 1, issue #33, job `130938510090`; immutable source SHA `04ec48a53bef308f0817470d2d758697a1592cc4`.
+- **Passed steps 1–10:** runner, checkout, Java 17, Flutter 3.47.2, Gradle 9.3.1, toolchain verification, Flutter local.properties, production signing preparation, wrapper recovery, App security/architecture audit.
+- **Current:** step 11 `Install dependencies` / `flutter pub get` — in progress. **Pending:** analyzer; full Flutter tests; Android Gradle gate; obfuscated APK; V1/V2/V3 + pinned certificate; matching source ZIP; Release/tag parity and downloaded asset verification.
+- **Latest published package remains Build #151** (Release 403010611 / tag `jexfyz-latest` at source `e383924067b7ab2da27f2e41f21232cfb7144ec0`) until #152 passes all gates. Preserve Android `versionName "Telegram @horizontalzzz"`.
+- Workflow remains issues-only/owner-title-token guarded; no additional trigger while #152 is active.
+- No Firmware/BIN/Firebase/OTA/flash/physical BLE-device/NVS/rail/LED or OEM visual testing.
+- **Next:** monitor run `43144337555` / job `130938510090` only.
 
 ---
 
