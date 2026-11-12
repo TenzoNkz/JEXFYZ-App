@@ -1,16 +1,13 @@
-## CURRENT CHECKPOINT — BUILD #152 FAILED / APP TEST REPAIR — 2026-11-12
+## CURRENT CHECKPOINT — BUILD #152 FAILED / TEST REPAIR COMMITTED — 2026-11-12
 
-- **Repository:** TenzoNkz/JEXFYZ-App, branch main. Build #152 tested source SHA `04ec48a53bef308f0817470d2d758697a1592cc4`; current main includes only the failure-ledger documentation commit after the run.
-- **Run:** Actions `43144337555`, job `130938510090`, attempt 1, terminal failure. Steps 1–12 passed including analyzer. Step 13 Flutter tests failed **171 passed / 5 failed**. Steps 14–21 skipped. No new artifact.
-- **Failures:** two stale Home NOTIFY source assertions (incorrect method end anchor; outdated font-size source expression); one Statistics last-sample test with a zero-size test viewport (fixture's pure analytics timestamp assertion passes); Diagnostics localization copy asserted against the wrong source file; stale expected casing of DISCONNECTED.
-- **Repair plan:** test-only corrections; explicitly isolate the Statistics widget viewport, preserve an actual visible-label assertion, correct source anchors/expressions and localization expectation. No production source behavior is to be changed unless the Statistics UI check then demonstrates a real defect. Full hosted test suite remains mandatory.
-- **Latest verified App release remains Build #151**, Release ID 403010611/tag `jexfyz-latest` on source `e383924067b7ab2da27f2e41f21232cfb7144ec0`. No Build #152 artifact.
-- Android `versionName "Telegram @horizontalzzz"` unchanged.
-- Firmware V7.2 compile/BIN, Firebase/OTA/flash, device/BLE/NVS/rail/LED, thermal/electrical, OEM screenshots and owner installation are separate and NOT RUN / UNVERIFIED.
-- **Next:** scoped test repairs, verify, then one guarded App build retry after clean preflight.
+- Build #152 / run `43144337555` failed at Flutter tests: 171 passed, 5 failed; analyzer passed. Steps 14–21 skipped; no APK/source/Release artifact.
+- Five failed test contracts/conditions are repaired in three test-only commits: `5f06e121cdb6f84f7cb3c70c020d4e89a97e3725`, `bba8cd2eb96f82a0c7a087cb165866e1cda2e11e`, `642e6a500473b16554ab849f07ed8ddffd84bc8a`. Statistics test now isolates viewport and still asserts the last-sample UI label; Diagnostics source/casing and Home NOTIFY assertions now match current code.
+- Diff from failed source SHA `04ec48a53bef308f0817470d2d758697a1592cc4` to repaired main contains only those three test paths (plus documentation records). No production App, Firmware, workflow, BLE/P1, dependencies or Gradle config changed. Android `versionName "Telegram @horizontalzzz"` unchanged.
+- Local Flutter/Dart/Gradle are unavailable; test execution locally BLOCKED / NOT RUN. Hosted retry required to verify all repaired test behavior.
+- Build #151 remains latest published Release (ID 403010611, tag `jexfyz-latest`, source `e383924067b7ab2da27f2e41f21232cfb7144ec0`) until a later guarded build passes every gate.
+- Next: fresh no-active-run / issue guard / Release asset preflight, then one guarded retry. Firmware V7.2 compile/BIN/Firebase/OTA/flash/device/BLE/NVS/rail/LED/cooling/OEM visual validation remain separate and NOT RUN/UNVERIFIED.
 
 ---
-
 ## Firmware V7.2 source implementation — App CI verified; Firmware validation pending (2026-11-12)
 
 - **CURRENT source:** `firmware/JEXFYZ-V7.2.ino`, `FW_VERSION="V7.2"`, blob `140e758e7101cadc3ccc58cc5c52e49534b0032c`; it is the only active versioned `.ino` in the complete recursive tree (131 entries, `truncated=false`). The source-review baseline before this Diskusi's documentation-only updates was main SHA `ddf9aa441a22dc715bb026f4a1c3bd74e9b425ae`.
