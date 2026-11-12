@@ -27,8 +27,18 @@ This proves hosted App CI and packaging only. No Arduino-ESP32 Core 3.3.7 Firmwa
 
 ## Next action
 
-Gemini review is complete. The next current workstream is the owner-approved App visual refinement plan recorded in DESIGN_NOTES.md and APP_NOTES.md. The earlier BLE identity limitation remains a separate known security gap; do not implement BLE authentication without explicit scope and backend/enrollment permissions. Firmware V7.2 still requires separate compile/BIN identity and physical validation before distribution; no BIN/Firebase/OTA/flash/device operation is authorized here.
+The App-only visual refinement source pass is implemented on current main: Lock Voltage overlay/Settings placement, custom Peltier prerequisite card, bilingual About credits, Device Diagnostics snapshot, simplified Statistics diagrams, Phosphor icon consistency and Home NOTIFY readability. Build #151 remains the latest verified APK; these newer source changes are NOT RELEASED. Formatter, Flutter tests, analyzer, hosted QC and visual screenshots are NOT RUN/BLOCKED because Flutter/Dart/Gradle/ADB are unavailable in this environment. The recommended next command is a separate Eksekusi Build App! for hosted QC/package gates; do not trigger it without the owner's command. Firmware/BIN/Firebase/OTA/flash/device work remains separately unauthorized.
 
+
+## Eksekusi Full checkpoint — App visual refinement source implemented (2026-11-12)
+
+- Current main after source/test work: e30d0addcdeeb79541b1f795bb7e93fd8987594a. Changed App paths: lib/main.dart, lib/floating_monitor.dart, lib/app_settings.dart, lib/usage_statistics.dart; regression paths: test/widget_test.dart, test/floating_monitor_layout_contract_test.dart, test/usage_statistics_test.dart.
+- Lock Voltage uses the centered blur/padlock overlay on Voltage and Adaptive only when synchronized Firmware lock is ON; Bluetooth-disconnected and existing Adaptive restrictions retain priority. Voltage handoff wording waits for actual VOLTAGE telemetry. Settings lock card is the first item below AppBar.
+- Peltier prompt is a custom amber safety card, and its CTA accurately names both outputs; FAN ACK remains required before PELTIER:ON. About/Tentang is below Firmware. Device Diagnostics shows an opening-time snapshot, not a live stream, from source-available values; Copy Diagnostics excludes cooler ID/credentials and does not upload.
+- Statistics graph flow is simplified without changing capture, analytics, SQL or persistence. Six metrics, cursor, session states, gaps and secondary aggregates remain; provenance is on demand.
+- Static source scanner: balanced delimiters across seven changed Dart files; 357 bilingual localization keys scanned with no missing literal JexText.of key; no Material Icons.* in main/floating/statistics/app_settings; no duplicate test names or malformed });;. 78 Phosphor Regular/Bold symbols matched package-generated declarations. This is STATIC SOURCE CHECK, not Dart parser/formatter/analyzer/tests.
+- Flutter/Dart/Gradle/ADB are unavailable. Formatter, focused/full tests, analyzer, emulator screenshots and Android/OEM visual QA did not run. No hosted CI/Build/Release was triggered. Build #151 remains latest verified APK; current main source changes are NOT RELEASED and VISUAL NOT VERIFIED.
+- No Firmware compile/BIN, Firebase, OTA, flash or device operation occurred. Firmware V7.2 and BLE identity blockers remain separate.
 
 ## Discussion checkpoint — Lock Voltage UI refinement (2026-11-12)
 
