@@ -306,8 +306,14 @@ void main() {
 
     final dialog = source.substring(start, end);
     expect(dialog, contains('showGeneralDialog<bool>('));
-    expect(dialog, contains('borderRadius: BorderRadius.circular(24)'));
-    expect(dialog, contains('BoxConstraints(maxWidth: 312)'));
+    expect(dialog, contains('borderRadius: BorderRadius.circular(20)'));
+    expect(dialog, contains('BoxConstraints(maxWidth: 296)'));
+    expect(dialog, contains('Center('));
+    expect(dialog, contains('DefaultTextStyle.merge('));
+    expect(dialog, contains('TextDecoration.none'));
+    expect(dialog, contains("fontFamily: fontFamily"));
+    expect(dialog, isNot(contains('SingleChildScrollView(')));
+    expect(dialog, isNot(contains('SlideTransition(')));
     expect(dialog, contains('Color(0xFFD69A38)'));
     expect(dialog, contains('peltierFanRequiredTitle'));
     expect(dialog, contains('peltierCoolingPrerequisite'));
@@ -2068,6 +2074,18 @@ void main() {
     expect(state, contains('Duration(milliseconds: active ? 360 : 440)'));
     expect(state, contains('Curves.easeInOutCubic'));
     expect(state, contains('unawaited(_coastFanToStop());'));
+  });
+
+  test('Temperature tab does not expose a global reset action', () {
+    final source = File('lib/main.dart').readAsStringSync();
+    final settings = File('lib/app_settings.dart').readAsStringSync();
+
+    expect(source, isNot(contains('_resetTemperatureSettings')));
+    expect(source, isNot(contains("JexText.of('resetTemperature'")));
+    expect(settings, isNot(contains("'resetTemperature'")));
+
+    // Keep protocol acknowledgement classification independent of the removed UI action.
+    expect(source, contains("if (c == 'RESET:TEMPERATURE') return 'RESET_TEMPERATURE';"));
   });
 
   test('Peltier safety action keeps a reachable Cancel and a full-width primary target', () {

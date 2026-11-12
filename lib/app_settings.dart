@@ -1013,10 +1013,6 @@ class JexText {
       AppLanguage.english: 'Fan Speed',
       AppLanguage.indonesia: 'Kecepatan Kipas',
     },
-    'resetTemperature': {
-      AppLanguage.english: 'Reset Temperature Settings',
-      AppLanguage.indonesia: 'Atur Ulang Pengaturan Suhu',
-    },
     'hotsideLimitNotConfirmed': {
       AppLanguage.english: 'The device did not confirm the Hotside limit change.',
       AppLanguage.indonesia: 'Perangkat belum mengonfirmasi perubahan batas suhu Hotside.',

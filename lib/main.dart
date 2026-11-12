@@ -6627,57 +6627,87 @@ void _handleAckLine(String line) {
           pageBuilder: (dialogContext, _, __) {
             return JexFixedScalePage(
               child: SafeArea(
-              child: LayoutBuilder(
-                builder: (dialogContext, constraints) {
-                  final top = displayMenuOverlayTop(
-                    screenWidth: 360,
-                    availableHeight: constraints.maxHeight,
-                  );
-                  return SingleChildScrollView(
-                    padding: EdgeInsets.fromLTRB(16, top, 16, 16),
-                    child: Center(
-                      child: ConstrainedBox(
-                        constraints: const BoxConstraints(maxWidth: 312),
-                        child: Container(
-                          width: double.infinity,
-                          padding: const EdgeInsets.fromLTRB(18, 18, 18, 14),
-                          decoration: BoxDecoration(
-                            color: Theme.of(dialogContext).colorScheme.surface,
-                            borderRadius: BorderRadius.circular(24),
-                            border: Border.all(
-                              color: Theme.of(dialogContext).colorScheme.outlineVariant.withValues(alpha: .82),
+                child: LayoutBuilder(
+                  builder: (dialogContext, constraints) {
+                    final compactHeight = constraints.maxHeight < 520;
+                    final scheme = Theme.of(dialogContext).colorScheme;
+                    final fontFamily =
+                        Theme.of(dialogContext).textTheme.bodyMedium?.fontFamily ??
+                            'Roboto';
+                    final verticalPadding = compactHeight ? 11.0 : 14.0;
+                    final sectionGap = compactHeight ? 6.0 : 8.0;
+
+                    Widget step(IconData icon, String label) => Expanded(
+                          child: Container(
+                            padding: EdgeInsets.symmetric(
+                              vertical: compactHeight ? 6 : 8,
+                              horizontal: 6,
                             ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withValues(alpha: .14),
-                                blurRadius: 22,
-                                offset: const Offset(0, 8),
-                              ),
-                            ],
+                            decoration: BoxDecoration(
+                              color: scheme.surfaceContainerHighest.withValues(alpha: .42),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  icon,
+                                  size: 18,
+                                  color: scheme.onSurfaceVariant,
+                                ),
+                                const SizedBox(height: 3),
+                                Text(
+                                  label,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: scheme.onSurface,
+                                    fontFamily: fontFamily,
+                                    decoration: TextDecoration.none,
+                                    fontSize: 10.5,
+                                    fontWeight: FontWeight.w800,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                          child: Builder(
-                            builder: (cardContext) {
-                              final scheme = Theme.of(cardContext).colorScheme;
-                              final language = appLanguageNotifier.value;
-                              Widget step(IconData icon, String label) => Expanded(
-                                    child: Container(
-                                      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
-                                      decoration: BoxDecoration(
-                                        color: scheme.surfaceContainerHighest.withValues(alpha: .42),
-                                        borderRadius: BorderRadius.circular(14),
-                                      ),
-                                      child: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Icon(icon, size: 21, color: scheme.onSurfaceVariant),
-                                          const SizedBox(height: 5),
-                                          Text(label, textAlign: TextAlign.center,
-                                            style: TextStyle(color: scheme.onSurface, fontSize: 11, fontWeight: FontWeight.w800)),
-                                        ],
-                                      ),
-                                    ),
-                                  );
-                              return Column(
+                        );
+
+                    return Center(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 10,
+                        ),
+                        child: ConstrainedBox(
+                          constraints: const BoxConstraints(maxWidth: 296),
+                          child: Container(
+                            width: double.infinity,
+                            padding: EdgeInsets.fromLTRB(
+                              14,
+                              verticalPadding,
+                              14,
+                              verticalPadding - 2,
+                            ),
+                            decoration: BoxDecoration(
+                              color: scheme.surface,
+                              borderRadius: BorderRadius.circular(20),
+                              border: Border.all(
+                                color: scheme.outlineVariant.withValues(alpha: .82),
+                              ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withValues(alpha: .14),
+                                  blurRadius: 18,
+                                  offset: const Offset(0, 6),
+                                ),
+                              ],
+                            ),
+                            child: DefaultTextStyle.merge(
+                              style: TextStyle(
+                                fontFamily: fontFamily,
+                                decoration: TextDecoration.none,
+                              ),
+                              child: Column(
                                 mainAxisSize: MainAxisSize.min,
                                 crossAxisAlignment: CrossAxisAlignment.stretch,
                                 children: [
@@ -6685,25 +6715,30 @@ void _handleAckLine(String line) {
                                     crossAxisAlignment: CrossAxisAlignment.center,
                                     children: [
                                       Container(
-                                        width: 44,
-                                        height: 44,
+                                        width: 40,
+                                        height: 40,
                                         decoration: BoxDecoration(
                                           color: const Color(0xFFD69A38).withValues(alpha: .14),
-                                          borderRadius: BorderRadius.circular(14),
+                                          borderRadius: BorderRadius.circular(12),
                                         ),
                                         child: const Icon(
                                           PhosphorIconsRegular.fan,
                                           color: Color(0xFFB7791F),
-                                          size: 24,
+                                          size: 22,
                                         ),
                                       ),
-                                      const SizedBox(width: 12),
+                                      const SizedBox(width: 9),
                                       Expanded(
                                         child: Text(
-                                          JexText.of('peltierFanRequiredTitle', language),
+                                          JexText.of(
+                                            'peltierFanRequiredTitle',
+                                            appLanguageNotifier.value,
+                                          ),
                                           style: TextStyle(
                                             color: scheme.onSurface,
-                                            fontSize: 17,
+                                            fontFamily: fontFamily,
+                                            decoration: TextDecoration.none,
+                                            fontSize: compactHeight ? 15 : 15.5,
                                             height: 1.15,
                                             fontWeight: FontWeight.w800,
                                           ),
@@ -6711,82 +6746,114 @@ void _handleAckLine(String line) {
                                       ),
                                     ],
                                   ),
-                                  const SizedBox(height: 13),
+                                  SizedBox(height: sectionGap),
                                   Text(
-                                    JexText.of('peltierCoolingPrerequisite', language),
+                                    JexText.of(
+                                      'peltierCoolingPrerequisite',
+                                      appLanguageNotifier.value,
+                                    ),
                                     style: TextStyle(
                                       color: scheme.onSurfaceVariant,
-                                      fontSize: 13,
-                                      height: 1.35,
+                                      fontFamily: fontFamily,
+                                      decoration: TextDecoration.none,
+                                      fontSize: compactHeight ? 11.5 : 12.5,
+                                      height: 1.3,
                                       fontWeight: FontWeight.w500,
                                     ),
                                   ),
-                                  const SizedBox(height: 14),
+                                  SizedBox(height: sectionGap + 2),
                                   Row(
                                     children: [
-                                      step(PhosphorIconsRegular.fan, JexText.of('fan', language)),
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(horizontal: 9),
-                                        child: Icon(PhosphorIconsRegular.arrowRight, size: 17, color: scheme.onSurfaceVariant),
+                                      step(
+                                        PhosphorIconsRegular.fan,
+                                        JexText.of('fan', appLanguageNotifier.value),
                                       ),
-                                      step(PhosphorIconsRegular.snowflake, JexText.of('peltier', language)),
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(horizontal: 6),
+                                        child: Icon(
+                                          PhosphorIconsRegular.arrowRight,
+                                          size: 15,
+                                          color: scheme.onSurfaceVariant,
+                                        ),
+                                      ),
+                                      step(
+                                        PhosphorIconsRegular.snowflake,
+                                        JexText.of('peltier', appLanguageNotifier.value),
+                                      ),
                                     ],
                                   ),
-                                  const SizedBox(height: 16),
+                                  SizedBox(height: compactHeight ? 9 : 11),
                                   SizedBox(
                                     height: 48,
                                     child: FilledButton.icon(
                                       style: FilledButton.styleFrom(
                                         minimumSize: const Size.fromHeight(48),
                                         tapTargetSize: MaterialTapTargetSize.padded,
-                                        textStyle: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700),
-                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                                        textStyle: TextStyle(
+                                          fontFamily: fontFamily,
+                                          decoration: TextDecoration.none,
+                                          fontSize: 12.5,
+                                          fontWeight: FontWeight.w700,
+                                        ),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(12),
+                                        ),
                                       ),
                                       onPressed: () => Navigator.pop(dialogContext, true),
-                                      icon: const Icon(PhosphorIconsRegular.power, size: 18),
-                                      label: Text(JexText.of('turnOnFanAndPeltier', language)),
+                                      icon: const Icon(
+                                        PhosphorIconsRegular.power,
+                                        size: 17,
+                                      ),
+                                      label: Text(
+                                        JexText.of(
+                                          'turnOnFanAndPeltier',
+                                          appLanguageNotifier.value,
+                                        ),
+                                      ),
                                     ),
                                   ),
-                                  const SizedBox(height: 4),
+                                  const SizedBox(height: 0),
                                   SizedBox(
                                     height: 48,
                                     child: TextButton(
                                       style: TextButton.styleFrom(
                                         minimumSize: const Size.fromHeight(48),
                                         tapTargetSize: MaterialTapTargetSize.padded,
-                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                                        textStyle: TextStyle(
+                                          fontFamily: fontFamily,
+                                          decoration: TextDecoration.none,
+                                          fontSize: 12.5,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(12),
+                                        ),
                                       ),
                                       onPressed: () => Navigator.pop(dialogContext, false),
-                                      child: Text(JexText.of('cancel', language)),
+                                      child: Text(
+                                        JexText.of('cancel', appLanguageNotifier.value),
+                                      ),
                                     ),
                                   ),
                                 ],
-                              );
-                            },
+                              ),
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  );
-                },
-              ),
+                    );
+                  },
+                ),
               ),
             );
           },
           transitionBuilder: (_, animation, __, child) {
-            final offset = Tween<Offset>(
-              begin: const Offset(0, -.035),
-              end: Offset.zero,
-            ).animate(CurvedAnimation(parent: animation, curve: Curves.easeOutCubic));
             final scale = Tween<double>(begin: .97, end: 1).animate(
               CurvedAnimation(parent: animation, curve: Curves.easeOutCubic),
             );
             return FadeTransition(
               opacity: animation,
-              child: SlideTransition(
-                position: offset,
-                child: ScaleTransition(scale: scale, child: child),
-              ),
+              child: ScaleTransition(scale: scale, child: child),
             );
           },
         );
@@ -7059,18 +7126,6 @@ void _handleAckLine(String line) {
         setState(() => battery12Draft = battery12Limit);
         _showSnackBar(JexText.of('battery12LimitFailed', appLanguageNotifier.value));
       }
-    }
-  }
-
-
-  Future<void> _resetTemperatureSettings() async {
-    if (!connected || adaptiveOn) return;
-    try {
-      final ok = await _sendAndConfirm('RESET:TEMPERATURE');
-      if (!ok && mounted) _showSnackBar(JexText.phrase('The device did not confirm the temperature settings.','Perangkat belum mengonfirmasi pengaturan suhu.'));
-    } catch (e) {
-      debugPrint('Temperature reset: $e');
-      if (mounted) _showSnackBar(JexText.phrase('Temperature settings failed.','Pengaturan suhu gagal.'));
     }
   }
 
@@ -9212,22 +9267,6 @@ void _handleAckLine(String line) {
                 ],
               ),
             ),
-          Align(
-            alignment: Alignment.centerLeft,
-            child: OutlinedButton(
-              onPressed: connected && !locked
-                  ? _resetTemperatureSettings
-                  : null,
-              style: OutlinedButton.styleFrom(
-                minimumSize: const Size(0, 38),
-                padding: const EdgeInsets.symmetric(horizontal: 14),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(13),
-                ),
-              ),
-              child: Text(JexText.of('resetTemperature', lang)),
-            ),
-          ),
         ],
       ),
     );

@@ -83,3 +83,13 @@ This document stores owner-approved, screen-specific visual constraints, not a b
 - **Acceptance matrix:** real App screenshots at 350-dp/420-dp, portrait/constrained height, English/Indonesian, Light/Dark, connected/disconnected/unknown/safety states, plus Statistics short/long and one/multiple sessions. Keep BLE P1, telemetry truth, safety, persistence and Firmware contracts unchanged.
 - **Visual result remains VISUAL NOT VERIFIED:** passing analyzer/Flutter tests/Build #153 does not prove actual Android/OEM visual quality.
 
+
+
+### Peltier safety dialog — fixed compact follow-up (source change after Build #153; not released)
+
+- **Problem/reference:** owner screenshot showed a draggable/scrollable oversized popup and dialog text with anomalous inherited-looking underlines/face. Scope is only the Fan-OFF → Peltier-ON prerequisite dialog.
+- **Fixed geometry:** preserve `JexFixedScalePage`, one existing 360-dp transform and safe-area behavior. Keep the panel centered with 296-dp max width, 20-dp radius and compact internal spacing. Remove `SingleChildScrollView` so the card cannot be dragged/scroll-shifted; remove the entrance SlideTransition while retaining restrained fade/scale. No second transform or global scaling change.
+- **Typography:** explicitly use the existing ThemeData Roboto family and `TextDecoration.none` for raw dialog copy; title 15–15.5 dp, body 11.5–12.5 dp, step labels 10.5 dp. Keep adequate line-height and test the longest EN/ID strings. These are modal-only compact values, not new global text tokens.
+- **Actions and safety:** preserve 48-dp primary and Cancel targets, amber fan-prerequisite meaning, barrier/Cancel no-command behavior, and exact FAN:ON → successful ACK → PELTIER:ON order. Do not modify BLE/P1, Firmware, telemetry authority, or thermal/NTC behavior.
+- **Temperature tab:** remove the global Reset Temperature Settings control and its App handler/label. Keep Hotside limit and battery 5V/12V zone controls unchanged; leave generic command acknowledgement classification untouched.
+- **Acceptance:** 350-dp/420-dp fixed-canvas behavior; portrait and constrained height; EN/ID longest strings; Light/Dark; Fan OFF and Cancel/approve/fan-ACK-failure. Capture actual Android screenshots before marking visual acceptance. Status after source commit: STATIC SOURCE CHECK only / VISUAL NOT VERIFIED.

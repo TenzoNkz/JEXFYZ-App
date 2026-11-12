@@ -1,3 +1,10 @@
+## 2026-11-12 — Fixed compact Peltier popup and removed Temperature reset action (source implemented; not released)
+
+- Peltier prerequisite popup is fixed and centered in the existing 360-dp canvas. Removed the scroll/drag surface and entrance slide; compacted the panel to 296-dp max width with tighter padding, typography and step tiles. Explicit theme Roboto and no text decoration prevent inherited underlines.
+- Primary and Cancel hit areas remain 48 dp. The Amber prerequisite and FAN:ON → successful ACK → PELTIER:ON transaction are unchanged.
+- Removed the Temperature tab's Reset Temperature Settings button, its unused UI handler and button localization key. Temperature thresholds and protocol ACK parsing remain.
+- Regression source updates the Peltier geometry/interaction contracts and asserts the reset control is absent. Flutter/Dart/Gradle/ADB are unavailable here: formatter, focused/full tests, analyzer and device screenshots are BLOCKED / NOT RUN. No App Build/Release or Firmware/device operation was triggered.
+
 ## 2026-11-12 — App visual refinement, Statistics simplification and Diagnostics (source implemented; not released)
 
 - App-only source implementation after the immutable Build #151 release: Lock Voltage centered blur overlay on Voltage/Adaptive only, preserving Bluetooth-disconnected and existing Adaptive priority; moved the Firmware-owned Lock Voltage card to the top of Settings.
