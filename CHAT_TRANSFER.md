@@ -1,30 +1,29 @@
-## CURRENT CHECKPOINT — BUILD #155 FAILED / FOUR TEST FIXES IN PROGRESS — 2026-11-12
+## CURRENT CHECKPOINT — BUILD #155 FAILED / FOUR ROOT CAUSES REPAIRED / RETRY PREFLIGHT — 2026-11-12
 
 **Mode:** `@Thinking Eksekusi Build App!` — guarded App Build/QC/release only.
 
 ### Build #155 terminal result
 
-- Run [43244335274](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/43244335274), workflow 374946166, issue event, attempt 1, job 131272831810; immutable tested source SHA `63ab4e8167cd099a30ad4ca8cd8cfb52d0c098`.
-- **FAILED at step 13 Flutter tests:** steps 1–12 SUCCESS; analyzer reports 23 info-level findings (0 errors/warnings). Flutter suite reports **183 passed / 4 failed**. Steps 14–21 skipped; cleanup 39–43 successful. No APK/source ZIP, no Release/tag mutation. Build #153 remains latest published Release.
-- Build #154 remains separately FAILED at analyzer (six errors); its services import and Tamper theme repairs passed analyzer in #155.
+- Run [43244335274](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/43244335274), job 131272831810, workflow 374946166, attempt 1; immutable tested source SHA `63ab4e8167cd099a30ad4ca8cd8cfb52d0c098`.
+- **FAILED at Flutter test gate:** analyzer step 12 passed (23 infos, 0 warnings/errors); Flutter suite step 13 reported **183 passed / 4 failed**. Android Gradle and release gates 14–21 skipped; cleanup 39–43 succeeded. No APK/source ZIP or Release/tag mutation; Build #153 remains latest published package.
+- Build #154 / run `43243342029` remains separately FAILED at analyzer (6 errors), now repaired by the two earlier App source commits.
 
-### Four exact test findings
+### Four #155 findings and committed repairs
 
-1. **Tamper source-range assertion:** test extracts `TamperScreen` but expects dark ThemeData from `TamperApp`. Update test to validate theme in owner wrapper and copy/contact in screen.
-2. **Actual dashboard overflow:** 420-dp Home canvas less outer padding (9), header (48), Notify (44), and two 3-dp gaps leaves 313 dp; seven 45-dp rows require 315 dp. Reduce only those two Home spacing gaps to 2 dp, preserving canvas/rows/NOTIFY/order. Change test physical size 1080×3200 to DPR 3.0 to model a 360×1066.7-dp portrait viewport.
-3. **Home hit target test locator:** global first 48-dp SizedBox hits LED color-picker header, not Home. Scope test to `_buildHomeArea`; assert both Bluetooth and Settings 48×48 dp buttons and size 25 glyphs; retain Temperature 48-dp checks.
-4. **Lock Voltage copy assertion:** old expected phrase no longer matches source/APP_NOTES. Current bilingual text is `Firmware V7.2+ required` / `Perlu Firmware V7.2+`; update only that string contract, preserving sync/command/telemetry assertions.
+1. Tamper theme source-range mismatch — dark theme/Roboto belong to `TamperApp`, not `TamperScreen`. Test repair `53ebaecb6722e4335e6c20ead419fea96ee1b0e9` now checks both correct owners without removing copy/contact assertions.
+2. Actual 2-dp Home RenderFlex overflow — seven 45-dp rows needed 315 dp but had 313 dp. Source repair `9f1130642666801799cd7547dc907ec50cc55bf5` changes only two internal Home gaps 3→2 dp, leaving 420-dp canvas, 45-dp rows, 44-dp NOTIFY and ordering intact.
+3. Home hit-target source locator mismatch — test repair `53ebaecb6722e4335e6c20ead419fea96ee1b0e9` scopes search to `_buildHomeArea`, checks two 48×48-dp controls and size-25 glyphs, and preserves Temperature button checks. Dashboard fixture DPR is corrected to 3.0 for 1080×3200 physical / 360×1066.7 logical dp.
+4. Lock Voltage copy contract was stale — Firmware test repair `d00cef194cc27e65085234955b2eda60faa3aba8` asserts actual EN/ID copy `Firmware V7.2+ required` / `Perlu Firmware V7.2+`. P1/firmware ownership, command and telemetry assertions remain.
 
-### Repair scope and next action
+### Patch status / next action
 
-- Expected source change: only two Home inter-row spacing gaps in `lib/main.dart`; keep fixed 420-dp canvas, seven 45-dp rows and 44-dp NOTIFY.
-- Expected test-only changes: `test/widget_test.dart` (Tamper scope, accurate Home locator, DPR3 dashboard fixture) and `test/firmware_qc_contract_test.dart` (current bilingual V7.2+ copy).
-- Never weaken/delete the four failing checks or mask the real overflow. No local Flutter/Dart tools available; hosted retry is needed to test repaired changes.
-- Before one new guarded retry, verify #155 terminal and no active/queued run, no PR, exact issue #33 guard, unchanged workflow and Release #153. No retry before repair/read-back.
+- All three repair commits have been inspected and read back. Current main tree 132 entries, recursive listing not truncated. Changed executable/test paths are exactly `lib/main.dart`, `test/widget_test.dart`, `test/firmware_qc_contract_test.dart`; no BLE/P1, Firmware, Gradle, workflow, OTA or release logic changed.
+- No post-repair local tests/analyzer/formatter have run; local Flutter/Dart are unavailable. Workflow lacks a formatter step; `dart format` remains NOT RUN / UNVERIFIED.
+- **Next:** fresh Build App preflight, then one guarded retry only if #155 terminal, no queued/in-progress run, no open PR, issue #33 exact owner/title/token, workflow unchanged, Release #153 unchanged, and versionName exact. Do not weaken tests/gates.
 
 ### Boundaries
 
-No Firmware compile/BIN, Firebase, OTA/flash, physical BLE/device/NVS/rail/LED, thermal/electrical or OEM visual action. Formatter remains NOT RUN / UNVERIFIED because workflow has no formatter step.
+No Firmware compilation/BIN, Firebase, OTA/flash, physical BLE/device/NVS/rail/LED, thermal/electrical or OEM visual acceptance. These remain NOT RUN / UNVERIFIED.
 
 ---
 
