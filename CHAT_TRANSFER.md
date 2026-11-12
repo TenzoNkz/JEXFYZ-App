@@ -5,7 +5,7 @@
 ### Live repository and release boundary
 
 - **Repository:** `TenzoNkz/JEXFYZ-App`, branch `main`.
-- **Current App source commit:** `0b888fc2902430ac67388a05d348f78bf8df5bbc` — compact Settings and remove Device Diagnostics. The latest branch HEAD is documentation checkpoint `1f201aa69e1d799825ac3909f202e2dce4f368b4`.
+- **Current App source commit:** `0b888fc2902430ac67388a05d348f78bf8df5bbc` — compact Settings and remove Device Diagnostics. The branch head after this source commit contains only documentation/checkpoint changes; the executable App baseline remains this source commit.
 - **Previous App UI fix:** `5296ba50f7fe0ba2c0ecff4e6112bed6e40dab2a` — fixed compact Peltier popup and removed Temperature global reset action.
 - **Recursive tree:** 131 entries, `truncated=false`. Source tree was created on the verified full tree; no file paths were added or deleted.
 - **Build #153 remains the latest verified APK/Release:** source SHA `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e`, Actions run `43145542329`, job `130942369953`, Release ID `403010611`, tag `jexfyz-latest`. Current Settings/Peltier/Temperature source changes are NOT in that APK.
