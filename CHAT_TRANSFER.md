@@ -5,16 +5,16 @@
 ### Live branch and Release boundary
 
 - **Repository:** `TenzoNkz/JEXFYZ-App`, branch `main`.
-- **Current executable source/test HEAD:** `aa58a2f14354692a1dbcebfcb70436deb3aabf06`.
+- **Current executable source/test HEAD:** `a963f8bd100f7f2c41f720933ade2cd586145270`.
 - Recursive tree: 132 entries, `truncated=false`.
-- Remediation commits: `5763b08f8b37fccafd2ac2403a51b26ad0be4b41` (Statistics dock/analytics/storage + P1 touch/polling/integrity fixes), `b1275d278ca0b0d2765174364250873044a943d1` (Statistics chart density + integrity dark theme), and `aa58a2f14354692a1dbcebfcb70436deb3aabf06` (skip redundant sort for chronological live events).
+- Remediation commits: `5763b08f8b37fccafd2ac2403a51b26ad0be4b41` (Statistics dock/analytics/storage + P1 touch/polling/integrity fixes), `b1275d278ca0b0d2765174364250873044a943d1` (Statistics chart density + integrity dark theme), and `a963f8bd100f7f2c41f720933ade2cd586145270` (skip redundant sort for chronological live events).
 - Compared with Build #153, main is 55 commits ahead / 0 behind; 18 changed paths (11 Markdown, 4 Dart source, 3 test files).
 - **Build #153 remains the latest published package:** source `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e`, Actions run `43145542329`, Release ID `403010611`, tag `jexfyz-latest`. Current fixes are not in that APK.
 
 ### Usage Statistics — source implemented
 
 - Selected-time dock now uses intrinsic content height via outer Column `MainAxisSize.min`; stable key supports measured-height regression. Bottom placement, SafeArea, six selected values and 48×48 dp Clear target remain. Test asserts dock ≤200 dp at normal text scale and removal after Clear.
-- Temperature charts are 160 dp high, axis painter labels 10 dp, and Hotside-to-Activity spacing is tighter. Battery/Hotside plots, four activity timelines, six-value cursor, Min/Avg/Max/Observed, Hotside limit, aggregates, provenance and data gaps remain.
+- Temperature charts are 160 dp high, axis painter labels 10 dp with tick-spacing-aware precision, and Hotside-to-Activity spacing is tighter. Battery/Hotside plots, four activity timelines, six-value cursor, Min/Avg/Max/Observed, Hotside limit, aggregates, provenance and data gaps remain.
 - Analytics groups events by session/metric, de-duplicates via event identity, merges ordered events, sorts only when needed, computes summary once per live batch, caches decimated chart points and uses binary search for cursor temperature.
 - SQLite sample + matching freshness update is transactional. Schema v2, retention, raw 1-Hz samples, null gaps and HOT-only P1 freshness remain. Serial local write queue has capacity 64 and backpressure; write failures remain visible.
 - **Remaining performance boundary:** one full selected-session summary/chart-decimation pass still runs per one-second refresh. No 1h/8h/long-session Android CPU/memory soak or sustained SQLite backlog measurement has run.
@@ -29,14 +29,14 @@
 
 ### Regression inventory and validation boundary
 
-- Current suite: **184 declarations** (171 unit/source-contract + 13 widget). New cases cover 12k Battery + 12k Hotside long history and bounded chart points, queue capacity/FIFO, dock height/clear, polling guards, touch targets and neutral integrity UX.
+- Current suite: **185 declarations** (172 unit/source-contract + 13 widget). New cases cover 12k Battery + 12k Hotside long history and bounded chart points, queue capacity/FIFO, dock height/clear, polling guards, touch targets and neutral integrity UX.
 - Source read-back/static structural checks passed. Flutter/Dart are unavailable in this runtime; formatter, focused tests, analyzer and full suite are **BLOCKED / NOT RUN**. Written tests are not passing tests.
 - No Actions run, App Build, APK, Release, screenshot/device test or performance soak was started. Current visual status is **VISUAL NOT VERIFIED**.
 - Native Android code/Firmware/BIN, BLE/P1, Firmware safety, OTA, Firebase, notification IDs, SQLite schema/version, Android versionName and 360-dp DPI canvas were not changed.
 
 ### Exact next action
 
-**Siap Eksekusi Build App!** — run the separate guarded workflow on exact main SHA `aa58a2f14354692a1dbcebfcb70436deb3aabf06`. The workflow must validate all 184 current tests, analyzer, Android build, signing, checksums, source ZIP and Release identity. If a gate fails, return to `Eksekusi Full!` and fix the root cause. After a successful package, install and inspect Usage Statistics at 350/420 dp, EN/ID, Light/Dark; verify the compact selected-time dock, graphs/axis labels, chart cursor, and prior Settings/Peltier/Temperature/touch/integrity changes. This checkpoint does not trigger Build App.
+**Siap Eksekusi Build App!** — run the separate guarded workflow on exact main SHA `a963f8bd100f7f2c41f720933ade2cd586145270`. The workflow must validate all 185 current tests, analyzer, Android build, signing, checksums, source ZIP and Release identity. If a gate fails, return to `Eksekusi Full!` and fix the root cause. After a successful package, install and inspect Usage Statistics at 350/420 dp, EN/ID, Light/Dark; verify the compact selected-time dock, distinct y-axis labels on narrow ranges, graphs/axis labels, chart cursor, and prior Settings/Peltier/Temperature/touch/integrity changes. This checkpoint does not trigger Build App.
 
 
 ---

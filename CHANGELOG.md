@@ -1,3 +1,9 @@
+## 2026-11-12 — Distinct Usage Statistics axis labels on narrow temperature ranges
+
+- Y-axis tick labels now select decimal precision from numerical distance between ticks. Narrow ranges retain sufficient precision instead of repeating whole-degree labels; wide ranges stay compact.
+- Added a regression for the 42.5°C-style narrow plot range and asserts distinct expected labels in source.
+- Current test inventory is 185 declarations (172 unit/source-contract + 13 widget). Flutter/Dart are unavailable here, so the test, formatter and analyzer remain NOT RUN. No App Build or screenshot/device validation occurred.
+
 ## 2026-11-12 — Usage Statistics and pre-build P1 remediation (source implemented; QC pending)
 
 - Fixed the selected-time Statistics dock using `MainAxisSize.min`; retained bottom SafeArea, six metrics and 48-dp Clear control. Added measured-height and clear-behavior regression.

@@ -1,3 +1,14 @@
+## Current implementation update — 2026-11-12
+
+**Status: SOURCE IMPLEMENTED / 185 TESTS WRITTEN / TEST, FORMATTER AND ANALYZER NOT RUN / VISUAL NOT VERIFIED.** Current executable source/test HEAD: `a963f8bd100f7f2c41f720933ade2cd586145270`. Build #153 remains the latest published APK; the current source is not packaged.
+
+- The selected-time dock now sizes to its content and retains the bottom SafeArea, elapsed time, six synchronized metrics and 48×48 dp clear action. Regression asserts a height ≤200 dp and Clear removes the dock.
+- Temperature charts use a 160-dp plot, 10-dp axis/time labels and tighter section spacing. Y-axis labels now derive decimal precision from tick spacing, avoiding duplicate rounded labels when a temperature range is narrow.
+- Analytics groups by session/metric, de-duplicates event identities, merges ordered events, skips unnecessary event sorting and computes one summary per one-second live batch. Decimated points are cached and cursor lookup uses binary search.
+- SQLite schema v2, 30-day retention, raw 1-Hz observations, null gaps and HOT-only P1 freshness remain. Sample insert + matching session freshness update are transactional. The serial write queue limits scheduled operations to 64 and waits for capacity; failures remain visible.
+- Current Usage Statistics tests cover a 12k-per-sensor synthetic history, bounded chart points, queue FIFO/capacity, selected-dock height/clear and narrow-axis label precision. The full current suite contains 185 declarations (172 unit/source-contract, 13 widget), but none has run on this source yet.
+- No raw telemetry, sampling cadence, database schema, P1 protocol, Firmware or native security behavior was changed. One full selected-session summary/decimation pass still occurs once per second; long-session Android CPU/memory soak and OEM visual acceptance remain pending.
+
 # JE X FYZ / JE Cooler — App Behavior Reference
 
 Purpose: canonical current App/UI/BLE/telemetry contract. Current source defines implementation; DESIGN_NOTES.md holds owner-approved screen-specific visual constraints; PRODUCT_DESIGN_CONSTITUTION.md defines cross-screen design principles; VISUAL_QUALITY_GATE.md defines evidence-based visual acceptance; CHANGELOG.md and APP_BUILD_REPORT.md hold history/evidence.
@@ -130,7 +141,7 @@ Purpose: canonical current App/UI/BLE/telemetry contract. Current source defines
 - Keep statistics on the Android App locally. Do not send raw history to Firebase and do not persist it in Firmware NVS. Existing `AppSettingsStore` / `flutter_secure_storage` is for small user preferences and is not a time-series database.
 - Current source uses App-local SQLite (`sqflite` 2.4.2) behind a repository boundary and custom Flutter painters; no additional chart package is used. The database stores changed temperature values and authoritative state-change events.
 - Current implementation retains changed-value temperature events and operating-state events for 30 days. It does not yet build 1-minute rollup tables; do not describe the retained history as aggregated. Database growth under sustained high-change telemetry remains a validation item. Clear Statistics requires confirmation.
-- Recording is submitted to a serialized asynchronous queue so BLE parsing/UI do not await SQLite operations. The queue is not currently bounded or coalesced and is not batch-written; stress/backpressure validation remains open. A local write exception is retained for the current process and surfaced as a recording warning on the Statistics page. Collection is not dependent on the page being open.
+- Historical initial-state note (2026-11-09): the first recorder queue had no explicit bound. The current implementation supersedes that state with a serial capacity-64 scheduled-operation queue that waits for capacity; sustained producer/storage-pressure testing remains open. A local write exception is retained for the current process and surfaced as a recording warning on the Statistics page. Collection is not dependent on the page being open.
 
 ### User-visible limitation
 

@@ -7,12 +7,12 @@
 ## 1. Baseline and evidence
 
 - **Repository:** `TenzoNkz/JEXFYZ-App`, branch `main`.
-- **Audited baseline:** executable source snapshot `4d02fbf705a85820a4ea1e530d167ebb53ab3a68`. **Current source HEAD:** `aa58a2f14354692a1dbcebfcb70436deb3aabf06`; recursive tree has 132 entries and is not truncated. Source remediation commits are `5763b08f8b37fccafd2ac2403a51b26ad0be4b41`, `b1275d278ca0b0d2765174364250873044a943d1` and `aa58a2f14354692a1dbcebfcb70436deb3aabf06`.
-- **Audit progression:** the initial static audit was performed on executable snapshot `4d02fbf705a85820a4ea1e530d167ebb53ab3a68`. Three subsequent source commits addressed P1 findings; current source is `aa58a2f14354692a1dbcebfcb70436deb3aabf06`. Current recursive tree has 132 entries, not truncated.
+- **Audited baseline:** executable source snapshot `4d02fbf705a85820a4ea1e530d167ebb53ab3a68`. **Current source HEAD:** `a963f8bd100f7f2c41f720933ade2cd586145270`; recursive tree has 132 entries and is not truncated. Source remediation commits are `5763b08f8b37fccafd2ac2403a51b26ad0be4b41`, `b1275d278ca0b0d2765174364250873044a943d1` and `a963f8bd100f7f2c41f720933ade2cd586145270`.
+- **Audit progression:** the initial static audit was performed on executable snapshot `4d02fbf705a85820a4ea1e530d167ebb53ab3a68`. Three subsequent source commits addressed P1 findings; current source is `a963f8bd100f7f2c41f720933ade2cd586145270`. Current recursive tree has 132 entries, not truncated.
 - **Current executable surface:** 7 Dart library files; 9 test files. Main implementation is concentrated in `lib/main.dart` (10,563 lines / ~387 KB), `lib/usage_statistics.dart` (3,298 lines / ~106 KB), `lib/floating_monitor.dart` (1,808 lines / ~65 KB) and `lib/app_settings.dart`.
 - **Tests in current main:** 184 declarations — 171 unit/source-contract and 13 widget tests. This is an inventory only, not a passing result. All current-main tests remain **NOT RUN**.
 - **Latest verified package:** Build #153 / Actions run `43145542329`, tested source SHA `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e`, Release ID `403010611`, tag `jexfyz-latest`. Build #153 reported 176/176 Flutter tests, analyzer 23 info / 0 warnings / 0 errors, and Android Gradle success. Its native Android JUnit tasks were NO-SOURCE; no native Android JUnit test cases ran.
-- **Source/release gap:** current `main` is 55 commits ahead / 0 behind Build #153. GitHub compare reports 18 changed paths (11 Markdown, 4 Dart source and 3 test files). Current Settings/About, Statistics, Peltier, Temperature, Home hit-target, polling and integrity-screen fixes are not in Build #153 APK. Release #153 remains the latest package.
+- **Source/release gap:** current `main` is 56 commits ahead / 0 behind Build #153. GitHub compare reports 18 changed paths (11 Markdown, 4 Dart source and 3 test files). Current Settings/About, Statistics, Peltier, Temperature, Home hit-target, polling and integrity-screen fixes are not in Build #153 APK. Release #153 remains the latest package.
 - **CI state at audit:** latest run #153 is completed SUCCESS; no active run or open PR. Release tag still resolves to the Build #153 source SHA. No build trigger was sent.
 
 Evidence is classified as **STATIC SOURCE CHECK** unless explicitly stated otherwise. Source inspection does not prove runtime behavior, performance or visual acceptance.
@@ -81,9 +81,9 @@ Evidence is classified as **STATIC SOURCE CHECK** unless explicitly stated other
 
 **Status: BLOCKED / NOT RUN LOCALLY; READY FOR GUARDED CI VALIDATION.**
 
-- Current main contains 184 test declarations (171 unit/source-contract, 13 widget). They have not run in the current runtime because Flutter/Dart executables are unavailable.
+- Current main contains 185 test declarations (172 unit/source-contract, 13 widget). They have not run in the current runtime because Flutter/Dart executables are unavailable.
 - Build #153's 176/176 result applies only to old immutable SHA `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e`, not current main.
-- Next evidence must come from the separate guarded App Build workflow on exact source SHA `aa58a2f14354692a1dbcebfcb70436deb3aabf06`. Fix any failure at root and rerun; do not weaken contracts.
+- Next evidence must come from the separate guarded App Build workflow on exact source SHA `a963f8bd100f7f2c41f720933ade2cd586145270`. Fix any failure at root and rerun; do not weaken contracts.
 - The guarded workflow currently has no Dart formatter step. Formatter/lint policy remains a P2 follow-up and must not be reported as passed.
 
 ## 4. P2 — professional polish and maintainability
@@ -94,7 +94,7 @@ Source contains 15 distinct explicit font-size values from 6.8 to 21 dp. Several
 - Home “Developed by Horizon” is 6.8 dp.
 - Home tab captions are 9 dp.
 - Home NOTIFY label/body are 9.5/10.5 dp.
-- Usage chart axis labels are 9 dp.
+- Usage chart axis labels are 10 dp; narrow-range y-axis ticks now choose decimal precision from tick spacing to avoid duplicate rounded values.
 - Firmware dialog's “saved securely” helper is 9 dp.
 
 **Recommendation:** establish a restrained role hierarchy based on the existing Roboto/ThemeData roles: screen title, row/section title, primary value, supporting state, caption. Remove purely decorative microcopy where it adds no product information; make essential helper/axis text readable. Do not enlarge every label indiscriminately or sacrifice telemetry fit.
@@ -130,7 +130,7 @@ Static source inventory found 71 distinct literal `Color(0x...)` values, 13 dist
 
 Home and fixed-canvas routes use `TextScaler.noScaling` to preserve the established physical-size/DPI contract. Treat this as a known accessibility limitation, not as proof of large-text support. It must not be silently removed or changed during a visual sweep.
 
-There are no screenshot/golden or `integration_test` assets in the current test tree. Only 13 of 179 tests are widget tests; actual visual acceptance is still a manual/device gate. Capture matched 350/420-dp, EN/ID, Light/Dark screenshots at the exact tested source SHA.
+There are no screenshot/golden or `integration_test` assets in the current test tree. Only 13 of 185 tests are widget tests; actual visual acceptance is still a manual/device gate. Capture matched 350/420-dp, EN/ID, Light/Dark screenshots at the exact tested source SHA.
 
 ## 5. Design direction for the whole App
 
@@ -171,4 +171,4 @@ Do not ask Gemini to claim it inspected GitHub, executed Flutter tests, or saw a
 
 ---
 
-**Audit conclusion (updated 2026-11-12):** source remediation is implemented for the Statistics dock/data path, native polling overlap, Home/Temperature touch targets and TamperScreen presentation. The current 184-test suite, analyzer and formatter have not run here. The next operation may be the separate guarded `Eksekusi Build App!` QC on exact main SHA `aa58a2f14354692a1dbcebfcb70436deb3aabf06`. This means ready to execute QC, not a passed build, visual pass, device validation or release. One selected-session summary/decimation pass remains each second; long-session CPU/memory soak, formatter/lint standard and Android visual/touch acceptance remain explicit follow-up evidence.
+**Audit conclusion (updated 2026-11-12):** source remediation is implemented for the Statistics dock/data path, native polling overlap, Home/Temperature touch targets and TamperScreen presentation. The current 184-test suite, analyzer and formatter have not run here. The next operation may be the separate guarded `Eksekusi Build App!` QC on exact main SHA `a963f8bd100f7f2c41f720933ade2cd586145270`. This means ready to execute QC, not a passed build, visual pass, device validation or release. One selected-session summary/decimation pass remains each second; long-session CPU/memory soak, formatter/lint standard and Android visual/touch acceptance remain explicit follow-up evidence.
