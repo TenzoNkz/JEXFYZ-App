@@ -1,12 +1,17 @@
-## CURRENT APP QC — BUILD #157 ACTIVE / RELEASE PUBLISHING — 2026-11-12
+## CURRENT APP QC — BUILD #157 SUCCESS / RELEASE VERIFIED — 2026-11-12
 
-- **Run:** Build #157 / Actions `43247876115`, job `131285336987`, attempt 1; immutable checkout SHA `10d106537e92060e0aac3fc17fd37f56e746bcd5`.
-- **Progress:** steps 1–19 SUCCESS, including analyzer, Flutter tests, Android Gradle, obfuscated APK, V1/V2/V3 signing, signature/certificate verification, filename and source ZIP. Step 20 Release publish IN_PROGRESS; step 21 downloaded-asset verification pending. Continue this run only.
-- **Failure history:** #154 analyzer failure (6 errors), #155 tests (183/4), #156 tests (186/1) all remain preserved. Final #156 stale Home Notify assertion repaired by test-only commits `b007b56ab5ddf91546f86937be202978dc7fee3b` and `38212c3620aba6eb9fa5f6db41b43fdb777a9ddf`.
-- **Evidence pending:** exact analyzer/test counts, Android JUnit NO-SOURCE results, APK/ZIP hashes and sizes, certificate detail, live Release/tag parity and downloaded asset verification await terminal logs/API read-back.
-- **Release baseline:** Build #153 remains current live Release until Build #157 step 20 completes.
-- **Formatter:** no workflow formatter step; `dart format` NOT RUN / UNVERIFIED.
-- **Boundary:** App Build only. No Firmware/BIN/Firebase/OTA/flash/device/physical BLE/thermal/electrical/OEM visual operation.
+- **Immutable tested/released source SHA:** `10d106537e92060e0aac3fc17fd37f56e746bcd5`. Actions run `43247876115`, workflow 374946166, attempt 1, job `131285336987`; completed SUCCESS. All steps 1–21 and cleanup 39–43 SUCCESS.
+- **QC:** security/architecture audit passed; Dart analyzer **23 infos, 0 warnings/errors**; Flutter **187/187 tests passed**; Android Gradle `BUILD SUCCESSFUL in 3m19s`.
+- **Android JUnit coverage limitation:** `:app:compileDebugUnitTestKotlin`, `:app:compileDebugUnitTestJavaWithJavac`, `:app:processDebugUnitTestJavaRes`, `:app:testDebugUnitTest` are `NO-SOURCE`; no native Android JUnit test cases executed. Gradle task gate passed.
+- **APK:** 55,980,123 bytes; SHA-256 `24a42feb2ec8968209ac5dd764c6acb789c09fb0fc9a26df8e7d4bf5e1652aef`. [Download](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-release.apk).
+- **Source ZIP:** 2,932,445 bytes; SHA-256 `3b6f0a84a760b26587ca39a946f14383f2acee933fb5b30247270713a32e6a06`. [Download](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-corresponding-source.zip).
+- **Release:** ID 403010611 / tag `jexfyz-latest` and Release target resolve to exact Build #157 source SHA. Exactly one APK + one matching source ZIP; gate 21 re-download hash, ZIP integrity/source marker and APK signature/cert verification passed.
+- **Signing:** RSA 4096, JE X FYZ DN, pinned cert SHA-256 `dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0`; V1/V2/V3 true. Self-signed/PKIX chain/no timestamp warnings remain; not publicly CA-trusted.
+- Android Gradle `versionName "Telegram @horizontalzzz"` unchanged; Flutter app version `1.0.0+3`.
+- **Failed attempt history:** #154 analyzer failed (6 errors), #155 tests failed (183/4), #156 tests failed (186/1); all original evidence preserved. #157 validated all repairs.
+- **Repository after build:** main has only four Markdown documentation paths changed after build SHA: APP_BUILD_REPORT, CHAT_TRANSFER, HANDOVER, PROJECT_STATE. No App source/test, Gradle/config, Firmware or workflow change. Recursive tree was 132 entries, not truncated.
+- **Evidence boundary:** hosted App CI/release only. Firmware V7.2 compile/BIN, Firebase, OTA/flash, physical BLE/device/NVS/rail/LED, thermal/electrical cooling, owner installation and OEM visual acceptance remain NOT RUN / UNVERIFIED.
+- **Next:** owner install and physical App/BLE/OEM visual acceptance at 350-dp/420-dp, Light/Dark, EN/ID, reconnect and Lock Voltage. No new App Build unless App source changes.
 
 
 ---
