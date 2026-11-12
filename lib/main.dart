@@ -8466,7 +8466,7 @@ void _handleAckLine(String line) {
               ],
             ),
             child: displayedValue && showCheck
-                ? const Icon(Icons.check, size: 15, color: Colors.white)
+                ? const Icon(PhosphorIconsBold.check, size: 15, color: Colors.white)
                 : null,
           ),
         ),
@@ -8511,7 +8511,7 @@ void _handleAckLine(String line) {
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
               child: Row(
                 children: [
-                  Icon(Icons.lock_outline_rounded, color: Theme.of(context).colorScheme.primary, size: 18),
+                  Icon(PhosphorIconsRegular.lock, color: Theme.of(context).colorScheme.primary, size: 18),
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
@@ -8777,7 +8777,7 @@ void _handleAckLine(String line) {
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
               child: Row(
                 children: [
-                  Icon(Icons.lock_outline_rounded, color: Theme.of(context).colorScheme.primary, size: 18),
+                  Icon(PhosphorIconsRegular.lock, color: Theme.of(context).colorScheme.primary, size: 18),
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
@@ -8849,7 +8849,7 @@ void _handleAckLine(String line) {
               child: Row(
                 children: [
                   const Icon(
-                    Icons.lock_outline_rounded,
+                    PhosphorIconsRegular.lock,
                     size: 19,
                     color: Colors.orangeAccent,
                   ),
@@ -8946,7 +8946,7 @@ void _handleAckLine(String line) {
                 ),
               ),
               child: selected
-                  ? Icon(Icons.check, size: 17, color: accent)
+                  ? Icon(PhosphorIconsBold.check, size: 17, color: accent)
                   : null,
             ),
           ],
@@ -9036,7 +9036,7 @@ void _handleAckLine(String line) {
                   ),
                   child: Row(
                     children: [
-                      Icon(Icons.wb_sunny_outlined, size: 19, color: scheme.onSurfaceVariant),
+                      Icon(PhosphorIconsRegular.sun, size: 19, color: scheme.onSurfaceVariant),
                       const SizedBox(width: 8),
                       Expanded(
                         child: Slider(
@@ -9121,7 +9121,7 @@ void _handleAckLine(String line) {
                           ],
                         ),
                       ),
-                      Icon(Icons.chevron_right_rounded, color: scheme.onSurfaceVariant, size: 22),
+                      Icon(PhosphorIconsRegular.caretRight, color: scheme.onSurfaceVariant, size: 22),
                     ],
                   ),
                 ),
@@ -9199,7 +9199,7 @@ void _handleAckLine(String line) {
               child: Row(
                 children: [
                   const Icon(
-                    Icons.lock_outline_rounded,
+                    PhosphorIconsRegular.lock,
                     size: 19,
                     color: Colors.orangeAccent,
                   ),
@@ -9279,7 +9279,7 @@ void _handleAckLine(String line) {
             ),
           ),
           _temperatureButton(
-            icon: Icons.remove_rounded,
+            icon: PhosphorIconsRegular.minus,
             enabled: enabled && value > min,
             onPressed: () => onChanged(value - 1),
           ),
@@ -9305,7 +9305,7 @@ void _handleAckLine(String line) {
           ),
           const SizedBox(width: 5),
           _temperatureButton(
-            icon: Icons.add_rounded,
+            icon: PhosphorIconsRegular.plus,
             enabled: enabled && value < max,
             onPressed: () => onChanged(value + 1),
           ),
@@ -9359,7 +9359,7 @@ void _handleAckLine(String line) {
       child: Row(
         children: [
           Icon(
-            Icons.lock_outline_rounded,
+            PhosphorIconsRegular.lock,
             size: 18,
             color: scheme.onSurfaceVariant.withValues(alpha: .55),
           ),
@@ -10583,7 +10583,7 @@ class _FirmwareUpdateDialogState extends State<FirmwareUpdateDialog> {
                       });
                     },
                     icon: Icon(
-                      passwordVisible ? Icons.visibility_off : Icons.visibility,
+                      passwordVisible ? PhosphorIconsRegular.eyeSlash : PhosphorIconsRegular.eye,
                     ),
                   ),
                 ),
