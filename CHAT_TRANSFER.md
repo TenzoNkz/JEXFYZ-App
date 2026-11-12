@@ -1,24 +1,24 @@
-## CURRENT CHECKPOINT — BUILD #157 ACTIVE / FLUTTER TESTS — 2026-11-12
+## CURRENT CHECKPOINT — BUILD #157 ACTIVE / ANDROID GRADLE GATE — 2026-11-12
 
 **Mode:** `@Thinking Eksekusi Build App!` — guarded App Build/QC/release only.
 
-### Previous failed attempts and final repair
+### Previous failures and repairs
 
-- Build #154 / run `43243342029`: analyzer FAILED (6 errors); root causes repaired with services import and proper Tamper textTheme handling.
-- Build #155 / run `43244335274`: Flutter tests FAILED (183 pass / 4 fail); analyzer passed. Four causes repaired with Home 2-dp overflow correction, Tamper/Home source-contract and DPR3 fixture correction, and current V7.2+ copy assertion.
-- Build #156 / run `43246666829`: Flutter tests FAILED (186 pass / 1 fail); analyzer passed (23 infos, zero warning/error). Its sole failure was a stale Home Notify assertion expecting 3-dp spacing. Final test correction `b007b56ab5ddf91546f86937be202978dc7fee3b` then `38212c3620aba6eb9fa5f6db41b43fdb777a9ddf` now counts two 2-dp spacers and rejects any 3-dp spacer before NOTIFY.
-- All three failures are preserved. Build #153 remains latest published package until a later run passes all gates.
+- Build #154 analyzer FAILED (6 errors); fixed Flutter services import and Tamper textTheme API.
+- Build #155 tests FAILED (183 pass / 4 fail); #156 tests FAILED (186 pass / 1 fail). All findings preserved; #155's actual Home 2-dp overflow, three stale assertions and #156's final 3-dp Notify source assertion are repaired and read back.
+- Build #153 remains latest published Release until #157 finishes.
 
 ### Current guarded retry — Build #157
 
 - Run `43247876115`, workflow 374946166, issue event, attempt 1, job `131285336987`; immutable checkout SHA `10d106537e92060e0aac3fc17fd37f56e746bcd5`. [Actions run](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/43247876115).
-- Steps 1–12 SUCCESS. Step 13 `flutter test` IN_PROGRESS. Steps 14–21 pending. Continue this run only.
-- Fresh preflight: #156 terminal; zero queued/in-progress; no open PR; issue #33 exact owner/title/token; workflow unchanged; Release #153 tag/assets intact; versionName exact. Issue #33 closed/reopened once and a single #157 run appeared.
+- Steps 1–13 SUCCESS, including analyzer and Flutter tests. Step 14 `Run Android unit-test gate` IN_PROGRESS. Steps 15–21 pending.
+- Exact analyzer info count, Flutter test count and native JUnit `NO-SOURCE` detail await final logs; do not infer exact counts.
+- Preflight passed before trigger: no queued/in-progress run or open PR, exact issue #33 guard, workflow unchanged, Release #153/tag/assets intact, versionName exact. Issue #33 closed/reopened once; no duplicate trigger.
 - Formatter remains NOT RUN / UNVERIFIED; workflow has no formatter step.
 
 ### Next
 
-Inspect only run `43247876115` / job `131285336987`; record actual test/Gradle/APK/signing/source ZIP/Release/tag/downloaded-asset results. No duplicate trigger. Firmware/BIN/Firebase/OTA/flash/device/BLE/thermal/electrical/OEM visual validation remains separate and not performed.
+Continue only run `43247876115` / job `131285336987`; inspect Gradle gate then APK/signing/source ZIP/Release/tag/downloaded assets. Keep Firmware/BIN/Firebase/OTA/flash/device/BLE/thermal/electrical/OEM visual evidence separate.
 
 ---
 
