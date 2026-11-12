@@ -1,12 +1,11 @@
-## CURRENT CHECKPOINT — BUILD #153 ACTIVE / GUARDED APP QC — 2026-11-12
+## CURRENT CHECKPOINT — BUILD #153 ACTIVE / ANDROID GRADLE GATE — 2026-11-12
 
-- **Run:** Actions `43145542329`, workflow 374946166, attempt 1, issue event #33, job `130942369953`; immutable source SHA `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e`. Current run active; initial state steps 1–2 success, step 3 Java 17 setup in progress.
-- Build #153 includes test-only repairs after Build #152 failure: Home NOTIFY source anchors/adaptive font assertion, explicit nonzero Statistics test viewport, and Diagnostics localization/casing. No production App source, Firmware, workflow or Gradle versionName changed in repair.
-- Build #152 / run `43144337555` remains a preserved failure at Flutter suite (171 pass / 5 fail), no artifact. Full failure evidence and test repair summary are in APP_BUILD_REPORT.md.
-- **Latest published App remains Build #151** (Release 403010611, tag `jexfyz-latest` source `e383924067b7ab2da27f2e41f21232cfb7144ec0`) until #153 clears all gates.
-- Android Gradle `versionName "Telegram @horizontalzzz"` exact.
-- No Firmware compile/BIN/Firebase/OTA/flash/device/BLE/NVS/rail/LED/thermal/electrical/OEM validation. App CI does not prove physical field acceptance.
-- **Next:** monitor Build #153 to full gate and Release verification; no additional trigger.
+- Build #153: Actions run `43145542329`, job `130942369953`, attempt 1, immutable source SHA `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e`.
+- Steps 1–13 passed, including Dart analyzer and full Flutter suite after the three test-only repairs. Step 14 Android unit-test gate started at `2026-11-12T03:05:02Z` and remains in progress at last check. Steps 15–21 pending.
+- Exactly one run active (#153), zero queued; active job log archive unavailable until job completion. No Android gate result or APK is claimed yet.
+- Build #152 remains a separately recorded Flutter test failure (171 pass / 5 fail), no artifact. Latest published Release remains #151 on source `e383924067b7ab2da27f2e41f21232cfb7144ec0`.
+- Android `versionName "Telegram @horizontalzzz"` exact. No Firmware/BIN/Firebase/OTA/flash/device/BLE/NVS/rail/LED/cooling/OEM QA.
+- Next: continue checking run #153 only; do not trigger another run while active.
 
 ---
 ## Firmware V7.2 source implementation — App CI verified; Firmware validation pending (2026-11-12)
