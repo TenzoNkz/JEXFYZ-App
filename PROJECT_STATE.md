@@ -1,11 +1,10 @@
-## CURRENT CHECKPOINT — BUILD #153 ACTIVE / ANDROID GRADLE GATE — 2026-11-12
+## CURRENT CHECKPOINT — BUILD #153 ACTIVE / APK BUILD — 2026-11-12
 
-- Build #153: Actions run `43145542329`, job `130942369953`, attempt 1, immutable source SHA `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e`.
-- Steps 1–13 passed, including Dart analyzer and full Flutter suite after the three test-only repairs. Step 14 Android unit-test gate started at `2026-11-12T03:05:02Z` and remains in progress at last check. Steps 15–21 pending.
-- Exactly one run active (#153), zero queued; active job log archive unavailable until job completion. No Android gate result or APK is claimed yet.
-- Build #152 remains a separately recorded Flutter test failure (171 pass / 5 fail), no artifact. Latest published Release remains #151 on source `e383924067b7ab2da27f2e41f21232cfb7144ec0`.
-- Android `versionName "Telegram @horizontalzzz"` exact. No Firmware/BIN/Firebase/OTA/flash/device/BLE/NVS/rail/LED/cooling/OEM QA.
-- Next: continue checking run #153 only; do not trigger another run while active.
+- Build #153 / run `43145542329`, job `130942369953`, source `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e`. Steps 1–14 passed, including analyzer, full Flutter test suite and Android Gradle gate (success in 3m42s). Step 15 APK build in progress; steps 16–21 pending.
+- Build #152 remains historical Flutter test failure (171 passed / 5 failed), repaired in test-only commits and verified through #153's passing Flutter gate. Final test counts and Android NO-SOURCE caveat await final job log.
+- Latest published Release remains Build #151 / Release 403010611 / tag `jexfyz-latest` on `e383924067b7ab2da27f2e41f21232cfb7144ec0` until #153 finishes all gates.
+- Android `versionName "Telegram @horizontalzzz"` exact. No Firmware/BIN/Firebase/OTA/flash/device/BLE/NVS/rail/LED/thermal/electrical/OEM visual validation.
+- Next: inspect #153 APK build, signing and downloaded Release verification only; no additional trigger.
 
 ---
 ## Firmware V7.2 source implementation — App CI verified; Firmware validation pending (2026-11-12)
