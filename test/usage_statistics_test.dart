@@ -739,6 +739,12 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('History recording may be incomplete.'), findsOneWidget);
+      expect(
+        find.text(
+          'The local history writer could not keep up with incoming readings or storage failed. Some history may be missing; check available phone storage.',
+        ),
+        findsOneWidget,
+      );
       expect(tester.takeException(), isNull);
     });
 
