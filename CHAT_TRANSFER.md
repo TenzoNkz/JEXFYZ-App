@@ -1,18 +1,16 @@
-## CURRENT CHECKPOINT — BUILD #152 FAILED / TEST REPAIR IN PROGRESS — 2026-11-12
+## CURRENT CHECKPOINT — BUILD #152 FAILED / TEST REPAIR COMMITTED / GUARDED RETRY PREFLIGHT — 2026-11-12
 
-**Disposition:** Build #152 terminal FAILED at Flutter test gate. Analyzer passed. No APK, signing, source ZIP or Release mutation. Failure details and each exact test assertion are appended to APP_BUILD_REPORT.md; Build #152 remains historical failure.
+**Disposition:** Build #152 remains terminal FAILED (171 Flutter tests passed, 5 failed); no artifact was produced. The five test failures have now been repaired in three test-only commits. No retry has yet been triggered.
 
-- **Run/job/source:** Build #152 / Actions run `43144337555`, job `130938510090`, attempt 1; immutable tested SHA `04ec48a53bef308f0817470d2d758697a1592cc4`.
-- **Passed:** steps 1–12 (toolchain, security/architecture audit, dependencies, analyzer). **Failed:** step 13 Flutter tests — **171 passed, 5 failed**. Steps 14–21 skipped; cleanup 39–43 passed.
-- **Failures identified:** (1) Home NOTIFY test end anchor searches for an earlier method; (2) Home NOTIFY source assertion expects obsolete fontSize assignment, but current adaptive ternary is intentional; (3) Usage Statistics last-sample test scrolls with zero-height viewport, causing drag hit-test/No element; analytics fixture assertion itself confirms latest timestamp. (4) Device Diagnostics summary copy is asserted in SettingsPage source instead of localization source; (5) expected title-case Disconnected differs from actual localized uppercase DISCONNECTED. See APP_BUILD_REPORT.md for exact diagnostics/locations.
-- **Repair scope:** only correct stale test anchors/expectations and isolate the Statistics widget test with explicit surface size and DPR teardown. Keep behavior assertions. Do not weaken gates. Re-run suite in hosted CI before any build/release gates are reached.
-- **Current main at checkpoint:** `1e29b4da2d25581c27b9b8f72bd3525fe6be044e` (Build #152 failure ledger documentation only since tested SHA). No source repair has yet been committed.
-- **Pre-repair state:** no active/queued runs; issue #33 OPEN with exact owner/title/token. Workflow unchanged, issue-only. Release ID 403010611/tag `jexfyz-latest` still points to Build #151 SHA `e383924067b7ab2da27f2e41f21232cfb7144ec0`; prior APK/ZIP remain unchanged. Android `versionName "Telegram @horizontalzzz"` preserved.
-- **Next:** patch the five test failures narrowly; investigate the Statistics viewport if it persists after test isolation; then preflight and one guarded retry only after the concrete changes are committed.
-- **Scope boundary:** no Firmware compile/BIN/Firebase/OTA/flash/device/BLE/NVS/rail/LED/cooling/OEM screenshot operation occurred.
+- **Failed attempt:** Build #152 / run `43144337555`, job `130938510090`, tested SHA `04ec48a53bef308f0817470d2d758697a1592cc4`. Steps 1–12 success; step 13 Flutter tests failed 171/5; steps 14–21 skipped; cleanup 39–43 passed.
+- **Repair commits:** `5f06e121cdb6f84f7cb3c70c020d4e89a97e3725` (Home NOTIFY source anchors + current font adaptive expression); `bba8cd2eb96f82a0c7a087cb165866e1cda2e11e` (explicit 800×1200/DPR 1 Statistics test viewport with teardown and nonzero viewport assertion before retaining visible Last sample check); `642e6a500473b16554ab849f07ed8ddffd84bc8a` (Diagnostics summary localization assertion moved to correct source and English expected state changed to `DISCONNECTED`).
+- **Review:** diff from failed run SHA to repaired main contains only the three test paths above, plus Markdown ledger/checkpoint updates. No production App Dart, Firmware, workflow, Gradle, dependency, BLE/P1 or versionName change. The 5 original failures and exact evidence remain preserved in APP_BUILD_REPORT.md.
+- **Local test status:** Flutter, Dart and Gradle are not installed in this container; formatter/focused/full tests BLOCKED / NOT RUN locally. Hosted CI is required to verify the repair. The Statistics widget test still asserts the rendered `Last sample · 04:00` and checks its viewport is nonzero; it has not been weakened.
+- **Pre-retry state to verify:** main after this checkpoint; no active/queued Actions runs; issue #33 OPEN with owner/title/body-token; workflow unchanged issue-only; Release #151 tag/source SHA and exactly one APK + one ZIP unchanged; Android `versionName "Telegram @horizontalzzz"` exact.
+- **Next:** run a fresh preflight; if all clear, close/reopen issue #33 exactly once for one guarded retry. No second retry or trigger while that run is active.
+- No Firmware compile/BIN/Firebase/OTA/flash/device/BLE/NVS/rail/LED/cooling/electrical/OEM visual work.
 
 ---
-
 ## CURRENT CHECKPOINT — BUILD #149 COMPLETED / RELEASE VERIFIED — 2026-11-11
 
 **Disposition:** Build #149 / Actions run 42967289995 COMPLETED / SUCCESS / RELEASED. Workflow 374946166, attempt 1; job 130347345586 completed success. All 21 required gates and post-job cleanup steps 39–43 passed.
