@@ -51,7 +51,7 @@ Purpose: canonical current App/UI/BLE/telemetry contract. Current source defines
 - Android package: com.horizontalzzz.jexfyz. Flutter version: 1.0.0+3 at last live config review.
 - Android Gradle versionName "Telegram @horizontalzzz" is intentional creator/contact identity; preserve it exactly.
 - Visual assets are transparent square PNGs: assets/jexfyzicon.png and assets/jexfyzcooler.png. Preserve transparency and aspect ratio.
-- Core Dashboard modes are VOLTAGE and ADAPTIVE. The compact menu hierarchy is VOLTAGE → CONTROL → ADAPTIVE → LED → TEMPERATURE. Do not reintroduce the removed About Settings page/row without a new request.
+- Core Dashboard modes are VOLTAGE and ADAPTIVE. The compact menu hierarchy is VOLTAGE → CONTROL → ADAPTIVE → LED → TEMPERATURE. The earlier removal of the About Settings page/row is historical and is superseded by the owner's explicit 2026-11-12 request to restore About below Firmware.
 
 ## Home state and NOTIFY
 
@@ -227,3 +227,22 @@ Purpose: canonical current App/UI/BLE/telemetry contract. Current source defines
 - Distinguish a Fan-OFF prerequisite prompt (amber, informational) from actual Hotside/NTC safety faults (red/error treatment). The dialog remains shown only when the user requests Peltier ON while Fan is OFF. Cancel sends nothing; Fan ACK failure must continue to prevent Peltier:ON; preserve timeouts, authoritative confirmations, failure notices and bilingual support.
 - Keep subtle fade/scale entrance and light/dark theme contrast; avoid decorative motion or full-red alarming surfaces for this prerequisite. Do not change Home geometry, fixed-canvas scale, Firmware, BLE/P1, safety policy or command order.
 - Status: design proposal recorded in Diskusi only. No source/tests changed or run, no App Build/Release and no Firmware/device action.
+
+
+## Owner request — About page and bilingual contributor credits (2026-11-12)
+
+- Restore an **About / Tentang** entry directly below the Firmware section in the main Settings list. It opens a vertically scrollable About subpage using the established `JexFixedScalePage(compactUi: true, ...)` contract. This is a new explicit owner request and overrides the historical removal note; update the existing source-contract test that currently asserts About must not exist.
+- About page content, preserving the project/brand names and exact social handles:
+  - English heading: **JE Cooler**; credit heading: **Special Thanks**.
+  - **App Development & Build** — Horizon — `@Horizontalzzz`.
+  - **Design Inspiration** — FYZ — `@FYZ737`.
+  - **3D Design & Printing** — Logos — `@Logos3dMichael`.
+  - Indonesian heading: **JE Cooler**; credit heading: **Ucapan Terima Kasih**.
+  - **Pengembangan Aplikasi & Build** — Horizon — `@Horizontalzzz`.
+  - **Inspirasi Desain** — FYZ — `@FYZ737`.
+  - **Desain & Pencetakan 3D** — Logos — `@Logos3dMichael`.
+- Wording notes: use “Special Thanks” as a standalone heading rather than “Special Thanks to:” because the credits are role/name pairs; “Design Inspiration” corrects the unidiomatic “Design Inspired”; “3D Design & Printing” is recommended assuming Logos contributed both 3D design and printing. If the role is print-only, narrow it to “3D Printing” / “Pencetakan 3D”.
+- Keep handles exactly as supplied; display them as text unless the owner supplies verified profile URLs. Do not invent links or claim additional roles/endorsements.
+- Presentation direction: clean single-column credit layout with the JE Cooler brand at top, clear role hierarchy, generous spacing and subtle separators. Reuse Settings typography, theme-aware colors, bilingual localization and the 360-dp compact-scale/DPI behavior. No extra claims, version metadata or legal text were requested.
+- Regression requirements: About row appears after Firmware in Settings ordering; About subpage opens; all role labels and handles match exact copy in both locales; EN/ID switching updates the heading/role labels but not names/handles; light/dark and 350-dp/420-dp layouts remain readable without overflow.
+- Status: requirement/design recorded in Diskusi only. No executable source/tests changed or run, no build/release, Firmware or device action.
