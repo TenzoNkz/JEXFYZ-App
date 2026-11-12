@@ -243,6 +243,18 @@ class JexText {
       AppLanguage.english: 'Firmware',
       AppLanguage.indonesia: 'Firmware',
     },
+    'about': {
+      AppLanguage.english: 'About',
+      AppLanguage.indonesia: 'Tentang',
+    },
+    'deviceDiagnostics': {
+      AppLanguage.english: 'Device Diagnostics',
+      AppLanguage.indonesia: 'Diagnostik Perangkat',
+    },
+    'deviceDiagnosticsSummary': {
+      AppLanguage.english: 'Live device and safety details',
+      AppLanguage.indonesia: 'Informasi perangkat dan keselamatan terkini',
+    },
     'language': {
       AppLanguage.english: 'Language',
       AppLanguage.indonesia: 'Bahasa',
@@ -856,6 +868,18 @@ class JexText {
     'fanRequiredPeltier': {
       AppLanguage.english: 'Turn on the fan before enabling Peltier.',
       AppLanguage.indonesia: 'Nyalakan kipas sebelum mengaktifkan Peltier.',
+    },
+    'peltierFanRequiredTitle': {
+      AppLanguage.english: 'Fan required before cooling',
+      AppLanguage.indonesia: 'Kipas perlu dinyalakan',
+    },
+    'peltierCoolingPrerequisite': {
+      AppLanguage.english: 'Peltier needs airflow to remove heat. The fan will be confirmed ON before Peltier starts.',
+      AppLanguage.indonesia: 'Peltier memerlukan aliran udara untuk membuang panas. Kipas akan dikonfirmasi AKTIF sebelum Peltier menyala.',
+    },
+    'turnOnFanAndPeltier': {
+      AppLanguage.english: 'Turn on Fan & Peltier',
+      AppLanguage.indonesia: 'Nyalakan Kipas & Peltier',
     },
     'cancel': {
       AppLanguage.english: 'Cancel',
