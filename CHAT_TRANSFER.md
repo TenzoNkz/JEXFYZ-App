@@ -2,6 +2,10 @@
 
 **Disposition:** guarded App Build/QC/release completed successfully. No further Build App trigger is needed for the built source SHA.
 
+**Live revalidation — 2026-11-12 10:38 Asia/Jakarta:** The pre-checkpoint live main HEAD was 283a8689bdb574280a0547c7377bedd64001344a; recursive tree 131 entries, not truncated. Comparing against the immutable Build #153 source 1834a78e20273c9ea6cd51ad4d52b64370c5bd9e shows 30 commits ahead / 0 behind and exactly six modified Markdown paths only: APP_BUILD_REPORT.md, APP_NOTES.md, BUILD_NOTES.md, CHAT_TRANSFER.md, HANDOVER.md, and PROJECT_STATE.md. No App source, test, Gradle/config, Firmware or workflow change exists after the tested source.
+- **Current run state:** Build #153 / run 43145542329 remains the newest run, terminal SUCCESS; job 130942369953; steps 1–21 and cleanup 39–43 SUCCESS. Actions filters show 0 queued / 0 in progress. No run is active. No duplicate trigger or rerun was created.
+- **Release:** Release ID 403010611 and tag jexfyz-latest still resolve to 1834a78e20273c9ea6cd51ad4d52b64370c5bd9e; exactly one APK and one matching source ZIP remain attached, with the CI-verified SHA-256 values recorded below. Workflow blob remains 9dc1e61ba49f19cad4edbb99a832d5333d9f0f12; Issue #33 is open with the exact owner/title/token guard. No further Build App operation is required unless App source changes.
+
 - **Run/job/source:** Build #153 / Actions run `43145542329`, workflow `374946166`, issue event, attempt 1, job `130942369953`; immutable tested SHA `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e`. [View Actions run](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/43145542329).
 - **Gates:** steps 1–21 and cleanup 39–43 all SUCCESS. App audit passed; Dart analyzer **23 info, 0 warnings/errors**; Flutter **176/176 tests passed**; Android Gradle `BUILD SUCCESSFUL in 3m41`.
 - **Android JUnit caveat:** `:app:compileDebugUnitTestKotlin`, `:app:compileDebugUnitTestJavaWithJavac`, `:app:processDebugUnitTestJavaRes`, and `:app:testDebugUnitTest` were `NO-SOURCE`; no native Android JUnit tests executed although the Gradle task gate passed.
