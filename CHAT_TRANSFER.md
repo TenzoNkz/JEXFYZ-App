@@ -1,29 +1,24 @@
-## CURRENT CHECKPOINT — BUILD #155 FAILED / FOUR ROOT CAUSES REPAIRED / RETRY PREFLIGHT — 2026-11-12
+## CURRENT CHECKPOINT — BUILD #156 ACTIVE / JAVA SETUP — 2026-11-12
 
 **Mode:** `@Thinking Eksekusi Build App!` — guarded App Build/QC/release only.
 
-### Build #155 terminal result
+### Previous attempts
 
-- Run [43244335274](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/43244335274), job 131272831810, workflow 374946166, attempt 1; immutable tested source SHA `63ab4e8167cd099a30ad4ca8cd8cfb52d0c098`.
-- **FAILED at Flutter test gate:** analyzer step 12 passed (23 infos, 0 warnings/errors); Flutter suite step 13 reported **183 passed / 4 failed**. Android Gradle and release gates 14–21 skipped; cleanup 39–43 succeeded. No APK/source ZIP or Release/tag mutation; Build #153 remains latest published package.
-- Build #154 / run `43243342029` remains separately FAILED at analyzer (6 errors), now repaired by the two earlier App source commits.
+- Build #154 / run `43243342029` remains FAILED at analyzer (six errors); source repairs: missing Flutter services import and valid Roboto textTheme application.
+- Build #155 / run `43244335274`, job `131272831810`, source `63ab4e8167cd099a30ad4ca8cd8cfb52d0c098`, remains FAILED at Flutter tests **183 passed / 4 failed**. Analyzer passed (23 info, zero warning/error); downstream gates skipped; no artifact/Release change.
+- Root cause fixes are committed/read back: `9f1130642666801799cd7547dc907ec50cc55bf5` (two Home gaps 3→2 dp, preserve 420 canvas/7×45-dp rows/44-dp NOTIFY), `53ebaecb6722e4335e6c20ead419fea96ee1b0e9` (Tamper and Home test scopes plus DPR3), `d00cef194cc27e65085234955b2eda60faa3aba8` (current bilingual V7.2+ copy contract).
 
-### Four #155 findings and committed repairs
+### Current guarded retry — Build #156
 
-1. Tamper theme source-range mismatch — dark theme/Roboto belong to `TamperApp`, not `TamperScreen`. Test repair `53ebaecb6722e4335e6c20ead419fea96ee1b0e9` now checks both correct owners without removing copy/contact assertions.
-2. Actual 2-dp Home RenderFlex overflow — seven 45-dp rows needed 315 dp but had 313 dp. Source repair `9f1130642666801799cd7547dc907ec50cc55bf5` changes only two internal Home gaps 3→2 dp, leaving 420-dp canvas, 45-dp rows, 44-dp NOTIFY and ordering intact.
-3. Home hit-target source locator mismatch — test repair `53ebaecb6722e4335e6c20ead419fea96ee1b0e9` scopes search to `_buildHomeArea`, checks two 48×48-dp controls and size-25 glyphs, and preserves Temperature button checks. Dashboard fixture DPR is corrected to 3.0 for 1080×3200 physical / 360×1066.7 logical dp.
-4. Lock Voltage copy contract was stale — Firmware test repair `d00cef194cc27e65085234955b2eda60faa3aba8` asserts actual EN/ID copy `Firmware V7.2+ required` / `Perlu Firmware V7.2+`. P1/firmware ownership, command and telemetry assertions remain.
+- Run `43246666829`, workflow 374946166, issue event, attempt 1, job `131281061201`; immutable checkout SHA `c180f2bb18b3361ecd02fff2503b06043f0d22e0`. [Actions run](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/43246666829).
+- Initial status: IN_PROGRESS. Steps 1 Set up job and 2 Checkout repository SUCCESS; step 3 Set up Java 17 IN_PROGRESS. Gates 4–21 pending. Continue this run only.
+- Retry preflight: #155 terminal; zero queued/in-progress run; no open PR; issue #33 exact owner/title/body token; workflow unchanged blob `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12`; Release #153 tag/hash/assets intact. Issue #33 closed/reopened once; exactly one #156 run.
+- Android `versionName "Telegram @horizontalzzz"` remains exact.
+- **Formatter caveat:** no Dart formatter step exists; `dart format` remains NOT RUN / UNVERIFIED.
 
-### Patch status / next action
+### Next
 
-- All three repair commits have been inspected and read back. Current main tree 132 entries, recursive listing not truncated. Changed executable/test paths are exactly `lib/main.dart`, `test/widget_test.dart`, `test/firmware_qc_contract_test.dart`; no BLE/P1, Firmware, Gradle, workflow, OTA or release logic changed.
-- No post-repair local tests/analyzer/formatter have run; local Flutter/Dart are unavailable. Workflow lacks a formatter step; `dart format` remains NOT RUN / UNVERIFIED.
-- **Next:** fresh Build App preflight, then one guarded retry only if #155 terminal, no queued/in-progress run, no open PR, issue #33 exact owner/title/token, workflow unchanged, Release #153 unchanged, and versionName exact. Do not weaken tests/gates.
-
-### Boundaries
-
-No Firmware compilation/BIN, Firebase, OTA/flash, physical BLE/device/NVS/rail/LED, thermal/electrical or OEM visual acceptance. These remain NOT RUN / UNVERIFIED.
+Inspect only run `43246666829` / job `131281061201`; do not trigger another run while active. Record analyzer, tests, Gradle, APK signing, source ZIP, Release/tag and downloaded-asset verification only when observed. Build CI does not prove Firmware/BIN/Firebase/OTA/flash, physical BLE/device or thermal/electrical/OEM visual acceptance.
 
 ---
 
