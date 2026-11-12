@@ -1,11 +1,12 @@
-## CURRENT CHECKPOINT — BUILD #152 FAILED / TEST REPAIR COMMITTED — 2026-11-12
+## CURRENT CHECKPOINT — BUILD #153 ACTIVE / GUARDED APP QC — 2026-11-12
 
-- Build #152 / run `43144337555` failed at Flutter tests: 171 passed, 5 failed; analyzer passed. Steps 14–21 skipped; no APK/source/Release artifact.
-- Five failed test contracts/conditions are repaired in three test-only commits: `5f06e121cdb6f84f7cb3c70c020d4e89a97e3725`, `bba8cd2eb96f82a0c7a087cb165866e1cda2e11e`, `642e6a500473b16554ab849f07ed8ddffd84bc8a`. Statistics test now isolates viewport and still asserts the last-sample UI label; Diagnostics source/casing and Home NOTIFY assertions now match current code.
-- Diff from failed source SHA `04ec48a53bef308f0817470d2d758697a1592cc4` to repaired main contains only those three test paths (plus documentation records). No production App, Firmware, workflow, BLE/P1, dependencies or Gradle config changed. Android `versionName "Telegram @horizontalzzz"` unchanged.
-- Local Flutter/Dart/Gradle are unavailable; test execution locally BLOCKED / NOT RUN. Hosted retry required to verify all repaired test behavior.
-- Build #151 remains latest published Release (ID 403010611, tag `jexfyz-latest`, source `e383924067b7ab2da27f2e41f21232cfb7144ec0`) until a later guarded build passes every gate.
-- Next: fresh no-active-run / issue guard / Release asset preflight, then one guarded retry. Firmware V7.2 compile/BIN/Firebase/OTA/flash/device/BLE/NVS/rail/LED/cooling/OEM visual validation remain separate and NOT RUN/UNVERIFIED.
+- **Run:** Actions `43145542329`, workflow 374946166, attempt 1, issue event #33, job `130942369953`; immutable source SHA `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e`. Current run active; initial state steps 1–2 success, step 3 Java 17 setup in progress.
+- Build #153 includes test-only repairs after Build #152 failure: Home NOTIFY source anchors/adaptive font assertion, explicit nonzero Statistics test viewport, and Diagnostics localization/casing. No production App source, Firmware, workflow or Gradle versionName changed in repair.
+- Build #152 / run `43144337555` remains a preserved failure at Flutter suite (171 pass / 5 fail), no artifact. Full failure evidence and test repair summary are in APP_BUILD_REPORT.md.
+- **Latest published App remains Build #151** (Release 403010611, tag `jexfyz-latest` source `e383924067b7ab2da27f2e41f21232cfb7144ec0`) until #153 clears all gates.
+- Android Gradle `versionName "Telegram @horizontalzzz"` exact.
+- No Firmware compile/BIN/Firebase/OTA/flash/device/BLE/NVS/rail/LED/thermal/electrical/OEM validation. App CI does not prove physical field acceptance.
+- **Next:** monitor Build #153 to full gate and Release verification; no additional trigger.
 
 ---
 ## Firmware V7.2 source implementation — App CI verified; Firmware validation pending (2026-11-12)
