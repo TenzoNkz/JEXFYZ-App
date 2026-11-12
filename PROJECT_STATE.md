@@ -26,7 +26,7 @@
 - **Source cleanup item:** the sketch's opening comment says `V7.1 Firmware` although `FW_VERSION` is `V7.2`; no runtime effect, but fix in an authorized source patch.
 - **Next:** resolve in Diskusi whether Lock Voltage is intended only as an operational/accidental-change interlock or must enforce cryptographic official-App-only unlocking. Do not start BLE authorization implementation until its backend/enrollment scope and required permissions are explicitly approved. Firmware compile and any BIN/OTA/flash/device operation remain separately gated.
 
-## HISTORICAL App release — Build #149 verified (2026-11-11; superseded by Build #151)
+## HISTORICAL App release — Build #149 verified (2026-11-11; superseded by Build #153)
 
 - **Latest verified package:** Build #149 / Actions run 42967289995, job 130347345586, conclusion success; all 21 required workflow steps and cleanup 39–43 passed.
 - **Exact source/tag:** 0507e3e11b67b8f8d042e49b74cc14a53bfc4f21. jexfyz-latest tag and Release ID 403010611 target this exact commit. Current main also contains the newer, unreleased Peltier/LED source refinement documented below; it is not part of Build #149.
