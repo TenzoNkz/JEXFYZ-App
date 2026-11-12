@@ -1,52 +1,34 @@
-## CURRENT CHECKPOINT — SETTINGS REFINEMENT / DEVICE DIAGNOSTICS REMOVED — 2026-11-12
+## CURRENT CHECKPOINT — PROFESSIONAL SETTINGS / NOT RELEASED — 2026-11-12
 
-**Mode:** `@Thinking Eksekusi Full!` — authorized App UI/source, regression-test and documentation scope. No App Build/APK/Release, Firmware compile/BIN, Firebase, OTA, flashing or physical device operation was performed.
+**Mode:** `@Thinking Eksekusi Full!` — App Settings/About source, regression tests and documentation only. No App Build/APK/Release, Firmware compile/BIN, Firebase, OTA, flashing or device operation.
 
-### Live repository and release boundary
+### Live branch and release boundary
 
 - **Repository:** `TenzoNkz/JEXFYZ-App`, branch `main`.
-- **Current App source commit:** `0b888fc2902430ac67388a05d348f78bf8df5bbc` — compact Settings and remove Device Diagnostics. The branch head after this source commit contains only documentation/checkpoint changes; the executable App baseline remains this source commit.
-- **Previous App UI fix:** `5296ba50f7fe0ba2c0ecff4e6112bed6e40dab2a` — fixed compact Peltier popup and removed Temperature global reset action.
-- **Recursive tree:** 131 entries, `truncated=false`. Source tree was created on the verified full tree; no file paths were added or deleted.
-- **Build #153 remains the latest verified APK/Release:** source SHA `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e`, Actions run `43145542329`, job `130942369953`, Release ID `403010611`, tag `jexfyz-latest`. Current Settings/Peltier/Temperature source changes are NOT in that APK.
-- Comparison to Build #153: main is ahead / 0 behind; the comparison lists 13 changed paths (8 Markdown docs plus 5 App/test files). The current App fixes are limited to those three source files and two test files; the later commits are documentation-only. No Firmware, Gradle/configuration, workflow or Release asset path changed.
+- **Settings source commit:** `1cae4cfc061328b3b2b8bed96987c410f37373f2`.
+- **Regression test commit:** `96301aec962739c39518e84f38cd4294d975595f`.
+- Recursive tree: 131 entries, `truncated=false`; no file paths were added or removed in this pass.
+- **Build #153 remains the latest verified APK/Release:** immutable source SHA `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e`, Actions run `43145542329`, job `130942369953`, Release ID `403010611`, tag `jexfyz-latest`. Current main UI follow-ups are NOT included in that APK.
 
-### Owner-requested Settings refinement
+### Implemented professional Settings/About refinement
 
-- **Lock Voltage:** remains the first card beneath AppBar and Firmware-owned. Reduced the card to 11×7 dp internal padding, 34×34 dp lock icon tile, 12.5/10.5 dp title/support copy, 16-dp radius, and concise EN/ID state explanations. Supporting text is capped at two lines.
-- Switch and retry controls remain present and were not deliberately scaled down; the Firmware-owned notifier/state/command callback and unknown/session/busy/save-failure behavior remain. No protocol, BLE/P1, NVS or Firmware behavior changed.
-- **About / Tentang:** its existing row is now wrapped in a standalone single-row Card immediately below Firmware, with no duplicate section heading. About page and exact Horizon/FYZ/Logos credits remain unchanged.
-- **Device Diagnostics removed fully:** removed the Device row, `DeviceDiagnosticsPage` and clipboard report action; removed diagnostic-only SettingsPage constructor fields, Home-to-Settings snapshot plumbing, EN/ID localization and dedicated widget test. Shared telemetry/state still used by Home, Settings Lock Voltage and Usage Statistics was retained.
-- **Other Settings:** General, Bluetooth, Floating Monitor, Statistics/Usage Statistics and Firmware Update remain in the same category order. Existing compact Settings theme and 360-dp master-canvas/DPI behavior remain. Section heading gaps are slightly tighter; normal item row/tap geometry is preserved.
-- **Regression source:** updated Settings contract verifies compact Lock Voltage structure, boxed About placement/credits and absence of Diagnostics page/menu/localization. The About bilingual credit widget test remains.
+- **Settings rows:** each setting is now one horizontal row: icon, setting name, optional right-aligned value and chevron. Single-line title/value with ellipsis; minimum row height 48 dp. Useful values retained: Language, Appearance, Bluetooth Auto/Manual, Floating Monitor ON/OFF, and known Firmware version.
+- Removed the hard-coded Notifications count, duplicate Usage Statistics explanation, repeated About subtitle `JE Cooler`, and unknown Firmware placeholder `V?`.
+- **Lock Voltage:** remains first, Firmware-owned and functional. Compact tile/text retained. State text appears only when needed: Not synchronized; Firmware V7.2+ required; Active · not saved; 5V limit · Adaptive OFF. A synchronized/known/saved OFF state has no redundant explanatory text. Switch, retry and all state semantics remain.
+- **About:** standalone row card under Firmware, no duplicate subtitle. About page retains JE Cooler title and three compact credits in one card; generic Special Thanks/Ucapan Terima Kasih heading removed. All exact role/name/handle pairs remain.
+- **Unchanged:** grouped General/Device/Statistics/Firmware cards and their order, theme, EN/ID, Phosphor icons, compact Settings scope, 360-dp canvas/DPI transform, Home, BLE/P1, Firmware, persistence and Usage Statistics data. Earlier Diagnostics removal, Peltier Fan-ACK gate and Temperature reset removal are retained.
 
-### Diskusi — professional Settings / remove nonessential copy (proposal only, 2026-11-12)
+### Regression source
 
-**Status:** NOT APPROVED / NOT IMPLEMENTED. This is a design recommendation from the current Discussion; no executable source or tests were changed. Do not treat it as a new owner-approved visual contract until explicitly accepted.
-
-- Preserve the grouped section Cards, existing JE Cooler visual language, compact Settings theme, 360-dp canvas, themes and EN/ID. Prefer one-line Settings rows: icon + setting name + useful current value + chevron. Keep interactive row targets at least 48 dp.
-- Remove redundant/ambiguous secondary copy: hard-coded Notifications count 3, Usage Statistics descriptor duplicating the title, About subtitle JE Cooler, and Firmware placeholder V? (hide the version until an actual version is known). Keep meaningful current values such as selected Language/Appearance, Bluetooth Auto/Manual and Floating Monitor ON/OFF.
-- Keep Lock Voltage as a compact top control. Use the existing switch and concise state-only copy when needed; no explanatory paragraph when the switch/state already communicates the information. Preserve unknown/session/busy/save-failure/retry semantics and Firmware authority.
-- Keep About in its own simple Card. On the About page, remove the generic Special Thanks heading and compact the three existing role/name/handle credits without deleting or changing those credits.
-- Avoid introducing gradients, glow, badges, ornamental icons, extra nested Cards or another visual system. Do not trade readability/touch targets for density.
-- The supplied Settings screenshots predate the latest current-main compact Lock Voltage/About Card source and are not evidence of rendering that source. Build #153 remains the published package; current source is unbuilt.
-- Next: owner approval or adjustment of this proposal. Only after approval, a separate Eksekusi Full! may implement the scoped Settings/About copy and row-layout changes; a new APK then requires separate Eksekusi Build App!.
-
-### Previous authorized fixes carried forward
-
-- Peltier prerequisite popup is fixed/centered in the 360-dp canvas with 296-dp max width, no scroll/drag surface or entrance slide, explicit Roboto/no decoration, and 48-dp actions. FAN:ON successful ACK remains mandatory before PELTIER:ON.
-- Temperature tab's Reset Temperature Settings button, App handler and UI key remain removed; threshold controls remain and generic `RESET:TEMPERATURE` ACK classification is preserved.
-
-### Validation and evidence boundary
-
-- **STATIC SOURCE CHECK / source tree verification:** passed for Diagnostics route/class/labels removal, diagnostic-only parameter plumbing removal, About Card placement, compact Lock Voltage dimensions/copy, retained lock callback and test updates. A follow-up documentation audit also corrected stale Build #153-versus-current-main statements in APP_NOTES.md and PROJECT_STATE.md. Full tree count/path inventory remained unchanged.
-- Flutter/Dart are not installed in the active runtime. `dart format`, focused tests, analyzer and full Flutter suite are BLOCKED / NOT RUN. No hosted Actions run, App Build, APK/Release, screenshot rendering, emulator or physical device validation was run.
-- Owner screenshots are the visual reference, not proof of the modified build output. Outcome remains **VISUAL NOT VERIFIED** until a new APK is built/installed and actual 350/420-dp, Light/Dark, EN/ID screenshots are inspected.
-- No App build/release is running. Firmware V7.2 compile/BIN, BLE/NVS/rail/Touch/LED, thermal/electrical, Firebase/OTA/flash remain outside this authorization.
+- Updated `test/floating_monitor_layout_contract_test.dart` for 48-dp horizontal Settings rows, right-aligned values, removed redundant labels, hidden unknown Firmware version, compact About card and existing canvas contract.
+- Widget tests cover one-line Language/value alignment, omitted filler copy, known/unknown Firmware version display, Lock Voltage state text in EN/ID, and About card/credits.
+- The tests are **written but NOT RUN**. Flutter and Dart are not installed in the active runtime; formatter, focused widget/source-contract tests, analyzer and full suite are BLOCKED / NOT RUN. No hosted Actions run/build/release was triggered.
+- Source read-back and static checks passed. The modified source has not been rendered on Android; appearance remains **VISUAL NOT VERIFIED**.
 
 ### Exact next action
 
-Review and approve/adjust the proposed professional Settings direction above. The immediate next source scope is an `Eksekusi Full!` only after that direction is accepted; do not implement it during Discussion. After source/test work is complete, a separate `Eksekusi Build App!` is still required before installing and visually accepting the new UI at 350/420 dp, Light/Dark and EN/ID.
+Use a separate guarded `Eksekusi Build App!` for the current App source, then inspect actual screenshots at 350-dp/420-dp in EN/ID and Light/Dark. Review row alignment and truncation, all meaningful right-side values, compact Lock Voltage unknown/active/OFF states, About credits, and the previously changed Peltier popup and Temperature tab. Build #153 remains the current published package until the new guarded workflow passes.
+
 
 ---
 

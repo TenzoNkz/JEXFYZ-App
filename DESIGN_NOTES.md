@@ -82,6 +82,18 @@ This document stores owner-approved, screen-specific visual constraints, not a b
 - **Status after source update:** STATIC SOURCE CHECK / GitHub read-back; tests/analyzer/build and actual Android screenshots not yet run. VISUAL NOT VERIFIED.
 
 
+
+### Professional Settings and About content — implemented on current main (2026-11-12)
+
+**Status: SOURCE IMPLEMENTED / TEST SOURCE UPDATED / VALIDATION BLOCKED / VISUAL NOT VERIFIED.** Keep the interface concise and functional; do not add decorative containers or a new design system.
+
+- **Settings rows:** maintain the existing General, Device, Statistics and Firmware grouped Cards, section order, theme, Phosphor family, compact ThemeData and 360-dp canvas. Each actionable setting uses a single horizontal row: icon, left-aligned title, optional right-aligned current value and chevron. Use the existing 13-dp title / 11-dp value typography, single-line ellipsis and a minimum 48-dp row height. Keep values only when they aid a decision: selected Language/Appearance, Bluetooth Auto/Manual, Floating Monitor ON/OFF and a known Firmware version. Do not show a notification count, duplicate Usage Statistics description, About subtitle or unknown `V?` Firmware placeholder.
+- **Lock Voltage:** preserve its top-of-Settings position, 34-dp lock tile, Firmware-owned notifier, switch and retry affordances, and all existing synchronization/known/busy/save-failure semantics. Show only a concise state message when the control needs explanation: Not synchronized; Firmware V7.2+ required; Active · not saved; or 5V limit · Adaptive OFF. When state is synchronized, known, saved and OFF, omit the explanatory copy—the switch communicates OFF. Keep EN/ID strings and do not infer physical state.
+- **About:** keep a standalone one-row Settings Card beneath Firmware, without a redundant JE Cooler summary. On the About page keep the product heading and group the three credits in one simple Card. Remove the generic Special Thanks/Ucapan Terima Kasih heading. Preserve the exact role/name/handle pairs: App Development & Build / Horizon / @Horizontalzzz; Design Inspiration / FYZ / @FYZ737; 3D Design & Printing / Logos / @Logos3dMichael.
+- **Guardrails:** do not add extra nested cards, gradients, glow, badges, ornamental icons, decorative animation or a parallel palette/type scale. Do not change Home geometry, BLE/P1, Firmware, notifications persistence, usage statistics data, theme behavior or the 360-dp DPI transform. Keep row tap targets and the existing 48-dp Lock Voltage switch/retry interactions usable.
+- **Acceptance:** verify row/value alignment and long localized titles at 350-dp/420-dp, English/Indonesian, Light/Dark, and accessible text settings supported by the existing canvas. Check Lock Voltage disconnected/unknown, Firmware unsupported, active-unsaved, active-saved and saved-OFF states. Check About role/name/handle wrapping. Flutter tests and actual Android screenshots are still required before acceptance.
+
+
 ## Whole-App visual refinement — owner-approved direction, Phase 1 in Build #153
 
 **Status: PHASE 1 SOURCE INCLUDED IN BUILD #153 / VERIFIED CI / VISUAL NOT VERIFIED.** The owner approved the complete refinement direction. Implementation preserves the established JE X FYZ identity, Home composition, 360-dp canvas and semantic theme rather than introducing a second visual system.

@@ -1,3 +1,11 @@
+## 2026-11-12 — Professional Settings and About copy/layout (source implemented; not released)
+
+- Changed Settings rows to a one-line horizontal layout with a 13-dp title, optional right-aligned 11-dp value and chevron; minimum row height 48 dp.
+- Removed redundant Settings content: Notifications count, Usage Statistics descriptor, About subtitle and unknown Firmware `V?`. Keep useful current values and only show Firmware when known.
+- Lock Voltage displays a concise bilingual status only when it adds information; synchronized/saved/OFF has no extra text. Switch/retry and Firmware-owned behavior are unchanged.
+- About now groups the existing bilingual role/name/handle credits in one compact Card and removes the generic Special Thanks heading.
+- Regression source covers row/value alignment, omitted copy, known/unknown Firmware version, Lock Voltage state matrix and About credits. Tests are written but not run because Flutter/Dart are absent. No App Build/Release or screenshot rendering occurred; visual status is NOT VERIFIED.
+
 ## 2026-11-12 — Compact Settings, box About and remove Device Diagnostics (source implemented; not released)
 
 - Reduced the Settings Lock Voltage card dimensions/copy while preserving the Firmware-owned notifier, switch, retry behavior and existing BLE/P1 semantics.

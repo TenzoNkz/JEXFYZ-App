@@ -19,11 +19,12 @@ Build #153 proves hosted App CI/package/release only. No Firmware compilation, B
 
 ## Current App source change — not yet packaged
 
-- Current main source commit `0b888fc2902430ac67388a05d348f78bf8df5bbc` follows the Peltier/Temperature UI fix `5296ba50f7fe0ba2c0ecff4e6112bed6e40dab2a`.
-- Settings Lock Voltage card compacted (smaller icon and spacing, concise bilingual state copy); switch/retry and Firmware authority remain. About/Tentang is boxed in a standalone card beneath Firmware.
-- Device Diagnostics Settings row, page and clipboard report have been removed, along with diagnostic-only route fields, EN/ID labels and dedicated widget test. The rest of Settings order, compact theme and 360-dp canvas are unchanged.
-- Earlier Peltier popup fix and Temperature reset button removal remain in current source. Source read-back/static checks passed. Flutter/Dart formatter/tests/analyzer have not run; no hosted CI/build, APK or screenshot/device validation occurred. Visual outcome remains NOT VERIFIED.
+- Settings source commit `1cae4cfc061328b3b2b8bed96987c410f37373f2`; regression test commit `96301aec962739c39518e84f38cd4294d975595f`.
+- Settings rows now use a single horizontal line with an optional right-side current value and 48-dp minimum height. Redundant Notifications count, Usage Statistics descriptor, About subtitle and unknown Firmware `V?` are hidden.
+- Lock Voltage has concise bilingual state-only copy; saved OFF has no redundant subtitle. Firmware state authority, switch and retry remain.
+- About page keeps all contributor credits in one compact card and removes the generic Special Thanks heading.
+- Diagnostics removal, fixed Peltier popup and Temperature reset-button removal remain. Source read-back/static checks passed. Tests were updated but not run because Flutter/Dart are unavailable. No Build App or screenshot validation occurred; visual status remains NOT VERIFIED.
 
 ## Next action
 
-A professional Settings/About refinement has been proposed in the active `CHAT_TRANSFER.md` checkpoint, but it is NOT APPROVED / NOT IMPLEMENTED. First obtain the owner's acceptance or adjustment. Then use a separate `Eksekusi Full!` for the concise one-line Settings rows, removal of redundant copy, Lock Voltage state-copy simplification and compact About credits. Only after source/test completion should a separate `Eksekusi Build App!` package it. Build #153 remains the latest published package. Firmware/BIN/Firebase/OTA/flash/device work remains separately gated.
+Issue a separate guarded `Eksekusi Build App!` for current main, then install and inspect Settings/About/Peltier/Temperature on Android at 350/420 dp, Light/Dark and EN/ID. Build #153 remains the latest package until that workflow succeeds. Firmware/BIN/Firebase/OTA/flash/device work remains separately gated.
