@@ -432,6 +432,8 @@ void main() {
     expect(lockCard, isNonNegative);
     expect(generalSection, greaterThan(lockCard));
     expect(settingsPage, contains('DeviceDiagnosticsPage('));
+    expect(settingsPage, contains('PhosphorIconsRegular.chartLineUp'));
+    expect(settingsPage, contains('PhosphorIconsRegular.info'));
 
     final firmwareSection = settingsPage.indexOf("JexText.of('firmwareSection', language)");
     final aboutRow = settingsPage.indexOf("JexText.of('about', language)");
@@ -452,6 +454,8 @@ void main() {
     final diagnosticsStart = settingsSource.indexOf('class DeviceDiagnosticsPage');
     final diagnosticsPage = settingsSource.substring(diagnosticsStart);
     expect(diagnosticsPage, contains('Copy diagnostics'));
+    expect(diagnosticsPage, contains('runtimeOutputsKnown ?'));
+    expect(diagnosticsPage, contains("voltageLockActive && !voltageLockSaved"));
     expect(diagnosticsPage, isNot(contains('coolerId')));
     expect(diagnosticsPage, isNot(contains('BluetoothDevice')));
   });
