@@ -485,6 +485,15 @@ void main() {
     expect(usage, contains('reservedControlOperations = 8'));
     expect(usage, contains('maxTotalPendingOperations'));
     expect(usage, contains('rejectedWriteCount'));
+    expect(usage, contains('bool failOnReject = false'));
+    expect(
+      usage,
+      contains('failOnReject ? Future<void>.error(error) : Future<void>.value()'),
+    );
+    expect(
+      usage,
+      contains('allowReservedCapacity: true, failOnReject: true'),
+    );
     expect(usage, contains('final p1ReceiptGap ='));
     expect(usage, contains('final sampleGap ='));
     expect(usage, contains("allowReservedCapacity: metric != 'fan_speed'"));
@@ -535,11 +544,13 @@ void main() {
       onError: errors.add,
       allowReservedCapacity: true,
     );
-    unawaited(queue.enqueue(
+    final rejectedControl = queue.enqueue(
       () async => completed.add(22),
       onError: errors.add,
       allowReservedCapacity: true,
-    ));
+      failOnReject: true,
+    );
+    await expectLater(rejectedControl, throwsA(isA<StateError>()));
 
     await Future<void>.delayed(Duration.zero);
     expect(queue.pendingOperations, 6);
