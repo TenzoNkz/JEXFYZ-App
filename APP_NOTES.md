@@ -1,3 +1,11 @@
+## Owner UI decision — Peltier prerequisite modal bottom alignment — 2026-11-13
+
+- **Screenshot review:** the Peltier prerequisite card itself is approved; only its vertical placement is wrong. Current `lib/main.dart` uses `Center(` around the card, which places it in the middle of the usable screen.
+- **Approved correction:** bottom-center the same card inside the existing `SafeArea`, preserving a 10-dp vertical margin and 16-dp horizontal margin. Keep the 296-dp maximum width, 20-dp corners, typography, copy, step tiles, button heights, background dimming and fade/scale transition unchanged.
+- The same App already uses `Align(alignment: Alignment.bottomCenter)` for the LED Color Picker. Reuse this established layout pattern. Preserve `JexFixedScalePage`, its single 360-dp transform and current safe-area/inset handling.
+- **Regression update when implemented:** the Peltier source-contract test must require bottom-center `Align`, not `Center`, while retaining width/radius, 48-dp action, bilingual copy and Fan-ACK-before-Peltier safety assertions.
+- **Status:** decision recorded in Diskusi only; `lib/main.dart` and `test/widget_test.dart` are not modified yet. Build #157 remains the latest successful package. Source change requires `Eksekusi Full!`; packaging then requires a separate `Eksekusi Build App!`. Visual acceptance remains NOT VERIFIED until the real updated Android screenshot is inspected.
+
 ## Validation follow-up — 2026-11-12
 
 - The source-audit base was `82114a7540a7f225482c67ffb7772894c956b0b1`; subsequent commits in this session updated documentation only. The executable source/test checkpoint is still `6c551c4ff95329e56eca7ce758078c9590b4b726`. No executable source/test/workflow change was made in this review.

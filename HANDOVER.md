@@ -1,3 +1,11 @@
+## Immediate App UI next step — Peltier modal bottom alignment — 2026-11-13
+
+- Build #157 remains the latest verified release. Current main source/test still match its immutable App source SHA `10d106537e92060e0aac3fc17fd37f56e746bcd5`; subsequent commits have only updated Markdown files.
+- New owner decision: keep the Peltier safety card's current visual design but anchor it at the bottom-center inside the existing SafeArea, with 10-dp vertical and 16-dp horizontal margins. Current source uses `Center(`; the next change should use `Align(alignment: Alignment.bottomCenter)`.
+- Preserve `JexFixedScalePage`, 360-dp scaling, 296-dp max width, 20-dp radius, card contents, 48-dp controls, Cancel/barrier no-command behavior and FAN:ON → successful ACK → PELTIER:ON ordering.
+- Update `test/widget_test.dart` to check bottom-center alignment and retain all existing safety/localization assertions.
+- The current interaction is Diskusi-only: no source/test change and no Build were made. **Next mode: Eksekusi Full!** for the narrow source/test fix. A new `Eksekusi Build App!` will be needed after that fix. VISUAL NOT VERIFIED until an actual updated Android screenshot is inspected.
+
 # JE X FYZ / JE Cooler — Immediate Handover
 
 Updated: 2026-11-12 (Asia/Jakarta).

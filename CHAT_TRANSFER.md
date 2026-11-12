@@ -1,4 +1,32 @@
-## CURRENT CHECKPOINT — BUILD #157 SUCCESS / RELEASE VERIFIED — 2026-11-12
+## CURRENT CHECKPOINT — PELTIER PREREQUISITE MODAL BOTTOM ANCHOR REQUESTED / SOURCE CHANGE PENDING — 2026-11-13
+
+**Mode:** `@Thinking Diskusi!` — visual review and documentation-only decision record. No App source, test, configuration, workflow, Actions, Build, Release, Firmware or device operation is authorized/performed in this interaction.
+
+### Live source and release baseline
+
+- **Repository/branch:** `TenzoNkz/JEXFYZ-App` / `main`.
+- **Live main at review:** `6e57c9d2dab7ec8b75adf0f555e5dd156f73b7f1`; source `lib/main.dart` blob `a948a5b104507c082a6f844ba6d64d759ccd63df`; regression file `test/widget_test.dart` blob `189bdeddf0163b3a71d6661e57625d15dcd5d160`.
+- **Latest verified release:** Build #157, Actions run `43247876115`, immutable package source SHA `10d106537e92060e0aac3fc17fd37f56e746bcd5`. Build #157 passed analyzer (23 infos, 0 warnings/errors), Flutter tests 187/187 and Android Gradle. The main branch is 24 commits ahead / 0 behind Build #157 only because four Markdown files changed; App source/test and workflow paths still match the built source. The screenshot's centered Peltier modal therefore reflects the current released source implementation.
+- **Current source cause:** `_togglePeltier(bool enabled)` in `lib/main.dart` wraps the card in `Center(` at approximately line 6576. The Peltier source-contract test in `test/widget_test.dart` explicitly expects `Center(`.
+- **Existing in-app precedent:** LED Color Picker in the same `main.dart` already uses `Align(alignment: Alignment.bottomCenter)` inside `JexFixedScalePage` and `SafeArea`.
+
+### Owner-approved presentation decision
+
+- The card's current appearance, dimensions, typography, copy, buttons and behavior are accepted. The defect is its vertical placement: it must no longer be vertically centered.
+- **New position:** anchor the Peltier prerequisite card at `Alignment.bottomCenter` within the existing `SafeArea`, leaving the existing 10-dp vertical breathing margin. Keep the existing 16-dp horizontal margin and 296-dp maximum card width.
+- Implementation direction for the next authorized source change: replace the outer `Center(` with `Align(alignment: Alignment.bottomCenter,` around the same `Padding` and `ConstrainedBox`. Preserve the existing `JexFixedScalePage`, one 360-dp transform, SafeArea/inset handling, fade/scale transition, non-scrollable card and compact-height behavior. Do not add another transform or convert it into a full-height bottom sheet.
+- Update the existing regression assertion to require `Align(` plus `alignment: Alignment.bottomCenter`; remove the old expectation that the Peltier panel is centered. Keep the assertions for 296-dp width, 20-dp radius, 48-dp actions, bilingual copy, command-free Cancel/barrier and FAN:ON → successful ACK → PELTIER:ON order.
+- The previous centered-layout sentence in `DESIGN_NOTES.md` is superseded by this newer owner instruction and will be corrected in the documentation update below.
+
+### Scope and next action
+
+- This Diskusi interaction makes a durable documentation/design-contract update only. Current source and test files remain unchanged; Build #157 remains the latest package.
+- After the owner issues `@Thinking Eksekusi Full!`, implement only the bottom-anchor source and regression-test change, run available formatter/focused/full tests/analyzer, update the canonical notes and commit. A fresh `Eksekusi Build App!` is separately required to package the changed source.
+- Visual acceptance remains **VISUAL NOT VERIFIED** until the actual revised Android screenshot is reviewed, including SafeArea/gesture-navigation spacing and supported 350-dp/420-dp configurations.
+
+---
+
+## LAST VERIFIED BUILD BASELINE — BUILD #157 SUCCESS / RELEASE VERIFIED — 2026-11-12
 
 **Disposition:** guarded App Build/QC/release COMPLETED SUCCESSFULLY. No further Build App trigger is needed for this source SHA.
 

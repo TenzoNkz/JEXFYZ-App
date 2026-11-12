@@ -1,3 +1,14 @@
+## CURRENT APP UI CHANGE — PELTIER MODAL BOTTOM ANCHOR DECIDED / SOURCE PENDING — 2026-11-13
+
+- Owner screenshot identifies a vertical-placement defect in the Fan-OFF → Peltier-ON prerequisite modal. The current card design is accepted; only its position changes.
+- Current source uses `Center(` in `lib/main.dart` around line 6576. The replacement should use `Align(alignment: Alignment.bottomCenter)` inside the same `JexFixedScalePage` → `SafeArea` → `LayoutBuilder` structure.
+- Retain existing 16-dp horizontal and 10-dp vertical margin, 296-dp max width, card dimensions/typography, 48-dp actions, localization, dim barrier and fade/scale transition. Preserve one 360-dp transform, the 360-dp canvas and system insets.
+- Change the Peltier test contract to assert bottom-center alignment instead of centered placement; preserve the fan-first ACK ordering and Cancel/barrier no-command assertions.
+- **Mode/evidence:** Diskusi only; documentation/design decision recorded, no executable files changed. Latest verified package remains Build #157 / source `10d106537e92060e0aac3fc17fd37f56e746bcd5`. The current source/test match that built source; the new position change is not yet implemented or packaged.
+- **Next:** owner command `Eksekusi Full!` for the narrow App source/test patch; then a separate `Eksekusi Build App!` is required to publish the changed App. VISUAL NOT VERIFIED until a real updated device screenshot is reviewed.
+
+---
+
 ## CURRENT APP QC — BUILD #157 SUCCESS / RELEASE VERIFIED — 2026-11-12
 
 - **Immutable tested/released source SHA:** `10d106537e92060e0aac3fc17fd37f56e746bcd5`. Actions run `43247876115`, workflow 374946166, attempt 1, job `131285336987`; completed SUCCESS. All steps 1–21 and cleanup 39–43 SUCCESS.
