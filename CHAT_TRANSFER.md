@@ -1,22 +1,35 @@
-## CURRENT CHECKPOINT — BUILD #153 SUCCESS / RELEASE VERIFIED — 2026-11-12
+## CURRENT CHECKPOINT — BUILD #153 RELEASE VERIFIED / APP VISUAL ACCEPTANCE PENDING — 2026-11-12
 
-**Disposition:** guarded App Build/QC/release completed successfully. No further Build App trigger is needed for the built source SHA.
+**Mode:** `Diskusi!` — repository recovery, source/evidence reconciliation and documentation-only checkpoint. No executable source, tests, configuration, workflow, App Build/Release, Firmware compile/BIN, Firebase, OTA, flashing or device operation was changed or run in this session.
 
-**Live revalidation — 2026-11-12 10:38 Asia/Jakarta:** The pre-checkpoint live main HEAD was 283a8689bdb574280a0547c7377bedd64001344a; recursive tree 131 entries, not truncated. Comparing against the immutable Build #153 source 1834a78e20273c9ea6cd51ad4d52b64370c5bd9e shows 30 commits ahead / 0 behind and exactly six modified Markdown paths only: APP_BUILD_REPORT.md, APP_NOTES.md, BUILD_NOTES.md, CHAT_TRANSFER.md, HANDOVER.md, and PROJECT_STATE.md. No App source, test, Gradle/config, Firmware or workflow change exists after the tested source.
-- **Current run state:** Build #153 / run 43145542329 remains the newest run, terminal SUCCESS; job 130942369953; steps 1–21 and cleanup 39–43 SUCCESS. Actions filters show 0 queued / 0 in progress. No run is active. No duplicate trigger or rerun was created.
-- **Release:** Release ID 403010611 and tag jexfyz-latest still resolve to 1834a78e20273c9ea6cd51ad4d52b64370c5bd9e; exactly one APK and one matching source ZIP remain attached, with the CI-verified SHA-256 values recorded below. Workflow blob remains 9dc1e61ba49f19cad4edbb99a832d5333d9f0f12; Issue #33 is open with the exact owner/title/token guard. No further Build App operation is required unless App source changes.
+### Live repository and evidence boundary
 
-- **Run/job/source:** Build #153 / Actions run `43145542329`, workflow `374946166`, issue event, attempt 1, job `130942369953`; immutable tested SHA `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e`. [View Actions run](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/43145542329).
-- **Gates:** steps 1–21 and cleanup 39–43 all SUCCESS. App audit passed; Dart analyzer **23 info, 0 warnings/errors**; Flutter **176/176 tests passed**; Android Gradle `BUILD SUCCESSFUL in 3m41`.
-- **Android JUnit caveat:** `:app:compileDebugUnitTestKotlin`, `:app:compileDebugUnitTestJavaWithJavac`, `:app:processDebugUnitTestJavaRes`, and `:app:testDebugUnitTest` were `NO-SOURCE`; no native Android JUnit tests executed although the Gradle task gate passed.
-- **APK:** `JEXFYZ-release.apk`; obfuscated with `--obfuscate --split-debug-info=build/symbols`; 55,996,507 bytes; SHA-256 `d956959414eb085e1779c30bf035a0bbc64d18330e19b85251cc0ead90f5661c`. [Download APK](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-release.apk).
-- **Source ZIP:** `JEXFYZ-corresponding-source.zip`; 2,929,311 bytes; SHA-256 `87808fe37f31e7fec589477a3c658a2f10fa06362bd72b173eeada95d3b03604`. [Download source ZIP](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-corresponding-source.zip).
-- **Release parity:** Release ID 403010611 / tag `jexfyz-latest` point to exact built source SHA. Exactly one APK + one matching ZIP; local/downloaded hashes, source marker, ZIP integrity and downloaded APK V1/V2/V3/one-signer/pinned-certificate checks passed.
-- **Certificate:** JE X FYZ DN, RSA 4096, pinned SHA-256 `dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0`. Keep self-signed PKIX trust-chain/no-timestamp jarsigner warnings explicit; it is not publicly CA-trusted.
-- Android `versionName "Telegram @horizontalzzz"` unchanged; Flutter version `1.0.0+3`.
-- **Failure history:** Build #152 / run `43144337555` remains FAILED at tests (171 pass / 5 fail), no artifact. The three test-only repairs were revalidated by Build #153 (176 pass). Do not rewrite the failed attempt.
-- **Evidence boundary:** hosted App CI/package/release only. Firmware V7.2 compile/BIN, Firebase/OTA/flash, physical BLE/device/NVS/rail/LED, thermal/electrical cooling and owner/OEM visual acceptance remain NOT RUN / UNVERIFIED.
-- **Next:** owner installation and physical App/BLE/OEM visual acceptance at 350-dp/420-dp, Light/Dark, EN/ID; test reconnect and Lock Voltage. No new App Build until source changes.
+- **Repository:** `TenzoNkz/JEXFYZ-App`, branch `main`. Pre-checkpoint HEAD for this documentation reconciliation: `bae7dc9354b2e813e90bd6308efb96f1d2001c38`; recursive tree `bae7dc9354b2e813e90bd6308efb96f1d2001c38`, 131 entries, `truncated=false`.
+- **Compared with immutable Build #153 source:** `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e`; current pre-checkpoint main is 34 commits ahead / 0 behind. The complete compare lists only Markdown paths: APP_BUILD_REPORT.md, APP_NOTES.md, BUILD_NOTES.md, CHAT_TRANSFER.md, DESIGN_NOTES.md, HANDOVER.md, PROJECT_STATE.md. No App/Firmware source, tests, Gradle/configuration or workflow path changed after the tested source.
+- **Latest Actions:** Build #153 / run `43145542329`, workflow `374946166`, attempt 1, job `130942369953`, completed SUCCESS. All workflow steps 1–21 and cleanup 39–43 passed. Latest API window reports 328 total runs; no newer run than #153. No current queued/in-progress run was observed.
+- **Hosted App QC:** security/architecture audit passed; analyzer 23 info-level findings, zero warnings/errors; Flutter `176/176` passed; Android Gradle `BUILD SUCCESSFUL in 3m41s`. Native app JUnit compile/process/test tasks were `NO-SOURCE`; no native Android JUnit tests ran.
+- **Release parity:** Release ID `403010611`; tag `jexfyz-latest`, Release target and tag ref all resolve to exact source SHA `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e`. Exactly one APK and one corresponding source ZIP remain attached.
+- **APK:** `JEXFYZ-release.apk`; 55,996,507 bytes; SHA-256 `d956959414eb085e1779c30bf035a0bbc64d18330e19b85251cc0ead90f5661c`. [Download APK](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-release.apk).
+- **Source ZIP:** `JEXFYZ-corresponding-source.zip`; 2,929,311 bytes; SHA-256 `87808fe37f31e7fec589477a3c658a2f10fa06362bd72b173eeada95d3b03604). [Download matching source](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-corresponding-source.zip).
+- **Signing:** RSA 4096, pinned certificate SHA-256 `dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0`; required V1/V2/V3 checks passed. Keep self-signed PKIX trust-chain/no-timestamp jarsigner warnings explicit; signer is not publicly CA-trusted. Android `versionName "Telegram @horizontalzzz"` remains unchanged.
+
+### Build #153 App content now reconciled against source
+
+- The current Lock Voltage centered overlay/Settings placement, custom amber Peltier prerequisite card with Fan-first ACK gate, About/Tentang, source-backed Device Diagnostics, simplified six-metric Usage Statistics, Phosphor consistency and Home NOTIFY refinements are present in the source/test checkout used by Build #153.
+- Live source review confirmed `DisplayMenuLockReason.voltageLocked`, the custom Peltier paired CTA and Fan ACK → Peltier order, About/Diagnostics source and related regression tests. Compare evidence proves those executable paths are unchanged after the Build #153 source SHA.
+- `APP_NOTES.md` remains the App behavior contract. `DESIGN_NOTES.md` and `PROJECT_STATE.md` were corrected in this Diskusi to distinguish Build #153 CI validation from pending visual/field acceptance and to remove stale Build #143/#151 "latest/unreleased" claims.
+- The Build #152 failed test history remains preserved; #153 is the verified repair run. No build trigger/rerun or Release mutation was made.
+
+### Open evidence gaps and exact next action
+
+- **Owner-side App acceptance pending:** install Build #153 and confirm the installed package identity, then capture/review actual Android screenshots at 350-dp/420-dp, portrait/constrained height, Light/Dark, English/Indonesian, and relevant connected/disconnected/unknown/safety states. Include Home, Settings/Connection, Lock Voltage, Peltier popup, About, Diagnostics and Usage Statistics (short/long and one/multiple sessions). Current outcome: **VISUAL NOT VERIFIED**.
+- Physical BLE reconnect/rediscovery/handoff and Lock Voltage state/NVS/rail behavior remain UNVERIFIED. App CI does not prove a physical radio session or Firmware behavior.
+- Firmware V7.2 compilation with Arduino-ESP32 Core 3.3.7, BIN provenance, NVS power-cycle, rail/selector/Touch/LED, thermal/electrical cooling, Firebase/OTA/flash remain NOT RUN / UNVERIFIED. Do not infer permission for those operations.
+- Usage Statistics long-session CPU/memory, unbounded/unbatched SQLite queue/backpressure and animation lifecycle/60–120-Hz stress remain open risks; ordinary widget CI does not close them.
+- No new App Build is required unless App source changes. If owner screenshots identify a code defect, discuss and scope it first; a source edit needs `Eksekusi Full!`, and another APK still needs separate `Eksekusi Build App!`.
+- **Next owner action:** install and visually/physically accept Build #153; record actual outcomes separately. No repository source action is authorized by this checkpoint.
+
+---
 
 ---
 ## CURRENT CHECKPOINT — BUILD #149 COMPLETED / RELEASE VERIFIED — 2026-11-11
