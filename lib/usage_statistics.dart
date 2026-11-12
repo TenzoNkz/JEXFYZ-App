@@ -2204,8 +2204,7 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
             const SizedBox(width: 2),
             IconButton(
               tooltip: JexText.phrase('Clear selected time', 'Hapus waktu pilihan', language),
-              visualDensity: VisualDensity.compact,
-              constraints: const BoxConstraints.tightFor(width: 36, height: 36),
+              constraints: const BoxConstraints.tightFor(width: 48, height: 48),
               padding: EdgeInsets.zero,
               onPressed: () => setState(() => _selectedTimestampMs = null),
               icon: const Icon(PhosphorIconsRegular.x, size: 17),
