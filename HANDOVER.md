@@ -6,9 +6,19 @@
 - Update `test/widget_test.dart` to check bottom-center alignment and retain all existing safety/localization assertions.
 - The current interaction is Diskusi-only: no source/test change and no Build were made. **Next mode: Eksekusi Full!** for the narrow source/test fix. A new `Eksekusi Build App!` will be needed after that fix. VISUAL NOT VERIFIED until an actual updated Android screenshot is inspected.
 
+## Immediate App UI implementation scope — 2026-11-13
+
+The owner has approved three App-only presentation changes, all still **SOURCE PENDING**:
+
+1. **Peltier safety modal:** bottom-center inside the existing SafeArea; keep current card size/style and FAN-first safety transaction.
+2. **Lock Voltage Settings:** fixed one-line card; no visible state subtitle; static neutral lock icon; Switch stays visible and is disabled while busy; only the Switch animates on authoritative P1 state update. Preserve unavailable-state tooltip and icon-only NVS retry.
+3. **About:** replace content heading with Special Thanks / Ucapan Terima Kasih; stretch credit blocks to full card width and align them left; Horizon role becomes Pengembang Aplikasi & Perakit (EN: App Developer & Builder); preserve other roles and handles.
+
+Latest source/test still match Build #157; no code change has been made in this Diskusi. **Next mode: Eksekusi Full!** for narrow source and regression changes. New Build # is separately authorized with Eksekusi Build App! after source work.
+
 # JE X FYZ / JE Cooler — Immediate Handover
 
-Updated: 2026-11-12 (Asia/Jakarta).
+Updated: 2026-11-13 (Asia/Jakarta).
 
 ## Latest verified App release — Build #157 SUCCESS
 

@@ -1,32 +1,52 @@
-## CURRENT CHECKPOINT — PELTIER PREREQUISITE MODAL BOTTOM ANCHOR REQUESTED / SOURCE CHANGE PENDING — 2026-11-13
+## CURRENT CHECKPOINT — LOCK VOLTAGE ROW + ABOUT CREDITS + PELTIER MODAL / SOURCE CHANGES PENDING — 2026-11-13
 
-**Mode:** `@Thinking Diskusi!` — visual review and documentation-only decision record. No App source, test, configuration, workflow, Actions, Build, Release, Firmware or device operation is authorized/performed in this interaction.
+**Mode:** `@Thinking Diskusi!` — screenshot review, source inspection and documentation/design decisions only. No executable source, tests, configuration, workflow, Actions, App Build, Release, Firmware or device operation is authorized or performed in this interaction.
 
-### Live source and release baseline
+### Live repository and release boundary
 
 - **Repository/branch:** `TenzoNkz/JEXFYZ-App` / `main`.
-- **Live main at review:** `6e57c9d2dab7ec8b75adf0f555e5dd156f73b7f1`; source `lib/main.dart` blob `a948a5b104507c082a6f844ba6d64d759ccd63df`; regression file `test/widget_test.dart` blob `189bdeddf0163b3a71d6661e57625d15dcd5d160`.
-- **Latest verified release:** Build #157, Actions run `43247876115`, immutable package source SHA `10d106537e92060e0aac3fc17fd37f56e746bcd5`. Build #157 passed analyzer (23 infos, 0 warnings/errors), Flutter tests 187/187 and Android Gradle. The main branch is 24 commits ahead / 0 behind Build #157 only because four Markdown files changed; App source/test and workflow paths still match the built source. The screenshot's centered Peltier modal therefore reflects the current released source implementation.
-- **Current source cause:** `_togglePeltier(bool enabled)` in `lib/main.dart` wraps the card in `Center(` at approximately line 6576. The Peltier source-contract test in `test/widget_test.dart` explicitly expects `Center(`.
-- **Existing in-app precedent:** LED Color Picker in the same `main.dart` already uses `Align(alignment: Alignment.bottomCenter)` inside `JexFixedScalePage` and `SafeArea`.
+- **Live docs HEAD at this review:** `033eda6c076e3ea4987543a54385aa8f56d0b895`; recursive tree: 132 entries, not truncated.
+- **App code/test baseline:** current source and tests still match the immutable Build #157 source SHA `10d106537e92060e0aac3fc17fd37f56e746bcd5`. GitHub compare shows main 25 commits ahead / 0 behind; its six changed paths are documentation-only: `APP_BUILD_REPORT.md`, `APP_NOTES.md`, `CHAT_TRANSFER.md`, `DESIGN_NOTES.md`, `HANDOVER.md`, `PROJECT_STATE.md`.
+- **Relevant source blobs:** `lib/main.dart` = `a948a5b104507c082a6f844ba6d64d759ccd63df`; `lib/floating_monitor.dart` = `9dc2b065d560bae0aa3d43f0c8fc0809e12d0cf1`; `test/widget_test.dart` = `189bdeddf0163b3a71d6661e57625d15dcd5d160`; `test/floating_monitor_layout_contract_test.dart` = `bd7b5b2e789b2df6c372ddd6a1a7b46a4905ddb2`.
+- **Latest verified release:** Build #157 / Actions run `43247876115`. Analyzer 23 infos / 0 warnings / 0 errors, Flutter 187/187, Android Gradle success. Its result applies to the identical App source/test baseline; it does not include the following unimplemented presentation changes.
 
-### Owner-approved presentation decision
+### Owner-requested changes and approved direction
 
-- The card's current appearance, dimensions, typography, copy, buttons and behavior are accepted. The defect is its vertical placement: it must no longer be vertically centered.
-- **New position:** anchor the Peltier prerequisite card at `Alignment.bottomCenter` within the existing `SafeArea`, leaving the existing 10-dp vertical breathing margin. Keep the existing 16-dp horizontal margin and 296-dp maximum card width.
-- Implementation direction for the next authorized source change: replace the outer `Center(` with `Align(alignment: Alignment.bottomCenter,` around the same `Padding` and `ConstrainedBox`. Preserve the existing `JexFixedScalePage`, one 360-dp transform, SafeArea/inset handling, fade/scale transition, non-scrollable card and compact-height behavior. Do not add another transform or convert it into a full-height bottom sheet.
-- Update the existing regression assertion to require `Align(` plus `alignment: Alignment.bottomCenter`; remove the old expectation that the Peltier panel is centered. Keep the assertions for 296-dp width, 20-dp radius, 48-dp actions, bilingual copy, command-free Cancel/barrier and FAN:ON → successful ACK → PELTIER:ON order.
-- The previous centered-layout sentence in `DESIGN_NOTES.md` is superseded by this newer owner instruction and will be corrected in the documentation update below.
+#### 1. Lock Voltage Settings row
+
+- **Observed cause:** `_voltageLockSettingRow()` currently adds state subtitles (`Not synchronized`, `Firmware V7.2+ required`, `Active · not saved`, `5V limit · Adaptive OFF`), which turns the row into two lines. Its busy state replaces the Switch with a spinner, and the lock glyph changes color when active.
+- **Approved visual behavior:** keep the card's surface, outline, corner radius, padding, lock tile, title and overall geometry constant across saved ON/OFF states. Remove visible state subtitles. Keep the lock glyph neutral and static. The Switch remains in the same trailing position; it is the only animated state indicator.
+- Keep the Switch visible for a known Firmware state even while a command is in progress; disable it while busy (and whenever session readiness is absent). Let its value change only when the authoritative P1 `VOLTAGE_LOCK` state updates `state.active`; do not optimistically infer lock success from a tap or ACK. This allows the native Switch animation to show the confirmed OFF → ON / ON → OFF transition without reshaping the card.
+- Preserve unknown/not-synchronized handling through the existing Bluetooth/info icon and its tooltip, and preserve the icon-only retry affordance + tooltip when the lock is active but NVS saving has not succeeded. Do not expose persistent explanatory text under the title. Do not weaken Firmware ownership, session gating, NVS-save failure handling or retry behavior.
+
+#### 2. About / Tentang credits
+
+- Replace the internal page heading `JE Cooler` with `Special Thanks` in English and `Ucapan Terima Kasih` in Indonesian. Keep the AppBar route title `About` / `Tentang`; this is only the content heading, not a change to the product/app identity.
+- The current credit parent `Column` has default centered cross-axis sizing; each `_credit` block therefore takes its intrinsic text width, which makes shorter entries (especially the Logos block in the supplied screenshot) shift toward the center. Stretch the three credit blocks to the full card width and keep their text left-aligned.
+- Change Horizon's role to **App Developer & Builder** / **Pengembang Aplikasi & Perakit**. Preserve the remaining approved roles and exact identities: Design Inspiration / Inspirasi Desain — FYZ — `@FYZ737`; 3D Design & Printing / Desain & Pencetakan 3D — Logos — `@Logos3dMichael`; Horizon handle remains `@Horizontalzzz`.
+- Use one clear hierarchy: section heading, smaller muted role, bold name, muted handle. Keep the single existing credit Card and simple dividers; no additional decorative containers or redundant product heading.
+
+#### 3. Previously approved Peltier modal position
+
+- Keep the existing compact Peltier card design but replace its centered placement with bottom-center alignment inside its existing `SafeArea`. Preserve the 10-dp vertical breathing margin, 16-dp horizontal margin, 296-dp maximum width, `JexFixedScalePage`, one 360-dp transform, fade/scale, non-scrollable card and all FAN:ON → successful ACK → PELTIER:ON / command-free Cancel guarantees.
+
+### Regression requirements for the next authorized source task
+
+- Lock Voltage: test saved OFF, saved ON, active-unsaved, busy and not-ready/unknown states; assert no persistent subtitle; assert Switch remains present for known busy state and is disabled while busy/not-ready; assert the card height is identical between stable saved OFF and saved ON. Keep tests for unavailable tooltip and NVS retry.
+- About: assert the English and Indonesian headings/role copy, unchanged names/handles, all three role labels share the same left edge, and no overflow occurs at supported 350-dp/420-dp widths in Light/Dark.
+- Peltier: update the existing source-contract assertion from `Center(` to `Align(alignment: Alignment.bottomCenter)`; retain width/radius/action and fan-first safety assertions.
+- Run changed-file formatter, focused tests, analyzer and full Flutter suite where an executable toolchain exists. Capture actual Android screenshots before claiming visual acceptance.
 
 ### Scope and next action
 
-- This Diskusi interaction makes a durable documentation/design-contract update only. Current source and test files remain unchanged; Build #157 remains the latest package.
-- After the owner issues `@Thinking Eksekusi Full!`, implement only the bottom-anchor source and regression-test change, run available formatter/focused/full tests/analyzer, update the canonical notes and commit. A fresh `Eksekusi Build App!` is separately required to package the changed source.
-- Visual acceptance remains **VISUAL NOT VERIFIED** until the actual revised Android screenshot is reviewed, including SafeArea/gesture-navigation spacing and supported 350-dp/420-dp configurations.
+- This Diskusi session only records design decisions. Source and test blobs above remain unchanged; no Build or Actions operation was triggered.
+- **Next recommended action:** owner issues `@Thinking Eksekusi Full!` to implement the three App-only UI changes and regression tests. A new `@Thinking Eksekusi Build App!` is separately required to package/publish the changed source.
+- Visual acceptance remains **VISUAL NOT VERIFIED** until the actual revised Android UI is inspected.
 
 ---
 
 ## LAST VERIFIED BUILD BASELINE — BUILD #157 SUCCESS / RELEASE VERIFIED — 2026-11-12
+
 
 **Disposition:** guarded App Build/QC/release COMPLETED SUCCESSFULLY. No further Build App trigger is needed for this source SHA.
 

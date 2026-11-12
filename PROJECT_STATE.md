@@ -1,3 +1,14 @@
+## CURRENT APP UI REQUESTS — DESIGN DECISIONS RECORDED / SOURCE PENDING — 2026-11-13
+
+- **Baseline:** Build #157 (`10d106537e92060e0aac3fc17fd37f56e746bcd5`) remains the latest verified package. Current main `033eda6c076e3ea4987543a54385aa8f56d0b895` is 25 commits ahead / 0 behind; all six post-build paths are Markdown-only. App source/test remains the exact Build #157 implementation.
+- **Lock Voltage Settings:** keep the card fixed as one row, remove every persistent subtitle, retain the static neutral lock icon, and keep the Switch visible/disabled during busy state. Only the Switch animates as the authoritative P1 `VOLTAGE_LOCK` state changes. Preserve unknown-state tooltip and icon-only NVS retry; no Firmware or persistence behavior change.
+- **About:** replace the content heading `JE Cooler` with `Special Thanks` / `Ucapan Terima Kasih`; set the credit parent to stretch all three blocks so they share a left edge. Horizon role becomes `App Developer & Builder` / `Pengembang Aplikasi & Perakit`. Preserve FYZ/Logos labels, names and exact handles.
+- **Peltier popup:** the previously approved bottom-center-within-SafeArea placement change remains pending in the same App-only implementation batch.
+- **Next:** owner command `Eksekusi Full!` for source + test updates; a separate `Eksekusi Build App!` is required afterward. No App source/test, workflow, Build, Release or device operation was changed/performed in this Diskusi.
+- **Visual acceptance:** not verified until actual updated Android screenshots are reviewed at supported 350-dp/420-dp, EN/ID and Light/Dark conditions.
+
+---
+
 ## CURRENT APP UI CHANGE — PELTIER MODAL BOTTOM ANCHOR DECIDED / SOURCE PENDING — 2026-11-13
 
 - Owner screenshot identifies a vertical-placement defect in the Fan-OFF → Peltier-ON prerequisite modal. The current card design is accepted; only its position changes.
