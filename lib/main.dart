@@ -6637,7 +6637,7 @@ void _handleAckLine(String line) {
                     padding: EdgeInsets.fromLTRB(16, top, 16, 16),
                     child: Center(
                       child: ConstrainedBox(
-                        constraints: const BoxConstraints(maxWidth: 340),
+                        constraints: const BoxConstraints(maxWidth: 312),
                         child: Container(
                           width: double.infinity,
                           padding: const EdgeInsets.fromLTRB(18, 18, 18, 14),
@@ -8091,7 +8091,7 @@ void _handleAckLine(String line) {
 
   // AI-METHOD: _homeNotify — Render the localized Home Notification card.
   // Retain the original icon-left / text-left Row; only the connection badge is removed.
-  // The card stays compact for one line and grows naturally for two lines without shrinking its font.
+  // Keep the 44-dp card geometry; long copy uses two-line ellipsis at readable text sizes.
   Widget _homeNotify() {
     final headerDark = jexHomeHeaderUsesDarkPalette(appThemeNotifier.value);
     final noticeTextColor =
@@ -8166,7 +8166,7 @@ void _handleAckLine(String line) {
                     textAlign: TextAlign.start,
                     style: TextStyle(
                       color: foregroundColor,
-                      fontSize: 8.5,
+                      fontSize: 9.5,
                       fontWeight: FontWeight.w900,
                       letterSpacing: 0.8,
                     ),
@@ -8194,16 +8194,10 @@ void _handleAckLine(String line) {
                             ellipsis: '…',
                           )..layout(maxWidth: constraints.maxWidth);
 
-                      var fontSize = 10.5;
-                      var measured = measure(fontSize);
-                      // A wrapped notice gets a slightly smaller type size first;
-                      // further reduction is used only when required by the fixed slot.
-                      if (measured.computeLineMetrics().length > 1) {
-                        fontSize = 9.5;
-                        measured = measure(fontSize);
-                      }
-                      // Keep NOTIFY readable. The fixed slot uses two-line ellipsis
-                      // instead of shrinking important status text to microtype.
+                      final wraps = measure(10.5).computeLineMetrics().length > 1;
+                      final fontSize = wraps ? 9.5 : 10.5;
+                      // Keep NOTIFY readable. Longer copy is ellipsized to two lines,
+                      // never reduced to microtype to force the full message into 44 dp.
                       return Align(
                         alignment: Alignment.centerLeft,
                         child: Text(
