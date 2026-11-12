@@ -1,11 +1,10 @@
-## CURRENT APP QC — BUILD #157 ACTIVE — 2026-11-12
+## CURRENT APP QC — BUILD #157 ACTIVE / ANALYZER PASSED — 2026-11-12
 
-- **Run:** Build #157 / Actions `43247876115`, workflow 374946166, issue event, attempt 1, job `131285336987`; immutable checkout SHA `10d106537e92060e0aac3fc17fd37f56e746bcd5`.
-- **Initial progress:** runner, checkout and Java 17 SUCCESS; Flutter setup IN_PROGRESS; later analyzer/test/Gradle/APK/signing/source ZIP/Release gates pending. Continue this run only.
-- **Prior preserved failures:** #154 analyzer 6 errors; #155 tests 183 pass / 4 fail; #156 tests 186 pass / 1 fail. #156 sole remaining cause was a stale 3-dp spacing assertion; corrected in test commits `b007b56ab5ddf91546f86937be202978dc7fee3b` and `38212c3620aba6eb9fa5f6db41b43fdb777a9ddf`.
-- **Preflight:** #156 terminal; no queued/in-progress runs; no open PR; exact issue #33 owner/title/token; workflow unchanged; Release #153 assets/tag intact; Android versionName exact. Issue #33 closed/reopened once; one #157 run appeared.
-- **Formatter:** workflow has no Dart format step; `dart format` remains NOT RUN / UNVERIFIED.
-- **Release baseline:** Build #153 / Release 403010611 / tag `jexfyz-latest` remains on source `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e` until #157 passes.
+- **Run:** Build #157 / Actions `43247876115`, job `131285336987`, attempt 1; immutable checkout SHA `10d106537e92060e0aac3fc17fd37f56e746bcd5`.
+- **Progress:** steps 1–12 SUCCESS, including analyzer. Step 13 `flutter test` IN_PROGRESS; steps 14–21 pending. Continue this run only.
+- **Prior failures:** #154 analyzer failure (6 errors), #155 test failure (183/4), and #156 test failure (186/1) remain preserved. Their root causes and repairs are recorded in APP_BUILD_REPORT.md; #156's final stale 3-dp assertion was changed to a literal count of the two 2-dp Home spacers in commits `b007b56ab5ddf91546f86937be202978dc7fee3b` and `38212c3620aba6eb9fa5f6db41b43fdb777a9ddf`.
+- **Preflight:** no queued/in-progress run or open PR; issue #33 exact owner/title/token; guarded workflow unchanged; Release #153/tag/assets intact. Exactly one guarded close/reopen created #157.
+- **Formatter:** no workflow formatter gate; `dart format` NOT RUN / UNVERIFIED.
 - **Boundary:** App build only; no Firmware/BIN/Firebase/OTA/flash/device/physical BLE/thermal/electrical/OEM visual operation.
 
 
