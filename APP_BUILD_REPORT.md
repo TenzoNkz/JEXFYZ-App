@@ -2555,3 +2555,16 @@
 - **Local execution:** `command -v flutter`, `dart`, `gradle` returned no executable paths in this container. Formatter and focused/full tests are BLOCKED / NOT RUN locally. The repaired source/test tree has not yet been executed by hosted CI; only a guarded retry can provide actual Flutter results.
 - **Retry disposition:** concrete test-only repair is committed; one guarded hosted retry is justified. No retry has yet been triggered at this checkpoint. Fresh preflight must confirm no active/queued runs, issue #33 guard, unchanged workflow, Release #151 tag/asset identity and versionName before close/reopen.
 - **Boundary:** no App runtime source or device/Firmware/BIN/Firebase/OTA/flash/physical BLE/NVS/rail/LED/cooling/OEM screenshot change/action.
+
+## BUILD #153 — GUARDED RETRY AFTER BUILD #152 TEST REPAIR — ACTIVE — 2026-11-12
+
+- **Disposition:** ACTIVE, attempt 1. Exactly one guarded issue-triggered retry after the concrete test-only repairs; no duplicate or blind retry.
+- **Run/job:** Build #153 / Actions run `43145542329`, workflow `374946166`, event `issues`, issue #33, build job `130942369953`, attempt 1. [Actions run](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/43145542329).
+- **Immutable build source SHA:** `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e`, exact `main` HEAD at trigger. It includes the three Build #152 test repairs: Home NOTIFY test source anchor/font expression, Statistics test explicit 800×1200/DPR 1 viewport with nonzero viewport assertion, and Diagnostics localization/casing corrections. No production App source, Firmware source, workflow or Gradle versionName changed in these repairs.
+- **Preserved failure:** Build #152 / run `43144337555` remains FAILED at Flutter tests (171 passed, 5 failed), with all exact evidence and repaired causes retained above. No Release artifact was created by #152.
+- **Guard:** issue #33 was OPEN and owner-authored by `TenzoNkz`, exact title `JE X FYZ — EKSEKUSI BUILD APP TRIGGER`, exact body token `JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1`; closed/reopened exactly once to create #153. Workflow unchanged blob `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12`, issues-only opened/reopened trigger and owner/title/token gate; no push/PR path.
+- **Preflight:** no active or queued run; recursive tree 131 entries, not truncated. Release ID 403010611/tag `jexfyz-latest` remained on Build #151 source `e383924067b7ab2da27f2e41f21232cfb7144ec0`, with the exact previously verified APK/source pair. Android Gradle `versionName "Telegram @horizontalzzz"` unchanged.
+- **Initial run state:** run first observed `in_progress`; job `130942369953` showed steps 1 Set up job and 2 Checkout repository success, step 3 Set up Java 17 in progress. No analyzer/test/package/release gate had completed at first snapshot.
+- **Remaining:** Java/Flutter/Gradle setup, signing preparation, security/architecture audit, dependencies, analyzer, full Flutter tests, Android Gradle gate, obfuscated APK, V1/V2/V3 + pinned certificate, source ZIP, Release/tag/source SHA parity and downloaded asset verification.
+- **No Firmware compilation, BIN generation/publication, Firebase, OTA, flash, physical BLE/device/NVS/rail/LED, cooling/electrical or OEM visual tests.**
+- **Next:** inspect run `43145542329` / job `130942369953` only; no additional trigger while active.
