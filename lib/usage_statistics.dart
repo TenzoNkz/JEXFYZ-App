@@ -1158,20 +1158,22 @@ class UsageStatsWriteQueue {
     Future<void> Function() operation, {
     required void Function(Object error) onError,
     bool allowReservedCapacity = false,
+    bool failOnReject = false,
   }) {
     final capacity = maxPendingOperations +
         (allowReservedCapacity ? reservedControlOperations : 0);
     if (_pendingOperations >= capacity) {
       _rejectedOperations++;
+      final error = StateError(
+        'Usage statistics write queue is full ($capacity pending); '
+        'the incoming record was not accepted.',
+      );
       try {
-        onError(StateError(
-          'Usage statistics write queue is full ($capacity pending); '
-          'the incoming record was not accepted.',
-        ));
+        onError(error);
       } catch (_) {
         // A rejection reporter must never interrupt the telemetry producer.
       }
-      return Future<void>.value();
+      return failOnReject ? Future<void>.error(error) : Future<void>.value();
     }
 
     _pendingOperations++;
@@ -1222,10 +1224,12 @@ class UsageStatisticsRecorder {
   Future<void> _enqueue(
     Future<void> Function() operation, {
     bool allowReservedCapacity = false,
+    bool failOnReject = false,
   }) {
     return _writeQueue.enqueue(
       operation,
       allowReservedCapacity: allowReservedCapacity,
+      failOnReject: failOnReject,
       onError: (error) {
         lastWriteError = error.toString();
         debugPrint('Usage statistics write: $error');
@@ -1433,12 +1437,6 @@ class UsageStatisticsRecorder {
         // device-session timeout.
         final cutoff = previousP1ReceiptAtMs! +
             const Duration(milliseconds: 1500).inMilliseconds;
-        await _store.endSession(
-          sessionId: sessionId,
-          timestampMs: cutoff,
-          reason: 'stale_p1',
-        );
-        _sessionEndedAtMs = cutoff;
         final gapEvents = <UsageStatsEvent>[
           UsageStatsEvent(
             sessionId: sessionId,
@@ -1469,6 +1467,12 @@ class UsageStatisticsRecorder {
             textValue: null,
           ));
         }
+        await _store.endSession(
+          sessionId: sessionId,
+          timestampMs: cutoff,
+          reason: 'stale_p1',
+        );
+        _sessionEndedAtMs = cutoff;
         _publishLiveUpdate(
           timestampMs: cutoff,
           endedAtMs: cutoff,
@@ -1678,7 +1682,7 @@ class UsageStatisticsRecorder {
           UsageStatsEvent(sessionId: sessionId, timestampMs: now, metric: 'fan_speed', numberValue: (_states['fan_speed'] as num).toDouble(), textValue: null),
       ]);
       _notifyChanged();
-    }, allowReservedCapacity: true);
+    }, allowReservedCapacity: true, failOnReject: true);
   }
 }
 
