@@ -1,3 +1,14 @@
+## 2026-11-12 — App visual refinement, Statistics simplification and Diagnostics (source implemented; not released)
+
+- App-only source implementation after the immutable Build #151 release: Lock Voltage centered blur overlay on Voltage/Adaptive only, preserving Bluetooth-disconnected and existing Adaptive priority; moved the Firmware-owned Lock Voltage card to the top of Settings.
+- Replaced the Peltier Fan-OFF prerequisite AlertDialog with a theme-aware amber JE card, clear Fan→Peltier steps and paired-action CTA. FAN:ON ACK remains a hard gate before PELTIER:ON; Cancel remains command-free.
+- Restored About/Tentang below Firmware with bilingual JE Cooler contributor credits. Added Device Diagnostics as an opening-time snapshot using only source-available values; unknown remains --, Copy Diagnostics is manual/bilingual and redacted, with no automatic upload.
+- Simplified Usage Statistics: graph-first flow, data provenance on demand, shorter labels, compact six-metric cursor, collapsed secondary aggregates. Two temperature plots, four operating timelines, all six metrics, session/gap semantics and useful aggregates are retained. Sampling cadence, SQL/schema, analytics and persistence are unchanged.
+- Cross-screen polish: primary App Dart surfaces use Phosphor icons; Home NOTIFY keeps 44-dp geometry and readable 10.5/9.5-dp text with two-line ellipsis; existing Light/Dark semantic theme and compact Settings text roles are reused.
+- Regression source updated for Lock Voltage priority/tab scope, Peltier paired action/Fan ACK gating, Settings/About ordering/localization, unknown Diagnostics state, icon family, NOTIFY text floor and Statistics details/provenance/cursor targets.
+- **Validation:** static source/readback only. Seven Dart files passed bracket-balance and localization-key scans (357 bilingual keys); all used Phosphor Regular/Bold names matched package-generated source; no Material Icons.* remain in primary App files. Flutter/Dart/Gradle/ADB are unavailable, so formatter, focused/full tests, analyzer, Android rendering and screenshots were NOT RUN. No hosted CI or App Build/Release triggered.
+- Build #151 remains the latest verified release; these newer changes are **NOT RELEASED** and **VISUAL NOT VERIFIED**. No Firmware/BIN/Firebase/OTA/flash/device operation occurred.
+
 ## 2026-11-12 — Firmware V7.2 Lock Voltage and one-way Touch cycle (source implemented; validation pending)
 
 - Active sketch source advanced from V7.1 to firmware/JEXFYZ-V7.2.ino; FW_VERSION="V7.2". Exactly one active versioned sketch remains after the rename.
