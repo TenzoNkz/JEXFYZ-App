@@ -1,33 +1,34 @@
-## CURRENT CHECKPOINT — PROFESSIONAL SETTINGS / NOT RELEASED — 2026-11-12
+## CURRENT CHECKPOINT — FULL APP PRE-BUILD AUDIT / NOT READY — 2026-11-12
 
-**Mode:** `@Thinking Eksekusi Full!` — App Settings/About source, regression tests and documentation only. No App Build/APK/Release, Firmware compile/BIN, Firebase, OTA, flashing or device operation.
+**Mode:** `@Thinking Diskusi!` — static App/repository analysis and documentation only. No executable source, tests, configuration, build workflow, Firmware, Actions, Release, Firebase, OTA, flashing or device operations were changed or run.
 
-### Live branch and release boundary
+### Live repository and package state
 
 - **Repository:** `TenzoNkz/JEXFYZ-App`, branch `main`.
-- **Settings source commit:** `1cae4cfc061328b3b2b8bed96987c410f37373f2`.
-- **Regression test commit:** `96301aec962739c39518e84f38cd4294d975595f`.
-- Recursive tree: 131 entries, `truncated=false`; no file paths were added or removed in this pass.
-- **Build #153 remains the latest verified APK/Release:** immutable source SHA `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e`, Actions run `43145542329`, job `130942369953`, Release ID `403010611`, tag `jexfyz-latest`. Current main UI follow-ups are NOT included in that APK.
+- **Audited HEAD:** `4d02fbf705a85820a4ea1e530d167ebb53ab3a68`; recursive tree 131 entries, not truncated.
+- **Latest executable App/test state:** Settings/About source `1cae4cfc061328b3b2b8bed96987c410f37373f2`; test additions `96301aec962739c39518e84f38cd4294d975595f`.
+- **Current verified package remains Build #153:** source `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e`, Actions run `43145542329`, Release ID `403010611`, tag `jexfyz-latest`. Current source is newer than the APK.
+- Actions latest #153 completed SUCCESS; no open PR or active run. No build trigger was sent.
 
-### Implemented professional Settings/About refinement
+### Audit result
 
-- **Settings rows:** each setting is now one horizontal row: icon, setting name, optional right-aligned value and chevron. Single-line title/value with ellipsis; minimum row height 48 dp. Useful values retained: Language, Appearance, Bluetooth Auto/Manual, Floating Monitor ON/OFF, and known Firmware version.
-- Removed the hard-coded Notifications count, duplicate Usage Statistics explanation, repeated About subtitle `JE Cooler`, and unknown Firmware placeholder `V?`.
-- **Lock Voltage:** remains first, Firmware-owned and functional. Compact tile/text retained. State text appears only when needed: Not synchronized; Firmware V7.2+ required; Active · not saved; 5V limit · Adaptive OFF. A synchronized/known/saved OFF state has no redundant explanatory text. Switch, retry and all state semantics remain.
-- **About:** standalone row card under Firmware, no duplicate subtitle. About page retains JE Cooler title and three compact credits in one card; generic Special Thanks/Ucapan Terima Kasih heading removed. All exact role/name/handle pairs remain.
-- **Unchanged:** grouped General/Device/Statistics/Firmware cards and their order, theme, EN/ID, Phosphor icons, compact Settings scope, 360-dp canvas/DPI transform, Home, BLE/P1, Firmware, persistence and Usage Statistics data. Earlier Diagnostics removal, Peltier Fan-ACK gate and Temperature reset removal are retained.
+- Complete static inventory: 7 Dart library files, 9 test files, 179 test declarations (166 unit/source-contract and 13 widget tests). The latest source suite is **NOT RUN**; Build #153's 176/176 result applies only to its older source SHA.
+- Full findings and remediation priority are recorded in `APP_PREBUILD_AUDIT.md`.
+- **P1 not ready:** Usage Statistics full-session recompute + unbounded serialized write queue; overlapping 650-ms Connection and 300-ms Floating Monitor polling; 36/42/34-dp Home/Temperature hit targets; profane hard-coded TamperScreen copy with an explicit test contract; latest current-main tests not executed.
+- **P2:** no `analysis_options.yaml` although `flutter_lints` is declared; no formatter check in guarded workflow; monolithic main.dart; microtype (6.8–10.5 dp) and dialog/Floating presentation inconsistency; semantic token/contrast and fixed TextScaler accessibility review.
+- **Positive findings:** 354 localized keys, no duplicate keys or missing static `JexText.of` references; semantic telemetry colors and Phosphor icon family are coherent; current Settings one-line rows/About/Peltier/Temperature/Diagnostics changes are present in source.
+- **Evidence:** STATIC SOURCE CHECK only. No format/analyzer/test, screenshots, App Build, physical device or performance soak was run. No false claim of a clean or visually accepted App.
 
-### Regression source
+### Required remediation order
 
-- Updated `test/floating_monitor_layout_contract_test.dart` for 48-dp horizontal Settings rows, right-aligned values, removed redundant labels, hidden unknown Firmware version, compact About card and existing canvas contract.
-- Widget tests cover one-line Language/value alignment, omitted filler copy, known/unknown Firmware version display, Lock Voltage state text in EN/ID, and About card/credits.
-- The tests are **written but NOT RUN**. Flutter and Dart are not installed in the active runtime; formatter, focused widget/source-contract tests, analyzer and full suite are BLOCKED / NOT RUN. No hosted Actions run/build/release was triggered.
-- Source read-back and static checks passed. The modified source has not been rendered on Android; appearance remains **VISUAL NOT VERIFIED**.
+1. UX/accessibility: touch surfaces, Home microcopy hierarchy, neutral TamperScreen UX while preserving fail-closed signature check, modal/overlay consistency.
+2. Runtime/performance: single-flight/lifecycle-aware polling; bounded/coalesced Statistics writes and scalable summary/deduplication, with long-session tests.
+3. Code quality: formatter/lint baseline and current-source analyzer/test pass, without weakening contracts.
+4. Then guarded App Build, followed by actual screenshot/device visual acceptance. The precise matrix and exit conditions are in `APP_PREBUILD_AUDIT.md`.
 
 ### Exact next action
 
-Use a separate guarded `Eksekusi Build App!` for the current App source, then inspect actual screenshots at 350-dp/420-dp in EN/ID and Light/Dark. Review row alignment and truncation, all meaningful right-side values, compact Lock Voltage unknown/active/OFF states, About credits, and the previously changed Peltier popup and Temperature tab. Build #153 remains the current published package until the new guarded workflow passes.
+Use a separate `Eksekusi Full!` for the P1 remediation and matching tests. **Do not build yet.** Issue `Eksekusi Build App!` only after the P1 findings are fixed/dispositioned, current-source tests/analyzer/formatter are clean, and the pre-build criteria in `APP_PREBUILD_AUDIT.md` are met.
 
 
 ---

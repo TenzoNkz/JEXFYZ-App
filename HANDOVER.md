@@ -27,4 +27,4 @@ Build #153 proves hosted App CI/package/release only. No Firmware compilation, B
 
 ## Next action
 
-Issue a separate guarded `Eksekusi Build App!` for current main, then install and inspect Settings/About/Peltier/Temperature on Android at 350/420 dp, Light/Dark and EN/ID. Build #153 remains the latest package until that workflow succeeds. Firmware/BIN/Firebase/OTA/flash/device work remains separately gated.
+Do NOT start Build App yet. The full static pre-build audit is recorded in `APP_PREBUILD_AUDIT.md`. Several P1 findings remain: Statistics long-session/backpressure, overlapping native polling, undersized Home/Temperature touch targets, TamperScreen copy, and lack of current-source test execution. Use a separate `Eksekusi Full!` to remediate these with regression coverage. Build #153 remains the latest verified package; current main has not been packaged or visually verified.

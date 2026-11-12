@@ -1,14 +1,13 @@
-## CURRENT APP SOURCE — PROFESSIONAL SETTINGS / NOT RELEASED — 2026-11-12
+## CURRENT APP SOURCE — FULL PRE-BUILD AUDIT / NOT READY — 2026-11-12
 
-- **Current source:** Settings/About source commit `1cae4cfc061328b3b2b8bed96987c410f37373f2`; regression test follow-up commit `96301aec962739c39518e84f38cd4294d975595f`. Latest branch HEAD before documentation checkpointing is the test commit.
-- **Settings:** rows are horizontal and single-line: Phosphor icon, 13-dp title, optional right-aligned 11-dp value and chevron. Minimum row height is 48 dp. Keep Language, Appearance, Bluetooth Auto/Manual, Floating Monitor ON/OFF and known Firmware version; remove Notifications count, the Usage Statistics descriptor, About subtitle and unknown Firmware `V?`.
-- **Lock Voltage:** stays at top and Firmware-owned. Its 34-dp lock tile and compact typography remain. Show short bilingual status only when the state needs explanation; synchronized/saved/OFF displays no extra paragraph. Switch/retry and unknown/session/busy/save-failure semantics remain.
-- **About:** its Settings row is a standalone card without a repeated JE Cooler subtitle. About page now has a product heading and one compact credit Card; Special Thanks/Ucapan Terima Kasih heading removed. Horizon/FYZ/Logos roles, names and handles are unchanged.
-- **Retained earlier UI fixes:** Device Diagnostics remains removed; Peltier dialog remains fixed/compact and retains FAN:ON ACK before PELTIER:ON; Temperature tab reset action remains removed. No Home, BLE/P1, Firmware, OTA, telemetry ownership, persistence, theme or 360-dp canvas behavior changed.
-- **Source/test files in this pass:** `lib/floating_monitor.dart` and `test/floating_monitor_layout_contract_test.dart`. Design and current behavior notes are updated in this documentation commit.
-- **Evidence:** source GitHub read-back and static structural checks passed. Tests now cover Settings rows and Lock Voltage status, but **no test was run**. Flutter/Dart are unavailable in this runtime, so formatter, focused tests, analyzer and full suite are BLOCKED / NOT RUN. No CI, App Build, APK, release or visual screenshot/device review was started. **VISUAL NOT VERIFIED**.
-- **Latest release remains Build #153**, immutable source `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e`, Release ID `403010611`. Current Settings, Peltier and Temperature source fixes are not in that APK. No Firmware/BIN, Firebase, OTA, flash or device operation occurred.
-- **Next:** separate guarded `Eksekusi Build App!` for the current main source after this documentation checkpoint, then inspect actual Settings/About/Peltier/Temperature screenshots at 350/420 dp, EN/ID and Light/Dark.
+- **Current branch HEAD:** `4d02fbf705a85820a4ea1e530d167ebb53ab3a68`. Executable App source/test commits: `1cae4cfc061328b3b2b8bed96987c410f37373f2` and `96301aec962739c39518e84f38cd4294d975595f`.
+- **Audit report:** `APP_PREBUILD_AUDIT.md`. Covers all 7 Dart library files, 9 test files, Settings/About, Home tabs, Connection sheet, Floating Monitor, Usage Statistics, dialogs, localization/theme, dependency/build configuration and current Actions/Release state.
+- **Audit disposition:** NOT READY FOR NEXT BUILD. P1 work remains: Usage Statistics long-session/backpressure, overlapping Connection/Floating native polling, undersized Home/Temperature touch targets, non-professional TamperScreen copy without weakening signature fail-closed behavior, and current-main tests not yet executed.
+- **Code-quality findings:** no `analysis_options.yaml` despite declared `flutter_lints`; guarded workflow runs analyzer/tests but no Dart formatter; main.dart is ~10.6k lines. Fixed-canvas text scaling remains protected and requires a documented accessibility boundary.
+- **Current tests:** 179 declarations (166 unit/source-contract, 13 widget) in current main. All are **NOT RUN** on current source. Build #153 passed 176/176 at older immutable SHA `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e`; this does not validate current main.
+- **Positive baseline:** 354 localized keys, no duplicate keys or missing statically referenced `JexText.of` keys; existing 360-dp canvas, theme roles, Phosphor family, telemetry semantics, P1 and safety contracts are to be preserved.
+- **Latest package remains Build #153**, Release ID `403010611`, tag `jexfyz-latest`; no current-main changes are in that APK. No build was triggered in this Diskusi. Current visual status is **VISUAL NOT VERIFIED**.
+- **Next:** separate `Eksekusi Full!` for P1 remediation and matching regression tests. Do not use `Eksekusi Build App!` until the audit's build-readiness criteria are satisfied.
 
 
 ---

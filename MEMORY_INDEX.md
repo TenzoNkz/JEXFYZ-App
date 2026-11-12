@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — Documentation Map & Retention Policy
 
-Last reconciled: 2026-11-08 (Asia/Jakarta). This file is the navigation and retention index, not an alternate operating ruleset or current-state ledger. Read MASTER_PROMPT.md for all operating instructions. Verify current implementation against live main/source/tests and current Actions/Release evidence.
+Last reconciled: 2026-11-12 (Asia/Jakarta). This file is the navigation and retention index, not an alternate operating ruleset or current-state ledger. Read MASTER_PROMPT.md for all operating instructions. Verify current implementation against live main/source/tests and current Actions/Release evidence.
 
 ## Authority order
 
@@ -23,6 +23,7 @@ Last reconciled: 2026-11-08 (Asia/Jakarta). This file is the navigation and rete
 | PROJECT_STATE.md | Current-only product/source/release/validation truth | Active state | KEEP concise; remove superseded narratives |
 | HANDOVER.md | Immediate next action and nearest blockers | Active handover | KEEP short; no duplicate history |
 | APP_NOTES.md | Current App behavior, BLE, telemetry, language and notification contracts | Active subject reference | KEEP; detailed implementation must match source |
+| APP_PREBUILD_AUDIT.md | Rolling static pre-build audit, prioritized source risks, acceptance matrix and build-readiness decision | Active audit ledger | KEEP while the current source has open pre-build findings; update after each remediation pass and close only after verified acceptance |
 | DESIGN_NOTES.md | Owner-approved screen-specific UI/design constraints and visual contracts | Active subject reference | KEEP; no build chronology |
 | PRODUCT_DESIGN_CONSTITUTION.md | Cross-screen product-design intent, protected identity, design-system governance and anti-AI-slop principles | Active design reference | KEEP; do not override more specific owner-approved screen contracts |
 | VISUAL_QUALITY_GATE.md | Evidence-based visual review, viewport/state matrix, accessibility checks and acceptance outcomes | Active quality standard | KEEP; visual acceptance is separate from build/test status |

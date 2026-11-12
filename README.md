@@ -15,7 +15,8 @@ Flutter Android companion App and ESP32-C3 Firmware source for the JE X FYZ ther
 9. [CHAT_RULES.md](CHAT_RULES.md) — compatibility pointer to the Master Prompt.
 10. App, Firmware, OTA, voltage-transition and BLE-auth contracts: [APP_NOTES.md](APP_NOTES.md), [DESIGN_NOTES.md](DESIGN_NOTES.md), [PRODUCT_DESIGN_CONSTITUTION.md](PRODUCT_DESIGN_CONSTITUTION.md), [VISUAL_QUALITY_GATE.md](VISUAL_QUALITY_GATE.md), [FIRMWARE_NOTES.md](FIRMWARE_NOTES.md), [Firmware technical reference](firmware/FIRMWARE_TECHNICAL_REFERENCE.md), [OTA protection](OTA_PROTECTION.md), [OTA incident record](OTA_REGRESSION_MEMORY.md), [voltage transition memory](VOLTAGE_TRANSITION_MEMORY.md), [BLE App authorization](BLE_APP_AUTH.md).
 11. [BUILD_NOTES.md](BUILD_NOTES.md) is the current App release procedure; [APP_BUILD_REPORT.md](APP_BUILD_REPORT.md) is its append-only attempt/evidence ledger.
-12. [CHANGELOG.md](CHANGELOG.md) is dated history. [archive/](archive/) contains immutable forensic snapshots.
+12. [APP_PREBUILD_AUDIT.md](APP_PREBUILD_AUDIT.md) — current full App pre-build findings, prioritized remediation and definition of build-ready.
+13. [CHANGELOG.md](CHANGELOG.md) is dated history. [archive/](archive/) contains immutable forensic snapshots.
 
 ## Operating modes
 
