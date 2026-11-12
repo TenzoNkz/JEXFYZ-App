@@ -1,10 +1,15 @@
-## CURRENT CHECKPOINT — BUILD #153 ACTIVE / APK BUILD — 2026-11-12
+## CURRENT CHECKPOINT — BUILD #153 SUCCESS / RELEASE VERIFIED — 2026-11-12
 
-- Build #153 / run `43145542329`, job `130942369953`, source `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e`. Steps 1–14 passed, including analyzer, full Flutter test suite and Android Gradle gate (success in 3m42s). Step 15 APK build in progress; steps 16–21 pending.
-- Build #152 remains historical Flutter test failure (171 passed / 5 failed), repaired in test-only commits and verified through #153's passing Flutter gate. Final test counts and Android NO-SOURCE caveat await final job log.
-- Latest published Release remains Build #151 / Release 403010611 / tag `jexfyz-latest` on `e383924067b7ab2da27f2e41f21232cfb7144ec0` until #153 finishes all gates.
-- Android `versionName "Telegram @horizontalzzz"` exact. No Firmware/BIN/Firebase/OTA/flash/device/BLE/NVS/rail/LED/thermal/electrical/OEM visual validation.
-- Next: inspect #153 APK build, signing and downloaded Release verification only; no additional trigger.
+- **Repository:** TenzoNkz/JEXFYZ-App, branch main. Immutable Build #153 source SHA `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e`; current main's post-run differences are documentation/checkpoint changes only.
+- **Build:** Actions run `43145542329`, workflow 374946166, attempt 1, job 130942369953; completed SUCCESS. All gates 1–21 and cleanup 39–43 passed.
+- **QC:** security/architecture audit passed; Dart analyzer 23 infos / zero warnings/errors; Flutter 176/176 tests passed; Android Gradle `BUILD SUCCESSFUL in 3m41`. Native Android `:app:testDebugUnitTest` and compile/process prerequisites were `NO-SOURCE`, so native JUnit cases did not execute.
+- **Release:** Release ID 403010611, tag `jexfyz-latest`, target exact built source SHA. Exactly one APK and one matching source ZIP; downloaded SHA values, ZIP integrity/source marker, and downloaded APK V1/V2/V3 signature/certificate checks passed.
+- **APK:** 55,996,507 bytes; SHA-256 `d956959414eb085e1779c30bf035a0bbc64d18330e19b85251cc0ead90f5661c`. [APK](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-release.apk).
+- **Source ZIP:** 2,929,311 bytes; SHA-256 `87808fe37f31e7fec589477a3c658a2f10fa06362bd72b173eeada95d3b03604`. [Source ZIP](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-corresponding-source.zip).
+- **Certificate:** RSA 4096, JE X FYZ DN, pinned SHA-256 `dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0`; V1/V2/V3 passed. Self-signed PKIX chain/no-timestamp jarsigner caveat retained. Android `versionName "Telegram @horizontalzzz"` unchanged; app version 1.0.0+3.
+- **Failure history:** Build #152 remains a separate FAILED attempt (171 passed / 5 failed) with test-only repairs then verified by Build #153; failure details retained in APP_BUILD_REPORT.md.
+- **Separate gaps:** no Firmware V7.2 compile/BIN, Firebase/OTA/flash, physical BLE/device/NVS/rail/LED, thermal/electrical cooling, owner install or OEM visual acceptance. App CI does not prove field acceptance.
+- **Next:** owner installation plus physical App/BLE/OEM visual QA; no new App Build until App source changes.
 
 ---
 ## Firmware V7.2 source implementation — App CI verified; Firmware validation pending (2026-11-12)
