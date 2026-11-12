@@ -1,16 +1,17 @@
 ## CURRENT CHECKPOINT — BUILD #153 ACTIVE / ANDROID GRADLE GATE — 2026-11-12
 
-**Mode:** owner-authorized `Eksekusi Build App!`; App Build/QC/release only.
+**Mode:** owner-authorized `Eksekusi Build App!`; guarded App Build/QC/release only.
 
-- **Run/job/source:** Build #153 / Actions run `43145542329`, job `130942369953`, immutable SHA `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e`.
-- **Passed:** steps 1–13, including analyzer and **Flutter test suite**. This hosted run passes the five test repairs after #152's 171/5 failure. Test count will be taken from completed logs, not inferred.
-- **Current:** step 14 Android unit-test gate in progress. **Pending:** steps 15–21 APK, V1/V2/V3 signing/cert, source archive, Release/tag parity and downloaded asset checks.
-- **Build #152 remains FAILED and preserved**; no artifact. Repairs were test-only.
-- **Latest published Release is still Build #151** at source `e383924067b7ab2da27f2e41f21232cfb7144ec0` until #153 finishes all gates. Android `versionName "Telegram @horizontalzzz"` unchanged.
-- No Firmware/BIN/Firebase/OTA/flash/physical BLE/device/NVS/rail/LED/cooling/electrical/OEM screenshot work.
-- **Next:** continue only run `43145542329` / job `130942369953`.
+- **Run/job/source:** Build #153 / Actions run `43145542329`, job `130942369953`, attempt 1; immutable source `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e`.
+- **Passed:** steps 1–13, including analyzer and repaired Flutter test suite. **Current:** step 14 Android unit-test gate, started `2026-11-12T03:05:02Z`, still `in_progress` at last check. **Pending:** step 15 APK build and steps 16–21 signing/source/Release/download verification.
+- **Run inventory:** exactly one active run (#153), zero queued. Active job logs not yet available (BlobNotFound while the job is running); no success/failure is inferred for Android gate.
+- **Build #152 remains historical FAILED** at Flutter tests (171 passed, 5 failed), with all failure details and test-only repairs preserved. #153 is the guarded verification run for those repairs.
+- **Latest published Release remains Build #151** (Release ID 403010611, tag `jexfyz-latest`, source `e383924067b7ab2da27f2e41f21232cfb7144ec0`) until #153 finishes all gates. Android `versionName "Telegram @horizontalzzz"` unchanged.
+- No additional trigger while #153 active; no Firmware/BIN/Firebase/OTA/flash/physical BLE/device/NVS/rail/LED/thermal/electrical/OEM screenshot work.
+- **Next:** inspect only run `43145542329` / job `130942369953`; preserve this active run.
 
 ---
+
 ## CURRENT CHECKPOINT — BUILD #149 COMPLETED / RELEASE VERIFIED — 2026-11-11
 
 **Disposition:** Build #149 / Actions run 42967289995 COMPLETED / SUCCESS / RELEASED. Workflow 374946166, attempt 1; job 130347345586 completed success. All 21 required gates and post-job cleanup steps 39–43 passed.
