@@ -66,3 +66,14 @@ This document stores owner-approved, screen-specific visual constraints, not a b
 - **Tone/color/motion:** use a restrained amber accent for a missing fan prerequisite, not full red alarm styling (reserve red for an actual safety fault/latch). Keep the surface theme-aware for light/dark, with readable contrast and subtle fade/scale entrance rather than a rigid stock dialog feel. Avoid decorative animation that obscures the safety instruction.
 - **Behavioral invariants:** popup remains limited to the existing Fan-OFF → user requests Peltier-ON path. Cancel sends no command. Approval keeps the current ordered sequence FAN:ON → wait for authoritative ACK → PELTIER:ON; if Fan confirmation fails, do not send Peltier. Preserve timeout/error feedback, localization and barrier dismissal semantics unless a separate review justifies a change.
 - **Validation:** cover English/Indonesian copy, long-text and compact-width fit, light/dark contrast, 48-dp actions, cancellation/no-write, fan ACK failure preventing Peltier, and success command ordering. Verify on 350-dp/420-dp Android layouts. This is a proposal recorded in Diskusi, not source implementation.
+
+
+### Settings About page — bilingual contributor credits (2026-11-12)
+
+- Add an About / Tentang Settings entry immediately after Firmware in the main Settings list. Tap opens an About subpage under the existing compact fixed-canvas navigation contract.
+- Content:
+  - EN: JE Cooler → Special Thanks → App Development & Build: Horizon (@Horizontalzzz) → Design Inspiration: FYZ (@FYZ737) → 3D Design & Printing: Logos (@Logos3dMichael).
+  - ID: JE Cooler → Ucapan Terima Kasih → Pengembangan Aplikasi & Build: Horizon (@Horizontalzzz) → Inspirasi Desain: FYZ (@FYZ737) → Desain & Pencetakan 3D: Logos (@Logos3dMichael).
+- Use “Special Thanks” rather than “Special Thanks to:” as a heading; “Design Inspiration” is the grammatical role label. “3D Design & Printing” assumes the Logos contribution includes both design and 3D printing; if only printing is intended, use “3D Printing” / “Pencetakan 3D”.
+- Clean credit hierarchy, centered or left-aligned brand heading (use existing app style), role labels distinct from contributor names, handles preserved exactly, subtle dividers and spacing. No unverified external profile links or extra claims.
+- This explicit request supersedes the historical decision to remove About. Update the old test assertions that prohibited About and replace them with presence, order, localization and responsive-layout assertions. Discussion only; no source/tests/build changed.
