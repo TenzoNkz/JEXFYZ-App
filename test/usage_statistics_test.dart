@@ -588,13 +588,13 @@ void main() {
       }
 
       await pumpAtWidth(350, ThemeData.light(useMaterial3: true));
-      expect(find.text('Suhu Baterai HP'), findsOneWidget);
-      expect(find.text('Suhu Hotside'), findsOneWidget);
+      expect(find.text('Baterai HP'), findsOneWidget);
+      expect(find.text('Hotside'), findsOneWidget);
       expect(find.text('30D'), findsNothing);
       expect(find.text('1H'), findsNothing);
       expect(find.text('24H'), findsNothing);
       expect(find.text('7D'), findsNothing);
-      expect(find.text('Sesi pendinginan selesai'), findsOneWidget);
+      expect(find.text('Selesai'), findsOneWidget);
       final elapsedHeader = tester.widget<Text>(
         find.byKey(const ValueKey<String>('usage-session-elapsed')),
       );
@@ -649,13 +649,13 @@ void main() {
       expect(tester.takeException(), isNull);
 
       await pumpAtWidth(420, ThemeData.dark(useMaterial3: true));
-      expect(find.text('Suhu Baterai HP'), findsOneWidget);
-      expect(find.text('Suhu Hotside'), findsOneWidget);
+      expect(find.text('Baterai HP'), findsOneWidget);
+      expect(find.text('Hotside'), findsOneWidget);
       expect(find.text('30D'), findsNothing);
       expect(find.text('1H'), findsNothing);
       expect(find.text('24H'), findsNothing);
       expect(find.text('7D'), findsNothing);
-      expect(find.text('Sesi pendinginan selesai'), findsOneWidget);
+      expect(find.text('Selesai'), findsOneWidget);
       final profileHeadingDark = find.text('Aktivitas');
       await tester.scrollUntilVisible(
         profileHeadingDark,
