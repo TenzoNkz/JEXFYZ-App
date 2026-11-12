@@ -133,7 +133,7 @@ void main() {
     expect(settingsEnd, greaterThan(settingsStart));
     final settings = floating.substring(settingsStart, settingsEnd);
     expect(settings, contains('data: buildJexCompactUiTheme(preset)'));
-    expect(settings, contains('EdgeInsets.fromLTRB(8, 13, 8, 6)'));
+    expect(settings, contains('EdgeInsets.fromLTRB(8, 10, 8, 5)'));
     expect(settings, contains('EdgeInsets.symmetric(horizontal: 12, vertical: 10)'));
     expect(settings, contains('fontSize: 13'));
     expect(settings, contains('fontSize: 11'));
@@ -564,6 +564,83 @@ void main() {
     expect(find.text('Manual'), findsOneWidget);
     expect(find.text('OFF'), findsOneWidget);
     expect(find.text('About'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('Lock Voltage copy appears only for states that need explanation', (tester) async {
+    final previousLanguage = appLanguageNotifier.value;
+    final previousLock = voltageLockSettingsNotifier.value;
+    addTearDown(() {
+      appLanguageNotifier.value = previousLanguage;
+      voltageLockSettingsNotifier.value = previousLock;
+    });
+
+    Future<void> pumpLockState(
+      VoltageLockSettingsState state, {
+      AppLanguage language = AppLanguage.english,
+    }) async {
+      appLanguageNotifier.value = language;
+      voltageLockSettingsNotifier.value = state;
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: ThemeData.dark(useMaterial3: true),
+          home: SettingsPage(
+            currentFirmwareVersion: 'V7.2',
+            onOpenFirmwareUpdate: () async {},
+            onVoltageLockChanged: (_) async {},
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+    }
+
+    await pumpLockState(const VoltageLockSettingsState());
+    expect(find.text('Not synchronized'), findsOneWidget);
+
+    await pumpLockState(
+      const VoltageLockSettingsState(sessionReady: true, known: false),
+    );
+    expect(find.text('Firmware V7.2+ required'), findsOneWidget);
+
+    await pumpLockState(
+      const VoltageLockSettingsState(
+        sessionReady: true,
+        known: true,
+        active: true,
+        saved: false,
+      ),
+    );
+    expect(find.text('Active · not saved'), findsOneWidget);
+
+    await pumpLockState(
+      const VoltageLockSettingsState(
+        sessionReady: true,
+        known: true,
+        active: true,
+        saved: true,
+      ),
+    );
+    expect(find.text('5V limit · Adaptive OFF'), findsOneWidget);
+
+    await pumpLockState(
+      const VoltageLockSettingsState(
+        sessionReady: true,
+        known: true,
+        active: false,
+        saved: true,
+      ),
+    );
+    expect(find.text('Not synchronized'), findsNothing);
+    expect(find.text('Firmware V7.2+ required'), findsNothing);
+    expect(find.text('Active · not saved'), findsNothing);
+    expect(find.text('5V limit · Adaptive OFF'), findsNothing);
+    expect(find.byType(Switch), findsOneWidget);
+
+    await pumpLockState(
+      const VoltageLockSettingsState(sessionReady: true, known: false),
+      language: AppLanguage.indonesia,
+    );
+    expect(find.text('Perlu Firmware V7.2+'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 
