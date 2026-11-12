@@ -286,13 +286,53 @@ void main() {
       });
       final rendered = UsageStatsAnalytics.decimatePoints(points);
       expect(rendered.length, lessThan(points.length));
+      expect(rendered.length, lessThanOrEqualTo(1600));
       expect(rendered, contains(points[711]));
       expect(rendered, contains(points[900]));
       expect(rendered, contains(points[1531]));
-      expect(rendered.any((point) => point.value == null), isTrue);
       expect(
         rendered.any((point) => point.value == 120 && point.breakBefore),
         isTrue,
+      );
+    });
+
+    test('gap-heavy decimation has a hard cap and never bridges discarded gaps', () {
+      const count = 24000;
+      final points = List<UsageChartPoint>.generate(count, (index) {
+        final double? value = index.isOdd ? null : (index % 83).toDouble();
+        return UsageChartPoint(
+          timestampMs: index,
+          value: value,
+          sessionId: index < count ~/ 2 ? 1 : 2,
+          breakBefore: index == count ~/ 2 || index % 211 == 0,
+        );
+      });
+      final gapPrefix = List<int>.filled(points.length + 1, 0);
+      for (var index = 0; index < points.length; index++) {
+        final point = points[index];
+        gapPrefix[index + 1] = gapPrefix[index] +
+            (point.value == null || point.breakBefore ? 1 : 0);
+      }
+
+      for (final budget in [1, 2, 3, 7, 8, 1599, 1600]) {
+        final rendered = UsageStatsAnalytics.decimatePoints(
+          points,
+          maxPoints: budget,
+        );
+        expect(rendered.length, lessThanOrEqualTo(budget));
+        for (var index = 1; index < rendered.length; index++) {
+          final previous = rendered[index - 1].timestampMs;
+          final current = rendered[index].timestampMs;
+          final crossedGap =
+              gapPrefix[current + 1] - gapPrefix[previous + 1] > 0;
+          if (crossedGap && rendered[index].value != null) {
+            expect(rendered[index].breakBefore, isTrue);
+          }
+        }
+      }
+      expect(
+        UsageStatsAnalytics.decimatePoints(points, maxPoints: 0),
+        isEmpty,
       );
     });
 
@@ -442,6 +482,12 @@ void main() {
       ),
     );
     expect(usage, contains('recordTemperatureSample('));
+    expect(usage, contains('reservedControlOperations = 8'));
+    expect(usage, contains('maxTotalPendingOperations'));
+    expect(usage, contains('rejectedWriteCount'));
+    expect(usage, contains('final p1ReceiptGap ='));
+    expect(usage, contains('final sampleGap ='));
+    expect(usage, contains("allowReservedCapacity: metric != 'fan_speed'"));
     expect(usage, contains('final eventsBySession ='));
     expect(usage, contains('var isChronological = true;'));
     expect(usage, contains('if (!isChronological)'));
@@ -456,27 +502,56 @@ void main() {
     expect(usage, isNot(contains('Duration(milliseconds: 16)')));
   });
 
-  test('usage history write queue applies backpressure without dropping accepted work', () async {
-    final queue = UsageStatsWriteQueue(maxPendingOperations: 4);
+  test('usage history queue bounds fire-and-forget producers and reserves control capacity', () async {
+    final queue = UsageStatsWriteQueue(
+      maxPendingOperations: 4,
+      reservedControlOperations: 2,
+    );
     final releaseFirst = Completer<void>();
     final completed = <int>[];
-    final futures = <Future<void>>[];
+    final errors = <Object>[];
 
-    for (var index = 0; index < 12; index++) {
+    for (var index = 0; index < 4; index++) {
       final operationIndex = index;
-      futures.add(queue.enqueue(() async {
+      unawaited(queue.enqueue(() async {
         if (operationIndex == 0) await releaseFirst.future;
         completed.add(operationIndex);
-      }, onError: (_) {}));
+      }, onError: errors.add));
+    }
+    for (var index = 4; index < 12; index++) {
+      unawaited(queue.enqueue(
+        () async => completed.add(index),
+        onError: errors.add,
+      ));
     }
 
-    await Future<void>.delayed(Duration.zero);
-    expect(queue.pendingOperations, lessThanOrEqualTo(4));
-    expect(completed, isEmpty);
-    releaseFirst.complete();
-    await Future.wait(futures);
+    unawaited(queue.enqueue(
+      () async => completed.add(20),
+      onError: errors.add,
+      allowReservedCapacity: true,
+    ));
+    final lastControl = queue.enqueue(
+      () async => completed.add(21),
+      onError: errors.add,
+      allowReservedCapacity: true,
+    );
+    unawaited(queue.enqueue(
+      () async => completed.add(22),
+      onError: errors.add,
+      allowReservedCapacity: true,
+    ));
 
-    expect(completed, List<int>.generate(12, (index) => index));
+    await Future<void>.delayed(Duration.zero);
+    expect(queue.pendingOperations, 6);
+    expect(queue.maxTotalPendingOperations, 6);
+    expect(queue.rejectedOperations, 9);
+    expect(errors, hasLength(9));
+    expect(completed, isEmpty);
+
+    releaseFirst.complete();
+    await lastControl;
+
+    expect(completed, [0, 1, 2, 3, 20, 21]);
     expect(queue.pendingOperations, 0);
   });
 
