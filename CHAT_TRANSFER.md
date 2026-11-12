@@ -5,8 +5,8 @@
 ### Live branch and package boundary
 
 - **Repository:** `TenzoNkz/JEXFYZ-App`, branch `main`.
-- **Latest source/test code checkpoint:** `cc6ce0263d7086296013d518895073c3dce58aff`.
-- **Code blobs:** `lib/usage_statistics.dart` = `4759ace8a9e7fdf5cbdfe5aea4ff6f284571299a`; `test/usage_statistics_test.dart` = `8bcc06fc714a071138fc20fb6f54179debc7f04c`. Documentation commits follow this code checkpoint.
+- **Latest source/test code checkpoint:** `632cdc1f55e9080d6b1559f103f33e3eed698006`.
+- **Code blobs:** `lib/usage_statistics.dart` = `2ab91603e28be53ca1138d279ee33fb0b0e0375e`; `test/usage_statistics_test.dart` = `46fb3765e47dbecf24da18ec3df20df8c2f25bb2`. Documentation commits follow this code checkpoint.
 - **Current repository tree:** 132 entries, recursive listing not truncated.
 - **Latest published package remains Build #153:** source SHA `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e`, Actions run `43145542329`, Release ID `403010611`, tag `jexfyz-latest`. Current changes are NOT in that APK/source ZIP.
 
@@ -15,7 +15,7 @@
 - `UsageStatsWriteQueue` accepts FIFO work up to 64 normal pending operations plus 8 reserved control operations (72 total). Temperature and Fan-Speed producers never wait for capacity. Session start/end/clear and Voltage/Adaptive/Peltier state events can use reserved slots; Fan Speed remains under the normal ceiling.
 - An operation beyond its applicable capacity is rejected immediately, increments `rejectedWriteCount`, and records a persistent `lastWriteError` that is surfaced as a bilingual Statistics warning. Accepted operations are never evicted. This explicitly trades lossless indefinite buffering for bounded memory and non-blocking BLE producers when the local store is overloaded; the incoming rejected record is not accepted.
 - Clear History uses `failOnReject` so a queue-full request reaches the existing UI error handler instead of appearing successful.
-- HOT freshness follows actual Firmware HOT receipt time, not SQLite write progress. A slow/rejected write cannot falsely mark a still-live P1 session stale. Explicit null sample gaps are written when recording resumes or when a session closes; the HOT-stale close path also writes a Battery gap before ending the session.
+- HOT freshness follows actual Firmware HOT receipt time, not SQLite write progress. A slow/rejected write cannot falsely mark a continuously receiving P1 session stale. A late HOT packet after the 2.5-second stale threshold does not refresh or enter the old session; it leaves the previous receipt timestamp for the watchdog to close through reserved capacity. Explicit null sample gaps are written when recording resumes or when a session closes; the HOT-stale close path also writes a Battery gap before ending the session.
 - SQLite schema v2, raw 1-Hz capture policy, 30-day retention, transaction semantics and HOT-only P1 freshness authority remain unchanged.
 
 ### Usage Statistics — gap-safe chart budget implemented
@@ -25,7 +25,7 @@
 
 ### Regression inventory and evidence boundary
 
-- Current test inventory: **186 declarations** (173 unit/source-contract + 13 widget). New source tests cover fire-and-forget producers against a held writer, 64 normal + reserved capacity, immediate rejection, accepted FIFO order, error propagation for Clear, a 24,000-point alternating-null/gap-heavy chart across budgets 1/2/3/7/8/1599/1600, boundary propagation and the localized overload warning.
+- Current test inventory: **187 declarations** (174 unit/source-contract + 13 widget). New source tests cover fire-and-forget producers against a held writer, 64 normal + reserved capacity, immediate rejection, accepted FIFO order, error propagation for Clear, a 24,000-point alternating-null/gap-heavy chart across budgets 1/2/3/7/8/1599/1600, boundary propagation, late-HOT/P1-watchdog ordering and the localized overload warning.
 - GitHub read-back, custom delimiter balance scan and structural source checks passed. A separate algorithm simulation of the 24,000-point alternating-gap fixture returned no output above its budget and no missing gap breaks. These are **static/source checks and simulation only**, not Dart compilation or Flutter test results.
 - Flutter/Dart/Gradle/ADB are unavailable in this runtime. `dart format`, focused/full `flutter test`, `flutter analyze` and Android Gradle remain **BLOCKED / NOT RUN**. The guarded App workflow contains no Dart formatter step; this task did not change or trigger the workflow.
 - Remaining performance evidence: one selected-session analytics summary/decimation pass still occurs per one-second live batch. 1-hour/8-hour storage pressure, backlog drain rate/rejection frequency, CPU/memory, animation lifecycle/60–120-Hz frame behavior and OEM screenshots/device validation remain unmeasured. Visual status is **VISUAL NOT VERIFIED**.
