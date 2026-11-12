@@ -1138,11 +1138,14 @@ class UsageStatsWriteQueue {
   UsageStatsWriteQueue({
     this.maxPendingOperations = 64,
     this.reservedControlOperations = 8,
+    this.criticalControlOperations = 1,
   })  : assert(maxPendingOperations > 0),
-        assert(reservedControlOperations >= 0);
+        assert(reservedControlOperations >= 0),
+        assert(criticalControlOperations >= 0);
 
   final int maxPendingOperations;
   final int reservedControlOperations;
+  final int criticalControlOperations;
   int _pendingOperations = 0;
   int _rejectedOperations = 0;
   Future<void> _tail = Future<void>.value();
@@ -1150,18 +1153,24 @@ class UsageStatsWriteQueue {
   int get pendingOperations => _pendingOperations;
   int get rejectedOperations => _rejectedOperations;
   int get maxTotalPendingOperations =>
-      maxPendingOperations + reservedControlOperations;
-  bool get hasReservedCapacity =>
+      maxPendingOperations +
+      reservedControlOperations +
+      criticalControlOperations;
+  bool get hasCriticalCapacity =>
       _pendingOperations < maxTotalPendingOperations;
 
   Future<void> enqueue(
     Future<void> Function() operation, {
     required void Function(Object error) onError,
     bool allowReservedCapacity = false,
+    bool allowCriticalCapacity = false,
     bool failOnReject = false,
   }) {
     final capacity = maxPendingOperations +
-        (allowReservedCapacity ? reservedControlOperations : 0);
+        (allowReservedCapacity || allowCriticalCapacity
+            ? reservedControlOperations
+            : 0) +
+        (allowCriticalCapacity ? criticalControlOperations : 0);
     if (_pendingOperations >= capacity) {
       _rejectedOperations++;
       final error = StateError(
@@ -1224,11 +1233,13 @@ class UsageStatisticsRecorder {
   Future<void> _enqueue(
     Future<void> Function() operation, {
     bool allowReservedCapacity = false,
+    bool allowCriticalCapacity = false,
     bool failOnReject = false,
   }) {
     return _writeQueue.enqueue(
       operation,
       allowReservedCapacity: allowReservedCapacity,
+      allowCriticalCapacity: allowCriticalCapacity,
       failOnReject: failOnReject,
       onError: (error) {
         lastWriteError = error.toString();
@@ -1291,7 +1302,7 @@ class UsageStatisticsRecorder {
         final now = DateTime.now().millisecondsSinceEpoch;
         if (now - lastReceipt >
                 const Duration(milliseconds: 2500).inMilliseconds &&
-            _writeQueue.hasReservedCapacity) {
+            _writeQueue.hasCriticalCapacity) {
           // Keep retrying while control slots are full; otherwise this watchdog
           // would enqueue duplicate close requests every 500 ms.
           _p1FreshnessTimer?.cancel();
@@ -1569,7 +1580,7 @@ class UsageStatisticsRecorder {
       _sessionStartedAtMs = null;
       _sessionEndedAtMs = null;
       _notifyChanged();
-    }, allowReservedCapacity: true);
+    }, allowReservedCapacity: true, allowCriticalCapacity: true);
   }
 
   Future<void> clearHistory(String coolerId) {
