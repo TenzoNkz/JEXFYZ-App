@@ -132,7 +132,7 @@
 - **Status:** PRE-TRIGGER. Await the official workflow's analyzer/test/Android/signing/Release/download verification; do not declare the new source released until every required gate passes.
 
 ---
-## Current App release — Build #143 completed and verified (2026-11-10)
+## HISTORICAL App release — Build #143 completed and verified (superseded by Build #153)
 
 - **Latest verified package:** Build #143 / Actions run 42783474515, job 129718855331, final conclusion success; all 21 required gates and cleanup passed.
 - **Exact package source/tag:** 121ef9e0f5ed6a0003837d32e4c8b1701f38631a. The jexfyz-latest tag and Release ID 403010611 target this exact commit. Later main updates are documentation-only; do not misidentify them as the APK source.
@@ -144,7 +144,7 @@
 - **Field evidence UNVERIFIED:** installation identity, OEM screenshots/layout at 350-dp/420-dp, physical BLE lifecycle, Usage Statistics real sensor/soak/storage behavior, cooling thermal/electrical performance, Firmware V7.1 source-to-BIN identity, physical OTA/reboot and recovery. No Firmware/device operation was performed.
 
 ---
-## Current App Statistics implementation — one-second diagram refresh; pre-build QC incomplete (2026-11-11)
+## HISTORICAL App Statistics implementation — later included in Build #153
 
 - **Owner direction:** professional Usage Statistics diagrams for Battery, Hotside, Voltage, Adaptive Mode, Peltier and Fan Speed, with smooth transitions and one synchronized elapsed-time cursor.
 - **Latest source/test checkpoint:** source commit `33fe9a545d7a8594e6e3a5119d3b1f564a93d868`; `lib/usage_statistics.dart` blob `0be670370685725283d51c84f1d33df83dd7e6e8`; `lib/main.dart` blob `56e71dcaa482cabddd141cd3ae5c6cf28437ada7`; `test/usage_statistics_test.dart` blob `af23d8b6b2e08d11ef28dc58496b574d1fa17e3b`.
@@ -156,7 +156,7 @@
 - **Release distinction:** Build #143 / run 42783474515 / source `121ef9e0f5ed6a0003837d32e4c8b1701f38631a` remains the latest verified APK and does not contain the current Statistics source. Current `jexfyz-latest` tag/Release ID 403010611 still targets that older SHA.
 - **Build decision:** NOT YET RECOMMENDED to trigger release Build App until remaining source/performance and regression work is completed, then hosted QC passes. No Build/Release has been triggered for current Statistics source.
 
-## Current App UI correction — compact modal overlays implemented, validation pending
+## HISTORICAL App UI correction — compact modal baseline later superseded by Build #153
 
 - **Release/source distinction:** Build #143 remains the latest verified package. The modal sizing correction below is committed to `main` but is NOT in Build #143 and has not been packaged.
 - **Peltier safety dialog:** title 20 dp, body 15 dp, actions 14 dp; reduced insets and internal padding; Cancel 72×48 dp and Fan 128×48 dp minimums. FAN-before-PELTIER safety flow and ACK semantics remain unchanged.
@@ -211,7 +211,7 @@
 
 ---
 
-## Current App release and validation — Build #138 — 2026-11-10
+## HISTORICAL App release and validation — Build #138 (superseded by Build #153)
 
 - **Latest verified published package:** Build #138 / [Actions run 42749408202](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42749408202), job `129609197264`, terminal `success`, immutable tested source `b553f22092d9b33b2c81753254d2e3f03928fa18`.
 - **CI:** all 21 main workflow steps succeeded. Dart analyzer exited successfully with 25 info-level diagnostics and no analyzer warnings/errors. Full Flutter suite: **157/157 passed**, including the responsive Usage Statistics reset and localization trailing-comma contract repairs.
@@ -225,7 +225,7 @@
 
 ---
 
-## App — Usage Statistics implementation state (2026-11-09)
+## HISTORICAL App — Usage Statistics implementation state (later refined and included in Build #153)
 
 - **Owner direction:** no standalone Firmware timer for now. Build an App Usage Statistics / Statistik Penggunaan page inside Settings from locally recorded telemetry.
 - **Build #138 layout baseline (superseded by owner revision below):** Phone Battery Temperature trend first; Hotside Temperature trend second; Operating Profile timeline third with Voltage (5V/9V/12V), Adaptive ON/OFF and Fan Speed (%) lanes. Released periods were 1h / 24h / 7d / 30d, default 24h; the owner now requests per-second active-session elapsed time instead.
@@ -239,7 +239,7 @@
 - **Implementation source:** lib/main.dart gates start/end from synchronized output telemetry; lib/usage_statistics.dart uses SQLite schema v2 (usage_samples plus usage_events), serializes recorder writes, stores 1Hz readings, and ends sessions on P1 staleness. Core commits: 8c1d57b593e7f471a0d5715929575f416e396a2b, 58fdac9fab2ce15b9154907d369096a49fb6b308, and coverage commit 0413b536fcb5771652ad6312cc40b5bcb748639e.
 - **Status:** APP SOURCE/TEST IMPLEMENTED ON MAIN; AWAITING VERIFIED CI in Build #139. Build #138 is a prior package containing the earlier wall-clock-period design and does not include this new model. Per-second database growth/queue backpressure, physical BLE sampling and owner/OEM visual acceptance remain UNVERIFIED.
 
-## Firmware — V7.2 planned scope: Touch cycle + persistent Lock Voltage (2026-11-11)
+## HISTORICAL Firmware — V7.2 planned scope (implemented in current source; validation pending)
 
 - **Current active Firmware remains V7.1:** firmware/JEXFYZ-V7.1.ino, FW_VERSION="V7.1", source blob c44e076b2c1ee2d0b66b4fcd308d0febc69976e9. Exactly one active .ino is present. No V7.2 source change, Arduino compile, BIN, Firebase, OTA or flash has occurred.
 - **Touch one-way cycle request:** hardware TTP223 single tap should step from actual current rail: 5V→9V→12V→5V, repeating; current V7.1 executeTouchSingle() still uses touchVoltageAscending and ping-pongs.
@@ -276,85 +276,34 @@
 - Current container checked 2026-11-07: Python 3 and Git are available; Flutter, Dart, Gradle, ADB, Arduino CLI and ESP-IDF are absent. Re-check tool availability per task. This environment cannot claim local Flutter/Android/Firmware builds or physical-device validation.
 ## Production and release baseline
 
-- **Protected known production reference:** App Build #124 + Firmware V7.1. Keep separate from the newest published App package and from the exact package actually installed on the field phone.
-- **Latest independently verified published App package:** Build #138 / run `42749408202`, exact tested source `b553f22092d9b33b2c81753254d2e3f03928fa18`. Release `jexfyz-latest` (ID `403010611`) and lightweight tag target this same SHA.
-- APK asset `729969125`: 55,455,835 bytes, SHA-256 `2ed225d992288cccc02313d206675a7313c73a4cad061de70cddf7209d39b9f8`.
-- Corresponding source ZIP asset `729969127`: 2,908,354 bytes, SHA-256 `47161a972131c95a74e8f5a191754504b76e2c31edd95fd19b1b4c75717ab906`.
-- Build #138 passed all 21 workflow main steps, analyzer (25 info-only diagnostics), all 157 Flutter tests, configured Android Gradle gate, obfuscated APK build, V1/V2/V3 and expected production-certificate checks, corresponding source archive integrity/source marker, exact Release/tag parity and downloaded asset checksums/signatures.
-- Android `:app:testDebugUnitTest` succeeded, but app JUnit compile/test tasks were `NO-SOURCE`; no native app JUnit case ran.
-- Current `main` is two documentation-only commits beyond Build #138 source; it does not change the executable package source. Latest release provenance remains pinned to the exact Build #138 SHA.
-- **Field evidence UNVERIFIED:** Build #138 installation, screenshot/OEM QA, physical BLE lifecycle, Firmware V7.1 source-to-BIN identity, physical OTA/reboot and cooler thermal/electrical behavior remain unverified. Do not infer them from hosted CI.
+- **Protected known production reference:** App Build #124 + Firmware V7.1. Keep this separate from the latest published App package and the exact APK installed on the field phone.
+- **Latest verified published App package:** Build #153 / Actions run `43145542329`, immutable tested source `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e`; Release ID `403010611` and tag `jexfyz-latest` point to this exact source.
+- **APK:** 55,996,507 bytes, SHA-256 `d956959414eb085e1779c30bf035a0bbc64d18330e19b85251cc0ead90f5661c`.
+- **Source ZIP:** 2,929,311 bytes, SHA-256 `87808fe37f31e7fec589477a3c658a2f10fa06362bd72b173eeada95d3b03604`.
+- All 21 required workflow steps and cleanup 39–43 passed; analyzer 23 info-level findings / 0 warnings / 0 errors; Flutter 176/176; Android Gradle gate succeeded with native JUnit compile/process/test tasks `NO-SOURCE`.
+- Current main is 32 documentation-only commits ahead of the immutable Build #153 source and 0 commits behind; the comparison lists only six Markdown files. No source/tests/config/workflow/Firmware change exists after the tested source.
+- Android `versionName "Telegram @horizontalzzz"` remains exact. Keep the self-signed PKIX trust-chain/no-timestamp jarsigner caveat explicit despite V1/V2/V3 and pinned-certificate verification.
 
-## Current App source and validation
+## Current App source and acceptance state
 
-- Build #138 packages the current App source at `b553f22092d9b33b2c81753254d2e3f03928fa18`, including Usage Statistics, SQLite telemetry and its responsive/layout/localization regression fixes.
-- Build #138 analyzer passed with 25 info-level diagnostics and no warnings/errors; Flutter suite passed 157/157. Android Gradle gate succeeded, with app JUnit tasks `NO-SOURCE`.
-- The release remains obfuscated and production-signed; V1/V2/V3 checks, expected certificate identity, corresponding source ZIP and downloaded Release asset verification passed.
-- Android `versionName "Telegram @horizontalzzz"` is preserved.
-- Local formatter was not run in this session. Build #138's hosted workflow did not include a separate Dart formatter step.
-- No actual screenshot/OEM visual QA, installation identity, physical BLE lifecycle test, usage-history soak/storage stress test or thermal/electrical validation has been performed. Hosted CI is not physical acceptance.
+- **Build #153 includes:** Lock Voltage's centered lock overlay on Voltage/Adaptive and top-of-Settings Firmware-owned card; custom amber Peltier prerequisite card with paired Fan + Peltier CTA and Fan-ACK gate; About/Tentang credits; source-backed Device Diagnostics snapshot and manual redacted copy; graph-first Usage Statistics with six metrics/shared cursor/collapsed details; Phosphor icon consistency and Home NOTIFY readability.
+- **Hosted validation:** these App source and regression changes were included in exact Build #153 source SHA above. Analyzer passed with 23 info-only findings; Flutter suite passed 176/176. This does not establish Android/OEM screenshot quality or physical device behavior.
+- **Visual acceptance:** **VISUAL NOT VERIFIED**. Owner-side install identity and actual screenshots are still needed at 350-dp/420-dp, Light/Dark, English/Indonesian, normal portrait/constrained height, and relevant connected/disconnected/unknown/safety states. Review Statistics short/long and one/multiple-session cases too.
+- **BLE runtime acceptance:** physical reconnect, passive rediscovery, selected-device handoff, adapter-loss and synchronized Lock Voltage behavior remain UNVERIFIED. ACK and UI tests do not prove a physical radio session.
+- **Statistics performance:** complete selected-session analytics summary is still recomputed on each live batch; serialized SQLite write queue is unbounded/unbatched. Long-session CPU/memory, queue pressure and animation lifecycle/60–120-Hz soak remain open; 176 widget tests do not close these risks.
+- **No new App Build is needed** unless App source changes. The immediate action is owner installation and visual/physical acceptance of Build #153, with observations recorded separately.
 
-## Default hybrid Home theme contrast — implemented; Build #143 CI passed; field QA pending (2026-11-10)
+## Current Firmware and security gaps
 
-- **Observed:** owner-provided Default screenshot showed the intended dark Home header and light lower Display Menu panel, but low-contrast metric labels/values, NOTIFY body and animated metric glyph treatment in the header.
-- **Root cause (STATIC SOURCE CHECK):** Default intentionally inherits Light Theme for the lower white panel and light dialogs, while the header is dark. The former inherited-brightness checks in _homeMetric() and _homeNotify() selected the wrong header foreground/painter palette.
-- **Implemented source:** lib/app_settings.dart defines a single preset-based jexHomeHeaderUsesDarkPalette resolver (Default/Dark = dark; Light = light), and a separate jexDashboardContentUsesDarkPalette resolver (only explicit Dark = dark). lib/main.dart uses the header resolver consistently in metrics/indicator painter and NOTIFY; the lower-panel resolver and Default white surface remain separate. Source commits: 8b9e04e06cc28aa88cdd38e70dae48aa7c2b5ba7 and follow-up test 8115f6702c9be1381c10d1ed610b4a6e720c6753.
-- **Regression contract:** test/widget_test.dart checks Default/Dark/Light palette mapping, NOTIFY resolver usage and metric resolver usage. This is committed source/test evidence only until hosted CI passes.
-- **Status:** IMPLEMENTED ON MAIN / BUILD #143 HOSTED CI VALIDATED / FIELD ACCEPTANCE PENDING. The owner screenshot's installed APK identity remains unknown. No physical screenshot/OEM acceptance is inferred from source or widget-test intent.
-
-## Open design and engineering gaps
-
-- **Physical App acceptance remains pending:** after the owner installs Build #143, inspect Home, Settings/Connection and Usage Statistics at 350-dp/420-dp, English/Indonesian, Light/Dark. For Home, verify Battery/Hotside/Voltage/Adaptive/Peltier/Fan/Fan Speed normal, warning and unknown states plus NOTIFY success/warning/error with one-/two-line copy. CI tests are not screenshot/OEM acceptance.
-- **App visual correction — modal overlays (2026-11-10):** Peltier dialog and LED Color Picker compact sizing are now SOURCE IMPLEMENTED with regression test source committed. Local formatter/tests/analyzer are BLOCKED / NOT RUN because Flutter/Dart are unavailable; actual screenshots remain VISUAL NOT VERIFIED. Build #143 is still the latest verified APK. A separate `Eksekusi Build App!` is required to run hosted QC and package the changes.
-- **BLE runtime acceptance remains pending:** verify passive rediscovery, prerequisite cancellation, manual-sheet pre-emption and neutral dismissal, selected-device handoff, fresh primary/fallback advertisement handling, adapter loss and reconnect on the actual phone/cooler. Flutter tests do not represent a physical radio session.
-- Exact Build #143 installed APK identity on the field unit, Firmware V7.1 source-to-BIN identity, physical OTA/reboot/BLE recovery and thermal/electrical behavior remain independently UNVERIFIED.
-- BLE App-only identity authorization remains BLOCKED / NOT IMPLEMENTED until trusted enrollment/signing backend and Firmware verification exist.
-- Rapid Hotside-rise/rate-of-rise shutdown plus manual re-arm remains NOT IMPLEMENTED in Firmware V7.1; do not conflate it with Adaptive Fan tiers or ordinary Hotside-limit protection.
+- Firmware V7.2 source is present as documented above, but Arduino-ESP32 Core 3.3.7 compilation, BIN provenance, NVS power-cycle, rail/selector/Touch/LED behavior, thermal/electrical cooling, OTA and flashing remain NOT RUN / UNVERIFIED.
+- BLE App-only identity authorization remains BLOCKED / NOT IMPLEMENTED: bonded Just Works plus `SYNC_READY` does not prove official App identity. Do not add authentication implementation until enrollment/backend scope and permissions are explicitly approved.
+- The sold unit is not assumed available for repair or routine testing. Physical work requires explicit owner permission.
 
 ## Protected contracts
 
 - Preserve Android Gradle versionName `Telegram @horizontalzzz`.
-- Preserve BLE P1, authoritative telemetry, session synchronization, radio ownership, Touch synchronization, unknown/disconnected value semantics and persisted schema compatibility.
-- Preserve safe outputs, calibrated one-sample-per-second NTC path, cooperative millis() timing, Peltier/selector/rail timing and OTA recovery.
-- Online OTA intentionally uses `cloudClient.setInsecure()`; HTTPS server certificate identity is not authenticated. Preserve the allowlist, redirect blocking, response/size/image validation and safe-output/recovery behavior.
+- Preserve BLE P1, authoritative telemetry, session synchronization, radio ownership, Touch synchronization, unknown/disconnected value semantics and persisted-data contracts.
+- Preserve safe outputs, NTC protection, Peltier/selector/rail timing, cooperative `millis()` scheduling and OTA recovery.
+- Online OTA's `cloudClient.setInsecure()` encrypts transport but does not authenticate server certificate identity. Preserve the allowlist, redirect blocking, response/size/image checks and safe-output/recovery behavior.
 - Do not add Firebase firmware hash/signature requirements or a standalone Battery Protection Guard UI without explicit owner approval.
-- The sold unit is not available for routine disassembly/repair; do not infer device-operation authorization.
-
-## Current Discussion — Lock Voltage UI presentation refinement (2026-11-12)
-
-- Owner requests the Lock Voltage UI to use the same centered lock icon + blurred submenu treatment already used for Bluetooth-disconnected and Adaptive-active states, and requests Kunci Tegangan be moved to the very top of Settings with a cleaner dedicated card.
-- Live source review: `displayMenuLockReason()` currently has only `none`, `bluetoothDisconnected`, and `adaptiveActive`; it prioritizes disconnected and maps Adaptive-active/transitioning to tabs 0/1/4. `_lockedDisplayMenu()` already provides blur, dimming, a centered lock panel, and pointer blocking. Lock Voltage is not currently part of this overlay decision; Voltage/Adaptive pages instead render local inline lock notices/disabled controls.
-- Design contract recorded in `APP_NOTES.md`: a synchronized Lock Voltage ON should invoke the overlay on Voltage (tab 0) and Adaptive (tab 2) only. Keep Control, LED, and Temperature available for Lock Voltage alone; existing Adaptive-active/transitioning and Bluetooth-disconnected gates retain their current scope/priority. Voltage copy must distinguish pending safe handoff from confirmed 5V using actual Firmware voltage telemetry.
-- Settings contract: show Kunci Tegangan as the first dedicated card directly below the Settings AppBar and before UMUM; retain the Firmware-owned notifier, unknown/disconnected state, busy state, persistence warning and retry.
-- This is a Discussion/design checkpoint only. No executable source/tests or app package changed; no formatter, tests, analyzer, build, release, Firmware compile, OTA or device operation was run. Next recommended mode: `Eksekusi Full!` for the App-only UI/test implementation. This is a recommendation, not authorization.
-
-
-## Current Discussion — Peltier safety popup visual redesign (2026-11-12)
-
-- Owner says the existing Peltier safety popup still feels rigid. Source review confirms that the 2026-11-11 compacting pass retained a stock `AlertDialog`; it changed sizing/typography rather than the visual composition.
-- Proposed App-only redesign is recorded in `DESIGN_NOTES.md` and `APP_NOTES.md`: custom JE X FYZ safety card inside the existing general-dialog/fixed-canvas route; restrained amber prerequisite icon; concise title/explanation; two-step Fan ON → Peltier ON visual; full-width paired-action button and quieter Cancel below; responsive 300–312-dp width, natural/scrollable height, theme-aware surface and subtle fade/scale transition.
-- Copy/action correction required: displayed CTA currently says only “Turn on Fan” / “Nyalakan Kipas”, but approval then sends FAN:ON, awaits ACK, and sends PELTIER:ON. Proposed CTA accurately names both outputs. Preserve Fan-first ACK order; if Fan is not confirmed, Peltier must not be commanded.
-- Keep this amber informational prerequisite distinct from red thermal/NTC fault states. Cancel remains command-free; no Firmware safety policy, BLE/P1, command semantics, Home geometry, fixed-canvas transform or physical output behavior changes are included.
-- Discussion-only checkpoint: no App source/tests changed or run, no build/release and no Firmware/device operation. Next recommended direction remains a scoped `Eksekusi Full!` for App UI + regression tests only; this is not authorization.
-
-
-## Current Discussion — About Settings page and contributor credits (2026-11-12)
-
-- Owner explicitly requests an About entry below Firmware in Settings and supplies three contributor credits. This supersedes the earlier historical removal of About from Settings.
-- Recommended English copy: **JE Cooler** / **Special Thanks** / **App Development & Build — Horizon (@Horizontalzzz)** / **Design Inspiration — FYZ (@FYZ737)** / **3D Design & Printing — Logos (@Logos3dMichael)**.
-- Recommended Indonesian copy: **JE Cooler** / **Ucapan Terima Kasih** / **Pengembangan Aplikasi & Build — Horizon (@Horizontalzzz)** / **Inspirasi Desain — FYZ (@FYZ737)** / **Desain & Pencetakan 3D — Logos (@Logos3dMichael)**.
-- “Special Thanks” is the natural standalone heading; “Design Inspiration” corrects the initial phrase. “3D Design & Printing” assumes Logos contributed both design and printing; narrow it to printing-only wording if that assumption is incorrect.
-- Add About / Tentang immediately after Firmware in Settings; open a compact fixed-scale About page with a clear role/name/handle hierarchy. Preserve handles; do not invent profile URLs.
-- This is Discussion/design only. The existing test currently explicitly rejects About and must be revised during implementation. No executable source/tests, build, release, Firmware or device behavior changed or ran.
-- Next recommended mode: scoped `Eksekusi Full!` for the accumulated App UI tasks (Lock Voltage overlay/Settings placement, Peltier popup redesign, and About page) with focused regression tests. This is a recommendation, not authorization.
-
-
-## Current Discussion — Whole-App visual refinement and Usage Statistics redesign (2026-11-12)
-
-- Owner explicitly approves adopting the complete premium/professional refinement direction and requests a cleaner Usage Statistics diagram with substantially less always-visible prose. The project already has `PRODUCT_DESIGN_CONSTITUTION.md` and `VISUAL_QUALITY_GATE.md`; these are the governing design/acceptance contracts, not a request to invent a new brand.
-- Global scope: unify semantic typography, spacing/radius/surface hierarchy, icon family/weights and interaction/motion; review Home NOTIFY readability; reduce redundant cards, labels and effects; maintain existing Home composition/360-dp scale, theme, EN/ID, telemetry truth, safety, BLE/P1 and Firmware behavior.
-- Statistics source review: `UsageStatisticsPage` displays two temperature charts, four operating timeline lanes, a shared cursor with six metric values, session selector/header, axis text, Min/Avg/Max and observed labels, a long always-visible sampling/storage explanation, an always-visible last-sample sentence, an initial cursor instruction, and a trailing Wrap of seven operational summary texts. The current widget test exercises the sample page at 350-dp Light and 420-dp Dark (Indonesian) but does not establish the full cross-product visual matrix.
-- Statistics design direction: preserve all six metrics, their chart types, common cursor, useful aggregates, session history and truthful gap handling. Consolidate session metadata; shorten visible prose; move explanatory provenance behind an info affordance; keep a compact Min/Avg/Max row and Hotside limit; retain all secondary durations/fan aggregates behind collapsed details; simplify cursor hint/readout; do not add chart cards or decorative effects. No data model, cadence, persistence, SQL or analytics changes under this visual scope.
-- Device Diagnostics is accepted as a future feature direction, conditional on auditing which values are actually exposed. Show only confirmed App/Firmware/session/sync/sample/output/safety facts. Unknown remains unknown; no raw tokens, credentials, secrets, fabricated signal/health metrics or automatic uploads.
-- Execution order: current approved Lock Voltage/Peltier/About UI scope; Statistics visual simplification; cross-screen design-system/NOTIFY/motion polish; Device Diagnostics field audit + implementation; full visual QC with actual screenshot evidence at 350/420 dp, EN/ID, Light/Dark and edge states.
-- Current mode remains `Diskusi!`: no executable source or tests changed/run; no App Build, Release, Firmware compile/BIN, Firebase, OTA, flash or device operation. Recommended next mode: `Eksekusi Full!` beginning with the staged App UI/design work; this is recommendation only.
+- Do not perform physical device operations without explicit authorization.
