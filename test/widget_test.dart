@@ -68,7 +68,7 @@ void main() {
   test('Home NOTIFY preserves readable text inside its fixed 44dp geometry', () {
     final source = File('lib/main.dart').readAsStringSync();
     final start = source.indexOf('Widget _homeNotify()');
-    final end = source.indexOf('Widget _homeMetric(', start);
+    final end = source.indexOf('Widget _card(', start);
     expect(start, isNonNegative);
     expect(end, greaterThan(start));
     final notify = source.substring(start, end);
@@ -1326,7 +1326,7 @@ void main() {
     expect(card, contains('color.withValues(alpha: hasError ? .11 : .08)'));
     expect(card, isNot(contains('BoxConstraints(minHeight: 44)')));
     expect(card, contains('TextPainter measure(double fontSize)'));
-    expect(card, contains('fontSize = 9.5;'));
+    expect(card, contains('final fontSize = wraps ? 9.5 : 10.5;'));
     expect(card, contains('maxLines: 2'));
     expect(card, contains('maxLines: 2'));
     expect(card, contains('softWrap: true'));
