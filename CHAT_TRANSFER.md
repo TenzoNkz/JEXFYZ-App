@@ -1,26 +1,24 @@
-## CURRENT CHECKPOINT — BUILD #156 FAILED / FINAL TEST ASSERTION REPAIRED / RETRY PREFLIGHT — 2026-11-12
+## CURRENT CHECKPOINT — BUILD #157 ACTIVE / FLUTTER SETUP — 2026-11-12
 
 **Mode:** `@Thinking Eksekusi Build App!` — guarded App Build/QC/release only.
 
-### Build #156 terminal result
+### Previous attempt outcomes
 
-- Run [43246666829](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/43246666829), workflow 374946166, issue event, attempt 1, job 131281061201; immutable checkout SHA `c180f2bb18b3361ecd02fff2503b06043f0d22e0`.
-- **FAILED at gate 13 Flutter tests:** steps 1–12 SUCCESS; analyzer 23 infos / 0 warnings/errors; test suite **186 passed / 1 failed**. The only failed test was a stale assertion still expecting a 3-dp spacer before Home NOTIFY; current Home layout intentionally uses two 2-dp spacers after the proven 2-dp overflow repair. Gates 14–21 skipped; cleanup 39–43 SUCCESS. No APK/ZIP/Release mutation.
-- Build #154 remains FAILED at analyzer (six errors). Build #155 remains FAILED at tests (183 passed / 4 failed). Build #156 remains a separately preserved FAILED attempt (186 passed / 1 failed). Build #153 remains the latest published Release/tag at source `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e`.
+- Build #154 / run `43243342029`: FAILED at analyzer, six errors. The missing Flutter services import and invalid Tamper theme copyWith font argument were repaired.
+- Build #155 / run `43244335274`: FAILED at tests, 183 passed / 4 failed. Analyzer passed; App source/test fixes included two Home gaps 3→2 dp, Tamper/Home contract ownership, DPR3 dashboard fixture and bilingual Firmware V7.2+ text.
+- Build #156 / run `43246666829`: FAILED at tests, 186 passed / 1 failed. Analyzer passed with 23 info findings, zero warnings/errors. The only remaining error was a stale Home Notify test assertion expecting the pre-fix 3-dp spacer. Final test correction now counts two literal 2-dp spacers and rejects any remaining 3-dp spacer; commits `b007b56ab5ddf91546f86937be202978dc7fee3b` then `38212c3620aba6eb9fa5f6db41b43fdb777a9ddf`. All three failed attempts are retained in the report.
 
-### Final source-contract repair
+### Current guarded retry — Build #157
 
-- Final test repair is in `test/widget_test.dart`: assert exactly two literal 2-dp Home spacers before `_homeNotify()`, and assert there is no 3-dp spacer in that Home block. Intermediate regex commit `b007b56ab5ddf91546f86937be202978dc7fee3b` was corrected by `38212c3620aba6eb9fa5f6db41b43fdb777a9ddf` to a direct literal split/count assertion; final read-back confirms the exact text.
-- Earlier Home fix remains: `9f1130642666801799cd7547dc907ec50cc55bf5` changes only two Home gaps 3→2 dp, preserving 420-dp canvas, seven 45-dp rows and 44-dp NOTIFY. Tamper/Home test owner and DPR3 correction: `53ebaecb6722e4335e6c20ead419fea96ee1b0e9`. Current bilingual V7.2+ copy assertion: `d00cef194cc27e65085234955b2eda60faa3aba8`.
-- Four #155 failures now pass in #156; only this stale 3-dp assertion remained. No production source change was needed for this final failure.
+- Run `43247876115`, workflow 374946166, issue event, attempt 1, job `131285336987`; immutable checkout SHA `10d106537e92060e0aac3fc17fd37f56e746bcd5`. [Actions run](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/43247876115).
+- Initial state: IN_PROGRESS. Steps 1–3 SUCCESS; step 4 Set up Flutter IN_PROGRESS; steps 5–21 pending. Continue this run only.
+- Fresh preflight: #156 terminal; zero queued/in-progress runs; no open PR; exact issue #33 owner/title/body token; unchanged workflow blob `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12`; Release #153 tag/assets intact; versionName exact. Issue #33 was closed/reopened once and only one #157 run appeared.
+- Build #153 remains current published Release until #157 passes.
+- **Formatter:** workflow has no Dart format step; `dart format` remains NOT RUN / UNVERIFIED.
 
 ### Next
 
-Fresh preflight for one guarded retry: #156 terminal, zero queued/in-progress Actions runs, no open PR, issue #33 exact owner/title/body token, unchanged workflow blob, Release #153/tag/assets intact, Android versionName exact. Then close/reopen issue #33 once and inspect only the new run. No retry before the preflight.
-
-### Validation limits
-
-No local Flutter/Dart/formatter/test after the final assertion repair. Workflow has no Dart formatter step; `dart format` remains NOT RUN / UNVERIFIED. No Firmware compile/BIN/Firebase/OTA/flash/device/physical BLE/thermal/electrical/OEM visual operation.
+Inspect only run `43247876115` / job `131285336987`; preserve all previous failures and never duplicate. Record analyzer/test/Gradle/APK signing/source ZIP/Release/tag/downloaded-asset gates only when actually observed. Firmware/BIN/Firebase/OTA/flash/device/BLE/thermal/electrical/OEM visual tests remain outside scope.
 
 ---
 
