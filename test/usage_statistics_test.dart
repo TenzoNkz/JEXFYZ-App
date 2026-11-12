@@ -483,7 +483,10 @@ void main() {
     );
     expect(usage, contains('recordTemperatureSample('));
     expect(usage, contains('reservedControlOperations = 8'));
+    expect(usage, contains('criticalControlOperations = 1'));
     expect(usage, contains('maxTotalPendingOperations'));
+    expect(usage, contains('hasCriticalCapacity'));
+    expect(usage, contains('allowCriticalCapacity: true'));
     expect(usage, contains('rejectedWriteCount'));
     expect(usage, contains('bool failOnReject = false'));
     expect(
@@ -533,13 +536,14 @@ void main() {
     expect(guardReturn, greaterThan(staleReceiptGuard));
     expect(receiptUpdate, greaterThan(guardReturn));
     expect(enqueue, greaterThan(receiptUpdate));
-    expect(usage, contains('_writeQueue.hasReservedCapacity'));
+    expect(usage, contains('_writeQueue.hasCriticalCapacity'));
   });
 
   test('usage history queue bounds fire-and-forget producers and reserves control capacity', () async {
     final queue = UsageStatsWriteQueue(
       maxPendingOperations: 4,
       reservedControlOperations: 2,
+      criticalControlOperations: 1,
     );
     final releaseFirst = Completer<void>();
     final completed = <int>[];
@@ -577,17 +581,30 @@ void main() {
     );
     await expectLater(rejectedControl, throwsA(isA<StateError>()));
 
+    final criticalClose = queue.enqueue(
+      () async => completed.add(23),
+      onError: errors.add,
+      allowCriticalCapacity: true,
+    );
+    final rejectedCriticalClose = queue.enqueue(
+      () async => completed.add(24),
+      onError: errors.add,
+      allowCriticalCapacity: true,
+      failOnReject: true,
+    );
+    await expectLater(rejectedCriticalClose, throwsA(isA<StateError>()));
+
     await Future<void>.delayed(Duration.zero);
-    expect(queue.pendingOperations, 6);
-    expect(queue.maxTotalPendingOperations, 6);
-    expect(queue.rejectedOperations, 9);
-    expect(errors, hasLength(9));
+    expect(queue.pendingOperations, 7);
+    expect(queue.maxTotalPendingOperations, 7);
+    expect(queue.rejectedOperations, 10);
+    expect(errors, hasLength(10));
     expect(completed, isEmpty);
 
     releaseFirst.complete();
-    await lastControl;
+    await Future.wait([lastControl, criticalClose]);
 
-    expect(completed, [0, 1, 2, 3, 20, 21]);
+    expect(completed, [0, 1, 2, 3, 20, 21, 23]);
     expect(queue.pendingOperations, 0);
   });
 
