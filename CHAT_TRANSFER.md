@@ -9,7 +9,7 @@
 - **Previous App UI fix:** `5296ba50f7fe0ba2c0ecff4e6112bed6e40dab2a` — fixed compact Peltier popup and removed Temperature global reset action.
 - **Recursive tree:** 131 entries, `truncated=false`. Source tree was created on the verified full tree; no file paths were added or deleted.
 - **Build #153 remains the latest verified APK/Release:** source SHA `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e`, Actions run `43145542329`, job `130942369953`, Release ID `403010611`, tag `jexfyz-latest`. Current Settings/Peltier/Temperature source changes are NOT in that APK.
-- Comparison to Build #153: current main is 40 commits ahead / 0 behind; 13 changed paths (8 Markdown docs plus 5 App/test files). The extra commit after the source patch is documentation-only. No Firmware, Gradle/configuration, workflow or Release asset path changed.
+- Comparison to Build #153: main is ahead / 0 behind; the comparison lists 13 changed paths (8 Markdown docs plus 5 App/test files). The current App fixes are limited to those three source files and two test files; the later commits are documentation-only. No Firmware, Gradle/configuration, workflow or Release asset path changed.
 
 ### Owner-requested Settings refinement
 
