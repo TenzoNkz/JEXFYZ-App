@@ -31,13 +31,24 @@ void main() {
     expect(dialog, contains('obscureText: !passwordVisible'));
     expect(dialog, contains("passwordVisible ? 'hidePassword' : 'showPassword'"));
     expect(dialog, contains('passwordVisible = !passwordVisible;'));
-    expect(dialog, contains('passwordVisible ? Icons.visibility_off : Icons.visibility'));
+    expect(dialog, contains('passwordVisible ? PhosphorIconsRegular.eyeSlash : PhosphorIconsRegular.eye'));
     expect(settings, contains("'showPassword': {"));
     expect(settings, contains("AppLanguage.english: 'Show password'"));
     expect(settings, contains("AppLanguage.indonesia: 'Tampilkan kata sandi'"));
     expect(settings, contains("'hidePassword': {"));
     expect(settings, contains("AppLanguage.english: 'Hide password'"));
     expect(settings, contains("AppLanguage.indonesia: 'Sembunyikan kata sandi'"));
+  });
+
+  test('Primary App surfaces use one consistent Phosphor icon family', () {
+    for (final path in <String>[
+      'lib/main.dart',
+      'lib/floating_monitor.dart',
+      'lib/usage_statistics.dart',
+    ]) {
+      final source = File(path).readAsStringSync();
+      expect(source, isNot(contains('Icons.')), reason: '$path should not mix Material glyphs into product UI.');
+    }
   });
 
   test('Generic action glyphs stay static outside telemetry-driven indicators', () {
