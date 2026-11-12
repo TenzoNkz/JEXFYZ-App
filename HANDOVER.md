@@ -26,4 +26,4 @@ Build #153 proves hosted App CI/package/release only. No Firmware compilation, B
 
 ## Next action
 
-Issue a separate guarded `Eksekusi Build App!` for current main source `0b888fc2902430ac67388a05d348f78bf8df5bbc`. After packaging, install it and inspect Settings at 350/420 dp, Light/Dark and EN/ID; confirm compact Lock Voltage, boxed About and complete Diagnostics removal. Recheck the prior Peltier popup and Temperature-tab fix. Build #153 remains the latest published package until the new guarded workflow succeeds. Firmware/BIN/Firebase/OTA/flash/device work remains separately gated.
+A professional Settings/About refinement has been proposed in the active `CHAT_TRANSFER.md` checkpoint, but it is NOT APPROVED / NOT IMPLEMENTED. First obtain the owner's acceptance or adjustment. Then use a separate `Eksekusi Full!` for the concise one-line Settings rows, removal of redundant copy, Lock Voltage state-copy simplification and compact About credits. Only after source/test completion should a separate `Eksekusi Build App!` package it. Build #153 remains the latest published package. Firmware/BIN/Firebase/OTA/flash/device work remains separately gated.

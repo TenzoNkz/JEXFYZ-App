@@ -7,7 +7,8 @@
 - **Source files:** `lib/floating_monitor.dart`, `lib/main.dart`, `lib/app_settings.dart`, `test/floating_monitor_layout_contract_test.dart`. Canonical UI notes/checkpoints are updated in the following documentation commit.
 - **Evidence:** source/read-back and static assertions only. Flutter/Dart are not installed in this runtime; formatter, focused tests, analyzer and full suite are BLOCKED / NOT RUN. No CI/App Build/APK/Release or actual screenshot rendering has occurred. **VISUAL NOT VERIFIED**.
 - **Latest package remains Build #153**, immutable source `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e`, Release ID `403010611`; the current main fixes are not in that APK. No Firmware/BIN, Firebase, OTA, flash or device operation occurred.
-- **Next action:** separate guarded `Eksekusi Build App!` for the current main source, then owner installation and screenshot acceptance for Settings/Lock Voltage/About at 350/420 dp, EN/ID and Light/Dark.
+- **Design follow-up (Discussion proposal only):** professional Settings pass has been proposed but is NOT APPROVED / NOT IMPLEMENTED. Preserve grouped cards and 360-dp canvas; convert rows to concise one-line title/value/chevron; remove ambiguous/redundant copy; keep Lock Voltage state truthful; simplify About credits without changing contributors. See active CHAT_TRANSFER checkpoint for details. Do not alter DESIGN_NOTES owner-approved contracts until the owner accepts this proposal.
+- **Next action:** owner approves/adjusts the design direction; then separate `Eksekusi Full!` for the Settings/About source/tests. A new APK still requires a separate `Eksekusi Build App!`.
 
 
 ---

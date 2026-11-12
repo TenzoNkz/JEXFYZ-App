@@ -20,6 +20,18 @@
 - **Other Settings:** General, Bluetooth, Floating Monitor, Statistics/Usage Statistics and Firmware Update remain in the same category order. Existing compact Settings theme and 360-dp master-canvas/DPI behavior remain. Section heading gaps are slightly tighter; normal item row/tap geometry is preserved.
 - **Regression source:** updated Settings contract verifies compact Lock Voltage structure, boxed About placement/credits and absence of Diagnostics page/menu/localization. The About bilingual credit widget test remains.
 
+### Diskusi — professional Settings / remove nonessential copy (proposal only, 2026-11-12)
+
+**Status:** NOT APPROVED / NOT IMPLEMENTED. This is a design recommendation from the current Discussion; no executable source or tests were changed. Do not treat it as a new owner-approved visual contract until explicitly accepted.
+
+- Preserve the grouped section Cards, existing JE Cooler visual language, compact Settings theme, 360-dp canvas, themes and EN/ID. Prefer one-line Settings rows: icon + setting name + useful current value + chevron. Keep interactive row targets at least 48 dp.
+- Remove redundant/ambiguous secondary copy: hard-coded Notifications count 3, Usage Statistics descriptor duplicating the title, About subtitle JE Cooler, and Firmware placeholder V? (hide the version until an actual version is known). Keep meaningful current values such as selected Language/Appearance, Bluetooth Auto/Manual and Floating Monitor ON/OFF.
+- Keep Lock Voltage as a compact top control. Use the existing switch and concise state-only copy when needed; no explanatory paragraph when the switch/state already communicates the information. Preserve unknown/session/busy/save-failure/retry semantics and Firmware authority.
+- Keep About in its own simple Card. On the About page, remove the generic Special Thanks heading and compact the three existing role/name/handle credits without deleting or changing those credits.
+- Avoid introducing gradients, glow, badges, ornamental icons, extra nested Cards or another visual system. Do not trade readability/touch targets for density.
+- The supplied Settings screenshots predate the latest current-main compact Lock Voltage/About Card source and are not evidence of rendering that source. Build #153 remains the published package; current source is unbuilt.
+- Next: owner approval or adjustment of this proposal. Only after approval, a separate Eksekusi Full! may implement the scoped Settings/About copy and row-layout changes; a new APK then requires separate Eksekusi Build App!.
+
 ### Previous authorized fixes carried forward
 
 - Peltier prerequisite popup is fixed/centered in the 360-dp canvas with 296-dp max width, no scroll/drag surface or entrance slide, explicit Roboto/no decoration, and 48-dp actions. FAN:ON successful ACK remains mandatory before PELTIER:ON.
@@ -34,7 +46,7 @@
 
 ### Exact next action
 
-Issue a separate `Eksekusi Build App!` for current main source `0b888fc2902430ac67388a05d348f78bf8df5bbc`. After packaging, install the new APK and inspect Settings at 350-dp/420-dp in EN/ID and Light/Dark: verify Lock Voltage is clearly smaller but fully usable, About is visibly inside its own card, and no Device Diagnostics item/page remains. Also recheck Peltier popup and Temperature tab changes from the preceding source fix. Do not start Build App from this checkpoint without that separate command.
+Review and approve/adjust the proposed professional Settings direction above. The immediate next source scope is an `Eksekusi Full!` only after that direction is accepted; do not implement it during Discussion. After source/test work is complete, a separate `Eksekusi Build App!` is still required before installing and visually accepting the new UI at 350/420 dp, Light/Dark and EN/ID.
 
 ---
 
