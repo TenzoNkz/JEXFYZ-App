@@ -1,14 +1,18 @@
-## CURRENT CHECKPOINT — BUILD #153 ACTIVE / APK BUILD — 2026-11-12
+## CURRENT CHECKPOINT — BUILD #153 SUCCESS / RELEASE VERIFIED — 2026-11-12
 
-**Mode:** owner-authorized `Eksekusi Build App!`; App Build/QC/release only.
+**Disposition:** guarded App Build/QC/release completed successfully. No further Build App trigger is needed for the built source SHA.
 
-- **Run/job/source:** Build #153 / Actions run `43145542329`, job `130942369953`, attempt 1; immutable SHA `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e`.
-- **Passed:** steps 1–14, including analyzer, Flutter test suite and Android Gradle gate. Android Gradle completed success in **3m42s**. Test count/Android native JUnit NO-SOURCE coverage detail await final log.
-- **Current:** step 15 `Build latest release APK` in progress. **Pending:** steps 16–17 V1/V2/V3 and pinned certificate; 18 artifact naming; 19 matching source ZIP; 20 Release publish; 21 downloaded bytes/hash/source marker/ZIP/signature verification.
-- **Build #152 remains historical failure:** 171 pass / 5 fail; test-only fixes are included in #153. Original failure and repair are preserved in APP_BUILD_REPORT.md.
-- **Latest published Release remains Build #151** until #153 completes every gate; tag `jexfyz-latest` still points to source `e383924067b7ab2da27f2e41f21232cfb7144ec0`. Android `versionName "Telegram @horizontalzzz"` remains exact.
-- No additional trigger while #153 active. No Firmware compile/BIN/Firebase/OTA/flash/physical BLE/device/NVS/rail/LED/cooling/electrical/OEM screenshot work.
-- **Next:** inspect APK build and remaining Release gates for run `43145542329` only.
+- **Run/job/source:** Build #153 / Actions run `43145542329`, workflow `374946166`, issue event, attempt 1, job `130942369953`; immutable tested source SHA `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e`. [View Actions run](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/43145542329).
+- **Gates:** all required steps 1–21 and cleanup/post-job steps 39–43 SUCCESS. App security/architecture audit passed; Dart analyzer **23 info, 0 warnings/errors**; Flutter suite **176/176 passed**; Android Gradle `BUILD SUCCESSFUL in 3m41`.
+- **Android native JUnit caveat:** `:app:compileDebugUnitTestKotlin`, `:app:compileDebugUnitTestJavaWithJavac`, `:app:processDebugUnitTestJavaRes`, `:app:testDebugUnitTest` were `NO-SOURCE`; no native Android JUnit tests executed. The required Gradle task gate itself passed.
+- **APK:** `JEXFYZ-release.apk`, obfuscated with `--obfuscate --split-debug-info=build/symbols`; 55,996,507 bytes; SHA-256 `d956959414eb085e1779c30bf035a0bbc64d18330e19b85251cc0ead90f5661c`. [Download APK](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-release.apk).
+- **Source ZIP:** `JEXFYZ-corresponding-source.zip`; 2,929,311 bytes; SHA-256 `87808fe37f31e7fec589477a3c658a2f10fa06362bd72b173eeada95d3b03604`. [Download matching source ZIP](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-corresponding-source.zip).
+- **Release/source parity:** Release ID `403010611`, tag `jexfyz-latest`, both point to exact Build #153 source SHA above. Exactly one APK + one corresponding source ZIP. Workflow downloaded both; APK/ZIP local and downloaded SHA values matched; ZIP integrity/source marker passed; downloaded APK V1/V2/V3, one-signer and pinned certificate checks passed.
+- **Certificate:** JE X FYZ DN, RSA 4096; pinned cert SHA-256 `dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0`. Required V1/V2/V3 are true on generated/downloaded APK. Keep self-signed PKIX trust-chain and missing timestamp caveat visible; signer is not publicly CA-trusted.
+- **Repair history:** Build #152 / run `43144337555` remains FAILED at Flutter tests (171 passed / 5 failed), no artifact. Three test-only repair commits were validated by #153's 176/176 suite; #152 failure was not overwritten.
+- Android `versionName "Telegram @horizontalzzz"` remains exact; App version `1.0.0+3`.
+- **Open boundary:** this proves hosted App CI/package/release only. Firmware V7.2 compile/BIN, Firebase/OTA/flash, physical BLE/device/NVS/rail/LED, thermal/electrical cooling, owner installation and OEM visual acceptance remain NOT RUN / UNVERIFIED.
+- **Next direction:** owner installation and physical App/BLE/OEM visual acceptance at 350-dp/420-dp, Light/Dark and EN/ID; verify reconnect and Lock Voltage against a physical device. Do not trigger another App Build unless source changes.
 
 ---
 ## CURRENT CHECKPOINT — BUILD #149 COMPLETED / RELEASE VERIFIED — 2026-11-11
