@@ -54,7 +54,7 @@ void main() {
     expect(app, contains('jexIconAnimationPermitted'));
   });
 
-  test('Display-menu lock policy covers all disconnected menus and Adaptive-only restrictions', () {
+  test('Display-menu lock policy preserves disconnected and Adaptive priority and limits Lock Voltage scope', () {
     for (var tab = 0; tab < 5; tab++) {
       expect(
         displayMenuLockReason(
@@ -62,9 +62,11 @@ void main() {
           adaptiveActive: false,
           adaptiveTransitioning: false,
           tabIndex: tab,
+          voltageLockKnown: true,
+          voltageLockActive: true,
         ),
         DisplayMenuLockReason.bluetoothDisconnected,
-        reason: 'Disconnected submenu $tab must receive the full-menu Bluetooth lock.',
+        reason: 'Bluetooth disconnection must remain the highest-priority lock.',
       );
     }
 
@@ -80,7 +82,25 @@ void main() {
           tabIndex: tab,
         ),
         expected,
-        reason: 'Adaptive should lock Voltage, Control, and Temperature only.',
+        reason: 'Adaptive should keep its existing Voltage/Control/Temperature gate.',
+      );
+    }
+
+    for (var tab = 0; tab < 5; tab++) {
+      final expected = const <int>{0, 2}.contains(tab)
+          ? DisplayMenuLockReason.voltageLocked
+          : DisplayMenuLockReason.none;
+      expect(
+        displayMenuLockReason(
+          connected: true,
+          adaptiveActive: false,
+          adaptiveTransitioning: false,
+          tabIndex: tab,
+          voltageLockKnown: true,
+          voltageLockActive: true,
+        ),
+        expected,
+        reason: 'Lock Voltage alone must cover Voltage and Adaptive only.',
       );
     }
 
@@ -96,11 +116,35 @@ void main() {
     expect(
       displayMenuLockReason(
         connected: true,
+        adaptiveActive: true,
+        adaptiveTransitioning: false,
+        tabIndex: 0,
+        voltageLockKnown: true,
+        voltageLockActive: true,
+      ),
+      DisplayMenuLockReason.adaptiveActive,
+      reason: 'The pre-existing Adaptive restriction must retain priority over Lock Voltage.',
+    );
+    expect(
+      displayMenuLockReason(
+        connected: true,
         adaptiveActive: false,
         adaptiveTransitioning: false,
         tabIndex: 2,
       ),
       DisplayMenuLockReason.none,
+    );
+    expect(
+      displayMenuLockReason(
+        connected: true,
+        adaptiveActive: false,
+        adaptiveTransitioning: false,
+        tabIndex: 2,
+        voltageLockKnown: false,
+        voltageLockActive: true,
+      ),
+      DisplayMenuLockReason.none,
+      reason: 'An unknown/un-synchronized lock state must not lock the UI.',
     );
   });
 
@@ -119,6 +163,10 @@ void main() {
     expect(lockSource, contains('child: Center('));
     expect(lockSource, contains('CONNECT YOUR DEVICE FIRST'));
     expect(lockSource, contains('LOCKED BY ADAPTIVE MODE'));
+    expect(lockSource, contains('RETURNING TO 5V'));
+    expect(lockSource, contains('VOLTAGE LOCKED AT 5V'));
+    expect(lockSource, contains('ADAPTIVE MODE DISABLED'));
+    expect(lockSource, contains("final voltageConfirmedAtFive = voltage == '5V';"));
     expect(lockSource, isNot(contains('_tab(')));
 
     final buildStart = source.indexOf('Widget build(BuildContext context) {', source.indexOf('class _DashboardScreenState'));
@@ -223,7 +271,7 @@ void main() {
     );
   });
 
-  test('Peltier safety prompt is wide and compact while preserving fan-first safety behavior', () {
+  test('Peltier safety card uses JE styling, bilingual paired-action copy and fan-first confirmation', () {
     final source = File('lib/main.dart').readAsStringSync();
     final start = source.indexOf('Future<void> _togglePeltier(bool enabled)');
     final end = source.indexOf('if (approved != true) return;', start);
@@ -231,22 +279,29 @@ void main() {
     expect(end, greaterThan(start));
 
     final dialog = source.substring(start, end);
-    expect(dialog, contains('fontSize: 18'));
-    expect(dialog, contains('fontSize: 14'));
-    expect(dialog, contains('height: 1.12'));
-    expect(dialog, contains('height: 1.28'));
-    expect(dialog, contains('insetPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8)'));
-    expect(dialog, contains('titlePadding: const EdgeInsets.fromLTRB(16, 12, 16, 4)'));
-    expect(dialog, contains('contentPadding: const EdgeInsets.fromLTRB(16, 0, 16, 4)'));
-    expect(dialog, contains('actionsPadding: const EdgeInsets.fromLTRB(8, 2, 8, 6)'));
-    expect(dialog, contains('minimumSize: const Size(72, 48)'));
-    expect(dialog, contains('minimumSize: const Size(128, 48)'));
-    expect(JexText.of('fanRequiredPeltier', AppLanguage.english), 'Turn on the fan before enabling Peltier.');
-    expect(JexText.of('fanRequiredPeltier', AppLanguage.indonesia), 'Nyalakan kipas sebelum mengaktifkan Peltier.');
+    expect(dialog, contains('showGeneralDialog<bool>('));
+    expect(dialog, contains('borderRadius: BorderRadius.circular(24)'));
+    expect(dialog, contains('Color(0xFFD69A38)'));
+    expect(dialog, contains('peltierFanRequiredTitle'));
+    expect(dialog, contains('peltierCoolingPrerequisite'));
+    expect(dialog, contains('turnOnFanAndPeltier'));
+    expect(dialog, contains('FilledButton.icon('));
+    expect(dialog, contains('minimumSize: const Size.fromHeight(48)'));
+    expect(dialog, contains('TextButton('));
+    expect(dialog, contains('Navigator.pop(dialogContext, false)'));
+    expect(dialog, contains('barrierDismissible: true'));
+    expect(dialog, isNot(contains('AlertDialog(')));
+    expect(JexText.of('peltierFanRequiredTitle', AppLanguage.english), 'Fan required before cooling');
+    expect(JexText.of('peltierFanRequiredTitle', AppLanguage.indonesia), 'Kipas perlu dinyalakan');
+    expect(JexText.of('turnOnFanAndPeltier', AppLanguage.english), 'Turn on Fan & Peltier');
+    expect(JexText.of('turnOnFanAndPeltier', AppLanguage.indonesia), 'Nyalakan Kipas & Peltier');
+
     final fanCommand = source.indexOf("final fanOk = await _sendAndWaitAck('FAN:ON')", end);
-    final peltierCommand = source.indexOf("_sendAndWaitAck(\n          'PELTIER:ON'", fanCommand);
+    final fanGate = source.indexOf('if (!fanOk || !mounted)', fanCommand);
+    final peltierCommand = source.indexOf("'PELTIER:ON'", fanGate);
     expect(fanCommand, greaterThan(end));
-    expect(peltierCommand, greaterThan(fanCommand));
+    expect(fanGate, greaterThan(fanCommand));
+    expect(peltierCommand, greaterThan(fanGate));
   });
 
   test('LED color picker keeps 60 unique, accurately named bilingual colors accessible', () {
@@ -1988,19 +2043,17 @@ void main() {
     expect(state, contains('unawaited(_coastFanToStop());'));
   });
 
-  test('Peltier safety actions retain compact text and full-size tap targets', () {
+  test('Peltier safety action keeps a reachable Cancel and a full-width primary target', () {
     final source = File('lib/main.dart').readAsStringSync();
     final methodStart = source.indexOf('Future<void> _togglePeltier(bool enabled)');
     final dialogEnd = source.indexOf('if (approved != true) return;', methodStart);
     expect(methodStart, isNonNegative);
     expect(dialogEnd, greaterThan(methodStart));
     final dialog = source.substring(methodStart, dialogEnd);
-    // The compact safety prompt keeps clear hierarchy with 48-dp minimum touch targets.
-    expect(dialog, contains('fontSize: 18'));
-    expect(dialog, contains('fontSize: 14'));
-    expect(dialog, contains('insetPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8)'));
-    expect(dialog, contains('minimumSize: const Size(72, 48)'));
-    expect(dialog, contains('minimumSize: const Size(128, 48)'));
+    expect(dialog, contains('height: 48'));
+    expect(dialog, contains('minimumSize: const Size.fromHeight(48)'));
+    expect(dialog, contains('Navigator.pop(dialogContext, false)'));
+    expect(dialog, contains('Navigator.pop(dialogContext, true)'));
     expect(dialog, contains('barrierDismissible: true'));
   });
 
