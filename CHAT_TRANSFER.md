@@ -4,7 +4,7 @@
 
 ### Live repository and evidence boundary
 
-- **Repository:** `TenzoNkz/JEXFYZ-App`, branch `main`. Pre-checkpoint HEAD for this documentation reconciliation: `bae7dc9354b2e813e90bd6308efb96f1d2001c38`; recursive tree `bae7dc9354b2e813e90bd6308efb96f1d2001c38`, 131 entries, `truncated=false`.
+- **Repository:** `TenzoNkz/JEXFYZ-App`, branch `main`. Pre-checkpoint HEAD for this documentation reconciliation: `bae7dc9354b2e813e90bd6308efb96f1d2001c38`; recursive tree inventory: 131 entries, `truncated=false`.
 - **Compared with immutable Build #153 source:** `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e`; current pre-checkpoint main is 34 commits ahead / 0 behind. The complete compare lists only Markdown paths: APP_BUILD_REPORT.md, APP_NOTES.md, BUILD_NOTES.md, CHAT_TRANSFER.md, DESIGN_NOTES.md, HANDOVER.md, PROJECT_STATE.md. No App/Firmware source, tests, Gradle/configuration or workflow path changed after the tested source.
 - **Latest Actions:** Build #153 / run `43145542329`, workflow `374946166`, attempt 1, job `130942369953`, completed SUCCESS. All workflow steps 1–21 and cleanup 39–43 passed. Latest API window reports 328 total runs; no newer run than #153. No current queued/in-progress run was observed.
 - **Hosted App QC:** security/architecture audit passed; analyzer 23 info-level findings, zero warnings/errors; Flutter `176/176` passed; Android Gradle `BUILD SUCCESSFUL in 3m41s`. Native app JUnit compile/process/test tasks were `NO-SOURCE`; no native Android JUnit tests ran.
