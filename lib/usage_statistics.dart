@@ -280,7 +280,16 @@ class UsageStatsAnalytics {
     }
     for (final metrics in eventsBySession.values) {
       for (final events in metrics.values) {
-        events.sort((a, b) => a.timestampMs.compareTo(b.timestampMs));
+        var isChronological = true;
+        for (var index = 1; index < events.length; index++) {
+          if (events[index].timestampMs < events[index - 1].timestampMs) {
+            isChronological = false;
+            break;
+          }
+        }
+        if (!isChronological) {
+          events.sort((a, b) => a.timestampMs.compareTo(b.timestampMs));
+        }
       }
     }
 

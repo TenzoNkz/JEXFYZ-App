@@ -428,6 +428,8 @@ void main() {
     );
     expect(usage, contains('recordTemperatureSample('));
     expect(usage, contains('final eventsBySession ='));
+    expect(usage, contains('var isChronological = true;'));
+    expect(usage, contains('if (!isChronological)'));
     expect(usage, contains('_mergeSortedUsageStatsEvents('));
     expect(usage, contains('_summary = UsageStatsAnalytics.summarize(workingSnapshot);'));
     expect(usage, contains('var workingEventKeys = _snapshotEventKeys;'));
