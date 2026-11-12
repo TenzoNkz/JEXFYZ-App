@@ -1,18 +1,17 @@
-## CURRENT CHECKPOINT — BUILD #153 ACTIVE / GUARDED APP QC — 2026-11-12
+## CURRENT CHECKPOINT — BUILD #153 ACTIVE / GRADLE SETUP — 2026-11-12
 
-**Mode:** owner-authorized `Eksekusi Build App!`; guarded App Build/QC/release only. No Firmware/BIN/Firebase/OTA/flash/device operations.
+**Mode:** owner-authorized `Eksekusi Build App!`; App Build/QC/release only. Firmware/BIN/Firebase/OTA/flash/device operations excluded.
 
-- **Run/job/source:** Build #153 / Actions run `43145542329`, workflow 374946166, attempt 1, issue #33, job `130942369953`; immutable source SHA `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e`. [View run](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/43145542329).
-- **Trigger guard:** issue #33 owner/title/token validated and closed/reopened exactly once. Workflow remains issues-only/guarded. No duplicate trigger.
-- **Previous Build #152:** run `43144337555` is preserved FAILED at Flutter tests (171 passed, 5 failed); all exact diagnostics are in APP_BUILD_REPORT.md. It produced no artifact.
-- **Repair included in #153 source:** three test-only commits correct Home NOTIFY end anchor/font assertion, set/reset an explicit Statistics viewport and check nonzero scroll viewport while retaining Last sample assertion, and align Diagnostics test copy/casing with localization. No production source or Firmware/workflow changed in the repair.
-- **Current state:** run `in_progress`; initial job snapshot had steps 1–2 success, step 3 Java 17 setup in progress. No QC gate completed yet. Continue observing this run only.
-- **Last published Release remains Build #151** (Release 403010611, `jexfyz-latest` target `e383924067b7ab2da27f2e41f21232cfb7144ec0`) until #153 passes all gates. Android `versionName "Telegram @horizontalzzz"` preserved.
-- **Remaining:** toolchain, signing setup, security/architecture, dependencies, analyzer, Flutter suite, Android Gradle, obfuscated APK, V1/V2/V3/cert, source ZIP, Release parity and downloaded asset verification.
-- **Not performed:** Firmware compile/BIN, Firebase/OTA/flash, physical BLE/device/NVS/rail/LED, cooling/electrical or OEM screenshot tests.
-- **Next:** inspect run `43145542329` / job `130942369953`; no additional trigger while active.
+- **Run/job/source:** Build #153 / Actions run `43145542329`, job `130942369953`, attempt 1; immutable source `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e`.
+- **Passed:** steps 1–4 (runner, checkout, Java 17, Flutter 3.47.2). **Current:** step 5 Set up Gradle 9.3.1 in progress. Steps 6–21 pending.
+- **Build #152 remains historical failure:** 171 tests passed / 5 failed. Three test-only repair commits are included in this source. Build #152 failure and repaired assertions are preserved in APP_BUILD_REPORT.md.
+- **Latest Release remains Build #151** at source `e383924067b7ab2da27f2e41f21232cfb7144ec0` until #153 passes all gates. Android `versionName "Telegram @horizontalzzz"` unchanged.
+- Workflow is unchanged issue-only/guarded. No additional trigger while #153 is active.
+- No Firmware/BIN/Firebase/OTA/flash/device/BLE/NVS/rail/LED/cooling/OEM screenshot testing.
+- **Next:** continue inspecting run `43145542329` / job `130942369953` only.
 
 ---
+
 ## CURRENT CHECKPOINT — BUILD #149 COMPLETED / RELEASE VERIFIED — 2026-11-11
 
 **Disposition:** Build #149 / Actions run 42967289995 COMPLETED / SUCCESS / RELEASED. Workflow 374946166, attempt 1; job 130347345586 completed success. All 21 required gates and post-job cleanup steps 39–43 passed.
