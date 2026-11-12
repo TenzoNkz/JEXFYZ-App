@@ -1,50 +1,39 @@
-## CURRENT CHECKPOINT — STATISTICS BOUNDEDNESS REVIEW / SOURCE FOLLOW-UP BEFORE BUILD QC — 2026-11-12
+## CURRENT CHECKPOINT — BOUNDED STATISTICS WRITER + GAP DECIMATION IMPLEMENTED / VALIDATION HOLD — 2026-11-12
 
-**Prior implementation mode:** `@Thinking Eksekusi Full!` — App source, regression tests and documentation only. **Current review mode:** `@Thinking Diskusi!` — static source/repository inspection and documentation-only checkpoint update. No Build App, Actions execution, APK/Release, Firmware, Firebase, OTA, flashing, native Android code or device operation was performed in this review.
+**Current mode:** `@Thinking Eksekusi Full!` — App source, regression tests and canonical documentation only. No App Build/QC, Actions trigger, APK/Release, Firmware, Firebase, OTA, native Android, flashing or device operation was performed. Build authorization remains separate.
 
-### Live branch and Release boundary
+### Live branch and package boundary
 
 - **Repository:** `TenzoNkz/JEXFYZ-App`, branch `main`.
-- **Current repository tree:** 132 entries, recursive listing not truncated. Documentation-only checkpoint commits follow this executable source/test snapshot.
-- **Current executable source/test HEAD:** `a963f8bd100f7f2c41f720933ade2cd586145270`.
-- Recursive tree: 132 entries, `truncated=false`.
-- Remediation commits: `5763b08f8b37fccafd2ac2403a51b26ad0be4b41` (Statistics dock/analytics/storage + P1 touch/polling/integrity fixes), `b1275d278ca0b0d2765174364250873044a943d1` (Statistics chart density + integrity dark theme), `aa58a2f14354692a1dbcebfcb70436deb3aabf06` (skip redundant sort for chronological live events), and `a963f8bd100f7f2c41f720933ade2cd586145270` (dynamic narrow-range axis precision).
-- Compared with Build #153, executable source/test SHA is 57 commits ahead / 0 behind; 18 changed paths (11 Markdown, 4 Dart source, 3 test files).
-- **Build #153 remains the latest published package:** source `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e`, Actions run `43145542329`, Release ID `403010611`, tag `jexfyz-latest`. Current fixes are not in that APK.
+- **Latest source/test code checkpoint:** `cc6ce0263d7086296013d518895073c3dce58aff`.
+- **Code blobs:** `lib/usage_statistics.dart` = `4759ace8a9e7fdf5cbdfe5aea4ff6f284571299a`; `test/usage_statistics_test.dart` = `8bcc06fc714a071138fc20fb6f54179debc7f04c`. Documentation commits follow this code checkpoint.
+- **Current repository tree:** 132 entries, recursive listing not truncated.
+- **Latest published package remains Build #153:** source SHA `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e`, Actions run `43145542329`, Release ID `403010611`, tag `jexfyz-latest`. Current changes are NOT in that APK/source ZIP.
 
-### Usage Statistics — source implemented
+### Usage Statistics — bounded writer admission implemented
 
-- Selected-time dock now uses intrinsic content height via outer Column `MainAxisSize.min`; stable key supports measured-height regression. Bottom placement, SafeArea, six selected values and 48×48 dp Clear target remain. Test asserts dock ≤200 dp at normal text scale and removal after Clear.
-- Temperature charts are 160 dp high, axis painter labels 10 dp with tick-spacing-aware precision, and Hotside-to-Activity spacing is tighter. Battery/Hotside plots, four activity timelines, six-value cursor, Min/Avg/Max/Observed, Hotside limit, aggregates, provenance and data gaps remain.
-- Analytics groups events by session/metric, de-duplicates via event identity, merges ordered events, sorts only when needed, computes summary once per live batch, caches decimated chart points and uses binary search for cursor temperature.
-- SQLite sample + matching freshness update is transactional. Schema v2, retention, raw 1-Hz samples, null gaps and HOT-only P1 freshness remain. The internal serial queue admits up to 64 scheduled operations and exposes write failures; a follow-up static review found that this does not bound all waiting producer Futures because important main.dart call sites use unawaited().
-- **Remaining performance boundary:** one full selected-session summary/chart-decimation pass still runs per one-second refresh. No 1h/8h/long-session Android CPU/memory soak or sustained SQLite backlog measurement has run.
+- `UsageStatsWriteQueue` accepts FIFO work up to 64 normal pending operations plus 8 reserved control operations (72 total). Temperature and Fan-Speed producers never wait for capacity. Session start/end/clear and Voltage/Adaptive/Peltier state events can use reserved slots; Fan Speed remains under the normal ceiling.
+- An operation beyond its applicable capacity is rejected immediately, increments `rejectedWriteCount`, and records a persistent `lastWriteError` that is surfaced as a bilingual Statistics warning. Accepted operations are never evicted. This explicitly trades lossless indefinite buffering for bounded memory and non-blocking BLE producers when the local store is overloaded; the incoming rejected record is not accepted.
+- Clear History uses `failOnReject` so a queue-full request reaches the existing UI error handler instead of appearing successful.
+- HOT freshness follows actual Firmware HOT receipt time, not SQLite write progress. A slow/rejected write cannot falsely mark a still-live P1 session stale. Explicit null sample gaps are written when recording resumes or when a session closes; the HOT-stale close path also writes a Battery gap before ending the session.
+- SQLite schema v2, raw 1-Hz capture policy, 30-day retention, transaction semantics and HOT-only P1 freshness authority remain unchanged.
 
-### Additional static review — two Statistics boundedness gaps
+### Usage Statistics — gap-safe chart budget implemented
 
-- **Queue ingress:** lib/usage_statistics.dart UsageStatsWriteQueue.enqueue() waits for _tail after 64 admitted operations, but lib/main.dart submits Battery/Hotside samples and state changes through unawaited(). If storage remains slower than producers, callers can accumulate waiting Futures outside pendingOperations; the current capacity/FIFO test observes only admitted operations. This is a STATIC SOURCE RISK, not an observed data-loss/runtime failure.
-- **Gap-heavy chart decimation:** UsageStatsAnalytics.decimatePoints() preserves every null and breakBefore point. That preserves gaps, but it can return more than maxPoints when the data contains many invalid samples or segment boundaries. The existing 12k-per-sensor cap test uses continuous valid samples and does not establish a hard cap under dense gaps. This is a deterministic source-level edge case, not a device observation.
-- **Required next review:** design bounded ingress/backpressure without blocking the BLE telemetry callback or silently discarding accepted 1-Hz samples; make gap-aware chart reduction preserve invalid intervals while explicitly bounding or documenting output under dense gaps; add delayed-writer, many-submitter and invalid-heavy regressions. Preserve SQLite schema v2, raw samples, null gaps, HOT-only P1 freshness and telemetry authority.
-- **Formatting gate:** the guarded workflow has no dart format --output=none --set-exit-if-changed step; formatting is still NOT RUN. This must be explicitly handled in the next source/quality pass rather than assumed to be covered by Build QC.
+- `decimatePoints(maxPoints)` now enforces a hard output ceiling, including budgets below four. It selects bucket endpoints/extrema and propagates any skipped null/`breakBefore` boundary onto the next retained valid point. The painter therefore starts a new path rather than visually bridging a discarded invalid interval.
+- Only the render list is reduced. Raw SQLite samples and full-resolution summary/statistics inputs are unchanged.
 
-### Other P1 source remediation
+### Regression inventory and evidence boundary
 
-- Connection status refresh is single-flight, 3-second while active, immediate on open/resume and paused in background/dispose.
-- Floating Monitor runtime reconcile is single-flight, 3-second while enabled/connected, paused in background and checked immediately on resume. The 300-ms interval remains only in the bounded max-2-second overlay permission return flow.
-- Home header actions use 48×48 dp hit surfaces with 25-dp visible artwork; Home tab strip is 48 dp; Temperature +/- art remains 34 dp inside 48×48 dp tap areas. Existing Connection 40–42 dp legacy controls are unchanged.
-- TamperScreen now has concise bilingual official-build verification failure copy and an explicit dark theme while retaining developer contact. Native signature verification/fail-closed route is untouched.
-- Settings one-line rows, compact Lock Voltage, boxed About, Device Diagnostics removal, Peltier FAN-ACK gate and Temperature reset removal remain.
-
-### Regression inventory and validation boundary
-
-- Current suite: **185 declarations** (172 unit/source-contract + 13 widget). Current long-history test covers 12k valid Battery + 12k valid Hotside events; queue test checks admitted-operation capacity/FIFO but not blocked unawaited producer Futures; dense-null/gap chart decimation is not covered. The current suite remains NOT RUN.
-- Source read-back/static structural checks passed. Flutter/Dart are unavailable in this runtime; formatter, focused tests, analyzer and full suite are **BLOCKED / NOT RUN**. Written tests are not passing tests.
-- No Actions run, App Build, APK, Release, screenshot/device test or performance soak was started. Current visual status is **VISUAL NOT VERIFIED**.
-- Native Android code/Firmware/BIN, BLE/P1, Firmware safety, OTA, Firebase, notification IDs, SQLite schema/version, Android versionName and 360-dp DPI canvas were not changed.
+- Current test inventory: **186 declarations** (173 unit/source-contract + 13 widget). New source tests cover fire-and-forget producers against a held writer, 64 normal + reserved capacity, immediate rejection, accepted FIFO order, error propagation for Clear, a 24,000-point alternating-null/gap-heavy chart across budgets 1/2/3/7/8/1599/1600, boundary propagation and the localized overload warning.
+- GitHub read-back, custom delimiter balance scan and structural source checks passed. A separate algorithm simulation of the 24,000-point alternating-gap fixture returned no output above its budget and no missing gap breaks. These are **static/source checks and simulation only**, not Dart compilation or Flutter test results.
+- Flutter/Dart/Gradle/ADB are unavailable in this runtime. `dart format`, focused/full `flutter test`, `flutter analyze` and Android Gradle remain **BLOCKED / NOT RUN**. The guarded App workflow contains no Dart formatter step; this task did not change or trigger the workflow.
+- Remaining performance evidence: one selected-session analytics summary/decimation pass still occurs per one-second live batch. 1-hour/8-hour storage pressure, backlog drain rate/rejection frequency, CPU/memory, animation lifecycle/60–120-Hz frame behavior and OEM screenshots/device validation remain unmeasured. Visual status is **VISUAL NOT VERIFIED**.
+- Only executable paths changed in this task are `lib/usage_statistics.dart` and `test/usage_statistics_test.dart`. Workflow, Android/native source, Firmware, assets, BLE/P1 identifiers, Firebase/OTA and release metadata were not changed.
 
 ### Exact next action
 
-**Arah berikutnya: Lanjut Eksekusi Full! (rekomendasi, belum diotorisasi).** Before any Build App trigger, resolve or explicitly disposition the end-to-end queue-ingress bound and gap-heavy decimation bound on source snapshot a963f8bd100f7f2c41f720933ade2cd586145270. Add regression cases for delayed SQLite writes with more than 64 unawaited submissions and for invalid-heavy/alternating gap histories; choose an overload strategy that preserves every accepted raw sample and does not block BLE parsing. Also decide how the missing formatter gate is satisfied. Only after the source/tests and formatting policy are clean should the owner issue a separate Eksekusi Build App!. No build is authorized or started by this checkpoint.
+**Arah berikutnya: Terhambat — jalankan formatter check, focused/full Flutter tests and analyzer on this exact source/test revision in an environment with Flutter/Dart, then review the results.** No App Build is authorized by this checkpoint; after source validation, the owner must separately issue `Eksekusi Build App!` for guarded QC/package validation.
 
 
 ---
