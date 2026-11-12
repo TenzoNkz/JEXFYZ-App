@@ -1,27 +1,30 @@
-## CURRENT CHECKPOINT — BUILD #154 ACTIVE / FLUTTER SETUP — 2026-11-12
+## CURRENT CHECKPOINT — BUILD #154 ANALYZER FAILURE REPAIRED / RETRY PREFLIGHT — 2026-11-12
 
-**Mode:** `@Thinking Eksekusi Build App!` — guarded App Build/QC/release only. No Firmware compilation/BIN, Firebase, OTA, flashing or device operation.
+**Mode:** `@Thinking Eksekusi Build App!` — guarded App Build/QC/release only.
 
-### Live repository and source/release boundary
+### Build #154 terminal result
 
-- Repository: `TenzoNkz/JEXFYZ-App`, branch `main`. Immutable Build #154 checkout SHA: `dd7e75f1597e14c3d929b1ca78825dc806aef25d`; recursive tree at trigger: 132 entries, `truncated=false`.
-- Current executable source/test checkpoint: `6c551c4ff95329e56eca7ce758078c9590b4b726`. The run checkout SHA above is the exact source/repository commit under validation; intervening commits are documentation-only.
-- Compared with Build #153 source `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e`, the checkout is 99 commits ahead / 0 behind; 18 changed paths comprise 11 Markdown files, 4 Dart libraries and 3 Dart test files. The current Usage Statistics/Settings/Floating Monitor/Home changes and their regressions are not in the #153 APK.
-- Build #153 remains the last published Release until #154 passes: Release ID `403010611`, tag `jexfyz-latest`, old target SHA `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e`.
+- Run [43243342029](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/43243342029), workflow 374946166, attempt 1, job 131269364235; immutable checkout SHA `dd7e75f1597e14c3d929b1ca78825dc806aef25d`.
+- **FAILED at gate 12 `Analyze Dart code`.** Steps 1–11 succeeded; 13–21 skipped; cleanup 39–43 succeeded. No APK/source ZIP, no Release/tag mutation. Build #153 remains the latest release.
+- Analyzer: 29 issues = **6 errors, 0 warnings, 23 infos**. Five MethodChannel cascade errors were caused by missing `package:flutter/services.dart` in `lib/floating_monitor.dart`; one error was unsupported `fontFamily` on `ThemeData.copyWith` in `lib/main.dart:4181`. The 23 deprecation infos were not fatal under `--no-fatal-infos`.
 
-### Build #154 — active guarded run
+### Concrete repair/read-back
 
-- Run `43243342029`, workflow `374946166`, issue event, attempt 1, job `131269364235`, checkout SHA `dd7e75f1597e14c3d929b1ca78825dc806aef25d`. [Actions run](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/43243342029).
-- Trigger: issue #33 exact owner/title/body-token guard closed/reopened once. Exactly one #154 run exists. No duplicate trigger.
-- Current first job snapshot: runner, checkout, Java 17 succeeded; Flutter 3.47.2 setup is in progress; remaining gates pending. Continue this run only.
-- Current workflow blob: `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12`; only issue opened/reopened trigger, owner/title/token gate; no push/PR release path.
-- **Formatter caveat:** workflow has no Dart formatter step. `dart format` remains NOT RUN / UNVERIFIED; this is not represented as a passed gate. The explicit owner Build App command authorized proceeding with the existing guarded workflow, and no existing gate was weakened.
-- Preflight: no open PR and zero queued/in-progress Actions runs before trigger. Android Gradle `versionName "Telegram @horizontalzzz"` remains exact.
-- Next: inspect run `43243342029` / job `131269364235` steps/logs; do not trigger another run while active. Record actual analyzer/test/Gradle/signing/release results only when observed.
+- `7b852bde09cac3c0f0c86cbe1fa4b28e994ea840`: added `package:flutter/services.dart` to Floating Monitor imports, restoring the existing MethodChannel references.
+- `e2aa22b8d64016ab686009ecd2fc57f2ef330ec5`: preserved Roboto on TamperApp through `textTheme.apply` and `primaryTextTheme.apply`, rather than the unsupported `ThemeData.copyWith(fontFamily: ...)`.
+- Diff from failed checkout to repair head changes exactly two executable paths: `lib/floating_monitor.dart` and `lib/main.dart`. Read-back confirms both corrections. No native/BLE/P1/telemetry/safety/workflow changes.
+- No local Dart/Flutter execution after repair. Formatter remains NOT RUN / UNVERIFIED because the existing workflow has no formatter step; do not report it as passed.
 
-### Acceptance boundaries
+### Retry preflight
 
-CI/Release is App-only. Firmware V7.2 compile/BIN, Firebase/OTA/flash, physical BLE/device/NVS/rail/LED, thermal/electrical cooling, OEM rendering and owner installation remain separately NOT RUN / UNVERIFIED.
+- Current repaired source HEAD: `e2aa22b8d64016ab686009ecd2fc57f2ef330ec5` before this documentation checkpoint; source fix is the exact two-file patch above.
+- #154 is terminal FAILED; this failure is preserved in `APP_BUILD_REPORT.md`. No duplicate/active run.
+- Issue #33 remains the exact owner/title/token guard. The release baseline remains Build #153 / Release 403010611 / tag `jexfyz-latest` at source `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e`.
+- **Next:** run a fresh preflight, then one guarded retry authorized by the owner's original Build App command and concrete repair. Do not trigger while any other run is active; inspect only the resulting run.
+
+### Boundaries
+
+No Firmware compilation/BIN, Firebase, OTA, flashing, device, BLE/NVS/rail/LED, cooling/electrical or OEM visual test was performed. These remain separately NOT RUN / UNVERIFIED.
 
 ---
 
