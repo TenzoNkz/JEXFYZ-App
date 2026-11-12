@@ -2543,3 +2543,15 @@
 - **Local validation:** active environment has no Flutter/Dart/Gradle; local format/analyzer/widget tests are BLOCKED / NOT RUN. Hosted analyzer passed; hosted Flutter suite failed 171/5. No Build #152 artifact exists.
 - **Next:** implement the narrow test repairs, re-read them, then a new guarded trigger is justified only after the Statistics widget test is independently robust. Preserve Build #152 failure.
 - **Evidence boundary:** no Firmware compile/BIN/Firebase/OTA/flash/device/BLE/NVS/rail/LED, cooling, electrical or OEM visual test occurred.
+
+## BUILD #152 TEST-GATE REPAIR — TEST ISOLATION/CONTRACTS CORRECTED — 2026-11-12
+
+- **Repair commits:**
+  - `5f06e121cdb6f84f7cb3c70c020d4e89a97e3725` — `test/widget_test.dart`: `_homeNotify()` source-contract range now ends at the following `_card()` method, because `_homeMetric()` is declared earlier in main.dart; second contract now asserts the current `final fontSize = wraps ? 9.5 : 10.5;` adaptive expression.
+  - `bba8cd2eb96f82a0c7a087cb165866e1cda2e11e` — `test/usage_statistics_test.dart`: last-valid-sample widget test explicitly sets a nonzero 800×1200 physical surface and DPR 1, with teardown resets; captures its Scrollable, asserts its height is >0 before scrolling, then still requires visible `Last sample · 04:00` and no Flutter exception. The underlying analytics fixture and expected latest timestamp are unchanged.
+  - `642e6a500473b16554ab849f07ed8ddffd84bc8a` — `test/floating_monitor_layout_contract_test.dart`: Device Diagnostics summary copy is asserted against the localization source (`app_settings.dart`), where it actually resides; widget test expectation uses the exact English localized label `DISCONNECTED`.
+- **Diff review:** compared failed Build #152 source SHA `04ec48a53bef308f0817470d2d758697a1592cc4` against repaired main `642e6a500473b16554ab849f07ed8ddffd84bc8a`: changed non-Markdown paths are exactly the three test files listed above. No production Dart source, Firmware source, workflow, dependencies, Gradle configuration, BLE/P1 behavior or versionName changed in the repair.
+- **Static read-back:** all five failed expectations now map to a real current source contract; the new Statistics test explicitly rejects a zero-sized scroll viewport rather than silently skipping its visible-label assertion. Build #152 failure log still records the original five failures; it has not been rewritten.
+- **Local execution:** `command -v flutter`, `dart`, `gradle` returned no executable paths in this container. Formatter and focused/full tests are BLOCKED / NOT RUN locally. The repaired source/test tree has not yet been executed by hosted CI; only a guarded retry can provide actual Flutter results.
+- **Retry disposition:** concrete test-only repair is committed; one guarded hosted retry is justified. No retry has yet been triggered at this checkpoint. Fresh preflight must confirm no active/queued runs, issue #33 guard, unchanged workflow, Release #151 tag/asset identity and versionName before close/reopen.
+- **Boundary:** no App runtime source or device/Firmware/BIN/Firebase/OTA/flash/physical BLE/NVS/rail/LED/cooling/OEM screenshot change/action.
