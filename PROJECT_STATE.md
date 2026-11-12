@@ -1,12 +1,12 @@
-## CURRENT APP QC — BUILD #155 FAILED / FOUR TEST FIXES IDENTIFIED — 2026-11-12
+## CURRENT APP QC — BUILD #155 FAILED / ROOT CAUSE REPAIRS COMMITTED — 2026-11-12
 
-- **Run:** Build #155 / Actions `43244335274`, job `131272831810`, attempt 1; immutable checkout SHA `63ab4e8167cd099a30ad4ca8cd8cfb52d0c098`. Gate 13 `flutter test` failed: 183 passed / 4 failed. Analyzer step 12 passed, with 23 info-level findings and zero errors/warnings. Android Gradle and package/Release steps 14–21 skipped. No APK/source ZIP; Release/tag untouched; Build #153 remains latest Release.
-- **Failed test causes:** Tamper test looks for the dark ThemeData within `TamperScreen` but its real owner is `TamperApp`; dashboard has a real 2-dp vertical shortfall (seven 45-dp rows need 315 dp, but Home currently gives 313); Home touch-target test globally locates the first 48-dp SizedBox, now in the Color Picker instead of Home; Firmware QC test expects obsolete Lock Voltage copy rather than current EN/ID `Firmware V7.2+ required` / `Perlu Firmware V7.2+`.
-- **Repair plan:** only two internal Home gaps change from 3 to 2 dp; preserve the 420-dp canvas, seven 45-dp rows and 44-dp NOTIFY. Update widget test to check TamperApp separately, scope Home button checks to the Home builder, and use DPR3 with the existing 1080×3200 physical dashboard fixture. Update Firmware QC copy assertion to actual bilingual source. Do not weaken or remove tests.
-- **Prior failure preserved:** Build #154 / run `43243342029` remains FAILED at analyzer (6 errors); services import and Tamper theme repairs were committed and passed the #155 analyzer.
-- **Current status:** #155 terminal. Four source/test defects are triaged, not yet repaired. No retry until concrete patch and read-back.
-- **Formatter:** current workflow has no Dart formatter step; formatting NOT RUN / UNVERIFIED. Local Flutter/Dart are unavailable.
-- **Next:** apply narrow Home spacing source fix and test/fixture contract fixes, review exact diff, then fresh guarded retry preflight. No Firmware/BIN/Firebase/OTA/flash/device/physical BLE/thermal/OEM visual action.
+- **Failed run:** Build #155 / Actions `43244335274`, job `131272831810`, attempt 1; immutable checkout `63ab4e8167cd099a30ad4ca8cd8cfb52d0c098`. Analyzer passed with 23 infos, 0 warnings/errors. Flutter suite failed **183 passed / 4 failed**; Gradle/build/signing/ZIP/Release gates skipped; no artifact or Release mutation.
+- **Four findings repaired:** (1) Tamper theme contract now checks `TamperApp` separate from `TamperScreen`; (2) actual Home 2-dp overflow fixed by changing two Home gaps 3→2 dp while preserving 420-dp canvas, seven 45-dp rows and 44-dp NOTIFY; (3) Home hit-target test now searches inside `_buildHomeArea`, asserts two 48×48 controls, and dashboard fixture uses 1080×3200 DPR3; (4) Firmware QC copy assertion uses actual bilingual `Firmware V7.2+ required` / `Perlu Firmware V7.2+`.
+- **Repair commits:** `9f1130642666801799cd7547dc907ec50cc55bf5` (one App source file), `53ebaecb6722e4335e6c20ead419fea96ee1b0e9` (widget tests), and `d00cef194cc27e65085234955b2eda60faa3aba8` (Firmware/App contract test). Each commit diff has been re-read; exactly three executable/test paths changed.
+- **Retry status:** #155 remains a preserved FAILED attempt; repairs are committed/read back, hosted validation still pending. No duplicate trigger until fresh preflight confirms no active/queued run, no PR, exact issue #33 owner/title/token, unchanged workflow and Build #153 Release baseline.
+- **Formatter/validation caveat:** local Flutter/Dart unavailable; no post-repair local tests/analyzer/format run. Workflow has no formatter step; `dart format` remains NOT RUN / UNVERIFIED.
+- **Next:** one guarded retry only after preflight. No Firmware/BIN/Firebase/OTA/flash/device/physical BLE/NVS/rail/LED/thermal/electrical/OEM visual action.
+
 
 ---
 
