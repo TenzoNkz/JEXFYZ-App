@@ -673,6 +673,10 @@ void main() {
       (tester) async {
         final previousLanguage = appLanguageNotifier.value;
         addTearDown(() => appLanguageNotifier.value = previousLanguage);
+        addTearDown(tester.view.resetPhysicalSize);
+        addTearDown(tester.view.resetDevicePixelRatio);
+        tester.view.devicePixelRatio = 1.0;
+        tester.view.physicalSize = const Size(800, 1200);
         appLanguageNotifier.value = AppLanguage.english;
 
         final startMs = DateTime(2026, 1, 1, 8).millisecondsSinceEpoch;
@@ -738,10 +742,12 @@ void main() {
         final lastValidSample = find.textContaining(
           'Last sample · 04:00',
         );
+        final statisticsScrollable = find.byType(Scrollable).first;
+        expect(tester.getSize(statisticsScrollable).height, greaterThan(0));
         await tester.scrollUntilVisible(
           lastValidSample,
           240,
-          scrollable: find.byType(Scrollable).first,
+          scrollable: statisticsScrollable,
         );
         await tester.pumpAndSettle();
         expect(lastValidSample, findsOneWidget);
