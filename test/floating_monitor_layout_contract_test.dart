@@ -454,7 +454,7 @@ void main() {
     final diagnosticsStart = settingsSource.indexOf('class DeviceDiagnosticsPage');
     final diagnosticsPage = settingsSource.substring(diagnosticsStart);
     expect(diagnosticsPage, contains('Copy diagnostics'));
-    expect(settingsPage, contains('Device and safety snapshot'));
+    expect(localizationSource, contains('Device and safety snapshot'));
     expect(diagnosticsPage, contains('runtimeOutputsKnown ?'));
     expect(diagnosticsPage, contains("voltageLockActive && !voltageLockSaved"));
     expect(diagnosticsPage, isNot(contains('coolerId')));
@@ -531,7 +531,7 @@ void main() {
     expect(find.text('Device Diagnostics'), findsOneWidget);
     expect(find.text('1.0.0+3'), findsOneWidget);
     expect(find.text('Copy diagnostics'), findsOneWidget);
-    expect(find.text('Disconnected'), findsOneWidget);
+    expect(find.text('DISCONNECTED'), findsOneWidget);
     expect(find.text('ON'), findsNothing);
     expect(tester.takeException(), isNull);
   });
