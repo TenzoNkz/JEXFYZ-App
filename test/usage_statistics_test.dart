@@ -511,6 +511,31 @@ void main() {
     expect(usage, isNot(contains('Duration(milliseconds: 16)')));
   });
 
+  test('late HOT after a stale gap leaves P1 closure to the receipt watchdog', () {
+    final usage = File('lib/usage_statistics.dart').readAsStringSync();
+    final recorderMethod = usage.indexOf('Future<void> recordTemperature({');
+    final staleReceiptGuard = usage.indexOf('if (p1ReceiptGap) {', recorderMethod);
+    final guardReturn = usage.indexOf(
+      'return Future<void>.value();',
+      staleReceiptGuard,
+    );
+    final receiptUpdate = usage.indexOf(
+      '_lastP1ReceiptAtMs = receivedAtMs;',
+      recorderMethod,
+    );
+    final enqueue = usage.indexOf(
+      'return _enqueue(() async {',
+      recorderMethod,
+    );
+
+    expect(recorderMethod, isNonNegative);
+    expect(staleReceiptGuard, greaterThan(recorderMethod));
+    expect(guardReturn, greaterThan(staleReceiptGuard));
+    expect(receiptUpdate, greaterThan(guardReturn));
+    expect(enqueue, greaterThan(receiptUpdate));
+    expect(usage, contains('_writeQueue.hasReservedCapacity'));
+  });
+
   test('usage history queue bounds fire-and-forget producers and reserves control capacity', () async {
     final queue = UsageStatsWriteQueue(
       maxPendingOperations: 4,
