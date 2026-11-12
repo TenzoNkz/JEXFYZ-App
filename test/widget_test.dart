@@ -1346,7 +1346,8 @@ void main() {
     final notifySlot = source.indexOf('_homeNotify(),', homeStart);
     expect(homeStart, isNonNegative);
     expect(notifySlot, greaterThan(homeStart));
-    expect(source.substring(homeStart, notifySlot), contains('const SizedBox(height: 3),'));
+    expect(RegExp(r'const SizedBox\\(height: 2,\\)').allMatches(source.substring(homeStart, notifySlot)).length, 2);
+    expect(source.substring(homeStart, notifySlot), isNot(contains('const SizedBox(height: 3),')));
     expect(source.substring(homeStart, notifySlot), contains("Image.asset(\n                              'assets/jexfyzcooler.png'"));
     expect(source.substring(homeStart, notifySlot), contains('height: imageHeight'));
     expect(source.substring(homeStart, notifySlot), isNot(contains('height: 56,')));
