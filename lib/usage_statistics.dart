@@ -1661,7 +1661,7 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
 
     setState(() {
       UsageStatsSnapshot? workingSnapshot = _snapshot;
-      var workingEventKeys = Set<String>.from(_snapshotEventKeys);
+      var workingEventKeys = _snapshotEventKeys;
       var summaryChanged = false;
 
       for (final update in updates) {
@@ -2029,7 +2029,7 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
                 metricKey: 'hotside',
                 referenceValue: widget.hotLimit.toDouble(),
               ),
-              const SizedBox(height: 22),
+              const SizedBox(height: 18),
               _profileSection(summary, language, scheme),
               const SizedBox(height: 12),
               Align(
@@ -2399,7 +2399,7 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
         ],
         const SizedBox(height: 7),
         SizedBox(
-          height: 170,
+          height: 160,
           width: double.infinity,
           child: hasData
               ? LayoutBuilder(
@@ -2861,7 +2861,7 @@ class _UsageLinePainter extends CustomPainter {
     final gridPaint = Paint()
       ..color = gridColor
       ..strokeWidth = 0.7;
-    final textStyle = TextStyle(color: labelColor, fontSize: 9);
+    final textStyle = TextStyle(color: labelColor, fontSize: 10);
     for (var index = 0; index <= 3; index++) {
       final fraction = index / 3;
       final y = plot.top + plot.height * fraction;
@@ -2964,14 +2964,14 @@ class _UsageLinePainter extends CustomPainter {
     final startText = TextPainter(
       text: TextSpan(
         text: _axisTime(fromMs, fromMs),
-        style: TextStyle(color: labelColor, fontSize: 9),
+        style: TextStyle(color: labelColor, fontSize: 10),
       ),
       textDirection: TextDirection.ltr,
     )..layout();
     final endText = TextPainter(
       text: TextSpan(
         text: _axisTime(toMs, fromMs),
-        style: TextStyle(color: labelColor, fontSize: 9),
+        style: TextStyle(color: labelColor, fontSize: 10),
       ),
       textDirection: TextDirection.ltr,
     )..layout();

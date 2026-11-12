@@ -766,6 +766,7 @@ void main() {
     final screenContract = screenSource.substring(screenStart, screenEnd).toLowerCase();
     expect(screenContract, contains('official build verification failed'));
     expect(screenContract, contains('verifikasi build resmi gagal'));
+    expect(screenContract, contains('themedata.dark(usematerial3: true)'));
     expect(screenContract, contains('opendevelopercontact'));
     expect(screenContract, isNot(contains('_insult(')));
 

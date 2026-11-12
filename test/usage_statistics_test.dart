@@ -430,6 +430,11 @@ void main() {
     expect(usage, contains('final eventsBySession ='));
     expect(usage, contains('_mergeSortedUsageStatsEvents('));
     expect(usage, contains('_summary = UsageStatsAnalytics.summarize(workingSnapshot);'));
+    expect(usage, contains('var workingEventKeys = _snapshotEventKeys;'));
+    expect(usage, isNot(contains('Set<String>.from(_snapshotEventKeys)')));
+    expect(usage, contains('height: 160,'));
+    expect(usage, contains('fontSize: 10);'));
+    expect(usage, isNot(contains('height: 170,')));
     expect(usage, isNot(contains('mergedEvents.any(')));
     expect(usage, isNot(contains('Duration(milliseconds: 16)')));
   });
