@@ -1199,3 +1199,20 @@ Only after validation and a separate explicit `Eksekusi Build App!` may an APK b
 - Device Diagnostics is accepted as a later feature direction, conditional on a source availability audit. Display only confirmed App/Firmware version, BLE/P1/sync state, sample freshness, actual voltage, confirmed outputs and localized safety state. No fake signal/health metrics, raw reason tokens, credentials, secrets or automatic cloud upload. A manual redacted copy report may be considered.
 - Execution staged: (1) earlier agreed Lock Voltage, Peltier popup, About; (2) Statistics simplification; (3) cross-screen style/motion/NOTIFY polish; (4) Device Diagnostics; (5) complete visual QC. Work in verifiable increments with regression tests and actual screenshot evidence.
 - Current mode is Diskusi: documentation-only. No source/tests/build/release/Firmware/OTA/flash/device operation. Recommended next mode is `Eksekusi Full!` to begin App-only implementation; this is a recommendation, not authorization.
+
+
+# CURRENT EXECUTION — APP VISUAL REFINEMENT IMPLEMENTED / QC BLOCKED — 2026-11-12
+
+- User command: @Thinking Eksekusi Full!. Authorized scope carried out: App source, App tests and project documentation only. No App Build/Release, Firmware/BIN, Firebase, OTA, flash or physical device operation was authorized or performed.
+- Execution baseline main HEAD: 5349cb0729d38f059ca0bb79350b931c01e36bd8; recursive tree 131 entries, truncated=false. Latest App source/test HEAD before the documentation checkpoint series: e30d0addcdeeb79541b1f795bb7e93fd8987594a.
+- Implemented:
+  - lib/main.dart: Lock Voltage centered blur overlay on Voltage/Adaptive only (Bluetooth > existing Adaptive gate > Lock Voltage; actual 5V telemetry gates locked confirmation); custom amber Peltier Fan→Peltier card, accurate paired CTA and preserved FAN ACK gate; readable Home NOTIFY two-line behavior; Phosphor icons.
+  - lib/floating_monitor.dart: Lock Voltage card first under Settings AppBar; Device Diagnostics snapshot under Device; About/Tentang below Firmware with bilingual contributor credits.
+  - lib/app_settings.dart: bilingual About, Diagnostics and Peltier prerequisite labels.
+  - lib/usage_statistics.dart: graph-first, less text-heavy diagrams, provenance info affordance, concise session/metric labels, compact six-metric cursor, collapsed secondary aggregates, Phosphor icons. Capture cadence, data semantics, SQL, schema, analytics and persistence unchanged.
+  - Regression source updated in test/widget_test.dart, test/floating_monitor_layout_contract_test.dart and test/usage_statistics_test.dart.
+- Device Diagnostics is a snapshot at page-open time, not a live updating stream. Only source-available values are shown; unknown remains --. Unsupported sensor sample freshness, signal strength, health, uptime are not fabricated. Copy report is manual, bilingual and does not include cooler ID/credentials or upload.
+- Static scan: seven changed Dart files have balanced delimiters; no missing literal JexText.of key against the 357-key bilingual table; no Material Icons.* in primary App Dart surfaces; no duplicate test names or malformed });;; 78 Phosphor Regular/Bold identifiers matched package-generated declarations. This is static source/readback only, not Dart parsing.
+- BLOCKED / NOT RUN: Flutter/Dart/Gradle/ADB are unavailable; local clone DNS failed. Formatter, focused/full Flutter tests, analyzer, Android build, rendered screenshots and OEM visual QA did not run. No hosted CI was triggered.
+- Release: Build #151 remains latest verified App artifact, immutable source SHA e383924067b7ab2da27f2e41f21232cfb7144ec0. Current main is newer, NOT RELEASED and VISUAL NOT VERIFIED. Firmware V7.2 validation, BLE physical/security, NVS, thermal/electrical, Firebase/OTA/flash/device remain separately unverified/unauthorized.
+- Next recommended command: Eksekusi Build App! for hosted format/analyzer/widget/full-suite/Android/release gates; then owner screenshot and field/OEM visual acceptance. This recommendation is not authorization.
