@@ -2658,3 +2658,16 @@
 - **Local validation:** no local Flutter/Dart toolchain is available in this runtime; no formatter, analyzer or test has run locally after repair. Hosted analyzer/test evidence for repaired source is still pending. The workflow has no Dart formatter step; formatting remains NOT RUN / UNVERIFIED.
 - **Retry disposition:** a single new guarded run is justified by the concrete analyzer root-cause repair. Before retry, confirm #154 terminal, zero queued/in-progress runs, no open PR, exact Issue #33 owner/title/token, unchanged workflow, expected tag/Release baseline, and capture the new immutable checkout SHA. Do not retry blindly or weaken any gate.
 - **Boundary:** no Firmware compile/BIN/Firebase/OTA/flash/device/BLE/NVS/rail/LED/thermal/electrical/OEM visual operation occurred.
+
+
+## BUILD #155 — GUARDED RETRY AFTER BUILD #154 ANALYZER REPAIR — ACTIVE — 2026-11-12
+
+- **Disposition:** ACTIVE, attempt 1. One guarded retry after the concrete analyzer root-cause repair; no blind retry.
+- **Run/job/source:** Build #155 / Actions run `43244335274`, workflow `374946166`, issue event, attempt 1, build job `131272831810`; immutable checkout SHA `63ab4e8167cd099a30ad6a4ca8cd8cfb52d0c098`. [Actions run](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/43244335274).
+- **Prior failure preserved:** Build #154 / run `43243342029` remains FAILED at analyzer on source `dd7e75f1597e14c3d929b1ca78825dc806aef25d`, with 6 errors / 0 warnings / 23 info deprecations. No tests/package/release occurred. The missing Flutter services import and invalid ThemeData.copyWith argument were repaired in commits `7b852bde09cac3c0f0c86cbe1fa4b28e994ea840` and `e2aa22b8d64016ab686009ecd2fc57f2ef330ec5`.
+- **Retry guard:** issue #154 terminal; no queued or in-progress run; no open PR; issue #33 remained owner-authored, OPEN, exact title and token; workflow blob unchanged `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12`; Release ID `403010611` / tag `jexfyz-latest` remained on Build #153 source `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e`. Issue #33 was closed/reopened once. Exactly one #155 run appeared.
+- **Current initial state:** run IN_PROGRESS. Steps 1 Set up job, 2 Checkout repository and 3 Set up Java 17 completed SUCCESS; step 4 Set up Flutter is IN_PROGRESS. Steps 5–21 and post-job cleanup are pending. Continue this run only.
+- **Source scope:** Build #155 checkout contains the two analyzer repairs. No workflow, Gradle, Android/native, BLE/P1, Firmware or Release logic change was made.
+- **Known omission:** workflow has no Dart formatter step; `dart format` remains NOT RUN / UNVERIFIED. Do not claim it as passed.
+- **Next:** inspect run `43244335274` / job `131272831810` and actual logs; do not create another trigger while active. Record analyzer, Flutter test count, Gradle, APK signing, source archive, Release/tag and downloaded asset evidence only when observed.
+- **Boundary:** Firmware compile/BIN, Firebase, OTA, flash, physical BLE/device/NVS/rail/LED, thermal/electrical cooling and OEM visual acceptance remain NOT RUN / UNVERIFIED.
