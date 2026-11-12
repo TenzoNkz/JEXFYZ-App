@@ -4173,12 +4173,14 @@ class TamperApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final darkTheme = ThemeData.dark(useMaterial3: true);
     return MaterialApp(
       title: appName,
       debugShowCheckedModeBanner: false,
-      theme: ThemeData.dark(useMaterial3: true).copyWith(
+      theme: darkTheme.copyWith(
         scaffoldBackgroundColor: const Color(0xFF111113),
-        fontFamily: 'Roboto',
+        textTheme: darkTheme.textTheme.apply(fontFamily: 'Roboto'),
+        primaryTextTheme: darkTheme.primaryTextTheme.apply(fontFamily: 'Roboto'),
       ),
       home: const TamperScreen(),
     );
