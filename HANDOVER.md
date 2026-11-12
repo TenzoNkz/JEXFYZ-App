@@ -27,7 +27,7 @@ This proves hosted App CI and packaging only. No Arduino-ESP32 Core 3.3.7 Firmwa
 
 ## Next action
 
-Gemini review is now complete and cross-checked against live `main`: the alleged P0 Adaptive deadlock and P2 LED stuttering are not supported by the code; the BLE App-identity limitation is real but already documented and requires the full trusted-enrollment/signature design, not a static APK token. The next recommended action is `Lanjut Diskusi!` to settle whether Lock Voltage must be a cryptographic App-only security boundary or remains an operational interlock. Do not implement BLE authorization until that scope and backend permissions are explicit. Firmware V7.2 still requires separate owner-side Arduino-ESP32 Core 3.3.7 compile/BIN identity and physical validation before distribution; no BIN/Firebase/OTA/flash/device operation is authorized here.
+Gemini review is complete. The next current workstream is the owner-approved App visual refinement plan recorded in DESIGN_NOTES.md and APP_NOTES.md. The earlier BLE identity limitation remains a separate known security gap; do not implement BLE authentication without explicit scope and backend/enrollment permissions. Firmware V7.2 still requires separate compile/BIN identity and physical validation before distribution; no BIN/Firebase/OTA/flash/device operation is authorized here.
 
 
 ## Discussion checkpoint — Lock Voltage UI refinement (2026-11-12)
@@ -53,3 +53,11 @@ Gemini review is now complete and cross-checked against live `main`: the alleged
 - The earlier About removal is historical and explicitly superseded. The source-contract test currently asserts About is absent; reverse those checks and add positive/order/localization/layout coverage under authorized implementation.
 - Keep handles exactly as written and do not fabricate links. “3D Design & Printing” assumes both activities; use “3D Printing” / “Pencetakan 3D” for print-only responsibility.
 - Discussion only; no source/test/build/release/Firmware/device action. Recommended next mode: `Eksekusi Full!` for App UI + regression tests across the accumulated UI requests; not yet authorized.
+
+
+## Current handover — whole-App polish and Statistics diagram (2026-11-12)
+
+- Owner approves the whole-App premium visual refinement plan and explicitly requests a simpler Usage Statistics diagram with less text. Follow PRODUCT_DESIGN_CONSTITUTION.md and VISUAL_QUALITY_GATE.md rather than creating a second style system.
+- Statistics must keep both temperature charts, Voltage/Adaptive/Peltier/Fan timelines, one shared cursor, session selection, useful aggregates and actual gap/session boundaries. Remove duplicated always-visible explanations, compact session metadata, retain concise Min/Avg/Max and Hotside limit, and move secondary duration/fan aggregates behind collapsed detail. Simplify cursor prompt/readout without losing accessibility or six-metric data.
+- Also stage the already approved Lock Voltage overlay/Settings placement, Peltier popup redesign, About/credits, global typography/icons/surfaces/motion/NOTIFY audit, then Device Diagnostics after authoritative data availability audit. Preserve Home geometry, 360-dp scale, EN/ID, themes, BLE/P1, safety and Firmware behavior.
+- Current mode: `Diskusi!`. Documentation only; no source/test/build/release/Firmware/device operation. Next recommended action: `Eksekusi Full!` to begin staged App-only implementation with focused regression tests; not authorization.
