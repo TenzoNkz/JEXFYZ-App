@@ -2115,8 +2115,8 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
                   language,
                 ),
                 JexText.phrase(
-                  'Local storage could not save one or more readings. Check available phone storage; some history may be missing.',
-                  'Penyimpanan lokal gagal menyimpan satu atau beberapa pembacaan. Periksa ruang penyimpanan ponsel; sebagian riwayat mungkin hilang.',
+                  'The local history writer could not keep up with incoming readings or storage failed. Some history may be missing; check available phone storage.',
+                  'Perekam riwayat lokal tidak mampu mengikuti pembacaan yang masuk atau penyimpanan mengalami kegagalan. Sebagian riwayat mungkin hilang; periksa ruang penyimpanan ponsel.',
                   language,
                 ),
                 scheme,
