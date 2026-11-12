@@ -1,24 +1,24 @@
-## CURRENT CHECKPOINT — BUILD #157 ACTIVE / FLUTTER SETUP — 2026-11-12
+## CURRENT CHECKPOINT — BUILD #157 ACTIVE / FLUTTER TESTS — 2026-11-12
 
 **Mode:** `@Thinking Eksekusi Build App!` — guarded App Build/QC/release only.
 
-### Previous attempt outcomes
+### Previous failed attempts and final repair
 
-- Build #154 / run `43243342029`: FAILED at analyzer, six errors. The missing Flutter services import and invalid Tamper theme copyWith font argument were repaired.
-- Build #155 / run `43244335274`: FAILED at tests, 183 passed / 4 failed. Analyzer passed; App source/test fixes included two Home gaps 3→2 dp, Tamper/Home contract ownership, DPR3 dashboard fixture and bilingual Firmware V7.2+ text.
-- Build #156 / run `43246666829`: FAILED at tests, 186 passed / 1 failed. Analyzer passed with 23 info findings, zero warnings/errors. The only remaining error was a stale Home Notify test assertion expecting the pre-fix 3-dp spacer. Final test correction now counts two literal 2-dp spacers and rejects any remaining 3-dp spacer; commits `b007b56ab5ddf91546f86937be202978dc7fee3b` then `38212c3620aba6eb9fa5f6db41b43fdb777a9ddf`. All three failed attempts are retained in the report.
+- Build #154 / run `43243342029`: analyzer FAILED (6 errors); root causes repaired with services import and proper Tamper textTheme handling.
+- Build #155 / run `43244335274`: Flutter tests FAILED (183 pass / 4 fail); analyzer passed. Four causes repaired with Home 2-dp overflow correction, Tamper/Home source-contract and DPR3 fixture correction, and current V7.2+ copy assertion.
+- Build #156 / run `43246666829`: Flutter tests FAILED (186 pass / 1 fail); analyzer passed (23 infos, zero warning/error). Its sole failure was a stale Home Notify assertion expecting 3-dp spacing. Final test correction `b007b56ab5ddf91546f86937be202978dc7fee3b` then `38212c3620aba6eb9fa5f6db41b43fdb777a9ddf` now counts two 2-dp spacers and rejects any 3-dp spacer before NOTIFY.
+- All three failures are preserved. Build #153 remains latest published package until a later run passes all gates.
 
 ### Current guarded retry — Build #157
 
 - Run `43247876115`, workflow 374946166, issue event, attempt 1, job `131285336987`; immutable checkout SHA `10d106537e92060e0aac3fc17fd37f56e746bcd5`. [Actions run](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/43247876115).
-- Initial state: IN_PROGRESS. Steps 1–3 SUCCESS; step 4 Set up Flutter IN_PROGRESS; steps 5–21 pending. Continue this run only.
-- Fresh preflight: #156 terminal; zero queued/in-progress runs; no open PR; exact issue #33 owner/title/body token; unchanged workflow blob `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12`; Release #153 tag/assets intact; versionName exact. Issue #33 was closed/reopened once and only one #157 run appeared.
-- Build #153 remains current published Release until #157 passes.
-- **Formatter:** workflow has no Dart format step; `dart format` remains NOT RUN / UNVERIFIED.
+- Steps 1–12 SUCCESS. Step 13 `flutter test` IN_PROGRESS. Steps 14–21 pending. Continue this run only.
+- Fresh preflight: #156 terminal; zero queued/in-progress; no open PR; issue #33 exact owner/title/token; workflow unchanged; Release #153 tag/assets intact; versionName exact. Issue #33 closed/reopened once and a single #157 run appeared.
+- Formatter remains NOT RUN / UNVERIFIED; workflow has no formatter step.
 
 ### Next
 
-Inspect only run `43247876115` / job `131285336987`; preserve all previous failures and never duplicate. Record analyzer/test/Gradle/APK signing/source ZIP/Release/tag/downloaded-asset gates only when actually observed. Firmware/BIN/Firebase/OTA/flash/device/BLE/thermal/electrical/OEM visual tests remain outside scope.
+Inspect only run `43247876115` / job `131285336987`; record actual test/Gradle/APK/signing/source ZIP/Release/tag/downloaded-asset results. No duplicate trigger. Firmware/BIN/Firebase/OTA/flash/device/BLE/thermal/electrical/OEM visual validation remains separate and not performed.
 
 ---
 
