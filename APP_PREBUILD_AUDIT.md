@@ -1,3 +1,14 @@
+## Disposition update — explicit Build #154 authorization — 2026-11-12
+
+The earlier HOLD was the pre-trigger recommendation made during the preceding Full/source-audit session, when no Build App authorization existed. The owner has now explicitly issued `@Thinking Eksekusi Build App!`. The existing guarded workflow was invoked once through issue #33, creating Build #154 / run 43243342029 / job 131269364235 on immutable checkout SHA dd7e75f1597e14c3d929b1ca78825dc806aef25d. The original HOLD is retained as historical context; it is not the current run state.
+
+- Run status at this update: IN_PROGRESS; runner, checkout and Java 17 succeeded; Flutter setup was active.
+- The workflow still has no Dart formatter step. `dart format` is NOT RUN / UNVERIFIED and must not be reported as passed. This known omission is disclosed rather than silently treated as validated.
+- Current source has 187 written test declarations from 9 Dart test files; inventory is not execution evidence. Await actual analyzer/test/Gradle logs for this exact checkout.
+- No Firmware compile/BIN, Firebase/OTA/flash, BLE physical/device, electrical/thermal or OEM visual operation is included.
+
+---
+
 # JE Cooler App — Full Pre-Build Audit
 
 **Audit date:** 2026-11-12 (Asia/Jakarta)  
