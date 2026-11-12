@@ -54,6 +54,22 @@ void main() {
     expect(migrated.toMap()['metricSchemaVersion'], FloatingMetric.schemaVersion);
   });
 
+  test('Floating Monitor native reconciliation is single-flight and lifecycle-bound', () {
+    final source = File('lib/floating_monitor.dart').readAsStringSync();
+    final start = source.indexOf('void _startRuntimeSync()');
+    final end = source.indexOf('void dispose()', start);
+    expect(start, isNonNegative);
+    expect(end, greaterThan(start));
+    final runtime = source.substring(start, end);
+
+    expect(runtime, contains('Duration(seconds: 3)'));
+    expect(runtime, contains('_runtimeSyncInFlight'));
+    expect(runtime, contains('finally'));
+    expect(runtime, isNot(contains('Duration(milliseconds: 300)')));
+    expect(source, contains('runtimeTimer?.cancel();'));
+    expect(source, contains('WidgetsBindingObserver'));
+  });
+
   test('Floating Monitor settings show live numeric values and opacity marks', () {
     final floating = File('lib/floating_monitor.dart').readAsStringSync();
     final settings = File('lib/app_settings.dart').readAsStringSync();

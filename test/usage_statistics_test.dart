@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -426,7 +427,82 @@ void main() {
       ),
     );
     expect(usage, contains('recordTemperatureSample('));
+    expect(usage, contains('final eventsBySession ='));
+    expect(usage, contains('_mergeSortedUsageStatsEvents('));
+    expect(usage, contains('_summary = UsageStatsAnalytics.summarize(workingSnapshot);'));
+    expect(usage, isNot(contains('mergedEvents.any(')));
     expect(usage, isNot(contains('Duration(milliseconds: 16)')));
+  });
+
+  test('usage history write queue applies backpressure without dropping accepted work', () async {
+    final queue = UsageStatsWriteQueue(maxPendingOperations: 4);
+    final releaseFirst = Completer<void>();
+    final completed = <int>[];
+    final futures = <Future<void>>[];
+
+    for (var index = 0; index < 12; index++) {
+      final operationIndex = index;
+      futures.add(queue.enqueue(() async {
+        if (operationIndex == 0) await releaseFirst.future;
+        completed.add(operationIndex);
+      }, onError: (_) {}));
+    }
+
+    await Future<void>.delayed(Duration.zero);
+    expect(queue.pendingOperations, lessThanOrEqualTo(4));
+    expect(completed, isEmpty);
+    releaseFirst.complete();
+    await Future.wait(futures);
+
+    expect(completed, List<int>.generate(12, (index) => index));
+    expect(queue.pendingOperations, 0);
+  });
+
+  test('large Statistics snapshots preserve samples while rendering a bounded chart list', () {
+    final start = DateTime(2026, 1, 1).millisecondsSinceEpoch;
+    const count = 12000;
+    final events = <UsageStatsEvent>[];
+    for (var index = 0; index < count; index++) {
+      final timestamp = start + index * 1000;
+      events.add(UsageStatsEvent(
+        sessionId: 9,
+        timestampMs: timestamp,
+        metric: 'battery',
+        numberValue: 30 + (index % 9) * .1,
+        textValue: null,
+      ));
+      events.add(UsageStatsEvent(
+        sessionId: 9,
+        timestampMs: timestamp,
+        metric: 'hotside',
+        numberValue: 35 + (index % 7) * .1,
+        textValue: null,
+      ));
+    }
+    final session = UsageStatsSession(
+      id: 9,
+      coolerId: 'AA:BB:CC',
+      startedAtMs: start,
+      endedAtMs: start + count * 1000,
+      lastSeenAtMs: start + count * 1000,
+      lastHotsideSeenAtMs: start + count * 1000,
+      lastBatterySeenAtMs: start + count * 1000,
+    );
+    final snapshot = UsageStatsSnapshot(
+      fromMs: start,
+      toMs: start + count * 1000,
+      sessions: [session],
+      events: events,
+    );
+
+    final summary = UsageStatsAnalytics.summarize(snapshot);
+    expect(snapshot.events.length, count * 2);
+    expect(summary.battery.points.length, greaterThan(12000));
+    expect(summary.hotside.points.length, greaterThan(12000));
+    expect(summary.battery.chartPoints.length, lessThanOrEqualTo(1600));
+    expect(summary.hotside.chartPoints.length, lessThanOrEqualTo(1600));
+    expect(summary.battery.observedMs, greaterThan(0));
+    expect(summary.hotside.observedMs, greaterThan(0));
   });
 
   test('statistics storage is local SQLite and is not added to Firmware or Firebase', () {
@@ -641,11 +717,19 @@ void main() {
       await tester.tap(peltierHitArea);
       await tester.pump();
       expect(find.text('Waktu dipilih'), findsOneWidget);
+      final selectedDock = find.byKey(
+        const ValueKey<String>('usage-selected-time-dock'),
+      );
+      expect(selectedDock, findsOneWidget);
+      expect(tester.getSize(selectedDock).height, lessThanOrEqualTo(200));
       final clearCursor = find.byTooltip('Hapus waktu pilihan');
       expect(clearCursor, findsOneWidget);
       final clearCursorSize = tester.getSize(clearCursor);
       expect(clearCursorSize.width, greaterThanOrEqualTo(48));
       expect(clearCursorSize.height, greaterThanOrEqualTo(48));
+      await tester.tap(clearCursor);
+      await tester.pumpAndSettle();
+      expect(find.byKey(const ValueKey<String>('usage-selected-time-dock')), findsNothing);
       expect(tester.takeException(), isNull);
 
       await pumpAtWidth(420, ThemeData.dark(useMaterial3: true));

@@ -13,6 +13,7 @@ import 'dart:math' as math;
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter/material.dart';
+import 'package:phosphor_icons/phosphor_icons.dart';
 import 'package:jexfyz_cooler/main.dart';
 import 'package:jexfyz_cooler/app_settings.dart';
 import 'package:jexfyz_cooler/floating_monitor.dart';
@@ -702,7 +703,7 @@ void main() {
     expect(source, contains('active: connected && runtimeOutputsKnown && fanOn'));
   });
 
-  testWidgets('tamper screen shows an insult-only wall and opens developer contact',
+  testWidgets('tamper screen explains official-build verification failure and opens developer contact',
       (tester) async {
     tester.view.physicalSize = const Size(390, 844);
     tester.view.devicePixelRatio = 1.0;
@@ -731,30 +732,30 @@ void main() {
     await tester.pumpWidget(const TamperApp());
     await tester.pump();
 
+    expect(find.text('Verifikasi build resmi gagal'), findsOneWidget);
+    expect(
+      find.text(
+        'Versi JE Cooler ini tidak dapat diverifikasi. Pasang rilis resmi lalu coba lagi.',
+      ),
+      findsOneWidget,
+    );
     expect(find.text('Hubungi Pengembang'), findsOneWidget);
-    expect(find.byType(Icon), findsOneWidget);
-    expect(find.textContaining('KONTOL'), findsWidgets);
-    expect(find.textContaining('MEMEK'), findsWidgets);
-    expect(find.textContaining('ANJING'), findsWidgets);
-    expect(find.textContaining('MONYET'), findsWidgets);
-    expect(find.textContaining('BABI'), findsWidgets);
+    expect(find.byIcon(PhosphorIconsBold.warning), findsOneWidget);
 
     final renderedText = tester
         .widgetList<Text>(find.byType(Text))
         .map((widget) => widget.data ?? widget.textSpan?.toPlainText() ?? '')
         .join(' ')
         .toLowerCase();
-    for (final forbidden in [
-      'integrity',
-      'integritas',
-      'build',
-      'verifikasi',
-      'modifikasi',
-      'telegram',
-      '@horizontalzzz',
-      'exit',
+    for (final obsolete in [
+      'kontol',
+      'memek',
+      'anjing',
+      'monyet',
+      'bangsat',
+      'babi',
     ]) {
-      expect(renderedText, isNot(contains(forbidden)));
+      expect(renderedText, isNot(contains(obsolete)));
     }
 
     final screenSource = File('lib/main.dart').readAsStringSync();
@@ -763,25 +764,10 @@ void main() {
     expect(screenStart, isNonNegative);
     expect(screenEnd, greaterThan(screenStart));
     final screenContract = screenSource.substring(screenStart, screenEnd).toLowerCase();
-    expect(screenContract, isNot(contains('integrity')));
-    expect(screenContract, isNot(contains('integritas')));
-    expect(screenContract, isNot(contains('official build')));
+    expect(screenContract, contains('official build verification failed'));
+    expect(screenContract, contains('verifikasi build resmi gagal'));
     expect(screenContract, contains('opendevelopercontact'));
-    expect(screenContract, contains('child: icon('));
-    expect(screenContract, contains('phosphoriconsbold.warning'));
-    expect(screenContract, isNot(contains('jexanimatedicon.glyph')));
-    expect(
-      screenContract,
-      contains('padding: const edgeinsets.symmetric(horizontal: 12, vertical: 4)'),
-    );
-    expect(screenContract, contains('color: const color(0xff101014)'));
-    expect(screenContract, contains('borderradius: borderradius.circular(12)'));
-    expect(
-      screenContract,
-      contains('border.all(color: const color(0xff30252a), width: 1)'),
-    );
-    expect(screenContract, contains('textalign: textalign.center'));
-    expect(screenContract, contains('softwrap: true'));
+    expect(screenContract, isNot(contains('_insult(')));
 
     final nativeSource = File(
       'android/app/src/main/kotlin/com/horizontalzzz/jexfyz/MainActivity.kt',
@@ -794,6 +780,7 @@ void main() {
     expect(contactRequested, isTrue);
     expect(tester.takeException(), isNull);
   });
+
 
   test('Dashboard indicators use integrated 2D silhouettes instead of stacked ornaments', () {
     final source = File('lib/main.dart').readAsStringSync();
@@ -2667,5 +2654,42 @@ void main() {
     expect(theme.brightness, Brightness.dark);
     expect(theme.scaffoldBackgroundColor, const Color(0xFF0F1013));
   });
+
+  test('Home controls keep compact visuals inside 48-dp touch targets', () {
+    final source = File('lib/main.dart').readAsStringSync();
+    final headerStart = source.indexOf('SizedBox(\n              height: 48,');
+    final headerEnd = source.indexOf('const SizedBox(height: 3),', headerStart);
+    expect(headerStart, isNonNegative);
+    expect(headerEnd, greaterThan(headerStart));
+    final header = source.substring(headerStart, headerEnd);
+    expect(header, contains('tightFor(width: 48, height: 48)'));
+    expect(header, contains('size: 25'));
+
+    final tabStart = source.indexOf("SizedBox(\n                                    height: 48,");
+    expect(tabStart, isNonNegative);
+    final temperatureStart = source.indexOf('Widget _temperatureButton(');
+    final temperatureEnd = source.indexOf('Widget _lockedZoneRow(', temperatureStart);
+    expect(temperatureStart, isNonNegative);
+    expect(temperatureEnd, greaterThan(temperatureStart));
+    final temperatureButton = source.substring(temperatureStart, temperatureEnd);
+    expect(temperatureButton, contains('width: 48'));
+    expect(temperatureButton, contains('height: 48'));
+    expect(temperatureButton, contains('width: 34'));
+    expect(temperatureButton, contains('height: 34'));
+  });
+
+  test('Connection status polling is lifecycle-aware and prevents overlapping native reads', () {
+    final source = File('lib/main.dart').readAsStringSync();
+    final start = source.indexOf('class _ConnectionSheetContentState');
+    final end = source.indexOf('Future<int> _getAndroidSdkInt', start);
+    expect(start, isNonNegative);
+    expect(end, greaterThan(start));
+    final connection = source.substring(start, end);
+    expect(connection, contains('Duration(seconds: 3)'));
+    expect(connection, contains('_statusRefreshInFlight'));
+    expect(connection, contains('WidgetsBindingObserver'));
+    expect(connection, isNot(contains('Duration(milliseconds: 650)')));
+  });
+
 
 }

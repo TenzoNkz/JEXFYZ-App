@@ -4193,170 +4193,70 @@ class TamperScreen extends StatelessWidget {
     try {
       await securityChannel.invokeMethod<bool>('openDeveloperContact');
     } catch (error) {
-      // Keep the screen intentionally opaque if the external launch cannot be completed.
       debugPrint('Developer contact launch failed: $error');
     }
   }
 
-  Widget _insult(
-    String text, {
-    Color color = Colors.white,
-    double size = 14,
-    FontWeight weight = FontWeight.w800,
-  }) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-        decoration: BoxDecoration(
-          color: const Color(0xFF101014),
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: const Color(0xFF30252A), width: 1),
-        ),
-        child: Text(
-          text,
-          textAlign: TextAlign.center,
-          softWrap: true,
-          style: TextStyle(
-            color: color,
-            fontSize: size,
-            height: 1.18,
-            fontWeight: weight,
-            letterSpacing: 0.18,
-          ),
-        ),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
-    const background = Color(0xFF09090B);
-    const hotRed = Color(0xFFFF4654);
-    final compact = MediaQuery.sizeOf(context).width < 370;
-
+    final language = appLanguageNotifier.value;
+    final scheme = Theme.of(context).colorScheme;
     return Scaffold(
-      backgroundColor: background,
+      backgroundColor: scheme.surface,
       body: SafeArea(
-        child: Column(
-          children: [
-            Expanded(
-              child: LayoutBuilder(
-                builder: (context, constraints) => SingleChildScrollView(
-                  padding: const EdgeInsets.fromLTRB(16, 10, 16, 8),
-                  child: ConstrainedBox(
-                    constraints: BoxConstraints(
-                      minHeight: constraints.maxHeight > 18
-                          ? constraints.maxHeight - 18
-                          : 0,
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        const SizedBox(height: 4),
-                        Center(
-                          child: Container(
-                            width: 58,
-                            height: 58,
-                            decoration: BoxDecoration(
-                              color: const Color(0x223A0B10),
-                              borderRadius: BorderRadius.circular(18),
-                              border: Border.all(color: const Color(0x8870232A)),
-                            ),
-                            child: Icon(
-                              PhosphorIconsBold.warning,
-                              color: hotRed,
-                              size: 32,
-                            ),
-                          ),
-                        ),
-                        const Text(
-                          headerName,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 21,
-                            fontWeight: FontWeight.w900,
-                            letterSpacing: 1.2,
-                          ),
-                        ),
-                        _insult(
-                          'WOI, KONTOL!!!',
-                          color: hotRed,
-                          size: compact ? 24 : 27,
-                        ),
-                        _insult(
-                          'ANJING! BANGSAT! BAJINGAN! BRENGSEK! KEPARAT! KAMPRET! JANCOK! ASU!',
-                          color: Colors.white,
-                          size: compact ? 13 : 15,
-                        ),
-                        _insult(
-                          'KONTOL! MEMEK! BABI! MONYET! GOBLOK! TOLOL! BEGO! DONGO! SINTING! TAI!',
-                          color: hotRed,
-                          size: compact ? 14 : 16,
-                        ),
-                        _insult(
-                          'MUKA LO KAYA TAI, KELAKUAN KAYA MONYET! BACOT LO GEDE BANGET, OTAK LO DI MANA, HAH?!',
-                          size: compact ? 13 : 15,
-                        ),
-                        _insult(
-                          'DASAR BABI GOBLOK! TOLOL MAKSIMAL! BEGO KEBANGETAN! BANGSAT NGGAK KETULUNGAN! SOK JAGO, SOK KERAS, SOK PALING PINTER!',
-                          color: const Color(0xFFFF737D),
-                          size: compact ? 13 : 15,
-                        ),
-                        _insult(
-                          'ANJING LO! KONTOL LO! MEMEK LO! MONYET LO! BABI LO! BRENGSEK! KAMPRET! BAJINGAN!',
-                          size: compact ? 14 : 16,
-                        ),
-                        _insult(
-                          'NGACA DULU, WOI! BACOT KAYA DEWA, OTAK KAYA KOSONG! DASAR KEPARAT! TAI! JANCOK! ASU!',
-                          color: hotRed,
-                          size: compact ? 13 : 15,
-                        ),
-                        _insult(
-                          'WOI, BAJINGAN! BANGSAT! SETAN KEPARAT! DONGO! GOBLOK! TOLOL! BEGO! KELEWAT BEGO!',
-                          size: compact ? 13 : 15,
-                        ),
-                        _insult(
-                          'ANJING! KONTOL! MEMEK! TAI! BABI! MONYET! KAMPRET! BRENGSEK! KEPARAT! JANCOK! ASU!',
-                          color: const Color(0xFFFF737D),
-                          size: compact ? 14 : 16,
-                        ),
-                        _insult(
-                          'SOK JAGO BANGET, PADAHAL BEGO KEBANGETAN! DASAR BANGSAT, OTAK KOSONG, BACOT DOANG!',
-                          size: compact ? 13 : 15,
-                        ),
-                        const SizedBox(height: 4),
-                      ],
+        child: Center(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(24),
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 420),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Center(
+                    child: Icon(
+                      PhosphorIconsBold.warning,
+                      color: scheme.error,
+                      size: 46,
                     ),
                   ),
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
-              child: SizedBox(
-                width: double.infinity,
-                height: 54,
-                child: FilledButton(
-                  onPressed: _contactDeveloper,
-                  style: FilledButton.styleFrom(
-                    backgroundColor: const Color(0xFFB42332),
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14),
+                  const SizedBox(height: 20),
+                  Text(
+                    JexText.phrase(
+                      'Official build verification failed',
+                      'Verifikasi build resmi gagal',
+                      language,
                     ),
-                    textStyle: const TextStyle(
-                      fontWeight: FontWeight.w900,
-                      letterSpacing: 0.35,
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.w800,
                     ),
                   ),
-                  child: Text(JexText.of('contactDeveloper', appLanguageNotifier.value)),
-                ),
+                  const SizedBox(height: 10),
+                  Text(
+                    JexText.phrase(
+                      'This copy of JE Cooler could not be verified. Install the official release and try again.',
+                      'Versi JE Cooler ini tidak dapat diverifikasi. Pasang rilis resmi lalu coba lagi.',
+                      language,
+                    ),
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: scheme.onSurfaceVariant,
+                      height: 1.4,
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  SizedBox(
+                    height: 52,
+                    child: FilledButton(
+                      onPressed: _contactDeveloper,
+                      child: Text(JexText.of('contactDeveloper', language)),
+                    ),
+                  ),
+                ],
               ),
             ),
-          ],
+          ),
         ),
       ),
     );
@@ -9335,25 +9235,34 @@ void _handleAckLine(String line) {
     required VoidCallback onPressed,
   }) {
     final scheme = Theme.of(context).colorScheme;
-    return InkWell(
-      onTap: enabled ? onPressed : null,
-      borderRadius: BorderRadius.circular(12),
-      child: Container(
-        width: 34,
-        height: 34,
-        decoration: BoxDecoration(
-          color: enabled
-              ? scheme.surfaceContainerHighest
-              : scheme.surfaceContainerHighest.withValues(alpha: .48),
+    return SizedBox(
+      width: 48,
+      height: 48,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: enabled ? onPressed : null,
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: scheme.outlineVariant),
-        ),
-        child: Icon(
-          icon,
-          size: 19,
-          color: enabled
-              ? scheme.onSurfaceVariant
-              : scheme.onSurfaceVariant.withValues(alpha: .28),
+          child: Center(
+            child: Container(
+              width: 34,
+              height: 34,
+              decoration: BoxDecoration(
+                color: enabled
+                    ? scheme.surfaceContainerHighest
+                    : scheme.surfaceContainerHighest.withValues(alpha: .48),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: scheme.outlineVariant),
+              ),
+              child: Icon(
+                icon,
+                size: 19,
+                color: enabled
+                    ? scheme.onSurfaceVariant
+                    : scheme.onSurfaceVariant.withValues(alpha: .28),
+              ),
+            ),
+          ),
         ),
       ),
     );
@@ -9539,15 +9448,15 @@ void _handleAckLine(String line) {
         child: Column(
           children: [
             SizedBox(
-              height: 42,
+              height: 48,
               child: Row(
                 children: [
                   SizedBox(
-                    width: 40,
+                    width: 48,
                     child: Center(
                       child: IconButton(
                         padding: EdgeInsets.zero,
-                        constraints: const BoxConstraints.tightFor(width: 36, height: 36),
+                        constraints: const BoxConstraints.tightFor(width: 48, height: 48),
                         tooltip: connected ? JexText.of('disconnect', appLanguageNotifier.value) : JexText.of('bluetooth', appLanguageNotifier.value),
                         icon: JexAnimatedIcon(
                           kind: JexAnimatedIconKind.bluetooth,
@@ -9593,11 +9502,11 @@ void _handleAckLine(String line) {
                     ),
                   ),
                   SizedBox(
-                    width: 40,
+                    width: 48,
                     child: Center(
                       child: IconButton(
                         padding: EdgeInsets.zero,
-                        constraints: const BoxConstraints.tightFor(width: 36, height: 36),
+                        constraints: const BoxConstraints.tightFor(width: 48, height: 48),
                         tooltip: JexText.of('settings', appLanguageNotifier.value),
                         icon: JexAnimatedIcon.glyph(
                           icon: PhosphorIconsRegular.gear,
@@ -9838,7 +9747,7 @@ void _handleAckLine(String line) {
                                 children: [
                                   const SizedBox(height: 11),
                                   SizedBox(
-                                    height: 42,
+                                    height: 48,
                                     child: Padding(
                                       padding: const EdgeInsets.symmetric(horizontal: 8),
                                       child: Row(
@@ -9905,10 +9814,12 @@ class _ConnectionSheetContent extends StatefulWidget {
   State<_ConnectionSheetContent> createState() => _ConnectionSheetContentState();
 }
 
-class _ConnectionSheetContentState extends State<_ConnectionSheetContent> {
+class _ConnectionSheetContentState extends State<_ConnectionSheetContent>
+    with WidgetsBindingObserver {
   static const MethodChannel _channel = MethodChannel('je_x_fyz/battery_temp');
 
   Timer? _refreshTimer;
+  bool _statusRefreshInFlight = false;
   bool _scanAttempted = false;
   bool _scanRequestInFlight = false;
   int _scanGeneration = 0;
@@ -9923,18 +9834,36 @@ class _ConnectionSheetContentState extends State<_ConnectionSheetContent> {
   @override
   void initState() {
     super.initState();
-    _refreshStatus();
-    _refreshTimer = Timer.periodic(
-      const Duration(milliseconds: 650),
-      (_) => _refreshStatus(),
-    );
+    WidgetsBinding.instance.addObserver(this);
+    unawaited(_refreshStatus());
+    _startStatusRefresh();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) unawaited(_requestScan());
     });
   }
 
+  void _startStatusRefresh() {
+    _refreshTimer?.cancel();
+    _refreshTimer = Timer.periodic(
+      const Duration(seconds: 3),
+      (_) => unawaited(_refreshStatus()),
+    );
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      unawaited(_refreshStatus());
+      _startStatusRefresh();
+    } else {
+      _refreshTimer?.cancel();
+      _refreshTimer = null;
+    }
+  }
+
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _refreshTimer?.cancel();
     super.dispose();
   }
@@ -9965,7 +9894,8 @@ class _ConnectionSheetContentState extends State<_ConnectionSheetContent> {
   }
 
   Future<void> _refreshStatus() async {
-    if (!Platform.isAndroid) return;
+    if (!Platform.isAndroid || !mounted || _statusRefreshInFlight) return;
+    _statusRefreshInFlight = true;
     try {
       final adapter = await FlutterBluePlus.adapterState.first;
       final scan = await Permission.bluetoothScan.status;
@@ -9992,6 +9922,8 @@ class _ConnectionSheetContentState extends State<_ConnectionSheetContent> {
       });
     } catch (e) {
       debugPrint('Connection status: $e');
+    } finally {
+      _statusRefreshInFlight = false;
     }
   }
 

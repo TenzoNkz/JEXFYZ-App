@@ -384,6 +384,7 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
   bool loading = true;
   bool _waitingForOverlayPermission = false;
   bool _permissionResumeCheckRunning = false;
+  bool _runtimeSyncInFlight = false;
   Timer? runtimeTimer;
 
   @override
@@ -401,7 +402,15 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
   // may not be observable at the exact first resumed callback.
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      if (_waitingForOverlayPermission) unawaited(_finishOverlayPermissionFlow());
+      if (_waitingForOverlayPermission) {
+        unawaited(_finishOverlayPermissionFlow());
+      } else if (config.enabled && floatingTelemetryNotifier.value.connected) {
+        _startRuntimeSync();
+        unawaited(_syncRuntimeState());
+      }
+    } else {
+      runtimeTimer?.cancel();
+      runtimeTimer = null;
     }
   }
 
@@ -617,48 +626,59 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
   }
 
   // AI-METHOD / RUNTIME-SYNC-CONTRACT
-  // Low-frequency reconciliation for overlay attachment and native size/orientation changes.
+  // Bounded reconciliation for native overlay attachment and size/orientation changes.
   void _startRuntimeSync() {
     runtimeTimer?.cancel();
     runtimeTimer = Timer.periodic(
-      const Duration(milliseconds: 300),
+      const Duration(seconds: 3),
       (_) => unawaited(_syncRuntimeState()),
     );
   }
 
   // AI-METHOD / RUNTIME-HEALTH-CONTRACT
-  // Detect service/window loss and clear stale enabled state instead of silently showing
-  // a broken Floating Monitor toggle.
+  // Single-flight native reconciliation prevents slow MethodChannel calls from overlapping.
   Future<void> _syncRuntimeState() async {
-    if (!mounted || !config.enabled || !floatingTelemetryNotifier.value.connected) return;
-    if (!await FloatingBridge.hasPermission()) return;
-    final state = await FloatingBridge.runtimeState();
-    if (!mounted || state == null || !floatingTelemetryNotifier.value.connected) return;
-
-    final serviceRunning = state['service_running'] ?? state['running'];
-    final overlayAttached = state['view_attached_to_window'] ?? state['overlay'];
-    if (serviceRunning != true || overlayAttached != true) {
-      runtimeTimer?.cancel();
-      runtimeTimer = null;
-      config = config.copyWith(enabled: false);
-      await FloatingStore.save(config);
-      if (mounted) setState(() {});
+    if (_runtimeSyncInFlight ||
+        !mounted ||
+        !config.enabled ||
+        !floatingTelemetryNotifier.value.connected) {
       return;
     }
+    _runtimeSyncInFlight = true;
+    try {
+      if (!await FloatingBridge.hasPermission()) return;
+      final state = await FloatingBridge.runtimeState();
+      if (!mounted || state == null || !floatingTelemetryNotifier.value.connected) return;
 
-    final horizontal = state['horizontal'];
-    final size = state['size'];
-    var next = config;
-    if (horizontal is bool && horizontal != config.horizontal) {
-      next = next.copyWith(horizontal: horizontal);
-    }
-    if (size is num && (size.toDouble() - config.size).abs() > 0.005) {
-      next = next.copyWith(size: size.toDouble().clamp(0.3, 1.0).toDouble());
-    }
-    if (next.horizontal != config.horizontal || next.size != config.size) {
-      config = next;
-      await FloatingStore.save(next);
-      if (mounted) setState(() {});
+      final serviceRunning = state['service_running'] ?? state['running'];
+      final overlayAttached = state['view_attached_to_window'] ?? state['overlay'];
+      if (serviceRunning != true || overlayAttached != true) {
+        runtimeTimer?.cancel();
+        runtimeTimer = null;
+        config = config.copyWith(enabled: false);
+        await FloatingStore.save(config);
+        if (mounted) setState(() {});
+        return;
+      }
+
+      final horizontal = state['horizontal'];
+      final size = state['size'];
+      var next = config;
+      if (horizontal is bool && horizontal != config.horizontal) {
+        next = next.copyWith(horizontal: horizontal);
+      }
+      if (size is num && (size.toDouble() - config.size).abs() > 0.005) {
+        next = next.copyWith(size: size.toDouble().clamp(0.3, 1.0).toDouble());
+      }
+      if (next.horizontal != config.horizontal || next.size != config.size) {
+        config = next;
+        await FloatingStore.save(next);
+        if (mounted) setState(() {});
+      }
+    } catch (error) {
+      debugPrint('Floating Monitor runtime sync: $error');
+    } finally {
+      _runtimeSyncInFlight = false;
     }
   }
 

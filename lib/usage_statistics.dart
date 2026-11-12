@@ -184,6 +184,7 @@ class UsageTemperatureSummary {
   final double? average;
   final int observedMs;
   final List<UsageChartPoint> points;
+  final List<UsageChartPoint> chartPoints;
 
   const UsageTemperatureSummary({
     required this.minimum,
@@ -191,6 +192,7 @@ class UsageTemperatureSummary {
     required this.average,
     required this.observedMs,
     required this.points,
+    required this.chartPoints,
   });
 
   bool get hasData => observedMs > 0 && minimum != null && maximum != null;
@@ -269,12 +271,25 @@ abstract interface class UsageStatisticsRepository {
 
 class UsageStatsAnalytics {
   static UsageStatsSummary summarize(UsageStatsSnapshot snapshot) {
-    final battery = _temperatureSummary(snapshot, 'battery');
-    final hotside = _temperatureSummary(snapshot, 'hotside');
-    final voltage = _stateSegments(snapshot, 'voltage');
-    final adaptive = _stateSegments(snapshot, 'adaptive');
-    final peltier = _stateSegments(snapshot, 'peltier');
-    final fan = _stateSegments(snapshot, 'fan_speed');
+    final eventsBySession = <int, Map<String, List<UsageStatsEvent>>>{};
+    for (final event in snapshot.events) {
+      eventsBySession
+          .putIfAbsent(event.sessionId, () => <String, List<UsageStatsEvent>>{})
+          .putIfAbsent(event.metric, () => <UsageStatsEvent>[])
+          .add(event);
+    }
+    for (final metrics in eventsBySession.values) {
+      for (final events in metrics.values) {
+        events.sort((a, b) => a.timestampMs.compareTo(b.timestampMs));
+      }
+    }
+
+    final battery = _temperatureSummary(snapshot, 'battery', eventsBySession);
+    final hotside = _temperatureSummary(snapshot, 'hotside', eventsBySession);
+    final voltage = _stateSegments(snapshot, 'voltage', eventsBySession);
+    final adaptive = _stateSegments(snapshot, 'adaptive', eventsBySession);
+    final peltier = _stateSegments(snapshot, 'peltier', eventsBySession);
+    final fan = _stateSegments(snapshot, 'fan_speed', eventsBySession);
 
     final voltageTimes = <String, int>{'5V': 0, '9V': 0, '12V': 0};
     for (final segment in voltage) {
@@ -362,6 +377,7 @@ class UsageStatsAnalytics {
   static UsageTemperatureSummary _temperatureSummary(
     UsageStatsSnapshot snapshot,
     String metric,
+    Map<int, Map<String, List<UsageStatsEvent>>> eventsBySession,
   ) {
     double? minimum;
     double? maximum;
@@ -383,11 +399,8 @@ class UsageStatsAnalytics {
       ).toInt();
       if (sessionEnd <= sessionStart) continue;
 
-      final events = snapshot.events
-          .where((event) =>
-              event.sessionId == session.id && event.metric == metric)
-          .toList()
-        ..sort((a, b) => a.timestampMs.compareTo(b.timestampMs));
+      final events =
+          eventsBySession[session.id]?[metric] ?? const <UsageStatsEvent>[];
 
       UsageStatsEvent? previous;
       for (final event in events) {
@@ -461,6 +474,7 @@ class UsageStatsAnalytics {
       average: observedMs == 0 ? null : weightedSum / observedMs,
       observedMs: observedMs,
       points: points,
+      chartPoints: decimatePoints(points),
     );
   }
 
@@ -468,15 +482,22 @@ class UsageStatsAnalytics {
     List<UsageChartPoint> points,
     int timestampMs,
   ) {
-    UsageChartPoint? previous;
-    for (final point in points) {
-      if (point.timestampMs > timestampMs) break;
-      previous = point;
-    }
-    if (previous == null || previous.value == null) return null;
-    // The analytics path ends at each sensor's freshness horizon. Do not hold a
-    // last value beyond that endpoint when another sensor keeps the session alive.
     if (points.isEmpty || timestampMs > points.last.timestampMs) return null;
+
+    var low = 0;
+    var high = points.length - 1;
+    var previousIndex = -1;
+    while (low <= high) {
+      final middle = low + ((high - low) ~/ 2);
+      if (points[middle].timestampMs <= timestampMs) {
+        previousIndex = middle;
+        low = middle + 1;
+      } else {
+        high = middle - 1;
+      }
+    }
+    if (previousIndex < 0) return null;
+    final previous = points[previousIndex];
     return previous.value;
   }
 
@@ -544,6 +565,7 @@ class UsageStatsAnalytics {
   static List<UsageStateSegment> _stateSegments(
     UsageStatsSnapshot snapshot,
     String metric,
+    Map<int, Map<String, List<UsageStatsEvent>>> eventsBySession,
   ) {
     final result = <UsageStateSegment>[];
 
@@ -560,11 +582,8 @@ class UsageStatsAnalytics {
       ).toInt();
       if (sessionEnd <= sessionStart) continue;
 
-      final events = snapshot.events
-          .where((event) =>
-              event.sessionId == session.id && event.metric == metric)
-          .toList()
-        ..sort((a, b) => a.timestampMs.compareTo(b.timestampMs));
+      final events =
+          eventsBySession[session.id]?[metric] ?? const <UsageStatsEvent>[];
 
       UsageStatsEvent? previous;
       for (final event in events) {
@@ -876,58 +895,48 @@ class UsageStatisticsStore implements UsageStatisticsRepository {
     required String metric,
     required double? value,
   }) async {
-    final database = await _database;
-    if (metric == 'battery') {
-      await database.rawInsert(
-        'INSERT INTO usage_samples '
-        '(session_id, timestamp_ms, battery_seen, battery_c) '
-        'VALUES (?, ?, 1, ?) '
-        'ON CONFLICT(session_id, timestamp_ms) DO UPDATE SET '
-        'battery_seen = 1, battery_c = excluded.battery_c',
-        [sessionId, timestampMs, value],
-      );
-    } else if (metric == 'hotside') {
-      await database.rawInsert(
-        'INSERT INTO usage_samples '
-        '(session_id, timestamp_ms, hotside_seen, hotside_c) '
-        'VALUES (?, ?, 1, ?) '
-        'ON CONFLICT(session_id, timestamp_ms) DO UPDATE SET '
-        'hotside_seen = 1, hotside_c = excluded.hotside_c',
-        [sessionId, timestampMs, value],
-      );
-    } else {
+    if (metric != 'battery' && metric != 'hotside') {
       throw ArgumentError.value(metric, 'metric', 'Unsupported temperature metric');
     }
-  }
-
-  Future<void> touchSensor({
-    required int sessionId,
-    required String metric,
-    required int timestampMs,
-  }) async {
-    final database = await _database;
     await _pruneIfDue(timestampMs);
-    if (metric == 'hotside') {
-      // Only the Firmware HOT heartbeat proves the P1 device session is fresh.
-      await database.update(
-        'usage_sessions',
-        {
-          'last_seen_at_ms': timestampMs,
-          'last_hotside_seen_at_ms': timestampMs,
-        },
-        where: 'id = ? AND ended_at_ms IS NULL',
-        whereArgs: [sessionId],
-      );
-    } else {
-      // Phone battery samples have their own freshness and cannot extend
-      // Firmware state timelines when the cooler telemetry stream has stopped.
-      await database.update(
-        'usage_sessions',
-        {'last_battery_seen_at_ms': timestampMs},
-        where: 'id = ? AND ended_at_ms IS NULL',
-        whereArgs: [sessionId],
-      );
-    }
+    final database = await _database;
+    await database.transaction((transaction) async {
+      if (metric == 'battery') {
+        await transaction.rawInsert(
+          'INSERT INTO usage_samples '
+          '(session_id, timestamp_ms, battery_seen, battery_c) '
+          'VALUES (?, ?, 1, ?) '
+          'ON CONFLICT(session_id, timestamp_ms) DO UPDATE SET '
+          'battery_seen = 1, battery_c = excluded.battery_c',
+          [sessionId, timestampMs, value],
+        );
+        await transaction.update(
+          'usage_sessions',
+          {'last_battery_seen_at_ms': timestampMs},
+          where: 'id = ? AND ended_at_ms IS NULL',
+          whereArgs: [sessionId],
+        );
+      } else {
+        await transaction.rawInsert(
+          'INSERT INTO usage_samples '
+          '(session_id, timestamp_ms, hotside_seen, hotside_c) '
+          'VALUES (?, ?, 1, ?) '
+          'ON CONFLICT(session_id, timestamp_ms) DO UPDATE SET '
+          'hotside_seen = 1, hotside_c = excluded.hotside_c',
+          [sessionId, timestampMs, value],
+        );
+        // Only the Firmware HOT heartbeat proves the P1 device session is fresh.
+        await transaction.update(
+          'usage_sessions',
+          {
+            'last_seen_at_ms': timestampMs,
+            'last_hotside_seen_at_ms': timestampMs,
+          },
+          where: 'id = ? AND ended_at_ms IS NULL',
+          whereArgs: [sessionId],
+        );
+      }
+    });
   }
 
 
@@ -1066,6 +1075,44 @@ class UsageStatisticsStore implements UsageStatisticsRepository {
   }
 }
 
+class UsageStatsWriteQueue {
+  UsageStatsWriteQueue({this.maxPendingOperations = 64})
+      : assert(maxPendingOperations > 0);
+
+  final int maxPendingOperations;
+  int _pendingOperations = 0;
+  Future<void> _tail = Future<void>.value();
+
+  int get pendingOperations => _pendingOperations;
+
+  Future<void> enqueue(
+    Future<void> Function() operation, {
+    required void Function(Object error) onError,
+  }) async {
+    while (_pendingOperations >= maxPendingOperations) {
+      final currentTail = _tail;
+      await currentTail;
+    }
+
+    _pendingOperations++;
+    final scheduled = _tail.then((_) async {
+      try {
+        await operation();
+      } catch (error) {
+        try {
+          onError(error);
+        } catch (_) {
+          // An error reporter must never poison the serial queue.
+        }
+      } finally {
+        _pendingOperations--;
+      }
+    });
+    _tail = scheduled;
+    await scheduled;
+  }
+}
+
 class UsageStatisticsRecorder {
   UsageStatisticsRecorder._();
 
@@ -1074,7 +1121,7 @@ class UsageStatisticsRecorder {
 
   final UsageStatisticsStore _store = UsageStatisticsStore.instance;
   final ValueNotifier<int> revisionNotifier = ValueNotifier<int>(0);
-  Future<void> _queue = Future<void>.value();
+  final UsageStatsWriteQueue _writeQueue = UsageStatsWriteQueue();
   int? _sessionId;
   String? _coolerId;
   final Map<String, double?> _temperatures = {};
@@ -1093,17 +1140,17 @@ class UsageStatisticsRecorder {
   String? lastWriteError;
 
   Future<void> _enqueue(Future<void> Function() operation) {
-    _queue = _queue.then((_) async {
-      try {
-        await operation();
-      } catch (error) {
+    return _writeQueue.enqueue(
+      operation,
+      onError: (error) {
         lastWriteError = error.toString();
-        debugPrint('Usage statistics write: ' + error.toString());
+        debugPrint('Usage statistics write: $error');
         _notifyChanged();
-      }
-    });
-    return _queue;
+      },
+    );
   }
+
+  int get pendingWriteCount => _writeQueue.pendingOperations;
 
   void _notifyChanged() {
     revisionNotifier.value++;
@@ -1315,11 +1362,6 @@ class UsageStatisticsRecorder {
         metric: metric,
         value: safeValue,
       );
-      await _store.touchSensor(
-        sessionId: sessionId,
-        metric: metric,
-        timestampMs: receivedAtMs,
-      );
       _temperatures[metric] = safeValue;
       _lastSensorSeenMs[metric] = receivedAtMs;
       _publishLiveUpdate(timestampMs: receivedAtMs, events: [
@@ -1474,6 +1516,58 @@ class UsageStatisticsRecorder {
   }
 }
 
+String _usageStatsEventKey(UsageStatsEvent event) =>
+    '${event.sessionId}|${event.metric}|${event.timestampMs}';
+
+int _compareUsageStatsEvents(UsageStatsEvent a, UsageStatsEvent b) {
+  final byTime = a.timestampMs.compareTo(b.timestampMs);
+  return byTime != 0 ? byTime : a.metric.compareTo(b.metric);
+}
+
+List<UsageStatsEvent> _mergeSortedUsageStatsEvents(
+  List<UsageStatsEvent> existing,
+  List<UsageStatsEvent> additions,
+) {
+  if (additions.isEmpty) return existing;
+  if (existing.isEmpty) return List<UsageStatsEvent>.of(additions);
+
+  final merged = <UsageStatsEvent>[];
+  var existingIndex = 0;
+  var additionIndex = 0;
+  while (existingIndex < existing.length &&
+      additionIndex < additions.length) {
+    if (_compareUsageStatsEvents(
+          existing[existingIndex],
+          additions[additionIndex],
+        ) <=
+        0) {
+      merged.add(existing[existingIndex++]);
+    } else {
+      merged.add(additions[additionIndex++]);
+    }
+  }
+  if (existingIndex < existing.length) {
+    merged.addAll(existing.skip(existingIndex));
+  }
+  if (additionIndex < additions.length) {
+    merged.addAll(additions.skip(additionIndex));
+  }
+  return merged;
+}
+
+UsageStatsSnapshot _sortUsageStatsSnapshotEvents(
+  UsageStatsSnapshot snapshot,
+) {
+  final events = List<UsageStatsEvent>.of(snapshot.events)
+    ..sort(_compareUsageStatsEvents);
+  return UsageStatsSnapshot(
+    fromMs: snapshot.fromMs,
+    toMs: snapshot.toMs,
+    sessions: snapshot.sessions,
+    events: events,
+  );
+}
+
 class UsageStatisticsPage extends StatefulWidget {
   final String? coolerId;
   final int hotLimit;
@@ -1504,6 +1598,7 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
   bool _reloadPending = false;
   StreamSubscription<UsageStatsLiveUpdate>? _liveSubscription;
   final List<UsageStatsLiveUpdate> _pendingLiveUpdates = [];
+  Set<String> _snapshotEventKeys = <String>{};
   Timer? _liveFlushTimer;
   int? _selectedTimestampMs;
   String? _lastRecorderWriteError;
@@ -1560,10 +1655,15 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
     _liveFlushTimer?.cancel();
     _liveFlushTimer = null;
     if (!mounted || _pendingLiveUpdates.isEmpty) return;
+
     final updates = List<UsageStatsLiveUpdate>.of(_pendingLiveUpdates);
     _pendingLiveUpdates.clear();
 
     setState(() {
+      UsageStatsSnapshot? workingSnapshot = _snapshot;
+      var workingEventKeys = Set<String>.from(_snapshotEventKeys);
+      var summaryChanged = false;
+
       for (final update in updates) {
         final isSelected = update.session.id == _selectedSessionId;
         final canFollowLatest = !_sessionSelectionPinned;
@@ -1589,23 +1689,26 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
           ];
         }
 
-        final previous = _snapshot;
-        final sameSession = previous != null &&
-            previous.sessions.any((session) => session.id == update.session.id);
-        final mergedEvents = <UsageStatsEvent>[
-          if (sameSession) ...previous.events,
-        ];
+        final sameSession = workingSnapshot != null &&
+            workingSnapshot.sessions.any(
+              (session) => session.id == update.session.id,
+            );
+        final existingEvents = sameSession
+            ? workingSnapshot.events
+            : const <UsageStatsEvent>[];
+        if (!sameSession) workingEventKeys = <String>{};
+
+        final newEvents = <UsageStatsEvent>[];
         for (final event in update.events) {
-          final exists = mergedEvents.any((existing) =>
-              existing.sessionId == event.sessionId &&
-              existing.metric == event.metric &&
-              existing.timestampMs == event.timestampMs);
-          if (!exists) mergedEvents.add(event);
+          final key = _usageStatsEventKey(event);
+          if (workingEventKeys.add(key)) newEvents.add(event);
         }
-        mergedEvents.sort((a, b) {
-          final byTime = a.timestampMs.compareTo(b.timestampMs);
-          return byTime != 0 ? byTime : a.metric.compareTo(b.metric);
-        });
+        newEvents.sort(_compareUsageStatsEvents);
+        final mergedEvents = _mergeSortedUsageStatsEvents(
+          existingEvents,
+          newEvents,
+        );
+
         // Battery phone samples must never extend the P1 operating timeline.
         // An open run is covered only through the last fresh Firmware HOT heartbeat.
         final coverageEndMs = usageSessionCoverageEndMs(
@@ -1613,16 +1716,22 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
           publishedAtMs: update.publishedAtMs,
         );
         final retainedEndMs = sameSession
-            ? math.min(previous.toMs, coverageEndMs)
+            ? math.min(workingSnapshot.toMs, coverageEndMs)
             : update.session.startedAtMs;
         final toMs = math.max(retainedEndMs, coverageEndMs).toInt();
-        _snapshot = UsageStatsSnapshot(
+        workingSnapshot = UsageStatsSnapshot(
           fromMs: update.session.startedAtMs,
           toMs: toMs,
           sessions: [update.session],
           events: mergedEvents,
         );
-        _summary = UsageStatsAnalytics.summarize(_snapshot!);
+        summaryChanged = true;
+      }
+
+      if (summaryChanged && workingSnapshot != null) {
+        _snapshot = workingSnapshot;
+        _snapshotEventKeys = workingEventKeys;
+        _summary = UsageStatsAnalytics.summarize(workingSnapshot);
         _loading = false;
         _error = null;
       }
@@ -1642,6 +1751,7 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
           _sessions = const [];
           _selectedSessionId = null;
           _snapshot = null;
+          _snapshotEventKeys = <String>{};
           _summary = null;
           _loading = false;
           _error = null;
@@ -1662,19 +1772,26 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
                 sessions.any((session) => session.id == requestedId)
             ? requestedId
             : (sessions.isEmpty ? null : sessions.first.id);
-        final snapshot = selectedId == null
+        final loadedSnapshot = selectedId == null
             ? null
             : await _repository.loadSessionSnapshot(
                 coolerId: coolerId,
                 sessionId: selectedId,
               );
+        final snapshot = loadedSnapshot == null
+            ? null
+            : _sortUsageStatsSnapshotEvents(loadedSnapshot);
         final summary =
             snapshot == null ? null : UsageStatsAnalytics.summarize(snapshot);
+        final eventKeys = snapshot == null
+            ? <String>{}
+            : snapshot.events.map(_usageStatsEventKey).toSet();
         if (!mounted) break;
         setState(() {
           _sessions = sessions;
           _selectedSessionId = selectedId;
           _snapshot = snapshot;
+          _snapshotEventKeys = eventKeys;
           _summary = summary;
           _loading = false;
           _error = null;
@@ -1796,8 +1913,9 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(14, 0, 14, 8),
                 child: Material(
+                  key: const ValueKey<String>('usage-selected-time-dock'),
                   color: scheme.surfaceContainerHigh,
-                  elevation: 3,
+                  elevation: 2,
                   borderRadius: BorderRadius.circular(14),
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(12, 10, 12, 4),
@@ -1898,7 +2016,7 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
                 language: language,
                 metricKey: 'battery',
               ),
-              const SizedBox(height: 22),
+              const SizedBox(height: 18),
               _temperatureSection(
                 title: JexText.phrase(
                   'Hotside',
@@ -2185,6 +2303,7 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
         );
 
     return Column(
+      mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
@@ -2303,7 +2422,7 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
                       ),
                       child: _AnimatedUsageLineChart(
                         key: ValueKey<String>('usage-temperature-chart-$metricKey'),
-                        points: UsageStatsAnalytics.decimatePoints(summary.points),
+                        points: summary.chartPoints,
                         fromMs: _snapshot!.fromMs,
                         toMs: _snapshot!.toMs,
                         color: color,
