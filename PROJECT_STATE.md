@@ -1,11 +1,12 @@
-## CURRENT APP QC — BUILD #155 FAILED / ROOT CAUSE REPAIRS COMMITTED — 2026-11-12
+## CURRENT APP QC — BUILD #156 ACTIVE — 2026-11-12
 
-- **Failed run:** Build #155 / Actions `43244335274`, job `131272831810`, attempt 1; immutable checkout `63ab4e8167cd099a30ad4ca8cd8cfb52d0c098`. Analyzer passed with 23 infos, 0 warnings/errors. Flutter suite failed **183 passed / 4 failed**; Gradle/build/signing/ZIP/Release gates skipped; no artifact or Release mutation.
-- **Four findings repaired:** (1) Tamper theme contract now checks `TamperApp` separate from `TamperScreen`; (2) actual Home 2-dp overflow fixed by changing two Home gaps 3→2 dp while preserving 420-dp canvas, seven 45-dp rows and 44-dp NOTIFY; (3) Home hit-target test now searches inside `_buildHomeArea`, asserts two 48×48 controls, and dashboard fixture uses 1080×3200 DPR3; (4) Firmware QC copy assertion uses actual bilingual `Firmware V7.2+ required` / `Perlu Firmware V7.2+`.
-- **Repair commits:** `9f1130642666801799cd7547dc907ec50cc55bf5` (one App source file), `53ebaecb6722e4335e6c20ead419fea96ee1b0e9` (widget tests), and `d00cef194cc27e65085234955b2eda60faa3aba8` (Firmware/App contract test). Each commit diff has been re-read; exactly three executable/test paths changed.
-- **Retry status:** #155 remains a preserved FAILED attempt; repairs are committed/read back, hosted validation still pending. No duplicate trigger until fresh preflight confirms no active/queued run, no PR, exact issue #33 owner/title/token, unchanged workflow and Build #153 Release baseline.
-- **Formatter/validation caveat:** local Flutter/Dart unavailable; no post-repair local tests/analyzer/format run. Workflow has no formatter step; `dart format` remains NOT RUN / UNVERIFIED.
-- **Next:** one guarded retry only after preflight. No Firmware/BIN/Firebase/OTA/flash/device/physical BLE/NVS/rail/LED/thermal/electrical/OEM visual action.
+- **Run:** Build #156 / Actions `43246666829`, job `131281061201`, attempt 1; immutable checkout SHA `c180f2bb18b3361ecd02fff2503b06043f0d22e0`.
+- **Progress:** steps 1–11 SUCCESS (runner/toolchain, signing prep, security/architecture audit, dependencies); step 12 `Analyze Dart code` IN_PROGRESS; steps 13–21 pending. Continue this run only.
+- **Retry rationale:** Build #155 failed at Flutter tests (183 passed / 4 failed) after analyzer success. All four root causes have been fixed in commits `9f1130642666801799cd7547dc907ec50cc55bf5`, `53ebaecb6722e4335e6c20ead419fea96ee1b0e9`, `d00cef194cc27e65085234955b2eda60faa3aba8`; Build #154/#155 failures remain preserved.
+- **Preflight:** no queued/in-progress run or open PR; exact issue #33 owner/title/token; workflow unchanged; Release #153 hash/assets intact; one guarded close/reopen created #156.
+- **Formatter:** workflow has no formatter step; `dart format` remains NOT RUN / UNVERIFIED.
+- **Release baseline:** Build #153 / Release 403010611 / tag `jexfyz-latest` remains on source `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e` until #156 passes.
+- **Boundary:** App build only. No Firmware/BIN/Firebase/OTA/flash/device/physical BLE/thermal/electrical operations.
 
 
 ---
