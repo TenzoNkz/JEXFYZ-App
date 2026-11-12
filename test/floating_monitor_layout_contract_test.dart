@@ -417,22 +417,42 @@ void main() {
     expect(native, isNot(contains('Gravity.CENTER_HORIZONTAL')));
   });
 
-  test('Settings removes the About section and page entirely', () {
+  test('Settings puts Lock Voltage first and About directly after Firmware with bilingual credits', () {
     final settingsSource = File('lib/floating_monitor.dart').readAsStringSync();
     final localizationSource = File('lib/app_settings.dart').readAsStringSync();
     final settingsStart = settingsSource.indexOf('class SettingsPage extends StatelessWidget');
-    final settingsEnd = settingsSource.indexOf('class LanguageSettingsPage', settingsStart);
+    final settingsEnd = settingsSource.indexOf('class AboutSettingsPage', settingsStart);
     expect(settingsStart, isNonNegative);
     expect(settingsEnd, greaterThan(settingsStart));
     final settingsPage = settingsSource.substring(settingsStart, settingsEnd);
 
-    expect(settingsPage, isNot(contains("JexText.of('aboutSection'")));
-    expect(settingsPage, isNot(contains("JexText.of('about'")));
-    expect(settingsPage, isNot(contains('AboutSettingsPage')));
-    expect(settingsSource, isNot(contains('class AboutSettingsPage')));
-    expect(settingsSource, isNot(contains('class _AboutRow')));
-    expect(localizationSource, isNot(contains("'aboutSection':")));
-    expect(localizationSource, isNot(contains("'about':")));
-  });
+    final lockCard = settingsPage.indexOf('_voltageLockSettingRow(context, language, state)');
+    final generalSection = settingsPage.indexOf("JexText.of('general', language)");
+    expect(lockCard, isNonNegative);
+    expect(generalSection, greaterThan(lockCard));
+    expect(settingsPage, contains('DeviceDiagnosticsPage('));
+
+    final firmwareSection = settingsPage.indexOf("JexText.of('firmwareSection', language)");
+    final aboutRow = settingsPage.indexOf("JexText.of('about', language)");
+    expect(firmwareSection, isNonNegative);
+    expect(aboutRow, greaterThan(firmwareSection));
+
+    expect(settingsSource, contains('class AboutSettingsPage'));
+    expect(settingsSource, contains('class DeviceDiagnosticsPage'));
+    expect(settingsSource, contains('App Development & Build'));
+    expect(settingsSource, contains('Design Inspiration'));
+    expect(settingsSource, contains('3D Design & Printing'));
+    expect(settingsSource, contains('@Horizontalzzz'));
+    expect(settingsSource, contains('@FYZ737'));
+    expect(settingsSource, contains('@Logos3dMichael'));
+    expect(localizationSource, contains("'about': {"));
+    expect(localizationSource, contains("'deviceDiagnostics': {"));
+    expect(localizationSource, contains("'peltierFanRequiredTitle': {"));
+    final diagnosticsStart = settingsSource.indexOf('class DeviceDiagnosticsPage');
+    final diagnosticsPage = settingsSource.substring(diagnosticsStart);
+    expect(diagnosticsPage, contains('Copy diagnostics'));
+    expect(diagnosticsPage, isNot(contains('coolerId')));
+    expect(diagnosticsPage, isNot(contains('BluetoothDevice')));
+  });;
 
 }
