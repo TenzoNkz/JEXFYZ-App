@@ -2754,3 +2754,11 @@
 - **Formatter caveat:** workflow has no Dart formatter step; `dart format` remains NOT RUN / UNVERIFIED. Local Flutter/Dart unavailable.
 - **Next:** inspect run `43247876115` / job `131285336987`; record only actual analyzer/test/Gradle/signing/source ZIP/Release/tag/downloaded asset evidence. No duplicate trigger while active.
 - **Boundary:** no Firmware compile/BIN/Firebase/OTA/flash/device/physical BLE/NVS/rail/LED/thermal/electrical/OEM visual operation occurred.
+
+
+### BUILD #157 progress update — analyzer passed / Flutter tests active (2026-11-12)
+
+- Run `43247876115` / job `131285336987`, immutable checkout SHA `10d106537e92060e0aac3fc17fd37f56e746bcd5`, attempt 1.
+- Steps 1–12 completed SUCCESS, including security/architecture audit, dependency installation and Dart analyzer. Step 13 `Run Flutter tests` is IN_PROGRESS. Steps 14–21 remain pending.
+- Analyzer exact info count and Flutter test count are not asserted until terminal log read-back. No active log archive currently relied upon while job is running.
+- No duplicate trigger; continue #157 only.
