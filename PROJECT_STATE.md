@@ -318,3 +318,11 @@
 - Online OTA intentionally uses `cloudClient.setInsecure()`; HTTPS server certificate identity is not authenticated. Preserve the allowlist, redirect blocking, response/size/image validation and safe-output/recovery behavior.
 - Do not add Firebase firmware hash/signature requirements or a standalone Battery Protection Guard UI without explicit owner approval.
 - The sold unit is not available for routine disassembly/repair; do not infer device-operation authorization.
+
+## Current Discussion — Lock Voltage UI presentation refinement (2026-11-12)
+
+- Owner requests the Lock Voltage UI to use the same centered lock icon + blurred submenu treatment already used for Bluetooth-disconnected and Adaptive-active states, and requests Kunci Tegangan be moved to the very top of Settings with a cleaner dedicated card.
+- Live source review: `displayMenuLockReason()` currently has only `none`, `bluetoothDisconnected`, and `adaptiveActive`; it prioritizes disconnected and maps Adaptive-active/transitioning to tabs 0/1/4. `_lockedDisplayMenu()` already provides blur, dimming, a centered lock panel, and pointer blocking. Lock Voltage is not currently part of this overlay decision; Voltage/Adaptive pages instead render local inline lock notices/disabled controls.
+- Design contract recorded in `APP_NOTES.md`: a synchronized Lock Voltage ON should invoke the overlay on Voltage (tab 0) and Adaptive (tab 2) only. Keep Control, LED, and Temperature available for Lock Voltage alone; existing Adaptive-active/transitioning and Bluetooth-disconnected gates retain their current scope/priority. Voltage copy must distinguish pending safe handoff from confirmed 5V using actual Firmware voltage telemetry.
+- Settings contract: show Kunci Tegangan as the first dedicated card directly below the Settings AppBar and before UMUM; retain the Firmware-owned notifier, unknown/disconnected state, busy state, persistence warning and retry.
+- This is a Discussion/design checkpoint only. No executable source/tests or app package changed; no formatter, tests, analyzer, build, release, Firmware compile, OTA or device operation was run. Next recommended mode: `Eksekusi Full!` for the App-only UI/test implementation. This is a recommendation, not authorization.
