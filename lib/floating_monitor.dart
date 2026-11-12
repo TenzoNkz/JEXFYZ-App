@@ -1151,7 +1151,7 @@ class SettingsPage extends StatelessWidget {
                 ),
                 _item(
                   context,
-                  PhosphorIconsRegular.info,
+                  PhosphorIconsRegular.chartLineUp,
                   JexText.of('deviceDiagnostics', language),
                   JexText.of('deviceDiagnosticsSummary', language),
                   () => Navigator.of(context).push(
