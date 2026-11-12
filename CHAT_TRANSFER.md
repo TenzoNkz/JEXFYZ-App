@@ -1,14 +1,15 @@
-## CURRENT CHECKPOINT — BUILD #152 ACTIVE / FLUTTER TESTS — 2026-11-12
+## CURRENT CHECKPOINT — BUILD #152 FAILED / TEST REPAIR IN PROGRESS — 2026-11-12
 
-**Mode:** owner-authorized `Eksekusi Build App!`; guarded App Build/QC/release only. No Firmware/BIN/Firebase/OTA/flash/device operations.
+**Disposition:** Build #152 terminal FAILED at Flutter test gate. Analyzer passed. No APK, signing, source ZIP or Release mutation. Failure details and each exact test assertion are appended to APP_BUILD_REPORT.md; Build #152 remains historical failure.
 
-- **Run/job/source:** Build #152 / Actions run `43144337555`, job `130938510090`, attempt 1; immutable source SHA `04ec48a53bef308f0817470d2d758697a1592cc4`.
-- **Passed steps 1–12:** runner, checkout, Java 17, Flutter 3.47.2, Gradle 9.3.1, toolchain, local.properties, signing setup, wrapper, security/architecture audit, dependency installation, and **Dart analyzer**.
-- **Current:** step 13 `Run Flutter tests` — in progress. **Pending:** step 14 Android Gradle gate; step 15 obfuscated APK; steps 16–17 V1/V2/V3 and pinned certificate; source ZIP; Release/tag parity and downloaded-asset verification.
-- **Current published Release remains Build #151** at source SHA `e383924067b7ab2da27f2e41f21232cfb7144ec0` until #152 passes all gates. Keep `versionName "Telegram @horizontalzzz"`.
-- Build #152 tests newer App source: Lock Voltage overlay/Settings, Peltier card, About, Diagnostics, simplified Statistics, icon/notification copy changes and associated tests. No Firmware source/workflow changed.
-- Workflow issue-only/guarded; no additional trigger while #152 active.
-- **Next:** inspect run `43144337555` / job `130938510090` through the Flutter suite and remaining gates.
+- **Run/job/source:** Build #152 / Actions run `43144337555`, job `130938510090`, attempt 1; immutable tested SHA `04ec48a53bef308f0817470d2d758697a1592cc4`.
+- **Passed:** steps 1–12 (toolchain, security/architecture audit, dependencies, analyzer). **Failed:** step 13 Flutter tests — **171 passed, 5 failed**. Steps 14–21 skipped; cleanup 39–43 passed.
+- **Failures identified:** (1) Home NOTIFY test end anchor searches for an earlier method; (2) Home NOTIFY source assertion expects obsolete fontSize assignment, but current adaptive ternary is intentional; (3) Usage Statistics last-sample test scrolls with zero-height viewport, causing drag hit-test/No element; analytics fixture assertion itself confirms latest timestamp. (4) Device Diagnostics summary copy is asserted in SettingsPage source instead of localization source; (5) expected title-case Disconnected differs from actual localized uppercase DISCONNECTED. See APP_BUILD_REPORT.md for exact diagnostics/locations.
+- **Repair scope:** only correct stale test anchors/expectations and isolate the Statistics widget test with explicit surface size and DPR teardown. Keep behavior assertions. Do not weaken gates. Re-run suite in hosted CI before any build/release gates are reached.
+- **Current main at checkpoint:** `1e29b4da2d25581c27b9b8f72bd3525fe6be044e` (Build #152 failure ledger documentation only since tested SHA). No source repair has yet been committed.
+- **Pre-repair state:** no active/queued runs; issue #33 OPEN with exact owner/title/token. Workflow unchanged, issue-only. Release ID 403010611/tag `jexfyz-latest` still points to Build #151 SHA `e383924067b7ab2da27f2e41f21232cfb7144ec0`; prior APK/ZIP remain unchanged. Android `versionName "Telegram @horizontalzzz"` preserved.
+- **Next:** patch the five test failures narrowly; investigate the Statistics viewport if it persists after test isolation; then preflight and one guarded retry only after the concrete changes are committed.
+- **Scope boundary:** no Firmware compile/BIN/Firebase/OTA/flash/device/BLE/NVS/rail/LED/cooling/OEM screenshot operation occurred.
 
 ---
 
