@@ -1,14 +1,16 @@
-## CURRENT CHECKPOINT — BUILD #152 FAILED / TEST REPAIR COMMITTED / GUARDED RETRY PREFLIGHT — 2026-11-12
+## CURRENT CHECKPOINT — BUILD #153 ACTIVE / GUARDED APP QC — 2026-11-12
 
-**Disposition:** Build #152 remains terminal FAILED (171 Flutter tests passed, 5 failed); no artifact was produced. The five test failures have now been repaired in three test-only commits. No retry has yet been triggered.
+**Mode:** owner-authorized `Eksekusi Build App!`; guarded App Build/QC/release only. No Firmware/BIN/Firebase/OTA/flash/device operations.
 
-- **Failed attempt:** Build #152 / run `43144337555`, job `130938510090`, tested SHA `04ec48a53bef308f0817470d2d758697a1592cc4`. Steps 1–12 success; step 13 Flutter tests failed 171/5; steps 14–21 skipped; cleanup 39–43 passed.
-- **Repair commits:** `5f06e121cdb6f84f7cb3c70c020d4e89a97e3725` (Home NOTIFY source anchors + current font adaptive expression); `bba8cd2eb96f82a0c7a087cb165866e1cda2e11e` (explicit 800×1200/DPR 1 Statistics test viewport with teardown and nonzero viewport assertion before retaining visible Last sample check); `642e6a500473b16554ab849f07ed8ddffd84bc8a` (Diagnostics summary localization assertion moved to correct source and English expected state changed to `DISCONNECTED`).
-- **Review:** diff from failed run SHA to repaired main contains only the three test paths above, plus Markdown ledger/checkpoint updates. No production App Dart, Firmware, workflow, Gradle, dependency, BLE/P1 or versionName change. The 5 original failures and exact evidence remain preserved in APP_BUILD_REPORT.md.
-- **Local test status:** Flutter, Dart and Gradle are not installed in this container; formatter/focused/full tests BLOCKED / NOT RUN locally. Hosted CI is required to verify the repair. The Statistics widget test still asserts the rendered `Last sample · 04:00` and checks its viewport is nonzero; it has not been weakened.
-- **Pre-retry state to verify:** main after this checkpoint; no active/queued Actions runs; issue #33 OPEN with owner/title/body-token; workflow unchanged issue-only; Release #151 tag/source SHA and exactly one APK + one ZIP unchanged; Android `versionName "Telegram @horizontalzzz"` exact.
-- **Next:** run a fresh preflight; if all clear, close/reopen issue #33 exactly once for one guarded retry. No second retry or trigger while that run is active.
-- No Firmware compile/BIN/Firebase/OTA/flash/device/BLE/NVS/rail/LED/cooling/electrical/OEM visual work.
+- **Run/job/source:** Build #153 / Actions run `43145542329`, workflow 374946166, attempt 1, issue #33, job `130942369953`; immutable source SHA `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e`. [View run](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/43145542329).
+- **Trigger guard:** issue #33 owner/title/token validated and closed/reopened exactly once. Workflow remains issues-only/guarded. No duplicate trigger.
+- **Previous Build #152:** run `43144337555` is preserved FAILED at Flutter tests (171 passed, 5 failed); all exact diagnostics are in APP_BUILD_REPORT.md. It produced no artifact.
+- **Repair included in #153 source:** three test-only commits correct Home NOTIFY end anchor/font assertion, set/reset an explicit Statistics viewport and check nonzero scroll viewport while retaining Last sample assertion, and align Diagnostics test copy/casing with localization. No production source or Firmware/workflow changed in the repair.
+- **Current state:** run `in_progress`; initial job snapshot had steps 1–2 success, step 3 Java 17 setup in progress. No QC gate completed yet. Continue observing this run only.
+- **Last published Release remains Build #151** (Release 403010611, `jexfyz-latest` target `e383924067b7ab2da27f2e41f21232cfb7144ec0`) until #153 passes all gates. Android `versionName "Telegram @horizontalzzz"` preserved.
+- **Remaining:** toolchain, signing setup, security/architecture, dependencies, analyzer, Flutter suite, Android Gradle, obfuscated APK, V1/V2/V3/cert, source ZIP, Release parity and downloaded asset verification.
+- **Not performed:** Firmware compile/BIN, Firebase/OTA/flash, physical BLE/device/NVS/rail/LED, cooling/electrical or OEM screenshot tests.
+- **Next:** inspect run `43145542329` / job `130942369953`; no additional trigger while active.
 
 ---
 ## CURRENT CHECKPOINT — BUILD #149 COMPLETED / RELEASE VERIFIED — 2026-11-11
