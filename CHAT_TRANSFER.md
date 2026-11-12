@@ -5,11 +5,11 @@
 ### Live branch and Release boundary
 
 - **Repository:** `TenzoNkz/JEXFYZ-App`, branch `main`.
-- **Current branch HEAD:** `2870fb026139f949da269e9646b50036fce15cdd` (documentation-only checkpoint sync); recursive tree remains 132 entries, not truncated.
+- **Current repository tree:** 132 entries, recursive listing not truncated. Documentation-only checkpoint commits follow this executable source/test snapshot.
 - **Current executable source/test HEAD:** `a963f8bd100f7f2c41f720933ade2cd586145270`.
 - Recursive tree: 132 entries, `truncated=false`.
 - Remediation commits: `5763b08f8b37fccafd2ac2403a51b26ad0be4b41` (Statistics dock/analytics/storage + P1 touch/polling/integrity fixes), `b1275d278ca0b0d2765174364250873044a943d1` (Statistics chart density + integrity dark theme), `aa58a2f14354692a1dbcebfcb70436deb3aabf06` (skip redundant sort for chronological live events), and `a963f8bd100f7f2c41f720933ade2cd586145270` (dynamic narrow-range axis precision).
-- Compared with Build #153, main is 58 commits ahead / 0 behind; 18 changed paths (11 Markdown, 4 Dart source, 3 test files).
+- Compared with Build #153, executable source/test SHA is 57 commits ahead / 0 behind; 18 changed paths (11 Markdown, 4 Dart source, 3 test files).
 - **Build #153 remains the latest published package:** source `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e`, Actions run `43145542329`, Release ID `403010611`, tag `jexfyz-latest`. Current fixes are not in that APK.
 
 ### Usage Statistics — source implemented

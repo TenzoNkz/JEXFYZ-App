@@ -19,7 +19,7 @@ Build #153 proves hosted App CI/package/release only. No Firmware compilation, B
 
 ## Current App source change — ready for guarded QC, not packaged
 
-- Current branch HEAD `2870fb026139f949da269e9646b50036fce15cdd` (documentation-only checkpoint sync); tree 132 entries, not truncated. Current executable source/test SHA `a963f8bd100f7f2c41f720933ade2cd586145270`.
+- Current repository tree has 132 entries and is not truncated; documentation-only checkpoint commits follow the source snapshot. Current executable source/test SHA `a963f8bd100f7f2c41f720933ade2cd586145270`.
 - Usage Statistics selected-time dock is content-sized; widget regression checks ≤200 dp and Clear behavior. Graphs are 160 dp, axis labels 10 dp with tick-spacing-aware precision, spacing is tighter. Analytics indexes events by session/metric, de-duplicates/merges sorted updates, summarizes once per batch, skips sort if chronological, caches decimated points and uses binary search for cursor. SQLite sample + freshness write is transactional; schema v2, raw 1-Hz data, gaps and HOT-only P1 freshness remain. Serial queue capacity64/backpressure.
 - Connection and Floating Monitor runtime polling are single-flight 3s/lifecycle-aware. Home header/tab and Temperature hit areas are 48 dp with artwork preserved. TamperScreen is neutral bilingual integrity copy in explicit dark theme; native signature fail-closed behavior remains unchanged.
 - Current source suite is 185 declarations (172 unit/source-contract +13 widget), written but not run. Flutter/Dart formatter, tests and analyzer are BLOCKED / NOT RUN in this runtime. Long-session CPU/memory soak and real Android visual/touch QA remain unverified. No Build App or screenshot validation has occurred.
