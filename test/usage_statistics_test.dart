@@ -470,6 +470,33 @@ void main() {
   });
 
   group('Usage Statistics page', () {
+    testWidgets('sampling and local-storage provenance remains available on demand', (tester) async {
+      final previousLanguage = appLanguageNotifier.value;
+      addTearDown(() => appLanguageNotifier.value = previousLanguage);
+      appLanguageNotifier.value = AppLanguage.english;
+
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: ThemeData.light(useMaterial3: true),
+          home: UsageStatisticsPage(
+            coolerId: 'AA:BB:CC',
+            repository: _FakeUsageRepository(_sampleSnapshot()),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.textContaining('sampled once per second'), findsNothing);
+      await tester.tap(find.byTooltip('Statistics information'));
+      await tester.pumpAndSettle();
+      expect(find.text('About this history'), findsOneWidget);
+      expect(find.textContaining('sampled once per second'), findsOneWidget);
+      expect(find.textContaining('stored locally on this phone'), findsOneWidget);
+      await tester.tap(find.text('Close'));
+      await tester.pumpAndSettle();
+      expect(tester.takeException(), isNull);
+    });
+
     testWidgets('shows a localized empty state without inventing chart values', (tester) async {
       final previousLanguage = appLanguageNotifier.value;
       addTearDown(() => appLanguageNotifier.value = previousLanguage);
@@ -590,6 +617,7 @@ void main() {
       expect(find.text('Rincian'), findsOneWidget);
       expect(find.textContaining('Rata-rata kipas'), findsNothing);
       expect(find.textContaining('Touch any chart'), findsNothing);
+      await tester.ensureVisible(find.text('Rincian'));
       await tester.tap(find.text('Rincian'));
       await tester.pumpAndSettle();
       expect(find.textContaining('Rata-rata kipas'), findsOneWidget);
