@@ -2,7 +2,7 @@
 
 **Audit date:** 2026-11-12 (Asia/Jakarta)  
 **Mode:** `@Thinking Diskusi!` — static source/repository analysis only.  
-**Disposition:** **READY FOR GUARDED APP BUILD QC — NOT RELEASE-ACCEPTED.** Source-level P1 remediations and regression tests are committed. Flutter/Dart are unavailable in this runtime, so current tests, formatter and analyzer have not run; the guarded workflow must validate the exact source SHA next. Visual/device acceptance remains separate and unverified.
+**Disposition:** **HOLD BEFORE GUARDED APP BUILD QC — two Statistics boundedness edge cases require source/test follow-up or explicit engineering disposition.** Existing P1 remediations are implemented, but static inspection found that the capacity-64 writer does not account for unawaited producer Futures waiting outside its admitted-operation count, and gap-heavy chart decimation can exceed its nominal 1,600-point target. The 185-test current suite, formatter and analyzer remain NOT RUN; the guarded workflow also has no formatter check. Visual/device acceptance remains separate and unverified.
 
 ## 1. Baseline and evidence
 
@@ -88,6 +88,31 @@ Evidence is classified as **STATIC SOURCE CHECK** unless explicitly stated other
 
 ## 4. P2 — professional polish and maintainability
 
+### P2.7 — Statistics writer admission is not an end-to-end backlog bound
+
+**Status: STATIC SOURCE RISK / NOT OBSERVED AT RUNTIME / REGRESSION INCOMPLETE.**
+
+- UsageStatsWriteQueue.enqueue() waits while _pendingOperations >= maxPendingOperations, then increments the admitted count and schedules the operation on _tail. This bounds operations admitted to the serial queue.
+- The recorder returns the queue Future, but production call sites in lib/main.dart use unawaited() for HOT/Battery samples and state updates. When storage remains slower than producers, each caller can remain suspended awaiting queue admission outside pendingOperations; the counter/test therefore does not establish a hard bound on all waiting producer Futures or memory.
+- Existing test "usage history write queue applies backpressure without dropping accepted work" creates 12 calls against capacity 4, checks only pendingOperations <= 4, and awaits all Futures. It does not assert the number of blocked submitters or model fire-and-forget production call sites.
+- **Follow-up:** test delayed writer + sustained unawaited submissions, expose/measure admitted and waiting work, and select a bounded-ingress policy. Do not block BLE parsing, silently drop accepted samples, alter the 1-Hz raw capture contract or claim losslessness under indefinite storage failure. The unavoidable trade-off between bounded memory, nonblocking producers and lossless indefinite buffering must be made explicit.
+
+### P2.8 — Chart decimation can exceed its nominal max under dense gaps
+
+**Status: STATIC SOURCE EDGE CASE / NOT COVERED BY CURRENT LONG-HISTORY TEST.**
+
+- decimatePoints(maxPoints: 1600) selects bucket endpoints/extrema and also adds every point whose value is null or whose breakBefore is true. This correctly protects data gaps, but a gap-heavy history can produce output greater than maxPoints.
+- The current 12,000-per-sensor regression uses mostly continuous valid observations and asserts output <= 1,600; it does not exercise thousands of nulls, alternating valid/invalid observations or dense session boundaries.
+- **Follow-up:** add invalid-heavy and alternating-gap fixtures. Design a segment-aware representation/reduction that never draws a line across an invalid interval and either enforces a hard render budget or documents and tests a justified upper bound. Do not discard raw SQLite observations or erase the fact that a gap occurred.
+
+### P2.9 — Formatting is not a guarded workflow gate
+
+**Status: NOT RUN / NOT ENFORCED BY CURRENT WORKFLOW.**
+
+- The current workflow runs flutter analyze --no-fatal-infos, flutter test, Android Gradle and release signing/package gates; no dart format --output=none --set-exit-if-changed step exists.
+- A successful guarded Build App therefore will not prove Dart formatting. The changed Dart files still need explicit formatting/check evidence or a separately approved formatter gate.
+
+
 ### P2.1 — Typography and microcopy hierarchy
 
 Source contains 15 distinct explicit font-size values from 6.8 to 21 dp. Several presentation labels are particularly small:
@@ -150,9 +175,9 @@ There are no screenshot/golden or `integration_test` assets in the current test 
 
 ## 7. Definition of “ready to build”
 
-- All accepted P1 findings are fixed or explicitly dispositioned; no silent deferrals.
-- Formatter is clean; analyzer has no errors/warnings and the info baseline is reviewed.
-- All tests on the exact current SHA pass, with long-session/backpressure and polling overlap tests included.
+- All accepted P1 findings and the two Statistics boundedness edge cases are fixed or explicitly dispositioned; no silent deferrals.
+- Formatter is clean through an explicit formatter run or enforced formatter gate; analyzer has no errors/warnings and the info baseline is reviewed.
+- All tests on the exact current SHA pass, with delayed-writer/unawaited-submitter, invalid-heavy gap decimation, long-session and polling-overlap cases included.
 - No accidental change to BLE P1, telemetry authority, Firmware safety, OTA, persisted schemas, Android `versionName "Telegram @horizontalzzz"`, theme/localization or 360-dp canvas.
 - Actual screenshot matrix is prepared for Home, Settings, Bluetooth/Connection, Floating Monitor, Usage Statistics, Voltage/Control/Adaptive/LED/Temperature tabs, Peltier dialog, LED picker and Firmware dialog at 350/420 dp, EN/ID and Light/Dark. Include constrained height and disconnected/unknown/locked/error states.
 - Owner visual review is recorded separately as VISUAL PASS / VISUAL PASS WITH ACCEPTED LIMITS / VISUAL REJECT / VISUAL NOT VERIFIED.
@@ -171,4 +196,4 @@ Do not ask Gemini to claim it inspected GitHub, executed Flutter tests, or saw a
 
 ---
 
-**Audit conclusion (updated 2026-11-12):** source remediation is implemented for the Statistics dock/data path, native polling overlap, Home/Temperature touch targets and TamperScreen presentation. The current 185-test suite, analyzer and formatter have not run here. The next operation may be the separate guarded `Eksekusi Build App!` QC on exact main SHA `a963f8bd100f7f2c41f720933ade2cd586145270`. This means ready to execute QC, not a passed build, visual pass, device validation or release. One selected-session summary/decimation pass remains each second; long-session CPU/memory soak, formatter/lint standard and Android visual/touch acceptance remain explicit follow-up evidence.
+**Audit conclusion (updated 2026-11-12):** the selected-time dock, analytics indexing/merge, transactional sample/freshness writes, polling overlap, Home/Temperature touch targets and integrity-screen presentation are source-implemented. A further static review identified two open Statistics boundedness edge cases: the capacity-64 admitted-operation counter does not cover suspended producer Futures created by unawaited call sites, and invalid-heavy/gap-heavy decimation can exceed the nominal 1,600-point target. Current 185 tests, formatter and analyzer have not run on this SHA; the build workflow contains no formatter gate. **Disposition: HOLD guarded Build QC until these findings are fixed or explicitly dispositioned and the formatter requirement is evidenced.** Next source target remains a963f8bd100f7f2c41f720933ade2cd586145270; no Build App/Actions trigger was sent. Full-session summary/decimation still occurs once per second; long-session CPU/memory soak and Android visual/touch acceptance remain unverified.
