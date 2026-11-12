@@ -1,25 +1,25 @@
-## CURRENT CHECKPOINT — BUILD #155 ACTIVE / FLUTTER SETUP — 2026-11-12
+## CURRENT CHECKPOINT — BUILD #155 ACTIVE / FLUTTER TESTS — 2026-11-12
 
 **Mode:** `@Thinking Eksekusi Build App!` — guarded App Build/QC/release only.
 
-### Previous attempt and repair
+### Build #154 failure and repair
 
-- Build #154 / run `43243342029` / job `131269364235` / source `dd7e75f1597e14c3d929b1ca78825dc806aef25d` is terminal FAILED at analyzer: 6 errors, 0 warnings, 23 info deprecations. Gates 13–21 skipped; no artifacts/Release mutation.
-- Root causes were missing `package:flutter/services.dart` in `lib/floating_monitor.dart` (MethodChannel) and unsupported `fontFamily` argument to `ThemeData.copyWith` in `lib/main.dart`.
-- Repairs: `7b852bde09cac3c0f0c86cbe1fa4b28e994ea840` (services import) and `e2aa22b8d64016ab686009ecd2fc57f2ef330ec5` (Roboto applied through textTheme/primaryTextTheme). Read-back confirms exactly two Dart source paths changed.
+- Build #154 / run `43243342029` / job `131269364235` / source `dd7e75f1597e14c3d929b1ca78825dc806aef25d` is terminal FAILED at analyzer: six errors, no warnings, 23 info deprecations. Gates 13–21 skipped; no artifact/Release update.
+- Root causes: missing `package:flutter/services.dart` for MethodChannel in `lib/floating_monitor.dart`; unsupported `fontFamily` argument passed to `ThemeData.copyWith` in `lib/main.dart`.
+- Repairs committed/read back: `7b852bde09cac3c0f0c86cbe1fa4b28e994ea840` and `e2aa22b8d64016ab686009ecd2fc57f2ef330ec5`. Exactly two Dart source paths changed.
 
-### Current retry — Build #155
+### Current guarded retry — Build #155
 
-- Run `43244335274`, workflow 374946166, issue event, attempt 1, job `131272831810`; immutable checkout SHA `63ab4e8167cd099a30ad6a4ca8cd8cfb52d0c098`. [Actions run](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/43244335274).
-- Initial state: IN_PROGRESS. Steps 1–3 succeeded; step 4 Set up Flutter is in progress. Remaining gates pending. Continue only this run.
-- Triggered one time after fresh preflight: #154 terminal, zero queued/in-progress runs, no open PR, Issue #33 exact owner/title/token, workflow unchanged, Release #153 target/hash intact. Issue #33 closed/reopened once.
-- Workflow blob `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12` remains issue opened/reopened only with owner/title/token guard; no push/PR release path.
-- **Formatter caveat:** no Dart formatter step exists in the workflow. `dart format` remains NOT RUN / UNVERIFIED.
-- Build #153 remains the published Release baseline (ID 403010611, tag `jexfyz-latest`, old source `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e`) until #155 passes publication.
+- Run `43244335274`, workflow 374946166, issue event, attempt 1, job `131272831810`; immutable checkout SHA `63ab4e8167cd099a30ad4d7a7c0`. [Actions run](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/43244335274).
+- **Progress:** steps 1–12 SUCCESS, including security/architecture audit, dependencies and analyzer. Step 13 `flutter test` is IN_PROGRESS. Steps 14–21 are pending.
+- Exact analyzer info count and test count are pending terminal logs. Active job log archive is not downloadable while the job is running; do not invent counts.
+- No duplicate trigger; continue run #155 only. Release baseline remains Build #153 / Release 403010611 / tag `jexfyz-latest`, source `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e`.
+- Workflow blob `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12` remains issue opened/reopened only with owner/title/token guard. No push/PR path.
+- **Formatter caveat:** no Dart formatter step exists; `dart format` remains NOT RUN / UNVERIFIED.
 
 ### Next
 
-Inspect only run `43244335274` / job `131272831810`; preserve any failure and retry only after a concrete repair. CI proves App scope only; Firmware/BIN/Firebase/OTA/flash, physical BLE/device, NVS/rail/LED, thermal/electrical and OEM visual acceptance remain separate and NOT RUN / UNVERIFIED.
+Inspect only run `43244335274` / job `131272831810`; wait for step 13 outcome, then the Android Gradle and release gates. If a gate fails, inspect actual logs and repair only its evidenced App-scope cause. Firmware/BIN/Firebase/OTA/flash/device/BLE/thermal/OEM visual evidence remains separate and NOT RUN / UNVERIFIED.
 
 ---
 
