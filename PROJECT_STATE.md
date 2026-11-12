@@ -1,11 +1,12 @@
-## CURRENT APP QC — BUILD #156 FAILED / SINGLE ASSERTION REPAIRED — 2026-11-12
+## CURRENT APP QC — BUILD #157 ACTIVE — 2026-11-12
 
-- **Failed run:** Build #156 / Actions `43246666829`, job `131281061201`, attempt 1; immutable checkout `c180f2bb18b3361ecd02fff2503b06043f0d22e0`. Analyzer passed (23 infos, zero warnings/errors). Flutter tests failed **186 passed / 1 failed**. Gradle and package/Release gates 14–21 skipped; no APK/source ZIP/Release mutation.
-- **Exact cause:** one stale assertion in `test/widget_test.dart` still expected `const SizedBox(height: 3),` in the Home builder before NOTIFY. The intentional real overflow fix now has exactly two 2-dp spacers there. All previous four #155 failures passed in #156.
-- **Repair:** final test-only assertion change is committed in `b007b56ab5ddf91546f86937be202978dc7fee3b` then corrected to literal split/count in `38212c3620aba6eb9fa5f6db41b43fdb777a9ddf`. Read-back asserts two 2-dp spacers and no 3-dp spacer before NOTIFY. No production source changed in this final repair.
-- **Preserved history:** #154 analyzer FAILED (6 errors); #155 Flutter tests FAILED (183/4); #156 Flutter tests FAILED (186/1). Build #153 remains latest Release.
-- **Current:** #156 terminal FAILED; final stale source-contract assertion repaired; retry preflight pending. Local formatter/analyzer/tests unavailable; workflow has no formatter step, so `dart format` NOT RUN / UNVERIFIED.
-- **Next:** one guarded retry after verifying zero queued/in-progress runs, no PR, exact issue #33 guard, unchanged workflow, current Release/tag/assets and exact versionName. No Firmware/BIN/Firebase/OTA/flash/device/BLE/thermal/electrical/OEM visual operations.
+- **Run:** Build #157 / Actions `43247876115`, workflow 374946166, issue event, attempt 1, job `131285336987`; immutable checkout SHA `10d106537e92060e0aac3fc17fd37f56e746bcd5`.
+- **Initial progress:** runner, checkout and Java 17 SUCCESS; Flutter setup IN_PROGRESS; later analyzer/test/Gradle/APK/signing/source ZIP/Release gates pending. Continue this run only.
+- **Prior preserved failures:** #154 analyzer 6 errors; #155 tests 183 pass / 4 fail; #156 tests 186 pass / 1 fail. #156 sole remaining cause was a stale 3-dp spacing assertion; corrected in test commits `b007b56ab5ddf91546f86937be202978dc7fee3b` and `38212c3620aba6eb9fa5f6db41b43fdb777a9ddf`.
+- **Preflight:** #156 terminal; no queued/in-progress runs; no open PR; exact issue #33 owner/title/token; workflow unchanged; Release #153 assets/tag intact; Android versionName exact. Issue #33 closed/reopened once; one #157 run appeared.
+- **Formatter:** workflow has no Dart format step; `dart format` remains NOT RUN / UNVERIFIED.
+- **Release baseline:** Build #153 / Release 403010611 / tag `jexfyz-latest` remains on source `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e` until #157 passes.
+- **Boundary:** App build only; no Firmware/BIN/Firebase/OTA/flash/device/physical BLE/thermal/electrical/OEM visual operation.
 
 
 ---
