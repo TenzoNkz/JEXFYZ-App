@@ -2770,3 +2770,11 @@
 - Steps 1–13 completed SUCCESS. This includes toolchain, security/architecture audit, dependency install, Dart analyzer and the complete Flutter test gate. Step 14 `Run Android unit-test gate` is IN_PROGRESS. Steps 15–21 remain pending.
 - Exact analyzer info count, Flutter test count and native Android `NO-SOURCE` coverage are awaiting terminal log extraction; no counts are inferred from a step status.
 - Continue Build #157 only; no duplicate trigger. No APK/Release gate has completed yet.
+
+
+### BUILD #157 progress update — Android Gradle passed / APK build active (2026-11-12)
+
+- Run `43247876115` / job `131285336987`, immutable checkout SHA `10d106537e92060e0aac3fc17fd37f56e746bcd5`, attempt 1.
+- Steps 1–14 completed SUCCESS, including Dart analyzer, Flutter tests and Android Gradle unit-test gate. Step 15 `Build latest release APK` is IN_PROGRESS. Steps 16–21 (V1/V2/V3 signing, cert verification, filename, source ZIP, Release publication, downloaded asset check) remain pending.
+- Exact analyzer info count, Flutter test count and native Android JUnit `NO-SOURCE` detail must be extracted from final logs; no count/coverage inference.
+- No duplicate trigger; continue #157 only.
