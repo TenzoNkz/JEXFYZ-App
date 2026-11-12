@@ -36,3 +36,11 @@ Gemini review is now complete and cross-checked against live `main`: the alleged
 - Reuse `_lockedDisplayMenu()`; extend the reason/state path rather than duplicate blur UI. Apply Lock Voltage overlay to Voltage and Adaptive tabs only. Preserve disconnected-first priority and the pre-existing Adaptive active/transitioning restrictions. Use actual VOLTAGE telemetry to distinguish safe handoff pending from confirmed locked 5V.
 - Put a standalone Lock Voltage card immediately below the Settings AppBar, before UMUM. Preserve session-ready/known gating, busy state, Firmware-owned state, NVS persistence warning and retry. No state/protocol/firmware policy change is authorized by this UI request.
 - Current mode: `Diskusi!`. No source or test edits, build, release, Firmware compile, OTA, flashing or device operation performed. APP_NOTES.md, PROJECT_STATE.md and this handover checkpoint record the requirement. Next recommended operation: `Eksekusi Full!` (App UI + regression tests only); this is not authorization.
+
+
+## Discussion checkpoint — Peltier safety popup redesign (2026-11-12)
+
+- Owner reports the current Peltier safety popup remains visually rigid. The current source still uses stock `AlertDialog` inside `showGeneralDialog`; prior compacting changed dimensions and typography but did not redesign the hierarchy.
+- Proposed treatment: custom JE X FYZ rounded safety card, theme-aware and responsive, warm amber fan prerequisite tile, concise title/explanation, visible Fan ON → Peltier ON sequence, full-width paired-action primary button and quieter Cancel below. Subtle fade/scale; no alarming red surface for a normal Fan-OFF prerequisite.
+- Correct action copy because approval sends FAN:ON → waits for ACK → PELTIER:ON, not just Fan ON. Preserve the existing sequence and failure gates exactly. Thermal/NTC faults remain distinct.
+- Requirements are recorded in DESIGN_NOTES.md, APP_NOTES.md and PROJECT_STATE.md. Diskusi only; no source/tests/build/release/Firmware/device work occurred. Next recommended action: scoped `Eksekusi Full!` for App-only implementation and regression tests; not yet authorized.
