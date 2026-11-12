@@ -1,12 +1,11 @@
-## CURRENT APP QC — BUILD #156 ACTIVE — 2026-11-12
+## CURRENT APP QC — BUILD #156 FAILED / SINGLE ASSERTION REPAIRED — 2026-11-12
 
-- **Run:** Build #156 / Actions `43246666829`, job `131281061201`, attempt 1; immutable checkout SHA `c180f2bb18b3361ecd02fff2503b06043f0d22e0`.
-- **Progress:** steps 1–11 SUCCESS (runner/toolchain, signing prep, security/architecture audit, dependencies); step 12 `Analyze Dart code` IN_PROGRESS; steps 13–21 pending. Continue this run only.
-- **Retry rationale:** Build #155 failed at Flutter tests (183 passed / 4 failed) after analyzer success. All four root causes have been fixed in commits `9f1130642666801799cd7547dc907ec50cc55bf5`, `53ebaecb6722e4335e6c20ead419fea96ee1b0e9`, `d00cef194cc27e65085234955b2eda60faa3aba8`; Build #154/#155 failures remain preserved.
-- **Preflight:** no queued/in-progress run or open PR; exact issue #33 owner/title/token; workflow unchanged; Release #153 hash/assets intact; one guarded close/reopen created #156.
-- **Formatter:** workflow has no formatter step; `dart format` remains NOT RUN / UNVERIFIED.
-- **Release baseline:** Build #153 / Release 403010611 / tag `jexfyz-latest` remains on source `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e` until #156 passes.
-- **Boundary:** App build only. No Firmware/BIN/Firebase/OTA/flash/device/physical BLE/thermal/electrical operations.
+- **Failed run:** Build #156 / Actions `43246666829`, job `131281061201`, attempt 1; immutable checkout `c180f2bb18b3361ecd02fff2503b06043f0d22e0`. Analyzer passed (23 infos, zero warnings/errors). Flutter tests failed **186 passed / 1 failed**. Gradle and package/Release gates 14–21 skipped; no APK/source ZIP/Release mutation.
+- **Exact cause:** one stale assertion in `test/widget_test.dart` still expected `const SizedBox(height: 3),` in the Home builder before NOTIFY. The intentional real overflow fix now has exactly two 2-dp spacers there. All previous four #155 failures passed in #156.
+- **Repair:** final test-only assertion change is committed in `b007b56ab5ddf91546f86937be202978dc7fee3b` then corrected to literal split/count in `38212c3620aba6eb9fa5f6db41b43fdb777a9ddf`. Read-back asserts two 2-dp spacers and no 3-dp spacer before NOTIFY. No production source changed in this final repair.
+- **Preserved history:** #154 analyzer FAILED (6 errors); #155 Flutter tests FAILED (183/4); #156 Flutter tests FAILED (186/1). Build #153 remains latest Release.
+- **Current:** #156 terminal FAILED; final stale source-contract assertion repaired; retry preflight pending. Local formatter/analyzer/tests unavailable; workflow has no formatter step, so `dart format` NOT RUN / UNVERIFIED.
+- **Next:** one guarded retry after verifying zero queued/in-progress runs, no PR, exact issue #33 guard, unchanged workflow, current Release/tag/assets and exact versionName. No Firmware/BIN/Firebase/OTA/flash/device/BLE/thermal/electrical/OEM visual operations.
 
 
 ---
