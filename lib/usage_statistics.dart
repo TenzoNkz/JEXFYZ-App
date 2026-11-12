@@ -1397,7 +1397,13 @@ class UsageStatisticsRecorder {
         receivedAtMs - previousP1ReceiptAtMs >
             const Duration(milliseconds: 2500).inMilliseconds;
     if (metric == 'hotside' && _sessionId != null) {
-      // The P1 watchdog follows real receipt time, not SQLite write progress.
+      if (p1ReceiptGap) {
+        // Leave the prior receipt timestamp intact. The P1 watchdog must close
+        // the stale session through reserved capacity; this late HOT packet is
+        // not allowed to extend or backfill the already-expired session.
+        return Future<void>.value();
+      }
+      // Track actual receipt time independently from the SQLite write queue.
       _lastP1ReceiptAtMs = receivedAtMs;
     }
 
@@ -1409,91 +1415,20 @@ class UsageStatisticsRecorder {
       final sampleGap = lastSeen != null &&
           receivedAtMs - lastSeen >
               const Duration(milliseconds: 2500).inMilliseconds;
-      final gapTimestamps = <int>{};
       if (sampleGap) {
-        gapTimestamps.add(
-          lastSeen + const Duration(milliseconds: 1500).inMilliseconds,
-        );
-      }
-      if (p1ReceiptGap && previousP1ReceiptAtMs != null) {
-        gapTimestamps.add(
-          previousP1ReceiptAtMs +
-              const Duration(milliseconds: 1500).inMilliseconds,
-        );
-      }
-      final orderedGapTimestamps = gapTimestamps.toList()..sort();
-      for (final gapTimestamp in orderedGapTimestamps) {
+        // The writer missed one or more observations while the queue/storage
+        // was delayed. Preserve that as a chart gap before the next valid row.
         await _store.recordTemperatureSample(
           sessionId: sessionId,
-          timestampMs: gapTimestamp,
+          timestampMs:
+              lastSeen + const Duration(milliseconds: 1500).inMilliseconds,
           metric: metric,
           value: null,
         );
       }
 
-      if (p1ReceiptGap) {
-        // Only a real gap between received Firmware HOT heartbeats ends P1.
-        // A slow/rejected SQLite write must create a chart gap, not a false
-        // device-session timeout.
-        final cutoff = previousP1ReceiptAtMs! +
-            const Duration(milliseconds: 1500).inMilliseconds;
-        final gapEvents = <UsageStatsEvent>[
-          UsageStatsEvent(
-            sessionId: sessionId,
-            timestampMs: cutoff,
-            metric: 'hotside',
-            numberValue: null,
-            textValue: null,
-          ),
-        ];
-        final batteryLastSeen = _lastSensorSeenMs['battery'];
-        if (batteryLastSeen != null &&
-            cutoff - batteryLastSeen >
-                const Duration(milliseconds: 2500).inMilliseconds) {
-          final batteryGapAt = batteryLastSeen +
-              const Duration(milliseconds: 1500).inMilliseconds;
-          await _store.recordTemperatureSample(
-            sessionId: sessionId,
-            timestampMs: batteryGapAt,
-            metric: 'battery',
-            value: null,
-          );
-          _temperatures['battery'] = null;
-          gapEvents.add(UsageStatsEvent(
-            sessionId: sessionId,
-            timestampMs: batteryGapAt,
-            metric: 'battery',
-            numberValue: null,
-            textValue: null,
-          ));
-        }
-        await _store.endSession(
-          sessionId: sessionId,
-          timestampMs: cutoff,
-          reason: 'stale_p1',
-        );
-        _sessionEndedAtMs = cutoff;
-        _publishLiveUpdate(
-          timestampMs: cutoff,
-          endedAtMs: cutoff,
-          events: gapEvents,
-        );
-        _p1FreshnessTimer?.cancel();
-        _p1FreshnessTimer = null;
-        _sessionId = null;
-        _coolerId = null;
-        _temperatures.clear();
-        _states.clear();
-        _lastSensorSeenMs.clear();
-        _lastP1ReceiptAtMs = null;
-        _sessionStartedAtMs = null;
-        _sessionEndedAtMs = null;
-        _notifyChanged();
-        return;
-      }
-
       // Persist every accepted 1 Hz observation, even when unchanged.
-      // Explicit null rows mark invalid readings and missed persisted intervals.
+      // Null rows are explicit gaps, never zero or a carried-forward reading.
       await _store.recordTemperatureSample(
         sessionId: sessionId,
         timestampMs: receivedAtMs,
