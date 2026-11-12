@@ -28,3 +28,11 @@ This proves hosted App CI and packaging only. No Arduino-ESP32 Core 3.3.7 Firmwa
 ## Next action
 
 Gemini review is now complete and cross-checked against live `main`: the alleged P0 Adaptive deadlock and P2 LED stuttering are not supported by the code; the BLE App-identity limitation is real but already documented and requires the full trusted-enrollment/signature design, not a static APK token. The next recommended action is `Lanjut Diskusi!` to settle whether Lock Voltage must be a cryptographic App-only security boundary or remains an operational interlock. Do not implement BLE authorization until that scope and backend permissions are explicit. Firmware V7.2 still requires separate owner-side Arduino-ESP32 Core 3.3.7 compile/BIN identity and physical validation before distribution; no BIN/Firebase/OTA/flash/device operation is authorized here.
+
+
+## Discussion checkpoint — Lock Voltage UI refinement (2026-11-12)
+
+- Owner supplied three screenshots and requested: (1) Lock Voltage should appear like the existing disconnected/Adaptive lock screen—blurred submenu with one centered padlock panel; (2) Kunci Tegangan should move to the first position in Settings and use a cleaner dedicated card.
+- Reuse `_lockedDisplayMenu()`; extend the reason/state path rather than duplicate blur UI. Apply Lock Voltage overlay to Voltage and Adaptive tabs only. Preserve disconnected-first priority and the pre-existing Adaptive active/transitioning restrictions. Use actual VOLTAGE telemetry to distinguish safe handoff pending from confirmed locked 5V.
+- Put a standalone Lock Voltage card immediately below the Settings AppBar, before UMUM. Preserve session-ready/known gating, busy state, Firmware-owned state, NVS persistence warning and retry. No state/protocol/firmware policy change is authorized by this UI request.
+- Current mode: `Diskusi!`. No source or test edits, build, release, Firmware compile, OTA, flashing or device operation performed. APP_NOTES.md, PROJECT_STATE.md and this handover checkpoint record the requirement. Next recommended operation: `Eksekusi Full!` (App UI + regression tests only); this is not authorization.
