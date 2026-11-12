@@ -1,28 +1,14 @@
-## CURRENT CHECKPOINT — BUILD #151 SUCCESS / RELEASE VERIFIED — 2026-11-12
+## CURRENT CHECKPOINT — BUILD #152 ACTIVE / GUARDED APP QC — 2026-11-12
 
-- **Repository:** TenzoNkz/JEXFYZ-App, branch main. Build #151 immutable release source SHA: `e383924067b7ab2da27f2e41f21232cfb7144ec0`. Current main also contains a newer App-only source/test candidate that is NOT included in that release and has NOT been validated by a new CI run.
-- **Build:** Actions run `43080954412`, workflow 374946166, attempt 1, job 130733048413; completed success. All gates 1–21 and cleanup 39–43 passed; zero active/queued runs at final pre-documentation check.
-- **QC:** Dart analyzer 23 infos, zero warnings/errors; Flutter 171/171 tests passed; Android Gradle gate BUILD SUCCESSFUL in 3m01. Native app JUnit task `:app:testDebugUnitTest` and its compile/process prerequisites are NO-SOURCE, so no native Android JUnit cases ran.
-- **Repair:** Build #150 failed analyzer due malformed `_openSettings()`; fixed by restoring `await Navigator.push<void>(` in App commit `4368c9b81741690cfbcaa30ab00df6438e61d40f`; Lock Voltage callback preserved. Build #150 failure remains historical and documented in APP_BUILD_REPORT.md.
-- **Release:** Release ID 403010611 / tag `jexfyz-latest` now point to exact Build #151 source SHA. Exactly one APK and one matching source ZIP; downloaded SHA, ZIP integrity, source marker and downloaded APK signature/certificate verified.
-- **APK:** 55,881,819 bytes; SHA-256 `4e69ee9bdbc716fc7dfe9679fd630e5ddde8694c61a5b618450026eae83f0935`. [APK](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-release.apk).
-- **Source ZIP:** 2,923,217 bytes; SHA-256 `2ad9f745196665e667fdff02ae0d92900665667ee2358f57d14b7e0da0273ac1`. [Source ZIP](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-corresponding-source.zip).
-- **Certificate:** RSA 4096, JE X FYZ DN, pinned SHA-256 `dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0`; V1/V2/V3 pass. Retain self-signed PKIX trust-chain/no-timestamp jarsigner caveat. Android versionName remains `Telegram @horizontalzzz`; App version 1.0.0+3.
-- **Separate gaps:** Firmware V7.2 compile/BIN, Firebase/OTA/flash, physical BLE/device/NVS/rail/LED, cooling thermal/electrical and owner/OEM visual acceptance are NOT RUN / UNVERIFIED. CI does not prove field acceptance.
-- **Release boundary:** Build #151 remains the latest verified package; its immutable SHA is unchanged. Current main contains a newer App UI candidate and requires formatter/tests/analyzer/hosted QC plus visual acceptance before any new release. No Build #152 was triggered by this Eksekusi Full.
+- **Repository:** TenzoNkz/JEXFYZ-App, branch main. Immutable source at trigger: `04ec48a53bef308f0817470d2d758697a1592cc4`.
+- **Current build:** Build #152 / Actions run `43144337555`, workflow 374946166, attempt 1, issue #33, job `130938510090`. First observation: step 1 Set up job in progress. No gate completed yet.
+- **Change scope vs Build #151 source `e383924067b7ab2da27f2e41f21232cfb7144ec0`:** seven App/test paths changed; 4 Dart source + 3 test files. Implemented Lock Voltage overlay/Settings card priority, custom Peltier safety prompt, About credits, Device Diagnostics snapshot, simplified Usage Statistics, Phosphor icons and Home NOTIFY readability. No Firmware source or workflow changed.
+- **Prior Build #151 remains the latest verified Release while #152 is active:** Release ID 403010611, tag `jexfyz-latest` targets `e383924067b7ab2da27f2e41f21232cfb7144ec0`. Build #152 must pass all gates before claiming updated Release.
+- **Android contract:** Gradle `versionName "Telegram @horizontalzzz"` remains unchanged.
+- **No Firmware compile/BIN/Firebase/OTA/flash/device/BLE/NVS/rail/LED or OEM visual validation.**
+- **Next:** inspect Build #152 through all QC and release gates; no duplicate trigger.
 
 ---
-
-## CURRENT APP SOURCE — visual refinement implementation checkpoint (2026-11-12)
-
-- **Execution baseline:** main HEAD at start was 5349cb0729d38f059ca0bb79350b931c01e36bd8; recursive tree contained 131 entries, truncated=false. Current implementation before this documentation update: e30d0addcdeeb79541b1f795bb7e93fd8987594a.
-- **Implemented on current main:** Lock Voltage centered blur overlay on Voltage/Adaptive with disconnected > Adaptive > Lock Voltage priority and telemetry-based 5V wording; Lock Voltage Settings card moved to the top; custom amber Peltier Fan→Peltier prerequisite card with paired CTA and unchanged Fan-ACK gate; bilingual About below Firmware; Device Diagnostics snapshot/Copy action using available state; simplified Statistics diagrams; Phosphor icon consistency; readable Home NOTIFY behavior.
-- **Statistics invariants:** two measured temperature plots, four step/area timelines, shared six-metric cursor, Min/Avg/Max/Observed, Hotside limit, all secondary aggregates, gap/session boundaries and last-sample provenance remain. Sampling cadence, database/schema, SQL/persistence and analytics logic were not modified.
-- **Regression source updated:** Lock Voltage priority/tab matrix; Peltier custom card/copy/Fan ACK gating; Settings ordering/About localization/credits/Diagnostics unknown values; Phosphor icon family; NOTIFY text sizing; Statistics collapsed details/info provenance/cursor target.
-- **STATIC SOURCE CHECK:** seven changed Dart files have balanced delimiters; all literal JexText.of lookups scanned resolve against the 357-key bilingual localization table; no Material Icons.* references remain in the primary App Dart files; no duplicate test names or malformed });; were found. All 78 Phosphor Regular/Bold references were checked against the package's generated icon declarations. This is static inspection, not Dart parsing or runtime validation.
-- **BLOCKED / NOT RUN:** Flutter, Dart, Gradle and ADB are absent; local clone was blocked by GitHub DNS in this environment. Dart formatter, focused/full tests, analyzer, Android build, emulator screenshots and OEM validation were not run. No hosted CI/build workflow was triggered.
-- **NOT RELEASED / VISUAL NOT VERIFIED:** Build #151 remains latest verified APK (immutable source SHA above); current main source is newer and not in that artifact. Diagnostics is an opening-time snapshot, not a live stream. Unsupported sample freshness/signal/health fields are not fabricated. No Firmware/BIN/Firebase/OTA/flash/device operation occurred.
-- **Next gate:** separate Eksekusi Build App! for hosted formatter/analyzer/widget/full-suite/Android/release gates, then owner screenshots and field/OEM visual acceptance at 350/420 dp, EN/ID, Light/Dark. Eksekusi Full did not authorize or trigger that build.
 
 ## Firmware V7.2 source implementation — App CI verified; Firmware validation pending (2026-11-12)
 
