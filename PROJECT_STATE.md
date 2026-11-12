@@ -1,12 +1,12 @@
-## CURRENT APP QC — BUILD #154 FAILED / ANALYZER REPAIR COMMITTED — 2026-11-12
+## CURRENT APP QC — BUILD #155 ACTIVE — 2026-11-12
 
-- **Failed run:** Build #154 / Actions 43243342029, job 131269364235, attempt 1; immutable checkout SHA `dd7e75f1597e14c3d929b1ca78825dc806aef25d`. Gate 12 `flutter analyze --no-fatal-infos` failed with 6 errors, 0 warnings and 23 info deprecations. Gates 13–21 were skipped; no artifact/Release update.
-- **Exact causes:** missing Flutter services import for `MethodChannel` in `lib/floating_monitor.dart` (five cascade errors) and unsupported `fontFamily` argument to `ThemeData.copyWith` in `lib/main.dart` (one error).
-- **Repairs:** `7b852bde09cac3c0f0c86cbe1fa4b28e994ea840` adds the missing `package:flutter/services.dart` import. `e2aa22b8d64016ab686009ecd2fc57f2ef330ec5` applies Roboto through dark `textTheme` and `primaryTextTheme`. Live diff from failed checkout to repaired head was exactly two executable paths, these two Dart files.
-- **Current status:** source read-back confirms the two changes. Local Flutter/Dart is not available; formatter and post-repair analyzer/tests have NOT RUN. Existing workflow has no formatter step. Hosted revalidation is required.
-- **Release boundary:** Build #153 / Release ID 403010611 / tag `jexfyz-latest` still points to old source SHA `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e`. No Build #154 artifact exists.
-- **Next action:** verify no queued/in-progress run, no open PR, exact issue #33 guard and unchanged workflow; then one guarded retry is justified by this concrete repair. Keep Build #154 failure intact in APP_BUILD_REPORT.md.
-- **Scope boundary:** no Firmware compilation/BIN, Firebase, OTA, flashing, physical BLE/device, NVS/rail/LED, thermal/electrical or OEM visual operation.
+- **Run:** Build #155 / Actions `43244335274`, workflow 374946166, issue event, attempt 1, job `131272831810`; immutable checkout SHA `63ab4e8167cd099a30ad6a4ca8cd8cfb52d0c098`.
+- **State:** IN_PROGRESS. Runner, checkout and Java 17 passed; Flutter setup is in progress. Remaining analyzer, Flutter tests, Android Gradle, APK build/signing, source ZIP, Release/tag and downloaded-asset gates pending.
+- **Reason:** Build #154 failed at analyzer on the missing Flutter services import and invalid ThemeData.copyWith fontFamily argument. Both concrete App root causes were repaired in commits `7b852bde09cac3c0f0c86cbe1fa4b28e994ea840` and `e2aa22b8d64016ab686009ecd2fc57f2ef330ec5`; read-back showed exactly those two Dart source paths.
+- **Retry guard:** #154 terminal; no queued/in-progress run or open PR before retry; issue #33 exact owner/title/token; workflow blob unchanged. One close/reopen created #155. Do not trigger another run while it is active.
+- **Validation omission:** workflow has no Dart formatter step; `dart format` remains NOT RUN / UNVERIFIED.
+- **Release baseline:** Build #153 remains published at source `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e` until #155 passes all gates.
+- **Boundary:** App CI/release only. No Firmware/BIN/Firebase/OTA/flash/device/physical BLE or thermal/electrical operation.
 
 
 ---
