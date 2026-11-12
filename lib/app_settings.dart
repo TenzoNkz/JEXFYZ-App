@@ -252,8 +252,8 @@ class JexText {
       AppLanguage.indonesia: 'Diagnostik Perangkat',
     },
     'deviceDiagnosticsSummary': {
-      AppLanguage.english: 'Live device and safety details',
-      AppLanguage.indonesia: 'Informasi perangkat dan keselamatan terkini',
+      AppLanguage.english: 'Device and safety snapshot',
+      AppLanguage.indonesia: 'Ringkasan kondisi perangkat dan keselamatan',
     },
     'language': {
       AppLanguage.english: 'Language',
