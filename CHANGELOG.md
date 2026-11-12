@@ -1,3 +1,12 @@
+## 2026-11-12 — Bound Usage Statistics writer ingress and hard-cap chart rendering (source implemented; QC pending)
+
+- Replaced wait-for-admission queue behavior with a hard 64 normal + 8 reserved pending-operation ceiling. Producers never wait for a queue slot; excess incoming writes are rejected immediately, counted and shown through a localized history-incomplete warning. Accepted operations remain FIFO. Clear History surfaces queue rejection through its existing UI error path.
+- HOT freshness now follows actual Firmware HOT receipt time rather than persisted DB sample progress, so local write backlog cannot falsely mark a live P1 stream stale. Explicit null gap markers are persisted when recording resumes or a session closes, including the Battery gap on HOT-stale closure.
+- Chart decimation now has a strict maxPoints output ceiling and carries skipped null/breakBefore markers forward as a break before the next retained valid point. Raw SQLite samples and full-resolution analytics inputs remain unchanged.
+- Added regression source for held-writer/fire-and-forget producers, reserved capacity, explicit rejection, accepted FIFO behavior, Clear error propagation, 24,000-point alternating-null histories at several budgets, gap-boundary preservation and overload-warning copy. Current suite inventory: 186 declarations (173 unit/source-contract + 13 widget).
+- Static read-back, source-structure/delimiter checks and a standalone gap-heavy algorithm simulation completed. Flutter/Dart compiler/tests, formatter and analyzer are NOT RUN because the toolchain is unavailable in this runtime. The guarded workflow has no formatter gate.
+- No Actions run, App Build, APK, Release, screenshot, long-session performance soak, Firmware operation or device test occurred. Build #153 remains the latest published package; this change is not released.
+
 ## 2026-11-12 — Distinct Usage Statistics axis labels on narrow temperature ranges
 
 - Y-axis tick labels now select decimal precision from numerical distance between ticks. Narrow ranges retain sufficient precision instead of repeating whole-degree labels; wide ranges stay compact.
