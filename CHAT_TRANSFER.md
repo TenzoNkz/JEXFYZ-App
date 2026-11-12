@@ -1,24 +1,24 @@
-## CURRENT CHECKPOINT — BUILD #157 ACTIVE / APK BUILD RUNNING — 2026-11-12
+## CURRENT CHECKPOINT — BUILD #157 ACTIVE / RELEASE PUBLISHING — 2026-11-12
 
 **Mode:** `@Thinking Eksekusi Build App!` — guarded App Build/QC/release only.
 
-### Previous attempts and repairs
+### Previous failures and final repair
 
-- Build #154 analyzer FAILED (six errors); root causes repaired in App source.
-- Build #155 tests FAILED (183 pass / 4 fail); Build #156 tests FAILED (186 pass / 1 fail). All original diagnostics and repair commits remain recorded in APP_BUILD_REPORT.md.
-- #156's final stale 3-dp Home Notify assertion is now fixed: tests count exactly two literal 2-dp spacers and reject a 3-dp spacer before NOTIFY in commits `b007b56ab5ddf91546f86937be202978dc7fee3b` then `38212c3620aba6eb9fa5f6db41b43fdb777a9ddf`.
+- Build #154 analyzer FAILED (6 errors); Build #155 tests FAILED (183 pass / 4 fail); Build #156 tests FAILED (186 pass / 1 fail). All original failures and root causes remain preserved.
+- Final #156 failure was the stale Home Notify test expecting a 3-dp gap; final correction in commits `b007b56ab5ddf91546f86937be202978dc7fee3b` and `38212c3620aba6eb9fa5f6db41b43fdb777a9ddf` now asserts exactly two 2-dp spacers and rejects a 3-dp spacer.
 
 ### Current guarded retry — Build #157
 
 - Run `43247876115`, workflow 374946166, issue event, attempt 1, job `131285336987`; immutable checkout SHA `10d106537e92060e0aac3fc17fd37f56e746bcd5`. [Actions run](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/43247876115).
-- Steps 1–14 SUCCESS, including analyzer, Flutter tests and Android Gradle. Step 15 `Build latest release APK` IN_PROGRESS. Steps 16–21 pending.
-- Exact analyzer/test counts and native Android `NO-SOURCE` tasks are pending log extraction after job completion.
-- No duplicate trigger; continue #157 only. Build #153 is still the published Release baseline until #157 completes publication.
+- Steps 1–19 SUCCESS, including analyzer, Flutter tests, Android Gradle, obfuscated APK, V1/V2/V3 signing, APK signature verification, filename and source ZIP packaging.
+- Step 20 Release publication IN_PROGRESS. Step 21 downloaded-asset verification pending. Continue this run only.
+- Exact analyzer/test totals, APK/ZIP hashes/size, pinned certificate details, and Android native JUnit NO-SOURCE detail await final logs/Release read-back.
+- Release #153 is still the live prior Release until #157 publication succeeds. No duplicate trigger.
 - Formatter remains NOT RUN / UNVERIFIED; workflow has no formatter step.
 
 ### Next
 
-Inspect the APK build gate, then V1/V2/V3 signing, certificate, source ZIP, Release/tag/source SHA parity and downloaded asset identity. No Firmware/BIN/Firebase/OTA/flash/device/BLE/thermal/electrical/OEM visual evidence is inferred.
+Inspect Release publication, then gate 21 downloaded asset verification. After terminal success, verify live Release/tag/source SHA, exact one-APK/one-ZIP asset set and digests; record all actual evidence. Firmware/BIN/Firebase/OTA/flash/device/BLE/thermal/electrical/OEM visual remains separate.
 
 ---
 
