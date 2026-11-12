@@ -16,7 +16,7 @@ Purpose: canonical current App/UI/BLE/telemetry contract. Current source defines
 - This compact AlertDialog refinement and 60-color picker were later included in Build #151. The current main custom Peltier safety card is a newer second-stage redesign and is documented below.
 - Peltier popup now targets an approximately 312-dp card width inside the existing 360-dp fixed canvas, uses 18/14/14 dp title/body/actions and tightened vertical padding. Cancel/Fan targets remain 48 dp high. English/Indonesian copy is shorter. Fan-first safety and existing command/ACK sequence are unchanged.
 - LED Color Picker has 60 unique named colors with complete English/Indonesian localization, six columns, internal scrolling, 48×48 dp hit cells and 32×32 dp swatches. Names now match standard HEX values where available. Preview, tooltip, accessibility label, draft selection, Cancel and explicit Select/commit share the same color name/value mapping. Legacy stored RGB aliases remain supported.
-- Source and regression-test files are committed, but Flutter/Dart are unavailable locally and no formatter, local tests, analyzer, hosted CI, new APK or visual screenshot validation has run for this refinement. Visual status remains VISUAL NOT VERIFIED until real screenshots are inspected.
+- These compact dialog and 60-color picker refinements were subsequently included in Build #151 and passed that build's hosted analyzer/Flutter test gates. That validation applies to the Build #151 source baseline; it does not validate the newer custom Peltier card now on current main. Physical screenshot/OEM acceptance still requires owner-side visual review.
 
 
 ## Lock Voltage 5V — App source implementation (2026-11-12; not yet released or field-validated)
