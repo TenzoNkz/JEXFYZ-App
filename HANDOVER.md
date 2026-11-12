@@ -2,17 +2,18 @@
 
 Updated: 2026-11-12 (Asia/Jakarta).
 
-## Build #152 failure and test repair
+## Active App Build — Build #153
 
-- Build #152 / run `43144337555` failed Flutter tests (171 passed / 5 failed); analyzer passed; APK/Release steps skipped. Failure evidence preserved in APP_BUILD_REPORT.md.
-- Three test-only repair commits: `5f06e121cdb6f84f7cb3c70c020d4e89a97e3725`, `bba8cd2eb96f82a0c7a087cb165866e1cda2e11e`, `642e6a500473b16554ab849f07ed8ddffd84bc8a`. See report for precise fixes. No runtime source or workflow changed.
-- Statistics test now explicitly sets a 800×1200, DPR 1 viewport and checks its Scrollable height before attempting to reveal `Last sample · 04:00`; it still asserts the rendered label. All five repairs are statically verified only.
-- Flutter/Dart/Gradle unavailable locally. Tests NOT RUN after repair. Build #151 remains last verified release at `e383924067b7ab2da27f2e41f21232cfb7144ec0`.
+- Actions run [43145542329](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/43145542329), workflow 374946166, attempt 1, job 130942369953; source SHA `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e`. Initial job status steps 1–2 success, step 3 Java 17 setup in progress.
+- Build #153 is the one guarded retry after the three test-only repairs to Build #152 failures. It corrects Home NOTIFY source-contract assertions, isolates Statistics test viewport, and aligns Diagnostics localization/casing. No production App/Firmware/workflow source changed.
+- Build #152 / run 43144337555 remains failed at Flutter tests (171 pass / 5 fail); no artifact. Details preserved in APP_BUILD_REPORT.md.
+- Latest Release is still Build #151, Release ID 403010611/tag `jexfyz-latest`, source `e383924067b7ab2da27f2e41f21232cfb7144ec0` until #153 completes all gates.
+- Android `versionName "Telegram @horizontalzzz"` unchanged.
+
+## Boundaries
+
+No Firmware compile/BIN/Firebase/OTA/flash/device/BLE/NVS/rail/LED/cooling/electrical/OEM screenshot work.
 
 ## Next action
 
-Perform fresh preflight, then one guarded issue #33 close/reopen retry for the repaired test suite. Inspect its analyzer/tests/Android/signing/source/release gates. No further trigger while active.
-
-## Scope boundary
-
-No Firmware compile/BIN/Firebase/OTA/flash/device/BLE/NVS/rail/LED/cooling or OEM screenshot work.
+Continue inspecting run `43145542329` through analyzer, Flutter suite, Android gate, signing, matching source archive, Release/tag parity and downloaded asset verification. No additional trigger while active.
