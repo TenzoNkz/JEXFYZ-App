@@ -1,14 +1,14 @@
-## CURRENT CHECKPOINT — BUILD #153 ACTIVE / GRADLE SETUP — 2026-11-12
+## CURRENT CHECKPOINT — BUILD #153 ACTIVE / FLUTTER TESTS — 2026-11-12
 
-**Mode:** owner-authorized `Eksekusi Build App!`; App Build/QC/release only. Firmware/BIN/Firebase/OTA/flash/device operations excluded.
+**Mode:** owner-authorized `Eksekusi Build App!`; App Build/QC/release only.
 
-- **Run/job/source:** Build #153 / Actions run `43145542329`, job `130942369953`, attempt 1; immutable source `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e`.
-- **Passed:** steps 1–4 (runner, checkout, Java 17, Flutter 3.47.2). **Current:** step 5 Set up Gradle 9.3.1 in progress. Steps 6–21 pending.
-- **Build #152 remains historical failure:** 171 tests passed / 5 failed. Three test-only repair commits are included in this source. Build #152 failure and repaired assertions are preserved in APP_BUILD_REPORT.md.
-- **Latest Release remains Build #151** at source `e383924067b7ab2da27f2e41f21232cfb7144ec0` until #153 passes all gates. Android `versionName "Telegram @horizontalzzz"` unchanged.
-- Workflow is unchanged issue-only/guarded. No additional trigger while #153 is active.
-- No Firmware/BIN/Firebase/OTA/flash/device/BLE/NVS/rail/LED/cooling/OEM screenshot testing.
-- **Next:** continue inspecting run `43145542329` / job `130942369953` only.
+- **Run/job/source:** Build #153 / Actions run `43145542329`, job `130942369953`, attempt 1; immutable SHA `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e`.
+- **Passed:** steps 1–12, including toolchain, security audit, dependencies and **Dart analyzer**. **Current:** step 13 `Run Flutter tests` — in progress. Steps 14–21 pending.
+- **Test repair under verification:** Build #152's five test failures addressed by three test-only commits; app runtime/Firmware source unchanged. The Statistics test now uses its own viewport and retains visible Last sample assertion.
+- **Previous Build #152 remains FAILED**, 171/5; failure not overwritten.
+- **Latest published Release remains Build #151** until #153 passes all gates; tag `jexfyz-latest` still targets source `e383924067b7ab2da27f2e41f21232cfb7144ec0`. Android `versionName "Telegram @horizontalzzz"` unchanged.
+- No Firmware/BIN/Firebase/OTA/flash/device/BLE/NVS/rail/LED/cooling/OEM test or operation.
+- **Next:** continue run `43145542329`/job `130942369953` through test and release gates only.
 
 ---
 
