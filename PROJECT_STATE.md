@@ -1,4 +1,17 @@
-## CURRENT APP SOURCE — BOUNDED STATISTICS FIXES COMMITTED / QC HOLD — 2026-11-12
+## CURRENT APP QC — BUILD #154 ACTIVE — 2026-11-12
+
+- **Run:** Build #154 / Actions run 43243342029, workflow 374946166, issue event, attempt 1, job 131269364235; current checkout SHA dd7e75f1597e14c3d929b1ca78825dc806aef25d. [Actions run](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/43243342029).
+- **State:** IN_PROGRESS. Runner setup, checkout and Java 17 succeeded; Flutter setup is in progress. Remaining toolchain, audit, analyzer, Flutter tests, Android Gradle, APK/signing/source ZIP/Release/downloaded-asset gates are pending.
+- **Source/release gap:** current executable App/test checkpoint is 6c551c4ff95329e56eca7ce758078c9590b4b726. The run checkout is 99 commits ahead / 0 behind Build #153 source 1834a78e20273c9ea6cd51ad4d52b64370c5bd9e; 18 changed paths comprise 11 Markdown files, 4 Dart libraries and 3 Dart test files. The current Usage Statistics/Settings/Floating Monitor/Home changes are not in Build #153.
+- **Preflight:** complete recursive tree was 132 entries, not truncated; no open PR; no queued/in-progress run before trigger. Issue #33 matched exact owner/title/token and was closed/reopened once. Exactly one Build #154 run appeared; do not trigger a duplicate.
+- **Workflow:** unchanged blob 9dc1e61ba49f19cad4edbb99a832d5333d9f0f12. Trigger remains issues.opened/reopened with repository-owner/title/body-token guard; no push/PR release path. Android versionName remains "Telegram @horizontalzzz".
+- **Formatter caveat:** the live workflow has no Dart formatter step. `dart format` is NOT RUN / UNVERIFIED and is not being counted as passed. No gate was weakened.
+- **Release baseline:** Build #153 / Release 403010611 / tag jexfyz-latest remains on 1834a78e20273c9ea6cd51ad4d52b64370c5bd9e until #154 completes all required gates.
+- **Next:** inspect run 43243342029 / job 131269364235 only. CI success will prove App hosted validation/package only; Firmware/BIN/Firebase/OTA/flash, physical BLE, device/NVS/rail/LED, thermal/electrical and OEM visual acceptance remain separate.
+
+---
+
+## SOURCE IMPLEMENTATION BASELINE — PREBUILD AUDIT BEFORE BUILD #154 — 2026-11-12
 
 ### Validation follow-up — 2026-11-12
 
