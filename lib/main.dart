@@ -79,6 +79,7 @@ import 'usage_statistics.dart';
 // Material Icons are intentionally not used by JE X FYZ UI controls.
 // --- PRODUCT/INTEGRATION CONSTANTS: identity, BLE UUIDs, OTA endpoint, UI limits ---
 const String appName = 'JE Cooler';
+const String appVersion = '1.0.0+3'; // Keep synchronized with pubspec.yaml.
 const String headerName = 'JE X FYZ';
 const String serviceUuid = '6f1c0001-7f35-4d0f-9b9a-7e9b2f5c1001';
 const String rxUuid = '6f1c0002-7f35-4d0f-9b9a-7e9b2f5c1001';
@@ -1852,19 +1853,31 @@ bool jexIconAnimationPermitted({
   return stateActive;
 }
 
-enum DisplayMenuLockReason { none, bluetoothDisconnected, adaptiveActive }
+enum DisplayMenuLockReason {
+  none,
+  bluetoothDisconnected,
+  adaptiveActive,
+  voltageLocked,
+}
 
-/// Applies a single lock overlay to the selected submenu; Bluetooth has priority.
+/// Applies one centered lock overlay to the selected submenu.
+/// Disconnection has highest priority, followed by the existing Adaptive gate.
 DisplayMenuLockReason displayMenuLockReason({
   required bool connected,
   required bool adaptiveActive,
   required bool adaptiveTransitioning,
   required int tabIndex,
+  bool voltageLockKnown = false,
+  bool voltageLockActive = false,
 }) {
   if (!connected) return DisplayMenuLockReason.bluetoothDisconnected;
   final adaptiveLocksTab = tabIndex == 0 || tabIndex == 1 || tabIndex == 4;
   if ((adaptiveActive || adaptiveTransitioning) && adaptiveLocksTab) {
     return DisplayMenuLockReason.adaptiveActive;
+  }
+  final voltageLockLocksTab = tabIndex == 0 || tabIndex == 2;
+  if (voltageLockKnown && voltageLockActive && voltageLockLocksTab) {
+    return DisplayMenuLockReason.voltageLocked;
   }
   return DisplayMenuLockReason.none;
 }
@@ -6599,9 +6612,8 @@ void _handleAckLine(String line) {
   }
 
   // AI-METHOD / PELTIER-COMMAND-CONTRACT
-  // When the popup approves Peltier startup from Fan-OFF, queue FAN:ON and PELTIER:ON
-  // together before awaiting either confirmation. The BLE write queue preserves ordering,
-  // but there is no UI-side confirmation delay between the two commands.
+  // When the popup approves Peltier startup from Fan-OFF, confirm FAN:ON first.
+  // PELTIER:ON is sent only after the device acknowledges that the fan is on.
   Future<void> _togglePeltier(bool enabled) async {
     if (!connected || adaptiveOn) return;
     try {
@@ -6626,52 +6638,132 @@ void _handleAckLine(String line) {
                     child: Center(
                       child: ConstrainedBox(
                         constraints: const BoxConstraints(maxWidth: 340),
-                        child: AlertDialog(
-                          insetPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                          titlePadding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
-                          contentPadding: const EdgeInsets.fromLTRB(16, 0, 16, 4),
-                          actionsPadding: const EdgeInsets.fromLTRB(8, 2, 8, 6),
-                          actionsOverflowButtonSpacing: 6,
-                          title: Text(
-                            JexText.of('peltierSafety', appLanguageNotifier.value),
-                            style: const TextStyle(
-                              fontSize: 18,
-                              height: 1.12,
-                              fontWeight: FontWeight.w800,
+                        child: Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.fromLTRB(18, 18, 18, 14),
+                          decoration: BoxDecoration(
+                            color: Theme.of(dialogContext).colorScheme.surface,
+                            borderRadius: BorderRadius.circular(24),
+                            border: Border.all(
+                              color: Theme.of(dialogContext).colorScheme.outlineVariant.withValues(alpha: .82),
                             ),
-                          ),
-                          content: Text(
-                            JexText.of('fanRequiredPeltier', appLanguageNotifier.value),
-                            style: const TextStyle(fontSize: 14, height: 1.28),
-                          ),
-                          actions: [
-                            TextButton(
-                              style: TextButton.styleFrom(
-                                minimumSize: const Size(72, 48),
-                                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                                tapTargetSize: MaterialTapTargetSize.padded,
-                                textStyle: const TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w600,
-                                ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withValues(alpha: .14),
+                                blurRadius: 22,
+                                offset: const Offset(0, 8),
                               ),
-                              onPressed: () => Navigator.pop(dialogContext, false),
-                              child: Text(JexText.of('cancel', appLanguageNotifier.value)),
-                            ),
-                            FilledButton(
-                              style: FilledButton.styleFrom(
-                                minimumSize: const Size(128, 48),
-                                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                                tapTargetSize: MaterialTapTargetSize.padded,
-                                textStyle: const TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-                              onPressed: () => Navigator.pop(dialogContext, true),
-                              child: Text(JexText.of('turnOnFan', appLanguageNotifier.value)),
-                            ),
-                          ],
+                            ],
+                          ),
+                          child: Builder(
+                            builder: (cardContext) {
+                              final scheme = Theme.of(cardContext).colorScheme;
+                              final language = appLanguageNotifier.value;
+                              Widget step(IconData icon, String label) => Expanded(
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
+                                      decoration: BoxDecoration(
+                                        color: scheme.surfaceContainerHighest.withValues(alpha: .42),
+                                        borderRadius: BorderRadius.circular(14),
+                                      ),
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Icon(icon, size: 21, color: scheme.onSurfaceVariant),
+                                          const SizedBox(height: 5),
+                                          Text(label, textAlign: TextAlign.center,
+                                            style: TextStyle(color: scheme.onSurface, fontSize: 11, fontWeight: FontWeight.w800)),
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                              return Column(
+                                mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  Row(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      Container(
+                                        width: 44,
+                                        height: 44,
+                                        decoration: BoxDecoration(
+                                          color: const Color(0xFFD69A38).withValues(alpha: .14),
+                                          borderRadius: BorderRadius.circular(14),
+                                        ),
+                                        child: const Icon(
+                                          PhosphorIconsRegular.fan,
+                                          color: Color(0xFFB7791F),
+                                          size: 24,
+                                        ),
+                                      ),
+                                      const SizedBox(width: 12),
+                                      Expanded(
+                                        child: Text(
+                                          JexText.of('peltierFanRequiredTitle', language),
+                                          style: TextStyle(
+                                            color: scheme.onSurface,
+                                            fontSize: 17,
+                                            height: 1.15,
+                                            fontWeight: FontWeight.w800,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 13),
+                                  Text(
+                                    JexText.of('peltierCoolingPrerequisite', language),
+                                    style: TextStyle(
+                                      color: scheme.onSurfaceVariant,
+                                      fontSize: 13,
+                                      height: 1.35,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 14),
+                                  Row(
+                                    children: [
+                                      step(PhosphorIconsRegular.fan, JexText.of('fan', language)),
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(horizontal: 9),
+                                        child: Icon(PhosphorIconsRegular.arrowRight, size: 17, color: scheme.onSurfaceVariant),
+                                      ),
+                                      step(PhosphorIconsRegular.snowflake, JexText.of('peltier', language)),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 16),
+                                  SizedBox(
+                                    height: 48,
+                                    child: FilledButton.icon(
+                                      style: FilledButton.styleFrom(
+                                        minimumSize: const Size.fromHeight(48),
+                                        tapTargetSize: MaterialTapTargetSize.padded,
+                                        textStyle: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700),
+                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                                      ),
+                                      onPressed: () => Navigator.pop(dialogContext, true),
+                                      icon: const Icon(PhosphorIconsRegular.power, size: 18),
+                                      label: Text(JexText.of('turnOnFanAndPeltier', language)),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  SizedBox(
+                                    height: 48,
+                                    child: TextButton(
+                                      style: TextButton.styleFrom(
+                                        minimumSize: const Size.fromHeight(48),
+                                        tapTargetSize: MaterialTapTargetSize.padded,
+                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                                      ),
+                                      onPressed: () => Navigator.pop(dialogContext, false),
+                                      child: Text(JexText.of('cancel', language)),
+                                    ),
+                                  ),
+                                ],
+                              );
+                            },
+                          ),
                         ),
                       ),
                     ),
@@ -6686,9 +6778,15 @@ void _handleAckLine(String line) {
               begin: const Offset(0, -.035),
               end: Offset.zero,
             ).animate(CurvedAnimation(parent: animation, curve: Curves.easeOutCubic));
+            final scale = Tween<double>(begin: .97, end: 1).animate(
+              CurvedAnimation(parent: animation, curve: Curves.easeOutCubic),
+            );
             return FadeTransition(
               opacity: animation,
-              child: SlideTransition(position: offset, child: child),
+              child: SlideTransition(
+                position: offset,
+                child: ScaleTransition(scale: scale, child: child),
+              ),
             );
           },
         );
@@ -7040,8 +7138,26 @@ void _handleAckLine(String line) {
           compactUi: true,
           child: SettingsPage(
             currentFirmwareVersion: firmwareVersion,
+            currentAppVersion: appVersion,
             coolerId: device?.remoteId.toString() ?? knownCoolerRemoteIdNotifier.value,
             hotLimit: hotLimit,
+            deviceConnected: connected,
+            p1SessionReady: connected && dashboardReady && fullSyncReceived && _bleReady && _bleSessionReady && protocolValid,
+            runtimeOutputsKnown: runtimeOutputsKnown,
+            diagnosticVoltage: connected && fullSyncReceived ? voltage : '--',
+            diagnosticBatteryTemperature: connected && fullSyncReceived && phoneBatteryValid ? phoneBatteryTemp : '--',
+            diagnosticHotsideTemperature: connected && fullSyncReceived ? hotsideTemp : '--',
+            diagnosticFanOn: fanOn,
+            diagnosticPeltierOn: peltierOn,
+            diagnosticAdaptiveOn: adaptiveOn,
+            diagnosticSafetySummary: connected && fullSyncReceived
+                ? (safetyReason.trim().toUpperCase() == 'NONE'
+                    ? JexText.phrase('No active safety warning.', 'Tidak ada peringatan keselamatan aktif.')
+                    : _friendlyReason(safetyReason))
+                : '--',
+            diagnosticVoltageLockKnown: voltageLockKnown,
+            diagnosticVoltageLockActive: voltageLockActive,
+            diagnosticVoltageLockSaved: voltageLockSaved,
             onOpenFirmwareUpdate: _openFirmwareSettings,
             onVoltageLockChanged: _setVoltageLock,
           ),
@@ -9290,6 +9406,8 @@ void _handleAckLine(String line) {
       adaptiveActive: adaptiveOn,
       adaptiveTransitioning: adaptiveTransitioning,
       tabIndex: tabIndex,
+      voltageLockKnown: voltageLockKnown,
+      voltageLockActive: voltageLockActive,
     );
     return lockReason == DisplayMenuLockReason.none
         ? content
@@ -9300,13 +9418,40 @@ void _handleAckLine(String line) {
   /// Navigation tabs and the Bluetooth Home control live outside this Stack and remain usable.
   Widget _lockedDisplayMenu(Widget content, DisplayMenuLockReason reason) {
     final disconnected = reason == DisplayMenuLockReason.bluetoothDisconnected;
+    final adaptiveLocked = reason == DisplayMenuLockReason.adaptiveActive;
+    final voltageLocked = reason == DisplayMenuLockReason.voltageLocked;
+    final voltageConfirmedAtFive = voltage == '5V';
     final scheme = Theme.of(context).colorScheme;
     final title = disconnected
         ? JexText.phrase('CONNECT YOUR DEVICE FIRST', 'HUBUNGKAN PERANGKAT TERLEBIH DAHULU')
-        : JexText.phrase('LOCKED BY ADAPTIVE MODE', 'TERKUNCI OLEH MODE ADAPTIF');
+        : adaptiveLocked
+            ? JexText.phrase('LOCKED BY ADAPTIVE MODE', 'TERKUNCI OLEH MODE ADAPTIF')
+            : tabIndex == 0
+                ? (voltageConfirmedAtFive
+                    ? JexText.phrase('VOLTAGE LOCKED AT 5V', 'TEGANGAN TERKUNCI DI 5V')
+                    : JexText.phrase('RETURNING TO 5V', 'SEDANG KEMBALI KE 5V'))
+                : JexText.phrase('ADAPTIVE MODE DISABLED', 'MODE ADAPTIF DINONAKTIFKAN');
     final detail = disconnected
         ? JexText.phrase('Connect your device to use this menu.', 'Hubungkan perangkat untuk menggunakan menu ini.')
-        : JexText.phrase('Turn Adaptive Mode off to edit these settings.', 'Matikan Mode Adaptif untuk mengubah pengaturan ini.');
+        : adaptiveLocked
+            ? JexText.phrase('Turn Adaptive Mode off to edit these settings.', 'Matikan Mode Adaptif untuk mengubah pengaturan ini.')
+            : tabIndex == 0
+                ? (voltageConfirmedAtFive
+                    ? JexText.phrase('The device confirms the 5V rail. Higher voltage selections are locked.', 'Perangkat mengonfirmasi tegangan 5V. Pilihan tegangan yang lebih tinggi dikunci.')
+                    : JexText.phrase(
+                        voltage == '--'
+                            ? 'Waiting for confirmed 5V telemetry. The voltage lock remains active.'
+                            : 'The voltage lock is active. The device is safely returning from $voltage to 5V.',
+                        voltage == '--'
+                            ? 'Menunggu telemetri 5V yang terkonfirmasi. Kunci tegangan tetap aktif.'
+                            : 'Kunci tegangan aktif. Perangkat sedang kembali dengan aman dari $voltage ke 5V.',
+                      ))
+                : JexText.phrase('Adaptive Mode is forced OFF while Lock Voltage is active.', 'Mode Adaptif dipaksa MATI selama Kunci Tegangan aktif.');
+    final accent = disconnected
+        ? const Color(0xFF4D8CFF)
+        : adaptiveLocked
+            ? const Color(0xFFC05BFF)
+            : const Color(0xFFD69A38);
     return ClipRect(
       child: Stack(
         fit: StackFit.expand,
@@ -9339,7 +9484,7 @@ void _handleAckLine(String line) {
                       Icon(
                         PhosphorIconsBold.lock,
                         size: 38,
-                        color: disconnected ? const Color(0xFF4D8CFF) : const Color(0xFFC05BFF),
+                        color: accent,
                       ),
                       const SizedBox(height: 12),
                       Text(title, textAlign: TextAlign.center, style: TextStyle(
