@@ -2,6 +2,15 @@
 
 Updated: 2026-11-12 (Asia/Jakarta).
 
+## Current source validation follow-up — 2026-11-12
+
+- Live `main` HEAD: `82114a7540a7f225482c67ffb7772894c956b0b1` (132 entries, not truncated). The Usage Statistics source/test checkpoint is `6c551c4ff95329e56eca7ce758078c9590b4b726`.
+- Main is 96 commits ahead / 0 behind Build #153; 18 paths differ. The release tag still targets old source SHA `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e`. There are no Actions runs for live main or the current source/test checkpoint.
+- Recount: 187 current test declarations across 9 files (174 unit/source-contract + 13 widget). An independent Python simulation passed 60,726 randomized decimator fixtures; this is not Dart/Flutter test evidence.
+- Local Dart/Flutter/Gradle/ADB are absent; outbound DNS to GitHub/Flutter SDK hosts is blocked. Formatter, focused/full Flutter tests, analyzer and Android Gradle remain **BLOCKED / NOT RUN**.
+- The only Actions workflow is the guarded App build/release flow. It runs analyzer/tests/Gradle and publishes the APK/source ZIP but has no formatter step and no separate validation-only mode. It was not triggered.
+- **Disposition: HOLD before Build App.** This Full session made documentation-only updates; no source/test/config/workflow change or Build/Release/device operation occurred.
+
 ## Latest verified App release — Build #153 SUCCESS
 
 - Actions run [43145542329](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/43145542329), job 130942369953, attempt 1; immutable source SHA `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e`. All workflow steps 1–21 and cleanup 39–43 passed.

@@ -1,4 +1,33 @@
-## CURRENT CHECKPOINT — BOUNDED STATISTICS WRITER + GAP DECIMATION IMPLEMENTED / VALIDATION HOLD — 2026-11-12
+## CURRENT CHECKPOINT — VALIDATION REVIEW COMPLETE / FLUTTER TOOLCHAIN BLOCKED — 2026-11-12
+
+**Mode:** `@Thinking Eksekusi Full!` — App source/test review, static audit and project-memory updates only. No source/test/config/workflow change, Actions trigger, App Build/APK/Release, Firmware/BIN, Firebase/OTA, native Android, flashing or device operation.
+
+### Live repository evidence
+
+- **Repository/branch:** `TenzoNkz/JEXFYZ-App` / `main`. Live HEAD: `82114a7540a7f225482c67ffb7772894c956b0b1`; recursive tree: 132 entries, `truncated=false`.
+- **Executable source/test checkpoint:** `6c551c4ff95329e56eca7ce758078c9590b4b726`. Current blobs: `lib/usage_statistics.dart` = `3afd0d8e440b5c4b7c19fb46b825a8a821e5492b`; `test/usage_statistics_test.dart` = `fb665eeb3894a613c2a5bbcfb8ae72537b1c37a0`. Later commits are documentation-only.
+- **Release gap:** GitHub compare confirms `main` is 96 commits ahead / 0 behind Build #153; 18 paths differ (11 Markdown, 4 Dart libraries, 3 test files). Latest tag `jexfyz-latest` and Release #153 still point to source `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e`, not current code.
+- **Actions evidence:** zero workflow runs are associated with both the live HEAD and executable source/test checkpoint. The complete tree contains only `.github/workflows/jexfyz-app-build-trigger.yml`; it is the guarded issue-triggered App build/release workflow. It runs dependency resolution, analyzer, Flutter tests, Android Gradle gate, release APK build and publication, but it has no Dart formatter step. There is no separate validation-only workflow.
+
+### Review and validation performed in this Full session
+
+- Re-read the Master Prompt, active checkpoint, relevant Flutter engineering, Flutter quality/regression and BLE P1 review skills, plus current source, tests, workflow and project notes.
+- Rechecked the queue admission implementation: 64 normal + 8 reserved + 1 critical-close slots; fail-fast rejection; accepted FIFO work; and reserved/critical admission paths. Rechecked HOT receipt-time ordering, stale-packet guard and watchdog source order. Rechecked decimator hard-cap construction and null/explicit-boundary propagation.
+- Recounted all 9 current `*_test.dart` files: **187 declarations** (174 unit/source-contract + 13 widget). This is test inventory only; no Dart test has run.
+- Ran an independent Python property simulation of the decimator over **60,726 randomized (input-length, budget) fixtures**, with random nulls and explicit breaks. The output ceiling and skipped-gap propagation invariants held in every fixture. This is algorithm simulation, not execution of the Dart implementation.
+- GitHub source read-back and structural checks passed. No source defect substantiated by this review requires a speculative patch; executable files are unchanged.
+- **Toolchain blocker confirmed:** `git` and Python are present; `dart`, `flutter`, `gradle` and `adb` are absent. Container DNS resolution to both GitHub and the Flutter SDK host fails, so the SDK cannot be installed from this runtime. The connected GitHub capability used here can inspect repository/Actions evidence but does not provide a remote shell or a validation-only workflow dispatch.
+- Therefore `dart format`, focused/full `flutter test`, `flutter analyze` and Android Gradle remain **BLOCKED / NOT RUN**. No hosted CI result exists for the current code. Visual rendering, OEM screenshots, 1h/8h storage-pressure soak, queue rejection rate, CPU/memory and device behavior remain unverified.
+
+### Decision
+
+**HOLD — not ready to recommend Build App.** The current guarded workflow could execute analyzer/tests only as part of a release operation; it also publishes the APK/source ZIP and the release tag, and is separately protected by `Eksekusi Build App!`. It was not invoked in this Full session. The formatter gate is absent from that workflow.
+
+**Arah berikutnya: Terhambat — a Dart/Flutter-capable validation runner is required for the exact source/test checkpoint before Build App can be recommended.** Build App remains a separate owner authorization and must not be inferred from this checkpoint.
+
+---
+
+## HISTORICAL CHECKPOINT — BOUNDED STATISTICS WRITER + GAP DECIMATION IMPLEMENTED / VALIDATION HOLD — 2026-11-12
 
 **Current mode:** `@Thinking Eksekusi Full!` — App source, regression tests and canonical documentation only. No App Build/QC, Actions trigger, APK/Release, Firmware, Firebase, OTA, native Android, flashing or device operation was performed. Build authorization remains separate.
 

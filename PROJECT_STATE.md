@@ -1,5 +1,13 @@
 ## CURRENT APP SOURCE — BOUNDED STATISTICS FIXES COMMITTED / QC HOLD — 2026-11-12
 
+### Validation follow-up — 2026-11-12
+
+- Live main HEAD is `82114a7540a7f225482c67ffb7772894c956b0b1` (132-entry, non-truncated tree); executable source/test checkpoint remains `6c551c4ff95329e56eca7ce758078c9590b4b726`.
+- Compare against Build #153: 96 commits ahead / 0 behind, 18 changed paths. No Actions run exists for live HEAD or the executable source/test checkpoint; tag `jexfyz-latest` still targets old package source `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e`.
+- All 9 test files were re-counted: 187 declarations (174 unit/source-contract + 13 widget). A separate Python decimator property simulation passed 60,726 randomized fixtures; this is not Dart/Flutter execution.
+- Runtime check confirms `dart`, `flutter`, `gradle` and `adb` are absent and outbound DNS to GitHub/Flutter SDK hosts fails. Formatter, focused/full tests, analyzer and Android Gradle remain **BLOCKED / NOT RUN**. Only the guarded App build/release workflow exists; it has no formatter step and was not triggered.
+- **Current disposition: HOLD.** No executable source, tests, configuration or workflow were changed. No Build App, release or device operation was performed.
+
 - **Repository:** `TenzoNkz/JEXFYZ-App`, branch `main`; current tree has 132 entries, recursive listing not truncated. Current source/test code checkpoint: `6c551c4ff95329e56eca7ce758078c9590b4b726`. Source blob `lib/usage_statistics.dart`: `3afd0d8e440b5c4b7c19fb46b825a8a821e5492b`; test blob `test/usage_statistics_test.dart`: `fb665eeb3894a613c2a5bbcfb8ae72537b1c37a0`. Documentation-only commits follow this code checkpoint.
 - **Usage Statistics writer:** 64 normal pending-operation slots + 8 reserved control slots + 1 critical endSession slot (73 maximum). Admission is synchronous/fail-fast; no producer Future waits for a slot. Accepted operations remain FIFO and are not evicted. Excess arrivals are explicitly rejected, counted and surfaced through a persistent bilingual recording warning. Clear History propagates queue-full rejection to its existing UI error handler.
 - **Control reserve:** session start/clear and Voltage/Adaptive/Peltier transitions may use the 8 reserved slots. Only `endSession` can use the additional critical slot; the P1 watchdog checks that capacity before admitting a stale-session close. High-frequency Battery/HOT and Fan Speed writes are constrained to the 64 normal slots. This is a bounded-memory/non-blocking trade-off: excess arrivals while storage is overloaded are not accepted, and the UI warns that history may be incomplete.

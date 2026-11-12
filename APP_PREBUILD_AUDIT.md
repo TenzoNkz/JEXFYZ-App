@@ -2,7 +2,19 @@
 
 **Audit date:** 2026-11-12 (Asia/Jakarta)  
 **Mode:** `@Thinking Eksekusi Full!` — App source, regression tests and documentation only; no Build/Release, workflow trigger, Firmware or device operation.  
-**Disposition:** **HOLD BEFORE GUARDED APP BUILD QC — both Statistics boundedness source findings have been remediated and regression source added, but no Dart/Flutter execution or formatter evidence exists.** The writer now has a hard 73-operation ceiling (64 normal + 8 control + 1 critical close slot) with immediate visible rejection for excess submissions, and decimation enforces the render-point budget while carrying gap boundaries forward. The 187-test current suite, formatter and analyzer remain NOT RUN; the guarded workflow has no formatter step. Long-session performance and visual/device acceptance remain unverified.
+**Disposition:** **HOLD BEFORE GUARDED APP BUILD QC — current source and regression code are committed, but Dart formatting, Flutter test execution and analyzer evidence for that source are still unavailable.** This session re-read live main, its 187-test inventory and the Statistics queue/receipt-watchdog/decimator implementation; an independent Python simulation passed 60,726 randomized decimator fixtures. There are no Actions runs for current main or the source/test checkpoint. The only workflow is the guarded App build/release flow and it has no formatter step. Long-session and visual/device acceptance remain unverified.
+
+## Revalidation follow-up — 2026-11-12
+
+- Live `main` HEAD: `82114a7540a7f225482c67ffb7772894c956b0b1`; recursive tree 132 entries, not truncated. Executable source/test checkpoint remains `6c551c4ff95329e56eca7ce758078c9590b4b726`; source/test blobs remain `3afd0d8e440b5c4b7c19fb46b825a8a821e5492b` and `fb665eeb3894a613c2a5bbcfb8ae72537b1c37a0`.
+- Current main is **96 commits ahead / 0 behind** Build #153. GitHub compare reports 18 changed paths (11 Markdown, 4 Dart libraries, 3 test files). The `jexfyz-latest` release tag still targets Build #153 source SHA `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e`.
+- Exact-HEAD and source/test-checkpoint Actions queries both returned zero runs. Only one workflow file exists: `.github/workflows/jexfyz-app-build-trigger.yml`. It contains `flutter analyze`, `flutter test`, Android Gradle and APK/release publication steps, but no Dart formatter; it is not a validation-only pipeline.
+- Recounted all 9 test files: 187 declarations (174 unit/source-contract + 13 widget). No tests were executed in this session.
+- Independent Python simulation: 60,726 randomized decimator fixtures, with a hard output-budget and skipped-gap propagation check; all passed. This supplements static inspection only and does not validate Dart syntax, type analysis or Flutter runtime behavior.
+- Environment recheck: `dart`, `flutter`, `gradle` and `adb` are unavailable; outbound DNS to GitHub and the Flutter SDK host fails. Formatter, focused/full tests, analyzer and Android Gradle remain **BLOCKED / NOT RUN**.
+- No executable, test, configuration or workflow files were changed, and no Actions, Build, Release or device operation was triggered. Disposition remains **HOLD**.
+
+## 1. Baseline and evidence
 
 ## 1. Baseline and evidence
 
@@ -12,7 +24,7 @@
 - **Current executable surface:** 7 Dart library files; 9 test files. Main implementation is concentrated in `lib/main.dart` (10,563 lines / ~387 KB), `lib/usage_statistics.dart` (3,298 lines / ~106 KB), `lib/floating_monitor.dart` (1,808 lines / ~65 KB) and `lib/app_settings.dart`.
 - **Tests in current main:** 187 declarations — 174 unit/source-contract and 13 widget tests. This is an inventory only, not a passing result. All current-main tests remain **NOT RUN**.
 - **Latest verified package:** Build #153 / Actions run `43145542329`, tested source SHA `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e`, Release ID `403010611`, tag `jexfyz-latest`. Build #153 reported 176/176 Flutter tests, analyzer 23 info / 0 warnings / 0 errors, and Android Gradle success. Its native Android JUnit tasks were NO-SOURCE; no native Android JUnit test cases ran.
-- **Source/release gap:** current `main` is 79 commits ahead / 0 behind Build #153. GitHub compare reports 18 changed paths (11 Markdown, 4 Dart source and 3 test files). Current Settings/About, Statistics, Peltier, Temperature, Home hit-target, polling and integrity-screen fixes are not in Build #153 APK. Release #153 remains the latest package.
+- **Source/release gap:** current `main` is 96 commits ahead / 0 behind Build #153. GitHub compare reports 18 changed paths (11 Markdown, 4 Dart source and 3 test files). Current Settings/About, Statistics, Peltier, Temperature, Home hit-target, polling and integrity-screen fixes are not in Build #153 APK. Release #153 remains the latest package.
 - **CI state at audit:** latest run #153 is completed SUCCESS; no active run or open PR. Release tag still resolves to the Build #153 source SHA. No build trigger was sent.
 
 Evidence is classified as **STATIC SOURCE CHECK** unless explicitly stated otherwise. Source inspection does not prove runtime behavior, performance or visual acceptance.
