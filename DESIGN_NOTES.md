@@ -68,6 +68,20 @@ This document stores owner-approved, screen-specific visual constraints, not a b
 - **Validation:** cover English/Indonesian copy, long-text and compact-width fit, light/dark contrast, 48-dp actions, cancellation/no-write, fan ACK failure preventing Peltier, and success command ordering. Verify on 350-dp/420-dp Android layouts. This is a proposal recorded in Diskusi, not source implementation.
 
 
+### App visual refinement — implementation and acceptance status (2026-11-12)
+
+**Status: SOURCE IMPLEMENTED on current main / TESTS NOT RUN / VISUAL NOT VERIFIED / NOT RELEASED beyond Build #151.**
+
+- **Lock Voltage:** reuses the existing centered blur/lock surface for Voltage and Adaptive only when Firmware lock is known and ON. Bluetooth-disconnected stays highest priority; existing Adaptive restrictions remain unchanged. Voltage copy uses actual Firmware voltage telemetry, distinguishing handoff pending from confirmed 5V. The Settings card is directly below AppBar and before General; Firmware-owned known/session/busy/save/retry behavior is preserved.
+- **Peltier prerequisite:** stock AlertDialog replaced by a custom theme-aware amber card inside the existing general-dialog/fixed-canvas route. It shows the fan prerequisite and Fan→Peltier sequence; paired CTA names both outputs. FAN:ON must be acknowledged before PELTIER:ON. Cancel/no-write and existing failure gates remain.
+- **About:** About/Tentang is placed immediately after Firmware with the approved English/Indonesian credit roles and exact handles. No unverified profile links.
+- **Device Diagnostics:** a compact Device/diagnostics Settings page shows a snapshot of available App/Firmware version, Bluetooth/P1 readiness, known Voltage/temperature readings, output state, safety summary and Lock Voltage known/active/saved state. It is a snapshot at page-open time, not a live stream. Unknown values remain --; unsupported sensor timestamps, signal strength, battery-health and uptime are not fabricated. Manual Copy Diagnostics is bilingual and excludes cooler ID/credentials; no upload.
+- **Usage Statistics:** the two measured temperature plots and four operating timelines remain. Shared cursor, six metrics, Min/Avg/Max/Observed, Hotside limit and all aggregate durations/fan average/max remain. The long sampling/storage text moved behind info; initial cursor instruction removed; cursor readout compact; secondary aggregates are collapsed. Data capture cadence, gap/session semantics, analytics, SQL/schema and persistence are unchanged.
+- **Cross-screen polish:** all primary App Dart surfaces use Phosphor icon references; the 78 used Regular/Bold symbols were cross-checked against package-generated declarations. Existing semantic Light/Dark ColorScheme, Roboto and compact Settings textTheme are reused; no parallel palette, font or global scale transform was created. Home NOTIFY keeps 44-dp geometry with 10.5/9.5-dp text and two-line ellipsis rather than shrinking to microtype.
+- **Not claimed complete:** existing motion/spacing/elevation systems were retained; there was no wholesale reanimation, theme rewrite or Home redesign. These broader interactions still require rendered visual inspection and targeted refinement if screenshots identify defects.
+- **Regression source:** tests cover Lock Voltage priority/tab scope, Peltier card copy and Fan-first ACK order, Settings/About order and bilingual credits, unknown Diagnostics state, icon family, NOTIFY text floor and Statistics details/provenance/cursor. Tests are committed but NOT RUN.
+- **Visual acceptance:** still NOT VERIFIED. Required evidence includes actual built App screenshots at 350/420 dp, portrait/constrained height, English/Indonesian, Light/Dark and normal/disconnected/unknown/safety states. Widget/source tests alone are not visual acceptance.
+
 ### Settings About page — bilingual contributor credits (2026-11-12)
 
 - Add an About / Tentang Settings entry immediately after Firmware in the main Settings list. Tap opens an About subpage under the existing compact fixed-canvas navigation contract.
@@ -81,7 +95,7 @@ This document stores owner-approved, screen-specific visual constraints, not a b
 
 ## Whole-app visual refinement — owner-approved direction (2026-11-12)
 
-**Status: APPROVED DESIGN DIRECTION / NOT IMPLEMENTED.** The owner requests the full visual refinement direction, including a cleaner Usage Statistics diagram. This plan follows `PRODUCT_DESIGN_CONSTITUTION.md` and `VISUAL_QUALITY_GATE.md`; it is not permission to replace the established JE X FYZ identity or protected screen geometry.
+**Status: PHASE 1 SOURCE IMPLEMENTED on current main / NOT RELEASED / VISUAL NOT VERIFIED.** The owner approved the full visual refinement direction, including a cleaner Usage Statistics diagram. The core refinements below are now in source; cross-device visual acceptance remains pending. This plan follows `PRODUCT_DESIGN_CONSTITUTION.md` and `VISUAL_QUALITY_GATE.md`; it is not permission to replace the established JE X FYZ identity or protected screen geometry.
 
 ### Whole-app refinement
 
