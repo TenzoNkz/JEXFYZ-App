@@ -5,7 +5,7 @@
 ### Live repository and package state
 
 - **Repository:** `TenzoNkz/JEXFYZ-App`, branch `main`.
-- **Audited HEAD:** `4d02fbf705a85820a4ea1e530d167ebb53ab3a68`; recursive tree 131 entries, not truncated.
+- **Current branch HEAD:** `39845cc335508c854b87620f2dcbfd080c99eec9` (docs-only audit/checkpoint commit); recursive tree 132 entries, not truncated. The executable source snapshot analyzed is `4d02fbf705a85820a4ea1e530d167ebb53ab3a68`; the audit commit did not alter source/test/config/workflow.
 - **Latest executable App/test state:** Settings/About source `1cae4cfc061328b3b2b8bed96987c410f37373f2`; test additions `96301aec962739c39518e84f38cd4294d975595f`.
 - **Current verified package remains Build #153:** source `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e`, Actions run `43145542329`, Release ID `403010611`, tag `jexfyz-latest`. Current source is newer than the APK.
 - Actions latest #153 completed SUCCESS; no open PR or active run. No build trigger was sent.
