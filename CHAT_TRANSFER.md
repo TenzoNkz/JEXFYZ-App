@@ -1,25 +1,30 @@
-## CURRENT CHECKPOINT — BUILD #155 ACTIVE / FLUTTER TESTS — 2026-11-12
+## CURRENT CHECKPOINT — BUILD #155 FAILED / FOUR TEST FIXES IN PROGRESS — 2026-11-12
 
 **Mode:** `@Thinking Eksekusi Build App!` — guarded App Build/QC/release only.
 
-### Build #154 failure and repair
+### Build #155 terminal result
 
-- Build #154 / run `43243342029` / job `131269364235` / source `dd7e75f1597e14c3d929b1ca78825dc806aef25d` is terminal FAILED at analyzer: six errors, no warnings, 23 info deprecations. Gates 13–21 skipped; no artifact/Release update.
-- Root causes: missing `package:flutter/services.dart` for MethodChannel in `lib/floating_monitor.dart`; unsupported `fontFamily` argument passed to `ThemeData.copyWith` in `lib/main.dart`.
-- Repairs committed/read back: `7b852bde09cac3c0f0c86cbe1fa4b28e994ea840` and `e2aa22b8d64016ab686009ecd2fc57f2ef330ec5`. Exactly two Dart source paths changed.
+- Run [43244335274](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/43244335274), workflow 374946166, issue event, attempt 1, job 131272831810; immutable tested source SHA `63ab4e8167cd099a30ad4ca8cd8cfb52d0c098`.
+- **FAILED at step 13 Flutter tests:** steps 1–12 SUCCESS; analyzer reports 23 info-level findings (0 errors/warnings). Flutter suite reports **183 passed / 4 failed**. Steps 14–21 skipped; cleanup 39–43 successful. No APK/source ZIP, no Release/tag mutation. Build #153 remains latest published Release.
+- Build #154 remains separately FAILED at analyzer (six errors); its services import and Tamper theme repairs passed analyzer in #155.
 
-### Current guarded retry — Build #155
+### Four exact test findings
 
-- Run `43244335274`, workflow 374946166, issue event, attempt 1, job `131272831810`; immutable checkout SHA `63ab4e8167cd099a30ad6a4ca8cd8cfb52d0c098`. [Actions run](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/43244335274).
-- **Progress:** steps 1–12 SUCCESS, including security/architecture audit, dependencies and analyzer. Step 13 `flutter test` is IN_PROGRESS. Steps 14–21 are pending.
-- Exact analyzer info count and test count are pending terminal logs. Active job log archive is not downloadable while the job is running; do not invent counts.
-- No duplicate trigger; continue run #155 only. Release baseline remains Build #153 / Release 403010611 / tag `jexfyz-latest`, source `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e`.
-- Workflow blob `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12` remains issue opened/reopened only with owner/title/token guard. No push/PR path.
-- **Formatter caveat:** no Dart formatter step exists; `dart format` remains NOT RUN / UNVERIFIED.
+1. **Tamper source-range assertion:** test extracts `TamperScreen` but expects dark ThemeData from `TamperApp`. Update test to validate theme in owner wrapper and copy/contact in screen.
+2. **Actual dashboard overflow:** 420-dp Home canvas less outer padding (9), header (48), Notify (44), and two 3-dp gaps leaves 313 dp; seven 45-dp rows require 315 dp. Reduce only those two Home spacing gaps to 2 dp, preserving canvas/rows/NOTIFY/order. Change test physical size 1080×3200 to DPR 3.0 to model a 360×1066.7-dp portrait viewport.
+3. **Home hit target test locator:** global first 48-dp SizedBox hits LED color-picker header, not Home. Scope test to `_buildHomeArea`; assert both Bluetooth and Settings 48×48 dp buttons and size 25 glyphs; retain Temperature 48-dp checks.
+4. **Lock Voltage copy assertion:** old expected phrase no longer matches source/APP_NOTES. Current bilingual text is `Firmware V7.2+ required` / `Perlu Firmware V7.2+`; update only that string contract, preserving sync/command/telemetry assertions.
 
-### Next
+### Repair scope and next action
 
-Inspect only run `43244335274` / job `131272831810`; wait for step 13 outcome, then the Android Gradle and release gates. If a gate fails, inspect actual logs and repair only its evidenced App-scope cause. Firmware/BIN/Firebase/OTA/flash/device/BLE/thermal/OEM visual evidence remains separate and NOT RUN / UNVERIFIED.
+- Expected source change: only two Home inter-row spacing gaps in `lib/main.dart`; keep fixed 420-dp canvas, seven 45-dp rows and 44-dp NOTIFY.
+- Expected test-only changes: `test/widget_test.dart` (Tamper scope, accurate Home locator, DPR3 dashboard fixture) and `test/firmware_qc_contract_test.dart` (current bilingual V7.2+ copy).
+- Never weaken/delete the four failing checks or mask the real overflow. No local Flutter/Dart tools available; hosted retry is needed to test repaired changes.
+- Before one new guarded retry, verify #155 terminal and no active/queued run, no PR, exact issue #33 guard, unchanged workflow and Release #153. No retry before repair/read-back.
+
+### Boundaries
+
+No Firmware compile/BIN, Firebase, OTA/flash, physical BLE/device/NVS/rail/LED, thermal/electrical or OEM visual action. Formatter remains NOT RUN / UNVERIFIED because workflow has no formatter step.
 
 ---
 
