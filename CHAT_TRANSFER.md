@@ -1,24 +1,24 @@
-## CURRENT CHECKPOINT — BUILD #157 ACTIVE / ANDROID GRADLE GATE — 2026-11-12
+## CURRENT CHECKPOINT — BUILD #157 ACTIVE / APK BUILD RUNNING — 2026-11-12
 
 **Mode:** `@Thinking Eksekusi Build App!` — guarded App Build/QC/release only.
 
-### Previous failures and repairs
+### Previous attempts and repairs
 
-- Build #154 analyzer FAILED (6 errors); fixed Flutter services import and Tamper textTheme API.
-- Build #155 tests FAILED (183 pass / 4 fail); #156 tests FAILED (186 pass / 1 fail). All findings preserved; #155's actual Home 2-dp overflow, three stale assertions and #156's final 3-dp Notify source assertion are repaired and read back.
-- Build #153 remains latest published Release until #157 finishes.
+- Build #154 analyzer FAILED (six errors); root causes repaired in App source.
+- Build #155 tests FAILED (183 pass / 4 fail); Build #156 tests FAILED (186 pass / 1 fail). All original diagnostics and repair commits remain recorded in APP_BUILD_REPORT.md.
+- #156's final stale 3-dp Home Notify assertion is now fixed: tests count exactly two literal 2-dp spacers and reject a 3-dp spacer before NOTIFY in commits `b007b56ab5ddf91546f86937be202978dc7fee3b` then `38212c3620aba6eb9fa5f6db41b43fdb777a9ddf`.
 
 ### Current guarded retry — Build #157
 
 - Run `43247876115`, workflow 374946166, issue event, attempt 1, job `131285336987`; immutable checkout SHA `10d106537e92060e0aac3fc17fd37f56e746bcd5`. [Actions run](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/43247876115).
-- Steps 1–13 SUCCESS, including analyzer and Flutter tests. Step 14 `Run Android unit-test gate` IN_PROGRESS. Steps 15–21 pending.
-- Exact analyzer info count, Flutter test count and native JUnit `NO-SOURCE` detail await final logs; do not infer exact counts.
-- Preflight passed before trigger: no queued/in-progress run or open PR, exact issue #33 guard, workflow unchanged, Release #153/tag/assets intact, versionName exact. Issue #33 closed/reopened once; no duplicate trigger.
+- Steps 1–14 SUCCESS, including analyzer, Flutter tests and Android Gradle. Step 15 `Build latest release APK` IN_PROGRESS. Steps 16–21 pending.
+- Exact analyzer/test counts and native Android `NO-SOURCE` tasks are pending log extraction after job completion.
+- No duplicate trigger; continue #157 only. Build #153 is still the published Release baseline until #157 completes publication.
 - Formatter remains NOT RUN / UNVERIFIED; workflow has no formatter step.
 
 ### Next
 
-Continue only run `43247876115` / job `131285336987`; inspect Gradle gate then APK/signing/source ZIP/Release/tag/downloaded assets. Keep Firmware/BIN/Firebase/OTA/flash/device/BLE/thermal/electrical/OEM visual evidence separate.
+Inspect the APK build gate, then V1/V2/V3 signing, certificate, source ZIP, Release/tag/source SHA parity and downloaded asset identity. No Firmware/BIN/Firebase/OTA/flash/device/BLE/thermal/electrical/OEM visual evidence is inferred.
 
 ---
 
