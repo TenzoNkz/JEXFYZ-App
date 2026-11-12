@@ -1,24 +1,32 @@
-## CURRENT CHECKPOINT — BUILD #157 ACTIVE / RELEASE PUBLISHING — 2026-11-12
+## CURRENT CHECKPOINT — BUILD #157 SUCCESS / RELEASE VERIFIED — 2026-11-12
 
-**Mode:** `@Thinking Eksekusi Build App!` — guarded App Build/QC/release only.
+**Disposition:** guarded App Build/QC/release COMPLETED SUCCESSFULLY. No further Build App trigger is needed for this source SHA.
 
-### Previous failures and final repair
+### Immutable build and validation evidence
 
-- Build #154 analyzer FAILED (6 errors); Build #155 tests FAILED (183 pass / 4 fail); Build #156 tests FAILED (186 pass / 1 fail). All original failures and root causes remain preserved.
-- Final #156 failure was the stale Home Notify test expecting a 3-dp gap; final correction in commits `b007b56ab5ddf91546f86937be202978dc7fee3b` and `38212c3620aba6eb9fa5f6db41b43fdb777a9ddf` now asserts exactly two 2-dp spacers and rejects a 3-dp spacer.
+- **Run/job/source:** Build #157 / Actions run `43247876115`, workflow `374946166`, issue event, attempt 1, job `131285336987`; tested/released source SHA `10d106537e92060e0aac3fc17fd37f56e746bcd5`. [View Actions run](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/43247876115).
+- **Gates:** steps 1–21 and cleanup/post-job steps 39–43 all SUCCESS.
+- **Dart analyzer:** 23 info-level deprecations, 0 warnings, 0 errors.
+- **Flutter tests:** **187/187 passed**.
+- **Android Gradle:** `BUILD SUCCESSFUL in 3m19s`. App native JUnit test compile/process/test tasks `NO-SOURCE`; no native Android JUnit test cases executed.
+- **APK:** `JEXFYZ-release.apk`, obfuscated with `--obfuscate --split-debug-info=build/symbols`; **55,980,123 bytes**, SHA-256 `24a42feb2ec8968209ac5dd764c6acb789c09fb0fc9a26df8e7d4bf5e1652aef`. [Download APK](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-release.apk).
+- **Corresponding source ZIP:** `JEXFYZ-corresponding-source.zip`; **2,932,445 bytes**, SHA-256 `3b6f0a84a760b26587ca39a946f14383f2acee933fb5b30247270713a32e6a06`. [Download source ZIP](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-corresponding-source.zip).
+- **Release/tag parity:** Release ID `403010611` / tag `jexfyz-latest`; Release target and Git tag both point to exact Build #157 SHA `10d106537e92060e0aac3fc17fd37f56e746bcd5`. Exactly one APK + one corresponding source ZIP. Gate 21 re-downloaded both, matched checksums, confirmed ZIP integrity and source marker, and independently verified downloaded APK JAR/V1, V2, V3, one signer and pinned cert.
+- **Certificate:** RSA 4096, JE X FYZ DN, pinned SHA-256 `dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0`; V1/V2/V3 pass. Self-signed signer, PKIX trust-chain validation and no timestamp remain explicit caveats; it is not publicly CA-trusted. V3.1/V3.2/V4/SourceStamp were not required and were false.
+- Android Gradle `versionName "Telegram @horizontalzzz"` unchanged; Flutter app version `1.0.0+3`.
 
-### Current guarded retry — Build #157
+### Preserved failure history and repository state
 
-- Run `43247876115`, workflow 374946166, issue event, attempt 1, job `131285336987`; immutable checkout SHA `10d106537e92060e0aac3fc17fd37f56e746bcd5`. [Actions run](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/43247876115).
-- Steps 1–19 SUCCESS, including analyzer, Flutter tests, Android Gradle, obfuscated APK, V1/V2/V3 signing, APK signature verification, filename and source ZIP packaging.
-- Step 20 Release publication IN_PROGRESS. Step 21 downloaded-asset verification pending. Continue this run only.
-- Exact analyzer/test totals, APK/ZIP hashes/size, pinned certificate details, and Android native JUnit NO-SOURCE detail await final logs/Release read-back.
-- Release #153 is still the live prior Release until #157 publication succeeds. No duplicate trigger.
-- Formatter remains NOT RUN / UNVERIFIED; workflow has no formatter step.
+- Build #154 / run `43243342029` remains FAILED at analyzer (6 errors); Build #155 / `43244335274` remains FAILED at Flutter tests (183 pass / 4 fail); Build #156 / `43246666829` remains FAILED at Flutter tests (186 pass / 1 fail). All original failure causes and concrete repairs remain preserved in APP_BUILD_REPORT.md. Build #157 is the first successful build after these repairs.
+- Pre-final-doc live main HEAD: `07f9d706d5a9a19953f155351df2911cd131a2db`. Comparison to immutable build SHA shows 20 commits ahead / 0 behind and exactly four changed Markdown paths: APP_BUILD_REPORT.md, CHAT_TRANSFER.md, HANDOVER.md and PROJECT_STATE.md. No App source/test, Gradle/config, Firmware or workflow change after built SHA. Recursive tree 132 entries, not truncated.
+- Workflow blob remains `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12`, issue opened/reopened only with owner/title/body-token guard; no push/PR trigger. Actions queue and active filters are both zero. Actions artifacts API is empty by design; the Release owns APK/ZIP assets.
+- **Formatter:** workflow has no Dart formatter step; `dart format` remains NOT RUN / UNVERIFIED.
 
-### Next
+### Evidence boundary / next action
 
-Inspect Release publication, then gate 21 downloaded asset verification. After terminal success, verify live Release/tag/source SHA, exact one-APK/one-ZIP asset set and digests; record all actual evidence. Firmware/BIN/Firebase/OTA/flash/device/BLE/thermal/electrical/OEM visual remains separate.
+Build #157 proves hosted App CI, package and Release only. Firmware V7.2 compile/BIN, Firebase, OTA/flash, physical BLE/device/NVS/rail/LED, thermal/electrical cooling, owner installation and OEM visual acceptance remain NOT RUN / UNVERIFIED.
+
+Next: owner installs Build #157 and performs physical App/BLE/OEM visual acceptance at 350-dp/420-dp, Light/Dark, EN/ID, reconnect and Lock Voltage. No further App Build until App source changes.
 
 ---
 
