@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../lib/floating_monitor.dart';
+import '../lib/app_settings.dart';
 
 void main() {
   test('Floating Monitor normalizes and persists compact size, opacity and background', () {
@@ -453,6 +454,81 @@ void main() {
     expect(diagnosticsPage, contains('Copy diagnostics'));
     expect(diagnosticsPage, isNot(contains('coolerId')));
     expect(diagnosticsPage, isNot(contains('BluetoothDevice')));
-  });;
+  });
+
+  testWidgets('About page renders the exact contributor credits in both languages', (tester) async {
+    final previousLanguage = appLanguageNotifier.value;
+    addTearDown(() => appLanguageNotifier.value = previousLanguage);
+    appLanguageNotifier.value = AppLanguage.english;
+
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: ThemeData.light(useMaterial3: true),
+        home: const AboutSettingsPage(),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('JE Cooler'), findsOneWidget);
+    expect(find.text('Special Thanks'), findsOneWidget);
+    expect(find.text('App Development & Build'), findsOneWidget);
+    expect(find.text('Horizon'), findsOneWidget);
+    expect(find.text('@Horizontalzzz'), findsOneWidget);
+    expect(find.text('Design Inspiration'), findsOneWidget);
+    expect(find.text('FYZ'), findsOneWidget);
+    expect(find.text('@FYZ737'), findsOneWidget);
+    expect(find.text('3D Design & Printing'), findsOneWidget);
+    expect(find.text('Logos'), findsOneWidget);
+    expect(find.text('@Logos3dMichael'), findsOneWidget);
+
+    appLanguageNotifier.value = AppLanguage.indonesia;
+    await tester.pumpAndSettle();
+    expect(find.text('Tentang'), findsOneWidget);
+    expect(find.text('Ucapan Terima Kasih'), findsOneWidget);
+    expect(find.text('Pengembangan Aplikasi & Build'), findsOneWidget);
+    expect(find.text('Inspirasi Desain'), findsOneWidget);
+    expect(find.text('Desain & Pencetakan 3D'), findsOneWidget);
+    expect(find.text('@Horizontalzzz'), findsOneWidget);
+    expect(find.text('@FYZ737'), findsOneWidget);
+    expect(find.text('@Logos3dMichael'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('Device Diagnostics keeps unknown values unknown and offers a manual copy action', (tester) async {
+    final previousLanguage = appLanguageNotifier.value;
+    addTearDown(() => appLanguageNotifier.value = previousLanguage);
+    appLanguageNotifier.value = AppLanguage.english;
+
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: ThemeData.light(useMaterial3: true),
+        home: const DeviceDiagnosticsPage(
+          appVersion: '1.0.0+3',
+          firmwareVersion: 'V?',
+          bluetoothConnected: false,
+          p1SessionReady: false,
+          runtimeOutputsKnown: false,
+          voltage: '--',
+          batteryTemperature: '--',
+          hotsideTemperature: '--',
+          fanOn: false,
+          peltierOn: false,
+          adaptiveOn: false,
+          safetySummary: '--',
+          voltageLockKnown: false,
+          voltageLockActive: false,
+          voltageLockSaved: false,
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Device Diagnostics'), findsOneWidget);
+    expect(find.text('1.0.0+3'), findsOneWidget);
+    expect(find.text('Copy diagnostics'), findsOneWidget);
+    expect(find.text('Disconnected'), findsOneWidget);
+    expect(find.text('ON'), findsNothing);
+    expect(tester.takeException(), isNull);
+  });
 
 }
