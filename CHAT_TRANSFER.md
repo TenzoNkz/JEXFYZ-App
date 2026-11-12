@@ -1173,3 +1173,15 @@ Only after validation and a separate explicit `Eksekusi Build App!` may an APK b
 - Keep Fan-OFF prerequisite informational/amber and distinct from actual Hotside/NTC safety faults. Cancel sends no command. Preserve FAN ACK before PELTIER command, ACK/telemetry timeouts, failure notices, localization, barrier behavior unless separately justified. No Firmware safety, BLE/P1, Home geometry, fixed canvas, output or command semantics change is included.
 - Current mode is Diskusi. No App source/tests modified or run, no build/release, Firmware compile, OTA, flash or device action. This checkpoint documents proposal only.
 - Next recommended mode: `Eksekusi Full!` for App-only UI redesign and regression tests covering EN/ID, light/dark, compact widths, action targets, cancel/no-write, Fan ACK failure gating and successful order. Not an authorization.
+
+
+# CURRENT DISCUSSION — ABOUT SETTINGS PAGE AND BILINGUAL CREDITS — 2026-11-12
+
+- Owner requests an About / Tentang Settings entry directly below Firmware. It opens a compact About subpage with contributor credits.
+- Copy:
+  - EN: JE Cooler; Special Thanks; App Development & Build — Horizon (@Horizontalzzz); Design Inspiration — FYZ (@FYZ737); 3D Design & Printing — Logos (@Logos3dMichael).
+  - ID: JE Cooler; Ucapan Terima Kasih; Pengembangan Aplikasi & Build — Horizon (@Horizontalzzz); Inspirasi Desain — FYZ (@FYZ737); Desain & Pencetakan 3D — Logos (@Logos3dMichael).
+- Copy rationale: “Special Thanks” is a natural standalone credit heading; “Design Inspiration” is grammatical. “3D Design & Printing” assumes the contribution covers both 3D design and printing; if it means printing only, use “3D Printing” / “Pencetakan 3D”. Preserve all supplied handles exactly and do not invent external links.
+- Historical removal was an earlier explicit decision and is now superseded by this new request. Live `test/floating_monitor_layout_contract_test.dart` currently asserts About remains absent; implementation must replace these negative assertions with positive Settings order, page presence, bilingual content and responsive layout checks.
+- No source, tests, build, release, Firmware or device behavior changed or ran in this Discussion. All three UI requests (Lock Voltage overlay/Settings priority, Peltier popup redesign, About page) remain design requirements only.
+- Next recommended action: `Eksekusi Full!` for App-only implementation and regression tests; this is not authorization.
