@@ -2,16 +2,17 @@
 
 Updated: 2026-11-12 (Asia/Jakarta).
 
-## Build #155 — failed at Flutter test gate; repairs committed
+## Active App Build — Build #156
 
-- Run [43244335274](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/43244335274), job 131272831810, attempt 1, checkout SHA `63ab4e8167cd099a30ad4ca8cd8cfb52d0c098`.
-- Analyzer passed (23 infos, zero warnings/errors); Flutter tests failed 183 pass / 4 fail. Gradle and Release gates skipped; no package/Release mutation. Build #153 remains current Release.
-- Repair commits: `9f1130642666801799cd7547dc907ec50cc55bf5` changes only Home spacing (two gaps 3→2 dp; preserve 420 canvas, seven 45-dp rows, 44-dp Notify); `53ebaecb6722e4335e6c20ead419fea96ee1b0e9` corrects Tamper/Home widget test scopes and DPR3 dashboard viewport; `d00cef194cc27e65085234955b2eda60faa3aba8` asserts current Lock Voltage EN/ID copy.
-- Read-back passed. Changed executable/test paths exactly: `lib/main.dart`, `test/widget_test.dart`, `test/firmware_qc_contract_test.dart`. No Firmware, BLE/P1, workflow, Gradle or Release semantics changed.
-- No local post-repair formatter/analyzer/test; local Flutter/Dart unavailable. Workflow has no Dart formatter step; formatting NOT RUN / UNVERIFIED.
+- Actions run [43246666829](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/43246666829), job 131281061201, workflow 374946166, issue event, attempt 1; immutable checkout SHA `c180f2bb18b3361ecd02fff2503b06043f0d22e0`.
+- Steps 1–11 completed successfully; step 12 Dart analyzer is in progress; steps 13–21 pending. Continue this run only.
+- Build #154 analyzer failure and Build #155 test failure remain preserved. Build #155 fixes were committed/read back: Home spacing 3→2 dp, Tamper/Home widget contract ownership, DPR3 dashboard viewport, current bilingual Firmware V7.2+ copy.
+- Retry was one guarded issue #33 close/reopen after preflight. No queued/in-progress run or open PR before retry; exact owner/title/token; workflow unchanged; Build #153 Release baseline intact.
+- Workflow has no Dart format step; `dart format` remains NOT RUN / UNVERIFIED.
+- Build #153 / Release ID 403010611 / tag `jexfyz-latest` remains current published package until #156 succeeds.
 
 ## Next action
 
-Fresh preflight: ensure #155 terminal, zero queued/in-progress run, no open PR, exact issue #33 guard, unchanged workflow, Release #153/tag/hash still intact and Android versionName exact. Then one guarded retry; preserve all previous failures. No duplicate triggers.
+Inspect run 43246666829 / job 131281061201 for analyzer result and then test, Gradle, APK/signing/source archive, Release/tag and downloaded asset gates. No duplicate trigger while active.
 
 No Firmware compile/BIN, Firebase/OTA/flash, physical BLE/device/NVS/rail/LED, thermal/electrical or OEM visual operation.
