@@ -454,6 +454,7 @@ void main() {
     final diagnosticsStart = settingsSource.indexOf('class DeviceDiagnosticsPage');
     final diagnosticsPage = settingsSource.substring(diagnosticsStart);
     expect(diagnosticsPage, contains('Copy diagnostics'));
+    expect(settingsPage, contains('Device and safety snapshot'));
     expect(diagnosticsPage, contains('runtimeOutputsKnown ?'));
     expect(diagnosticsPage, contains("voltageLockActive && !voltageLockSaved"));
     expect(diagnosticsPage, isNot(contains('coolerId')));
