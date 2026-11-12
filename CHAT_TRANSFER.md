@@ -1,29 +1,27 @@
-## CURRENT CHECKPOINT — VALIDATION REVIEW COMPLETE / FLUTTER TOOLCHAIN BLOCKED — 2026-11-12
+## CURRENT CHECKPOINT — BUILD #154 ACTIVE / FLUTTER SETUP — 2026-11-12
 
-**Mode:** `@Thinking Eksekusi Full!` — App source/test review, static audit and project-memory updates only. No source/test/config/workflow change, Actions trigger, App Build/APK/Release, Firmware/BIN, Firebase/OTA, native Android, flashing or device operation.
+**Mode:** `@Thinking Eksekusi Build App!` — guarded App Build/QC/release only. No Firmware compilation/BIN, Firebase, OTA, flashing or device operation.
 
-### Repository evidence at the source-audit base
+### Live repository and source/release boundary
 
-- **Repository/branch:** `TenzoNkz/JEXFYZ-App` / `main`. Source-audit base before this session's documentation-only commits: `82114a7540a7f225482c67ffb7772894c956b0b1`; recursive tree: 132 entries, `truncated=false`. Subsequent checkpoint commits changed documentation only; executable code/test remains at the checkpoint below.
-- **Executable source/test checkpoint:** `6c551c4ff95329e56eca7ce758078c9590b4b726`; its source/test blobs are recorded below. Documentation-only checkpoint commits follow this executable revision. Current blobs: `lib/usage_statistics.dart` = `3afd0d8e440b5c4b7c19fb46b825a8a821e5492b`; `test/usage_statistics_test.dart` = `fb665eeb3894a613c2a5bbcfb8ae72537b1c37a0`. Later commits are documentation-only.
-- **Release gap:** At the source-audit base, GitHub compare showed `main` 96 commits ahead / 0 behind Build #153; the later commits in this session only update documentation; 18 paths differ (11 Markdown, 4 Dart libraries, 3 test files). Latest tag `jexfyz-latest` and Release #153 still point to source `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e`, not current code.
-- **Actions evidence:** zero workflow runs are associated with both the live HEAD and executable source/test checkpoint. The complete tree contains only `.github/workflows/jexfyz-app-build-trigger.yml`; it is the guarded issue-triggered App build/release workflow. It runs dependency resolution, analyzer, Flutter tests, Android Gradle gate, release APK build and publication, but it has no Dart formatter step. There is no separate validation-only workflow.
+- Repository: `TenzoNkz/JEXFYZ-App`, branch `main`. Immutable Build #154 checkout SHA: `dd7e75f1597e14c3d929b1ca78825dc806aef25d`; recursive tree at trigger: 132 entries, `truncated=false`.
+- Current executable source/test checkpoint: `6c551c4ff95329e56eca7ce758078c9590b4b726`. The run checkout SHA above is the exact source/repository commit under validation; intervening commits are documentation-only.
+- Compared with Build #153 source `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e`, the checkout is 99 commits ahead / 0 behind; 18 changed paths comprise 11 Markdown files, 4 Dart libraries and 3 Dart test files. The current Usage Statistics/Settings/Floating Monitor/Home changes and their regressions are not in the #153 APK.
+- Build #153 remains the last published Release until #154 passes: Release ID `403010611`, tag `jexfyz-latest`, old target SHA `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e`.
 
-### Review and validation performed in this Full session
+### Build #154 — active guarded run
 
-- Re-read the Master Prompt, active checkpoint, relevant Flutter engineering, Flutter quality/regression and BLE P1 review skills, plus current source, tests, workflow and project notes.
-- Rechecked the queue admission implementation: 64 normal + 8 reserved + 1 critical-close slots; fail-fast rejection; accepted FIFO work; and reserved/critical admission paths. Rechecked HOT receipt-time ordering, stale-packet guard and watchdog source order. Rechecked decimator hard-cap construction and null/explicit-boundary propagation.
-- Recounted all 9 current `*_test.dart` files: **187 declarations** (174 unit/source-contract + 13 widget). This is test inventory only; no Dart test has run.
-- Ran an independent Python property simulation of the decimator over **60,726 randomized (input-length, budget) fixtures**, with random nulls and explicit breaks. The output ceiling and skipped-gap propagation invariants held in every fixture. This is algorithm simulation, not execution of the Dart implementation.
-- GitHub source read-back and structural checks passed. No source defect substantiated by this review requires a speculative patch; executable files are unchanged.
-- **Toolchain blocker confirmed:** `git` and Python are present; `dart`, `flutter`, `gradle` and `adb` are absent. Container DNS resolution to both GitHub and the Flutter SDK host fails, so the SDK cannot be installed from this runtime. The connected GitHub capability used here can inspect repository/Actions evidence but does not provide a remote shell or a validation-only workflow dispatch.
-- Therefore `dart format`, focused/full `flutter test`, `flutter analyze` and Android Gradle remain **BLOCKED / NOT RUN**. No hosted CI result exists for the current code. Visual rendering, OEM screenshots, 1h/8h storage-pressure soak, queue rejection rate, CPU/memory and device behavior remain unverified.
+- Run `43243342029`, workflow `374946166`, issue event, attempt 1, job `131269364235`, checkout SHA `dd7e75f1597e14c3d929b1ca78825dc806aef25d`. [Actions run](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/43243342029).
+- Trigger: issue #33 exact owner/title/body-token guard closed/reopened once. Exactly one #154 run exists. No duplicate trigger.
+- Current first job snapshot: runner, checkout, Java 17 succeeded; Flutter 3.47.2 setup is in progress; remaining gates pending. Continue this run only.
+- Current workflow blob: `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12`; only issue opened/reopened trigger, owner/title/token gate; no push/PR release path.
+- **Formatter caveat:** workflow has no Dart formatter step. `dart format` remains NOT RUN / UNVERIFIED; this is not represented as a passed gate. The explicit owner Build App command authorized proceeding with the existing guarded workflow, and no existing gate was weakened.
+- Preflight: no open PR and zero queued/in-progress Actions runs before trigger. Android Gradle `versionName "Telegram @horizontalzzz"` remains exact.
+- Next: inspect run `43243342029` / job `131269364235` steps/logs; do not trigger another run while active. Record actual analyzer/test/Gradle/signing/release results only when observed.
 
-### Decision
+### Acceptance boundaries
 
-**HOLD — not ready to recommend Build App.** The current guarded workflow could execute analyzer/tests only as part of a release operation; it also publishes the APK/source ZIP and the release tag, and is separately protected by `Eksekusi Build App!`. It was not invoked in this Full session. The formatter gate is absent from that workflow.
-
-**Arah berikutnya: Terhambat — a Dart/Flutter-capable validation runner is required for the exact source/test checkpoint before Build App can be recommended.** Build App remains a separate owner authorization and must not be inferred from this checkpoint.
+CI/Release is App-only. Firmware V7.2 compile/BIN, Firebase/OTA/flash, physical BLE/device/NVS/rail/LED, thermal/electrical cooling, OEM rendering and owner installation remain separately NOT RUN / UNVERIFIED.
 
 ---
 
