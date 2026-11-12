@@ -1339,7 +1339,7 @@ class SettingsPage extends StatelessWidget {
               borderRadius: BorderRadius.circular(13),
             ),
             child: Icon(
-              PhosphorIconsBold.lock,
+              PhosphorIconsRegular.lock,
               size: 21,
               color: state.active && state.known
                   ? scheme.primary
@@ -1476,7 +1476,7 @@ class AboutSettingsPage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            role.toUpperCase(),
+            role,
             style: TextStyle(
               color: scheme.onSurfaceVariant,
               fontSize: 10,
