@@ -1889,8 +1889,8 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
             else ...[
               _temperatureSection(
                 title: JexText.phrase(
-                  'Phone Battery Temperature',
-                  'Suhu Baterai HP',
+                  'Phone Battery',
+                  'Baterai HP',
                   language,
                 ),
                 summary: summary.battery,
@@ -1901,8 +1901,8 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
               const SizedBox(height: 22),
               _temperatureSection(
                 title: JexText.phrase(
-                  'Hotside Temperature',
-                  'Suhu Hotside',
+                  'Hotside',
+                  'Hotside',
                   language,
                 ),
                 summary: summary.hotside,
@@ -2023,8 +2023,8 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
               children: [
                 Text(
                   JexText.phrase(
-                    active ? 'Cooling active' : 'Completed cooling run',
-                    active ? 'Pendinginan aktif' : 'Sesi pendinginan selesai',
+                    active ? 'Active' : 'Completed',
+                    active ? 'Aktif' : 'Selesai',
                     language,
                   ),
                   style: Theme.of(context).textTheme.labelMedium,
