@@ -8202,12 +8202,8 @@ void _handleAckLine(String line) {
                         fontSize = 9.5;
                         measured = measure(fontSize);
                       }
-                      while (fontSize > 7.0 &&
-                          (measured.didExceedMaxLines ||
-                              measured.height > constraints.maxHeight)) {
-                        fontSize = (fontSize - .5).clamp(7.0, 10.5).toDouble();
-                        measured = measure(fontSize);
-                      }
+                      // Keep NOTIFY readable. The fixed slot uses two-line ellipsis
+                      // instead of shrinking important status text to microtype.
                       return Align(
                         alignment: Alignment.centerLeft,
                         child: Text(
@@ -9419,7 +9415,6 @@ void _handleAckLine(String line) {
   Widget _lockedDisplayMenu(Widget content, DisplayMenuLockReason reason) {
     final disconnected = reason == DisplayMenuLockReason.bluetoothDisconnected;
     final adaptiveLocked = reason == DisplayMenuLockReason.adaptiveActive;
-    final voltageLocked = reason == DisplayMenuLockReason.voltageLocked;
     final voltageConfirmedAtFive = voltage == '5V';
     final scheme = Theme.of(context).colorScheme;
     final title = disconnected
