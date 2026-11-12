@@ -1,11 +1,12 @@
-## CURRENT APP QC — BUILD #157 ACTIVE / ANALYZER PASSED — 2026-11-12
+## CURRENT APP QC — BUILD #157 ACTIVE / FLUTTER TESTS PASSED — 2026-11-12
 
 - **Run:** Build #157 / Actions `43247876115`, job `131285336987`, attempt 1; immutable checkout SHA `10d106537e92060e0aac3fc17fd37f56e746bcd5`.
-- **Progress:** steps 1–12 SUCCESS, including analyzer. Step 13 `flutter test` IN_PROGRESS; steps 14–21 pending. Continue this run only.
-- **Prior failures:** #154 analyzer failure (6 errors), #155 test failure (183/4), and #156 test failure (186/1) remain preserved. Their root causes and repairs are recorded in APP_BUILD_REPORT.md; #156's final stale 3-dp assertion was changed to a literal count of the two 2-dp Home spacers in commits `b007b56ab5ddf91546f86937be202978dc7fee3b` and `38212c3620aba6eb9fa5f6db41b43fdb777a9ddf`.
-- **Preflight:** no queued/in-progress run or open PR; issue #33 exact owner/title/token; guarded workflow unchanged; Release #153/tag/assets intact. Exactly one guarded close/reopen created #157.
-- **Formatter:** no workflow formatter gate; `dart format` NOT RUN / UNVERIFIED.
-- **Boundary:** App build only; no Firmware/BIN/Firebase/OTA/flash/device/physical BLE/thermal/electrical/OEM visual operation.
+- **Progress:** steps 1–13 SUCCESS, including analyzer and Flutter tests. Step 14 Android Gradle gate IN_PROGRESS; steps 15–21 pending. Continue this run only.
+- **Failure history:** Build #154 analyzer failed (6 errors); Build #155 Flutter tests failed (183/4); Build #156 Flutter tests failed (186/1). All original causes and concrete repairs remain preserved in APP_BUILD_REPORT.md. Latest #156 single stale Notify assertion was corrected in test commits `b007b56ab5ddf91546f86937be202978dc7fee3b` and `38212c3620aba6eb9fa5f6db41b43fdb777a9ddf`.
+- **Preflight:** no queued/in-progress run or open PR; issue #33 exact owner/title/token; workflow unchanged; Release #153 tag/assets intact; one close/reopen started #157.
+- **Counts pending:** exact analyzer infos, Flutter test total and native Android `NO-SOURCE` details await the final log; do not infer from step status.
+- **Formatter:** no workflow format step; `dart format` remains NOT RUN / UNVERIFIED.
+- **Boundary:** App Build only. Firmware/BIN/Firebase/OTA/flash/device/physical BLE/electrical/thermal/OEM visual remain separate.
 
 
 ---
