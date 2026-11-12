@@ -2778,3 +2778,12 @@
 - Steps 1–14 completed SUCCESS, including Dart analyzer, Flutter tests and Android Gradle unit-test gate. Step 15 `Build latest release APK` is IN_PROGRESS. Steps 16–21 (V1/V2/V3 signing, cert verification, filename, source ZIP, Release publication, downloaded asset check) remain pending.
 - Exact analyzer info count, Flutter test count and native Android JUnit `NO-SOURCE` detail must be extracted from final logs; no count/coverage inference.
 - No duplicate trigger; continue #157 only.
+
+
+### BUILD #157 progress update — APK/sign/source archive prepared / Release publish active (2026-11-12)
+
+- Run `43247876115` / job `131285336987`, immutable checkout SHA `10d106537e92060e0aac3fc17fd37f56e746bcd5`, attempt 1.
+- Steps 1–19 completed SUCCESS: setup, security/architecture audit, dependencies, analyzer, Flutter tests, Android Gradle gate, obfuscated APK build, V1/V2/V3 signing, APK signature verification, release filename and corresponding source ZIP packaging.
+- Step 20 `Publish APK and corresponding source to GitHub Release` is IN_PROGRESS. Step 21 downloaded-asset verification is pending.
+- Exact analyzer/test counts, Android native JUnit `NO-SOURCE` status, APK/ZIP hashes/size and certificate details will be recorded from the final job logs and live Release metadata after publication completes.
+- Release #153 remains prior public baseline until step 20 succeeds. No duplicate trigger.
