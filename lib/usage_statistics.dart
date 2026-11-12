@@ -1151,6 +1151,8 @@ class UsageStatsWriteQueue {
   int get rejectedOperations => _rejectedOperations;
   int get maxTotalPendingOperations =>
       maxPendingOperations + reservedControlOperations;
+  bool get hasReservedCapacity =>
+      _pendingOperations < maxTotalPendingOperations;
 
   Future<void> enqueue(
     Future<void> Function() operation, {
@@ -1284,7 +1286,12 @@ class UsageStatisticsRecorder {
         if (sessionId == null || lastReceipt == null) return;
         final now = DateTime.now().millisecondsSinceEpoch;
         if (now - lastReceipt >
-            const Duration(milliseconds: 2500).inMilliseconds) {
+                const Duration(milliseconds: 2500).inMilliseconds &&
+            _writeQueue.hasReservedCapacity) {
+          // Keep retrying while control slots are full; otherwise this watchdog
+          // would enqueue duplicate close requests every 500 ms.
+          _p1FreshnessTimer?.cancel();
+          _p1FreshnessTimer = null;
           unawaited(endSession(
             reason: 'stale_p1',
             timestampMs: lastReceipt +
@@ -1397,7 +1404,7 @@ class UsageStatisticsRecorder {
       final lastSeen = _lastSensorSeenMs[metric];
       final sampleGap = lastSeen != null &&
           receivedAtMs - lastSeen >
-              const Duration(milliseconds: 1500).inMilliseconds;
+              const Duration(milliseconds: 2500).inMilliseconds;
       final gapTimestamps = <int>{};
       if (sampleGap) {
         gapTimestamps.add(
@@ -1508,12 +1515,13 @@ class UsageStatisticsRecorder {
       canonical = value.round().clamp(0, 100).toInt();
     }
 
-    return _enqueue(() async {
-      final sessionId = _sessionId;
-      if (sessionId == null) return;
+    return _enqueue(
+      () async {
+        final sessionId = _sessionId;
+        if (sessionId == null) return;
 
-      final now = DateTime.now().millisecondsSinceEpoch;
-      final previous = _states[metric];
+        final now = DateTime.now().millisecondsSinceEpoch;
+        final previous = _states[metric];
       if (previous == canonical) {
         _notifyChanged();
         return;
@@ -1538,8 +1546,10 @@ class UsageStatisticsRecorder {
           textValue: text,
         ),
       ]);
-      _notifyChanged();
-    }, allowReservedCapacity: true);
+        _notifyChanged();
+      },
+      allowReservedCapacity: metric != 'fan_speed',
+    );
   }
 
   Future<void> endSession({
@@ -1551,13 +1561,42 @@ class UsageStatisticsRecorder {
       if (id == null) return;
 
       final endedAt = timestampMs ?? DateTime.now().millisecondsSinceEpoch;
+      final gapEvents = <UsageStatsEvent>[];
+      for (final metric in const ['battery', 'hotside']) {
+        final lastSeen = _lastSensorSeenMs[metric];
+        if (lastSeen == null ||
+            endedAt - lastSeen <=
+                const Duration(milliseconds: 2500).inMilliseconds) {
+          continue;
+        }
+        final gapAt = lastSeen +
+            const Duration(milliseconds: 1500).inMilliseconds;
+        await _store.recordTemperatureSample(
+          sessionId: id,
+          timestampMs: gapAt,
+          metric: metric,
+          value: null,
+        );
+        _temperatures[metric] = null;
+        gapEvents.add(UsageStatsEvent(
+          sessionId: id,
+          timestampMs: gapAt,
+          metric: metric,
+          numberValue: null,
+          textValue: null,
+        ));
+      }
       await _store.endSession(
         sessionId: id,
         timestampMs: endedAt,
         reason: reason,
       );
       _sessionEndedAtMs = endedAt;
-      _publishLiveUpdate(timestampMs: endedAt, endedAtMs: endedAt);
+      _publishLiveUpdate(
+        timestampMs: endedAt,
+        endedAtMs: endedAt,
+        events: gapEvents,
+      );
       _p1FreshnessTimer?.cancel();
       _p1FreshnessTimer = null;
       _sessionId = null;
