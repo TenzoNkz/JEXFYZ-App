@@ -5,11 +5,11 @@
 ### Live repository and release boundary
 
 - **Repository:** `TenzoNkz/JEXFYZ-App`, branch `main`.
-- **Current source commit:** `0b888fc2902430ac67388a05d348f78bf8df5bbc` — compact Settings and remove Device Diagnostics.
+- **Current App source commit:** `0b888fc2902430ac67388a05d348f78bf8df5bbc` — compact Settings and remove Device Diagnostics. The latest branch HEAD is documentation checkpoint `1f201aa69e1d799825ac3909f202e2dce4f368b4`.
 - **Previous App UI fix:** `5296ba50f7fe0ba2c0ecff4e6112bed6e40dab2a` — fixed compact Peltier popup and removed Temperature global reset action.
 - **Recursive tree:** 131 entries, `truncated=false`. Source tree was created on the verified full tree; no file paths were added or deleted.
 - **Build #153 remains the latest verified APK/Release:** source SHA `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e`, Actions run `43145542329`, job `130942369953`, Release ID `403010611`, tag `jexfyz-latest`. Current Settings/Peltier/Temperature source changes are NOT in that APK.
-- Comparison to Build #153: main is 39 commits ahead / 0 behind; 13 changed paths (8 Markdown docs plus 5 App/test files). No Firmware, Gradle/configuration, workflow or Release asset path changed.
+- Comparison to Build #153: current main is 40 commits ahead / 0 behind; 13 changed paths (8 Markdown docs plus 5 App/test files). The extra commit after the source patch is documentation-only. No Firmware, Gradle/configuration, workflow or Release asset path changed.
 
 ### Owner-requested Settings refinement
 
@@ -27,7 +27,7 @@
 
 ### Validation and evidence boundary
 
-- **STATIC SOURCE CHECK / source tree verification:** passed for Diagnostics route/class/labels removal, 4 diagnostic-only parameter plumbing removal, About Card placement, compact Lock Voltage dimensions/copy, retained lock callback and test updates. Full tree count/path inventory remained unchanged.
+- **STATIC SOURCE CHECK / source tree verification:** passed for Diagnostics route/class/labels removal, diagnostic-only parameter plumbing removal, About Card placement, compact Lock Voltage dimensions/copy, retained lock callback and test updates. A follow-up documentation audit also corrected stale Build #153-versus-current-main statements in APP_NOTES.md and PROJECT_STATE.md. Full tree count/path inventory remained unchanged.
 - Flutter/Dart are not installed in the active runtime. `dart format`, focused tests, analyzer and full Flutter suite are BLOCKED / NOT RUN. No hosted Actions run, App Build, APK/Release, screenshot rendering, emulator or physical device validation was run.
 - Owner screenshots are the visual reference, not proof of the modified build output. Outcome remains **VISUAL NOT VERIFIED** until a new APK is built/installed and actual 350/420-dp, Light/Dark, EN/ID screenshots are inspected.
 - No App build/release is running. Firmware V7.2 compile/BIN, BLE/NVS/rail/Touch/LED, thermal/electrical, Firebase/OTA/flash remain outside this authorization.

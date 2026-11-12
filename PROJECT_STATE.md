@@ -14,7 +14,7 @@
 
 ## LATEST VERIFIED RELEASE BASELINE — BUILD #153 SUCCESS / RELEASE VERIFIED — 2026-11-12
 
-- **Repository:** TenzoNkz/JEXFYZ-App, branch main. Immutable tested source SHA: `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e`. The later commits on `main` are documentation/checkpoint updates only; no App/Firmware/workflow source has changed after the built SHA.
+- **Release record:** TenzoNkz/JEXFYZ-App, branch main. Immutable tested/package source SHA: `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e`. This section records only the Build #153 artifact and CI evidence; it does not describe current main source. Current main has later App/test follow-ups documented in the active source block above. No Firmware, Gradle/configuration or workflow source changed after the Build #153 source.
 - **Build:** Actions run `43145542329`, workflow 374946166, attempt 1, job 130942369953; completed SUCCESS. All required gates 1–21 and cleanup/post-job steps 39–43 passed.
 - **App QC:** security/architecture audit passed; Dart analyzer 23 info-level findings, zero warnings/errors; Flutter suite **176/176 tests passed**.
 - **Android Gradle:** `BUILD SUCCESSFUL in 3m41s`. `:app:compileDebugUnitTestKotlin`, `:app:compileDebugUnitTestJavaWithJavac`, `:app:processDebugUnitTestJavaRes`, and `:app:testDebugUnitTest` were `NO-SOURCE`; no native Android JUnit tests executed.
@@ -25,7 +25,7 @@
 - Android Gradle `versionName "Telegram @horizontalzzz"` remains exact; Flutter app version is `1.0.0+3`.
 - **Failed attempt history:** Build #152 / run `43144337555` remains FAILED at Flutter tests (171 pass / 5 fail), no artifact. The three test-only repair commits and original diagnostics are preserved in APP_BUILD_REPORT.md; Build #153 validated the repaired suite at 176/176.
 - **Separate gaps:** Firmware V7.2 compile/BIN, Firebase/OTA/flash, physical BLE/device/NVS/rail/LED, thermal/electrical cooling, owner installation and OEM visual acceptance remain NOT RUN / UNVERIFIED. CI is App-scope only.
-- **Next:** owner installation and physical App/BLE/OEM visual validation at 350-dp/420-dp, Light/Dark and EN/ID, with reconnect and Lock Voltage tests; record actual observations separately. No new App Build until source changes.
+- **Historical next action at the Build #153 release point:** owner installation and physical App/BLE/OEM visual validation of that package. Current main has newer App source/test fixes; package those through a separate guarded `Eksekusi Build App!` before treating them as part of any release or scheduling acceptance of the new UI.
 
 ---
 ## Firmware V7.2 source implementation — App CI verified; Firmware validation pending (2026-11-12)
