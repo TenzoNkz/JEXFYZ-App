@@ -1,12 +1,12 @@
-## CURRENT APP QC — BUILD #157 ACTIVE / FLUTTER TESTS PASSED — 2026-11-12
+## CURRENT APP QC — BUILD #157 ACTIVE / APK BUILD STARTED — 2026-11-12
 
 - **Run:** Build #157 / Actions `43247876115`, job `131285336987`, attempt 1; immutable checkout SHA `10d106537e92060e0aac3fc17fd37f56e746bcd5`.
-- **Progress:** steps 1–13 SUCCESS, including analyzer and Flutter tests. Step 14 Android Gradle gate IN_PROGRESS; steps 15–21 pending. Continue this run only.
-- **Failure history:** Build #154 analyzer failed (6 errors); Build #155 Flutter tests failed (183/4); Build #156 Flutter tests failed (186/1). All original causes and concrete repairs remain preserved in APP_BUILD_REPORT.md. Latest #156 single stale Notify assertion was corrected in test commits `b007b56ab5ddf91546f86937be202978dc7fee3b` and `38212c3620aba6eb9fa5f6db41b43fdb777a9ddf`.
-- **Preflight:** no queued/in-progress run or open PR; issue #33 exact owner/title/token; workflow unchanged; Release #153 tag/assets intact; one close/reopen started #157.
-- **Counts pending:** exact analyzer infos, Flutter test total and native Android `NO-SOURCE` details await the final log; do not infer from step status.
-- **Formatter:** no workflow format step; `dart format` remains NOT RUN / UNVERIFIED.
-- **Boundary:** App Build only. Firmware/BIN/Firebase/OTA/flash/device/physical BLE/electrical/thermal/OEM visual remain separate.
+- **Progress:** steps 1–14 SUCCESS, including analyzer, Flutter tests and Android Gradle unit-test gate. Step 15 APK build IN_PROGRESS; signing, cert verification, source ZIP and Release gates 16–21 pending. Continue this run only.
+- **Failure history:** #154 analyzer (6 errors), #155 tests (183/4), #156 tests (186/1) remain preserved. Their root causes and repairs are documented in APP_BUILD_REPORT.md.
+- **Preflight:** no queued/in-progress run or open PR; exact issue #33 guard; workflow unchanged; Release #153/tag/assets intact; one guarded close/reopen created #157.
+- **Counts pending:** exact analyzer infos, Flutter test total and native Android JUnit NO-SOURCE details require final log extraction.
+- **Formatter:** workflow has no formatter step; `dart format` remains NOT RUN / UNVERIFIED.
+- **Boundary:** App Build only; no Firmware/BIN/Firebase/OTA/flash/device/physical BLE/thermal/electrical/OEM visual operation.
 
 
 ---
