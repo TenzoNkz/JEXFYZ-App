@@ -1021,16 +1021,44 @@ class JexFixedScalePage extends StatelessWidget {
 // Hosts the Settings navigation hierarchy and delegates persisted preferences to AppSettingsStore.
 class SettingsPage extends StatelessWidget {
   final String currentFirmwareVersion;
+  final String currentAppVersion;
   final String? coolerId;
   final int hotLimit;
+  final bool deviceConnected;
+  final bool p1SessionReady;
+  final bool runtimeOutputsKnown;
+  final String diagnosticVoltage;
+  final String diagnosticBatteryTemperature;
+  final String diagnosticHotsideTemperature;
+  final bool diagnosticFanOn;
+  final bool diagnosticPeltierOn;
+  final bool diagnosticAdaptiveOn;
+  final String diagnosticSafetySummary;
+  final bool diagnosticVoltageLockKnown;
+  final bool diagnosticVoltageLockActive;
+  final bool diagnosticVoltageLockSaved;
   final Future<void> Function() onOpenFirmwareUpdate;
   final Future<void> Function(bool enabled) onVoltageLockChanged;
 
   const SettingsPage({
     super.key,
     required this.currentFirmwareVersion,
+    this.currentAppVersion = '--',
     this.coolerId,
     this.hotLimit = 45,
+    this.deviceConnected = false,
+    this.p1SessionReady = false,
+    this.runtimeOutputsKnown = false,
+    this.diagnosticVoltage = '--',
+    this.diagnosticBatteryTemperature = '--',
+    this.diagnosticHotsideTemperature = '--',
+    this.diagnosticFanOn = false,
+    this.diagnosticPeltierOn = false,
+    this.diagnosticAdaptiveOn = false,
+    this.diagnosticSafetySummary = '--',
+    this.diagnosticVoltageLockKnown = false,
+    this.diagnosticVoltageLockActive = false,
+    this.diagnosticVoltageLockSaved = false,
     required this.onOpenFirmwareUpdate,
     required this.onVoltageLockChanged,
   });
@@ -1048,6 +1076,14 @@ class SettingsPage extends StatelessWidget {
           body: ListView(
             padding: const EdgeInsets.fromLTRB(14, 8, 14, 28),
             children: [
+              Padding(
+                padding: const EdgeInsets.only(bottom: 6),
+                child: ValueListenableBuilder<VoltageLockSettingsState>(
+                  valueListenable: voltageLockSettingsNotifier,
+                  builder: (context, state, _) =>
+                      _voltageLockSettingRow(context, language, state),
+                ),
+              ),
               _section(context, JexText.of('general', language), [
                 _item(context, PhosphorIconsRegular.translate, JexText.of('language', language),
                     language == AppLanguage.english
@@ -1100,11 +1136,6 @@ class SettingsPage extends StatelessWidget {
                     ),
                   ),
                 ),
-                ValueListenableBuilder<VoltageLockSettingsState>(
-                  valueListenable: voltageLockSettingsNotifier,
-                  builder: (context, state, _) =>
-                      _voltageLockSettingRow(context, language, state),
-                ),
                 _item(
                   context,
                   PhosphorIconsRegular.stack,
@@ -1115,6 +1146,36 @@ class SettingsPage extends StatelessWidget {
                   () => Navigator.of(context).push(
                     MaterialPageRoute<void>(
                       builder: (_) => const JexFixedScalePage(compactUi: true, child: FloatingSettingsPage()),
+                    ),
+                  ),
+                ),
+                _item(
+                  context,
+                  PhosphorIconsRegular.info,
+                  JexText.of('deviceDiagnostics', language),
+                  JexText.of('deviceDiagnosticsSummary', language),
+                  () => Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                      builder: (_) => JexFixedScalePage(
+                        compactUi: true,
+                        child: DeviceDiagnosticsPage(
+                          appVersion: currentAppVersion,
+                          firmwareVersion: currentFirmwareVersion,
+                          bluetoothConnected: deviceConnected,
+                          p1SessionReady: p1SessionReady,
+                          runtimeOutputsKnown: runtimeOutputsKnown,
+                          voltage: diagnosticVoltage,
+                          batteryTemperature: diagnosticBatteryTemperature,
+                          hotsideTemperature: diagnosticHotsideTemperature,
+                          fanOn: diagnosticFanOn,
+                          peltierOn: diagnosticPeltierOn,
+                          adaptiveOn: diagnosticAdaptiveOn,
+                          safetySummary: diagnosticSafetySummary,
+                          voltageLockKnown: diagnosticVoltageLockKnown,
+                          voltageLockActive: diagnosticVoltageLockActive,
+                          voltageLockSaved: diagnosticVoltageLockSaved,
+                        ),
+                      ),
                     ),
                   ),
                 ),
@@ -1154,6 +1215,20 @@ class SettingsPage extends StatelessWidget {
                 _item(context, PhosphorIconsRegular.uploadSimple, JexText.of('firmwareUpdate', language),
                     currentFirmwareVersion, () => unawaited(onOpenFirmwareUpdate())),
               ]),
+              _item(
+                context,
+                PhosphorIconsRegular.info,
+                JexText.of('about', language),
+                'JE Cooler',
+                () => Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (_) => const JexFixedScalePage(
+                      compactUi: true,
+                      child: AboutSettingsPage(),
+                    ),
+                  ),
+                ),
+              ),
 
             ],
           ),
@@ -1204,15 +1279,20 @@ class SettingsPage extends StatelessWidget {
 
     Widget trailing;
     if (!state.known) {
-      trailing = Icon(
-        state.sessionReady ? Icons.info_outline_rounded : Icons.bluetooth_disabled,
-        size: 19,
-        color: scheme.onSurfaceVariant,
+      trailing = Tooltip(
+        message: subtitle,
+        child: Icon(
+          state.sessionReady
+              ? PhosphorIconsRegular.info
+              : PhosphorIconsRegular.bluetooth,
+          size: 20,
+          color: scheme.onSurfaceVariant,
+        ),
       );
     } else if (state.busy) {
       trailing = const SizedBox(
-        width: 20,
-        height: 20,
+        width: 22,
+        height: 22,
         child: CircularProgressIndicator(strokeWidth: 2),
       );
     } else {
@@ -1227,38 +1307,75 @@ class SettingsPage extends StatelessWidget {
           ),
           if (state.active && !state.saved)
             IconButton(
-              tooltip: JexText.phrase('Retry saving Lock Voltage', 'Coba simpan Kunci Tegangan lagi', language),
+              tooltip: JexText.phrase(
+                'Retry saving Lock Voltage',
+                'Coba simpan Kunci Tegangan lagi',
+                language,
+              ),
               onPressed: state.sessionReady
                   ? () => unawaited(onVoltageLockChanged(true))
                   : null,
-              icon: const Icon(Icons.refresh_rounded, size: 19),
+              icon: const Icon(PhosphorIconsRegular.arrowClockwise, size: 19),
             ),
         ],
       );
     }
 
-    return ListTile(
-      dense: true,
-      minVerticalPadding: 9,
-      contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
-      leading: Icon(
-        Icons.lock_outline_rounded,
-        size: 19,
-        color: scheme.onSurfaceVariant,
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 12),
+      decoration: BoxDecoration(
+        color: scheme.surface,
+        borderRadius: BorderRadius.circular(17),
+        border: Border.all(color: scheme.outlineVariant.withValues(alpha: .82)),
       ),
-      title: Text(
-        JexText.phrase('Lock Voltage', 'Kunci Tegangan', language),
-        style: TextStyle(
-          color: scheme.onSurface,
-          fontSize: 13,
-          fontWeight: FontWeight.w700,
-        ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Container(
+            width: 42,
+            height: 42,
+            decoration: BoxDecoration(
+              color: scheme.surfaceContainerHighest.withValues(alpha: .72),
+              borderRadius: BorderRadius.circular(13),
+            ),
+            child: Icon(
+              PhosphorIconsBold.lock,
+              size: 21,
+              color: state.active && state.known
+                  ? scheme.primary
+                  : scheme.onSurfaceVariant,
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  JexText.phrase('Lock Voltage', 'Kunci Tegangan', language),
+                  style: TextStyle(
+                    color: scheme.onSurface,
+                    fontSize: 13,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+                const SizedBox(height: 3),
+                Text(
+                  subtitle,
+                  style: TextStyle(
+                    color: scheme.onSurfaceVariant,
+                    fontSize: 11,
+                    height: 1.25,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: 6),
+          trailing,
+        ],
       ),
-      subtitle: Text(
-        subtitle,
-        style: TextStyle(color: scheme.onSurfaceVariant, fontSize: 11),
-      ),
-      trailing: trailing,
     );
   }
 
@@ -1337,6 +1454,319 @@ class SettingsPage extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+// About restores the owner-requested contributor credits in a quiet, single-column layout.
+class AboutSettingsPage extends StatelessWidget {
+  const AboutSettingsPage({super.key});
+
+  Widget _credit(
+    BuildContext context, {
+    required String role,
+    required String name,
+    required String handle,
+    required bool last,
+  }) {
+    final scheme = Theme.of(context).colorScheme;
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 13),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            role.toUpperCase(),
+            style: TextStyle(
+              color: scheme.onSurfaceVariant,
+              fontSize: 10,
+              fontWeight: FontWeight.w700,
+              letterSpacing: .55,
+            ),
+          ),
+          const SizedBox(height: 5),
+          Text(
+            name,
+            style: TextStyle(
+              color: scheme.onSurface,
+              fontSize: 16,
+              fontWeight: FontWeight.w800,
+            ),
+          ),
+          const SizedBox(height: 2),
+          Text(
+            handle,
+            style: TextStyle(
+              color: scheme.onSurfaceVariant,
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          if (!last) ...[
+            const SizedBox(height: 12),
+            Divider(height: 1, color: scheme.outlineVariant),
+          ],
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder<AppLanguage>(
+      valueListenable: appLanguageNotifier,
+      builder: (context, language, _) {
+        final scheme = Theme.of(context).colorScheme;
+        return Scaffold(
+          appBar: AppBar(title: Text(JexText.of('about', language))),
+          body: ListView(
+            padding: const EdgeInsets.fromLTRB(20, 22, 20, 32),
+            children: [
+              Text(
+                'JE Cooler',
+                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                  color: scheme.onSurface,
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: -.35,
+                ),
+              ),
+              const SizedBox(height: 7),
+              Text(
+                JexText.phrase('Special Thanks', 'Ucapan Terima Kasih', language),
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  color: scheme.onSurfaceVariant,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: 17),
+              _credit(
+                context,
+                role: JexText.phrase('App Development & Build', 'Pengembangan Aplikasi & Build', language),
+                name: 'Horizon',
+                handle: '@Horizontalzzz',
+                last: false,
+              ),
+              _credit(
+                context,
+                role: JexText.phrase('Design Inspiration', 'Inspirasi Desain', language),
+                name: 'FYZ',
+                handle: '@FYZ737',
+                last: false,
+              ),
+              _credit(
+                context,
+                role: JexText.phrase('3D Design & Printing', 'Desain & Pencetakan 3D', language),
+                name: 'Logos',
+                handle: '@Logos3dMichael',
+                last: true,
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+
+class DeviceDiagnosticsPage extends StatelessWidget {
+  final String appVersion;
+  final String firmwareVersion;
+  final bool bluetoothConnected;
+  final bool p1SessionReady;
+  final bool runtimeOutputsKnown;
+  final String voltage;
+  final String batteryTemperature;
+  final String hotsideTemperature;
+  final bool fanOn;
+  final bool peltierOn;
+  final bool adaptiveOn;
+  final String safetySummary;
+  final bool voltageLockKnown;
+  final bool voltageLockActive;
+  final bool voltageLockSaved;
+
+  const DeviceDiagnosticsPage({
+    super.key,
+    required this.appVersion,
+    required this.firmwareVersion,
+    required this.bluetoothConnected,
+    required this.p1SessionReady,
+    required this.runtimeOutputsKnown,
+    required this.voltage,
+    required this.batteryTemperature,
+    required this.hotsideTemperature,
+    required this.fanOn,
+    required this.peltierOn,
+    required this.adaptiveOn,
+    required this.safetySummary,
+    required this.voltageLockKnown,
+    required this.voltageLockActive,
+    required this.voltageLockSaved,
+  });
+
+  Widget _row(BuildContext context, String label, String value, {bool emphasized = false}) {
+    final scheme = Theme.of(context).colorScheme;
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 9),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child: Text(
+              label,
+              style: TextStyle(
+                color: scheme.onSurfaceVariant,
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+          const SizedBox(width: 12),
+          Flexible(
+            child: Text(
+              value,
+              textAlign: TextAlign.end,
+              style: TextStyle(
+                color: emphasized ? scheme.primary : scheme.onSurface,
+                fontSize: 12,
+                fontWeight: emphasized ? FontWeight.w800 : FontWeight.w700,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  String _outputValue(bool value, AppLanguage language) =>
+      runtimeOutputsKnown ? JexText.of(value ? 'on' : 'off', language) : '--';
+
+  String _lockValue(AppLanguage language) {
+    if (!voltageLockKnown) return '--';
+    if (voltageLockActive && !voltageLockSaved) {
+      return JexText.phrase('ON · NOT SAVED', 'AKTIF · BELUM TERSIMPAN', language);
+    }
+    return JexText.of(voltageLockActive ? 'on' : 'off', language);
+  }
+
+  Future<void> _copyDiagnostics(BuildContext context, AppLanguage language) async {
+    final report = <String>[
+      'JE Cooler — ${JexText.of('deviceDiagnostics', language)}',
+      '${JexText.phrase('App version', 'Versi aplikasi', language)}: $appVersion',
+      '${JexText.phrase('Firmware version', 'Versi Firmware', language)}: ${firmwareVersion == 'V?' ? '--' : firmwareVersion}',
+      '${JexText.phrase('Bluetooth', 'Bluetooth', language)}: ${JexText.of(bluetoothConnected ? 'connected' : 'disconnected', language)}',
+      '${JexText.phrase('P1 session', 'Sesi P1', language)}: ${p1SessionReady ? JexText.phrase('Ready', 'Siap', language) : '--'}',
+      'Voltage: $voltage',
+      'Battery: $batteryTemperature',
+      'Hotside: $hotsideTemperature',
+      'Fan: ${_outputValue(fanOn, language)}',
+      'Peltier: ${_outputValue(peltierOn, language)}',
+      'Adaptive: ${_outputValue(adaptiveOn, language)}',
+      '${JexText.phrase('Lock Voltage', 'Kunci Tegangan', language)}: ${_lockValue(language)}',
+      '${JexText.phrase('Safety', 'Keselamatan', language)}: $safetySummary',
+    ].join('\n');
+    await Clipboard.setData(ClipboardData(text: report));
+    if (!context.mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(JexText.phrase('Diagnostics copied.', 'Diagnostik disalin.', language)),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder<AppLanguage>(
+      valueListenable: appLanguageNotifier,
+      builder: (context, language, _) {
+        final scheme = Theme.of(context).colorScheme;
+        final firmware = firmwareVersion == 'V?' ? '--' : firmwareVersion;
+        final connection = JexText.of(
+          bluetoothConnected ? 'connected' : 'disconnected',
+          language,
+        );
+        final sync = p1SessionReady
+            ? JexText.phrase('Ready', 'Siap', language)
+            : bluetoothConnected
+                ? JexText.phrase('Waiting for synchronization', 'Menunggu sinkronisasi', language)
+                : '--';
+        return Scaffold(
+          appBar: AppBar(title: Text(JexText.of('deviceDiagnostics', language))),
+          body: ListView(
+            padding: const EdgeInsets.fromLTRB(16, 12, 16, 28),
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 6),
+                decoration: BoxDecoration(
+                  color: scheme.surface,
+                  borderRadius: BorderRadius.circular(17),
+                  border: Border.all(color: scheme.outlineVariant),
+                ),
+                child: Column(
+                  children: [
+                    _row(context, JexText.phrase('App version', 'Versi aplikasi', language), appVersion),
+                    Divider(height: 1, color: scheme.outlineVariant),
+                    _row(context, JexText.phrase('Firmware version', 'Versi Firmware', language), firmware),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 12),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 6),
+                decoration: BoxDecoration(
+                  color: scheme.surface,
+                  borderRadius: BorderRadius.circular(17),
+                  border: Border.all(color: scheme.outlineVariant),
+                ),
+                child: Column(
+                  children: [
+                    _row(context, JexText.phrase('Bluetooth', 'Bluetooth', language), connection, emphasized: bluetoothConnected),
+                    Divider(height: 1, color: scheme.outlineVariant),
+                    _row(context, JexText.phrase('P1 session', 'Sesi P1', language), sync, emphasized: p1SessionReady),
+                    Divider(height: 1, color: scheme.outlineVariant),
+                    _row(context, JexText.phrase('Voltage', 'Tegangan', language), voltage),
+                    Divider(height: 1, color: scheme.outlineVariant),
+                    _row(context, JexText.phrase('Phone battery', 'Baterai HP', language), batteryTemperature),
+                    Divider(height: 1, color: scheme.outlineVariant),
+                    _row(context, 'Hotside', hotsideTemperature),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 12),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 6),
+                decoration: BoxDecoration(
+                  color: scheme.surface,
+                  borderRadius: BorderRadius.circular(17),
+                  border: Border.all(color: scheme.outlineVariant),
+                ),
+                child: Column(
+                  children: [
+                    _row(context, JexText.of('fan', language), _outputValue(fanOn, language)),
+                    Divider(height: 1, color: scheme.outlineVariant),
+                    _row(context, JexText.of('peltier', language), _outputValue(peltierOn, language)),
+                    Divider(height: 1, color: scheme.outlineVariant),
+                    _row(context, JexText.phrase('Adaptive Mode', 'Mode Adaptif', language), _outputValue(adaptiveOn, language)),
+                    Divider(height: 1, color: scheme.outlineVariant),
+                    _row(context, JexText.phrase('Lock Voltage', 'Kunci Tegangan', language), _lockValue(language)),
+                    Divider(height: 1, color: scheme.outlineVariant),
+                    _row(context, JexText.phrase('Safety', 'Keselamatan', language), safetySummary),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 12),
+              SizedBox(
+                height: 48,
+                child: OutlinedButton.icon(
+                  onPressed: () => unawaited(_copyDiagnostics(context, language)),
+                  icon: const Icon(PhosphorIconsRegular.copy, size: 18),
+                  label: Text(JexText.phrase('Copy diagnostics', 'Salin diagnostik', language)),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }
