@@ -528,44 +528,80 @@ class UsageStatsAnalytics {
     List<UsageChartPoint> points, {
     int maxPoints = 1600,
   }) {
-    if (points.length <= maxPoints || maxPoints < 8) {
-      return points;
+    if (maxPoints <= 0) return const [];
+    if (points.length <= maxPoints) return points;
+
+    final selectedIndices = <int>{};
+    if (maxPoints < 4) {
+      for (var sample = 0; sample < maxPoints; sample++) {
+        final index = maxPoints == 1
+            ? points.length - 1
+            : (sample * (points.length - 1) / (maxPoints - 1)).round();
+        selectedIndices.add(index);
+      }
+    } else {
+      // Four representatives per bucket (first, last, minimum and maximum)
+      // guarantee a hard output ceiling even when every bucket contains gaps.
+      final bucketCount = math.max(1, maxPoints ~/ 4).toInt();
+      final bucketSize = points.length / bucketCount;
+      for (var bucket = 0; bucket < bucketCount; bucket++) {
+        final start = (bucket * bucketSize).floor();
+        final end =
+            math.min(points.length, ((bucket + 1) * bucketSize).ceil());
+        if (start >= end) continue;
+        selectedIndices
+          ..add(start)
+          ..add(end - 1);
+
+        int? minimumIndex;
+        int? maximumIndex;
+        for (var index = start; index < end; index++) {
+          final point = points[index];
+          if (point.value == null) continue;
+          if (minimumIndex == null ||
+              point.value! < points[minimumIndex].value!) {
+            minimumIndex = index;
+          }
+          if (maximumIndex == null ||
+              point.value! > points[maximumIndex].value!) {
+            maximumIndex = index;
+          }
+        }
+        if (minimumIndex != null) selectedIndices.add(minimumIndex);
+        if (maximumIndex != null) selectedIndices.add(maximumIndex);
+      }
     }
 
-    final selected = <UsageChartPoint>{};
-    final bucketCount = math.max(1, maxPoints ~/ 4).toInt();
-    final bucketSize = points.length / bucketCount;
-    for (var bucket = 0; bucket < bucketCount; bucket++) {
-      final start = (bucket * bucketSize).floor();
-      final end = math.min(points.length, ((bucket + 1) * bucketSize).ceil());
-      if (start >= end) continue;
-      selected
-        ..add(points[start])
-        ..add(points[end - 1]);
-
-      int? minimumIndex;
-      int? maximumIndex;
-      for (var index = start; index < end; index++) {
-        final point = points[index];
-        if (point.value == null || point.breakBefore) {
-          selected.add(point);
-        }
-        if (point.value == null) continue;
-        if (minimumIndex == null ||
-            point.value! < points[minimumIndex].value!) {
-          minimumIndex = index;
-        }
-        if (maximumIndex == null ||
-            point.value! > points[maximumIndex].value!) {
-          maximumIndex = index;
+    final orderedIndices = selectedIndices.toList()..sort();
+    final result = <UsageChartPoint>[];
+    var previousIndex = -1;
+    for (final index in orderedIndices) {
+      final point = points[index];
+      var breakBefore = point.breakBefore || point.value == null;
+      // Any discarded null/boundary point must still break the path before
+      // the next retained point. Multiple dense gaps safely collapse to one
+      // break rather than forcing the output beyond maxPoints.
+      for (var skipped = previousIndex + 1; skipped <= index; skipped++) {
+        final candidate = points[skipped];
+        if (candidate.value == null || candidate.breakBefore) {
+          breakBefore = true;
+          break;
         }
       }
-      if (minimumIndex != null) selected.add(points[minimumIndex]);
-      if (maximumIndex != null) selected.add(points[maximumIndex]);
+
+      if (point.value == null || !breakBefore || point.breakBefore) {
+        result.add(point);
+      } else {
+        result.add(UsageChartPoint(
+          timestampMs: point.timestampMs,
+          value: point.value,
+          sessionId: point.sessionId,
+          breakBefore: true,
+        ));
+      }
+      previousIndex = index;
     }
 
-    final result = selected.toList()
-      ..sort((a, b) => a.timestampMs.compareTo(b.timestampMs));
     return List<UsageChartPoint>.unmodifiable(result);
   }
 
@@ -1099,22 +1135,41 @@ class UsageStatisticsStore implements UsageStatisticsRepository {
 }
 
 class UsageStatsWriteQueue {
-  UsageStatsWriteQueue({this.maxPendingOperations = 64})
-      : assert(maxPendingOperations > 0);
+  UsageStatsWriteQueue({
+    this.maxPendingOperations = 64,
+    this.reservedControlOperations = 8,
+  })  : assert(maxPendingOperations > 0),
+        assert(reservedControlOperations >= 0);
 
   final int maxPendingOperations;
+  final int reservedControlOperations;
   int _pendingOperations = 0;
+  int _rejectedOperations = 0;
   Future<void> _tail = Future<void>.value();
 
   int get pendingOperations => _pendingOperations;
+  int get rejectedOperations => _rejectedOperations;
+  int get maxTotalPendingOperations =>
+      maxPendingOperations + reservedControlOperations;
 
   Future<void> enqueue(
     Future<void> Function() operation, {
     required void Function(Object error) onError,
-  }) async {
-    while (_pendingOperations >= maxPendingOperations) {
-      final currentTail = _tail;
-      await currentTail;
+    bool allowReservedCapacity = false,
+  }) {
+    final capacity = maxPendingOperations +
+        (allowReservedCapacity ? reservedControlOperations : 0);
+    if (_pendingOperations >= capacity) {
+      _rejectedOperations++;
+      try {
+        onError(StateError(
+          'Usage statistics write queue is full ($capacity pending); '
+          'the incoming record was not accepted.',
+        ));
+      } catch (_) {
+        // A rejection reporter must never interrupt the telemetry producer.
+      }
+      return Future<void>.value();
     }
 
     _pendingOperations++;
@@ -1132,7 +1187,7 @@ class UsageStatsWriteQueue {
       }
     });
     _tail = scheduled;
-    await scheduled;
+    return scheduled;
   }
 }
 
@@ -1159,12 +1214,16 @@ class UsageStatisticsRecorder {
   int? _lastP1ReceiptAtMs;
 
   // Kept visible for the lifetime of this process because a later successful
-  // write cannot prove that a previously dropped sample was recovered.
+  // write cannot prove that a previously rejected or failed record was recovered.
   String? lastWriteError;
 
-  Future<void> _enqueue(Future<void> Function() operation) {
+  Future<void> _enqueue(
+    Future<void> Function() operation, {
+    bool allowReservedCapacity = false,
+  }) {
     return _writeQueue.enqueue(
       operation,
+      allowReservedCapacity: allowReservedCapacity,
       onError: (error) {
         lastWriteError = error.toString();
         debugPrint('Usage statistics write: $error');
@@ -1174,6 +1233,7 @@ class UsageStatisticsRecorder {
   }
 
   int get pendingWriteCount => _writeQueue.pendingOperations;
+  int get rejectedWriteCount => _writeQueue.rejectedOperations;
 
   void _notifyChanged() {
     revisionNotifier.value++;
@@ -1303,7 +1363,7 @@ class UsageStatisticsRecorder {
           UsageStatsEvent(sessionId: sessionId, timestampMs: now, metric: 'fan_speed', numberValue: fanSpeed.toDouble(), textValue: null),
       ]);
       _notifyChanged();
-    });
+    }, allowReservedCapacity: true);
   }
 
   Future<void> recordTemperature({
@@ -1319,8 +1379,14 @@ class UsageStatisticsRecorder {
             ? value
             : null;
     final receivedAtMs = DateTime.now().millisecondsSinceEpoch;
+    final previousP1ReceiptAtMs =
+        metric == 'hotside' ? _lastP1ReceiptAtMs : null;
+    final p1ReceiptGap = metric == 'hotside' &&
+        previousP1ReceiptAtMs != null &&
+        receivedAtMs - previousP1ReceiptAtMs >
+            const Duration(milliseconds: 2500).inMilliseconds;
     if (metric == 'hotside' && _sessionId != null) {
-      // Advance the watchdog on receipt, before the serialized SQLite write.
+      // The P1 watchdog follows real receipt time, not SQLite write progress.
       _lastP1ReceiptAtMs = receivedAtMs;
     }
 
@@ -1329,56 +1395,72 @@ class UsageStatisticsRecorder {
       if (sessionId == null) return;
 
       final lastSeen = _lastSensorSeenMs[metric];
-      if (lastSeen != null &&
+      final sampleGap = lastSeen != null &&
           receivedAtMs - lastSeen >
-              const Duration(milliseconds: 2500).inMilliseconds) {
-        // Do not bridge a missing sensor interval with a stale value.
+              const Duration(milliseconds: 1500).inMilliseconds;
+      final gapTimestamps = <int>{};
+      if (sampleGap) {
+        gapTimestamps.add(
+          lastSeen + const Duration(milliseconds: 1500).inMilliseconds,
+        );
+      }
+      if (p1ReceiptGap && previousP1ReceiptAtMs != null) {
+        gapTimestamps.add(
+          previousP1ReceiptAtMs +
+              const Duration(milliseconds: 1500).inMilliseconds,
+        );
+      }
+      final orderedGapTimestamps = gapTimestamps.toList()..sort();
+      for (final gapTimestamp in orderedGapTimestamps) {
         await _store.recordTemperatureSample(
           sessionId: sessionId,
-          timestampMs: lastSeen +
-              const Duration(milliseconds: 1500).inMilliseconds,
+          timestampMs: gapTimestamp,
           metric: metric,
           value: null,
         );
-        if (metric == 'hotside') {
-          final cutoff = lastSeen +
-              const Duration(milliseconds: 1500).inMilliseconds;
-          await _store.endSession(
-            sessionId: sessionId,
-            timestampMs: cutoff,
-            reason: 'stale_p1',
-          );
-          _sessionEndedAtMs = cutoff;
-          _publishLiveUpdate(
-            timestampMs: cutoff,
-            endedAtMs: cutoff,
-            events: [
-              UsageStatsEvent(
-                sessionId: sessionId,
-                timestampMs: cutoff,
-                metric: 'hotside',
-                numberValue: null,
-                textValue: null,
-              ),
-            ],
-          );
-          _p1FreshnessTimer?.cancel();
-          _p1FreshnessTimer = null;
-          _sessionId = null;
-          _coolerId = null;
-          _temperatures.clear();
-          _states.clear();
-          _lastSensorSeenMs.clear();
-          _lastP1ReceiptAtMs = null;
-          _sessionStartedAtMs = null;
-          _sessionEndedAtMs = null;
-          _notifyChanged();
-          return;
-        }
       }
 
-      // Persist every 1 Hz observation, even when its numeric value is unchanged.
-      // Null samples are explicit gaps, not zero or a carried-forward reading.
+      if (p1ReceiptGap) {
+        // Only a real gap between received Firmware HOT heartbeats ends P1.
+        // A slow/rejected SQLite write must create a chart gap, not a false
+        // device-session timeout.
+        final cutoff = previousP1ReceiptAtMs! +
+            const Duration(milliseconds: 1500).inMilliseconds;
+        await _store.endSession(
+          sessionId: sessionId,
+          timestampMs: cutoff,
+          reason: 'stale_p1',
+        );
+        _sessionEndedAtMs = cutoff;
+        _publishLiveUpdate(
+          timestampMs: cutoff,
+          endedAtMs: cutoff,
+          events: [
+            UsageStatsEvent(
+              sessionId: sessionId,
+              timestampMs: cutoff,
+              metric: 'hotside',
+              numberValue: null,
+              textValue: null,
+            ),
+          ],
+        );
+        _p1FreshnessTimer?.cancel();
+        _p1FreshnessTimer = null;
+        _sessionId = null;
+        _coolerId = null;
+        _temperatures.clear();
+        _states.clear();
+        _lastSensorSeenMs.clear();
+        _lastP1ReceiptAtMs = null;
+        _sessionStartedAtMs = null;
+        _sessionEndedAtMs = null;
+        _notifyChanged();
+        return;
+      }
+
+      // Persist every accepted 1 Hz observation, even when unchanged.
+      // Explicit null rows mark invalid readings and missed persisted intervals.
       await _store.recordTemperatureSample(
         sessionId: sessionId,
         timestampMs: receivedAtMs,
@@ -1457,7 +1539,7 @@ class UsageStatisticsRecorder {
         ),
       ]);
       _notifyChanged();
-    });
+    }, allowReservedCapacity: true);
   }
 
   Future<void> endSession({
@@ -1487,7 +1569,7 @@ class UsageStatisticsRecorder {
       _sessionStartedAtMs = null;
       _sessionEndedAtMs = null;
       _notifyChanged();
-    });
+    }, allowReservedCapacity: true);
   }
 
   Future<void> clearHistory(String coolerId) {
@@ -1535,7 +1617,7 @@ class UsageStatisticsRecorder {
           UsageStatsEvent(sessionId: sessionId, timestampMs: now, metric: 'fan_speed', numberValue: (_states['fan_speed'] as num).toDouble(), textValue: null),
       ]);
       _notifyChanged();
-    });
+    }, allowReservedCapacity: true);
   }
 }
 
