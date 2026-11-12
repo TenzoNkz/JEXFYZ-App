@@ -4,9 +4,9 @@
 
 ### Live repository evidence
 
-- **Repository/branch:** `TenzoNkz/JEXFYZ-App` / `main`. Live HEAD: `82114a7540a7f225482c67ffb7772894c956b0b1`; recursive tree: 132 entries, `truncated=false`.
-- **Executable source/test checkpoint:** `6c551c4ff95329e56eca7ce758078c9590b4b726`. Current blobs: `lib/usage_statistics.dart` = `3afd0d8e440b5c4b7c19fb46b825a8a821e5492b`; `test/usage_statistics_test.dart` = `fb665eeb3894a613c2a5bbcfb8ae72537b1c37a0`. Later commits are documentation-only.
-- **Release gap:** GitHub compare confirms `main` is 96 commits ahead / 0 behind Build #153; 18 paths differ (11 Markdown, 4 Dart libraries, 3 test files). Latest tag `jexfyz-latest` and Release #153 still point to source `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e`, not current code.
+- **Repository/branch:** `TenzoNkz/JEXFYZ-App` / `main`. Live HEAD: `263bdff686d9735ee23b2a581b138db862daa088`; recursive tree: 132 entries, `truncated=false`.
+- **Latest docs checkpoint:** `263bdff686d9735ee23b2a581b138db862daa088` (documentation-only commit); executable source/test checkpoint remains `6c551c4ff95329e56eca7ce758078c9590b4b726`. Current blobs: `lib/usage_statistics.dart` = `3afd0d8e440b5c4b7c19fb46b825a8a821e5492b`; `test/usage_statistics_test.dart` = `fb665eeb3894a613c2a5bbcfb8ae72537b1c37a0`. Later commits are documentation-only.
+- **Release gap:** GitHub compare confirms `main` is 97 commits ahead / 0 behind Build #153; 18 paths differ (11 Markdown, 4 Dart libraries, 3 test files). Latest tag `jexfyz-latest` and Release #153 still point to source `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e`, not current code.
 - **Actions evidence:** zero workflow runs are associated with both the live HEAD and executable source/test checkpoint. The complete tree contains only `.github/workflows/jexfyz-app-build-trigger.yml`; it is the guarded issue-triggered App build/release workflow. It runs dependency resolution, analyzer, Flutter tests, Android Gradle gate, release APK build and publication, but it has no Dart formatter step. There is no separate validation-only workflow.
 
 ### Review and validation performed in this Full session

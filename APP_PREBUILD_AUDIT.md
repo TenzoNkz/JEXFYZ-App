@@ -6,15 +6,13 @@
 
 ## Revalidation follow-up — 2026-11-12
 
-- Live `main` HEAD: `82114a7540a7f225482c67ffb7772894c956b0b1`; recursive tree 132 entries, not truncated. Executable source/test checkpoint remains `6c551c4ff95329e56eca7ce758078c9590b4b726`; source/test blobs remain `3afd0d8e440b5c4b7c19fb46b825a8a821e5492b` and `fb665eeb3894a613c2a5bbcfb8ae72537b1c37a0`.
-- Current main is **96 commits ahead / 0 behind** Build #153. GitHub compare reports 18 changed paths (11 Markdown, 4 Dart libraries, 3 test files). The `jexfyz-latest` release tag still targets Build #153 source SHA `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e`.
+- Live `main` HEAD: `263bdff686d9735ee23b2a581b138db862daa088`; recursive tree 132 entries, not truncated. Executable source/test checkpoint remains `6c551c4ff95329e56eca7ce758078c9590b4b726`; source/test blobs remain `3afd0d8e440b5c4b7c19fb46b825a8a821e5492b` and `fb665eeb3894a613c2a5bbcfb8ae72537b1c37a0`.
+- Current main is **97 commits ahead / 0 behind** Build #153. GitHub compare reports 18 changed paths (11 Markdown, 4 Dart libraries, 3 test files). The `jexfyz-latest` release tag still targets Build #153 source SHA `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e`.
 - Exact-HEAD and source/test-checkpoint Actions queries both returned zero runs. Only one workflow file exists: `.github/workflows/jexfyz-app-build-trigger.yml`. It contains `flutter analyze`, `flutter test`, Android Gradle and APK/release publication steps, but no Dart formatter; it is not a validation-only pipeline.
 - Recounted all 9 test files: 187 declarations (174 unit/source-contract + 13 widget). No tests were executed in this session.
 - Independent Python simulation: 60,726 randomized decimator fixtures, with a hard output-budget and skipped-gap propagation check; all passed. This supplements static inspection only and does not validate Dart syntax, type analysis or Flutter runtime behavior.
 - Environment recheck: `dart`, `flutter`, `gradle` and `adb` are unavailable; outbound DNS to GitHub and the Flutter SDK host fails. Formatter, focused/full tests, analyzer and Android Gradle remain **BLOCKED / NOT RUN**.
 - No executable, test, configuration or workflow files were changed, and no Actions, Build, Release or device operation was triggered. Disposition remains **HOLD**.
-
-## 1. Baseline and evidence
 
 ## 1. Baseline and evidence
 

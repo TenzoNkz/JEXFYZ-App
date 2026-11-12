@@ -1,11 +1,11 @@
 ## Validation follow-up — 2026-11-12
 
-- Re-read live `main` at `82114a7540a7f225482c67ffb7772894c956b0b1`; executable source/test checkpoint is still `6c551c4ff95329e56eca7ce758078c9590b4b726`. No executable source/test/workflow change was made in this review.
+- Re-read live `main` at `263bdff686d9735ee23b2a581b138db862daa088`; executable source/test checkpoint is still `6c551c4ff95329e56eca7ce758078c9590b4b726`. No executable source/test/workflow change was made in this review.
 - Recounted the complete 9-file Dart test suite: 187 declarations (174 unit/source-contract + 13 widget). The inventory is not a test pass.
 - Independent Python property simulation exercised 60,726 decimator input-length/budget combinations with randomized nulls and path breaks. Hard point-budget and gap-propagation invariants held; Dart implementation and Flutter behavior remain unexecuted.
 - There are zero Actions runs for the current HEAD and source/test checkpoint. The only workflow is the guarded issue-triggered release pipeline; it runs analyzer/tests/Gradle and publishes release artifacts, but omits formatter and is not a validation-only path.
 - Local `dart`, `flutter`, `gradle` and `adb` are absent; outbound DNS to GitHub and Flutter SDK hosts fails. `dart format`, focused/full `flutter test`, `flutter analyze` and Android Gradle are **BLOCKED / NOT RUN**. Do not describe the current source as compile- or test-verified.
-- Main is 96 commits ahead / 0 behind the Build #153 source baseline. Build #153 still points to `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e`; it does not validate current main.
+- Main is 97 commits ahead / 0 behind the Build #153 source baseline. Build #153 still points to `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e`; it does not validate current main.
 
 ## Current implementation update — 2026-11-12
 
