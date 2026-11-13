@@ -6,15 +6,19 @@
 
 | Field | Value |
 |---|---|
-| **STATUS** | **IN_PROGRESS** |
+| **STATUS** | **WAITING_OWNER** |
 | Mode | Eksekusi Full |
-| Work item | Correct About Telegram handle casing to exact `@horizontalzzz`; add regression coverage and update canonical checkpoint |
+| Work item | Correct About Telegram handle to exact lowercase `@horizontalzzz`; regression and checkpoint updates |
 | Updated | 2026-11-13 (Asia/Jakarta) |
-| Starting main HEAD | `70a1044ceaf6385273130d35d7922ad4fcdde1c6` |
-| Last completed milestone | Loaded current checkpoint and Master Prompt; About correction scope confirmed as App source/test/docs only |
-| Result | Not yet edited. No Build App, Release, Firmware/BIN, Firebase, OTA, flash or device action authorized. |
-| Blocker | None identified for source editing; available runtime lacks Dart/Flutter/Gradle/ADB for local validation. |
-| Next action | Locate About contributor display and existing tests; replace any incorrect capitalized handle with exact lowercase `@horizontalzzz`, add/adjust a regression test, then update checkpoint/docs and verify live main. |
+| Last completed milestone | Updated About credit source; added exact-lowercase and no-capital-H regression checks in both locales; corrected active About reference docs and saved handover |
+| Result | Source/test/docs committed to main and read back. Android Gradle versionName remains unchanged. No Build App/Release, Firmware/BIN, Firebase, OTA, flash or device operation occurred. |
+| Latest App source commit | `bb0cffec50eceafa2d522f7507288635f6989bab`; source blob `5aee5d74ac83600c4db80cc880bb0878fbe5c734` |
+| Latest About regression test commit | `bc1a33b68daa99bdb339fa07d1d902af7ddd8855`; test blob `752e916fe984750adb7e40f121119bf53c8f510e` |
+| Test inventory | 188 declarations across 9 Dart test files. The updated About widget assertions are written, NOT RUN. |
+| Last verified package | Build #159 — source `cdca38b9e4f2f99006db8feae40c07c6f9bdfb0a`; Release `403010611`, tag `jexfyz-latest`. Current About casing correction, Usage Statistics refinement and native Fan fix are not included. |
+| Validation | GitHub source/test/doc read-back and static checks passed. No Dart, Flutter, Gradle or ADB executable is available; formatter, Flutter tests, analyzer and Android Gradle are NOT RUN. |
+| Blocker | Guarded hosted QC/package needs separate owner-issued `Eksekusi Build App!`. |
+| Next action | Owner separately issues `Eksekusi Build App!` to validate current main and package only if all gates pass. No Build App is triggered by this Full session. |
 
 ## Status meanings
 
