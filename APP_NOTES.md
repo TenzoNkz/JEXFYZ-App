@@ -207,7 +207,7 @@ Purpose: canonical current App/UI/BLE/telemetry contract. Current source defines
 
 ### User-visible limitation
 
-- Statistics represent periods when the App's connected-device service actually received telemetry. They are not guaranteed full-day hardware logs while BLE is disconnected, App is force-stopped, or Android does not deliver the connected-device session. Show coverage / missing-data gaps and the last-recorded timestamp so the graph is not misleading.
+- Statistics represent periods when the App's connected-device service actually received telemetry. They are not guaranteed full-day hardware logs while BLE is disconnected, App is force-stopped, or Android does not deliver the connected-device session. Show invalid/missing-data gaps clearly; keep sampling and local-storage provenance available through the Info dialog. The separate Last sample footer is intentionally omitted from the approved dashboard.
 
 **Status:** SOURCE IMPLEMENTED / VALIDATION NOT RUN. Live source contains SQLite persistence, P1-session recording, Settings navigation, period selector, charts/timelines and clear-history flow. The 30D selector and 30-day event retention are now present. Focused tests are committed but not executed in this runtime; visual/device acceptance remains unverified. App packaging still requires separate `Eksekusi Build App!`.
 
