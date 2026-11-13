@@ -1,11 +1,17 @@
-## Current App source checkpoint — 2026-11-13
+## Current App source and verified package — Build #159 SUCCESS — 2026-11-13
 
-- **Live source/test commit:** `a5d45866bb244a2f260330a0e2ea332c391a9fcd` on `main`. The four App UI refinements below are present in source and regression tests. They are **SOURCE IMPLEMENTED / STATIC SOURCE CHECKED / NOT YET RELEASED**.
-- **Latest verified package:** Build #157, Actions run `43247876115`, immutable source `10d106537e92060e0aac3fc17fd37f56e746bcd5`. The release tag `jexfyz-latest` still points to that source; it does not contain the four changes in `a5d4586`.
-- **Executable files changed in the source commit:** `lib/main.dart`, `lib/floating_monitor.dart`, `test/widget_test.dart`, and `test/floating_monitor_layout_contract_test.dart`. No workflow, Gradle, Firmware, Firebase, OTA or release metadata change was part of this UI commit.
-- **Test inventory:** 9 Dart test files, 187 declarations (174 unit/source-contract + 13 widget). Inventory is not test execution.
-- **Runtime validation:** a current environment check found Git, Java and Python, but no Dart, Flutter, Gradle or ADB. `dart format`, focused/full `flutter test`, `flutter analyze` and Android Gradle are **BLOCKED / NOT RUN** on this source. The GitHub App workflow is a guarded build-and-release pipeline, not a validation-only workflow; no run exists for `a5d4586`, and it was not triggered.
-- **Visual acceptance:** **VISUAL NOT VERIFIED**. No updated APK or actual Android screenshots are available for 350-dp/420-dp, English/Indonesian, Light/Dark and constrained-height review.
+- **Four App UI source refinements:** source checkpoint `a5d45866bb244a2f260330a0e2ea332c391a9fcd` on `main`; production source files implement the approved modal, Lock Voltage, About and Home-tab changes listed below.
+- **Test-only repair for hosted validation:** commit `2c75c5b96db21937ec66c46f954d672a45384a7f` updates two stale About Indonesian role assertions to match the approved/source wording `Pengembang Aplikasi & Perakit`. Production source was not changed by this repair.
+- **Latest verified App package:** Build #159, Actions run [43376503987](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/43376503987), job `131724120379`, immutable package source SHA `cdca38b9e4f2f99006db8feae40c07c6f9bdfb0a`. All workflow gates 1–21 and cleanup 39–43 passed.
+- **Hosted validation:** analyzer **23 info-level deprecations / 0 warnings / 0 errors**; Flutter suite **187/187 passed**; Android Gradle `BUILD SUCCESSFUL in 2m51s`. Native Android app JUnit compile/process/test tasks were `NO-SOURCE`; no native Android JUnit cases were executed.
+- **APK:** `JEXFYZ-release.apk`, obfuscated with split debug info; **55,914,587 bytes**, SHA-256 `02bef5960e0b23bea360d2cf8a0532e7dbd202e05f5420e055c98b4dc7a61321`. [Download APK](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-release.apk).
+- **Corresponding source ZIP:** **2,932,978 bytes**, SHA-256 `5dbb29ebc7629775835bc65d655069a1a077f6d3240114387c965b5ad4789558`. [Download source ZIP](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-corresponding-source.zip). ZIP integrity and embedded source marker passed.
+- **Release/tag integrity:** Release ID `403010611` and tag `jexfyz-latest` both point to exact package SHA `cdca38b9e4f2f99006db8feae40c07c6f9bdfb0a`; exactly one APK and one matching source ZIP. Step 21 re-downloaded both, matched hashes and verified ZIP marker/integrity plus downloaded APK V1/V2/V3 and pinned certificate.
+- **Signing:** one RSA-4096 signer, JE X FYZ DN, pinned certificate SHA-256 `dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0`; V1/JAR, V2 and V3 pass. Certificate is self-signed; jarsigner reports PKIX chain validation failure, so it is not publicly CA-trusted.
+- **Protected version:** Android Gradle `versionName "Telegram @horizontalzzz"` is unchanged; Flutter app version is `1.0.0+3`.
+- **Failure history:** Build #158 remains FAILED (185 passed / 2 stale About role assertions); its failure is preserved in APP_BUILD_REPORT.md. The two test-only corrections are verified by Build #159. Do not overwrite or relabel the failed attempt.
+- **Formatter/visual boundary:** the guarded workflow has no Dart formatter step; `dart format` is not claimed. Four refinements are included in the verified package, but actual Android/OEM screenshot acceptance remains **VISUAL NOT VERIFIED** pending owner screenshots at 350-dp/420-dp, EN/ID and Light/Dark. Physical BLE/device and Firmware/BIN/OTA evidence remain outside App CI.
+
 
 ### Implemented UI contracts
 
