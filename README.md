@@ -2,7 +2,7 @@
 
 Flutter Android companion App and ESP32-C3 Firmware source for the JE X FYZ thermoelectric cooler.
 
-> **Current chat/work status:** [Open 00_WORK_STATUS.md](00_WORK_STATUS.md) for the latest mode, completion state, last milestone and next action.
+> **Current work status:** [Open 00_WORK_STATUS.md](00_WORK_STATUS.md) for the latest project interaction, work-item state, external-operation state, last milestone and next action. Every JE X FYZ project message opens as IN_PROGRESS and closes with its actual result.
 
 ## Start here
 
@@ -27,7 +27,7 @@ Flutter Android companion App and ESP32-C3 Firmware source for the JE X FYZ ther
 - Eksekusi Build App! — guarded App Build/QC/release only.
 - Chat Stuck! — recover only an already-authorized in-progress operation.
 
-The Master Prompt is authoritative; chat-transfer blocks select a mode but do not widen it.
+The Master Prompt is authoritative; chat-transfer blocks select a mode but do not widen it. The status lifecycle is governed by Section 2A of MASTER_PROMPT.md: update at each project-interaction start, real milestone/state transition and terminal close. It is event-driven, not a background heartbeat.
 
 ## Reusable engineering skills
 
