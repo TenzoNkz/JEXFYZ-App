@@ -1,45 +1,30 @@
-## Immediate App UI next step — Peltier, Lock Voltage, About and Home tabs — 2026-11-13
+## Immediate next step — Validate current App source — 2026-11-13
 
-- First read [00_WORK_STATUS.md](00_WORK_STATUS.md) for the latest session marker, then [CHAT_TRANSFER.md](CHAT_TRANSFER.md) for the full engineering checkpoint. The status marker is a committed snapshot, not a live process monitor.
+- **Current App source/test commit:** `a5d45866bb244a2f260330a0e2ea332c391a9fcd` on `main`. Four owner-approved UI refinements are implemented and regression source is updated:
+  1. Peltier prerequisite popup anchored bottom-center inside SafeArea, retaining 16-dp horizontal / 10-dp vertical margins, 296-dp max width and FAN:ON → successful ACK → PELTIER:ON safety order.
+  2. Lock Voltage Settings is a fixed one-line row; P1 remains authoritative; Switch visible for known state and disabled while busy/not-ready; unknown tooltip and icon-only NVS retry remain.
+  3. About uses Special Thanks / Ucapan Terima Kasih, stretched left-aligned credit blocks and Horizon role App Developer & Builder / Pengembang Aplikasi & Perakit; FYZ/Logos identities remain.
+  4. Home tab pills are 38 dp inside the existing 48-dp row/hit area; divider removed and 8-dp spacing preserved.
 
-- Build #157 remains the latest verified release. Current main source/test still match its immutable App source SHA `10d106537e92060e0aac3fc17fd37f56e746bcd5`; subsequent commits have only updated Markdown files.
-- New owner decision: keep the Peltier safety card's current visual design but anchor it at the bottom-center inside the existing SafeArea, with 10-dp vertical and 16-dp horizontal margins. Current source uses `Center(`; the next change should use `Align(alignment: Alignment.bottomCenter)`.
-- Preserve `JexFixedScalePage`, 360-dp scaling, 296-dp max width, 20-dp radius, card contents, 48-dp controls, Cancel/barrier no-command behavior and FAN:ON → successful ACK → PELTIER:ON ordering.
-- Update `test/widget_test.dart` to check bottom-center alignment and retain all existing safety/localization assertions.
-- The current interaction is Diskusi-only: no source/test change and no Build were made. **Next mode: Eksekusi Full!** for the narrow source/test fix. A new `Eksekusi Build App!` will be needed after that fix. VISUAL NOT VERIFIED until an actual updated Android screenshot is inspected.
+- **Static evidence:** GitHub read-back and 20 explicit structural/source-contract assertions passed. All 9 Dart test files contain 187 test declarations (174 unit/source-contract + 13 widget). This is not test execution.
+- **Validation blocker:** the current runtime has Git, Java and Python but no Dart, Flutter, Gradle or ADB. Arduino CLI and ESP-IDF are absent. DNS resolution for GitHub/SDK hosts fails. Formatter, focused/full Flutter tests, analyzer and Android Gradle are **BLOCKED / NOT RUN** for `a5d4586`.
+- **Actions/release boundary:** there is no Actions run for `a5d4586`, no queued/in-progress run and no open PR. No Build App workflow was triggered. Latest verified release remains Build #157 / run `43247876115`, source `10d106537e92060e0aac3fc17fd37f56e746bcd5`; `jexfyz-latest` still points there. The four current UI changes are **NOT RELEASED**.
+- **Visual status:** **VISUAL NOT VERIFIED** until the updated source is packaged under a separately authorized Build App and actual Android screenshots are reviewed at 350-dp/420-dp, English/Indonesian, Light/Dark and constrained-height states.
 
-## Immediate App UI implementation scope — 2026-11-13
+### Exact next action
 
-Repository snapshot at recovery: `77b44b3fd171e7d4ff246fa5fc910868269f47ca`; current source/test remains Build #157 SHA `10d106537e92060e0aac3fc17fd37f56e746bcd5` (six documentation-only changed paths, 26 commits ahead / 0 behind). Latest documentation update follows this snapshot; no source/test changes have been made.
-
-
-The owner has approved four App-only presentation changes, all still **SOURCE PENDING**:
-
-1. **Peltier safety modal:** bottom-center inside the existing SafeArea; keep current card size/style and FAN-first safety transaction.
-2. **Lock Voltage Settings:** fixed one-line card; no visible state subtitle; static neutral lock icon; Switch stays visible and is disabled while busy; only the Switch animates on authoritative P1 state update. Preserve unavailable-state tooltip and icon-only NVS retry.
-3. **About:** replace content heading with Special Thanks / Ucapan Terima Kasih; stretch credit blocks to full card width and align them left; Horizon role becomes Pengembang Aplikasi & Perakit (EN: App Developer & Builder); preserve other roles and handles.
-4. **Home tabs:** visible pill height 38 dp inside a retained 48-dp tap row; keep existing widths/order; remove Divider and preserve its 8-dp spacing.
-
-Latest source/test still match Build #157; no code change has been made in this Diskusi. **Next mode: Eksekusi Full!** for narrow source and regression changes. New Build # is separately authorized with Eksekusi Build App! after source work.
-
-# JE X FYZ / JE Cooler — Immediate Handover
-
-Updated: 2026-11-13 (Asia/Jakarta).
+Obtain a Dart/Flutter-capable runner and validate exact source `a5d45866bb244a2f260330a0e2ea332c391a9fcd`: format the four changed Dart files, run focused Peltier/Home and Settings/About/Lock Voltage tests, run the full `flutter test` suite and `flutter analyze`, then review the results. Fix only actual failures within `Eksekusi Full!`. A separate explicit `Eksekusi Build App!` is required before APK/Release publication.
 
 ## Latest verified App release — Build #157 SUCCESS
 
 - Actions run [43247876115](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/43247876115), job 131285336987, attempt 1; immutable package source SHA `10d106537e92060e0aac3fc17fd37f56e746bcd5`. All workflow gates 1–21 and cleanup 39–43 passed.
-- QC: security/architecture audit passed; analyzer **23 infos / 0 warnings / 0 errors**; Flutter **187/187 tests passed**; Android Gradle `BUILD SUCCESSFUL in 3m19s`.
-- Native Android JUnit caveat: app test compile/process/test tasks were `NO-SOURCE`; no native Android JUnit cases executed despite Gradle gate pass.
-- Release ID 403010611 / tag `jexfyz-latest` target exact tested source SHA. Exactly one APK + one corresponding source ZIP. Workflow downloaded both, matched hashes, verified ZIP integrity/source marker, and rechecked downloaded APK V1/V2/V3, one signer and pinned cert.
-- APK: 55,980,123 bytes, SHA-256 `24a42feb2ec8968209ac5dd764c6acb789c09fb0fc9a26df8e7d4bf5e1652aef`. [Download APK](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-release.apk).
-- Source ZIP: 2,932,445 bytes, SHA-256 `3b6f0a84a760b26587ca39a946f14383f2acee933fb5b30247270713a32e6a06`. [Download corresponding source](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-corresponding-source.zip).
-- Certificate: RSA 4096, pinned SHA-256 `dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0`; V1/V2/V3 pass. Keep self-signed PKIX trust-chain/no timestamp caveat explicit; not publicly CA-trusted.
-- Android `versionName "Telegram @horizontalzzz"` preserved exactly.
-- Build #154/#155/#156 failures remain preserved; #157 passed after the concrete analyzer and widget/test-contract repairs. Full chronology is in APP_BUILD_REPORT.md.
+- QC: analyzer **23 infos / 0 warnings / 0 errors**; Flutter **187/187 tests passed**; Android Gradle `BUILD SUCCESSFUL in 3m19s`.
+- Native Android JUnit compile/process/test tasks were `NO-SOURCE`; no native Android JUnit cases executed.
+- Release ID 403010611 / tag `jexfyz-latest` target exact Build #157 source SHA. Exactly one APK plus one corresponding source ZIP; downloaded hashes, ZIP integrity/source marker and APK V1/V2/V3 + pinned certificate were verified.
+- APK: 55,980,123 bytes, SHA-256 `24a42feb2ec8968209ac5dd764c6acb789c09fb0fc9a26df8e7d4bf5e1652aef`.
+- Source ZIP: 2,932,445 bytes, SHA-256 `3b6f0a84a760b26587ca39a946f14383f2acee933fb5b30270713a32e6a06`.
+- Certificate: RSA 4096, pinned SHA-256 `dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0`; V1/V2/V3 pass. Self-signed/PKIX trust-chain/no-timestamp caveat remains. Android `versionName "Telegram @horizontalzzz"` is preserved.
 
-## Boundaries / next action
+## Protected boundary
 
-Build #157 proves hosted App CI/package/release only. No Firmware V7.2 compile/BIN, Firebase/OTA/flash, physical BLE/device/NVS/rail/LED, cooling electrical/thermal test, owner installation or OEM visual acceptance occurred.
-
-Next: install Build #157 and perform physical App/BLE/OEM visual acceptance at 350-dp/420-dp, Light/Dark, EN/ID, reconnect and Lock Voltage. No further App Build unless App source changes.
+No App Build/Release, Firmware compilation/BIN publication, Firebase change, OTA, flashing, physical device action or hardware validation occurred in this Eksekusi Full task. These remain separately authorized scopes.
