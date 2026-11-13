@@ -834,7 +834,7 @@ void main() {
 
       await pumpAtWidth(350, ThemeData.light(useMaterial3: true));
       expect(find.text('Suhu Baterai HP'), findsOneWidget);
-      expect(find.text('Hotside'), findsOneWidget);
+      expect(find.text('Suhu Hotside'), findsOneWidget);
       expect(find.text('30D'), findsNothing);
       expect(find.text('1H'), findsNothing);
       expect(find.text('24H'), findsNothing);
@@ -889,6 +889,16 @@ void main() {
       await tester.tap(peltierHitArea);
       await tester.pump();
       expect(find.text('Waktu dipilih'), findsOneWidget);
+      for (final label in [
+        'Baterai HP',
+        'Hotside',
+        'Tegangan',
+        'Adaptif',
+        'Peltier',
+        'Kecepatan Kipas',
+      ]) {
+        expect(find.text(label), findsOneWidget);
+      }
       final selectedDock = find.byKey(
         const ValueKey<String>('usage-selected-time-dock'),
       );
@@ -906,7 +916,7 @@ void main() {
 
       await pumpAtWidth(420, ThemeData.dark(useMaterial3: true));
       expect(find.text('Suhu Baterai HP'), findsOneWidget);
-      expect(find.text('Hotside'), findsOneWidget);
+      expect(find.text('Suhu Hotside'), findsOneWidget);
       expect(find.text('30D'), findsNothing);
       expect(find.text('1H'), findsNothing);
       expect(find.text('24H'), findsNothing);
