@@ -1,3 +1,15 @@
+## CURRENT APP SOURCE — USAGE STATISTICS PRESENTATION REFRESH / QC PENDING — 2026-11-13
+
+- **Latest UI source commit:** `f32c1278308bea7cedd4f150255d2128cac138bb`; `lib/usage_statistics.dart` blob `64fa93a39516126bbce04b3f031fcdc7f4e4381f`.
+- **Latest Statistics regression commit:** `b560403877fd2080db2019fc04d86d67020418dd`; `test/usage_statistics_test.dart` blob `259ba2e64a540a04c7f798f3688b2f1c225ccb9b`.
+- **Presentation changes:** one primary timer and a merged session selector/header; 1°C temperature axis ticks with data-based ranges and adaptive chart height; visible Observed / More details / Last sample removed; Min/Avg/Max retained; four activity timeline lanes retained; compact synchronized Selected time dock with six fields, icon-only 48-dp close target and bilingual state/temperature formatting.
+- **Preserved invariants:** six-metric cursor, real Battery/Hotside samples, null/invalid gaps, session boundaries, raw 1-Hz capture, SQLite schema v2 and retention, bounded writer queue, HOT-only P1 freshness and analytics. No Firmware, BLE/P1 protocol, Firebase, OTA, flash, device or workflow change.
+- **Regression inventory:** 188 declarations across 9 Dart test files; includes one-degree ticks/wide-range height, removed dashboard copy, single timer, localized titles and six readout fields. This count is declarations, not completed execution.
+- **Validation:** GitHub read-back and static textual/structural inspection only. No Dart/Flutter/Gradle/ADB; format, focused/full Flutter tests, analyzer, Android Gradle and screenshots are **NOT RUN**. Visual acceptance remains **NOT VERIFIED**.
+- **Release boundary:** Build #159 / run `43376503987` / Release ID `403010611` / source `cdca38b9e4f2f99006db8feae40c07c6f9bdfb0a` remain the latest verified package. The Usage Statistics changes and the native Fan icon correction are newer and **NOT RELEASED**. A separate owner-issued `Eksekusi Build App!` is required for guarded QC.
+
+---
+
 ## CURRENT APP SOURCE — FOUR UI REFINEMENTS / BUILD #159 SUCCESS — 2026-11-13
 
 - **App source checkpoint:** four owner-approved UI refinements were implemented in commit `a5d45866bb244a2f260330a0e2ea332c391a9fcd`; the related About test contract was corrected in test-only commit `2c75c5b96db21937ec66c46f954d672a45384a7f`. Build #159 packages immutable source SHA `cdca38b9e4f2f99006db8feae40c07c6f9bdfb0a`.
