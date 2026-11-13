@@ -6,17 +6,17 @@
 
 | Field | Value |
 |---|---|
-| **STATUS** | **IN_PROGRESS** |
+| **STATUS** | **COMPLETED** |
 | Mode | Eksekusi Build App |
 | Work item | Guarded App Build/QC for the latest verified main source and release provenance |
 | Updated | 2026-11-13 (Asia/Jakarta) |
-| Last completed milestone | Build #159 steps 1–14 succeeded; Android Gradle unit-test gate completed at 06:11:54Z and obfuscated APK build has started |
-| Result | Build #159 steps 1–14 are SUCCESS. Step 15 obfuscated release APK build is IN_PROGRESS; gates 16–21 remain pending. No Release result yet. |
+| Last completed milestone | Build #159 all workflow gates 1–21 and cleanup 39–43 passed; APK/source ZIP published and re-downloaded verification passed; Release/tag/source SHA parity confirmed |
+| Result | Build #159 SUCCESS / RELEASED. Flutter 187/187; analyzer 23 infos, 0 warnings/errors; Android Gradle BUILD SUCCESSFUL; obfuscated APK, one-signer V1/V2/V3 pinned-cert, matching source ZIP, Release/tag and downloaded asset checks verified. |
 | Latest App source commit | `a5d45866bb244a2f260330a0e2ea332c391a9fcd` (four UI refinements; latest main currently has documentation-only commits on top) |
 | Last verified package | Build #157 — source `10d106537e92060e0aac3fc17fd37f56e746bcd5` |
-| Validation | Existing static read-back only for `a5d4586`; hosted analyzer/tests/Gradle/signing/release for latest main are pending this authorized Build App attempt. Formatter remains absent from the workflow. |
-| Blocker | None established before trigger. If runner, permissions, secrets, signing, dependency service or a workflow gate blocks, stop and record exact evidence. |
-| Next action | Continue inspecting only run 43376503987 / job 131724120379; verify APK, signing/certificate, source ZIP, Release/tag parity and downloaded asset checksums. No duplicate trigger while active. |
+| Validation | Hosted Build #159 validates immutable source `cdca38b9e4f2f99006db8feae40c07c6f9bdfb0a`: analyzer passed (23 infos / 0 warnings / 0 errors), Flutter 187/187, Gradle BUILD SUCCESSFUL, gates 1–21 and cleanup 39–43 passed, Release/tag/source parity and downloaded APK/ZIP integrity/signature checks passed. Native Android JUnit tasks NO-SOURCE; dart format absent from workflow. |
+| Blocker | None for App CI/release. Physical install/OEM visual review, BLE/device behavior, Firmware compile/BIN, Firebase, OTA/flash, NVS/rail/LED and thermal/electrical validation remain NOT RUN / NOT VERIFIED and outside this Build App session. |
+| Next action | Owner installs Build #159 and supplies actual Android screenshots/physical acceptance at 350-dp/420-dp, EN/ID, Light/Dark and BLE/Lock Voltage flows. No further App Build unless App source changes. |
 
 ## Status meanings
 
