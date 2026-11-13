@@ -10,13 +10,13 @@
 | Mode | Eksekusi Build App |
 | Work item | Guarded App Build/QC for the latest verified main source and release provenance |
 | Updated | 2026-11-13 (Asia/Jakarta) |
-| Last completed milestone | Build #158 failure preserved (185 pass / 2 stale About role assertions); repair commit 2c75c5b verified as test-file-only; preflight passed and exactly one Build #159 run triggered |
-| Result | Build #159 is active on source cdca38b9e4f2f99006db8feae40c07c6f9bdfb0a; steps 1–3 succeeded and Set up Flutter is in progress. No package or Release result yet. |
+| Last completed milestone | Build #159 completed analyzer and Flutter test gates successfully; Android Gradle unit-test gate is now active on immutable source cdca38b9e4f2f99006db8feae40c07c6f9bdfb0a |
+| Result | Build #159 steps 1–13 are SUCCESS, including analyzer and Flutter tests. Step 14 Android Gradle gate is IN_PROGRESS; steps 15–21 remain pending. No package or Release result yet. |
 | Latest App source commit | `a5d45866bb244a2f260330a0e2ea332c391a9fcd` (four UI refinements; latest main currently has documentation-only commits on top) |
 | Last verified package | Build #157 — source `10d106537e92060e0aac3fc17fd37f56e746bcd5` |
 | Validation | Existing static read-back only for `a5d4586`; hosted analyzer/tests/Gradle/signing/release for latest main are pending this authorized Build App attempt. Formatter remains absent from the workflow. |
 | Blocker | None established before trigger. If runner, permissions, secrets, signing, dependency service or a workflow gate blocks, stop and record exact evidence. |
-| Next action | Inspect only run 43376503987 / job 131724120379; record each gate and final release/download verification. No duplicate trigger while active. |
+| Next action | Continue inspecting only run 43376503987 / job 131724120379; record Gradle and later APK/sign/source ZIP/Release/download verification. No duplicate trigger while active. |
 
 ## Status meanings
 
