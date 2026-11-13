@@ -21,7 +21,7 @@
 - `DESIGN_NOTES.md`: four UI contracts marked implemented; Home tab and Peltier status corrected; obsolete Build #149 references and stale 185-test/capacity-64 claims corrected; prior Peltier layout history distinguished from current implementation.
 - `PROJECT_STATE.md`: current App source and Build #157 package separated; older Build #153 release/status summary replaced; current runtime/toolchain boundary recorded.
 - `HANDOVER.md`: replaced stale source-pending implementation instructions with the exact validation blocker and next action.
-- `00_WORK_STATUS.md`: set to IN_PROGRESS at session start; closure marker will be BLOCKED because runtime validation cannot run here.
+- `00_WORK_STATUS.md`: set to IN_PROGRESS at session start and closed as BLOCKED because runtime validation cannot run in this environment.
 - No executable source, tests, configuration, workflow, Firmware or release artifact was modified in this documentation reconciliation.
 
 ### Exact next action
