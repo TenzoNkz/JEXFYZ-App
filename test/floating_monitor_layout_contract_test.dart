@@ -441,7 +441,7 @@ void main() {
     ).readAsStringSync();
     final drawIconStart = native.indexOf('private fun drawIcon(');
     final drawIconEnd = native.indexOf(
-      '\\n        // AI-METHOD / GESTURE-CONTRACT',
+      '\n        // AI-METHOD / GESTURE-CONTRACT',
       drawIconStart,
     );
     expect(drawIconStart, isNonNegative);
@@ -449,7 +449,7 @@ void main() {
 
     final drawIcon = native.substring(drawIconStart, drawIconEnd);
     final metricBranches = RegExp(
-      r'^\\s*"([^"]+)"\\s*->',
+      r'^\s*"([^"]+)"\s*->',
       multiLine: true,
     ).allMatches(drawIcon).map((match) => match.group(1)).toList();
 
