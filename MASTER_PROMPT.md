@@ -23,7 +23,7 @@ Use the mode explicitly selected by the owner's message. A mode is a permission 
 
 ## 2A. Per-interaction work-status lifecycle
 
-`00_WORK_STATUS.md` is the single root-level live snapshot. It tracks the latest owner interaction and the work item separately from independently running external operations. `CHAT_TRANSFER.md` preserves the durable continuation checkpoint; `APP_BUILD_REPORT.md` remains the append-only Build App evidence ledger.
+`00_WORK_STATUS.md` is the single root-level live snapshot. The top-level `STATUS` field is a compatibility alias for the current `SESSION STATUS`, so it opens as `IN_PROGRESS` for every new project message. `WORK STATUS` tracks the requested objective across steps/chats, separately from independently running external operations. `CHAT_TRANSFER.md` preserves the durable continuation checkpoint; `APP_BUILD_REPORT.md` remains the append-only Build App evidence ledger.
 
 ### Start — mandatory for every JE X FYZ interaction
 
