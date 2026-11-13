@@ -492,7 +492,7 @@ void main() {
     expect(settingsSource, contains('App Developer & Builder'));
     expect(settingsSource, contains('Special Thanks'));
     expect(settingsSource, contains('Ucapan Terima Kasih'));
-    expect(settingsSource, contains('Pengembangan Aplikasi & Perakit'));
+    expect(settingsSource, contains('Pengembang Aplikasi & Perakit'));
     expect(settingsSource, contains('CrossAxisAlignment.stretch'));
     expect(settingsSource, contains('Design Inspiration'));
     expect(settingsSource, contains('3D Design & Printing'));
@@ -543,7 +543,7 @@ void main() {
     expect(find.text('Tentang'), findsOneWidget);
     expect(find.text('Ucapan Terima Kasih'), findsOneWidget);
     expect(find.text('JE Cooler'), findsNothing);
-    expect(find.text('Pengembangan Aplikasi & Perakit'), findsOneWidget);
+    expect(find.text('Pengembang Aplikasi & Perakit'), findsOneWidget);
     expect(find.text('Inspirasi Desain'), findsOneWidget);
     expect(find.text('Desain & Pencetakan 3D'), findsOneWidget);
     expect(find.text('@Horizontalzzz'), findsOneWidget);
