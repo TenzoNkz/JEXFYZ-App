@@ -6,16 +6,17 @@
 
 | Field | Value |
 |---|---|
-| **STATUS** | **COMPLETED** |
+| **STATUS** | **BLOCKED** |
 | Mode | Eksekusi Full |
-| Work item | Complete Home display-menu tab height and divider design review |
+| Work item | Implement four approved App UI refinements and regression coverage |
 | Updated | 2026-11-13 (Asia/Jakarta) |
-| Last completed milestone | Screenshot reviewed; Home source and regression contract inspected; four UI changes documented |
-| Result | Diskusi review completed. Four approved App UI changes are documented and remain pending implementation. |
-| Last verified App source baseline | Build #157 — `10d106537e92060e0aac3fc17fd37f56e746bcd5` |
-| Validation | SCREENSHOT REVIEWED + STATIC SOURCE CHECK; no App source/test/build operation was performed |
-| Blocker | Validation toolchain check: Git available; Dart, Flutter, Gradle and ADB unavailable in this runtime. |
-| Next action | Finish source/test/docs edits, perform structural verification, commit main, and record formatter/test/analyzer as BLOCKED / NOT RUN if no runner becomes available. |
+| Last completed milestone | Four App UI changes and regression updates committed to main; source/test read-back and structural checks completed |
+| Result | All four requested UI changes are implemented in App source and regression tests. Formatter, Flutter tests, analyzer and Gradle could not run because the required SDK/toolchain is absent. |
+| Latest App source commit | `a5d45866bb244a2f260330a0e2ea332c391a9fcd` |
+| Last verified package | Build #157 — source `10d106537e92060e0aac3fc17fd37f56e746bcd5` |
+| Validation | STATIC SOURCE CHECK + GitHub read-back. `dart format`, `flutter test`, `flutter analyze`, Android Gradle and post-change screenshot review are NOT RUN |
+| Blocker | BLOCKED: Git is available, but Dart, Flutter, Gradle and ADB are not installed; DNS lookup for GitHub also fails from the container. |
+| Next action | Run formatter, focused/full Flutter tests and analyzer on the exact source commit in a Dart/Flutter-capable runner. Only after those checks pass should the owner separately authorize `Eksekusi Build App!`. |
 
 ## Status meanings
 
