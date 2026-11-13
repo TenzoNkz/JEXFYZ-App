@@ -1,3 +1,14 @@
+## CURRENT APP SOURCE — ABOUT TELEGRAM HANDLE CASE FIX / QC PENDING — 2026-11-13
+
+- **Exact About handle:** Horizon is displayed as `@horizontalzzz` in both English and Indonesian. Prior capital-H rendering `@Horizontalzzz` is removed from the active About source and regression contract.
+- **Source commit:** `bb0cffec50eceafa2d522f7507288635f6989bab`; `lib/floating_monitor.dart` blob `5aee5d74ac83600c4db80cc880bb0878fbe5c734`.
+- **Regression commit:** `bc1a33b68daa99bdb339fa07d1d902af7ddd8855`; `test/floating_monitor_layout_contract_test.dart` blob `752e916fe984750adb7e40f121119bf53c8f510e`. Test now checks the exact lowercase string and absence of the old capitalized form in the source contract and in both locale render paths.
+- **Scope:** About text + tests + active documentation only. Android Gradle `versionName "Telegram @horizontalzzz"` remains unchanged. No other contributor handles, BLE, telemetry, Firmware, workflow, versioning or persistence were changed.
+- **Validation:** static source and test read-back only. Dart/Flutter/Gradle/ADB are unavailable; formatter, widget test, full tests, analyzer and Gradle are NOT RUN.
+- **Release boundary:** Build #159 / source `cdca38b9e4f2f99006db8feae40c07c6f9bdfb0a` remains the latest verified APK. This fix is newer and NOT RELEASED. A separate `Eksekusi Build App!` is required for guarded QC/package.
+
+---
+
 ## CURRENT APP SOURCE — USAGE STATISTICS PRESENTATION REFRESH / QC PENDING — 2026-11-13
 
 - **Latest UI source commit:** `f32c1278308bea7cedd4f150255d2128cac138bb`; `lib/usage_statistics.dart` blob `64fa93a39516126bbce04b3f031fcdc7f4e4381f`.
