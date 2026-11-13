@@ -1,25 +1,33 @@
-## CURRENT CHECKPOINT — BUILD #159 ACTIVE / APK BUILD — 2026-11-13
+## CURRENT CHECKPOINT — BUILD #159 SUCCESS / RELEASE VERIFIED — 2026-11-13
 
-**Mode:** Eksekusi Build App! — explicit owner authorization remains active for guarded App Build/QC/release and justified App-scope repairs only. No Firmware compilation/BIN, Firebase mutation, OTA, flashing or device operation.
+**Mode:** `Eksekusi Build App!` — selected App Build/QC scope is COMPLETED. This authorized scope covered the guarded App workflow, App analyzer/tests/Android Gradle, obfuscated APK, signing, matching source archive and Release integrity. No Firmware compilation/BIN, Firebase mutation, OTA, flashing or device operation was performed or authorized.
 
-### Current run and source evidence
+### Final immutable build evidence
 
-- **Repository/branch:** TenzoNkz/JEXFYZ-App / main.
-- **Immutable Build #159 checkout:** cdca38b9e4f2f99006db8feae40c07c6f9bdfb0a.
-- **Trigger/run/job:** Issue #36 / [Build #159 run 43376503987](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/43376503987), workflow 374946166, event issues, attempt 1; job 131724120379. Only this run is active.
-- **Current gates:** steps 1–14 SUCCESS. Step 14 Android unit-test gate succeeded at 2026-11-13T06:11:54Z (started 06:09:02Z). Step 15 Build latest release APK is IN_PROGRESS. Steps 16–21 (V1/V2/V3 enforce, certificate verification, stable name, source ZIP, Release publish, re-download verification) pending.
-- **Analyzer/tests:** steps 12 and 13 succeeded. Exact info/warning/error and Flutter test counts await terminal log; active log archive unavailable so far. Do not infer.
-- **Prior failure/repair:** #158 / run 43375621769 failed at Flutter tests with 185 pass/2 fail caused by two stale About role assertions. Test-only correction commit 2c75c5b96db21937ec66c46f954d672a45384a7f updates both strings to Pengembang Aplikasi & Perakit; no production UI changed.
-- **Build #157 release baseline:** Release ID 403010611 / tag jexfyz-latest / source 10d106537e92060e0aac3fc17fd37f56e746bcd5; exactly one APK and one corresponding source ZIP remain until Build #159 gates publish.
-- **Preflight/guard:** main tree 133 entries, truncated=false before trigger; no active runs/open PRs; workflow blob 9dc1e61ba49f19cad4edbb99a832d5333d9f0f12 unchanged; Android versionName "Telegram @horizontalzzz" exact.
-- **Ledger:** APP_BUILD_REPORT.md records #158 failure + repair, #159 trigger, analyzer/Flutter success and Android pass/APK step active. Latest report commit 6bb82f1e142ea3162dc8d9d6435481214eb3b7ed.
+- **Repository/branch:** `TenzoNkz/JEXFYZ-App` / `main`.
+- **Build:** #159 / [GitHub Actions run 43376503987](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/43376503987), workflow `374946166`, event `issues`, attempt 1; job `131724120379`; terminal `completed / success`.
+- **Immutable tested/package source SHA:** `cdca38b9e4f2f99006db8feae40c07c6f9bdfb0a`. It includes the four owner-approved UI refinements from source checkpoint `a5d45866bb244a2f260330a0e2ea332c391a9fcd` and the test-only About role assertion repair `2c75c5b96db21937ec66c46f954d672a45384a7f`.
+- **Trigger:** owner-authored Issue #36, exact guarded title/body token; prior issues #33 and #35 were left OPEN and not reopened. Exactly one Build #159 run was generated.
+- **All workflow gates:** steps 1–21 SUCCESS; cleanup/post-job 39–43 SUCCESS. No further active/queued run and zero open PRs at final audit.
+- **Dart analyzer:** passed; 23 info-level deprecations, 0 analyzer warnings, 0 analyzer errors. Current findings cover Flutter deprecated `onReorder`, Radio `groupValue/onChanged`, and Color channel accessors.
+- **Flutter tests:** 187/187 passed.
+- **Android Gradle:** `./gradlew --no-daemon :app:testDebugUnitTest` — `BUILD SUCCESSFUL in 2m51s`, 162 actionable tasks. Caveat: native `:app:compileDebugUnitTestKotlin`, `:app:compileDebugUnitTestJavaWithJavac`, `:app:processDebugUnitTestJavaRes`, and `:app:testDebugUnitTest` are `NO-SOURCE`; no Android native app JUnit cases executed. Existing Kotlin warnings include a duplicate `when` branch at `FloatingMonitorService.kt:738` and deprecated Notification priority APIs; Gradle reports deprecations ahead of Gradle 10.
+- **APK:** `JEXFYZ-release.apk`, obfuscated release build with split debug info; 55,914,587 bytes; SHA-256 `02bef5960e0b23bea360d2cf8a0532e7dbd202e05f5420e055c98b4dc7a61321`. [Download APK](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-release.apk).
+- **Corresponding source ZIP:** `JEXFYZ-corresponding-source.zip`, 2,932,978 bytes; SHA-256 `5dbb29ebc7629775835bc65d655069a1a077f6d3240114387c965b5ad4789558`. ZIP integrity and embedded source marker passed. [Download source ZIP](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-corresponding-source.zip).
+- **Signing:** one RSA-4096 signer; DN `CN=JE X FYZ, OU=JE X FYZ, O=JE X FYZ, L=Indonesia, ST=Central Java, C=ID`; pinned SHA-256 `dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0`. V1/JAR, V2 and V3 pass for generated and downloaded APK. Trust caveat: cert is self-signed; jarsigner reports PKIX trust-chain failure, so it is not publicly CA-trusted. This does not negate the workflow's pinned certificate and APK scheme checks.
+- **Release parity:** Release ID `403010611`, tag `jexfyz-latest`, Release target, Git tag target and source-bundle marker all match `cdca38b9e4f2f99006db8feae40c07c6f9bdfb0a`. Release contains exactly one APK and one corresponding source ZIP; API size/digests match above. Step 21 re-downloaded both, matched local/download hashes and passed ZIP integrity, source marker and downloaded APK signature/certificate checks.
+- **Protected version:** Android Gradle `versionName "Telegram @horizontalzzz"` exact; Flutter version `1.0.0+3`.
+- **Formatter/cache caveats:** guarded workflow has no Dart formatter gate; `dart format` is not claimed. Post-job cache-write attempts were denied because workflow token lacked writable cache scope, but these optional cache actions and cleanup still ended SUCCESS; no retry needed.
+- **Historical Build #158:** remains FAILED at Flutter tests (185 passed / 2 failed) on source `285f3d6ea29378e9be4c711ede1705bf4abd821a`. Failure was two stale Indonesian About role assertions. The exact test-only repair is recorded above and Build #159 validates it. Never rewrite #158 as success.
+- **Latest release source:** Build #159 replaces Build #157 as latest verified package. Build #157 remains an accurate historical release attempt.
 
-### Continuation
+### Repository ledger and final evidence boundary
 
-- **Next:** inspect step 15 completion and each remaining step. No duplicate trigger.
-- **Terminal verification:** retrieve complete job log and record analyzer counts, Flutter count, Gradle task NO-SOURCE scope; verify obfuscated APK; JAR/V1 + V2/V3; exactly one signer and expected pinned cert; source ZIP integrity/marker; exactly two Release assets (one APK, one source ZIP); Release and Git tag exact source SHA; re-download bytes/digests and downloaded signature/cert.
-- **Formatter caveat:** no Dart formatter step exists in the workflow; no dart format result implied.
-- **Evidence boundary:** App CI/release is separate from Firmware compile/BIN, Firebase, OTA/flash, physical BLE/device, NVS/rail/LED, cooling/electrical and OEM screenshot acceptance. These remain NOT RUN / UNVERIFIED.
+- `APP_BUILD_REPORT.md` contains append-only #158 trigger/failure/repair and #159 trigger/progress/final success details, exact asset hashes, signatures, release and CI caveats. Final Build #159 record was appended in commit `fd0bd7c98bf66bb8bf25b5fe6fb0b32582bac373`.
+- **Session status:** close as `COMPLETED` after this checkpoint and `00_WORK_STATUS.md` are committed and re-read.
+- **Next owner action:** install Build #159 and inspect actual device screenshots/behavior at 350-dp/420-dp, portrait/constrained height, EN/ID, Light/Dark, plus BLE reconnect and Lock Voltage behavior. Visual acceptance and physical-device behavior remain NOT VERIFIED until owner evidence is available.
+- **Not covered by this build:** Firmware V7.2 compile/BIN, Firebase, OTA/flash, physical BLE/device/NVS/rail/LED, cooling/thermal/electrical, Android OEM screenshot acceptance. All remain NOT RUN / NOT VERIFIED. No Firmware/BIN/OTA/device operation occurred.
+- **Final repo verification still to perform after closing documentation:** re-fetch root status, checkpoint, build report, summary docs; inspect current main HEAD/tree, Release/tag parity and Actions to confirm only Markdown documentation advanced beyond immutable package SHA.
 
 ---
 
