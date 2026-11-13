@@ -2846,3 +2846,11 @@
 - **Initial live job state:** steps 1 `Set up job`, 2 `Checkout repository` and 3 `Set up Java 17` SUCCESS; step 4 `Set up Flutter` IN_PROGRESS; steps 5–21 pending; post-job cleanup pending. No analyzer/test/package/release result is asserted yet.
 - **Next:** continue inspecting only run `43376503987` / job `131724120379`; record actual analyzer/test/Gradle/signing/source ZIP/Release/downloaded asset evidence. No second trigger while it is active.
 - **Evidence boundary:** no Firmware compile/BIN, Firebase change, OTA, flashing, physical BLE/device/NVS/rail/LED, thermal/electrical cooling or OEM visual acceptance occurred.
+
+
+### BUILD #159 progress — analyzer and Flutter tests passed / Android Gradle active (2026-11-13)
+
+- Run `43376503987` / job `131724120379`, immutable checkout SHA `cdca38b9e4f2f99006db8feae40c07c6f9bdfb0a`, attempt 1.
+- Steps 1–13 completed SUCCESS: runner/checkout, Java 17, Flutter 3.47.2, Gradle 9.3.1, toolchain verification, local.properties, production signing preparation, wrapper restore, App security/architecture audit, dependencies, Dart analyzer and Flutter tests. Step 14 `Run Android unit-test gate` is IN_PROGRESS. Steps 15–21 remain pending.
+- Analyzer exact count (info/warning/error) and Flutter test pass count are pending complete hosted log access; do not infer counts from the step summary. The job log archive was not yet available while the run was active.
+- No APK, source ZIP or Release publication has started. Build #157 remains the release baseline until steps 20–21 succeed. Continue only this run; no duplicate trigger.
