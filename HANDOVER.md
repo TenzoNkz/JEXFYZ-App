@@ -1,4 +1,18 @@
-## Immediate next step — Validate Floating Monitor Fan icon repair — 2026-11-13
+## Immediate next step — Guarded QC for Usage Statistics presentation refresh — 2026-11-13
+
+**Current App source is newer than Build #159.** The current Full session has implemented the requested Usage Statistics presentation changes on `main`, but has not run any local or hosted Flutter/Android validation and has not packaged a release.
+
+- UI source: `lib/usage_statistics.dart`, latest code cleanup commit `f32c1278308bea7cedd4f150255d2128cac138bb`; intermediate main UI commits `9b9262d934ff2ab6575256b264f8bf851280dddf` and `364f5c3c1b777606647c3d85777091314988ea7f`.
+- Regression source: `test/usage_statistics_test.dart`, latest test commit `b560403877fd2080db2019fc04d86d67020418dd`; test inventory remains **188 declarations across 9 files**.
+- Implemented: one elapsed session timer in one header; selector menu excludes secondary duration; Battery/Hotside Y axes have 1°C whole-degree ticks and data-based ranges; Observed/More details/Last sample removed; Min/Avg/Max, four activity lanes and the six-field selected-time dock retained and tidied; EN/ID labels and decimal separators improved.
+- Telemetry, raw sample cadence, SQLite schema/retention, queue, session/gap handling, P1 freshness, analytics and Firmware remain unchanged.
+- **NOT RUN:** Dart formatter, focused/full Flutter tests, analyzer, Android Gradle, screenshots and device acceptance. The runtime has no Dart/Flutter/Gradle/ADB.
+- Build #159 / source `cdca38b9e4f2f99006db8feae40c07c6f9bdfb0a` remains the latest verified APK; this source patch is **NOT RELEASED** and **VISUAL NOT VERIFIED**.
+- **Next:** owner separately issues `Eksekusi Build App!` to run the guarded App QC/package process. Do not trigger it from this Full session.
+
+---
+
+## Previous source follow-up — Floating Monitor Fan icon repair — 2026-11-13
 
 **Latest verified package remains Build #159.** The owner reports Firmware V7.2 and Build #159 are installed and the system is safe in use (USER-REPORTED). The latest repository change is newer than that APK.
 
