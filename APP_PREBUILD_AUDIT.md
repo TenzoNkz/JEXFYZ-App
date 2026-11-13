@@ -1,3 +1,10 @@
+## Current source correction — About Telegram handle casing — 2026-11-13
+
+- Owner-specified About handle is exactly `@horizontalzzz`. The active `lib/floating_monitor.dart` value now uses that spelling; the regression checks reject the former `@Horizontalzzz` form in both English and Indonesian UI.
+- Commits: source `bb0cffec50eceafa2d522f7507288635f6989bab`; test `bc1a33b68daa99bdb339fa07d1d902af7ddd8855`.
+- Protected Android Gradle `versionName "Telegram @horizontalzzz"` was not changed.
+- Static read-back only. Formatter, Flutter tests, analyzer and Gradle are NOT RUN. This does not change the existing guarded-QC hold or authorize an App Build. Build #159 remains the latest verified package.
+
 ## Current App pre-build audit — Usage Statistics presentation refresh — 2026-11-13
 
 **Disposition: SOURCE IMPLEMENTED / WAITING FOR SEPARATE GUARDED APP QC.** This record supersedes the prior native Floating Monitor-only pre-build focus for the next App QC pass. No workflow or release action was initiated.
