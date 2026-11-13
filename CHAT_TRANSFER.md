@@ -1,28 +1,27 @@
-## CURRENT CHECKPOINT — BUILD #162 ACTIVE / JAVA 17 SETUP — 2026-11-13
+## CURRENT CHECKPOINT — BUILD #162 ACTIVE / FLUTTER TESTS RUNNING — 2026-11-13
 
-**Mode:** Eksekusi Build App! — explicit owner authorization is active for guarded App Build/QC/release and justified App-scope repairs only. No Firmware compilation/BIN, Firebase mutation, OTA, flashing or device operation.
+**Mode:** Eksekusi Build App! — explicit owner authorization remains active for guarded App Build/QC/release and justified App-scope repairs only. No Firmware compilation/BIN, Firebase mutation, OTA, flashing or device operation.
 
 ### Current run and immutable source
 
 - **Repository/branch:** TenzoNkz/JEXFYZ-App / main.
-- **Trigger:** owner-authored Issue #39 opened 2026-11-13T13:02:52Z with exact guarded title/token. Issues #33, #35, #36, #37 and #38 remain OPEN and were not reopened. Exactly one run for this attempt.
-- **Actions:** [Build #162 / run 43430275967](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/43430275967), workflow 374946166, event issues, attempt 1; job 131901744336; created 2026-11-13T13:02:56Z.
-- **Immutable checkout SHA:** 6854d8eb58a5f077cbc99749a35d37a4f55b8efa; exact match to pre-trigger main HEAD.
-- **Initial state:** step 1 Set up job SUCCESS; step 2 Checkout repository SUCCESS; step 3 Set up Java 17 IN_PROGRESS; steps 4–21 pending. No analyzer/test/Gradle/package/release gate result is asserted yet. Continue only this run.
-- **Candidate contains:** About lowercase `@horizontalzzz`; Usage Statistics single session header/timer, adaptive 1°C observed-data charts, removal of Observed/More details/Last sample while retaining Min/Avg/Max/activity lanes/six-field cursor; native Floating Monitor F branch maps uniquely to Fan glyph; multi-session dropdown no longer dense/overflowing; selected-time dock label regression finders scoped to the dock.
-- **Latest repaired regression:** #161's single remaining test issue was duplicate global `Tegangan` labels in Activity and selected-time dock. Commit `16286e41a98ecea2f11ab5f0155f03f10bcc5d51` changes only `test/usage_statistics_test.dart`, scoping Waktu dipilih + six metric label finders to selected dock while preserving timeline key assertions and dock/clear/48-dp checks.
-- **Preserved test failures:** Build #160 run `43427419461` remains FAILED 185 pass / 3 fail; Build #161 run `43428480911` remains FAILED 187 pass / 1 fail. Their test causes/fixes are preserved in APP_BUILD_REPORT.md; never relabel a failed attempt.
-- **Preflight:** tree 133 entries / `truncated=false`; zero active/queued runs and zero open PRs before trigger. Compare from #161 immutable source SHA `798845adf013f6cacd217c9d71a7208d57b64e94`: 13 ahead / 0 behind; only executable/test path changed was `test/usage_statistics_test.dart`, with four other docs paths. Workflow blob `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12`, exact issue-only owner/title/token guard; no push/PR trigger. Android `versionName "Telegram @horizontalzzz"` exact; app version `1.0.0+3`.
-- **Prior verified Release:** Release ID `403010611` / tag `jexfyz-latest` still target Build #159 source `cdca38b9e4f2f99006db8feae40c07c6f9bdfb0a`, exactly one APK and one source ZIP. APK SHA-256 `02bef5960e0b23bea360d2cf8a0532e7dbd202e05f5420e055c98b4dc7a61321`; source ZIP SHA-256 `5dbb29ebc7629775835bc65d655069a1a077f6d3240114387c965b5ad4789558`.
-- **Ledger:** APP_BUILD_REPORT.md contains #160/#161 failures/repairs plus #162 trigger/run/source/initial step state; latest trigger record commit `68faca5be4749b34ec0eaa12e3cf951bd4541df2`.
+- **Trigger/run/job:** Issue #39 / [Build #162 run 43430275967](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/43430275967), workflow 374946166, event issues, attempt 1; job 131901744336.
+- **Immutable checkout SHA:** 6854d8eb58a5f077cbc99749a35d37a4f55b8efa; exact match to main at pre-trigger.
+- **Current gates:** steps 1–12 SUCCESS, including toolchain, security/architecture audit, dependencies and Dart analyzer. Step 13 Flutter tests IN_PROGRESS. Steps 14–21 pending.
+- **Exact logs:** analyzer result is SUCCESS; exact info/warning/error counts and Flutter pass/fail total await terminal log retrieval. No downstream Gradle/APK/release outcome yet.
+- **Failures preserved:** Build #160 remains FAILED (185 passed/3 failed), Build #161 remains FAILED (187 passed/1 failed). Their causes and repairs remain append-only in APP_BUILD_REPORT.md. Do not relabel either failure.
+- **Latest test corrections included:** dropdown dense sizing disabled for the two-line selected item in source commit 7784b2c; minimum-height/adaptive-chart and lazy-list test correction 4823b76; final test finder scoping commit 16286e41a98ecea2f11ab5f0155f03f10bcc5d51 scopes Waktu dipilih/six metric labels to selected dock, keeping activity lane keys and dock clear/height assertions.
+- **Candidate source features:** About handle lowercase @horizontalzzz; Usage Statistics compact one-session header/timer + 1°C adaptive axes, removed observed/details/last sample, retained Min/Avg/Max/activity/six-metric cursor; native Floating Monitor F maps only to Fan glyph.
+- **Release baseline:** Release ID 403010611 / tag jexfyz-latest still on Build #159 source cdca38b9e4f2f99006db8feae40c07c6f9bdfb0a until #162 step 21 succeeds.
+- **Ledger:** APP_BUILD_REPORT.md includes #162 trigger/run/source, setup/audit/dependencies/analyzer passed and test gate active. Latest progress update commit 9bde00d981e52f02c7cbbf66c52bb6c4af57a414.
 
 ### Continuation
 
-- Inspect only run `43430275967` / job `131901744336`; update APP_BUILD_REPORT.md, CHAT_TRANSFER.md and 00_WORK_STATUS.md at each meaningful gate.
-- On failure: preserve logs and exact failure; repair only demonstrated App-scope root cause without weakening gates; another retry requires a new concrete repair and fresh preflight.
-- On success: confirm all steps 1–21 and cleanup 39–43; exact analyzer/test counts; Gradle NO-SOURCE scope; obfuscated APK; one signer/V1/V2/V3/pinned cert; source ZIP integrity/marker; exactly one APK and one source ZIP; Release/tag/source SHA parity; downloaded hashes/signature/certificate.
-- Workflow has no Dart formatter step; `dart format` is not implied. Local Dart/Flutter/Gradle/ADB unavailable.
-- **Evidence boundary:** App CI/release does not prove Firmware compile/BIN, Firebase, OTA/flash, physical BLE/device/NVS/rail/LED, cooling/thermal/electrical or OEM screenshot acceptance. Those remain NOT RUN / NOT VERIFIED.
+- Inspect only run 43430275967 / job 131901744336. Obtain complete logs at job terminal and record analyzer counts, Flutter suite result and exact failed tests if any.
+- If Flutter passes, continue Android Gradle, obfuscated APK, V1/V2/V3/pinned certificate, corresponding source ZIP, Release/tag/source parity and final downloaded asset verification.
+- Do not trigger another issue while #162 is active. Preserve all prior failures.
+- Workflow has no Dart formatter step; dart format is not implied. Local Dart/Flutter/Gradle/ADB are unavailable.
+- Firmware compile/BIN, Firebase, OTA/flash, physical BLE/device/NVS/rail/LED, thermal/electrical and OEM visual validation remain outside this Build App workflow.
 
 ---
 
