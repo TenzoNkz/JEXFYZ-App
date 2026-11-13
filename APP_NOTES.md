@@ -335,11 +335,11 @@ Purpose: canonical current App/UI/BLE/telemetry contract. Current source defines
 - Restore an **About / Tentang** entry directly below the Firmware section in the main Settings list. It opens a vertically scrollable About subpage using the established `JexFixedScalePage(compactUi: true, ...)` contract. This is a new explicit owner request and overrides the historical removal note; update the existing source-contract test that currently asserts About must not exist.
 - About page content, preserving the project/brand names and exact social handles:
   - English heading: **JE Cooler**; credit heading: **Special Thanks**.
-  - **App Development & Build** — Horizon — `@Horizontalzzz`.
+  - **App Development & Build** — Horizon — `@horizontalzzz`.
   - **Design Inspiration** — FYZ — `@FYZ737`.
   - **3D Design & Printing** — Logos — `@Logos3dMichael`.
   - Indonesian heading: **JE Cooler**; credit heading: **Ucapan Terima Kasih**.
-  - **Pengembangan Aplikasi & Build** — Horizon — `@Horizontalzzz`.
+  - **Pengembangan Aplikasi & Build** — Horizon — `@horizontalzzz`.
   - **Inspirasi Desain** — FYZ — `@FYZ737`.
   - **Desain & Pencetakan 3D** — Logos — `@Logos3dMichael`.
 - Wording notes: use “Special Thanks” as a standalone heading rather than “Special Thanks to:” because the credits are role/name pairs; “Design Inspiration” corrects the unidiomatic “Design Inspired”; “3D Design & Printing” is recommended assuming Logos contributed both 3D design and printing. If the role is print-only, narrow it to “3D Printing” / “Pencetakan 3D”.
