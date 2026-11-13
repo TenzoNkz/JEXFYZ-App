@@ -1,34 +1,28 @@
-## Owner UI decision — Home display-menu tab height and divider — 2026-11-13
+## Current App source checkpoint — 2026-11-13
 
-- **Source finding:** Home display menu uses a 48-dp outer tab row; _tab() distributes five equal widths through Expanded and currently uses vertical padding for the visual pill. A 1-dp Divider plus a following 7-dp spacer sits between tabs and submenu.
-- **Approved correction:** shorten only the visible tab pill to **38 dp**, centered in the existing 48-dp row; preserve the full 48-dp InkWell hit area. Keep equal widths, horizontal padding, tab order, label typography, selected/unselected colors, radius and behavior unchanged.
-- **Clean boundary:** remove the Divider completely and replace its combined 8-dp height (1 + 7) with a single SizedBox(height: 8), keeping submenu content at the same vertical position.
-- Preserve the existing 360-dp Home canvas, top spacing, Home metrics/image/Notification layout, menu content, all lock gates, localization and Light/Dark semantics.
-- Regression coverage should check 38-dp visual height, minimum 48-dp interaction bounds, unchanged equal-width distribution, absence of the Divider and preservation of the 8-dp content gap at 350-dp/420-dp. Verify tap selection and actual Android screenshots.
-- Status: Diskusi only; no executable source or test was changed. Implement with the previously agreed Peltier, Lock Voltage and About changes under Eksekusi Full!; package through a separate Eksekusi Build App!.
+- **Live source/test commit:** `a5d45866bb244a2f260330a0e2ea332c391a9fcd` on `main`. The four App UI refinements below are present in source and regression tests. They are **SOURCE IMPLEMENTED / STATIC SOURCE CHECKED / NOT YET RELEASED**.
+- **Latest verified package:** Build #157, Actions run `43247876115`, immutable source `10d106537e92060e0aac3fc17fd37f56e746bcd5`. The release tag `jexfyz-latest` still points to that source; it does not contain the four changes in `a5d4586`.
+- **Executable files changed in the source commit:** `lib/main.dart`, `lib/floating_monitor.dart`, `test/widget_test.dart`, and `test/floating_monitor_layout_contract_test.dart`. No workflow, Gradle, Firmware, Firebase, OTA or release metadata change was part of this UI commit.
+- **Test inventory:** 9 Dart test files, 187 declarations (174 unit/source-contract + 13 widget). Inventory is not test execution.
+- **Runtime validation:** a current environment check found Git, Java and Python, but no Dart, Flutter, Gradle or ADB. `dart format`, focused/full `flutter test`, `flutter analyze` and Android Gradle are **BLOCKED / NOT RUN** on this source. The GitHub App workflow is a guarded build-and-release pipeline, not a validation-only workflow; no run exists for `a5d4586`, and it was not triggered.
+- **Visual acceptance:** **VISUAL NOT VERIFIED**. No updated APK or actual Android screenshots are available for 350-dp/420-dp, English/Indonesian, Light/Dark and constrained-height review.
 
-## Live source boundary — recovered Chat Stuck state — 2026-11-13
+### Implemented UI contracts
 
-- Repository `TenzoNkz/JEXFYZ-App`, branch `main`; documentation snapshot before this update is `77b44b3fd171e7d4ff246fa5fc910868269f47ca`. App source/test remains identical to Build #157 source `10d106537e92060e0aac3fc17fd37f56e746bcd5`; GitHub compare is 26 commits ahead / 0 behind and all six changed paths are Markdown.
-- Current executable blobs: `lib/main.dart` `a948a5b104507c082a6f844ba6d64d759ccd63df`; `lib/floating_monitor.dart` `9dc2b065d560bae0aa3d43f0c8fc0809e12d0cf1`; `test/widget_test.dart` `189bdeddf0163b3a71d6661e57625d15dcd5d160`; `test/floating_monitor_layout_contract_test.dart` `bd7b5b2e789b2df6c372ddd6a1a7b46a4905ddb2`.
-- Three approved App UI changes remain **SOURCE PENDING**: fixed one-line Lock Voltage row; Special Thanks/About content and credit alignment; Peltier modal bottom anchor. No executable file was modified in Diskusi/Chat Stuck recovery.
+1. **Peltier prerequisite modal:** `Align(alignment: Alignment.bottomCenter)` inside the existing `JexFixedScalePage → SafeArea → LayoutBuilder`; 16-dp horizontal and 10-dp vertical margin; 296-dp max width; 20-dp radius. Keep Cancel/barrier dismissal command-free and preserve `FAN:ON → successful ACK → PELTIER:ON`.
+2. **Lock Voltage Settings:** one-line card; static neutral lock icon; P1-authoritative `state.active`; Switch remains visible for known state and is disabled when not ready/busy; unknown-state tooltip and icon-only retry are retained.
+3. **About:** localized `Special Thanks / Ucapan Terima Kasih`; full-width stretched credit column; Horizon role `App Developer & Builder / Pengembang Aplikasi & Perakit`; FYZ/Logos names and exact handles preserved.
+4. **Home tabs:** 38-dp visible pill in the retained 48-dp row and hit target; five equal-width tabs retained; Divider removed and replaced by the same 8-dp vertical footprint.
 
-## Owner UI decisions — Lock Voltage Settings row and About credits — 2026-11-13
+### Usage Statistics current storage/performance contract
 
-- **Lock Voltage:** current _voltageLockSettingRow() renders a subtitle for sync/unsupported/unsaved/active states and replaces the Switch with a spinner while busy. Owner requested a fixed one-line card with no permanent extra copy and only the Switch animating. Next implementation: remove subtitle rendering; keep the card and neutral lock glyph static; keep the Switch visible for a known state and disable it while busy/not-ready; let state.active continue to follow P1 VOLTAGE_LOCK telemetry. Keep unknown-state tooltip and icon-only NVS retry tooltip; do not change Firmware authority, persistence, gating or retry logic.
-- **About:** replace the content heading JE Cooler with Special Thanks / Ucapan Terima Kasih according to App language. Stretch the credit parent Column so each credit takes the full card width and all blocks align left. Change Horizon's label to App Developer & Builder / Pengembang Aplikasi & Perakit. Keep FYZ/Logos role labels, names and exact handles.
-- The current widget tests assert the old subtitles and old About title/role; update them in the next authorized Full task. Add checks for stable Lock Voltage card height, busy Switch visibility, bilingual headings/role and consistent left alignment.
-- Status: Diskusi/design decisions only; no executable source/test change. Latest package Build #157 remains the verified baseline; the requested changes need Eksekusi Full! then a separate Eksekusi Build App!.
+- SQLite schema v2, 30-day retention, raw 1-Hz Battery/Hotside observations, explicit null gaps and HOT-only P1 freshness remain.
+- `UsageStatsWriteQueue` has 64 normal pending-operation slots + 8 reserved control slots + 1 critical `endSession` slot (73 total). Admission is synchronous/fail-fast; rejected work increments `rejectedWriteCount` and exposes a persistent localized warning. Accepted operations remain FIFO and are not evicted; Clear History propagates queue-full rejection.
+- A full selected-session summary/chart-decimation pass still runs per one-second live batch. Long-session CPU/memory, sustained writer pressure and 60/120-Hz animation lifecycle/soak remain unmeasured.
 
-## Owner UI decision — Peltier prerequisite modal bottom alignment — 2026-11-13
+## Historical validation follow-up — earlier Usage Statistics source checkpoint — 2026-11-12
 
-- **Screenshot review:** the Peltier prerequisite card itself is approved; only its vertical placement is wrong. Current `lib/main.dart` uses `Center(` around the card, which places it in the middle of the usable screen.
-- **Approved correction:** bottom-center the same card inside the existing `SafeArea`, preserving a 10-dp vertical margin and 16-dp horizontal margin. Keep the 296-dp maximum width, 20-dp corners, typography, copy, step tiles, button heights, background dimming and fade/scale transition unchanged.
-- The same App already uses `Align(alignment: Alignment.bottomCenter)` for the LED Color Picker. Reuse this established layout pattern. Preserve `JexFixedScalePage`, its single 360-dp transform and current safe-area/inset handling.
-- **Regression update when implemented:** the Peltier source-contract test must require bottom-center `Align`, not `Center`, while retaining width/radius, 48-dp action, bilingual copy and Fan-ACK-before-Peltier safety assertions.
-- **Status:** decision recorded in Diskusi only; `lib/main.dart` and `test/widget_test.dart` are not modified yet. Build #157 remains the latest successful package. Source change requires `Eksekusi Full!`; packaging then requires a separate `Eksekusi Build App!`. Visual acceptance remains NOT VERIFIED until the real updated Android screenshot is inspected.
 
-## Validation follow-up — 2026-11-12
 
 - The source-audit base was `82114a7540a7f225482c67ffb7772894c956b0b1`; subsequent commits in this session updated documentation only. The executable source/test checkpoint is still `6c551c4ff95329e56eca7ce758078c9590b4b726`. No executable source/test/workflow change was made in this review.
 - Recounted the complete 9-file Dart test suite: 187 declarations (174 unit/source-contract + 13 widget). The inventory is not a test pass.
@@ -37,7 +31,7 @@
 - Local `dart`, `flutter`, `gradle` and `adb` are absent; outbound DNS to GitHub and Flutter SDK hosts fails. `dart format`, focused/full `flutter test`, `flutter analyze` and Android Gradle are **BLOCKED / NOT RUN**. Do not describe the current source as compile- or test-verified.
 - At the source-audit base, main was 96 commits ahead / 0 behind the Build #153 source baseline; subsequent review commits are documentation-only. Build #153 still points to `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e`; it does not validate current main.
 
-## Current implementation update — 2026-11-12
+## Usage Statistics implementation details — source changes dated 2026-11-12
 
 **Status: SOURCE + REGRESSION IMPLEMENTED / 187 TESTS WRITTEN / FLUTTER VALIDATION NOT RUN / VISUAL NOT VERIFIED.** Current source/test code checkpoint: `6c551c4ff95329e56eca7ce758078c9590b4b726`; source blob `3afd0d8e440b5c4b7c19fb46b825a8a821e5492b`, test blob `fb665eeb3894a613c2a5bbcfb8ae72537b1c37a0`. Build #153 remains the latest published APK; current main is not packaged.
 
@@ -54,13 +48,13 @@
 
 Purpose: canonical current App/UI/BLE/telemetry contract. Current source defines implementation; DESIGN_NOTES.md holds owner-approved screen-specific visual constraints; PRODUCT_DESIGN_CONSTITUTION.md defines cross-screen design principles; VISUAL_QUALITY_GATE.md defines evidence-based visual acceptance; CHANGELOG.md and APP_BUILD_REPORT.md hold history/evidence.
 
-## Current source and release boundary — checked 2026-11-12
+## Current source and release boundary — checked 2026-11-13
 
-- Latest verified App package: **Build #153**, Actions run [43145542329](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/43145542329), immutable package source SHA `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e`. Release/tag identity, asset hashes and full QC evidence are detailed in PROJECT_STATE.md and APP_BUILD_REPORT.md.
-- Build #153 passed the security/architecture audit, analyzer (**23 info-level findings, zero warnings/errors**), and **176/176 Flutter tests**. Android Gradle gate passed; `:app:testDebugUnitTest` and native compile/process prerequisites were `NO-SOURCE`, so no native Android JUnit case ran. Hosted CI does not establish screenshot/OEM or physical-device acceptance.
-- The immutable Build #153 package included the Lock Voltage overlay/Settings card, custom Peltier safety card, About page, Device Diagnostics snapshot, simplified Statistics diagrams and cross-screen icon/NOTIFY polish. Since that source, current main has unbuilt App/test follow-ups: a fixed compact Peltier dialog, removal of Temperature reset, compact Lock Voltage Settings card, About moved into its own card, and removal of Device Diagnostics. Therefore Diagnostics is present in the Build #153 APK but absent from current main. Build #153 hosted analyzer/tests validate only its immutable source SHA, not these follow-ups.
+- Latest verified App package: **Build #157**, Actions run [43247876115](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/43247876115), immutable package source SHA `10d106537e92060e0aac3fc17fd37f56e746bcd5`. Release ID `403010611` / tag `jexfyz-latest` still target this exact source. Release hashes and full QC evidence are detailed in PROJECT_STATE.md and APP_BUILD_REPORT.md.
+- Build #157 passed the security/architecture audit, analyzer (**23 info-level findings, zero warnings/errors**), and **187/187 Flutter tests**. Android Gradle gate passed (`BUILD SUCCESSFUL in 3m19s`); app native JUnit compile/process/test prerequisites were `NO-SOURCE`, so no native Android JUnit case ran. Hosted CI does not establish screenshot/OEM or physical-device acceptance.
+- The immutable Build #157 package includes the App source through `10d1065`. The four refinements described in the current checkpoint above were committed later in `a5d4586`; they are not included in Build #157 and have no hosted validation result. Current main continues to omit the removed Device Diagnostics page; do not infer its presence in the current source from older release notes.
 - Compact Settings/Connection sizing, Bluetooth scan-state presentation, scanner ownership/handoff and existing Home contrast work are already present in Build #151. Current refinement reuses the existing JE Cooler theme, compact Settings typography, 360-dp canvas and Phosphor icon family; no new font, parallel palette or global scale transform was introduced.
-- **Validation boundary:** Build #153 provides hosted analyzer, Flutter and Android Gradle evidence for the App source. This environment still has no local Flutter/Dart/Gradle/ADB toolchain, so local formatter and local test runs were NOT RUN. Android rendering, screenshot/OEM acceptance, and exact owner-installed APK identity remain owner-side evidence.
+- **Validation boundary:** Build #157 provides hosted analyzer, Flutter and Android Gradle evidence only for its immutable source SHA. For current main `a5d4586`, formatter/tests/analyzer/Gradle are BLOCKED / NOT RUN because the active runtime has no Dart/Flutter/Gradle/ADB toolchain. Android rendering, screenshot/OEM acceptance, and exact owner-installed APK identity remain owner-side evidence.
 - **Separate gaps remain:** physical BLE lifecycle/security, NVS power-cycle, rail/selector/LED, thermal/electrical cooling, Firmware V7.2 compile/BIN provenance, Firebase/OTA/flash and OEM visual acceptance are not established by App source checks.
 
 ## Build #151 Peltier dialog and LED Color Picker baseline (historical source; 2026-11-11)
