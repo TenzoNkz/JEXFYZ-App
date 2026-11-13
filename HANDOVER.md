@@ -1,19 +1,22 @@
-## Immediate next step — Validate current App source — 2026-11-13
+## Immediate next step — Install and physically review Build #159 — 2026-11-13
 
-- **Current App source/test commit:** `a5d45866bb244a2f260330a0e2ea332c391a9fcd` on `main`. Four owner-approved UI refinements are implemented and regression source is updated:
-  1. Peltier prerequisite popup anchored bottom-center inside SafeArea, retaining 16-dp horizontal / 10-dp vertical margins, 296-dp max width and FAN:ON → successful ACK → PELTIER:ON safety order.
-  2. Lock Voltage Settings is a fixed one-line row; P1 remains authoritative; Switch visible for known state and disabled while busy/not-ready; unknown tooltip and icon-only NVS retry remain.
-  3. About uses Special Thanks / Ucapan Terima Kasih, stretched left-aligned credit blocks and Horizon role App Developer & Builder / Pengembang Aplikasi & Perakit; FYZ/Logos identities remain.
-  4. Home tab pills are 38 dp inside the existing 48-dp row/hit area; divider removed and 8-dp spacing preserved.
+**App Build/QC status: COMPLETED / RELEASE VERIFIED.** The four owner-approved App UI refinements are now included in Build #159. CI success does not establish physical/OEM visual acceptance.
 
-- **Static evidence:** GitHub read-back and 20 explicit structural/source-contract assertions passed. All 9 Dart test files contain 187 test declarations (174 unit/source-contract + 13 widget). This is not test execution.
-- **Validation blocker:** the current runtime has Git, Java and Python but no Dart, Flutter, Gradle or ADB. Arduino CLI and ESP-IDF are absent. DNS resolution for GitHub/SDK hosts fails. Formatter, focused/full Flutter tests, analyzer and Android Gradle are **BLOCKED / NOT RUN** for `a5d4586`.
-- **Actions/release boundary:** there is no Actions run for `a5d4586`, no queued/in-progress run and no open PR. No Build App workflow was triggered. Latest verified release remains Build #157 / run `43247876115`, source `10d106537e92060e0aac3fc17fd37f56e746bcd5`; `jexfyz-latest` still points there. The four current UI changes are **NOT RELEASED**.
-- **Visual status:** **VISUAL NOT VERIFIED** until the updated source is packaged under a separately authorized Build App and actual Android screenshots are reviewed at 350-dp/420-dp, English/Indonesian, Light/Dark and constrained-height states.
+- **App source/test implementation:** source changes for the four refinements in `a5d45866bb244a2f260330a0e2ea332c391a9fcd`; test-only correction commit `2c75c5b96db21937ec66c46f954d672a45384a7f` aligns the two Indonesian About role assertions with the current approved/source phrase `Pengembang Aplikasi & Perakit`.
+- **Latest verified package:** Build #159, [Actions run 43376503987](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/43376503987), job 131724120379, immutable source SHA `cdca38b9e4f2f99006db8feae40c07c6f9bdfb0a`. All workflow gates 1–21 and cleanup 39–43 passed.
+- **QC:** analyzer 23 info-level deprecations / 0 warnings / 0 errors; Flutter 187/187 tests passed; Android Gradle `BUILD SUCCESSFUL in 2m51s`. Native Android app JUnit compile/process/test tasks were `NO-SOURCE`, so no native Android JUnit cases executed. Existing Kotlin/Gradle deprecation warnings and the duplicate branch warning at `FloatingMonitorService.kt:738` remain non-blocking.
+- **Release:** Release ID 403010611 / tag `jexfyz-latest` target exact Build #159 source SHA. Exactly one APK plus one corresponding source ZIP. Re-downloaded bytes/checksums, ZIP integrity/source marker, downloaded APK V1/V2/V3, one signer and pinned certificate passed.
+- **APK:** 55,914,587 bytes; SHA-256 `02bef5960e0b23bea360d2cf8a0532e7dbd202e05f5420e055c98b4dc7a61321`. [Download APK](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-release.apk).
+- **Source ZIP:** 2,932,978 bytes; SHA-256 `5dbb29ebc7629775835bc65d655069a1a077f6d3240114387c965b5ad4789558`. [Download source ZIP](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-corresponding-source.zip).
+- **Signing:** RSA 4096, exactly one signer, pinned certificate SHA-256 `dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0`; V1/V2/V3 pass. The certificate is self-signed and fails public PKIX trust-chain validation; not publicly CA-trusted.
+- **Protected version:** Android `versionName "Telegram @horizontalzzz"` unchanged; Flutter version `1.0.0+3`.
+- **Build #158 history:** Build #158 remains FAILED at Flutter test gate (185 pass / 2 stale About assertions). The source contract was already correct; only two test literals were repaired before successful Build #159. Keep the failure preserved in APP_BUILD_REPORT.md.
+- **Formatter:** the guarded workflow has no Dart formatter gate; `dart format` is not claimed. Optional cache writes were denied by token scope but cleanup and run still succeeded.
+- **Visual/physical status:** **VISUAL NOT VERIFIED** pending screenshots and actual owner review at 350-dp/420-dp, portrait/constrained height, EN/ID, Light/Dark. BLE reconnect/Lock Voltage physical behavior, installation, Firmware V7.2 compile/BIN, Firebase, OTA/flash, NVS/rail/LED and thermal/electrical validation remain NOT RUN / NOT VERIFIED.
 
 ### Exact next action
 
-Obtain a Dart/Flutter-capable runner and validate exact source `a5d45866bb244a2f260330a0e2ea332c391a9fcd`: format the four changed Dart files, run focused Peltier/Home and Settings/About/Lock Voltage tests, run the full `flutter test` suite and `flutter analyze`, then review the results. Fix only actual failures within `Eksekusi Full!`. A separate explicit `Eksekusi Build App!` is required before APK/Release publication.
+Owner installs Build #159 and supplies screenshots/observations for 350-dp/420-dp, portrait/constrained height, English/Indonesian, Light/Dark, plus BLE reconnect and Lock Voltage state transitions. Do not trigger another App Build unless App source changes. Do not infer Firmware/BIN, OTA, flashing or device validation from App CI.
 
 ## Latest verified App release — Build #157 SUCCESS
 
