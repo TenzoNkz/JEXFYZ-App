@@ -6,20 +6,15 @@
 
 | Field | Value |
 |---|---|
-| **STATUS** | **WAITING_OWNER** |
+| **STATUS** | **IN_PROGRESS** |
 | Mode | Eksekusi Full |
-| Work item | Usage Statistics visual refinement + regression source + project checkpoint |
+| Work item | Correct About Telegram handle casing to exact `@horizontalzzz`; add regression coverage and update canonical checkpoint |
 | Updated | 2026-11-13 (Asia/Jakarta) |
-| Last completed milestone | Implemented one primary session timer/header; 1°C data-based temperature axes; removed visible Observed / More details / Last sample; retained Min/Avg/Max, four activity lanes and six-field cursor dock; updated 188-test regression inventory and canonical docs |
-| Result | Source and tests are committed/read back. Static checks passed. No Build App, Release, Actions trigger, Firmware/BIN, Firebase, OTA, flash or device operation occurred. |
-| Latest App source commit | `f32c1278308bea7cedd4f150255d2128cac138bb`; source blob `64fa93a39516126bbce04b3f031fcdc7f4e4381f` |
-| Latest Usage Statistics test commit | `b560403877fd2080db2019fc04d86d67020418dd`; test blob `259ba2e64a540a04c7f798f3688b2f1c225ccb9b` |
-| Test inventory | 188 declarations across 9 Dart test files (2/12/5/5/27/3/13/24/97); declarations only, NOT execution. |
-| Last verified package | Build #159 — source `cdca38b9e4f2f99006db8feae40c07c6f9bdfb0a`; Release `403010611`, tag `jexfyz-latest`. Current Usage Statistics and preceding native Fan fixes are not included. |
-| Validation | GitHub read-back and static source checks only. Dart/Flutter/Gradle/ADB are absent; formatter, focused/full tests, analyzer, Android Gradle and screenshots are NOT RUN. |
-| Blocker | Hosted validation/package needs a separate owner-authorized guarded App Build. Visual acceptance requires screenshots after package/device install. |
-| Next action | Owner separately issues `Eksekusi Build App!` to validate this exact current main and package only if all gates pass. Do not trigger it from this Full session. |
-
+| Starting main HEAD | `70a1044ceaf6385273130d35d7922ad4fcdde1c6` |
+| Last completed milestone | Loaded current checkpoint and Master Prompt; About correction scope confirmed as App source/test/docs only |
+| Result | Not yet edited. No Build App, Release, Firmware/BIN, Firebase, OTA, flash or device action authorized. |
+| Blocker | None identified for source editing; available runtime lacks Dart/Flutter/Gradle/ADB for local validation. |
+| Next action | Locate About contributor display and existing tests; replace any incorrect capitalized handle with exact lowercase `@horizontalzzz`, add/adjust a regression test, then update checkpoint/docs and verify live main. |
 
 ## Status meanings
 
