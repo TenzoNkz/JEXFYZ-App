@@ -1,13 +1,19 @@
-## Immediate next step — Owner install and visual/device acceptance of Build #162 — 2026-11-14
+## Immediate next step — Return independent Gemini review of the repository audit — 2026-11-14
 
-**Guarded App Build #162 is COMPLETED / SUCCESS.** Do not start another Build for the same source.
+The comprehensive read-only audit of `TenzoNkz/JEXFYZ-App` has been completed against current main HEAD `763961ae46727887a73037ba46c50d38ac3cfdc6`. Full evidence and ranked findings are in the active top checkpoint of `CHAT_TRANSFER.md`.
 
-- Actions run [43430275967](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/43430275967), job `131901744336`, terminal success on immutable source `6854d8eb58a5f077cbc99749a35d37a4f55b8efa`. Steps 1–21 and cleanup 39–43 succeeded.
-- Analyzer: 23 info-level issues; 0 warning/error gate failures. Flutter: 188/188 passed. Gradle: `BUILD SUCCESSFUL in 3m56s`, 162 actionable tasks. Native App JUnit tasks were `NO-SOURCE`.
-- Release tag `jexfyz-latest` points to the exact source. APK SHA-256 `56c08bd490e52a8616627613675141a91c14ab6893cca0e1e54d5e5ac1a053f2`; source ZIP SHA-256 `86bd61edfe59acd6063367f7b8704356d2bf192d8c55c150f0f0e6b6285db42e`. Downloaded assets, source marker and APK V1/V2/V3 signatures were verified.
-- Included: About handle `@horizontalzzz`, Usage Statistics refinement/regressions and native Floating Monitor Fan icon correction. Android Gradle `versionName "Telegram @horizontalzzz"` remains exact.
-- **Next owner action:** install Build #162, then review screenshots and actual device behavior (350-dp/420-dp, EN/ID, Light/Dark, constrained height and relevant About/Statistics/Floating Monitor screens). CI success is not device/visual acceptance.
-- No Firmware compile/BIN, Firebase, OTA, flash or device operation was performed by the build workflow.
+**Highest priority confirmed finding:** the Build workflow listens to every issue opened/reopened event, but global workflow-level concurrency has one fixed group with `cancel-in-progress: true`; the owner/title/body-token guard is only at the build-job level. An unrelated issue event can therefore cancel an active guarded release before its job is skipped. Proposed fix is to scope concurrency to the guarded job and stop cancelling active releases; preserve the existing manual guard and all release gates.
+
+Other material findings:
+- `flutter_lints` is declared but root `analysis_options.yaml` is absent; no formatter gate and no separate non-publishing CI workflow exist.
+- Current docs disagree on the latest release: APP_NOTES/BUILD_NOTES say Build #159; DESIGN_NOTES and lower APP_PREBUILD_AUDIT sections still say QC pending despite Build #162 success.
+- PROJECT_STATE.md is 70 KB / 397 lines with a long historical build sequence, despite its current-only role.
+- `main.dart` is 10,564 lines; Usage Statistics, Floating Monitor and settings modules also bundle multiple responsibilities. Recommend incremental extraction, not a rewrite.
+- Build #162 passed 188/188 Flutter tests and release gates, but native Android JUnit tasks were NO-SOURCE; no hardware/visual proof. BLE App-only authentication remains unimplemented, and Online OTA's `setInsecure()` remains a documented TLS identity risk.
+
+**Gemini:** no direct Gemini connector is available. A self-contained copy-ready second-opinion prompt is in the current conversation. Owner should paste it into Gemini and return the complete answer for verification.
+
+**Scope:** Diskusi only. No executable source, tests, config, workflow, release, Firmware/BIN, Firebase, OTA, flash or device change was made. After the Gemini review, select a separate authorized implementation scope; do not infer Build App permission from this audit.
 
 ---
 
