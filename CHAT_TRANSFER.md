@@ -1,57 +1,43 @@
-## CURRENT CHECKPOINT — LOCK VOLTAGE ROW + ABOUT CREDITS + PELTIER MODAL / SOURCE CHANGES PENDING — 2026-11-13
+## CURRENT CHECKPOINT — HOME MENU TAB DENSITY DECIDED / FOUR APP UI CHANGES SOURCE PENDING — 2026-11-13
 
-**Mode:** `@Thinking Diskusi!` — screenshot review, source inspection and documentation/design decisions only. No executable source, tests, configuration, workflow, Actions, App Build, Release, Firmware or device operation is authorized or performed in this interaction.
+**Mode:** @Thinking Diskusi! — screenshot review and source/design inspection; documentation-only update. No executable source, tests, configuration, workflow, Actions, App Build, Release, Firmware or device operation was performed.
 
-### Work-status marker
+### Verified baseline and evidence
 
-- Added root-level `00_WORK_STATUS.md` as the latest-session snapshot. It records IN_PROGRESS / COMPLETED / BLOCKED / WAITING_OWNER / RECOVERY_REQUIRED, mode, milestone, evidence and next action. README links to it; MASTER_PROMPT, AGENTS, transfer prompts and MEMORY_INDEX define how to update and recover it.
-- An IN_PROGRESS marker left behind by a frozen chat is a last committed state, not proof that a background task is still executing. Chat Stuck! must verify actual repository/Actions state and recover only the last authorized scope.
-- The marker-setup subtask is COMPLETED; the previously approved three App UI changes remain SOURCE PENDING.
+- Repository: TenzoNkz/JEXFYZ-App, branch main. This review started at HEAD 662c4d9e9fa9eb89aafdad14760a6c3042700f5f; its recursive tree had 133 entries and was not truncated.
+- Current App code/test remains identical to the immutable Build #157 source SHA 10d106537e92060e0aac3fc17fd37f56e746bcd5. The live source blobs inspected were lib/main.dart a948a5b104507c082a6f844ba6d64d759ccd63df and test/widget_test.dart 189bdeddf0163b3a71d6661e57625d15dcd5d160.
+- Latest verified App package remains Build #157 / Actions run 43247876115: analyzer 23 info / 0 warnings / 0 errors, Flutter 187/187, Android Gradle success. No later code/test/build action was observed or triggered in this Diskusi.
+- **Evidence:** owner-uploaded Android screenshot reviewed; current Home source read-back and test contract inspected. This is SCREENSHOT REVIEWED + STATIC SOURCE CHECK for the existing UI only. The proposed modified UI has not been rendered or tested.
 
-### Live repository and release boundary
+### Owner-approved App UI work — four changes, all SOURCE PENDING
 
-- **Repository/branch:** `TenzoNkz/JEXFYZ-App` / `main`.
-- **Verified repository snapshot before this status-marker update:** `b596b4c0c188de9af9df38e011d080d9c1d4242f`; recursive tree: 132 entries, not truncated. The new marker and its navigation/policy references are documentation-only additions in the current commit.
-- **App code/test baseline:** current source and tests still match the immutable Build #157 source SHA `10d106537e92060e0aac3fc17fd37f56e746bcd5`. No executable source/test/workflow change is included in this status-marker task.
-- **Relevant source blobs:** `lib/main.dart` = `a948a5b104507c082a6f844ba6d64d759ccd63df`; `lib/floating_monitor.dart` = `9dc2b065d560bae0aa3d43f0c8fc0809e12d0cf1`; `test/widget_test.dart` = `189bdeddf0163b3a71d6661e57625d15dcd5d160`; `test/floating_monitor_layout_contract_test.dart` = `bd7b5b2e789b2df6c372ddd6a1a7b46a4905ddb2`.
-- **Latest verified release:** Build #157 / Actions run `43247876115`. Analyzer 23 infos / 0 warnings / 0 errors, Flutter 187/187, Android Gradle success. Its result applies to the identical App source/test baseline; it does not include the following unimplemented presentation changes.
+1. **Peltier prerequisite popup:** bottom-center inside existing SafeArea; retain 10-dp vertical / 16-dp horizontal inset, 296-dp max width, current card design/animation, fixed 360-dp canvas and Fan-ACK-before-Peltier safety order.
+2. **Lock Voltage Settings row:** fixed one-line card; no visible persistent state subtitle; static neutral lock icon; Switch stays visible and is disabled while busy; only the Switch animates on authoritative P1 VOLTAGE_LOCK state changes. Preserve unavailable tooltip, icon-only NVS retry, Firmware ownership and all gating/persistence behavior.
+3. **About / Tentang:** content heading Special Thanks / Ucapan Terima Kasih; stretch all three credit blocks full-width and align left; Horizon role App Developer & Builder / Pengembang Aplikasi & Perakit; preserve FYZ/Logos roles, names and exact handles.
+4. **Home display-menu tabs (new screenshot request):**
+   - Five tab widths, order, horizontal spacing, labels, colors, radius and behavior remain unchanged.
+   - Shorten only the visible pill to **38 dp**, vertically centered inside the existing **48-dp row**. Keep every InkWell's full 48-dp tap area; do not shrink the interaction target.
+   - Remove the thin grey Divider below the tabs. Replace its combined 8-dp height (1-dp line + 7-dp gap) with a single SizedBox(height: 8), so submenu content does not move.
+   - Preserve 11-dp top inset, 360-dp master canvas/DPI scale, Home height/metrics/image/Notification, white panel and all lock overlays.
 
-### Owner-requested changes and approved direction
+### Regression/visual acceptance for the next authorized source task
 
-#### 1. Lock Voltage Settings row
+- Update the existing Home controls layout contract and add widget coverage: visible tab pill 38 dp; interaction region at least 48 dp; equal five-way widths; no divider between tabs/submenu; 8-dp spacer remains; tab selection still works.
+- Check 350-dp/420-dp, EN/ID, Light/Dark, disconnected, Adaptive and Lock Voltage gating states; preserve all existing Home geometry and telemetry.
+- In the same source batch, add/update regression assertions for Peltier bottom alignment, fixed-height Lock Voltage row and About bilingual/left-aligned credits.
+- Run changed-file formatter, focused tests, analyzer and full Flutter suite where a Dart/Flutter runner is available. Capture actual Android screenshots before marking visual acceptance. No App Build is authorized by this Diskusi.
 
-- **Observed cause:** `_voltageLockSettingRow()` currently adds state subtitles (`Not synchronized`, `Firmware V7.2+ required`, `Active · not saved`, `5V limit · Adaptive OFF`), which turns the row into two lines. Its busy state replaces the Switch with a spinner, and the lock glyph changes color when active.
-- **Approved visual behavior:** keep the card's surface, outline, corner radius, padding, lock tile, title and overall geometry constant across saved ON/OFF states. Remove visible state subtitles. Keep the lock glyph neutral and static. The Switch remains in the same trailing position; it is the only animated state indicator.
-- Keep the Switch visible for a known Firmware state even while a command is in progress; disable it while busy (and whenever session readiness is absent). Let its value change only when the authoritative P1 `VOLTAGE_LOCK` state updates `state.active`; do not optimistically infer lock success from a tap or ACK. This allows the native Switch animation to show the confirmed OFF → ON / ON → OFF transition without reshaping the card.
-- Preserve unknown/not-synchronized handling through the existing Bluetooth/info icon and its tooltip, and preserve the icon-only retry affordance + tooltip when the lock is active but NVS saving has not succeeded. Do not expose persistent explanatory text under the title. Do not weaken Firmware ownership, session gating, NVS-save failure handling or retry behavior.
+### Current status and next action
 
-#### 2. About / Tentang credits
-
-- Replace the internal page heading `JE Cooler` with `Special Thanks` in English and `Ucapan Terima Kasih` in Indonesian. Keep the AppBar route title `About` / `Tentang`; this is only the content heading, not a change to the product/app identity.
-- The current credit parent `Column` has default centered cross-axis sizing; each `_credit` block therefore takes its intrinsic text width, which makes shorter entries (especially the Logos block in the supplied screenshot) shift toward the center. Stretch the three credit blocks to the full card width and keep their text left-aligned.
-- Change Horizon's role to **App Developer & Builder** / **Pengembang Aplikasi & Perakit**. Preserve the remaining approved roles and exact identities: Design Inspiration / Inspirasi Desain — FYZ — `@FYZ737`; 3D Design & Printing / Desain & Pencetakan 3D — Logos — `@Logos3dMichael`; Horizon handle remains `@Horizontalzzz`.
-- Use one clear hierarchy: section heading, smaller muted role, bold name, muted handle. Keep the single existing credit Card and simple dividers; no additional decorative containers or redundant product heading.
-
-#### 3. Previously approved Peltier modal position
-
-- Keep the existing compact Peltier card design but replace its centered placement with bottom-center alignment inside its existing `SafeArea`. Preserve the 10-dp vertical breathing margin, 16-dp horizontal margin, 296-dp maximum width, `JexFixedScalePage`, one 360-dp transform, fade/scale, non-scrollable card and all FAN:ON → successful ACK → PELTIER:ON / command-free Cancel guarantees.
-
-### Regression requirements for the next authorized source task
-
-- Lock Voltage: test saved OFF, saved ON, active-unsaved, busy and not-ready/unknown states; assert no persistent subtitle; assert Switch remains present for known busy state and is disabled while busy/not-ready; assert the card height is identical between stable saved OFF and saved ON. Keep tests for unavailable tooltip and NVS retry.
-- About: assert the English and Indonesian headings/role copy, unchanged names/handles, all three role labels share the same left edge, and no overflow occurs at supported 350-dp/420-dp widths in Light/Dark.
-- Peltier: update the existing source-contract assertion from `Center(` to `Align(alignment: Alignment.bottomCenter)`; retain width/radius/action and fan-first safety assertions.
-- Run changed-file formatter, focused tests, analyzer and full Flutter suite where an executable toolchain exists. Capture actual Android screenshots before claiming visual acceptance.
-
-### Scope and next action
-
-- This Diskusi session only records design decisions. Source and test blobs above remain unchanged; no Build or Actions operation was triggered.
-- **Next recommended action:** owner issues `@Thinking Eksekusi Full!` to implement the three App-only UI changes and regression tests. A new `@Thinking Eksekusi Build App!` is separately required to package/publish the changed source.
-- Visual acceptance remains **VISUAL NOT VERIFIED** until the actual revised Android UI is inspected.
+- Diskusi work is complete; the design decisions and test criteria are saved in canonical notes. The source and test files remain unchanged.
+- **Next recommended action:** @Thinking Eksekusi Full! for the four App-only UI changes and regression coverage. After implementation/validation, a separate @Thinking Eksekusi Build App! is required for a new package.
+- Current UI after these proposed changes remains **VISUAL NOT VERIFIED** until a real updated Android screenshot is reviewed.
 
 ---
 
 ## LAST VERIFIED BUILD BASELINE — BUILD #157 SUCCESS / RELEASE VERIFIED — 2026-11-12
+
+
 
 
 **Disposition:** guarded App Build/QC/release COMPLETED SUCCESSFULLY. No further Build App trigger is needed for this source SHA.

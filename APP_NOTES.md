@@ -1,3 +1,12 @@
+## Owner UI decision — Home display-menu tab height and divider — 2026-11-13
+
+- **Source finding:** Home display menu uses a 48-dp outer tab row; _tab() distributes five equal widths through Expanded and currently uses vertical padding for the visual pill. A 1-dp Divider plus a following 7-dp spacer sits between tabs and submenu.
+- **Approved correction:** shorten only the visible tab pill to **38 dp**, centered in the existing 48-dp row; preserve the full 48-dp InkWell hit area. Keep equal widths, horizontal padding, tab order, label typography, selected/unselected colors, radius and behavior unchanged.
+- **Clean boundary:** remove the Divider completely and replace its combined 8-dp height (1 + 7) with a single SizedBox(height: 8), keeping submenu content at the same vertical position.
+- Preserve the existing 360-dp Home canvas, top spacing, Home metrics/image/Notification layout, menu content, all lock gates, localization and Light/Dark semantics.
+- Regression coverage should check 38-dp visual height, minimum 48-dp interaction bounds, unchanged equal-width distribution, absence of the Divider and preservation of the 8-dp content gap at 350-dp/420-dp. Verify tap selection and actual Android screenshots.
+- Status: Diskusi only; no executable source or test was changed. Implement with the previously agreed Peltier, Lock Voltage and About changes under Eksekusi Full!; package through a separate Eksekusi Build App!.
+
 ## Live source boundary — recovered Chat Stuck state — 2026-11-13
 
 - Repository `TenzoNkz/JEXFYZ-App`, branch `main`; documentation snapshot before this update is `77b44b3fd171e7d4ff246fa5fc910868269f47ca`. App source/test remains identical to Build #157 source `10d106537e92060e0aac3fc17fd37f56e746bcd5`; GitHub compare is 26 commits ahead / 0 behind and all six changed paths are Markdown.

@@ -1,4 +1,4 @@
-## Immediate App UI next step — Peltier modal, Lock Voltage and About — 2026-11-13
+## Immediate App UI next step — Peltier, Lock Voltage, About and Home tabs — 2026-11-13
 
 - First read [00_WORK_STATUS.md](00_WORK_STATUS.md) for the latest session marker, then [CHAT_TRANSFER.md](CHAT_TRANSFER.md) for the full engineering checkpoint. The status marker is a committed snapshot, not a live process monitor.
 
@@ -18,6 +18,7 @@ The owner has approved three App-only presentation changes, all still **SOURCE P
 1. **Peltier safety modal:** bottom-center inside the existing SafeArea; keep current card size/style and FAN-first safety transaction.
 2. **Lock Voltage Settings:** fixed one-line card; no visible state subtitle; static neutral lock icon; Switch stays visible and is disabled while busy; only the Switch animates on authoritative P1 state update. Preserve unavailable-state tooltip and icon-only NVS retry.
 3. **About:** replace content heading with Special Thanks / Ucapan Terima Kasih; stretch credit blocks to full card width and align them left; Horizon role becomes Pengembang Aplikasi & Perakit (EN: App Developer & Builder); preserve other roles and handles.
+4. **Home tabs:** visible pill height 38 dp inside a retained 48-dp tap row; keep existing widths/order; remove Divider and preserve its 8-dp spacing.
 
 Latest source/test still match Build #157; no code change has been made in this Diskusi. **Next mode: Eksekusi Full!** for narrow source and regression changes. New Build # is separately authorized with Eksekusi Build App! after source work.
 

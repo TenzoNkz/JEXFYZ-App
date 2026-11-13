@@ -146,3 +146,14 @@ This document stores owner-approved, screen-specific visual constraints, not a b
 - **Actions and safety:** preserve 48-dp primary and Cancel targets, amber fan-prerequisite meaning, barrier/Cancel no-command behavior, and exact FAN:ON → successful ACK → PELTIER:ON order. Do not modify BLE/P1, Firmware, telemetry authority, or thermal/NTC behavior.
 - **Temperature tab:** remove the global Reset Temperature Settings control and its App handler/label. Keep Hotside limit and battery 5V/12V zone controls unchanged; leave generic command acknowledgement classification untouched.
 - **Acceptance:** 350-dp/420-dp fixed-canvas behavior; portrait and constrained height; EN/ID longest strings; Light/Dark; Fan OFF and Cancel/approve/fan-ACK-failure. Capture actual Android screenshots before marking visual acceptance. Status after source commit: STATIC SOURCE CHECK only / VISUAL NOT VERIFIED.
+
+### Home display-menu tabs — shorter visual pills and clean separator (owner screenshot, 2026-11-13)
+
+- **Observed issue:** the five Home display-menu tabs have the correct equal widths, but their visible pill shapes are too tall. A thin grey horizontal Divider directly below the row adds an unnecessary visual boundary before the submenu content.
+- **Tab geometry:** preserve the existing five-way Expanded width distribution, horizontal canvas padding (8 dp), per-tab horizontal inset (2 dp), tab order/labels, 12-dp corner radius, colors, border treatment and 9-dp text/weight. Set the visible pill to **38 dp high**, vertically centered within the existing **48-dp tab row**.
+- **Touch target:** keep the entire tab's InkWell hit area at least **48 dp high**. The visible pill alone is shortened; do not reduce the tap target or tab width. Use a full-size interactive child (for example, SizedBox.expand) and center the 38-dp pill inside it.
+- **Divider cleanup:** remove the Padding + Divider(thickness: 1, height: 1) between the tab row and submenu. Replace its total 8-dp vertical footprint (1-dp Divider + following 7-dp gap) with one SizedBox(height: 8). This removes the line without moving the submenu content or changing the overall Home geometry.
+- **Protected geometry:** retain the 11-dp top inset above the tab row, 48-dp row height, existing 360-dp master canvas/DPI scale, Home area height, rounded white content panel, notification layout, submenu padding, and all Home metrics/image.
+- **Acceptance:** same tab widths and order at 350-dp/420-dp; visible pill 38 dp; interactive bounds 48 dp; no divider line; existing 8-dp gap retained; selection/tap behavior and disconnected/Adaptive/Lock Voltage overlays unchanged; EN/ID and Light/Dark; actual Android screenshot review required.
+- **Status:** design decision recorded in Diskusi only. Source lib/main.dart and tests remain unchanged; visual result after implementation is **VISUAL NOT VERIFIED** until a real screenshot is inspected.
+
