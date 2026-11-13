@@ -2239,7 +2239,9 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
             key: const ValueKey<String>('usage-session-selector'),
             value: _selectedSessionId,
             isExpanded: true,
-            isDense: true,
+            // The selected item is a two-line status/date label; keep the
+            // normal 48-dp control height instead of clipping it when dense.
+            isDense: false,
             underline: const SizedBox.shrink(),
             menuMaxHeight: 360,
             selectedItemBuilder: (context) => [
