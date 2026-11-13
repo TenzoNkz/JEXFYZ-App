@@ -2950,3 +2950,11 @@
 - **Initial job state:** steps 1 `Set up job`, 2 `Checkout repository`, 3 `Set up Java 17` SUCCESS; step 4 `Set up Flutter` IN_PROGRESS; steps 5–21 pending. No analyzer/test/package/release result is asserted yet.
 - **Next:** inspect only run `43428480911` / job `131895713640`; record exact gates and full logs. Do not create any additional issue or run while this run is active.
 - **Evidence boundary:** no Firmware compile/BIN, Firebase, OTA/flash, physical BLE/device/NVS/rail/LED, thermal/electrical cooling or Android screenshot/OEM visual verification is included.
+
+
+### BUILD #161 progress — dependency install and analyzer passed / Flutter tests active (2026-11-13)
+
+- Run `43428480911` / job `131895713640`, immutable checkout SHA `798845adf013f6cacd217c9d71a7208d57b64e94`, attempt 1.
+- Steps 1–12 SUCCESS: runner/checkout, Java 17, Flutter, Gradle, toolchain, local.properties, production signing preparation, wrapper restore, security/architecture audit, dependency install and Dart analyzer. Step 13 `Run Flutter tests` IN_PROGRESS; steps 14–21 pending.
+- Exact analyzer finding counts and Flutter test totals remain pending complete log retrieval at job terminal state. Do not infer from step status alone.
+- Continue only #161; no duplicate issue/run. Release remains Build #159 until step 21 verification succeeds.
