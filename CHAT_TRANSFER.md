@@ -1,37 +1,56 @@
-## CURRENT CHECKPOINT — HOME MENU TAB DENSITY DECIDED / FOUR APP UI CHANGES SOURCE PENDING — 2026-11-13
+## CURRENT CHECKPOINT — FOUR APP UI CHANGES IMPLEMENTED / DART-FLUTTER VALIDATION BLOCKED — 2026-11-13
 
-**Mode:** @Thinking Diskusi! — screenshot review and source/design inspection; documentation-only update. No executable source, tests, configuration, workflow, Actions, App Build, Release, Firmware or device operation was performed.
+**Mode:** `@Thinking Eksekusi Full!` — App source, regression tests and canonical documentation only. App Build/APK/Release, Actions trigger, Firmware/BIN, Firebase, OTA, flashing and device operations are not authorized by this mode and were not performed.
 
-### Verified baseline and evidence
+### Current repository and package boundary
 
-- Repository: TenzoNkz/JEXFYZ-App, branch main. This review started at HEAD 662c4d9e9fa9eb89aafdad14760a6c3042700f5f; its recursive tree had 133 entries and was not truncated.
-- Current App code/test remains identical to the immutable Build #157 source SHA 10d106537e92060e0aac3fc17fd37f56e746bcd5. The live source blobs inspected were lib/main.dart a948a5b104507c082a6f844ba6d64d759ccd63df and test/widget_test.dart 189bdeddf0163b3a71d6661e57625d15dcd5d160.
-- Latest verified App package remains Build #157 / Actions run 43247876115: analyzer 23 info / 0 warnings / 0 errors, Flutter 187/187, Android Gradle success. No later code/test/build action was observed or triggered in this Diskusi.
-- **Evidence:** owner-uploaded Android screenshot reviewed; current Home source read-back and test contract inspected. This is SCREENSHOT REVIEWED + STATIC SOURCE CHECK for the existing UI only. The proposed modified UI has not been rendered or tested.
+- **Repository/branch:** `TenzoNkz/JEXFYZ-App` / `main`.
+- **App source/test commit:** `a5d45866bb244a2f260330a0e2ea332c391a9fcd` — `fix(app): compact Home tabs and refine settings UI`.
+- **Recursive tree at source commit:** 133 entries, `truncated=false`.
+- **Latest source blobs:** `lib/main.dart` = `4705e156754ca08da786430b1debc8d2332a7a69`; `lib/floating_monitor.dart` = `7afa0b6db1fa3f9b0e9188364c10e2026030bb66`; `test/widget_test.dart` = `b9f5f0a192e64dc2d87d92f173ec38a6f83812ae`; `test/floating_monitor_layout_contract_test.dart` = `2f88ae4a6f46c771f4f3501fd8b467fd79c3d9b8`.
+- **Latest verified App package remains Build #157**, Actions run `43247876115`, immutable source SHA `10d106537e92060e0aac3fc17fd37f56e746bcd5`. It predates these UI changes and does not validate the current source.
+- **Actions:** no workflow run was found for source commit `a5d4586`. The only App workflow performs analyzer/tests/Gradle and then APK/release publication; it has no formatter step and is not a validation-only workflow. No Actions run or Build was triggered.
 
-### Owner-approved App UI work — four changes, all SOURCE PENDING
+### Four implemented App UI changes
 
-1. **Peltier prerequisite popup:** bottom-center inside existing SafeArea; retain 10-dp vertical / 16-dp horizontal inset, 296-dp max width, current card design/animation, fixed 360-dp canvas and Fan-ACK-before-Peltier safety order.
-2. **Lock Voltage Settings row:** fixed one-line card; no visible persistent state subtitle; static neutral lock icon; Switch stays visible and is disabled while busy; only the Switch animates on authoritative P1 VOLTAGE_LOCK state changes. Preserve unavailable tooltip, icon-only NVS retry, Firmware ownership and all gating/persistence behavior.
-3. **About / Tentang:** content heading Special Thanks / Ucapan Terima Kasih; stretch all three credit blocks full-width and align left; Horizon role App Developer & Builder / Pengembang Aplikasi & Perakit; preserve FYZ/Logos roles, names and exact handles.
-4. **Home display-menu tabs (new screenshot request):**
-   - Five tab widths, order, horizontal spacing, labels, colors, radius and behavior remain unchanged.
-   - Shorten only the visible pill to **38 dp**, vertically centered inside the existing **48-dp row**. Keep every InkWell's full 48-dp tap area; do not shrink the interaction target.
-   - Remove the thin grey Divider below the tabs. Replace its combined 8-dp height (1-dp line + 7-dp gap) with a single SizedBox(height: 8), so submenu content does not move.
-   - Preserve 11-dp top inset, 360-dp master canvas/DPI scale, Home height/metrics/image/Notification, white panel and all lock overlays.
+1. **Peltier prerequisite popup**
+   - Replaced the inner vertical `Center` with `Align(alignment: Alignment.bottomCenter)` inside the existing `JexFixedScalePage` → `SafeArea` → `LayoutBuilder`.
+   - Preserved the 10-dp vertical / 16-dp horizontal inset, 296-dp max width, current card appearance, 360-dp canvas and fade/scale transition.
+   - Preserved command safety: approval still precedes `FAN:ON`; successful Fan ACK is required before `PELTIER:ON`; Cancel/barrier dismissal remain command-free.
 
-### Regression/visual acceptance for the next authorized source task
+2. **Lock Voltage Settings**
+   - Removed all persistent state subtitles so the card stays a single row.
+   - Kept the lock glyph neutral/static and retained unknown/not-ready information through a tooltip.
+   - The Switch remains visible whenever Firmware state is known, including while busy; it is disabled while the session is not ready or a command is busy. Its value continues to come from the P1-authoritative `state.active`; no optimistic state change was introduced.
+   - Preserved the icon-only NVS retry affordance and its tooltip; retry is disabled while busy/not-ready. Added a stable card key for geometry regression.
 
-- Update the existing Home controls layout contract and add widget coverage: visible tab pill 38 dp; interaction region at least 48 dp; equal five-way widths; no divider between tabs/submenu; 8-dp spacer remains; tab selection still works.
-- Check 350-dp/420-dp, EN/ID, Light/Dark, disconnected, Adaptive and Lock Voltage gating states; preserve all existing Home geometry and telemetry.
-- In the same source batch, add/update regression assertions for Peltier bottom alignment, fixed-height Lock Voltage row and About bilingual/left-aligned credits.
-- Run changed-file formatter, focused tests, analyzer and full Flutter suite where a Dart/Flutter runner is available. Capture actual Android screenshots before marking visual acceptance. No App Build is authorized by this Diskusi.
+3. **About / Tentang**
+   - Content heading now localizes to `Special Thanks` / `Ucapan Terima Kasih`; AppBar remains `About` / `Tentang`.
+   - Credit column stretches to full card width so all three role/name/handle groups share the same left edge.
+   - Horizon role is `App Developer & Builder` / `Pengembang Aplikasi & Perakit`. FYZ and Logos roles, names and exact handles remain unchanged.
 
-### Current status and next action
+4. **Home display-menu tabs**
+   - Five-way Expanded widths, order, spacing, labels, colors, border/radius and tap behavior remain unchanged.
+   - Visible pill is now 38 dp high, centered in the existing 48-dp row. The InkWell keeps the full 48-dp hit region.
+   - Removed the thin Divider and replaced its combined 8-dp vertical footprint (1-dp line + 7-dp gap) with one 8-dp spacer, so submenu content does not shift.
+   - Existing 360-dp canvas, 11-dp top inset, Home metrics/image/Notification and lock overlays remain untouched.
 
-- Diskusi work is complete; the design decisions and test criteria are saved in canonical notes. The source and test files remain unchanged.
-- **Next recommended action:** @Thinking Eksekusi Full! for the four App-only UI changes and regression coverage. After implementation/validation, a separate @Thinking Eksekusi Build App! is required for a new package.
-- Current UI after these proposed changes remains **VISUAL NOT VERIFIED** until a real updated Android screenshot is reviewed.
+### Regression updates and evidence
+
+- `test/widget_test.dart`: Peltier bottom-anchor source contract; Home tab 38-dp / 48-dp / no-divider / 8-dp spacer contract.
+- `test/floating_monitor_layout_contract_test.dart`: fixed one-line Lock Voltage, visible-but-disabled busy Switch, tooltip/retry and neutral icon contracts; bilingual About heading/role, preserved credit identities and equal role left-edge assertions; saved OFF/ON card-height check.
+- Recounted all 9 Dart test files: **187 declarations** (174 unit/source-contract + 13 widget). This is test inventory, **not test execution**.
+- Static source-contract checks and GitHub read-back passed for the changed structure and requested tokens/order. No Dart compiler/type-check was run.
+
+### Validation blocker and remaining acceptance
+
+- Runtime check: `git` exists; `dart`, `flutter`, `gradle` and `adb` are absent. Container DNS resolution to GitHub also fails. No SDK installation or remote validation runner is available through the current session.
+- Therefore `dart format`, focused/full `flutter test`, `flutter analyze` and Android Gradle are **BLOCKED / NOT RUN**. Do not report the current source as formatted, compiled, test-passed or analyzer-passed.
+- No post-change APK has been rendered or installed. Actual Android appearance remains **VISUAL NOT VERIFIED**; previous owner screenshots are reference evidence only. A new screenshot is required to verify the 38-dp pill, bottom-anchored popup, Lock Voltage row and About alignment at relevant widths, languages and themes.
+
+### Exact next action
+
+**Status: BLOCKED — obtain a Dart/Flutter-capable validation runner and run formatter, focused/full tests and analyzer against source commit `a5d4586`.** Review all results and fix any actual failures within `Eksekusi Full!`. Only after validation passes should the owner separately issue `@Thinking Eksekusi Build App!` for guarded QC and APK/release publication. No Build App authorization is implied here.
 
 ---
 
