@@ -1,32 +1,83 @@
-## CURRENT CHECKPOINT — PER-INTERACTION WORK-STATUS LIFECYCLE IMPLEMENTED / BUILD #162 VERIFIED SUCCESS — 2026-11-14
+## CURRENT CHECKPOINT — COMPREHENSIVE REPO AUDIT / GEMINI SECOND OPINION PENDING — 2026-11-14
 
-**Mode:** `Eksekusi Full!` — canonical work-status protocol and documentation only. No executable App source, tests, workflow, Firmware/BIN, Firebase, OTA, flashing or device operation was changed or performed.
+**Mode:** `Diskusi!` — read-only repository analysis. No App/Firmware source, tests, config, workflow, release or device operation was changed or run in this audit.
 
-### New status contract
+### Repository snapshot and evidence boundary
 
-- Every JE X FYZ project-related owner message, whether in a new chat or an existing conversation, begins with persisted `STATUS = IN_PROGRESS` / `SESSION STATUS = IN_PROGRESS` before extended loading, research or execution. This includes commands, questions, corrections, follow-ups and stop/cancel instructions. Unrelated conversation outside this project is excluded.
-- `00_WORK_STATUS.md` now distinguishes **SESSION STATUS** (current message/interaction), **WORK STATUS** (requested work item across steps/chats), and **EXTERNAL OPERATION STATUS** (actual Actions/build/process state). A new chat cannot overwrite or misreport an external operation.
-- Refresh the marker after meaningful milestones, actual tool/test results, commits, blockers, authorization changes and external-process transitions. Each refresh records an Asia/Jakarta timestamp, current phase, last verified milestone/evidence and next action.
-- Before every final response, close the current session and work item truthfully: `COMPLETED`, `BLOCKED`, `WAITING_OWNER`, `FAILED` or `CANCELLED`; a prior interrupted work item is classified `RECOVERY_REQUIRED` only after verification.
-- If an external job is still active after a response, keep the work item and operation `IN_PROGRESS` with its exact run/job; do not confuse a completed chat response with completed external work.
-- **Automation boundary:** this is an assistant-executed, event-driven protocol, not a webhook or background heartbeat. GitHub cannot receive normal ChatGPT messages directly; updates persist when the assistant executes GitHub writes. There are no per-second/background updates while the chat is disconnected or frozen. The timestamp marks the latest persisted observation.
-- Canonical rule: `MASTER_PROMPT.md` Section 2A. Both blocks in `CHAT_TRANSFER_PROMPTS.md`, `AGENTS.md`, `CHAT_RULES.md`, `README.md` and `MEMORY_INDEX.md` now point to the same contract.
+- **Repository/default branch:** `TenzoNkz/JEXFYZ-App` / `main`; current HEAD `763961ae46727887a73037ba46c50d38ac3cfdc6`.
+- **Release source:** Build #162 / Actions run `43430275967` / job `131901744336`, terminal SUCCESS on immutable source `6854d8eb58a5f077cbc99749a35d37a4f55b8efa`. Comparison from package source to current main shows 27 commits ahead, 0 behind and only Markdown documentation changed; current executable/test source matches the Build #162 package source in that comparison.
+- **Build #162 evidence:** analyzer 23 info-level issues; 0 warning/error gate failures; Flutter **188/188 passed**; Android Gradle `BUILD SUCCESSFUL in 3m56s`. Native App JUnit tasks were `NO-SOURCE`. Release/tag `jexfyz-latest` points to the source SHA; exactly one APK + one source ZIP; downloaded SHA-256s: APK `56c08bd490e52a8616627613675141a91c14ab6893cca0e1e54d5e5ac1a053f2`, source ZIP `86bd61edfe59acd6063367f7b8704356d2bf192d8c55c150f0f0e6b6285db42e`. APK V1/V2/V3, pinned certificate, source marker and ZIP integrity passed.
+- **Repository shape:** 7 Dart App source files, 9 Dart test files (188 declarations), 4 Kotlin source files, 1 active versioned Firmware sketch (`JEXFYZ-V7.2.ino` with `FW_VERSION="V7.2"`), 12 canonical agent skills plus 12 mirror files. The 12 canonical/mirror SKILL.md blob pairs are identical. 52 Markdown files are present across active docs, skill mirrors, firmware reference and immutable archives.
+- **Governance:** one branch (`main`), GitHub branch metadata `protected=false`; detailed branch-protection API is not accessible to the connector. No open PRs. The latest listed Actions runs have no active run; #162 is success, #160/#161 failures remain historical.
+- **Scope limit:** repository-wide inventory and targeted static risk/documentation audit, not a formal line-by-line proof that every branch has zero defects. No local Dart/Flutter/Gradle/ADB/Arduino compile or device validation was run here.
 
-### Separate external operation reconciled — Build #162
+### Ranked audit findings
 
-- **Run/job/source:** [Build #162 / run 43430275967](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/43430275967), job `131901744336`; immutable package source `6854d8eb58a5f077cbc99749a35d37a4f55b8efa`.
-- Job terminal state **COMPLETED / SUCCESS**. All workflow steps 1–21 and cleanup 39–43 succeeded; previous “Android gate active” checkpoint was stale.
-- Analyzer: 23 info-level issues, no warning/error gate failure. Flutter: **188/188 passed**. Gradle: `BUILD SUCCESSFUL in 3m56s`, 162 actionable tasks. Native App JUnit tasks were `NO-SOURCE`.
-- Release tag `jexfyz-latest` targets exact source SHA. Exactly one APK and matching source ZIP were uploaded and downloaded for verification. APK SHA-256 `56c08bd490e52a8616627613675141a91c14ab6893cca0e1e54d5e5ac1a053f2`; source ZIP SHA-256 `86bd61edfe59acd6063367f7b8704356d2bf192d8c55c150f0f0e6b6285db42e`. Downloaded V1/V2/V3 signatures, pinned certificate and source ZIP marker/integrity passed.
-- Included About `@horizontalzzz`, Usage Statistics refinements/tests and native Floating Monitor Fan correction. Android `versionName "Telegram @horizontalzzz"` unchanged.
-- **Not covered:** physical installation/OEM visual acceptance, physical BLE/device, Firmware compile/BIN, Firebase, OTA/flash and thermal/electrical validation. Next owner action is to install Build #162 and review the visual/device matrix.
+**P1 — Release workflow concurrency can cancel a valid Build from an unrelated issue event.**
 
-### Status-protocol implementation and evidence
+- `.github/workflows/jexfyz-app-build-trigger.yml`: event `issues.opened/reopened` (lines 11–15) triggers the workflow for every issue; workflow-level concurrency uses one fixed group and `cancel-in-progress: true` (lines 21–23); owner/title/body-token filtering occurs later on `jobs.build.if` (lines 31–35).
+- Therefore a non-matching issue event still creates a workflow run in the same workflow-level concurrency group before its build job is skipped, and can cancel the valid active run. GitHub documentation confirms workflow-level concurrency with `cancel-in-progress: true` cancels a running workflow in the same group.
+- **Smallest safe design proposal:** put concurrency at the guarded `build` job level so only a matching owner/title/token job enters the group; do not cancel an in-progress release; decide whether valid builds should queue (for example `queue: max`) or reject an additional trigger explicitly. Preserve all issue/title/token guards and every release gate. **Not changed in Diskusi.**
 
-- Updated `MASTER_PROMPT.md` (including the final `STATUS` alias rule), both load/continue templates, `00_WORK_STATUS.md`, `AGENTS.md`, `CHAT_RULES.md`, `README.md`, `MEMORY_INDEX.md`, `PROJECT_STATE.md`, `HANDOVER.md` and `APP_PREBUILD_AUDIT.md`; Build #162 terminal evidence appended to `APP_BUILD_REPORT.md`.
-- No new files created; immutable `archive/*.md` snapshots untouched.
-- Validation is repository read-back and static consistency checking. No application source/test/toolchain validation was required for this documentation-only change.
-- **Implementation result:** the per-interaction lifecycle is complete; the final `00_WORK_STATUS.md` write closes this interaction as `COMPLETED`. The top-level `STATUS` aliases `SESSION STATUS`, ensuring every new JE project message visibly starts as `IN_PROGRESS` while the previous `WORK STATUS` and external operation remain independently recorded.
+**P2 — Flutter lint package is declared but no root analyzer configuration exists.**
+
+- `pubspec.yaml` declares `flutter_lints: ^6.0.0`, but complete root listing has no `analysis_options.yaml`.
+- Flutter/Dart guidance requires an analysis options file with `include: package:flutter_lints/flutter.yaml` to activate that recommended set. Current CI runs `flutter analyze --no-fatal-infos`, reports 23 info issues, and does not run a formatter gate.
+- **Proposal:** add an explicit analyzed lint baseline, first measure/fix existing violations, then enforce non-regression; add a deterministic formatter check. Do not turn on every strict lint simultaneously without a staged baseline. Not changed.
+
+**P2 — No validation-only CI; the sole workflow is the guarded issue-triggered publishing workflow.**
+
+- `.github/workflows/` contains only `jexfyz-app-build-trigger.yml`, which runs analyzer, Flutter tests, Gradle and then builds/signs/publishes the APK + ZIP.
+- There is no separate non-publishing validation workflow for routine source changes. Current main is not protected and no required check is enforced by branch rules.
+- **Proposal:** after owner approval, separate non-publishing validation (format/analyze/test and any safe native compile checks) from the manually guarded release pipeline. Preserve the explicit Build App command as the only publication route. Consider required checks/branch protection only after the validation workflow is proven.
+
+**P2 — Documentation source-of-truth drift after Build #162.**
+
+- `APP_NOTES.md` and `BUILD_NOTES.md` still open with Build #159 as the latest verified package.
+- `DESIGN_NOTES.md` opens with Usage Statistics “QC pending” and states Build #159 does not contain the refinement, although Build #162 packages it.
+- `APP_PREBUILD_AUDIT.md` still has active-looking “Current source correction / QC pending” sections for About, Statistics and Fan fixes underneath a current Build #162 success section.
+- `PROJECT_STATE.md` is specified as current-only truth but is 70 KB / 397 lines / 41 headings and carries a large historical build chronology.
+- **Proposal:** designate exact fact ownership: Build #162 release truth in PROJECT_STATE/BUILD_NOTES; UI contracts in APP_NOTES/DESIGN_NOTES; gate disposition in APP_PREBUILD_AUDIT. Re-label superseded snapshots as historical and move chronology to APP_BUILD_REPORT/CHANGELOG where appropriate. Preserve all failure evidence and immutable archives. No documentation cleanup performed beyond this checkpoint.
+
+**P2 — App code has high concentration/maintenance cost.**
+
+- Static inventory: `lib/main.dart` 10,564 lines / ~386 KB; `lib/usage_statistics.dart` 3,409 lines / ~109 KB; `lib/floating_monitor.dart` 1,766 lines / ~64 KB; `lib/app_settings.dart` 1,678 lines / ~63 KB.
+- `main.dart` owns application startup, BLE/runtime state, navigation and many UI/painter classes. Usage Statistics combines SQLite/schema, recorder/write queue, aggregation/analytics, charts and page UI. Floating Monitor combines persistence, bridge/runtime synchronization and settings pages.
+- **Proposal:** incremental domain extraction with stable public interfaces and focused behavioral tests; do not conduct a mechanical all-at-once rewrite. Keep BLE P1, telemetry truth, persisted schemas, OTA and hardware safety boundaries unchanged.
+
+**P2 — Coverage visibility is limited.**
+
+- 188 Flutter tests passed in Build #162, but there is no coverage artifact/gate in the workflow. Android native test source/compile/process/test tasks are `NO-SOURCE`; no native App JUnit test cases executed.
+- Several tests are source-contract checks using `dart:io`, which are valuable for structural invariants but cannot substitute for parser/state/widget behavior or Android MethodChannel service tests.
+- **Proposal:** report coverage separately; add tests around the real BLE state machine, async cancellation/disposal, SQLite migrations/queue pressure, MethodChannel/native service lifecycle and firmware/App message contract where feasible. Preserve current source-contract tests for architectural invariants.
+
+**P2 — Supply-chain hardening backlog.**
+
+- Workflow action references are version tags (`actions/checkout@v6`, `actions/setup-java@v6`, `subosito/flutter-action@v2`, `gradle/actions/setup-gradle@v6`), not reviewed full commit SHAs.
+- **Proposal:** pin each third-party action to a verified full commit SHA or adopt a supported dependency lockfile; establish a controlled update process. No workflow change made.
+
+**Known security/physical evidence gaps — documented, not newly introduced by this audit.**
+
+- Firmware Online OTA currently calls `cloudClient.setInsecure()` (V7.2 sketch around line 3362): HTTPS transport is encrypted but server certificate identity is not authenticated. Existing OTA allow-list/redirect/content/size/recovery guards remain protected; do not redesign TLS/OTA without specific authorization.
+- BLE App-only identity authentication remains BLOCKED / NOT IMPLEMENTED: Just Works bonding plus `SYNC_READY` is not cryptographic proof of the official App.
+- The V7.2 sketch matches its filename and contains no literal `delay(` or `while(` occurrences in the static scan; this is not proof of a complete timing/safety audit or a Firmware compile.
+- Build #162 CI does not prove device installation, screenshots/OEM layout, physical BLE, OTA, cooling, NTC, rail, current, ripple or thermal/electrical validation.
+
+### Findings intentionally not treated as defects
+
+- `APP_BUILD_REPORT.md` (~643 KB), `CHANGELOG.md` (~218 KB), and the three `archive/*.md` files are evidence/history stores. Do **not** delete or truncate them just to reduce repo size; use indexed/targeted reads.
+- The 12 `.agents/skills` + 12 `.github/skills` mirrors are deliberate and verified byte-identical, not accidental duplicate copies.
+- One active V7.2 `.ino`, locked Android `versionName "Telegram @horizontalzzz"`, App-only guarded release, and explicit Firmware/device authorization boundaries are intentional contracts.
+
+### Gemini second opinion
+
+- No direct Gemini connector exists here. A copy-ready prompt is prepared in this conversation with repository/head/build evidence and the P1/P2 findings above. The owner must paste it into Gemini and return its response; Gemini cannot access the GitHub repository from this prompt.
+- **Next:** independently challenge the concurrency finding, lint/CI gaps, documentation authority map, modularization strategy and security/coverage risks. Re-check each Gemini claim against live source before accepting it.
+
+### Final disposition
+
+- This Diskusi audit is **read-only**: no source, test, configuration, workflow, release, Firmware/BIN, Firebase, OTA, flashing or device changes were made.
+- The requested audit/second-opinion prompt preparation is complete; implementation of confirmed fixes awaits owner review and a separate valid execution authorization.
 
 ---
 
