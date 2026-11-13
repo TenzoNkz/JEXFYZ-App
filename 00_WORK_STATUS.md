@@ -6,16 +6,16 @@
 
 | Field | Value |
 |---|---|
-| **STATUS** | **COMPLETED** |
+| **STATUS** | **IN_PROGRESS** |
 | Mode | Diskusi |
-| Work item | Create and install the GitHub work-status marker |
+| Work item | Review Home menu-tab height and divider cleanup |
 | Updated | 2026-11-13 (Asia/Jakarta) |
-| Last completed milestone | Status lifecycle defined; root marker created; README, operating rules, agent entrypoint, transfer prompts and memory index linked |
+| Last completed milestone | Screenshot inspected; tab width confirmed as owner-approved; current Home menu source and layout contract inspection underway |
 | Result | The marker setup is complete. The three approved App UI changes remain pending implementation. |
 | Last verified App source baseline | Build #157 — `10d106537e92060e0aac3fc17fd37f56e746bcd5` |
 | Validation | GitHub file read-back and repository-tree verification; no App source/test/build operation was performed |
-| Blocker | None for this marker. App UI implementation still requires a separate `Eksekusi Full!` command. |
-| Next action | Implement the three approved App UI fixes under `Eksekusi Full!`; a later App package requires separate `Eksekusi Build App!` authorization. |
+| Blocker | None currently. Diskusi mode is read-only for source and tests. |
+| Next action | Complete source/design review, record the approved tab dimensions and separator decision, then leave `COMPLETED` with the precise next authorized step. |
 
 ## Status meanings
 
