@@ -1,28 +1,27 @@
-## CURRENT CHECKPOINT — GUARDED APP BUILD #158 PRE-TRIGGER — 2026-11-13
+## CURRENT CHECKPOINT — BUILD #158 ACTIVE / JAVA SETUP — 2026-11-13
 
-**Mode:** `Eksekusi Build App!` — owner explicitly authorized the guarded App Build/QC/release operation in this chat. Scope is the App workflow and only justified App-scope repairs. No Firmware compilation/BIN, Firebase mutation, OTA, flashing, device operation or unrelated release work is authorized.
+**Mode:** `Eksekusi Build App!` — explicit owner authorization is active for guarded App Build/QC/release and justified App-scope repairs only. No Firmware compilation/BIN, Firebase mutation, OTA, flashing or device operation.
 
-### Live candidate and pre-trigger evidence
+### Live source and trigger evidence
 
 - **Repository/branch:** `TenzoNkz/JEXFYZ-App` / `main`.
-- **App source/test checkpoint:** `a5d45866bb244a2f260330a0e2ea332c391a9fcd` — four approved UI refinements and matching regression source. Compare from this code checkpoint to pre-trigger main shows documentation-only paths changed; no executable App/test, Gradle, configuration, Firmware or workflow change after this source checkpoint.
-- **Latest main before this checkpoint update:** `5859872be4139f7887d2f28960226a0724d16c86` (the work-status marker was committed for this Build session). Re-fetch main after this checkpoint commit and again immediately before issue creation; the issue event must capture the final source SHA.
-- **Recursive tree:** 133 entries, `truncated=false` at the pre-checkpoint HEAD.
-- **Pre-trigger Actions:** newest 100 workflow runs inspected; zero queued/in-progress/waiting/requested/pending runs. No run exists for pre-trigger main HEAD. Open PR count = 0.
-- **Existing trigger issue:** Issue #33 is owner-authored, OPEN, with exact title `JE X FYZ — EKSEKUSI BUILD APP TRIGGER` and body token `JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1`. Leave it OPEN and do not reopen it; use exactly one new owner-authored issue for this new attempt.
-- **Workflow:** `.github/workflows/jexfyz-app-build-trigger.yml`, blob `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12`, fully read (545 lines). It triggers only on `issues.opened` / `issues.reopened`; job guard requires repository owner, exact title and token. No push/PR release trigger. All analyzer, Flutter test, Android Gradle, obfuscated APK, V1/V2/V3 signing, pinned certificate, source ZIP, Release/tag parity and downloaded-asset checksum gates remain intact.
-- **Protected version:** Android `versionName "Telegram @horizontalzzz"` re-read unchanged. Flutter app version remains `1.0.0+3`.
-- **Last verified Release:** Build #157, run `43247876115`, job `131285336987`, immutable source `10d106537e92060e0aac3fc17fd37f56e746bcd5`; run concluded SUCCESS. Release ID `403010611` / tag `jexfyz-latest` still targets that old source. Assets remain exactly one APK (55,980,123 bytes; SHA-256 `24a42feb2ec8968209ac5dd764c6acb789c09fb0fc9a26df8e7d4bf5e1652aef`) and one source ZIP (2,932,445 bytes; SHA-256 `3b6f0a84a760b26587ca39a946f14383f2acee933fb5b30247270713a32e6a06`).
-- **Immediately preceding failure/repair:** Build #156 / run `43246666829`, job `131281061201`, source `c180f2bb18b3361ecd02fff2503b06043f0d22e0`, failed only at Flutter tests (186 passed / 1 failed). The remaining test expected an obsolete 3-dp Home spacer after the real Home overflow repair changed the two gaps to 2 dp. Commit `38212c3620aba6eb9fa5f6db41b43fdb777a9ddf` corrected the assertion to count the two 2-dp spacers and reject 3 dp; Build #157 then passed 187/187. Failure history remains preserved.
-- **Build #157 CI details:** analyzer passed with 23 info deprecations, zero warnings/errors; Flutter tests 187/187 passed; Android Gradle `BUILD SUCCESSFUL in 3m19s`, while native app JUnit tasks were `NO-SOURCE`; all workflow gates 1–21 and cleanup 39–43 passed. APK V1/V2/V3 and pinned certificate passed. Self-signed/PKIX/no-timestamp caveats remain.
-- **Evidence boundary:** Build #157 does not contain `a5d4586` UI refinements. Those remain NOT RELEASED and require this new Build. Visual acceptance, physical App/BLE/device, Firmware compile/BIN, Firebase, OTA/flash, thermal/electrical and owner installation remain separate / NOT VERIFIED.
+- **Immutable Build #158 checkout SHA:** `285f3d6ea29378e9be4c711ede1705bf4abd821a`. It contains App/test source checkpoint `a5d45866bb244a2f260330a0e2ea332c391a9fcd` plus later documentation-only commits.
+- **Trigger issue:** [#35](https://github.com/TenzoNkz/JEXFYZ-App/issues/35), owner-authored, opened 2026-11-13T05:59:45Z with the exact guarded title and token. The earlier Issue #33 remains OPEN and was not reused. Exactly one Actions run appeared.
+- **Actions run/job:** [Build #158 / run 43375621769](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/43375621769), workflow 374946166, event `issues`, attempt 1; job `131721325458`; run created 2026-11-13T05:59:48Z.
+- **Current observed gate:** steps 1 Set up job and 2 Checkout repository SUCCESS; step 3 Set up Java 17 IN_PROGRESS. Steps 4–21 pending. Build is active; no package/Release mutation or downstream gate is asserted yet.
+- **Workflow:** blob `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12`, full 545 lines read. Exact issues.opened/reopened + owner/title/token guard remains; no push/PR trigger. All analyzer/test/Gradle/sign/source-archive/Release/downloaded-asset gates remain unchanged.
+- **Build preflight:** recursive tree 133 entries, `truncated=false`; no active/queued runs before trigger; no open PR; Android `versionName "Telegram @horizontalzzz"` exact.
+- **Release before #158:** Release ID `403010611` / tag `jexfyz-latest` on older Build #157 source `10d106537e92060e0aac3fc17fd37f56e746bcd5`; its previous APK/ZIP asset pair remains the baseline until this run's gates succeed.
+- **Immediately preceding attempt:** Build #156 run `43246666829` failed at Flutter test gate (186 passed / 1 failed) because one test still expected a 3-dp spacer after the source was intentionally changed to 2 dp. The source-contract was corrected in `38212c3620aba6eb9fa5f6db41b43fdb777a9ddf`; Build #157 then passed 187/187. All failure history remains preserved.
+- **Build #157 baseline:** run `43247876115`, job `131285336987`, source `10d106537e92060e0aac3fc17fd37f56e746bcd5`, success; analyzer 23 infos/0 warnings/errors; Flutter 187/187; Android Gradle BUILD SUCCESSFUL (app JUnit tasks NO-SOURCE); all gates 1–21 and cleanup 39–43 success; APK V1/V2/V3 + pinned certificate and Release/tag/source parity/downloaded digest checks passed. Self-signed/PKIX/no-timestamp caveat remains.
+- **App source state:** four refinements in `a5d4586` were not in Build #157; Build #158 is the first run authorized to package the latest App UI candidate.
 
-### Current milestone and next action
+### Current milestone and exact continuation
 
-- `00_WORK_STATUS.md` is `IN_PROGRESS`, mode `Eksekusi Build App`, updated in commit `5859872be4139f7887d2f28960226a0724d16c86`.
-- **State:** PRE-TRIGGER. No new issue has been created and no new Actions run is active yet.
-- **Next action:** verify the post-checkpoint main HEAD/tree and zero active/queued runs once more, then create exactly one owner-authored issue with the exact guarded title/body token. Capture its issue number, run ID, immutable checkout SHA and job ID. Do not create or reopen any second trigger.
-- At each gate, update `APP_BUILD_REPORT.md`, `CHAT_TRANSFER.md` and `00_WORK_STATUS.md`. If a code gate fails, preserve the failed run and repair only the concrete App-scope root cause without weakening checks.
+- `APP_BUILD_REPORT.md` appended Build #158 trigger/run/job/source and initial job status; report update commit: `65bafcc1182841b98f85297014c8de4fd9766dba`.
+- **State:** ACTIVE, step 3 Java 17 setup. No duplicate or second issue trigger.
+- **Next:** inspect run `43375621769` / job `131721325458`; record actual step state and relevant job logs. Update this checkpoint and the append-only build report as gates complete. On failure, preserve logs and repair only the demonstrated App-scope cause without weakening any gate.
+- **Evidence boundary:** App CI/package is not Firmware compile/BIN, Firebase, OTA/flash, physical BLE/device, thermal/electrical or OEM visual acceptance. These remain NOT RUN / UNVERIFIED absent separate evidence.
 
 ---
 
