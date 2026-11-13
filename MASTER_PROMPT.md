@@ -21,20 +21,47 @@ Use the mode explicitly selected by the owner's message. A mode is a permission 
 - Chat Stuck! / @Thinking Chat Stuck! — recover only the most recent valid in-progress operation that already had explicit authorization. Inspect live branch, run state, jobs, logs and prior tool results before resuming. Do not repeat commits, triggers or other side effects blindly. If authorization or the intended operation cannot be recovered, remain read-only and ask for a valid command. This mode cannot widen the inherited scope.
 - Tanya Gemini! and Jawaban Gemini! may still be used as explicit labels within Diskusi, but Gemini consultation no longer requires the owner to type Tanya Gemini! first. The assistant may proactively prepare a Gemini handoff as described in Section 6.
 
-## 2A. GitHub work-status marker
+## 2A. Per-interaction work-status lifecycle
 
-- `00_WORK_STATUS.md` is the single root-level snapshot for the latest substantive chat work session. It is separate from `CHAT_TRANSFER.md`: the marker answers **what mode/status is this session in?**; the checkpoint records **what exactly was done, what evidence exists, and how to continue**.
-- At the beginning of every substantive session, set the marker to `IN_PROGRESS` with the selected mode, scope, date and latest verified checkpoint. Update milestone/evidence after meaningful progress. At closure, write `COMPLETED` only after the selected scope, required available validation, durable memory and final read-back are complete; otherwise write `BLOCKED` or `WAITING_OWNER`.
-- During `Chat Stuck!`, read `00_WORK_STATUS.md` first. An unfinished `IN_PROGRESS` marker becomes `RECOVERY_REQUIRED` while prior authorization, last milestone, live main and actual Actions state are verified. Resume only the already-authorized scope.
-- The marker is not a live heartbeat: ChatGPT cannot automatically update GitHub while a conversation is frozen or disconnected. An `IN_PROGRESS` value after an abrupt stop means the last session was not formally closed; it does not prove a process is still running. Never infer active background work without checking the actual job/run state.
+`00_WORK_STATUS.md` is the single root-level live snapshot. It tracks the latest owner interaction and the work item separately from independently running external operations. `CHAT_TRANSFER.md` preserves the durable continuation checkpoint; `APP_BUILD_REPORT.md` remains the append-only Build App evidence ledger.
 
+### Start — mandatory for every JE X FYZ interaction
+
+1. **Every incoming project-related owner message starts a new interaction with `SESSION STATUS = IN_PROGRESS`.** This includes every explicit mode command (`Diskusi!`, `Eksekusi Full!`, `Eksekusi Build App!`, `Chat Stuck!`), ordinary JE project requests, corrections, follow-ups, short questions and stop/cancel instructions. It applies in both an existing conversation and a newly opened chat. Unrelated personal/general conversation outside this project does not write this repository marker.
+2. Read the current `00_WORK_STATUS.md` first, then immediately persist the new interaction as `IN_PROGRESS` **before** extended repository loading, research, source edits, Actions inspection that may lead to side effects, or any other execution. Record the selected mode (or read-only/default mode), concise request, Asia/Jakarta start/update timestamps, current phase, last verified checkpoint and exact next action.
+3. Keep the current work item distinct from an external operation. Record any Actions run, build, deployment or other real process in the separate `EXTERNAL OPERATION` fields with its own observed state. Never overwrite an active operation with a new chat request.
+4. If the opening marker write fails, do not claim that status is synchronized. Report the status-write blocker; do not perform irreversible operations until the marker can be persisted or the owner explicitly changes this requirement.
+
+### During work — event-driven refresh
+
+- After every meaningful milestone, actual tool result, test gate, commit, failure, blocker, authorization change or external-operation state transition, refresh `00_WORK_STATUS.md`. Keep the work status `IN_PROGRESS` while the requested scope or a tracked operation is genuinely unfinished.
+- Update the phase, last completed milestone, evidence class, last verified SHA/run/job where relevant, blocker and next action. Use the current Asia/Jakarta timestamp for every persisted status refresh.
+- For a running Actions job, query the actual run/job/step state. Mark the external operation `QUEUED` or `IN_PROGRESS` only when the API says so; do not infer it from an old checkpoint. At terminal state, change it to `COMPLETED`, `FAILED` or `CANCELLED` and record the observed conclusion.
+- Do not write status commits for every internal thought, repeated tool poll with no state change, or cosmetic wording change. Refresh at each real state transition and meaningful milestone. The required start and terminal writes still occur for every project interaction.
+
+### Close — mandatory before every final response
+
+- Close the current interaction and work item before sending the final response. Use `COMPLETED` only when the requested scope is complete, required available checks are run, durable memory is saved and final repository read-back is verified.
+- Use `BLOCKED` when a concrete tool, permission, runner, service or environment dependency prevents completion; `WAITING_OWNER` when a specific owner decision, input or new authorization is required; `FAILED` when an executed acceptance gate ends unsuccessfully and no in-scope repair resolves it; and `CANCELLED` when the owner explicitly stops the work.
+- Use `RECOVERY_REQUIRED` for a prior interaction that ended unexpectedly before closure. It is a recovery disposition, not proof that ChatGPT or a process is still running.
+- A short answer still follows start → answer/check → terminal close. `COMPLETED` means **this requested work item** is complete; it never means the whole product is complete.
+- If a real external operation remains active after the current assistant interaction ends, close the interaction separately but leave the work item `IN_PROGRESS` and retain `EXTERNAL OPERATION STATUS = IN_PROGRESS`. State the exact run/job and that it is still active; never claim the work is complete.
+
+### New chat and interruption recovery
+
+- If the previous marker says `SESSION STATUS = IN_PROGRESS` or `WORK STATUS = IN_PROGRESS`, do not treat it as proof of a live assistant process. First verify any relevant Actions/job/service state. Preserve the prior unfinished task in `CHAT_TRANSFER.md` with disposition `RECOVERY_REQUIRED`, then open the new interaction as `IN_PROGRESS` without losing the external-operation fields.
+- `Chat Stuck!` inherits only the last valid authorization. Resume an operation only after live evidence confirms it is unfinished; do not repeat completed commits, triggers or irreversible effects.
+
+### Automation boundary
+
+This protocol is automatic **in the assistant's handling of each project message**, not a GitHub webhook or background heartbeat. GitHub does not receive ordinary ChatGPT messages directly, and ChatGPT cannot write a status update while it is disconnected, frozen or not executing a tool call. Therefore `00_WORK_STATUS.md` is event-driven and current as of its **Last updated** timestamp; it is not a continuously ticking clock. Never promise per-second updates or background monitoring.
 Important: a chat-transfer prompt selects a mode but does not enlarge the permissions stated here. A broad request such as 'rapikan repo' must still be interpreted within the selected mode. A documentation-only request never implies permission to alter source, workflow or release behavior.
 
 ## 3. Mandatory LOAD + CONTINUE protocol
 
 At the start of a new or recovered project chat:
 
-1. Read `00_WORK_STATUS.md` first to identify the latest recorded session mode/status, then read the active continuation checkpoint at the top of CHAT_TRANSFER.md fully. Treat later superseded entries as history; do not load them wholesale. Follow their references to the canonical subject note or evidence ledger only when the current task needs them. Never let a stale checkpoint override live main.
+1. Read `00_WORK_STATUS.md` first. Reconcile any unfinished prior interaction against live external-operation state, then immediately write the new JE X FYZ interaction as `SESSION STATUS = IN_PROGRESS` before extended loading or action. Next read the active continuation checkpoint at the top of CHAT_TRANSFER.md fully. Treat superseded entries as history; never let a stale checkpoint override live main.
 2. Fetch live repository metadata, main HEAD, commit metadata and the full recursive tree. Confirm the requested repository and branch; inspect whether the tree is truncated.
 3. Read AGENTS.md and SKILLS_INDEX.md to orient the active agent and discover applicable skills; then read CHAT_RULES.md (a short compatibility pointer), MEMORY_INDEX.md, PROJECT_STATE.md and HANDOVER.md.
 4. Read the complete canonical subject references relevant to the actual task. Inspect the live source, tests, configuration and workflow only to the degree needed to verify the issue. For a full Markdown cleanup/audit, enumerate and inspect every Markdown file, classify its role, and search all links/path-based references before proposing moves or deletion.
@@ -56,11 +83,12 @@ At the start of a new or recovered project chat:
 
 GitHub does not automatically store the chat transcript. Only a real repository change committed to main and re-read/verified is durable shared memory.
 
-- At the start of every substantive session and after meaningful milestones, update `00_WORK_STATUS.md` as specified in Section 2A. Before ending any substantive project chat, review the conversation since the last verified checkpoint. Save new durable requirements, owner decisions, technical findings, completed milestones, test results, blockers and next steps to the relevant canonical notes. Do not wait for a separate save request.
-- After every durable decision, significant finding, logical milestone, test result or blockage, update CHAT_TRANSFER.md plus the relevant canonical subject note. During Build App, append each real attempt and evidence to APP_BUILD_REPORT.md as it happens.
-- At substantive task completion/blockage, record: mode and authorized scope; result; evidence label; files/commit; tests actually run and outcomes; what remains unverified; blockers; exact next action; whether any operation is still running.
-- Commit documentation/source/test changes directly to main only within the selected mode's authorization. Verify resulting file content and live HEAD before saying 'saved'. If nothing durable changed, do not create an empty commit.
-- **Owner-mandated continuity rule:** every substantive project interaction — Diskusi, Eksekusi Full, Eksekusi Build App, Chat Stuck recovery, or another project operation — must leave its durable decisions/findings/action/results/blockers in `CHAT_TRANSFER.md` plus the relevant canonical subject note before the interaction ends. Refresh `PROJECT_STATE.md` and `HANDOVER.md` when current status or the immediate next action changes. For a short interaction that adds no durable information, re-read/confirm the current checkpoint rather than creating an empty or duplicate commit.
+- **Every JE X FYZ user interaction:** follow Section 2A. Persist `SESSION STATUS = IN_PROGRESS` at the start of every project-related message, refresh `00_WORK_STATUS.md` after real milestones/state changes, and persist a truthful terminal session state before the final response. This requirement includes short Q&A, follow-up corrections, stop/cancel messages and new chats; unrelated non-project conversation is excluded.
+- Every status write must contain the current mode, request/work item, Asia/Jakarta `Started`/`Last updated`, current phase, last completed milestone, evidence/commit/run where applicable, blocker and next action. Keep `SESSION STATUS`, `WORK STATUS` and `EXTERNAL OPERATION STATUS` separate so a completed chat response cannot falsely close a still-running Actions job, and a new chat cannot erase it.
+- After every durable decision, significant finding, logical milestone, test result or blockage, update `CHAT_TRANSFER.md` plus the relevant canonical subject note. During Build App, append every real attempt and terminal evidence to `APP_BUILD_REPORT.md` as it happens.
+- At work-item completion/blockage, record: mode and authorized scope; result; evidence label; files/commit; tests actually run and outcomes; what remains unverified; blockers; exact next action; and whether an external operation is still running.
+- Commit documentation/source/test changes directly to main only within the selected mode's authorization. Verify resulting file content and live HEAD before saying 'saved'. Required status transitions are real content changes, not empty commits. Avoid duplicate writes when neither status nor evidence changed.
+- **Owner-mandated continuity rule:** every substantive project interaction — Diskusi, Eksekusi Full, Eksekusi Build App, Chat Stuck recovery, or another project operation — must leave durable decisions/findings/action/results/blockers in `CHAT_TRANSFER.md` plus the relevant canonical subject note before ending. Refresh `PROJECT_STATE.md` and `HANDOVER.md` when current status or the immediate next action changes. A brief response that creates no new durable fact still receives the mandatory status start/close updates; it does not require an empty checkpoint/subject-note commit.
 - If a chat-limit interruption is foreseeable, checkpoint immediately. If the chat stops before the write is committed and verified, recover only the latest verified checkpoint and live state; state the possible unsaved gap and do not invent the missing tail.
 - CHAT_TRANSFER.md is a rolling continuation checkpoint, not a transcript. Keep it concise and current. PROJECT_STATE.md is current truth only. HANDOVER.md is the short immediate next-step note.
 
