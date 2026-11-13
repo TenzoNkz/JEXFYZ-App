@@ -1,4 +1,26 @@
-## CURRENT CHECKPOINT — REPO AUDIT + FLOATING MONITOR FAN ICON FIX / WAITING OWNER BUILD QC — 2026-11-13
+## CURRENT CHECKPOINT — USAGE STATISTICS UI REFINEMENT / WAITING OWNER BUILD QC — 2026-11-13
+
+**Mode:** `Eksekusi Full!` — App UI source, Flutter regression source, static read-back and canonical documentation only. No App Build/Release, Actions trigger, Firmware/BIN, Firebase, OTA, flashing or device operation was authorized or performed.
+
+### Source and change record
+
+- **Repository:** `TenzoNkz/JEXFYZ-App`, branch `main`. Source/test changes are on main; this checkpoint is written before final documentation-only commits.
+- **Usage Statistics source:** commit `9b9262d934ff2ab6575256b264f8bf851280dddf`; subsequent source-only changes `364f5c3c1b777606647c3d85777091314988ea7f` (session dropdown no longer duplicates duration) and `f32c1278308bea7cedd4f150255d2128cac138bb` (remove obsolete details-only formatter). Latest file blob: `lib/usage_statistics.dart` = `64fa93a39516126bbce04b3f031fcdc7f4e4381f`.
+- **Regression source:** commit `6c85166731fde4d6e72d44ab82d6a3a10826918a`; latest test correction `b560403877fd2080db2019fc04d86d67020418dd`. Latest file blob: `test/usage_statistics_test.dart` = `259ba2e64a540a04c7f798f3688b2f1c225ccb9b`.
+- **UI behavior:** one session header contains status, date/time and the only elapsed duration; session selection remains in the header dropdown and menu entries omit elapsed durations. Battery/Hotside axes show every whole degree at 1°C intervals using observed data range and adaptive chart height. Hotside limit remains visible as text but no longer dictates the plot range. Visible Observed, More details and Last sample elements were removed. Min/Avg/Max, four activity lanes, the common cursor and six selected-time fields remain. The selected-time dock is compact and uses locale-aware labels/state/temperature formatting.
+- **Data invariants:** no changes to actual telemetry values, raw one-second collection, SQLite schema v2/retention, queue capacity/backpressure, session continuity, null/invalid gaps, HOT-only P1 freshness, analytics event handling or decimation.
+- **Test inventory:** 188 declarations across 9 Dart test files (2 + 12 + 5 + 5 + 27 + 3 + 13 + 24 + 97). The changed tests are written; this inventory is not execution evidence.
+
+### Validation and release boundary
+
+- GitHub read-back and static checks passed: redundant UI strings/helpers are absent from the current screen source; the one-degree axis helper and adaptive height are present; the six-field dock remains; all test files were fetched and declaration-counted.
+- **NOT RUN:** `dart format`, focused/full `flutter test`, `flutter analyze`, Android Gradle, screenshot rendering, emulator and physical-device validation. The runtime has no Dart/Flutter/Gradle/ADB.
+- **Latest verified package:** Build #159 / Actions run `43376503987` / immutable source `cdca38b9e4f2f99006db8feae40c07c6f9bdfb0a` / Release `403010611` tag `jexfyz-latest`. Neither the Usage Statistics refinement nor the prior native Fan icon fix is included in that APK.
+- This source is **NOT RELEASED** and visual status is **NOT VERIFIED**. The next step requires a separate owner-issued `Eksekusi Build App!` for guarded QC. No workflow, issue, action run or release was created from this Full session.
+
+---
+
+## PREVIOUS CHECKPOINT — REPO AUDIT + FLOATING MONITOR FAN ICON FIX / WAITING OWNER BUILD QC — 2026-11-13
 
 **Mode:** `Eksekusi Full!` — App-native source, regression test, static repository audit and canonical documentation only. No App Build/Release, Firmware, BIN, Firebase, OTA, flashing or device operation was authorized or performed.
 
