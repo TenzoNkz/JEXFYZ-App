@@ -1,4 +1,17 @@
-## Immediate next step — Guarded QC for Usage Statistics presentation refresh — 2026-11-13
+## Immediate next step — Guarded QC for About handle correction and current App source — 2026-11-13
+
+The requested About credit casing is now corrected on `main`: Horizon displays exactly `@horizontalzzz` (lowercase h).
+
+- Source commit: `bb0cffec50eceafa2d522f7507288635f6989bab`; test commit: `bc1a33b68daa99bdb339fa07d1d902af7ddd8855`.
+- Regression asserts the lowercase handle and rejects `@Horizontalzzz` in source, English UI and Indonesian UI.
+- Android Gradle `versionName "Telegram @horizontalzzz"` is unchanged and remains protected.
+- This source/test change is static-source-checked only; formatter, Flutter tests, analyzer and Gradle are NOT RUN because Dart/Flutter/Gradle/ADB are unavailable.
+- The Usage Statistics refinement and preceding Floating Monitor Fan correction also remain newer than Build #159. Build #159 is still the latest verified package; current main changes are NOT RELEASED.
+- **Next:** owner separately issues `Eksekusi Build App!` to run guarded App QC for current main. Do not trigger a build from Eksekusi Full.
+
+---
+
+## Previous immediate next step — Guarded QC for Usage Statistics presentation refresh — 2026-11-13
 
 **Current App source is newer than Build #159.** The current Full session has implemented the requested Usage Statistics presentation changes on `main`, but has not run any local or hosted Flutter/Android validation and has not packaged a release.
 
