@@ -520,7 +520,10 @@ void main() {
     expect(usage, contains('_summary = UsageStatsAnalytics.summarize(workingSnapshot);'));
     expect(usage, contains('var workingEventKeys = _snapshotEventKeys;'));
     expect(usage, isNot(contains('Set<String>.from(_snapshotEventKeys)')));
-    expect(usage, contains('height: 160,'));
+    expect(usage, contains('final chartHeight = hasData'));
+    expect(usage, contains('usageTemperatureChartHeight('));
+    expect(usage, contains('height: chartHeight,'));
+    expect(usage, contains(': 160.0;'));
     expect(usage, contains('fontSize: 10);'));
     expect(usage, isNot(contains('height: 170,')));
     expect(usage, isNot(contains('mergedEvents.any(')));
@@ -865,10 +868,8 @@ void main() {
       expect(find.textContaining('Touch any chart'), findsNothing);
       expect(find.text('Terpantau'), findsNothing);
       expect(find.textContaining('Sampel terakhir'), findsNothing);
-      expect(
-        find.byKey(const ValueKey<String>('usage-session-elapsed')),
-        findsOneWidget,
-      );
+      // The session header is a lazy ListView child and may unmount
+      // after scrolling; its one elapsed timer was asserted before scrolling.
       for (final key in <Key>[
         const ValueKey<String>('usage-profile-timeline-voltage'),
         const ValueKey<String>('usage-profile-timeline-adaptive'),
@@ -973,10 +974,11 @@ void main() {
         );
         await tester.pumpAndSettle();
 
-        expect(
-          find.byKey(const ValueKey<String>('usage-session-selector')),
-          findsOneWidget,
+        final sessionSelector = find.byKey(
+          const ValueKey<String>('usage-session-selector'),
         );
+        expect(sessionSelector, findsOneWidget);
+        expect(tester.getSize(sessionSelector).height, greaterThanOrEqualTo(48));
         expect(
           find.byKey(const ValueKey<String>('usage-session-elapsed')),
           findsOneWidget,
