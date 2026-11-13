@@ -1,10 +1,10 @@
-## CURRENT CHECKPOINT — PER-INTERACTION WORK-STATUS LIFECYCLE / BUILD #162 VERIFIED SUCCESS — 2026-11-14
+## CURRENT CHECKPOINT — PER-INTERACTION WORK-STATUS LIFECYCLE IMPLEMENTED / BUILD #162 VERIFIED SUCCESS — 2026-11-14
 
 **Mode:** `Eksekusi Full!` — canonical work-status protocol and documentation only. No executable App source, tests, workflow, Firmware/BIN, Firebase, OTA, flashing or device operation was changed or performed.
 
 ### New status contract
 
-- Every JE X FYZ project-related owner message, whether in a new chat or an existing conversation, begins with a persisted `SESSION STATUS = IN_PROGRESS` before extended loading, research or execution. This includes commands, questions, corrections, follow-ups and stop/cancel instructions. Unrelated conversation outside this project is excluded.
+- Every JE X FYZ project-related owner message, whether in a new chat or an existing conversation, begins with persisted `STATUS = IN_PROGRESS` / `SESSION STATUS = IN_PROGRESS` before extended loading, research or execution. This includes commands, questions, corrections, follow-ups and stop/cancel instructions. Unrelated conversation outside this project is excluded.
 - `00_WORK_STATUS.md` now distinguishes **SESSION STATUS** (current message/interaction), **WORK STATUS** (requested work item across steps/chats), and **EXTERNAL OPERATION STATUS** (actual Actions/build/process state). A new chat cannot overwrite or misreport an external operation.
 - Refresh the marker after meaningful milestones, actual tool/test results, commits, blockers, authorization changes and external-process transitions. Each refresh records an Asia/Jakarta timestamp, current phase, last verified milestone/evidence and next action.
 - Before every final response, close the current session and work item truthfully: `COMPLETED`, `BLOCKED`, `WAITING_OWNER`, `FAILED` or `CANCELLED`; a prior interrupted work item is classified `RECOVERY_REQUIRED` only after verification.
@@ -23,10 +23,10 @@
 
 ### Status-protocol implementation and evidence
 
-- Updated `MASTER_PROMPT.md`, both load/continue templates, `00_WORK_STATUS.md`, `AGENTS.md`, `CHAT_RULES.md`, `README.md`, `MEMORY_INDEX.md`, `PROJECT_STATE.md`, `HANDOVER.md` and `APP_PREBUILD_AUDIT.md`; Build #162 terminal evidence appended to `APP_BUILD_REPORT.md`.
+- Updated `MASTER_PROMPT.md` (including the final `STATUS` alias rule), both load/continue templates, `00_WORK_STATUS.md`, `AGENTS.md`, `CHAT_RULES.md`, `README.md`, `MEMORY_INDEX.md`, `PROJECT_STATE.md`, `HANDOVER.md` and `APP_PREBUILD_AUDIT.md`; Build #162 terminal evidence appended to `APP_BUILD_REPORT.md`.
 - No new files created; immutable `archive/*.md` snapshots untouched.
 - Validation is repository read-back and static consistency checking. No application source/test/toolchain validation was required for this documentation-only change.
-- This interaction remains `IN_PROGRESS` until final documentation/read-back and terminal status are persisted.
+- **Implementation result:** the per-interaction lifecycle is complete; the final `00_WORK_STATUS.md` write closes this interaction as `COMPLETED`. The top-level `STATUS` aliases `SESSION STATUS`, ensuring every new JE project message visibly starts as `IN_PROGRESS` while the previous `WORK STATUS` and external operation remain independently recorded.
 
 ---
 
