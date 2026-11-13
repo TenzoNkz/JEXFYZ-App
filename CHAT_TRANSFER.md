@@ -1,30 +1,26 @@
-## CURRENT CHECKPOINT — BUILD #161 ACTIVE / FLUTTER SETUP — 2026-11-13
+## CURRENT CHECKPOINT — BUILD #161 ACTIVE / FLUTTER TEST GATE — 2026-11-13
 
 **Mode:** Eksekusi Build App! — explicit owner authorization remains active for guarded App Build/QC/release and justified App-scope repairs only. No Firmware compilation/BIN, Firebase mutation, OTA, flashing or device operation.
 
 ### Current run and immutable source
 
 - **Repository/branch:** TenzoNkz/JEXFYZ-App / main.
-- **Trigger:** owner-authored Issue #38 opened 2026-11-13T12:49:46Z with exact guarded title/token. Issues #33, #35, #36 and #37 remain OPEN and were not reopened. Exactly one run for this retry.
-- **Actions:** [Build #161 / run 43428480911](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/43428480911), workflow 374946166, event issues, attempt 1; job 131895713640; run created 2026-11-13T12:49:49Z.
-- **Immutable checkout source SHA:** 798845adf013f6cacd217c9d71a7208d57b64e94; exact match to live main HEAD at final pre-trigger re-fetch.
-- **Current gates:** steps 1 Set up job, 2 Checkout repository and 3 Set up Java 17 SUCCESS; step 4 Set up Flutter IN_PROGRESS; steps 5–21 pending. No analyzer/test/Gradle/package/release outcome asserted yet. Continue only this run.
-- **Workflow:** blob 9dc1e61ba49f19cad4edbb99a832d5333d9f0f12, fully read; issue opened/reopened only, exact repository-owner/title/token guard, no push/PR trigger. Security audit, dependency, analyzer, Flutter tests, Android Gradle, obfuscated APK, V1/V2/V3 signing, pinned cert, source ZIP, Release/tag parity and downloaded-asset checks unchanged.
-- **Preflight:** Build #160 terminal FAILED; zero active/queued/waiting/requested runs and zero open PRs before retry. Tree 133 entries / truncated=false. Android versionName "Telegram @horizontalzzz" exact. Release ID 403010611 / tag jexfyz-latest remained on previous Build #159 source cdca38b9e4f2f99006db8feae40c07c6f9bdfb5ad (prior Release source remains cdca38b9e4f2f99006db8feae40c07c6f9bdfb0a).
-- **Immediately preceding failure/repair:** Build #160 / run 43427419461 / job 131892170041 / source 24c6393364cade3d6093aebb6c52904f1af66396 failed at Flutter tests (185 pass / 3 fail). Analyzer 23 infos / 0 warnings/errors. Two stale test expectations and one genuine 8-dp multiple-session dropdown overflow were diagnosed. Source commit 7784b2cfb0d327bdd8db15122b6b224c03fc87b9 sets session picker isDense false for its two-line selected status/date; test commit 4823b76f62edbb82d982baf381922bfa265147b2 updates adaptive-height expectations, removes only redundant offscreen timer lookup (pre-scroll value check retained) and asserts selector height >=48 dp. #160 remains historically FAILED.
-- **Full candidate since Build #159:** lowercase About handle, Statistics refresh and native Fan F icon fix remain included; #161 adds only the targeted multi-session dropdown and matching test repairs.
-- **Ledger:** APP_BUILD_REPORT.md records #160 terminal failure/repair and #161 trigger/job/source initial state; latest report commit c88fb3c11e2e262ccdacf484257d2118497d3e0b.
+- **Trigger/run/job:** Issue #38 / [Build #161 run 43428480911](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/43428480911), workflow 374946166, event issues, attempt 1; job 131895713640.
+- **Immutable checkout SHA:** 798845adf013f6cacd217c9d71a7208d57b64e94; exact pre-trigger main SHA.
+- **Current gates:** steps 1–12 SUCCESS, including setup, audit, dependency install and Dart analyzer. Step 13 Flutter tests IN_PROGRESS. Steps 14–21 pending. Continue only this run.
+- **Exact logs/counts:** complete log archive not yet available while job is active; analyzer issue counts and Flutter pass/fail counts remain pending terminal log.
+- **Build #160 preceding failure:** run 43427419461 / job 131892170041 / source 24c6393364cade3d6093aebb6c52904f1af66396 failed Flutter suite 185 pass / 3 fail. Repairs: source commit 7784b2cfb0d327bdd8db15122b6b224c03fc87b9 removes dense sizing from two-line multi-session dropdown; test commit 4823b76f62edbb82d982baf381922bfa265147b2 updates adaptive-height contract, removes duplicate offscreen timer finder while retaining pre-scroll coverage, and asserts >=48-dp dropdown height. Preserve #160 as FAILED.
+- **Build #161 candidate:** includes lowercase About @horizontalzzz, Statistics presentation refresh, native Fan F icon correction, and the narrowly repaired multi-session picker + regression. No weakening of tests.
+- **Release baseline:** Build #159 remains latest verified package while #161 gates run; Release ID 403010611 / tag jexfyz-latest target source cdca38b9e4f2f99006db8feae40c07c6f9bdfb0a, with exact prior one-APK/one-source-ZIP pair.
+- **Guard/version:** workflow blob 9dc1e61ba49f19cad4edbb99a832d5333d9f0f12; issue-only owner/title/token guard, no push/PR. Android versionName "Telegram @horizontalzzz" exact.
+- **Ledger:** APP_BUILD_REPORT.md records #160 terminal failure/repairs and #161 trigger/run/gates 1–12 success; latest progress update commit a36116323d076f3df082b5bf4a1c2238fced06c0.
 
-### Continuation and release baseline
+### Continuation
 
-- Inspect only run 43428480911 / job 131895713640. Update APP_BUILD_REPORT.md, CHAT_TRANSFER.md and 00_WORK_STATUS.md at meaningful gates. No second trigger while active.
-- If a gate fails, preserve it, inspect complete logs and fix only the demonstrated App-scope cause without weakening checks.
-- Previous verified package Build #159 remains live Release until #161 steps 1–21 and cleanup succeed; Release ID 403010611 / tag jexfyz-latest still target source cdca38b9e4f2f99006db8feae40c07c6f9bdfb0a.
-  - APK: 55,914,587 bytes; SHA-256 02bef5960e0b23bea360d2cf8a0532e7dbd202e05f5420e055c98b4dc7a61321.
-  - Source ZIP: 2,932,978 bytes; SHA-256 5dbb29ebc7629775835bc65d655069a1a077f6d3240114387c965b5ad4789558.
-- On success, verify all gates, analyzer/test counts, Gradle NO-SOURCE coverage, obfuscated APK, one signer/V1/V2/V3/pinned cert, source ZIP integrity/marker, exactly one APK and one source ZIP, Release/tag/source SHA and downloaded bytes/digests/signature.
+- Monitor only run 43428480911 / job 131895713640. At test completion, retrieve full job log and record exact pass/fail count and analyzer findings. Then inspect Android Gradle, APK/signing, source ZIP, Release/tag and downloaded asset verification.
+- No duplicate trigger while active. If #161 fails, preserve full test log and repair only actual App-scope root cause without weakening any check; another retry requires a concrete fix and fresh preflight.
 - Workflow has no Dart formatter step; `dart format` is not implied. Local Dart/Flutter/Gradle/ADB are unavailable.
-- **Evidence boundary:** CI does not prove Firmware compile/BIN, Firebase, OTA/flash, physical BLE/device/NVS/rail/LED, thermal/electrical or OEM screenshot acceptance. These remain NOT RUN / NOT VERIFIED.
+- Physical BLE/device/OEM visual, Firmware compile/BIN, Firebase, OTA/flash, NVS/rail/LED and thermal/electrical validations remain outside App Build.
 
 ---
 
