@@ -3401,25 +3401,6 @@ String _formatTemperature(double? value, AppLanguage language) {
   return '$localized °C';
 }
 
-String _formatDuration(int milliseconds) {
-  if (milliseconds <= 0) return '0s';
-  if (milliseconds < 60000) {
-    return (milliseconds ~/ 1000).toString() + 's';
-  }
-  final minutes = milliseconds ~/ 60000;
-  final hours = minutes ~/ 60;
-  final days = hours ~/ 24;
-  final remainingHours = hours % 24;
-  final remainingMinutes = minutes % 60;
-  if (days > 0) {
-    return days.toString() + 'd ' + remainingHours.toString() + 'h';
-  }
-  if (hours > 0) {
-    return hours.toString() + 'h ' + remainingMinutes.toString() + 'm';
-  }
-  return minutes.toString() + 'm';
-}
-
 String _axisTime(int timestampMs, int sessionStartMs) =>
     formatUsageElapsed(timestampMs - sessionStartMs);
 
