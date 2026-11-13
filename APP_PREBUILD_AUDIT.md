@@ -1,3 +1,17 @@
+## Build #161 failure triage / Build #162 pre-trigger — 2026-11-13
+
+**Status: #161 FAILED AT FLUTTER TEST GATE / ONE TEST-ONLY REPAIR COMMITTED / #162 PRE-TRIGGER QC PENDING.**
+
+- Build #161: run `43428480911`, job `131895713640`, source `798845adf013f6cacd217c9d71f9bdfb0eebc62d4`, Issue #38. Terminal failure at step 13; setup/audit/dependency/analyzer steps 1–12 passed. Analyzer 23 info deprecations / 0 warnings / 0 errors; Flutter 187 pass / 1 fail. Android Gradle and release gates skipped; no artifact/release mutation.
+- The #160 dropdown repair works: multi-session selector test passes with `isDense: false` and >=48-dp height. The single remaining #161 test failure was global `find.text('Tegangan')` in the compact Home canvas test; output correctly found two instances, one in the Activity timeline and one inside selected-time dock.
+- **Repair:** test-only commit `16286e41a98ecea2f11ab5f0155f03f10bcc5d51` scopes `Waktu dipilih` and all six selected-time metrics to descendants of `usage-selected-time-dock`. Activity timeline key assertions remain; selected dock height/clear action assertions remain. No production source changed after failed #161 checkout.
+- #161 remains historical FAILED (187/1); do not rewrite it. Build #160 remains historical FAILED (185/3).
+- **Build #162 preflight:** final main HEAD still needs fresh fetch. Compare from failed #161 checkout must show only `test/usage_statistics_test.dart` as the executable/test change, plus the Markdown ledger/checkpoint updates. Confirm zero active/queued runs and open PR, Issue #38 remains OPEN and must not be reopened, issues #33/#35/#36/#37 remain open, exact workflow guard/blob, exact Android versionName `Telegram @horizontalzzz`, unchanged Build #159 Release/tag/source/assets.
+- **Next:** with fresh preflight and saved checkpoint, create exactly one new owner-authored trigger issue with exact title `JE X FYZ — EKSEKUSI BUILD APP TRIGGER` and token `JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1`; observe exactly one run. No duplicate triggers.
+- No Dart formatter gate exists; local Dart/Flutter/Gradle/ADB are unavailable. Build App does not cover Firmware compile/BIN, Firebase, OTA/flash, BLE/device, NVS/rail/LED, thermal/electrical or OEM screenshot validation.
+
+---
+
 ## Build #160 failure triage and focused Statistics repair — Build #161 pre-trigger — 2026-11-13
 
 **Status: #160 FAILED AT FLUTTER TEST GATE / CONCRETE APP + TEST REPAIRS COMMITTED / #161 PRE-TRIGGER QC PENDING.**
