@@ -1481,7 +1481,7 @@ class AboutSettingsPage extends StatelessWidget {
                       context,
                       role: JexText.phrase('App Developer & Builder', 'Pengembang Aplikasi & Perakit', language),
                       name: 'Horizon',
-                      handle: '@Horizontalzzz',
+                      handle: '@horizontalzzz',
                       last: false,
                     ),
                     _credit(
