@@ -1,56 +1,32 @@
-## CURRENT CHECKPOINT — FOUR APP UI CHANGES IMPLEMENTED / DART-FLUTTER VALIDATION BLOCKED — 2026-11-13
+## CURRENT CHECKPOINT — FOUR APP UI REFINEMENTS IMPLEMENTED / VALIDATION BLOCKED — 2026-11-13
 
-**Mode:** `@Thinking Eksekusi Full!` — App source, regression tests and canonical documentation only. App Build/APK/Release, Actions trigger, Firmware/BIN, Firebase, OTA, flashing and device operations are not authorized by this mode and were not performed.
+**Mode:** `Eksekusi Full!` — current authorized work was limited to source/test static review and canonical documentation reconciliation. No App Build/APK/Release, Actions trigger, Firmware/BIN, Firebase, OTA, flashing or device operation was performed.
 
-### Current repository and package boundary
+### Current source and release boundary
 
 - **Repository/branch:** `TenzoNkz/JEXFYZ-App` / `main`.
 - **App source/test commit:** `a5d45866bb244a2f260330a0e2ea332c391a9fcd` — `fix(app): compact Home tabs and refine settings UI`.
-- **Recursive tree at source commit:** 133 entries, `truncated=false`.
-- **Latest source blobs:** `lib/main.dart` = `4705e156754ca08da786430b1debc8d2332a7a69`; `lib/floating_monitor.dart` = `7afa0b6db1fa3f9b0e9188364c10e2026030bb66`; `test/widget_test.dart` = `b9f5f0a192e64dc2d87d92f173ec38a6f83812ae`; `test/floating_monitor_layout_contract_test.dart` = `2f88ae4a6f46c771f4f3501fd8b467fd79c3d9b8`.
-- **Latest verified App package remains Build #157**, Actions run `43247876115`, immutable source SHA `10d106537e92060e0aac3fc17fd37f56e746bcd5`. It predates these UI changes and does not validate the current source.
-- **Actions:** no workflow run was found for source commit `a5d4586`. The only App workflow performs analyzer/tests/Gradle and then APK/release publication; it has no formatter step and is not a validation-only workflow. No Actions run or Build was triggered.
+- **Source blobs:** `lib/main.dart` = `4705e156754ca08da786430b1debc8d2332a7a69`; `lib/floating_monitor.dart` = `7afa0b6db1fa3f9b0e9188364c10e2026030bb66`; `test/widget_test.dart` = `b9f5f0a192e64dc2d87d92f173ec38a6f83812ae`; `test/floating_monitor_layout_contract_test.dart` = `2f88ae4a6f46c771f4f3501fd8b467fd79c3d9b8`.
+- **Four implemented changes:** Peltier popup bottom-center inside SafeArea with original margins/geometry and FAN-first ACK safety; one-line Lock Voltage card with P1-authoritative Switch state, busy/not-ready gate and retained tooltip/retry; localized Special Thanks/About with stretched left alignment and updated Horizon role; Home display tabs use 38-dp visible pills inside 48-dp row/hit targets, no Divider and preserved 8-dp gap.
+- **Regression source:** `test/widget_test.dart` covers Peltier anchor/safety ordering and Home tab geometry; `test/floating_monitor_layout_contract_test.dart` covers fixed Lock Voltage row/busy Switch/tooltip/retry and bilingual About role/alignment/card height.
+- **Static verification:** latest GitHub source/test read-back passed. Twenty explicit source-structure assertions passed, including SafeArea/bottom anchor, FAN ACK before Peltier, P1 state authority, busy gating, retry visibility, credit strings/alignment, 38-dp pills, 48-dp hit area and divider/spacing. The 9 Dart test files contain **187 declarations** (174 unit/source-contract + 13 widget); that count is inventory only.
+- **Toolchain:** this runtime has Git, Java and Python; Dart, Flutter, Gradle, ADB, Arduino CLI and ESP-IDF are absent. DNS lookups for GitHub/SDK hosts failed. `dart format`, focused/full `flutter test`, `flutter analyze` and Android Gradle are **BLOCKED / NOT RUN** for `a5d4586`. No Dart compilation/type-check was performed.
+- **Hosted state:** no Actions run exists for `a5d4586`; in-progress runs = 0, queued runs = 0, open PRs = 0. The only App workflow is the guarded build-and-release pipeline; it has not been triggered because that is outside this mode.
+- **Latest verified package:** Build #157 / Actions run `43247876115`, immutable source `10d106537e92060e0aac3fc17fd37f56e746bcd5`; Release ID `403010611` / `jexfyz-latest` still targets that source. The changes in `a5d4586` are **NOT RELEASED**.
+- **Visual status:** **VISUAL NOT VERIFIED** until a package containing `a5d4586` is installed and actual screenshots are inspected at 350-dp/420-dp, portrait/constrained height, English/Indonesian, Light/Dark and relevant connected/disconnected/unknown states.
 
-### Four implemented App UI changes
+### Documentation reconciliation completed in this task
 
-1. **Peltier prerequisite popup**
-   - Replaced the inner vertical `Center` with `Align(alignment: Alignment.bottomCenter)` inside the existing `JexFixedScalePage` → `SafeArea` → `LayoutBuilder`.
-   - Preserved the 10-dp vertical / 16-dp horizontal inset, 296-dp max width, current card appearance, 360-dp canvas and fade/scale transition.
-   - Preserved command safety: approval still precedes `FAN:ON`; successful Fan ACK is required before `PELTIER:ON`; Cancel/barrier dismissal remain command-free.
-
-2. **Lock Voltage Settings**
-   - Removed all persistent state subtitles so the card stays a single row.
-   - Kept the lock glyph neutral/static and retained unknown/not-ready information through a tooltip.
-   - The Switch remains visible whenever Firmware state is known, including while busy; it is disabled while the session is not ready or a command is busy. Its value continues to come from the P1-authoritative `state.active`; no optimistic state change was introduced.
-   - Preserved the icon-only NVS retry affordance and its tooltip; retry is disabled while busy/not-ready. Added a stable card key for geometry regression.
-
-3. **About / Tentang**
-   - Content heading now localizes to `Special Thanks` / `Ucapan Terima Kasih`; AppBar remains `About` / `Tentang`.
-   - Credit column stretches to full card width so all three role/name/handle groups share the same left edge.
-   - Horizon role is `App Developer & Builder` / `Pengembang Aplikasi & Perakit`. FYZ and Logos roles, names and exact handles remain unchanged.
-
-4. **Home display-menu tabs**
-   - Five-way Expanded widths, order, spacing, labels, colors, border/radius and tap behavior remain unchanged.
-   - Visible pill is now 38 dp high, centered in the existing 48-dp row. The InkWell keeps the full 48-dp hit region.
-   - Removed the thin Divider and replaced its combined 8-dp vertical footprint (1-dp line + 7-dp gap) with one 8-dp spacer, so submenu content does not shift.
-   - Existing 360-dp canvas, 11-dp top inset, Home metrics/image/Notification and lock overlays remain untouched.
-
-### Regression updates and evidence
-
-- `test/widget_test.dart`: Peltier bottom-anchor source contract; Home tab 38-dp / 48-dp / no-divider / 8-dp spacer contract.
-- `test/floating_monitor_layout_contract_test.dart`: fixed one-line Lock Voltage, visible-but-disabled busy Switch, tooltip/retry and neutral icon contracts; bilingual About heading/role, preserved credit identities and equal role left-edge assertions; saved OFF/ON card-height check.
-- Recounted all 9 Dart test files: **187 declarations** (174 unit/source-contract + 13 widget). This is test inventory, **not test execution**.
-- Static source-contract checks and GitHub read-back passed for the changed structure and requested tokens/order. No Dart compiler/type-check was run.
-
-### Validation blocker and remaining acceptance
-
-- Runtime check: `git` exists; `dart`, `flutter`, `gradle` and `adb` are absent. Container DNS resolution to GitHub also fails. No SDK installation or remote validation runner is available through the current session.
-- Therefore `dart format`, focused/full `flutter test`, `flutter analyze` and Android Gradle are **BLOCKED / NOT RUN**. Do not report the current source as formatted, compiled, test-passed or analyzer-passed.
-- No post-change APK has been rendered or installed. Actual Android appearance remains **VISUAL NOT VERIFIED**; previous owner screenshots are reference evidence only. A new screenshot is required to verify the 38-dp pill, bottom-anchored popup, Lock Voltage row and About alignment at relevant widths, languages and themes.
+- `APP_NOTES.md`: current App source/test/release boundary, UI implementation facts, and 64+8+1 Statistics writer model reconciled.
+- `DESIGN_NOTES.md`: four UI contracts marked implemented; Home tab and Peltier status corrected; obsolete Build #149 references and stale 185-test/capacity-64 claims corrected; prior Peltier layout history distinguished from current implementation.
+- `PROJECT_STATE.md`: current App source and Build #157 package separated; older Build #153 release/status summary replaced; current runtime/toolchain boundary recorded.
+- `HANDOVER.md`: replaced stale source-pending implementation instructions with the exact validation blocker and next action.
+- `00_WORK_STATUS.md`: set to IN_PROGRESS at session start; closure marker will be BLOCKED because runtime validation cannot run here.
+- No executable source, tests, configuration, workflow, Firmware or release artifact was modified in this documentation reconciliation.
 
 ### Exact next action
 
-**Status: BLOCKED — obtain a Dart/Flutter-capable validation runner and run formatter, focused/full tests and analyzer against source commit `a5d4586`.** Review all results and fix any actual failures within `Eksekusi Full!`. Only after validation passes should the owner separately issue `@Thinking Eksekusi Build App!` for guarded QC and APK/release publication. No Build App authorization is implied here.
+Obtain a Dart/Flutter-capable runner and validate exact source `a5d45866bb244a2f260330a0e2ea332c391a9fcd`: format the four changed Dart files, run the focused Peltier/Home and Settings/About/Lock Voltage tests, full `flutter test` and `flutter analyze`, then review the results. Fix only actual failures within `Eksekusi Full!`. Only after validation is clean should the owner separately issue `Eksekusi Build App!` for guarded package/release QC.
 
 ---
 
