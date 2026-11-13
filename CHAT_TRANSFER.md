@@ -1,32 +1,28 @@
-## CURRENT CHECKPOINT — FOUR APP UI REFINEMENTS IMPLEMENTED / VALIDATION BLOCKED — 2026-11-13
+## CURRENT CHECKPOINT — GUARDED APP BUILD #158 PRE-TRIGGER — 2026-11-13
 
-**Mode:** `Eksekusi Full!` — current authorized work was limited to source/test static review and canonical documentation reconciliation. No App Build/APK/Release, Actions trigger, Firmware/BIN, Firebase, OTA, flashing or device operation was performed.
+**Mode:** `Eksekusi Build App!` — owner explicitly authorized the guarded App Build/QC/release operation in this chat. Scope is the App workflow and only justified App-scope repairs. No Firmware compilation/BIN, Firebase mutation, OTA, flashing, device operation or unrelated release work is authorized.
 
-### Current source and release boundary
+### Live candidate and pre-trigger evidence
 
 - **Repository/branch:** `TenzoNkz/JEXFYZ-App` / `main`.
-- **App source/test commit:** `a5d45866bb244a2f260330a0e2ea332c391a9fcd` — `fix(app): compact Home tabs and refine settings UI`.
-- **Source blobs:** `lib/main.dart` = `4705e156754ca08da786430b1debc8d2332a7a69`; `lib/floating_monitor.dart` = `7afa0b6db1fa3f9b0e9188364c10e2026030bb66`; `test/widget_test.dart` = `b9f5f0a192e64dc2d87d92f173ec38a6f83812ae`; `test/floating_monitor_layout_contract_test.dart` = `2f88ae4a6f46c771f4f3501fd8b467fd79c3d9b8`.
-- **Four implemented changes:** Peltier popup bottom-center inside SafeArea with original margins/geometry and FAN-first ACK safety; one-line Lock Voltage card with P1-authoritative Switch state, busy/not-ready gate and retained tooltip/retry; localized Special Thanks/About with stretched left alignment and updated Horizon role; Home display tabs use 38-dp visible pills inside 48-dp row/hit targets, no Divider and preserved 8-dp gap.
-- **Regression source:** `test/widget_test.dart` covers Peltier anchor/safety ordering and Home tab geometry; `test/floating_monitor_layout_contract_test.dart` covers fixed Lock Voltage row/busy Switch/tooltip/retry and bilingual About role/alignment/card height.
-- **Static verification:** latest GitHub source/test read-back passed. Twenty explicit source-structure assertions passed, including SafeArea/bottom anchor, FAN ACK before Peltier, P1 state authority, busy gating, retry visibility, credit strings/alignment, 38-dp pills, 48-dp hit area and divider/spacing. The 9 Dart test files contain **187 declarations** (174 unit/source-contract + 13 widget); that count is inventory only.
-- **Toolchain:** this runtime has Git, Java and Python; Dart, Flutter, Gradle, ADB, Arduino CLI and ESP-IDF are absent. DNS lookups for GitHub/SDK hosts failed. `dart format`, focused/full `flutter test`, `flutter analyze` and Android Gradle are **BLOCKED / NOT RUN** for `a5d4586`. No Dart compilation/type-check was performed.
-- **Hosted state:** no Actions run exists for `a5d4586`; in-progress runs = 0, queued runs = 0, open PRs = 0. The only App workflow is the guarded build-and-release pipeline; it has not been triggered because that is outside this mode.
-- **Latest verified package:** Build #157 / Actions run `43247876115`, immutable source `10d106537e92060e0aac3fc17fd37f56e746bcd5`; Release ID `403010611` / `jexfyz-latest` still targets that source. The changes in `a5d4586` are **NOT RELEASED**.
-- **Visual status:** **VISUAL NOT VERIFIED** until a package containing `a5d4586` is installed and actual screenshots are inspected at 350-dp/420-dp, portrait/constrained height, English/Indonesian, Light/Dark and relevant connected/disconnected/unknown states.
+- **App source/test checkpoint:** `a5d45866bb244a2f260330a0e2ea332c391a9fcd` — four approved UI refinements and matching regression source. Compare from this code checkpoint to pre-trigger main shows documentation-only paths changed; no executable App/test, Gradle, configuration, Firmware or workflow change after this source checkpoint.
+- **Latest main before this checkpoint update:** `5859872be4139f7887d2f28960226a0724d16c86` (the work-status marker was committed for this Build session). Re-fetch main after this checkpoint commit and again immediately before issue creation; the issue event must capture the final source SHA.
+- **Recursive tree:** 133 entries, `truncated=false` at the pre-checkpoint HEAD.
+- **Pre-trigger Actions:** newest 100 workflow runs inspected; zero queued/in-progress/waiting/requested/pending runs. No run exists for pre-trigger main HEAD. Open PR count = 0.
+- **Existing trigger issue:** Issue #33 is owner-authored, OPEN, with exact title `JE X FYZ — EKSEKUSI BUILD APP TRIGGER` and body token `JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1`. Leave it OPEN and do not reopen it; use exactly one new owner-authored issue for this new attempt.
+- **Workflow:** `.github/workflows/jexfyz-app-build-trigger.yml`, blob `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12`, fully read (545 lines). It triggers only on `issues.opened` / `issues.reopened`; job guard requires repository owner, exact title and token. No push/PR release trigger. All analyzer, Flutter test, Android Gradle, obfuscated APK, V1/V2/V3 signing, pinned certificate, source ZIP, Release/tag parity and downloaded-asset checksum gates remain intact.
+- **Protected version:** Android `versionName "Telegram @horizontalzzz"` re-read unchanged. Flutter app version remains `1.0.0+3`.
+- **Last verified Release:** Build #157, run `43247876115`, job `131285336987`, immutable source `10d106537e92060e0aac3fc17fd37f56e746bcd5`; run concluded SUCCESS. Release ID `403010611` / tag `jexfyz-latest` still targets that old source. Assets remain exactly one APK (55,980,123 bytes; SHA-256 `24a42feb2ec8968209ac5dd764c6acb789c09fb0fc9a26df8e7d4bf5e1652aef`) and one source ZIP (2,932,445 bytes; SHA-256 `3b6f0a84a760b26587ca39a946f14383f2acee933fb5b30247270713a32e6a06`).
+- **Immediately preceding failure/repair:** Build #156 / run `43246666829`, job `131281061201`, source `c180f2bb18b3361ecd02fff2503b06043f0d22e0`, failed only at Flutter tests (186 passed / 1 failed). The remaining test expected an obsolete 3-dp Home spacer after the real Home overflow repair changed the two gaps to 2 dp. Commit `38212c3620aba6eb9fa5f6db41b43fdb777a9ddf` corrected the assertion to count the two 2-dp spacers and reject 3 dp; Build #157 then passed 187/187. Failure history remains preserved.
+- **Build #157 CI details:** analyzer passed with 23 info deprecations, zero warnings/errors; Flutter tests 187/187 passed; Android Gradle `BUILD SUCCESSFUL in 3m19s`, while native app JUnit tasks were `NO-SOURCE`; all workflow gates 1–21 and cleanup 39–43 passed. APK V1/V2/V3 and pinned certificate passed. Self-signed/PKIX/no-timestamp caveats remain.
+- **Evidence boundary:** Build #157 does not contain `a5d4586` UI refinements. Those remain NOT RELEASED and require this new Build. Visual acceptance, physical App/BLE/device, Firmware compile/BIN, Firebase, OTA/flash, thermal/electrical and owner installation remain separate / NOT VERIFIED.
 
-### Documentation reconciliation completed in this task
+### Current milestone and next action
 
-- `APP_NOTES.md`: current App source/test/release boundary, UI implementation facts, and 64+8+1 Statistics writer model reconciled.
-- `DESIGN_NOTES.md`: four UI contracts marked implemented; Home tab and Peltier status corrected; obsolete Build #149 references and stale 185-test/capacity-64 claims corrected; prior Peltier layout history distinguished from current implementation.
-- `PROJECT_STATE.md`: current App source and Build #157 package separated; older Build #153 release/status summary replaced; current runtime/toolchain boundary recorded.
-- `HANDOVER.md`: replaced stale source-pending implementation instructions with the exact validation blocker and next action.
-- `00_WORK_STATUS.md`: set to IN_PROGRESS at session start and closed as BLOCKED because runtime validation cannot run in this environment.
-- No executable source, tests, configuration, workflow, Firmware or release artifact was modified in this documentation reconciliation.
-
-### Exact next action
-
-Obtain a Dart/Flutter-capable runner and validate exact source `a5d45866bb244a2f260330a0e2ea332c391a9fcd`: format the four changed Dart files, run the focused Peltier/Home and Settings/About/Lock Voltage tests, full `flutter test` and `flutter analyze`, then review the results. Fix only actual failures within `Eksekusi Full!`. Only after validation is clean should the owner separately issue `Eksekusi Build App!` for guarded package/release QC.
+- `00_WORK_STATUS.md` is `IN_PROGRESS`, mode `Eksekusi Build App`, updated in commit `5859872be4139f7887d2f28960226a0724d16c86`.
+- **State:** PRE-TRIGGER. No new issue has been created and no new Actions run is active yet.
+- **Next action:** verify the post-checkpoint main HEAD/tree and zero active/queued runs once more, then create exactly one owner-authored issue with the exact guarded title/body token. Capture its issue number, run ID, immutable checkout SHA and job ID. Do not create or reopen any second trigger.
+- At each gate, update `APP_BUILD_REPORT.md`, `CHAT_TRANSFER.md` and `00_WORK_STATUS.md`. If a code gate fails, preserve the failed run and repair only the concrete App-scope root cause without weakening checks.
 
 ---
 
