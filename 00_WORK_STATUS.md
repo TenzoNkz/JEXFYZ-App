@@ -6,17 +6,17 @@
 
 | Field | Value |
 |---|---|
-| **STATUS** | **BLOCKED** |
+| **STATUS** | **IN_PROGRESS** |
 | Mode | Eksekusi Full |
-| Work item | Implement four approved App UI refinements and regression coverage |
+| Work item | Validate the four implemented App UI refinements where tools permit, reconcile canonical UI status and continuation notes |
 | Updated | 2026-11-13 (Asia/Jakarta) |
-| Last completed milestone | Four App UI changes and regression updates committed to main; source/test read-back and structural checks completed |
-| Result | All four requested UI changes are implemented in App source and regression tests. Formatter, Flutter tests, analyzer and Gradle could not run because the required SDK/toolchain is absent. |
+| Last completed milestone | Restored live checkpoint; confirmed source/test commit a5d45866bb244a2f260330a0e2ea332c391a9fcd and current main HEAD e39c88ac76cf56cc279c43c979ae8785c08cb145 |
+| Result | Four App UI source/test changes already exist on main. Validation remains outstanding. Documentation has contradictory pending/implemented statements that need reconciliation. |
 | Latest App source commit | `a5d45866bb244a2f260330a0e2ea332c391a9fcd` |
 | Last verified package | Build #157 — source `10d106537e92060e0aac3fc17fd37f56e746bcd5` |
-| Validation | STATIC SOURCE CHECK + GitHub read-back. `dart format`, `flutter test`, `flutter analyze`, Android Gradle and post-change screenshot review are NOT RUN |
-| Blocker | BLOCKED: Git is available, but Dart, Flutter, Gradle and ADB are not installed; DNS lookup for GitHub also fails from the container. |
-| Next action | Run formatter, focused/full Flutter tests and analyzer on the exact source commit in a Dart/Flutter-capable runner. Only after those checks pass should the owner separately authorize `Eksekusi Build App!`. |
+| Validation | GitHub source/test read-back verified; formatter, Flutter tests, analyzer, Gradle and screenshot review not yet run for the current source |
+| Blocker | Current runtime/toolchain availability is being rechecked. No App Build/Release, Firmware, Firebase, OTA or device operation is authorized. |
+| Next action | Check available local/hosted validation capability; reconcile DESIGN_NOTES.md, PROJECT_STATE.md, HANDOVER.md and CHAT_TRANSFER.md against live source/release evidence; close status with exact validation boundary. |
 
 ## Status meanings
 
