@@ -1,28 +1,25 @@
-## CURRENT CHECKPOINT — BUILD #159 ACTIVE / ANDROID GRADLE GATE — 2026-11-13
+## CURRENT CHECKPOINT — BUILD #159 ACTIVE / APK BUILD — 2026-11-13
 
 **Mode:** Eksekusi Build App! — explicit owner authorization remains active for guarded App Build/QC/release and justified App-scope repairs only. No Firmware compilation/BIN, Firebase mutation, OTA, flashing or device operation.
 
 ### Current run and source evidence
 
 - **Repository/branch:** TenzoNkz/JEXFYZ-App / main.
-- **Immutable Build #159 checkout:** cdca38b9e4f2f99006db8feae40c07c6f9bdfb0a; contains only the two-literal test repair in executable/test scope, plus docs milestones.
-- **Trigger:** owner-authored Issue #36 opened 2026-11-13T06:07:25Z with exact guarded title/token. Issues #33 and #35 remain OPEN and were not reopened. Exactly one run for this attempt.
-- **Actions:** [Build #159 / run 43376503987](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/43376503987), workflow 374946166, event issues, attempt 1; job 131724120379.
-- **Current gate:** steps 1–13 SUCCESS, including toolchain, signing prep, App security/architecture audit, dependencies, Dart analyzer and Flutter test gate. Step 14 Android unit-test gate IN_PROGRESS. Steps 15–21 pending. Continue only this run.
-- **Counts/log:** analyzer and Flutter test step statuses are SUCCESS, but exact info/warning/error/test counts are not yet captured from the complete terminal log; active job log archive was not yet available. Do not infer counts.
-- **Immediately preceding failed run:** Build #158 / run 43375621769, source 285f3d6ea29378e9be4c711ede1705bf4abd821a; terminal FAILED at Flutter tests (185 pass / 2 fail). Two old assertions expected Pengembangan Aplikasi & Perakit instead of the current approved/source phrase Pengembang Aplikasi & Perakit. Android/release gates skipped; no package.
-- **Repair:** commit 2c75c5b96db21937ec66c46f954d672a45384a7f changed only test/floating_monitor_layout_contract_test.dart (2 assertions). Production source/UI unchanged. #158 failure remains documented as failure.
-- **Release baseline:** Build #157 / run 43247876115, source 10d106537e92060e0aac3fc17fd37f56e746bcd5; Release ID 403010611 / tag jexfyz-latest. Before #159, the two existing verified assets were APK 55,980,123 bytes (SHA-256 24a42feb2ec8968209ac5dd764c6acb789c09fb0fc9a26df8e7d4bf5e1652aef) and source ZIP 2,932,445 bytes (SHA-256 3b6f0a84a760b26587ca39a946f14383f2acee933fb5b30247270713a32e6a06).
-- **Preflight:** main tree 133 entries / truncated=false; no active run/open PR before trigger; workflow blob 9dc1e61ba49f19cad4edbb99a832d5333d9f0f12 unchanged; Android versionName "Telegram @horizontalzzz" exact.
-- **Ledger:** APP_BUILD_REPORT.md records #158 failure/repair and #159 trigger plus progress. Latest report update commit 7ceb92cee4c70f7d6592711f869fd4a60c31f8de.
+- **Immutable Build #159 checkout:** cdca38b9e4f2f99006db8feae40c07c6f9bdfb0a.
+- **Trigger/run/job:** Issue #36 / [Build #159 run 43376503987](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/43376503987), workflow 374946166, event issues, attempt 1; job 131724120379. Only this run is active.
+- **Current gates:** steps 1–14 SUCCESS. Step 14 Android unit-test gate succeeded at 2026-11-13T06:11:54Z (started 06:09:02Z). Step 15 Build latest release APK is IN_PROGRESS. Steps 16–21 (V1/V2/V3 enforce, certificate verification, stable name, source ZIP, Release publish, re-download verification) pending.
+- **Analyzer/tests:** steps 12 and 13 succeeded. Exact info/warning/error and Flutter test counts await terminal log; active log archive unavailable so far. Do not infer.
+- **Prior failure/repair:** #158 / run 43375621769 failed at Flutter tests with 185 pass/2 fail caused by two stale About role assertions. Test-only correction commit 2c75c5b96db21937ec66c46f954d672a45384a7f updates both strings to Pengembang Aplikasi & Perakit; no production UI changed.
+- **Build #157 release baseline:** Release ID 403010611 / tag jexfyz-latest / source 10d106537e92060e0aac3fc17fd37f56e746bcd5; exactly one APK and one corresponding source ZIP remain until Build #159 gates publish.
+- **Preflight/guard:** main tree 133 entries, truncated=false before trigger; no active runs/open PRs; workflow blob 9dc1e61ba49f19cad4edbb99a832d5333d9f0f12 unchanged; Android versionName "Telegram @horizontalzzz" exact.
+- **Ledger:** APP_BUILD_REPORT.md records #158 failure + repair, #159 trigger, analyzer/Flutter success and Android pass/APK step active. Latest report commit 6bb82f1e142ea3162dc8d9d6435481214eb3b7ed.
 
 ### Continuation
 
-- **Next:** continue the same run 43376503987 / job 131724120379. Wait for Android Gradle step 14 terminal state, then follow APK, signing, source ZIP, Release/tag and downloaded asset gates.
-- At terminal completion, read the complete job log for precise analyzer/test/Gradle/asset details. Verify all steps 1–21 and cleanup; confirm Release/tag exactly matches run source SHA and downloaded assets.
-- Do not retry while active. On a new failure, retain it and inspect actual evidence before any justified App-only repair.
-- **Formatter caveat:** workflow has no Dart formatter step; no dart format result is implied.
-- **Evidence boundary:** App CI/release does not establish Firmware compile/BIN, Firebase, OTA/flash, physical BLE/device, NVS/rail/LED, cooling/electrical or OEM visual acceptance. These remain NOT RUN / UNVERIFIED.
+- **Next:** inspect step 15 completion and each remaining step. No duplicate trigger.
+- **Terminal verification:** retrieve complete job log and record analyzer counts, Flutter count, Gradle task NO-SOURCE scope; verify obfuscated APK; JAR/V1 + V2/V3; exactly one signer and expected pinned cert; source ZIP integrity/marker; exactly two Release assets (one APK, one source ZIP); Release and Git tag exact source SHA; re-download bytes/digests and downloaded signature/cert.
+- **Formatter caveat:** no Dart formatter step exists in the workflow; no dart format result implied.
+- **Evidence boundary:** App CI/release is separate from Firmware compile/BIN, Firebase, OTA/flash, physical BLE/device, NVS/rail/LED, cooling/electrical and OEM screenshot acceptance. These remain NOT RUN / UNVERIFIED.
 
 ---
 
