@@ -6,17 +6,17 @@
 
 | Field | Value |
 |---|---|
-| **STATUS** | **COMPLETED** |
-| Mode | Eksekusi Build App |
-| Work item | Guarded App Build/QC for the latest verified main source and release provenance |
+| **STATUS** | **IN_PROGRESS** |
+| Mode | Eksekusi Full |
+| Work item | Broad repository hygiene, App/source/test static audit, workflow/dependency/doc consistency, and safe scoped repairs |
 | Updated | 2026-11-13 (Asia/Jakarta) |
-| Last completed milestone | Build #159 all workflow gates 1–21 and cleanup 39–43 passed; APK/source ZIP published and re-downloaded verification passed; Release/tag/source SHA parity confirmed |
-| Result | Build #159 SUCCESS / RELEASED. Flutter 187/187; analyzer 23 infos, 0 warnings/errors; Android Gradle BUILD SUCCESSFUL; obfuscated APK, one-signer V1/V2/V3 pinned-cert, matching source ZIP, Release/tag and downloaded asset checks verified. |
-| Latest App source/package commit | `cdca38b9e4f2f99006db8feae40c07c6f9bdfb0a` (Build #159 immutable package SHA; contains four UI refinements and test-only About assertion repair) |
+| Last completed milestone | Restored Build #159 checkpoint; verified live main HEAD `8442650e5512c187416dcc139e26459691f0ca41`, complete 133-entry tree and no active Actions run |
+| Result | Build #159 is the latest verified App release. Owner reports Firmware V7.2 and the latest App are installed and safe (USER-REPORTED). Broad repository audit and remediation are in progress. |
+| Latest App source/package commit | `cdca38b9e4f2f99006db8feae40c07c6f9bdfb0a` (Build #159 immutable package source) |
 | Last verified package | Build #159 — source `cdca38b9e4f2f99006db8feae40c07c6f9bdfb0a`; Release `403010611`, tag `jexfyz-latest` |
-| Validation | Hosted Build #159 validates immutable source `cdca38b9e4f2f99006db8feae40c07c6f9bdfb0a`: analyzer passed (23 infos / 0 warnings / 0 errors), Flutter 187/187, Gradle BUILD SUCCESSFUL, gates 1–21 and cleanup 39–43 passed, Release/tag/source parity and downloaded APK/ZIP integrity/signature checks passed. Native Android JUnit tasks NO-SOURCE; dart format absent from workflow. |
-| Blocker | None for App CI/release. Physical install/OEM visual review, BLE/device behavior, Firmware compile/BIN, Firebase, OTA/flash, NVS/rail/LED and thermal/electrical validation remain NOT RUN / NOT VERIFIED and outside this Build App session. |
-| Next action | Owner installs Build #159 and supplies actual Android screenshots/physical acceptance at 350-dp/420-dp, EN/ID, Light/Dark and BLE/Lock Voltage flows. No further App Build unless App source changes. |
+| Validation | Build #159 hosted CI passed (187/187 Flutter, analyzer, Gradle, release/signature/source integrity). New audit's local static checks/tests not yet run. |
+| Blocker | No blocker for repository read/write. Local Dart/Flutter/Gradle/ADB availability will be checked. No App Build/Release, Firmware/BIN, Firebase, OTA, flashing or device operations are authorized. |
+| Next action | Complete full tree/Markdown/link/skill-mirror/source/workflow/dependency audit; fix only supported in-scope defects; update canonical memory and verify final tree/HEAD. |
 
 ## Status meanings
 
