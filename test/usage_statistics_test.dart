@@ -182,18 +182,31 @@ UsageStatsSnapshot _sampleSnapshot() {
 
 void main() {
   group('Usage Statistics analytics', () {
-    test('temperature axis ticks keep narrow ranges distinct', () {
-      const tickStep = 2 / 3;
-      final labels = <String>[
-        formatUsageAxisTick(43.5, tickStep),
-        formatUsageAxisTick(42.833333, tickStep),
-        formatUsageAxisTick(42.166667, tickStep),
-        formatUsageAxisTick(41.5, tickStep),
-      ];
+    test('temperature axes label every degree and scale to observed data', () {
+      final ticks = usageTemperatureAxisTicks(
+        minimum: 31.5,
+        maximum: 31.6,
+      );
 
-      expect(labels, <String>['43.5', '42.8', '42.2', '41.5']);
-      expect(labels.toSet(), hasLength(4));
-      expect(formatUsageAxisTick(46, 2), '46');
+      expect(ticks, <double>[33, 32, 31, 30]);
+      expect(
+        ticks.map((value) => formatUsageAxisTick(value, 1)).toList(),
+        <String>['33', '32', '31', '30'],
+      );
+      expect(
+        usageTemperatureChartHeight(minimum: 31.5, maximum: 31.6),
+        160,
+      );
+
+      final wideRange = usageTemperatureAxisTicks(
+        minimum: 20,
+        maximum: 40,
+      );
+      expect(wideRange.first - wideRange.last, 22);
+      expect(
+        usageTemperatureChartHeight(minimum: 20, maximum: 40),
+        greaterThan(160),
+      );
       expect(formatUsageAxisTick(0.234, 0.01), '0.23');
     });
 
@@ -820,7 +833,7 @@ void main() {
       }
 
       await pumpAtWidth(350, ThemeData.light(useMaterial3: true));
-      expect(find.text('Baterai HP'), findsOneWidget);
+      expect(find.text('Suhu Baterai HP'), findsOneWidget);
       expect(find.text('Hotside'), findsOneWidget);
       expect(find.text('30D'), findsNothing);
       expect(find.text('1H'), findsNothing);
@@ -846,13 +859,16 @@ void main() {
       );
       await tester.pumpAndSettle();
       expect(profileHeadingLight, findsOneWidget);
-      expect(find.text('Rincian'), findsOneWidget);
+      expect(find.text('Rincian'), findsNothing);
+      expect(find.text('More details'), findsNothing);
       expect(find.textContaining('Rata-rata kipas'), findsNothing);
       expect(find.textContaining('Touch any chart'), findsNothing);
-      await tester.ensureVisible(find.text('Rincian'));
-      await tester.tap(find.text('Rincian'));
-      await tester.pumpAndSettle();
-      expect(find.textContaining('Rata-rata kipas'), findsOneWidget);
+      expect(find.text('Terpantau'), findsNothing);
+      expect(find.textContaining('Sampel terakhir'), findsNothing);
+      expect(
+        find.byKey(const ValueKey<String>('usage-session-elapsed')),
+        findsOneWidget,
+      );
       for (final key in <Key>[
         const ValueKey<String>('usage-profile-timeline-voltage'),
         const ValueKey<String>('usage-profile-timeline-adaptive'),
@@ -889,7 +905,7 @@ void main() {
       expect(tester.takeException(), isNull);
 
       await pumpAtWidth(420, ThemeData.dark(useMaterial3: true));
-      expect(find.text('Baterai HP'), findsOneWidget);
+      expect(find.text('Suhu Baterai HP'), findsOneWidget);
       expect(find.text('Hotside'), findsOneWidget);
       expect(find.text('30D'), findsNothing);
       expect(find.text('1H'), findsNothing);
@@ -909,63 +925,31 @@ void main() {
     });
 
     testWidgets(
-      'last valid sample uses the latest persisted temperature sample',
+      'session selector and dashboard expose only one elapsed timer',
       (tester) async {
         final previousLanguage = appLanguageNotifier.value;
         addTearDown(() => appLanguageNotifier.value = previousLanguage);
         addTearDown(tester.view.resetPhysicalSize);
         addTearDown(tester.view.resetDevicePixelRatio);
-        tester.view.devicePixelRatio = 1.0;
-        tester.view.physicalSize = const Size(800, 1200);
+        tester.view.devicePixelRatio = 1;
+        tester.view.physicalSize = const Size(420, 1000);
         appLanguageNotifier.value = AppLanguage.english;
 
-        final startMs = DateTime(2026, 1, 1, 8).millisecondsSinceEpoch;
-        final hotsideSampleMs =
-            startMs + const Duration(minutes: 2).inMilliseconds;
-        final latestSampleMs =
-            startMs + const Duration(minutes: 4).inMilliseconds;
-        final endMs = startMs + const Duration(minutes: 10).inMilliseconds;
-        final snapshot = UsageStatsSnapshot(
-          fromMs: startMs,
-          toMs: endMs,
-          sessions: [
-            UsageStatsSession(
-              id: 7,
-              coolerId: 'AA:BB:CC',
-              startedAtMs: startMs,
-              endedAtMs: endMs,
-              lastSeenAtMs: endMs,
-              lastHotsideSeenAtMs: endMs,
-              lastBatterySeenAtMs: endMs,
-            ),
-          ],
-          events: [
-            UsageStatsEvent(
-              sessionId: 7,
-              timestampMs: startMs,
-              metric: 'battery',
-              numberValue: 20,
-              textValue: null,
-            ),
-            UsageStatsEvent(
-              sessionId: 7,
-              timestampMs: hotsideSampleMs,
-              metric: 'hotside',
-              numberValue: 35,
-              textValue: null,
-            ),
-            UsageStatsEvent(
-              sessionId: 7,
-              timestampMs: latestSampleMs,
-              metric: 'battery',
-              numberValue: 21,
-              textValue: null,
-            ),
-          ],
+        final base = _sampleSnapshot();
+        final secondSession = UsageStatsSession(
+          id: 2,
+          coolerId: 'AA:BB:CC',
+          startedAtMs: 20000,
+          endedAtMs: 30000,
+          lastSeenAtMs: 30000,
+          lastHotsideSeenAtMs: 30000,
+          lastBatterySeenAtMs: 30000,
         );
-        expect(
-          UsageStatsAnalytics.lastTemperatureSampleAtMs(snapshot),
-          latestSampleMs,
+        final snapshot = UsageStatsSnapshot(
+          fromMs: base.fromMs,
+          toMs: base.toMs,
+          sessions: [...base.sessions, secondSession],
+          events: base.events,
         );
 
         await tester.pumpWidget(
@@ -979,18 +963,17 @@ void main() {
         );
         await tester.pumpAndSettle();
 
-        final lastValidSample = find.textContaining(
-          'Last sample · 04:00',
+        expect(
+          find.byKey(const ValueKey<String>('usage-session-selector')),
+          findsOneWidget,
         );
-        final statisticsScrollable = find.byType(Scrollable).first;
-        expect(tester.getSize(statisticsScrollable).height, greaterThan(0));
-        await tester.scrollUntilVisible(
-          lastValidSample,
-          240,
-          scrollable: statisticsScrollable,
+        expect(
+          find.byKey(const ValueKey<String>('usage-session-elapsed')),
+          findsOneWidget,
         );
-        await tester.pumpAndSettle();
-        expect(lastValidSample, findsOneWidget);
+        expect(find.textContaining('Last sample'), findsNothing);
+        expect(find.text('More details'), findsNothing);
+        expect(find.text('Observed'), findsNothing);
         expect(tester.takeException(), isNull);
       },
     );
