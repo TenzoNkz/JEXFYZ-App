@@ -1,27 +1,28 @@
-## CURRENT CHECKPOINT — BUILD #158 FAILED / BUILD #159 PRE-TRIGGER AFTER TEST REPAIR — 2026-11-13
+## CURRENT CHECKPOINT — BUILD #159 ACTIVE / FLUTTER SETUP — 2026-11-13
 
-**Mode:** `Eksekusi Build App!` — owner authorization remains active for guarded App Build/QC/release and justified App-scope repairs only. No Firmware compilation/BIN, Firebase mutation, OTA, flashing or device operation.
+**Mode:** Eksekusi Build App! — explicit owner authorization remains active for guarded App Build/QC/release and justified App-scope repairs only. No Firmware compilation/BIN, Firebase mutation, OTA, flashing or device operation.
 
-### Build #158 terminal evidence
+### Current run and source evidence
 
-- **Run/job/source:** Build #158 / run [43375621769](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/43375621769), workflow 374946166, event issues, attempt 1; job `131721325458`; immutable checkout `285f3d6ea29378e9be4c711ede1705bf4abd821a`.
-- **Terminal:** completed FAILURE at step 13 `Run Flutter tests`. Steps 1–12 passed; analyzer 23 infos / 0 warnings / 0 errors; Flutter suite 185 passed / 2 failed. Android Gradle and gates 14–21 were skipped; cleanup 39–43 passed. No APK/source ZIP/Release mutation.
-- **Exact failures:** both in `test/floating_monitor_layout_contract_test.dart`. The static test at line 495 and Indonesian About widget test at line 546 both expected `Pengembangan Aplikasi & Perakit`, while current approved/source text is `Pengembang Aplikasi & Perakit`.
-- **Root cause verified:** current `APP_NOTES.md` implemented UI contract and `PROJECT_STATE.md` say `App Developer & Builder / Pengembang Aplikasi & Perakit`; live `lib/floating_monitor.dart:1482` and `JexText.phrase` agree. This was two stale assertions, not a production UI regression.
-- **Repair commit:** `2c75c5b96db21937ec66c46f954d672a45384a7f`; only `test/floating_monitor_layout_contract_test.dart` changed, exactly two strings corrected at lines 495/546. Zero old incorrect literals remain; production source/UI/behavior untouched.
-- **Preserved package baseline:** Build #157 remains last verified Release; Release ID 403010611 / tag `jexfyz-latest` still at source `10d106537e92060e0aac3fc17fd37f56e746bcd5`, with original one-APK/one-source-ZIP assets. Build #158 did not alter release assets.
-- **Version/workflow guard:** Android `versionName "Telegram @horizontalzzz"` exact. Workflow blob `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12` unchanged; issue opened/reopened + owner/title/token only, no push/PR trigger.
+- **Repository/branch:** TenzoNkz/JEXFYZ-App / main.
+- **Immutable Build #159 checkout:** cdca38b9e4f2f99006db8feae40c07c6f9bdfb0a; includes the two-assertion test-only fix commit 2c75c5b96db21937ec66c46f954d672a45384a7f plus docs ledger/checkpoint commits.
+- **Trigger:** owner-authored Issue [#36](https://github.com/TenzoNkz/JEXFYZ-App/issues/36), opened 2026-11-13T06:07:25Z with exact guarded title/token. Issues #33 and #35 are still OPEN and were not reopened. Exactly one run was observed for this trigger.
+- **Actions:** [Build #159 / run 43376503987](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/43376503987), workflow 374946166, event issues, attempt 1; build job 131724120379; run created 2026-11-13T06:07:27Z.
+- **Current job state:** steps 1–3 success; step 4 Set up Flutter IN_PROGRESS; steps 5–21 pending. Continue only this run; no duplicate trigger.
+- **Immediately preceding failure:** Build #158 / run 43375621769, job 131721325458, source 285f3d6ea29378e9be4c711ede1705bf4abd821a, terminal FAILED at Flutter test gate: analyzer 23 infos, 0 warnings/errors; tests 185 passed / 2 failed. Both were stale Indonesian About role string assertions. Android Gradle and release gates were skipped, so no artifact or Release mutation.
+- **Repair:** commit 2c75c5b96db21937ec66c46f954d672a45384a7f changed only test/floating_monitor_layout_contract_test.dart (two literals at lines 495 and 546), aligning tests with the current approved/source phrase Pengembang Aplikasi & Perakit. Production source untouched. Failure and repair are preserved in APP_BUILD_REPORT.md.
+- **Build #157 remains published baseline:** run 43247876115, source 10d106537e92060e0aac3fc17fd37f56e746bcd5, Release ID 403010611, tag jexfyz-latest, original one APK + one source ZIP pair. Do not call it a Build #159 result.
+- **Preflight and protected config:** recursive main tree 133 entries, truncated=false; zero active/queued runs and open PR count 0 before trigger; workflow blob 9dc1e61ba49f19cad4edbb99a832d5333d9f0f12 unchanged; Android versionName "Telegram @horizontalzzz" preserved. Release/tag remained on Build #157 source before trigger.
+- **Workflow guard:** exact issues.opened/reopened + repository-owner/title/token condition; no push/PR path; current analyzer/test/Gradle/obfuscated APK/V1-V2-V3/pinned cert/source ZIP/Release parity/downloaded asset gates unchanged.
+- **Ledger:** APP_BUILD_REPORT.md includes terminal Build #158 failure/repair and Build #159 trigger/run initial state; latest ledger update commit bba0da9afddb2201eb27690257267be578f88a2d.
 
-### Build #159 pre-trigger state
+### Continuation
 
-- **Authorization:** the explicit owner `Eksekusi Build App!` continues to cover a retry after this concrete, narrow App test repair; no new authorization is inferred from another mode.
-- **Candidate source:** commit `2c75c5b96db21937ec66c46f954d672a45384a7f` (test-only repair) plus documentation-only commits that record Build #158's failure and repair. Re-fetch the live main HEAD/tree before triggering and confirm no further executable changes.
-- **Existing open trigger issue:** Issue #35 was used for Build #158 and remains OPEN. Do not reopen it or issue a duplicate event. Exactly one NEW owner-authored issue with the same guarded title/body token is required for Build #159 after preflight.
-- **Required preflight:** #158 terminal; zero queued/in-progress runs; zero open PRs; inspect latest main HEAD + complete recursive tree; issue #35 open; issue #33 remains historical/open; workflow blob unchanged; Release/tag/assets still match Build #157; exact Gradle versionName preserved.
-- **Ledger:** APP_BUILD_REPORT.md has the complete Build #158 trigger record plus terminal two-test failure and root-cause/repair evidence. Latest ledger update commit `59439aa7cfc9b54e4893e47f89a7b8fb2ce36cca`.
-- **State:** PRE-TRIGGER for Build #159. No #159 issue or Actions run has been created. On approval-by-existing-mode and after preflight, create only one new guarded issue, capture exact issue/run/source/job IDs, then inspect that single run.
-- **Formatter caveat:** workflow contains no `dart format` gate; no formatter result is implied.
-- **Evidence boundary:** App CI is separate from Firmware compile/BIN, Firebase, OTA/flash, physical BLE/device, thermal/electrical and OEM visual acceptance. These remain NOT RUN / UNVERIFIED.
+- **Next completed gate to inspect:** Flutter setup, then Gradle, dependency/audit/analyzer and Flutter suite. Record analyzer diagnostics/test counts only from complete job evidence.
+- **If test gate fails:** inspect exact failing tests and compare assertions to approved current source; preserve #159 failure and repair only an App-scope root cause; retry only after this concrete repair and a fresh preflight.
+- **If all gates pass:** verify all workflow steps 1–21 and cleanup, analyzer warnings/errors, test count, Gradle NO-SOURCE scope, obfuscated APK, V1/V2/V3 one-signer/pinned cert, source ZIP integrity/marker, exactly one APK plus one source ZIP, Release/tag/source SHA parity, and final downloaded asset digests/signature.
+- **Formatter caveat:** workflow has no Dart formatter step; no dart format result is implied.
+- **Evidence boundary:** App CI/release is separate from Firmware compilation/BIN, Firebase, OTA/flash, physical BLE/device, NVS/rail/LED, thermal/electrical cooling and OEM visual acceptance. These remain NOT RUN / UNVERIFIED.
 
 ---
 
