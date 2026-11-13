@@ -4,7 +4,7 @@
 
 ### Source and change record
 
-- **Repository:** `TenzoNkz/JEXFYZ-App`, branch `main`. Source/test changes are on main; this checkpoint is written before final documentation-only commits.
+- **Repository:** `TenzoNkz/JEXFYZ-App`, branch `main`. Source, regression tests and the current project checkpoint are committed on `main`; the checkpoint records the current handover and evidence boundary.
 - **Usage Statistics source:** commit `9b9262d934ff2ab6575256b264f8bf851280dddf`; subsequent source-only changes `364f5c3c1b777606647c3d85777091314988ea7f` (session dropdown no longer duplicates duration) and `f32c1278308bea7cedd4f150255d2128cac138bb` (remove obsolete details-only formatter). Latest file blob: `lib/usage_statistics.dart` = `64fa93a39516126bbce04b3f031fcdc7f4e4381f`.
 - **Regression source:** commit `6c85166731fde4d6e72d44ab82d6a3a10826918a`; latest test correction `b560403877fd2080db2019fc04d86d67020418dd`. Latest file blob: `test/usage_statistics_test.dart` = `259ba2e64a540a04c7f798f3688b2f1c225ccb9b`.
 - **UI behavior:** one session header contains status, date/time and the only elapsed duration; session selection remains in the header dropdown and menu entries omit elapsed durations. Battery/Hotside axes show every whole degree at 1°C intervals using observed data range and adaptive chart height. Hotside limit remains visible as text but no longer dictates the plot range. Visible Observed, More details and Last sample elements were removed. Min/Avg/Max, four activity lanes, the common cursor and six selected-time fields remain. The selected-time dock is compact and uses locale-aware labels/state/temperature formatting.
