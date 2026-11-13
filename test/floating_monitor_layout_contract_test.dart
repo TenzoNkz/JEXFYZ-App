@@ -456,10 +456,12 @@ void main() {
     expect(lockLayout, contains('width: 34'));
     expect(lockLayout, contains('height: 34'));
     expect(lockLayout, contains('fontSize: 12.5'));
-    expect(lockLayout, contains('fontSize: 10.5'));
-    expect(lockLayout, contains('final String? subtitle;'));
-    expect(lockLayout, contains('subtitle = null;'));
-    expect(lockLayout, contains('if (subtitle != null)'));
+    expect(lockLayout, contains('Switch.adaptive('));
+    expect(lockLayout, contains('state.sessionReady && !state.busy'));
+    expect(lockLayout, contains("ValueKey<String>('voltage-lock-card')"));
+    expect(lockLayout, isNot(contains('subtitle')));
+    expect(lockLayout, isNot(contains('CircularProgressIndicator')));
+    expect(lockLayout, contains('color: scheme.onSurfaceVariant'));
 
     final firmwareSection = settingsPage.indexOf("JexText.of('firmwareSection', language)");
     final aboutRow = settingsPage.indexOf("JexText.of('about', language)");
@@ -487,18 +489,23 @@ void main() {
 
     expect(settingsSource, contains('class AboutSettingsPage'));
     expect(settingsSource, isNot(contains('class DeviceDiagnosticsPage')));
-    expect(settingsSource, contains('App Development & Build'));
+    expect(settingsSource, contains('App Developer & Builder'));
+    expect(settingsSource, contains('Special Thanks'));
+    expect(settingsSource, contains('Ucapan Terima Kasih'));
+    expect(settingsSource, contains('Pengembangan Aplikasi & Perakit'));
+    expect(settingsSource, contains('CrossAxisAlignment.stretch'));
     expect(settingsSource, contains('Design Inspiration'));
     expect(settingsSource, contains('3D Design & Printing'));
     expect(settingsSource, contains('@Horizontalzzz'));
     expect(settingsSource, contains('@FYZ737'));
     expect(settingsSource, contains('@Logos3dMichael'));
+    expect(settingsSource, isNot(contains("'JE Cooler'")));
     expect(localizationSource, contains("'about': {"));
     expect(localizationSource, isNot(contains("'deviceDiagnostics': {")));
     expect(localizationSource, contains("'peltierFanRequiredTitle': {"));
   });
 
-  testWidgets('About page renders the exact contributor credits in both languages', (tester) async {
+  testWidgets('About page renders localized Special Thanks credits with one aligned left edge', (tester) async {
     final previousLanguage = appLanguageNotifier.value;
     addTearDown(() => appLanguageNotifier.value = previousLanguage);
     appLanguageNotifier.value = AppLanguage.english;
@@ -511,10 +518,11 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(find.text('JE Cooler'), findsOneWidget);
-    expect(find.text('Special Thanks'), findsNothing);
+    expect(find.text('About'), findsOneWidget);
+    expect(find.text('Special Thanks'), findsOneWidget);
+    expect(find.text('JE Cooler'), findsNothing);
     expect(find.byType(Card), findsOneWidget);
-    expect(find.text('App Development & Build'), findsOneWidget);
+    expect(find.text('App Developer & Builder'), findsOneWidget);
     expect(find.text('Horizon'), findsOneWidget);
     expect(find.text('@Horizontalzzz'), findsOneWidget);
     expect(find.text('Design Inspiration'), findsOneWidget);
@@ -524,11 +532,18 @@ void main() {
     expect(find.text('Logos'), findsOneWidget);
     expect(find.text('@Logos3dMichael'), findsOneWidget);
 
+    final firstRoleLeft = tester.getTopLeft(find.text('App Developer & Builder')).dx;
+    final secondRoleLeft = tester.getTopLeft(find.text('Design Inspiration')).dx;
+    final thirdRoleLeft = tester.getTopLeft(find.text('3D Design & Printing')).dx;
+    expect(secondRoleLeft, closeTo(firstRoleLeft, 0.01));
+    expect(thirdRoleLeft, closeTo(firstRoleLeft, 0.01));
+
     appLanguageNotifier.value = AppLanguage.indonesia;
     await tester.pumpAndSettle();
     expect(find.text('Tentang'), findsOneWidget);
-    expect(find.text('Ucapan Terima Kasih'), findsNothing);
-    expect(find.text('Pengembangan Aplikasi & Build'), findsOneWidget);
+    expect(find.text('Ucapan Terima Kasih'), findsOneWidget);
+    expect(find.text('JE Cooler'), findsNothing);
+    expect(find.text('Pengembangan Aplikasi & Perakit'), findsOneWidget);
     expect(find.text('Inspirasi Desain'), findsOneWidget);
     expect(find.text('Desain & Pencetakan 3D'), findsOneWidget);
     expect(find.text('@Horizontalzzz'), findsOneWidget);
@@ -536,7 +551,6 @@ void main() {
     expect(find.text('@Logos3dMichael'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
-
 
   testWidgets('Settings values share one line and redundant copy is absent', (tester) async {
     final previousLanguage = appLanguageNotifier.value;
@@ -583,7 +597,7 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets('Lock Voltage copy appears only for states that need explanation', (tester) async {
+  testWidgets('Lock Voltage stays one line and only its authoritative Switch changes state', (tester) async {
     final previousLanguage = appLanguageNotifier.value;
     final previousLock = voltageLockSettingsNotifier.value;
     addTearDown(() {
@@ -591,7 +605,7 @@ void main() {
       voltageLockSettingsNotifier.value = previousLock;
     });
 
-    Future<void> pumpLockState(
+    Future<double> pumpLockState(
       VoltageLockSettingsState state, {
       AppLanguage language = AppLanguage.english,
     }) async {
@@ -608,15 +622,24 @@ void main() {
         ),
       );
       await tester.pumpAndSettle();
+      expect(find.text('Not synchronized'), findsNothing);
+      expect(find.text('Firmware V7.2+ required'), findsNothing);
+      expect(find.text('Active · not saved'), findsNothing);
+      expect(find.text('5V limit · Adaptive OFF'), findsNothing);
+      expect(find.byKey(const ValueKey<String>('voltage-lock-card')), findsOneWidget);
+      return tester.getSize(find.byKey(const ValueKey<String>('voltage-lock-card'))).height;
     }
 
     await pumpLockState(const VoltageLockSettingsState());
-    expect(find.text('Not synchronized'), findsOneWidget);
+    expect(find.byType(Switch), findsNothing);
+    expect(find.byType(Tooltip), findsWidgets);
 
     await pumpLockState(
       const VoltageLockSettingsState(sessionReady: true, known: false),
     );
-    expect(find.text('Firmware V7.2+ required'), findsOneWidget);
+    final unavailableTooltip = tester.widgetList<Tooltip>(find.byType(Tooltip))
+        .firstWhere((tooltip) => tooltip.message == 'Firmware V7.2+ required');
+    expect(unavailableTooltip.message, 'Firmware V7.2+ required');
 
     await pumpLockState(
       const VoltageLockSettingsState(
@@ -626,19 +649,10 @@ void main() {
         saved: false,
       ),
     );
-    expect(find.text('Active · not saved'), findsOneWidget);
+    expect(find.byType(Switch), findsOneWidget);
+    expect(find.byTooltip('Retry saving Lock Voltage'), findsOneWidget);
 
-    await pumpLockState(
-      const VoltageLockSettingsState(
-        sessionReady: true,
-        known: true,
-        active: true,
-        saved: true,
-      ),
-    );
-    expect(find.text('5V limit · Adaptive OFF'), findsOneWidget);
-
-    await pumpLockState(
+    final offHeight = await pumpLockState(
       const VoltageLockSettingsState(
         sessionReady: true,
         known: true,
@@ -646,17 +660,40 @@ void main() {
         saved: true,
       ),
     );
-    expect(find.text('Not synchronized'), findsNothing);
-    expect(find.text('Firmware V7.2+ required'), findsNothing);
-    expect(find.text('Active · not saved'), findsNothing);
-    expect(find.text('5V limit · Adaptive OFF'), findsNothing);
     expect(find.byType(Switch), findsOneWidget);
+
+    final onHeight = await pumpLockState(
+      const VoltageLockSettingsState(
+        sessionReady: true,
+        known: true,
+        active: true,
+        saved: true,
+      ),
+    );
+    expect(find.byType(Switch), findsOneWidget);
+    expect(onHeight, closeTo(offHeight, 0.01));
+
+    await pumpLockState(
+      const VoltageLockSettingsState(
+        sessionReady: true,
+        known: true,
+        active: true,
+        saved: true,
+        busy: true,
+      ),
+    );
+    final busySwitch = tester.widget<Switch>(find.byType(Switch));
+    expect(busySwitch.value, isTrue);
+    expect(busySwitch.onChanged, isNull);
+    expect(find.byType(CircularProgressIndicator), findsNothing);
 
     await pumpLockState(
       const VoltageLockSettingsState(sessionReady: true, known: false),
       language: AppLanguage.indonesia,
     );
-    expect(find.text('Perlu Firmware V7.2+'), findsOneWidget);
+    final localizedTooltip = tester.widgetList<Tooltip>(find.byType(Tooltip))
+        .firstWhere((tooltip) => tooltip.message == 'Perlu Firmware V7.2+');
+    expect(localizedTooltip.message, 'Perlu Firmware V7.2+');
     expect(tester.takeException(), isNull);
   });
 

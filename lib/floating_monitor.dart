@@ -1214,39 +1214,18 @@ class SettingsPage extends StatelessWidget {
     VoltageLockSettingsState state,
   ) {
     final scheme = Theme.of(context).colorScheme;
-    final String? subtitle;
-    if (!state.sessionReady) {
-      subtitle = JexText.phrase(
-        'Not synchronized',
-        'Belum tersinkron',
-        language,
-      );
-    } else if (!state.known) {
-      subtitle = JexText.phrase(
-        'Firmware V7.2+ required',
-        'Perlu Firmware V7.2+',
-        language,
-      );
-    } else if (!state.saved) {
-      subtitle = JexText.phrase(
-        'Active · not saved',
-        'Aktif · belum tersimpan',
-        language,
-      );
-    } else if (state.active) {
-      subtitle = JexText.phrase(
-        '5V limit · Adaptive OFF',
-        'Batas 5V · Adaptive MATI',
-        language,
-      );
-    } else {
-      subtitle = null;
-    }
+    final unavailableMessage = !state.sessionReady
+        ? JexText.phrase('Not synchronized', 'Belum tersinkron', language)
+        : JexText.phrase(
+            'Firmware V7.2+ required',
+            'Perlu Firmware V7.2+',
+            language,
+          );
 
     Widget trailing;
     if (!state.known) {
       trailing = Tooltip(
-        message: subtitle ?? JexText.phrase('Lock Voltage', 'Kunci Tegangan', language),
+        message: unavailableMessage,
         child: Icon(
           state.sessionReady
               ? PhosphorIconsRegular.info
@@ -1255,19 +1234,13 @@ class SettingsPage extends StatelessWidget {
           color: scheme.onSurfaceVariant,
         ),
       );
-    } else if (state.busy) {
-      trailing = const SizedBox(
-        width: 22,
-        height: 22,
-        child: CircularProgressIndicator(strokeWidth: 2),
-      );
     } else {
       trailing = Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           Switch.adaptive(
             value: state.active,
-            onChanged: state.sessionReady
+            onChanged: state.sessionReady && !state.busy
                 ? (value) => unawaited(onVoltageLockChanged(value))
                 : null,
           ),
@@ -1278,7 +1251,7 @@ class SettingsPage extends StatelessWidget {
                 'Coba simpan Kunci Tegangan lagi',
                 language,
               ),
-              onPressed: state.sessionReady
+              onPressed: state.sessionReady && !state.busy
                   ? () => unawaited(onVoltageLockChanged(true))
                   : null,
               icon: const Icon(PhosphorIconsRegular.arrowClockwise, size: 19),
@@ -1288,6 +1261,7 @@ class SettingsPage extends StatelessWidget {
     }
 
     return Container(
+      key: const ValueKey<String>('voltage-lock-card'),
       padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 7),
       decoration: BoxDecoration(
         color: scheme.surface,
@@ -1307,38 +1281,20 @@ class SettingsPage extends StatelessWidget {
             child: Icon(
               PhosphorIconsRegular.lock,
               size: 18,
-              color: state.active && state.known
-                  ? scheme.primary
-                  : scheme.onSurfaceVariant,
+              color: scheme.onSurfaceVariant,
             ),
           ),
           const SizedBox(width: 8),
           Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  JexText.phrase('Lock Voltage', 'Kunci Tegangan', language),
-                  style: TextStyle(
-                    color: scheme.onSurface,
-                    fontSize: 12.5,
-                    fontWeight: FontWeight.w800,
-                  ),
-                ),
-                const SizedBox(height: 2),
-                if (subtitle != null)
-                  Text(
-                    subtitle,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      color: scheme.onSurfaceVariant,
-                      fontSize: 10.5,
-                      height: 1.2,
-                    ),
-                  ),
-              ],
+            child: Text(
+              JexText.phrase('Lock Voltage', 'Kunci Tegangan', language),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                color: scheme.onSurface,
+                fontSize: 12.5,
+                fontWeight: FontWeight.w800,
+              ),
             ),
           ),
           const SizedBox(width: 4),
@@ -1506,7 +1462,7 @@ class AboutSettingsPage extends StatelessWidget {
             padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
             children: [
               Text(
-                'JE Cooler',
+                JexText.phrase('Special Thanks', 'Ucapan Terima Kasih', language),
                 style: Theme.of(context).textTheme.titleLarge?.copyWith(
                   color: scheme.onSurface,
                   fontWeight: FontWeight.w800,
@@ -1519,10 +1475,11 @@ class AboutSettingsPage extends StatelessWidget {
                 elevation: 0,
                 clipBehavior: Clip.antiAlias,
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     _credit(
                       context,
-                      role: JexText.phrase('App Development & Build', 'Pengembangan Aplikasi & Build', language),
+                      role: JexText.phrase('App Developer & Builder', 'Pengembang Aplikasi & Perakit', language),
                       name: 'Horizon',
                       handle: '@Horizontalzzz',
                       last: false,

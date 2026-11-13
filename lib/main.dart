@@ -6573,7 +6573,8 @@ void _handleAckLine(String line) {
                           ),
                         );
 
-                    return Center(
+                    return Align(
+                      alignment: Alignment.bottomCenter,
                       child: Padding(
                         padding: const EdgeInsets.symmetric(
                           horizontal: 16,
@@ -9649,34 +9650,40 @@ void _handleAckLine(String line) {
     final dark = _dashboardDark;
     return Expanded(
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
+        padding: const EdgeInsets.symmetric(horizontal: 2),
         child: InkWell(
           borderRadius: BorderRadius.circular(12),
           onTap: () => setState(() => tabIndex = index),
-          child: Container(
-            alignment: Alignment.center,
-            padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 9),
-            decoration: BoxDecoration(
-              color: selected
-                  ? const Color(0xFF17181C)
-                  : (dark ? const Color(0xFF22242A) : const Color(0xFFE4E7EC)),
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: selected
-                    ? const Color(0xFF17181C)
-                    : (dark ? const Color(0xFF30323A) : const Color(0xFFD6DAE1)),
-              ),
-            ),
-            child: FittedBox(
-              fit: BoxFit.scaleDown,
-              child: Text(
-                title.toUpperCase(),
-                maxLines: 1,
-                style: TextStyle(
-                  color: selected ? Colors.white : (dark ? Colors.white70 : const Color(0xFF16181D)),
-                  fontWeight: FontWeight.w900,
-                  fontSize: 9,
-                  letterSpacing: 0.05,
+          child: SizedBox.expand(
+            child: Center(
+              child: Container(
+                width: double.infinity,
+                height: 38,
+                alignment: Alignment.center,
+                padding: const EdgeInsets.symmetric(horizontal: 3),
+                decoration: BoxDecoration(
+                  color: selected
+                      ? const Color(0xFF17181C)
+                      : (dark ? const Color(0xFF22242A) : const Color(0xFFE4E7EC)),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: selected
+                        ? const Color(0xFF17181C)
+                        : (dark ? const Color(0xFF30323A) : const Color(0xFFD6DAE1)),
+                  ),
+                ),
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text(
+                    title.toUpperCase(),
+                    maxLines: 1,
+                    style: TextStyle(
+                      color: selected ? Colors.white : (dark ? Colors.white70 : const Color(0xFF16181D)),
+                      fontWeight: FontWeight.w900,
+                      fontSize: 9,
+                      letterSpacing: 0.05,
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -9762,15 +9769,7 @@ void _handleAckLine(String line) {
                                       ),
                                     ),
                                   ),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 19),
-                                    child: Divider(
-                                      color: Theme.of(context).colorScheme.outlineVariant.withValues(alpha: .75),
-                                      thickness: 1,
-                                      height: 1,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 7),
+                                  const SizedBox(height: 8),
                                   Expanded(
                                     child: Padding(
                                       padding: const EdgeInsets.symmetric(horizontal: 8),

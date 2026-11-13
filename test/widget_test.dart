@@ -309,7 +309,8 @@ void main() {
     expect(dialog, contains('showGeneralDialog<bool>('));
     expect(dialog, contains('borderRadius: BorderRadius.circular(20)'));
     expect(dialog, contains('BoxConstraints(maxWidth: 296)'));
-    expect(dialog, contains('Center('));
+    expect(dialog, contains('alignment: Alignment.bottomCenter'));
+    expect(dialog, isNot(contains('Center(')));
     expect(dialog, contains('DefaultTextStyle.merge('));
     expect(dialog, contains('TextDecoration.none'));
     expect(dialog, contains("fontFamily: fontFamily"));
@@ -2662,7 +2663,7 @@ void main() {
     expect(theme.scaffoldBackgroundColor, const Color(0xFF0F1013));
   });
 
-  test('Home controls keep compact visuals inside 48-dp touch targets', () {
+  test('Home tabs keep compact 38-dp pills inside 48-dp touch targets without a divider', () {
     final source = File('lib/main.dart').readAsStringSync();
     final homeStart = source.indexOf('Widget _buildHomeArea(double height) {');
     final homeEnd = source.indexOf('Widget _tab(String title, int index) {', homeStart);
@@ -2676,15 +2677,34 @@ void main() {
     expect(headerStart, isNonNegative);
     expect(headerEnd, greaterThan(headerStart));
     final header = home.substring(headerStart, headerEnd);
-    final targetConstraints =
-        RegExp(r'constraints: const BoxConstraints\.tightFor\(width: 48, height: 48\)');
-    expect(targetConstraints.allMatches(header).length, 2);
+    expect(header.split('tightFor(width: 48, height: 48)').length - 1, 2);
     expect(header, contains('size: 25'));
 
+    final tabStart = source.indexOf('Widget _tab(String title, int index) {');
+    final tabEnd = source.indexOf('Color _dashboardTopColor()', tabStart);
+    expect(tabStart, isNonNegative);
+    expect(tabEnd, greaterThan(tabStart));
+    final tab = source.substring(tabStart, tabEnd);
+    expect(tab, contains('return Expanded('));
+    expect(tab, contains('SizedBox.expand('));
+    expect(tab, contains('height: 38'));
+    expect(tab, contains('width: double.infinity'));
+    expect(tab, contains('onTap: () => setState(() => tabIndex = index)'));
+
     final dashboardStart = source.indexOf('const homeHeight = 420.0;');
-    final tabHeight = source.indexOf('height: 48,', dashboardStart);
+    final menuStart = source.indexOf('height: 48,', dashboardStart);
+    final contentCall = source.indexOf('child: _buildTabContent()', menuStart);
+    final contentStart = source.lastIndexOf('Expanded(', contentCall);
     expect(dashboardStart, isNonNegative);
-    expect(tabHeight, greaterThan(dashboardStart));
+    expect(menuStart, greaterThan(dashboardStart));
+    expect(contentCall, greaterThan(menuStart));
+    expect(contentStart, greaterThan(menuStart));
+    final tabBoundary = source.substring(menuStart, contentStart);
+    expect(tabBoundary, contains('const SizedBox(height: 8),'));
+    expect(tabBoundary, isNot(contains('Divider(')));
+    expect(tabBoundary, contains("_tab(JexText.of('voltage'"));
+    expect(tabBoundary, contains("_tab(JexText.of('temperature'"));
+
     final temperatureStart = source.indexOf('Widget _temperatureButton(');
     final temperatureEnd = source.indexOf('Widget _lockedZoneRow(', temperatureStart);
     expect(temperatureStart, isNonNegative);
