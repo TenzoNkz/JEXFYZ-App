@@ -42,6 +42,45 @@ String formatUsageAxisTick(double value, double tickStep) {
   return value.toStringAsFixed(decimals);
 }
 
+/// Whole-degree ticks, padded one degree beyond the observed temperature range.
+/// The Hotside limit is deliberately not part of the data scale.
+List<double> usageTemperatureAxisTicks({
+  required double minimum,
+  required double maximum,
+}) {
+  if (!minimum.isFinite || !maximum.isFinite) return const [];
+
+  final low = math.min(minimum, maximum);
+  final high = math.max(minimum, maximum);
+  var firstTick = low.floor() - 1;
+  var lastTick = high.ceil() + 1;
+
+  // Keep at least four readable labels even for a perfectly flat sensor trace.
+  if (lastTick - firstTick < 3) {
+    final additional = 3 - (lastTick - firstTick);
+    firstTick -= additional ~/ 2;
+    lastTick += additional - additional ~/ 2;
+  }
+
+  return List<double>.generate(
+    lastTick - firstTick + 1,
+    (index) => (lastTick - index).toDouble(),
+    growable: false,
+  );
+}
+
+/// Preserve a readable label gap when a long or abnormal temperature range exists.
+double usageTemperatureChartHeight({
+  required double minimum,
+  required double maximum,
+}) {
+  final ticks = usageTemperatureAxisTicks(
+    minimum: minimum,
+    maximum: maximum,
+  );
+  return math.max(160.0, (ticks.length - 1) * 18.0 + 30.0).toDouble();
+}
+
 String formatUsageElapsed(int milliseconds) {
   final totalSeconds = math.max(0, milliseconds ~/ 1000).toInt();
   final hours = totalSeconds ~/ 3600;
@@ -363,38 +402,6 @@ class UsageStatsAnalytics {
       peltierSegments: peltier,
       fanSpeedSegments: fan,
     );
-  }
-
-  static int? lastTemperatureSampleAtMs(UsageStatsSnapshot snapshot) {
-    final sessionsById = <int, UsageStatsSession>{
-      for (final session in snapshot.sessions) session.id: session,
-    };
-    int? latestTimestampMs;
-
-    for (final event in snapshot.events) {
-      final value = event.numberValue;
-      if ((event.metric != 'battery' && event.metric != 'hotside') ||
-          value == null ||
-          !value.isFinite) {
-        continue;
-      }
-
-      final session = sessionsById[event.sessionId];
-      if (session == null) continue;
-      final sessionEndMs = session.endedAtMs ?? snapshot.toMs;
-      if (event.timestampMs < session.startedAtMs ||
-          event.timestampMs > sessionEndMs ||
-          event.timestampMs > snapshot.toMs) {
-        continue;
-      }
-
-      if (latestTimestampMs == null ||
-          event.timestampMs > latestTimestampMs) {
-        latestTimestampMs = event.timestampMs;
-      }
-    }
-
-    return latestTimestampMs;
   }
 
   static UsageTemperatureSummary _temperatureSummary(
@@ -2047,11 +2054,7 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
           physics: const AlwaysScrollableScrollPhysics(),
           padding: const EdgeInsets.fromLTRB(14, 10, 14, 28),
           children: [
-            if (_sessions.isNotEmpty) ...[
-              _sessionSelector(language),
-              const SizedBox(height: 8),
-              _sessionHeader(language, scheme),
-            ],
+            if (_sessions.isNotEmpty) _sessionHeader(language, scheme),
             if (UsageStatisticsRecorder.instance.lastWriteError != null) ...[
               const SizedBox(height: 10),
               _messageState(
@@ -2123,8 +2126,8 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
             else ...[
               _temperatureSection(
                 title: JexText.phrase(
-                  'Phone Battery',
-                  'Baterai HP',
+                  'Battery Temperature',
+                  'Suhu Baterai HP',
                   language,
                 ),
                 summary: summary.battery,
@@ -2135,8 +2138,8 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
               const SizedBox(height: 18),
               _temperatureSection(
                 title: JexText.phrase(
-                  'Hotside',
-                  'Hotside',
+                  'Hotside Temperature',
+                  'Suhu Hotside',
                   language,
                 ),
                 summary: summary.hotside,
@@ -2147,20 +2150,6 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
               ),
               const SizedBox(height: 18),
               _profileSection(summary, language, scheme),
-              const SizedBox(height: 12),
-              Align(
-                alignment: Alignment.centerRight,
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 2),
-                  child: Text(
-                    JexText.phrase('Last sample · ', 'Sampel terakhir · ', language) +
-                        _formatLastSample(_snapshot, language),
-                    style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                          color: scheme.onSurfaceVariant,
-                        ),
-                  ),
-                ),
-              ),
             ],
             if (_loading && summary != null) ...[
               const SizedBox(height: 8),
@@ -2202,31 +2191,6 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
     );
   }
 
-  Widget _sessionSelector(AppLanguage language) {
-    if (_sessions.length < 2 || _selectedSessionId == null) {
-      return const SizedBox.shrink();
-    }
-    return DropdownButton<int>(
-      key: const ValueKey<String>('usage-session-selector'),
-      isExpanded: true,
-      value: _selectedSessionId,
-      items: [
-        for (final session in _sessions)
-          DropdownMenuItem<int>(
-            value: session.id,
-            child: Text(
-              _sessionOptionLabel(session, language),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-      ],
-      onChanged: (sessionId) {
-        if (sessionId != null) _selectSession(sessionId);
-      },
-    );
-  }
-
   Widget _sessionHeader(AppLanguage language, ColorScheme scheme) {
     final snapshot = _snapshot;
     UsageStatsSession? selected;
@@ -2239,8 +2203,69 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
     if (snapshot == null || selected == null) {
       return const SizedBox.shrink();
     }
+
     final active = selected.isActive;
     final elapsed = formatUsageElapsed(snapshot.toMs - snapshot.fromMs);
+
+    Widget sessionLabel(UsageStatsSession session) {
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            JexText.phrase(
+              session.isActive ? 'Active' : 'Completed',
+              session.isActive ? 'Aktif' : 'Selesai',
+              language,
+            ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: Theme.of(context).textTheme.labelMedium,
+          ),
+          Text(
+            _sessionStartLabel(session),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+              color: scheme.onSurfaceVariant,
+            ),
+          ),
+        ],
+      );
+    }
+
+    final sessionDetails = _sessions.length > 1
+        ? DropdownButton<int>(
+            key: const ValueKey<String>('usage-session-selector'),
+            value: _selectedSessionId,
+            isExpanded: true,
+            isDense: true,
+            underline: const SizedBox.shrink(),
+            menuMaxHeight: 360,
+            selectedItemBuilder: (context) => [
+              for (final session in _sessions)
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: sessionLabel(session),
+                ),
+            ],
+            items: [
+              for (final session in _sessions)
+                DropdownMenuItem<int>(
+                  value: session.id,
+                  child: Text(
+                    _sessionOptionLabel(session, language),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+            ],
+            onChanged: (sessionId) {
+              if (sessionId != null) _selectSession(sessionId);
+            },
+          )
+        : sessionLabel(selected);
+
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
       child: Row(
@@ -2251,34 +2276,15 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
             size: 20,
           ),
           const SizedBox(width: 8),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  JexText.phrase(
-                    active ? 'Active' : 'Completed',
-                    active ? 'Aktif' : 'Selesai',
-                    language,
-                  ),
-                  style: Theme.of(context).textTheme.labelMedium,
-                ),
-                Text(
-                  _sessionStartLabel(selected),
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: scheme.onSurfaceVariant,
-                      ),
-                ),
-              ],
-            ),
-          ),
+          Expanded(child: sessionDetails),
+          const SizedBox(width: 8),
           Text(
             elapsed,
             key: const ValueKey<String>('usage-session-elapsed'),
             style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                  fontWeight: FontWeight.w800,
-                  fontFeatures: const [FontFeature.tabularFigures()],
-                ),
+              fontWeight: FontWeight.w800,
+              fontFeatures: const [FontFeature.tabularFigures()],
+            ),
           ),
         ],
       ),
@@ -2375,6 +2381,21 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
     setState(() => _selectedTimestampMs = timestamp);
   }
 
+  String _localizedUsageStateValue(String? value, AppLanguage language) {
+    final normalized = value?.trim().toUpperCase();
+    if (normalized == null || normalized.isEmpty) return '--';
+    if (normalized == 'ON') {
+      return JexText.phrase('ON', 'AKTIF', language);
+    }
+    if (normalized == 'OFF') {
+      return JexText.phrase('OFF', 'NONAKTIF', language);
+    }
+
+    final voltage = RegExp(r'^(\d+(?:\.\d+)?)\s*V$').firstMatch(normalized);
+    if (voltage != null) return '${voltage.group(1)} V';
+    return value!.trim();
+  }
+
   Widget _sharedCursorReadout(
     UsageStatsSummary summary,
     AppLanguage language,
@@ -2394,29 +2415,34 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
     final hotside = UsageStatsAnalytics.temperatureAt(summary.hotside.points, timestamp);
 
     Widget metric(String label, String value) => Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                label,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                  color: scheme.onSurfaceVariant,
-                ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 3),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              label,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                color: scheme.onSurfaceVariant,
               ),
-              Text(
-                value,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                  fontWeight: FontWeight.w700,
-                  fontFeatures: const [FontFeature.tabularFigures()],
-                ),
+            ),
+            const SizedBox(height: 2),
+            Text(
+              value,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                fontWeight: FontWeight.w800,
+                fontFeatures: const [FontFeature.tabularFigures()],
               ),
-            ],
-          ),
-        );
+            ),
+          ],
+        ),
+      ),
+    );
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -2424,21 +2450,28 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
       children: [
         Row(
           children: [
-            Text(
-              JexText.phrase('Selected time', 'Waktu dipilih', language),
-              style: Theme.of(context).textTheme.labelMedium,
+            Expanded(
+              child: Text(
+                JexText.phrase('Selected time', 'Waktu dipilih', language),
+                style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
             ),
-            const Spacer(),
             Text(
               _axisTime(timestamp, snapshot.fromMs),
-              style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                fontWeight: FontWeight.w700,
+              style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                fontWeight: FontWeight.w800,
                 fontFeatures: const [FontFeature.tabularFigures()],
               ),
             ),
             const SizedBox(width: 2),
             IconButton(
-              tooltip: JexText.phrase('Clear selected time', 'Hapus waktu pilihan', language),
+              tooltip: JexText.phrase(
+                'Clear selected time',
+                'Hapus waktu pilihan',
+                language,
+              ),
               constraints: const BoxConstraints.tightFor(width: 48, height: 48),
               padding: EdgeInsets.zero,
               onPressed: () => setState(() => _selectedTimestampMs = null),
@@ -2446,20 +2479,38 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
             ),
           ],
         ),
-        const SizedBox(height: 5),
-        Row(children: [
-          metric(JexText.phrase('Battery', 'Baterai HP', language), _formatTemperature(battery)),
-          metric('Hotside', _formatTemperature(hotside)),
-          metric(JexText.phrase('Voltage', 'Tegangan', language), voltage?.textValue ?? '--'),
-        ]),
-        const SizedBox(height: 5),
-        Row(children: [
-          metric(JexText.phrase('Adaptive', 'Adaptif', language), adaptive?.textValue ?? '--'),
-          metric('Peltier', peltier?.textValue ?? '--'),
-          metric(JexText.phrase('Fan Speed', 'Kecepatan Kipas', language), fan?.numberValue == null
-              ? '--'
-              : fan!.numberValue!.toStringAsFixed(0) + '%'),
-        ]),
+        const SizedBox(height: 2),
+        Row(
+          children: [
+            metric(
+              JexText.phrase('Battery', 'Baterai HP', language),
+              _formatTemperature(battery, language),
+            ),
+            metric('Hotside', _formatTemperature(hotside, language)),
+            metric(
+              JexText.phrase('Voltage', 'Tegangan', language),
+              _localizedUsageStateValue(voltage?.textValue, language),
+            ),
+          ],
+        ),
+        Row(
+          children: [
+            metric(
+              JexText.phrase('Adaptive', 'Adaptif', language),
+              _localizedUsageStateValue(adaptive?.textValue, language),
+            ),
+            metric(
+              'Peltier',
+              _localizedUsageStateValue(peltier?.textValue, language),
+            ),
+            metric(
+              JexText.phrase('Fan Speed', 'Kecepatan Kipas', language),
+              fan?.numberValue == null
+                  ? '--'
+                  : fan!.numberValue!.toStringAsFixed(0) + '%',
+            ),
+          ],
+        ),
       ],
     );
   }
@@ -2474,6 +2525,12 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
   }) {
     final scheme = Theme.of(context).colorScheme;
     final hasData = summary.hasData;
+    final chartHeight = hasData
+        ? usageTemperatureChartHeight(
+            minimum: summary.minimum!,
+            maximum: summary.maximum!,
+          )
+        : 160.0;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -2493,6 +2550,7 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
                   summary.points,
                   _snapshot!.toMs,
                 ),
+                language,
               ),
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
                 color: color,
@@ -2515,7 +2573,7 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
         ],
         const SizedBox(height: 7),
         SizedBox(
-          height: 160,
+          height: chartHeight,
           width: double.infinity,
           child: hasData
               ? LayoutBuilder(
@@ -2566,10 +2624,24 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
         const SizedBox(height: 7),
         Row(
           children: [
-            Expanded(child: _summaryValue(JexText.phrase('Min', 'Min', language), _formatTemperature(summary.minimum))),
-            Expanded(child: _summaryValue(JexText.phrase('Avg', 'Rata-rata', language), _formatTemperature(summary.average))),
-            Expanded(child: _summaryValue(JexText.phrase('Max', 'Maks', language), _formatTemperature(summary.maximum))),
-            Expanded(child: _summaryValue(JexText.phrase('Observed', 'Terpantau', language), _formatDuration(summary.observedMs))),
+            Expanded(
+              child: _summaryValue(
+                JexText.phrase('Min', 'Min', language),
+                _formatTemperature(summary.minimum, language),
+              ),
+            ),
+            Expanded(
+              child: _summaryValue(
+                JexText.phrase('Avg', 'Rata-rata', language),
+                _formatTemperature(summary.average, language),
+              ),
+            ),
+            Expanded(
+              child: _summaryValue(
+                JexText.phrase('Max', 'Maks', language),
+                _formatTemperature(summary.maximum, language),
+              ),
+            ),
           ],
         ),
       ],
@@ -2580,25 +2652,18 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
     AppLanguage language,
     ColorScheme scheme,
   ) {
-    final voltageLabels = <String>[
-      for (final rail in ['5V', '9V', '12V'])
-        rail + '  ' + _formatDuration(summary.voltageDurationMs[rail] ?? 0),
-    ];
-    final adaptiveLabel =
-        JexText.phrase('Adaptive ON · ', 'Adaptif AKTIF · ', language) +
-            _formatDuration(summary.adaptiveOnDurationMs);
-    final peltierLabel =
-        JexText.phrase('Peltier ON · ', 'Peltier AKTIF · ', language) +
-            _formatDuration(summary.peltierOnDurationMs);
-    final fanAverage = summary.fanSpeedAverage;
-    final fanMaximum = summary.fanSpeedMaximum;
-
-    String latestText(List<UsageStateSegment> values, {bool percentage = false}) {
+    String latestText(
+      List<UsageStateSegment> values, {
+      bool percentage = false,
+    }) {
       if (values.isEmpty) return '--';
       final latest = values.last;
-      if (latest.textValue != null) return latest.textValue!;
+      if (latest.textValue != null) {
+        return _localizedUsageStateValue(latest.textValue, language);
+      }
       if (latest.numberValue != null) {
-        return latest.numberValue!.toStringAsFixed(0) + (percentage ? '%' : '');
+        return latest.numberValue!.toStringAsFixed(0) +
+            (percentage ? '%' : '');
       }
       return '--';
     }
@@ -2619,7 +2684,7 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
           currentValue: latestText(summary.voltageSegments),
         ),
         _timelineLane(
-          JexText.phrase('Adaptive', 'Adaptif', language),
+          JexText.phrase('Adaptive Mode', 'Mode Adaptif', language),
           summary.adaptiveSegments,
           scheme,
           lane: 'adaptive',
@@ -2659,50 +2724,10 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
             ),
           ],
         ),
-        Theme(
-          data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
-          child: ExpansionTile(
-            key: const ValueKey<String>('usage-profile-details'),
-            tilePadding: EdgeInsets.zero,
-            childrenPadding: const EdgeInsets.only(bottom: 4),
-            visualDensity: VisualDensity.compact,
-            title: Text(
-              JexText.phrase('More details', 'Rincian', language),
-              style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                color: scheme.onSurfaceVariant,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(bottom: 6),
-                child: Wrap(
-                  spacing: 14,
-                  runSpacing: 8,
-                  children: [
-                    for (final label in voltageLabels)
-                      Text(label, style: Theme.of(context).textTheme.bodySmall),
-                    Text(adaptiveLabel, style: Theme.of(context).textTheme.bodySmall),
-                    Text(peltierLabel, style: Theme.of(context).textTheme.bodySmall),
-                    Text(
-                      JexText.phrase('Fan average · ', 'Rata-rata kipas · ', language) +
-                          (fanAverage == null ? '--' : fanAverage.toStringAsFixed(0) + '%'),
-                      style: Theme.of(context).textTheme.bodySmall,
-                    ),
-                    Text(
-                      JexText.phrase('Fan max · ', 'Kipas maks · ', language) +
-                          (fanMaximum == null ? '--' : fanMaximum.toStringAsFixed(0) + '%'),
-                      style: Theme.of(context).textTheme.bodySmall,
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
       ],
     );
   }
+
   Widget _timelineLane(
     String label,
     List<UsageStateSegment> segments,
@@ -2793,20 +2818,6 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
     );
   }
 
-  String _formatLastSample(
-    UsageStatsSnapshot? snapshot,
-    AppLanguage language,
-  ) {
-    if (snapshot == null) {
-      return JexText.phrase('No valid sample', 'Belum ada sampel valid', language);
-    }
-    final timestampMs =
-        UsageStatsAnalytics.lastTemperatureSampleAtMs(snapshot);
-    if (timestampMs == null) {
-      return JexText.phrase('No valid sample', 'Belum ada sampel valid', language);
-    }
-    return _axisTime(timestampMs, snapshot.fromMs);
-  }
 }
 
 
@@ -2955,38 +2966,33 @@ class _UsageLinePainter extends CustomPainter {
     final valid = points.where((point) => point.value != null).toList();
     if (valid.isEmpty || toMs <= fromMs) return;
 
-    var minValue = valid
+    final dataMinimum = valid
         .map((point) => point.value!)
         .reduce((a, b) => math.min(a, b).toDouble());
-    var maxValue = valid
+    final dataMaximum = valid
         .map((point) => point.value!)
         .reduce((a, b) => math.max(a, b).toDouble());
-    if (referenceValue != null) {
-      minValue = math.min(minValue, referenceValue!).toDouble();
-      maxValue = math.max(maxValue, referenceValue!).toDouble();
-    }
-    if ((maxValue - minValue).abs() < 0.5) {
-      minValue -= 1;
-      maxValue += 1;
-    } else {
-      final padding = (maxValue - minValue) * 0.12;
-      minValue -= padding;
-      maxValue += padding;
-    }
+    final axisTicks = usageTemperatureAxisTicks(
+      minimum: dataMinimum,
+      maximum: dataMaximum,
+    );
+    if (axisTicks.isEmpty) return;
+    final minValue = axisTicks.last;
+    final maxValue = axisTicks.first;
 
     final gridPaint = Paint()
       ..color = gridColor
       ..strokeWidth = 0.7;
     final textStyle = TextStyle(color: labelColor, fontSize: 10);
-    final tickStep = (maxValue - minValue) / 3;
-    for (var index = 0; index <= 3; index++) {
-      final fraction = index / 3;
+    const tickStep = 1.0;
+    final tickIntervals = axisTicks.length - 1;
+    for (var index = 0; index < axisTicks.length; index++) {
+      final fraction = index / tickIntervals;
       final y = plot.top + plot.height * fraction;
       canvas.drawLine(Offset(plot.left, y), Offset(plot.right, y), gridPaint);
-      final value = maxValue - (maxValue - minValue) * fraction;
       final text = TextPainter(
         text: TextSpan(
-          text: formatUsageAxisTick(value, tickStep),
+          text: formatUsageAxisTick(axisTicks[index], tickStep),
           style: textStyle,
         ),
         textDirection: TextDirection.ltr,
@@ -3011,7 +3017,7 @@ class _UsageLinePainter extends CustomPainter {
     }
 
     final reference = referenceValue;
-    if (reference != null) {
+    if (reference != null && reference >= minValue && reference <= maxValue) {
       final referencePaint = Paint()
         ..color = color.withValues(alpha: 0.78)
         ..strokeWidth = 1
@@ -3390,8 +3396,14 @@ class _UsageTimelinePainter extends CustomPainter {
       oldDelegate.animatedFanSpeed != animatedFanSpeed;
 }
 
-String _formatTemperature(double? value) =>
-    value == null ? '--' : value.toStringAsFixed(1) + '°C';
+String _formatTemperature(double? value, AppLanguage language) {
+  if (value == null) return '--';
+  final fixed = value.toStringAsFixed(1);
+  final localized = language == AppLanguage.indonesia
+      ? fixed.replaceFirst('.', ',')
+      : fixed;
+  return '$localized °C';
+}
 
 String _formatDuration(int milliseconds) {
   if (milliseconds <= 0) return '0s';
