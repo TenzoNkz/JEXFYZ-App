@@ -10,15 +10,15 @@
 | Mode | Eksekusi Build App |
 | Work item | Guarded Build #160 App QC/release for current main: About handle, Usage Statistics refresh, and native Floating Monitor Fan icon correction |
 | Updated | 2026-11-13 (Asia/Jakarta) |
-| Last completed milestone | Completed Build #160 pre-trigger audit; About/Statistics/Fan source and regression changes, workflow guard, exact versionName, no-active-run/PR state and Build #159 Release baseline recorded in APP_BUILD_REPORT.md and CHAT_TRANSFER.md |
-| Result | Build #160 candidate is ready for one guarded trigger after final live HEAD recheck. Candidate contains App/test changes after Build #159; hosted QC has not run and no new trigger exists yet. |
+| Last completed milestone | Exactly one guarded Build #160 trigger created as Issue #37; run 43427419461 / job 131892170041 observed on exact pre-trigger main SHA |
+| Result | Build #160 is active. Steps 1–2 succeeded; step 3 Java 17 setup is in progress. Hosted analyzer/tests/Gradle/package/release gates are pending; no new Release result yet. |
 | Latest candidate source commits | About `bb0cffec50eceafa2d522f7507288635f6989bab`; Statistics `f32c1278308bea7cedd4f150255d2128cac138bb`; native Fan `e0b68c3e98a5d75fe40c71bc0a7647712615c33d` |
 | Latest regression test commits | About `bc1a33b68daa99bdb339fa07d1d902af7ddd8855`; Statistics `b560403877fd2080db2019fc04d86d67020418dd`; native Fan `aff8b8ec2796d03432f4f8b000f6e70205eccf48` |
 | Test inventory | 188 declarations across 9 Dart test files. About, Statistics and native Fan regression changes are written, NOT RUN on current candidate. |
 | Last verified package | Build #159 — source `cdca38b9e4f2f99006db8feae40c07c6f9bdfb0a`; Release `403010611`, tag `jexfyz-latest`. Current About casing correction, Usage Statistics refinement and native Fan fix are not included. |
 | Validation | GitHub source/test/doc read-back and static checks passed. No Dart, Flutter, Gradle or ADB executable is available; formatter, Flutter tests, analyzer and Android Gradle are NOT RUN. |
 | Blocker | None identified in preflight. Hosted CI is required; local Dart/Flutter/Gradle/ADB are unavailable. |
-| Next action | Re-fetch main HEAD/tree, zero active runs/open PRs, workflow guard, versionName and Release immediately before creating exactly one new guarded owner-authored issue for Build #160; then inspect only its run. |
+| Next action | Inspect only Actions run 43427419461 / job 131892170041 through all gates and downloaded asset verification. Do not create another trigger while active. |
 
 ## Status meanings
 
