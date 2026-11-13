@@ -4,7 +4,7 @@ This document stores owner-approved, screen-specific visual constraints, not a b
 
 ## Latest implementation status — four App UI refinements — 2026-11-13
 
-The four owner-approved changes are implemented in App source commit `a5d45866bb244a2f260330a0e2ea332c391a9fcd` and covered by updated regression source. The implementation preserves the approved visual and behavior contracts in the sections below. Formatter, Flutter tests, analyzer, Android Gradle and post-change Android screenshot acceptance are **BLOCKED / NOT RUN** because this runtime has no Dart/Flutter/Gradle/ADB toolchain. Current visual result is **VISUAL NOT VERIFIED** until a new Android screenshot is inspected.
+The four owner-approved changes are implemented in App source commit `a5d45866bb244a2f260330a0e2ea332c391a9fcd` and included in verified Build #159 (Actions run `43376503987`, package source SHA `cdca38b9e4f2f99006db8feae40c07c6f9bdfb0a`). Hosted analyzer passed with 23 info-level deprecations, zero warnings/errors; Flutter passed 187/187; Android Gradle passed. The build workflow has no Dart formatter step, so `dart format` is not claimed. Actual Android screenshot/OEM acceptance remains **VISUAL NOT VERIFIED** until the owner reviews the installed package at the specified densities, languages and themes.
 
 ## Product identity and supplied assets
 
@@ -29,7 +29,7 @@ The four owner-approved changes are implemented in App source commit `a5d45866bb
 - **Automated regression evidence:** the hosted Build #131 Flutter suite passed 142/142. Coverage includes the 360-dp density canvas contract, compact-theme rendering at 350-dp/420-dp logical widths with inherited palette checks, scan-state mapping and source/layout regression contracts. This establishes test-suite behavior; it does not establish physical display/OEM visual quality.
 - Compact Theme remains opt-in (`compactUi: true`) on Settings root, Language/Appearance/Notifications/Bluetooth/Floating Settings subpages and the Connection sheet. Other fixed-canvas dialogs remain unchanged. Do not add a second transform or compromise the master canvas.
 - Do not change Home geometry, the 360-dp master canvas, `scale = width / 360`, safe-area/inset conversion, localization, status colors, BLE P1 behavior or Firmware behavior without a separately authorized scope.
-- **Physical visual status:** screenshot review and Android/OEM validation at 350-dp/420-dp remain NOT VERIFIED. Build #157 is the latest published package, but it does not include the four App UI refinements in source commit `a5d4586`; actual visual acceptance of those changes requires a later authorized package and screenshots.
+- **Physical visual status:** screenshot review and Android/OEM validation at 350-dp/420-dp remain NOT VERIFIED. Build #159 is the latest verified package and includes the four App UI refinements from `a5d4586`; actual visual acceptance still requires owner-side installation and screenshots.
 
 ### Peltier safety dialog and LED Color Picker — compact refinement and 60-color palette (2026-11-11)
 
