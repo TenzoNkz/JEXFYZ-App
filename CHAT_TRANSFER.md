@@ -1,30 +1,36 @@
-## CURRENT CHECKPOINT — BUILD #162 ACTIVE / ANDROID GRADLE GATE — 2026-11-13
+## CURRENT CHECKPOINT — PER-INTERACTION WORK-STATUS LIFECYCLE / BUILD #162 VERIFIED SUCCESS — 2026-11-14
 
-**Mode:** Eksekusi Build App! — explicit owner authorization remains active for guarded App Build/QC/release and justified App-scope repairs only. No Firmware compilation/BIN, Firebase mutation, OTA, flashing or device operation.
+**Mode:** `Eksekusi Full!` — canonical work-status protocol and documentation only. No executable App source, tests, workflow, Firmware/BIN, Firebase, OTA, flashing or device operation was changed or performed.
 
-### Current run and immutable source
+### New status contract
 
-- **Repository/branch:** TenzoNkz/JEXFYZ-App / main.
-- **Trigger/run/job:** Issue #39 / [Build #162 run 43430275967](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/43430275967), workflow 374946166, event issues, attempt 1; job 131901744336.
-- **Immutable checkout SHA:** 6854d8eb58a5f077cbc99749a35d37a4f55b8efa; exact match to main at pre-trigger.
-- **Current gates:** steps 1–13 SUCCESS, including setup, security/architecture audit, dependencies, Dart analyzer and Flutter tests. Step 14 Android unit-test gate IN_PROGRESS. Steps 15–21 pending.
-- **Exact logs/counts:** analyzer and Flutter step statuses are SUCCESS; exact info/warning/error and Flutter test totals await complete terminal log retrieval. No Gradle/APK/release gate result yet.
-- **Previous failures and repairs remain preserved:** #160 FAILED (185 pass / 3 fail); #161 FAILED (187 pass / 1 global cursor-label finder). #162 includes session dropdown isDense:false repair, >=48-dp control regression, adaptive chart-height contract, removal of duplicate offscreen timer finder, and selected-time dock descendant label finders.
-- **Candidate App features:** About handle lowercase @horizontalzzz; Statistics single header/timer, adaptive 1°C axes, no Observed/More details/Last sample, retain Min/Avg/Max/activity/six metrics; native Floating Monitor F branch maps to Fan glyph.
-- **Release baseline:** Build #159 still latest verified release until #162 step 21 succeeds; Release ID 403010611/tag jexfyz-latest point to source cdca38b9e4f2f99006db8feae40c07c6f9bdfb0a.
-- **Ledger:** APP_BUILD_REPORT.md records Build #162 steps 1–13 success and Android gate active; latest report progress commit 5e05bedf230f6c0b030891c6d883aa1d48d9b034.
+- Every JE X FYZ project-related owner message, whether in a new chat or an existing conversation, begins with a persisted `SESSION STATUS = IN_PROGRESS` before extended loading, research or execution. This includes commands, questions, corrections, follow-ups and stop/cancel instructions. Unrelated conversation outside this project is excluded.
+- `00_WORK_STATUS.md` now distinguishes **SESSION STATUS** (current message/interaction), **WORK STATUS** (requested work item across steps/chats), and **EXTERNAL OPERATION STATUS** (actual Actions/build/process state). A new chat cannot overwrite or misreport an external operation.
+- Refresh the marker after meaningful milestones, actual tool/test results, commits, blockers, authorization changes and external-process transitions. Each refresh records an Asia/Jakarta timestamp, current phase, last verified milestone/evidence and next action.
+- Before every final response, close the current session and work item truthfully: `COMPLETED`, `BLOCKED`, `WAITING_OWNER`, `FAILED` or `CANCELLED`; a prior interrupted work item is classified `RECOVERY_REQUIRED` only after verification.
+- If an external job is still active after a response, keep the work item and operation `IN_PROGRESS` with its exact run/job; do not confuse a completed chat response with completed external work.
+- **Automation boundary:** this is an assistant-executed, event-driven protocol, not a webhook or background heartbeat. GitHub cannot receive normal ChatGPT messages directly; updates persist when the assistant executes GitHub writes. There are no per-second/background updates while the chat is disconnected or frozen. The timestamp marks the latest persisted observation.
+- Canonical rule: `MASTER_PROMPT.md` Section 2A. Both blocks in `CHAT_TRANSFER_PROMPTS.md`, `AGENTS.md`, `CHAT_RULES.md`, `README.md` and `MEMORY_INDEX.md` now point to the same contract.
 
-### Continuation
+### Separate external operation reconciled — Build #162
 
-- Inspect only run 43430275967 / job 131901744336; continue through Android Gradle, obfuscated APK, V1/V2/V3 pinned certificate, source ZIP, Release/tag/source parity and downloaded asset checks.
-- At terminal state retrieve complete logs; record exact analyzer/test totals and Android NO-SOURCE coverage. No duplicate trigger while active.
-- If a new gate fails, preserve it and repair only an evidenced App-scope cause without weakening checks.
-- Workflow has no Dart formatter step; dart format is not implied. Local Dart/Flutter/Gradle/ADB are unavailable.
-- Firmware compile/BIN, Firebase, OTA/flash, physical BLE/device/NVS/rail/LED, thermal/electrical and OEM screenshot acceptance remain outside App Build and unverified.
+- **Run/job/source:** [Build #162 / run 43430275967](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/43430275967), job `131901744336`; immutable package source `6854d8eb58a5f077cbc99749a35d37a4f55b8efa`.
+- Job terminal state **COMPLETED / SUCCESS**. All workflow steps 1–21 and cleanup 39–43 succeeded; previous “Android gate active” checkpoint was stale.
+- Analyzer: 23 info-level issues, no warning/error gate failure. Flutter: **188/188 passed**. Gradle: `BUILD SUCCESSFUL in 3m56s`, 162 actionable tasks. Native App JUnit tasks were `NO-SOURCE`.
+- Release tag `jexfyz-latest` targets exact source SHA. Exactly one APK and matching source ZIP were uploaded and downloaded for verification. APK SHA-256 `56c08bd490e52a8616627613675141a91c14ab6893cca0e1e54d5e5ac1a053f2`; source ZIP SHA-256 `86bd61edfe59acd6063367f7b8704356d2bf192d8c55c150f0f0e6b6285db42e`. Downloaded V1/V2/V3 signatures, pinned certificate and source ZIP marker/integrity passed.
+- Included About `@horizontalzzz`, Usage Statistics refinements/tests and native Floating Monitor Fan correction. Android `versionName "Telegram @horizontalzzz"` unchanged.
+- **Not covered:** physical installation/OEM visual acceptance, physical BLE/device, Firmware compile/BIN, Firebase, OTA/flash and thermal/electrical validation. Next owner action is to install Build #162 and review the visual/device matrix.
+
+### Status-protocol implementation and evidence
+
+- Updated `MASTER_PROMPT.md`, both load/continue templates, `00_WORK_STATUS.md`, `AGENTS.md`, `CHAT_RULES.md`, `README.md`, `MEMORY_INDEX.md`, `PROJECT_STATE.md`, `HANDOVER.md` and `APP_PREBUILD_AUDIT.md`; Build #162 terminal evidence appended to `APP_BUILD_REPORT.md`.
+- No new files created; immutable `archive/*.md` snapshots untouched.
+- Validation is repository read-back and static consistency checking. No application source/test/toolchain validation was required for this documentation-only change.
+- This interaction remains `IN_PROGRESS` until final documentation/read-back and terminal status are persisted.
 
 ---
 
-## CURRENT CHECKPOINT — USAGE STATISTICS UI REFINEMENT / WAITING OWNER BUILD QC — 2026-11-13
+## HISTORICAL CHECKPOINT — USAGE STATISTICS UI REFINEMENT / WAITING OWNER BUILD QC — 2026-11-13
 
 **Mode:** `Eksekusi Full!` — App UI source, Flutter regression source, static read-back and canonical documentation only. No App Build/Release, Actions trigger, Firmware/BIN, Firebase, OTA, flashing or device operation was authorized or performed.
 
