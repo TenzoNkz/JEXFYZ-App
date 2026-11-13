@@ -1,3 +1,19 @@
+## CURRENT CHECKPOINT — ABOUT TELEGRAM HANDLE CASE CORRECTION / WAITING OWNER BUILD QC — 2026-11-13
+
+**Mode:** `Eksekusi Full!` — scoped About source, regression test and documentation only. No App Build/Release, Actions trigger, Firmware/BIN, Firebase, OTA, flash or device operation was performed.
+
+- **Repository/branch:** `TenzoNkz/JEXFYZ-App` / `main`.
+- **Owner request:** Horizon's About Telegram handle must be exactly `@horizontalzzz` (lowercase h).
+- **Source:** changed only the About credit value in `lib/floating_monitor.dart`. Commit `bb0cffec50eceafa2d522f7507288635f6989bab`; blob `5aee5d74ac83600c4db80cc880bb0878fbe5c734`.
+- **Regression:** updated `test/floating_monitor_layout_contract_test.dart` to require exact lowercase `@horizontalzzz` and reject `@Horizontalzzz` in the source contract and both English/Indonesian rendered About assertions. Commit `bc1a33b68daa99bdb339fa07d1d902af7ddd8855`; blob `752e916fe984750adb7e40f121119bf53c8f510e`.
+- **Documentation:** APP_NOTES.md and DESIGN_NOTES.md active About contract casing corrected; CHANGELOG, PROJECT_STATE, HANDOVER and this checkpoint refreshed. Immutable archive documents were not changed.
+- **Protected value:** Android Gradle `versionName "Telegram @horizontalzzz"` was checked and not modified; this task changes only the About handle literal.
+- **Validation:** GitHub source/test read-back and static checks only. Dart/Flutter/Gradle/ADB are unavailable; `dart format`, targeted widget test, full Flutter suite, analyzer and Gradle are **NOT RUN**.
+- **Latest verified package:** Build #159 / Actions run `43376503987` / package source `cdca38b9e4f2f99006db8feae40c07c6f9bdfb0a` / Release `403010611`. This fix, the Usage Statistics refinement and the native Fan icon correction are newer than that APK and **NOT RELEASED**.
+- **Exact next action:** owner separately issues `Eksekusi Build App!` to validate/package current main through guarded QC. This Full session did not trigger Actions or release.
+
+---
+
 ## CURRENT CHECKPOINT — USAGE STATISTICS UI REFINEMENT / WAITING OWNER BUILD QC — 2026-11-13
 
 **Mode:** `Eksekusi Full!` — App UI source, Flutter regression source, static read-back and canonical documentation only. No App Build/Release, Actions trigger, Firmware/BIN, Firebase, OTA, flashing or device operation was authorized or performed.
