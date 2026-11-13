@@ -2,11 +2,17 @@
 
 **Mode:** `@Thinking Diskusi!` — screenshot review, source inspection and documentation/design decisions only. No executable source, tests, configuration, workflow, Actions, App Build, Release, Firmware or device operation is authorized or performed in this interaction.
 
+### Work-status marker
+
+- Added root-level `00_WORK_STATUS.md` as the latest-session snapshot. It records IN_PROGRESS / COMPLETED / BLOCKED / WAITING_OWNER / RECOVERY_REQUIRED, mode, milestone, evidence and next action. README links to it; MASTER_PROMPT, AGENTS, transfer prompts and MEMORY_INDEX define how to update and recover it.
+- An IN_PROGRESS marker left behind by a frozen chat is a last committed state, not proof that a background task is still executing. Chat Stuck! must verify actual repository/Actions state and recover only the last authorized scope.
+- The marker-setup subtask is COMPLETED; the previously approved three App UI changes remain SOURCE PENDING.
+
 ### Live repository and release boundary
 
 - **Repository/branch:** `TenzoNkz/JEXFYZ-App` / `main`.
-- **Live docs HEAD at this review:** `77b44b3fd171e7d4ff246fa5fc910868269f47ca`; recursive tree: 132 entries, not truncated.
-- **App code/test baseline:** current source and tests still match the immutable Build #157 source SHA `10d106537e92060e0aac3fc17fd37f56e746bcd5`. GitHub compare shows main 26 commits ahead / 0 behind; its six changed paths are documentation-only: `APP_BUILD_REPORT.md`, `APP_NOTES.md`, `CHAT_TRANSFER.md`, `DESIGN_NOTES.md`, `HANDOVER.md`, `PROJECT_STATE.md`.
+- **Verified repository snapshot before this status-marker update:** `b596b4c0c188de9af9df38e011d080d9c1d4242f`; recursive tree: 132 entries, not truncated. The new marker and its navigation/policy references are documentation-only additions in the current commit.
+- **App code/test baseline:** current source and tests still match the immutable Build #157 source SHA `10d106537e92060e0aac3fc17fd37f56e746bcd5`. No executable source/test/workflow change is included in this status-marker task.
 - **Relevant source blobs:** `lib/main.dart` = `a948a5b104507c082a6f844ba6d64d759ccd63df`; `lib/floating_monitor.dart` = `9dc2b065d560bae0aa3d43f0c8fc0809e12d0cf1`; `test/widget_test.dart` = `189bdeddf0163b3a71d6661e57625d15dcd5d160`; `test/floating_monitor_layout_contract_test.dart` = `bd7b5b2e789b2df6c372ddd6a1a7b46a4905ddb2`.
 - **Latest verified release:** Build #157 / Actions run `43247876115`. Analyzer 23 infos / 0 warnings / 0 errors, Flutter 187/187, Android Gradle success. Its result applies to the identical App source/test baseline; it does not include the following unimplemented presentation changes.
 

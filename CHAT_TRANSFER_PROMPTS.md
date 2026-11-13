@@ -32,9 +32,10 @@ Load the current durable checkpoint and live repository evidence, then continue 
 
 MANDATORY LOAD
 1. Read MASTER_PROMPT.md fully. It is the single authority for modes, permissions, Gemini handoff, evidence, memory cadence and protected contracts.
-2. Read the active top checkpoint in CHAT_TRANSFER.md. Load older checkpoint history only when the current task needs it; use canonical notes/ledgers for the authoritative detail.
-3. Fetch live repository metadata, main HEAD/commit metadata and the complete recursive tree. Confirm the tree is not truncated.
-4. Read CHAT_RULES.md (pointer), MEMORY_INDEX.md, PROJECT_STATE.md and HANDOVER.md.
+2. Read `00_WORK_STATUS.md` to identify the latest recorded mode/status and recovery requirement.
+3. Read the active top checkpoint in CHAT_TRANSFER.md. Load older checkpoint history only when the current task needs it; use canonical notes/ledgers for the authoritative detail.
+4. Fetch live repository metadata, main HEAD/commit metadata and the complete recursive tree. Confirm the tree is not truncated.
+5. Read CHAT_RULES.md (pointer), MEMORY_INDEX.md, PROJECT_STATE.md and HANDOVER.md.
 5. Read the full canonical subject references relevant to the task. Inspect live source/tests/config/workflow read-only as needed.
 6. Check Actions, Releases, tags, PRs, jobs and logs when relevant.
 
@@ -48,7 +49,7 @@ GEMINI CONSULTATION
 During Discussion, proactively offer a self-contained Gemini review prompt whenever a second opinion would materially reduce uncertainty; the owner does not need to type Tanya Gemini! first. Gemini has zero access to this GitHub repository. Never ask it to open links or inspect files that are not pasted. Include the relevant facts, source/test excerpts, paths, revision context, constraints and exact question in the prompt. Do not include secrets. Treat its answer as unverified until checked against live source and canonical notes.
 
 MEMORY SAVE
-Follow the save cadence in MASTER_PROMPT.md. Before ending a substantive task, save new durable decisions/results/blockers in CHAT_TRANSFER.md and the relevant subject note; verify each write and final main HEAD. Do not create empty commits. If nothing durable changed, keep the previous checkpoint.
+Follow the save cadence in MASTER_PROMPT.md. Set `00_WORK_STATUS.md` to IN_PROGRESS at start, update it at milestones, and close it as COMPLETED/BLOCKED/WAITING_OWNER before ending. Before ending a substantive task, save new durable decisions/results/blockers in CHAT_TRANSFER.md and the relevant subject note; verify each write and final main HEAD. Do not create empty commits. If nothing durable changed, keep the previous checkpoint.
 
 AUTHORIZATION
 - Diskusi! is read-only for executable source, tests, config, workflow, builds/releases, Firmware, BIN, Firebase, OTA, flashing and device operations. Only canonical documentation/memory may be updated after a substantive conclusion.
@@ -78,12 +79,13 @@ PURPOSE
 Resume the same authorized App Build/QC operation from live repository, workflow, Actions/Release evidence and APP_BUILD_REPORT.md. Do not create a recap-only chat, request already-saved requirements again, or trigger a duplicate run.
 
 MANDATORY LOAD
-1. Read MASTER_PROMPT.md and the active top checkpoint in CHAT_TRANSFER.md. Do not load superseded checkpoint history wholesale.
-2. Fetch live main HEAD, commit metadata and the complete recursive tree.
-3. Read CHAT_RULES.md, MEMORY_INDEX.md, PROJECT_STATE.md, HANDOVER.md and BUILD_NOTES.md.
-4. Read the entire live .github/workflows/jexfyz-app-build-trigger.yml.
-5. Read the latest APP_BUILD_REPORT.md attempt and the immediately relevant preceding failure/repair evidence only. Fetch older build entries only when comparing a regression, artifact or unresolved historical claim.
-6. Fetch current Actions runs, jobs, logs, releases, tags and artifact metadata before any side effect.
+1. Read MASTER_PROMPT.md fully.
+2. Read `00_WORK_STATUS.md` to identify the latest recorded mode/status, then the active top checkpoint in CHAT_TRANSFER.md. Do not load superseded checkpoint history wholesale.
+3. Fetch live main HEAD, commit metadata and the complete recursive tree.
+4. Read CHAT_RULES.md, MEMORY_INDEX.md, PROJECT_STATE.md, HANDOVER.md and BUILD_NOTES.md.
+5. Read the entire live .github/workflows/jexfyz-app-build-trigger.yml.
+6. Read the latest APP_BUILD_REPORT.md attempt and the immediately relevant preceding failure/repair evidence only. Fetch older build entries only when comparing a regression, artifact or unresolved historical claim.
+7. Fetch current Actions runs, jobs, logs, releases, tags and artifact metadata before any side effect.
 
 CONTINUE THE BUILD — NO RECAP
 - Determine whether the intended run is active, queued, failed, cancelled, blocked or complete.
@@ -95,7 +97,7 @@ CONTINUE THE BUILD — NO RECAP
 - Success requires all current workflow gates, analyzer/test evidence, exactly one obfuscated APK and matching source ZIP, signature/certificate verification, exact Release/tag/source SHA parity, and downloaded-asset identity/checksum verification.
 
 MEMORY SAVE
-Append every real attempt, source SHA, run/job ID, failure evidence, repair, test result, artifact/release verification and blocker to APP_BUILD_REPORT.md as the work progresses. At every milestone update CHAT_TRANSFER.md with exact run state, last completed gate, remaining work and whether a run is active. Commit and re-read the ledger/checkpoint. Never rewrite historical failures as successes.
+Set `00_WORK_STATUS.md` to IN_PROGRESS when the Build session starts; update it alongside each durable milestone. Append every real attempt, source SHA, run/job ID, failure evidence, repair, test result, artifact/release verification and blocker to APP_BUILD_REPORT.md as the work progresses. At every milestone update CHAT_TRANSFER.md with exact run state, last completed gate, remaining work and whether a run is active. Commit and re-read the ledger/checkpoint. Never rewrite historical failures as successes.
 
 BUILD-ONLY LIMITS
 This operation authorizes only the guarded App Build/QC/release workflow and justified App-scope repairs needed by it. It does not authorize Firmware compilation, BIN generation/publication/replacement, Firebase changes, OTA, flashing, device operation or unrelated release work. Preserve Android Gradle versionName exactly: Telegram @horizontalzzz.

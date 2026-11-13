@@ -21,13 +21,20 @@ Use the mode explicitly selected by the owner's message. A mode is a permission 
 - Chat Stuck! / @Thinking Chat Stuck! — recover only the most recent valid in-progress operation that already had explicit authorization. Inspect live branch, run state, jobs, logs and prior tool results before resuming. Do not repeat commits, triggers or other side effects blindly. If authorization or the intended operation cannot be recovered, remain read-only and ask for a valid command. This mode cannot widen the inherited scope.
 - Tanya Gemini! and Jawaban Gemini! may still be used as explicit labels within Diskusi, but Gemini consultation no longer requires the owner to type Tanya Gemini! first. The assistant may proactively prepare a Gemini handoff as described in Section 6.
 
+## 2A. GitHub work-status marker
+
+- `00_WORK_STATUS.md` is the single root-level snapshot for the latest substantive chat work session. It is separate from `CHAT_TRANSFER.md`: the marker answers **what mode/status is this session in?**; the checkpoint records **what exactly was done, what evidence exists, and how to continue**.
+- At the beginning of every substantive session, set the marker to `IN_PROGRESS` with the selected mode, scope, date and latest verified checkpoint. Update milestone/evidence after meaningful progress. At closure, write `COMPLETED` only after the selected scope, required available validation, durable memory and final read-back are complete; otherwise write `BLOCKED` or `WAITING_OWNER`.
+- During `Chat Stuck!`, read `00_WORK_STATUS.md` first. An unfinished `IN_PROGRESS` marker becomes `RECOVERY_REQUIRED` while prior authorization, last milestone, live main and actual Actions state are verified. Resume only the already-authorized scope.
+- The marker is not a live heartbeat: ChatGPT cannot automatically update GitHub while a conversation is frozen or disconnected. An `IN_PROGRESS` value after an abrupt stop means the last session was not formally closed; it does not prove a process is still running. Never infer active background work without checking the actual job/run state.
+
 Important: a chat-transfer prompt selects a mode but does not enlarge the permissions stated here. A broad request such as 'rapikan repo' must still be interpreted within the selected mode. A documentation-only request never implies permission to alter source, workflow or release behavior.
 
 ## 3. Mandatory LOAD + CONTINUE protocol
 
 At the start of a new or recovered project chat:
 
-1. Read the active continuation checkpoint at the top of CHAT_TRANSFER.md fully. Treat later superseded entries as history; do not load them wholesale. Follow their references to the canonical subject note or evidence ledger only when the current task needs them. Never let a stale checkpoint override live main.
+1. Read `00_WORK_STATUS.md` first to identify the latest recorded session mode/status, then read the active continuation checkpoint at the top of CHAT_TRANSFER.md fully. Treat later superseded entries as history; do not load them wholesale. Follow their references to the canonical subject note or evidence ledger only when the current task needs them. Never let a stale checkpoint override live main.
 2. Fetch live repository metadata, main HEAD, commit metadata and the full recursive tree. Confirm the requested repository and branch; inspect whether the tree is truncated.
 3. Read AGENTS.md and SKILLS_INDEX.md to orient the active agent and discover applicable skills; then read CHAT_RULES.md (a short compatibility pointer), MEMORY_INDEX.md, PROJECT_STATE.md and HANDOVER.md.
 4. Read the complete canonical subject references relevant to the actual task. Inspect the live source, tests, configuration and workflow only to the degree needed to verify the issue. For a full Markdown cleanup/audit, enumerate and inspect every Markdown file, classify its role, and search all links/path-based references before proposing moves or deletion.
@@ -49,7 +56,7 @@ At the start of a new or recovered project chat:
 
 GitHub does not automatically store the chat transcript. Only a real repository change committed to main and re-read/verified is durable shared memory.
 
-- Before ending any substantive project chat, review the conversation since the last verified checkpoint. Save new durable requirements, owner decisions, technical findings, completed milestones, test results, blockers and next steps to the relevant canonical notes. Do not wait for a separate save request.
+- At the start of every substantive session and after meaningful milestones, update `00_WORK_STATUS.md` as specified in Section 2A. Before ending any substantive project chat, review the conversation since the last verified checkpoint. Save new durable requirements, owner decisions, technical findings, completed milestones, test results, blockers and next steps to the relevant canonical notes. Do not wait for a separate save request.
 - After every durable decision, significant finding, logical milestone, test result or blockage, update CHAT_TRANSFER.md plus the relevant canonical subject note. During Build App, append each real attempt and evidence to APP_BUILD_REPORT.md as it happens.
 - At substantive task completion/blockage, record: mode and authorized scope; result; evidence label; files/commit; tests actually run and outcomes; what remains unverified; blockers; exact next action; whether any operation is still running.
 - Commit documentation/source/test changes directly to main only within the selected mode's authorization. Verify resulting file content and live HEAD before saying 'saved'. If nothing durable changed, do not create an empty commit.
@@ -164,11 +171,12 @@ Do not claim a test/build/compile/flash/OTA/device check passed because a test f
 
 ## 10. Documentation architecture and repository hygiene
 
-Use the existing canonical files; do not create parallel status documents or duplicate the same rules across many files:
+Use the existing canonical files; do not create parallel status documents or duplicate the same rules across many files. `00_WORK_STATUS.md` is the one approved root-level latest-session marker; it does not replace the detailed checkpoint:
 
 - MASTER_PROMPT.md — single authoritative operating policy for modes, loading, Gemini, memory, evidence and safety.
 - CHAT_RULES.md — compatibility pointer to MASTER_PROMPT.md; do not maintain a second ruleset here.
 - CHAT_TRANSFER_PROMPTS.md — exactly two copy-ready LOAD + CONTINUE prompts: general engineering and App Build/QC.
+- 00_WORK_STATUS.md — top-level latest-session status marker (IN_PROGRESS / COMPLETED / BLOCKED / WAITING_OWNER / RECOVERY_REQUIRED); not a live heartbeat.
 - CHAT_TRANSFER.md — concise rolling checkpoint for the next chat.
 - MEMORY_INDEX.md — source-of-truth map, file roles and Markdown retention policy.
 - PROJECT_STATE.md — concise current product/source/release/validation truth; no long build chronology.

@@ -2,6 +2,8 @@
 
 Flutter Android companion App and ESP32-C3 Firmware source for the JE X FYZ thermoelectric cooler.
 
+> **Current chat/work status:** [Open 00_WORK_STATUS.md](00_WORK_STATUS.md) for the latest mode, completion state, last milestone and next action.
+
 ## Start here
 
 1. [MASTER_PROMPT.md](MASTER_PROMPT.md) — single authoritative operating policy: modes, authorization, skills, tools, Gemini, memory cadence, evidence and protected contracts.

@@ -7,14 +7,15 @@ Last reconciled: 2026-11-12 (Asia/Jakarta). This file is the navigation and rete
 1. Owner's explicit requirements and decisions determine intent and authorization.
 2. Live main source, tests, configuration, workflow, Actions/jobs/logs and Release/tag/artifacts establish implementation and release facts.
 3. Canonical subject notes establish durable contracts and design intent, but current implementation must still be checked against source.
-4. PROJECT_STATE.md summarizes current state; CHAT_TRANSFER.md and HANDOVER.md provide continuation context only.
+4. `00_WORK_STATUS.md` is the latest-session progress/closure marker only; it does not establish implementation truth or a live background process. PROJECT_STATE.md summarizes current state; CHAT_TRANSFER.md and HANDOVER.md provide continuation context only.
 5. CHANGELOG.md and APP_BUILD_REPORT.md preserve history/evidence. archive/*.md is immutable forensic material and never current truth.
 
 ## Canonical file map
 
 | File | Role / authority | Class | Retention |
 |---|---|---|---|
-| README.md | Project entrypoint and navigation | Active index | KEEP; no duplicated build history |
+| 00_WORK_STATUS.md | Single root-level marker for latest chat work mode, IN_PROGRESS/COMPLETED/BLOCKED/WAITING_OWNER/RECOVERY_REQUIRED, last milestone and next action | Active operational marker | KEEP one concise snapshot; update at session start, milestones and closure; not a live heartbeat or history ledger |
+| README.md | Project entrypoint and navigation; links directly to the current work marker | Active index | KEEP; no duplicated build history |
 | MASTER_PROMPT.md | Single authority for commands, scope, Gemini, loading, memory cadence, evidence and protected contracts | Active operating policy | KEEP; maintain as the only full ruleset |
 | CHAT_RULES.md | Compatibility pointer to MASTER_PROMPT.md | Active pointer | KEEP while legacy links refer to it; do not duplicate rules |
 | CHAT_TRANSFER_PROMPTS.md | Exactly two copy-ready LOAD + CONTINUE prompts | Active templates | KEEP exactly two prompts; no historical prompt library |

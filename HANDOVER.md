@@ -1,4 +1,6 @@
-## Immediate App UI next step — Peltier modal bottom alignment — 2026-11-13
+## Immediate App UI next step — Peltier modal, Lock Voltage and About — 2026-11-13
+
+- First read [00_WORK_STATUS.md](00_WORK_STATUS.md) for the latest session marker, then [CHAT_TRANSFER.md](CHAT_TRANSFER.md) for the full engineering checkpoint. The status marker is a committed snapshot, not a live process monitor.
 
 - Build #157 remains the latest verified release. Current main source/test still match its immutable App source SHA `10d106537e92060e0aac3fc17fd37f56e746bcd5`; subsequent commits have only updated Markdown files.
 - New owner decision: keep the Peltier safety card's current visual design but anchor it at the bottom-center inside the existing SafeArea, with 10-dp vertical and 16-dp horizontal margins. Current source uses `Center(`; the next change should use `Align(alignment: Alignment.bottomCenter)`.
