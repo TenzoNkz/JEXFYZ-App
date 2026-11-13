@@ -31,13 +31,13 @@ PURPOSE
 Load the current durable checkpoint and live repository evidence, then continue the same workstream. This is not a recap request. Do not ask the owner to repeat saved requirements. The first line selects the mode; the rest of this prompt does not widen its permissions.
 
 MANDATORY LOAD
-1. Read MASTER_PROMPT.md fully. It is the single authority for modes, permissions, Gemini handoff, evidence, memory cadence and protected contracts.
-2. Read `00_WORK_STATUS.md` to identify the latest recorded mode/status and recovery requirement.
-3. Read the active top checkpoint in CHAT_TRANSFER.md. Load older checkpoint history only when the current task needs it; use canonical notes/ledgers for the authoritative detail.
-4. Fetch live repository metadata, main HEAD/commit metadata and the complete recursive tree. Confirm the tree is not truncated.
-5. Read CHAT_RULES.md (pointer), MEMORY_INDEX.md, PROJECT_STATE.md and HANDOVER.md.
-5. Read the full canonical subject references relevant to the task. Inspect live source/tests/config/workflow read-only as needed.
-6. Check Actions, Releases, tags, PRs, jobs and logs when relevant.
+1. Read `00_WORK_STATUS.md` first and inspect its latest interaction, work item and external-operation states.
+2. **Immediately persist `SESSION STATUS = IN_PROGRESS` for this incoming JE X FYZ message**, with mode, request, Asia/Jakarta start/update timestamps, current phase, last verified checkpoint and next action. Do this before any extended loading, research or execution.
+3. Read MASTER_PROMPT.md fully. It is the single authority for modes, authorization, evidence, status lifecycle, memory cadence and protected contracts.
+4. Read the active top checkpoint in CHAT_TRANSFER.md. If the prior session was unfinished, verify external operations and preserve it as RECOVERY_REQUIRED without repeating side effects. Load older history only when needed.
+5. Fetch live repository metadata, main HEAD/commit metadata and the recursive tree; confirm whether the tree is truncated.
+6. Read CHAT_RULES.md, MEMORY_INDEX.md, PROJECT_STATE.md, HANDOVER.md and only the canonical subject references relevant to this task.
+7. Check Actions, Releases, tags, PRs, jobs and logs when relevant.
 
 CONTINUE — NO RECAP STAGE
 - Identify the last verified milestone, latest durable decision, unfinished work, blockers and precise next action.
@@ -48,8 +48,8 @@ CONTINUE — NO RECAP STAGE
 GEMINI CONSULTATION
 During Discussion, proactively offer a self-contained Gemini review prompt whenever a second opinion would materially reduce uncertainty; the owner does not need to type Tanya Gemini! first. Gemini has zero access to this GitHub repository. Never ask it to open links or inspect files that are not pasted. Include the relevant facts, source/test excerpts, paths, revision context, constraints and exact question in the prompt. Do not include secrets. Treat its answer as unverified until checked against live source and canonical notes.
 
-MEMORY SAVE
-Follow the save cadence in MASTER_PROMPT.md. Set `00_WORK_STATUS.md` to IN_PROGRESS at start, update it at milestones, and close it as COMPLETED/BLOCKED/WAITING_OWNER before ending. Before ending a substantive task, save new durable decisions/results/blockers in CHAT_TRANSFER.md and the relevant subject note; verify each write and final main HEAD. Do not create empty commits. If nothing durable changed, keep the previous checkpoint.
+STATUS + MEMORY SAVE
+Follow Section 2A and Section 5 of MASTER_PROMPT.md for every JE X FYZ message, not only large tasks. Open `SESSION STATUS = IN_PROGRESS` immediately at message start; refresh the marker after every meaningful milestone or real state transition; close the session/work item as COMPLETED, BLOCKED, WAITING_OWNER, FAILED or CANCELLED before the final response. Preserve unfinished prior work as RECOVERY_REQUIRED after verification. Keep external Actions/process state separate from chat/session state. The marker is event-driven, not a per-second heartbeat. Save durable decisions/results/blockers in CHAT_TRANSFER.md and the relevant subject note; verify every write and final main HEAD. Required status transitions are not empty commits; do not create empty checkpoint commits.
 
 AUTHORIZATION
 - Diskusi! is read-only for executable source, tests, config, workflow, builds/releases, Firmware, BIN, Firebase, OTA, flashing and device operations. Only canonical documentation/memory may be updated after a substantive conclusion.
@@ -79,13 +79,14 @@ PURPOSE
 Resume the same authorized App Build/QC operation from live repository, workflow, Actions/Release evidence and APP_BUILD_REPORT.md. Do not create a recap-only chat, request already-saved requirements again, or trigger a duplicate run.
 
 MANDATORY LOAD
-1. Read MASTER_PROMPT.md fully.
-2. Read `00_WORK_STATUS.md` to identify the latest recorded mode/status, then the active top checkpoint in CHAT_TRANSFER.md. Do not load superseded checkpoint history wholesale.
-3. Fetch live main HEAD, commit metadata and the complete recursive tree.
-4. Read CHAT_RULES.md, MEMORY_INDEX.md, PROJECT_STATE.md, HANDOVER.md and BUILD_NOTES.md.
-5. Read the entire live .github/workflows/jexfyz-app-build-trigger.yml.
-6. Read the latest APP_BUILD_REPORT.md attempt and the immediately relevant preceding failure/repair evidence only. Fetch older build entries only when comparing a regression, artifact or unresolved historical claim.
-7. Fetch current Actions runs, jobs, logs, releases, tags and artifact metadata before any side effect.
+1. Read `00_WORK_STATUS.md` first and inspect the latest session, work-item and external-operation statuses.
+2. **Immediately persist `SESSION STATUS = IN_PROGRESS` for this incoming Build App message**, including mode, exact build work item, Asia/Jakarta timestamps, current phase and next action.
+3. Read MASTER_PROMPT.md fully and follow its status lifecycle and Build-only authorization boundary.
+4. Read the active top checkpoint in CHAT_TRANSFER.md. Verify previous unfinished sessions and actual Actions state; never assume a run is alive from a stale `IN_PROGRESS` marker.
+5. Fetch live main HEAD, commit metadata and the recursive tree.
+6. Read CHAT_RULES.md, MEMORY_INDEX.md, PROJECT_STATE.md, HANDOVER.md and BUILD_NOTES.md.
+7. Read the entire live .github/workflows/jexfyz-app-build-trigger.yml and the latest APP_BUILD_REPORT.md attempt plus relevant preceding failure/repair only.
+8. Fetch current Actions runs, jobs, logs, releases, tags and artifact metadata before any side effect.
 
 CONTINUE THE BUILD — NO RECAP
 - Determine whether the intended run is active, queued, failed, cancelled, blocked or complete.
@@ -96,8 +97,8 @@ CONTINUE THE BUILD — NO RECAP
 - Stop as BLOCKED when permissions, runner allocation, signing, external services or owner/device action prevent safe progress.
 - Success requires all current workflow gates, analyzer/test evidence, exactly one obfuscated APK and matching source ZIP, signature/certificate verification, exact Release/tag/source SHA parity, and downloaded-asset identity/checksum verification.
 
-MEMORY SAVE
-Set `00_WORK_STATUS.md` to IN_PROGRESS when the Build session starts; update it alongside each durable milestone. Append every real attempt, source SHA, run/job ID, failure evidence, repair, test result, artifact/release verification and blocker to APP_BUILD_REPORT.md as the work progresses. At every milestone update CHAT_TRANSFER.md with exact run state, last completed gate, remaining work and whether a run is active. Commit and re-read the ledger/checkpoint. Never rewrite historical failures as successes.
+STATUS + MEMORY SAVE
+Set `SESSION STATUS = IN_PROGRESS` at the beginning of every Build App message. Track the Build work item and Actions run in separate status fields. Update `00_WORK_STATUS.md` and CHAT_TRANSFER.md at every actual gate/state transition; append every real trigger, source SHA, run/job ID, failure, repair, test result, artifact/release verification and blocker to APP_BUILD_REPORT.md as it happens. Before the final response, close the chat interaction and set the work/external-operation statuses from observed evidence. If the Actions run is still active, keep the operation IN_PROGRESS and record the exact run/job; do not label it complete. Verify all writes and never rewrite historical failures as successes.
 
 BUILD-ONLY LIMITS
 This operation authorizes only the guarded App Build/QC/release workflow and justified App-scope repairs needed by it. It does not authorize Firmware compilation, BIN generation/publication/replacement, Firebase changes, OTA, flashing, device operation or unrelated release work. Preserve Android Gradle versionName exactly: Telegram @horizontalzzz.
