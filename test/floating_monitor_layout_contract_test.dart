@@ -434,6 +434,34 @@ void main() {
     expect(native, isNot(contains('Gravity.CENTER_HORIZONTAL')));
   });
 
+
+  test('Native Floating Monitor maps each live metric to exactly one icon branch', () {
+    final native = File(
+      'android/app/src/main/kotlin/com/horizontalzzz/jexfyz/FloatingMonitorService.kt',
+    ).readAsStringSync();
+    final drawIconStart = native.indexOf('private fun drawIcon(');
+    final drawIconEnd = native.indexOf(
+      '\\n        // AI-METHOD / GESTURE-CONTRACT',
+      drawIconStart,
+    );
+    expect(drawIconStart, isNonNegative);
+    expect(drawIconEnd, greaterThan(drawIconStart));
+
+    final drawIcon = native.substring(drawIconStart, drawIconEnd);
+    final metricBranches = RegExp(
+      r'^\\s*"([^"]+)"\\s*->',
+      multiLine: true,
+    ).allMatches(drawIcon).map((match) => match.group(1)).toList();
+
+    expect(metricBranches, ['B', 'H', 'V', 'A', 'P', 'F']);
+    expect(metricBranches.toSet().length, metricBranches.length);
+    expect(drawIcon, contains('for (angle in 0 until 360 step 120)'));
+    expect(
+      drawIcon,
+      contains('canvas.drawCircle(cx, cy, dp(2.5f * scale), iconPaint)'),
+    );
+  });
+
   test('Settings uses concise horizontal rows and meaningful values', () {
     final settingsSource = File('lib/floating_monitor.dart').readAsStringSync();
     final localizationSource = File('lib/app_settings.dart').readAsStringSync();

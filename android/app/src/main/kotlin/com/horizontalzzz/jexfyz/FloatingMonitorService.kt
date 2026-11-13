@@ -690,11 +690,6 @@ class FloatingMonitorService : Service() {
             val s = dp(scale)
             iconPaint.strokeWidth = dp(1.55f * scale)
             when (metric) {
-                "F" -> {
-                    canvas.drawCircle(cx, cy, dp(7f * scale), iconPaint)
-                    canvas.drawLine(cx, cy, cx + dp(4f * scale), cy - dp(4f * scale), iconPaint)
-                    canvas.drawLine(cx - dp(5f * scale), cy + dp(5f * scale), cx + dp(5f * scale), cy + dp(5f * scale), iconPaint)
-                }
                 "B" -> {
                     canvas.drawRoundRect(cx - dp(6f * scale), cy - dp(7f * scale), cx + dp(6f * scale), cy + dp(7f * scale), dp(2f * scale), dp(2f * scale), iconPaint)
                     canvas.drawRect(cx + dp(6f * scale), cy - dp(3f * scale), cx + dp(8f * scale), cy + dp(3f * scale), iconPaint)
