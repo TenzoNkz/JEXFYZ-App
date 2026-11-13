@@ -1,3 +1,13 @@
+## 2026-11-13 — Refine Usage Statistics dashboard (source implemented; QC pending)
+
+- Combined session status, start time and duration into one compact header. The session selector remains in that header and no longer lists duplicate elapsed durations.
+- Battery/Hotside temperature painters use integer 1°C ticks and a range based on observed temperature values, with dynamic plot height for wider ranges. A distant Hotside limit no longer flattens the measured data scale; the numeric limit remains visible.
+- Removed the visible Observed row, More details disclosure and Last sample footer. Kept Min/Avg/Max, all four activity timeline lanes, the shared time cursor and all underlying aggregate calculations.
+- Tightened the Selected time dock to a two-row / three-column six-metric readout, bold tabular values and an icon-only 48-dp close action. Localized ON/OFF, voltage spacing, temperature unit spacing and EN/ID decimal separator.
+- Regression source covers 1°C ticks/data-range height, removed redundant dashboard elements, one elapsed timer, localized chart titles and selected-time labels.
+- Source commits: `9b9262d934ff2ab6575256b264f8bf851280dddf`, `364f5c3c1b777606647c3d85777091314988ea7f`, `f32c1278308bea7cedd4f150255d2128cac138bb`; test commits: `6c85166731fde4d6e72d44ab82d6a3a10826918a`, `b560403877fd2080db2019fc04d86d67020418dd`.
+- Test inventory: 188 declarations across 9 Dart test files. Source read-back/static checks only; formatter, Flutter tests, analyzer, Android Gradle and screenshots are NOT RUN because this runtime lacks Dart/Flutter/Gradle/ADB. Build #159 remains the latest verified APK; this patch is NOT RELEASED. No Build App, Firmware, BIN, Firebase, OTA, flash or device operation occurred.
+
 ## 2026-11-13 — Fix native Floating Monitor Fan icon branch; full repository audit
 
 - A Build #159 Android compiler warning identified a duplicate `"F"` branch in `FloatingMonitorService.kt:738`. The first gauge-like branch made the later three-blade Fan glyph unreachable. Removed the obsolete first branch; Floating Monitor F continues to mean Fan Speed, not FPS.
