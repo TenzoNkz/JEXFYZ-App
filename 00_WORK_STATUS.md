@@ -10,13 +10,13 @@
 | Mode | Eksekusi Build App |
 | Work item | Guarded App Build/QC for the latest verified main source and release provenance |
 | Updated | 2026-11-13 (Asia/Jakarta) |
-| Last completed milestone | 20 static source assertions passed; 187-test inventory recounted; APP_NOTES, DESIGN_NOTES, PROJECT_STATE, HANDOVER and CHAT_TRANSFER reconciled |
-| Result | Build #158 is active. Steps 1–2 succeeded; step 3 Java 17 setup is in progress. No package or Release mutation is asserted yet. |
+| Last completed milestone | Build #158 failed at Flutter tests (185 pass / 2 fail); exact stale About role assertions repaired in test-only commit 2c75c5b; failure and repair ledger/checkpoint saved |
+| Result | Build #158 is terminal FAILED at step 13. Analyzer passed (23 infos, 0 warnings/errors); two stale Indonesian About copy assertions failed; source/UI was not defective. Test-only repair is committed and awaiting guarded hosted revalidation. |
 | Latest App source commit | `a5d45866bb244a2f260330a0e2ea332c391a9fcd` (four UI refinements; latest main currently has documentation-only commits on top) |
 | Last verified package | Build #157 — source `10d106537e92060e0aac3fc17fd37f56e746bcd5` |
 | Validation | Existing static read-back only for `a5d4586`; hosted analyzer/tests/Gradle/signing/release for latest main are pending this authorized Build App attempt. Formatter remains absent from the workflow. |
 | Blocker | None established before trigger. If runner, permissions, secrets, signing, dependency service or a workflow gate blocks, stop and record exact evidence. |
-| Next action | Continue inspecting only run 43375621769 / job 131721325458; record each gate/log; verify APK, source ZIP, signatures, Release/tag SHA parity and downloaded asset digests at terminal state. |
+| Next action | Re-run preflight against latest main; confirm no active Actions run/open PR and unchanged release baseline; then trigger exactly one guarded Build #159 with a new issue (Issue #35 remains OPEN). |
 
 ## Status meanings
 
