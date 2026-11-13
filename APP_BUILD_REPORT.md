@@ -3014,3 +3014,19 @@
 - Steps 1–13 SUCCESS: runner/toolchain, security/architecture audit, dependencies, Dart analyzer and Flutter test suite. Step 14 `Run Android unit-test gate` IN_PROGRESS; steps 15–21 pending.
 - Exact analyzer issue counts and Flutter test count await full job-log retrieval after completion; do not infer exact numbers from step status. No APK or Release mutation yet.
 - Continue only run #162. Build #159 remains the latest verified Release until #162 step 21 succeeds.
+
+
+## BUILD #162 — TERMINAL SUCCESS / RELEASE AND DOWNLOADED ASSETS VERIFIED — 2026-11-13
+
+- **Run/job/source:** Build #162 / [Actions run 43430275967](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/43430275967), workflow `374946166`, issue #39, attempt 1; job `131901744336`; immutable checkout/source SHA `6854d8eb58a5f077cbc99749a35d37a4f55b8efa`.
+- **Terminal outcome:** job `completed / success`. Required workflow steps 1–21 all completed SUCCESS; post-job cleanup steps 39–43 also completed SUCCESS. The earlier IN_PROGRESS checkpoint was stale and is superseded by this observed terminal state.
+- **Dart analyzer:** `flutter analyze --no-fatal-infos` completed SUCCESS; log reports 23 info-level issues. No analyzer warning/error gate failure.
+- **Flutter tests:** `flutter test` completed SUCCESS — **188 tests passed**.
+- **Android Gradle:** `./gradlew --no-daemon :app:testDebugUnitTest` completed `BUILD SUCCESSFUL in 3m 56s`; 162 actionable tasks (161 executed, 1 up-to-date). Native App unit-test tasks `:app:compileDebugUnitTestKotlin`, `:app:compileDebugUnitTestJavaWithJavac`, `:app:processDebugUnitTestJavaRes` and `:app:testDebugUnitTest` were `NO-SOURCE`; this gate did not execute native App JUnit test cases. Existing Notification priority deprecation warnings and Gradle 10 deprecation notice remain non-blocking.
+- **APK build/signing:** obfuscated `JEXFYZ-release.apk` built successfully. Original and downloaded APK verification passed V1/JAR, V2 and V3 signatures with one signer and the pinned JE X FYZ certificate SHA-256 `dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0`.
+- **Matching source ZIP:** `JEXFYZ-corresponding-source.zip` passed ZIP integrity and embedded source SHA check. Downloaded source bundle SHA-256: `86bd61edfe59acd6063367f7b8704356d2bf192d8c55c150f0f0e6b6285db42e`.
+- **Release/tag parity:** GitHub Release tag `jexfyz-latest` was updated to exact source SHA `6854d8eb58a5f077cbc99749a35d37a4f55b8efa`; Release contains exactly one APK and one matching source ZIP. Downloaded APK SHA-256 `56c08bd490e52a8616627613675141a91c14ab6893cca0e1e54d5e5ac1a053f2`; re-download checksum, signature and source archive checks passed.
+- **Included App candidate:** exact lowercase About handle `@horizontalzzz`; Usage Statistics presentation refresh and regression changes; native Floating Monitor Fan icon correction. Android Gradle `versionName "Telegram @horizontalzzz"` remained exact.
+- **Formatter/coverage caveats:** workflow has no Dart formatter step; `dart format` is not claimed. Native Android JUnit tasks were `NO-SOURCE` as listed above. CI does not prove OEM screenshots, physical-device behavior, BLE, Firmware compile/BIN, OTA/flash, thermal or electrical acceptance.
+- **Scope boundary:** Build #162 App QC/release is **COMPLETED / SUCCESS**. No Firmware compilation/BIN publication, Firebase mutation, OTA, flashing or physical-device operation was performed by this workflow.
+
