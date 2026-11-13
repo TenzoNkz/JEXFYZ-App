@@ -2834,3 +2834,15 @@
 - **Retry basis:** one guarded retry is justified by the concrete two-assertion test-only repair. Before the next trigger, reconfirm #158 terminal, no queued/in-progress runs, no open PR, exact Issue #35/guard evidence and release baseline. Use exactly one new owner-authored issue; do not reopen an existing OPEN trigger issue. Do not weaken or remove tests.
 - **Validation caveat:** workflow has no Dart formatter step; no `dart format` result is claimed. Local Flutter/Dart is unavailable outside hosted Actions.
 - **Evidence boundary:** no Firmware compilation/BIN, Firebase, OTA, flashing, device/physical BLE, NVS/rail/LED, cooling/electrical or OEM visual acceptance occurred.
+
+
+## BUILD #159 — GUARDED RETRY AFTER BUILD #158 ABOUT TEST ASSERTION REPAIR — ACTIVE — 2026-11-13
+
+- **Disposition:** ACTIVE, attempt 1. One guarded retry after the concrete two-assertion App test repair; no blind/duplicate retry.
+- **Trigger:** new owner-authored Issue [#36](https://github.com/TenzoNkz/JEXFYZ-App/issues/36), created 2026-11-13T06:07:25Z with exact guarded title `JE X FYZ — EKSEKUSI BUILD APP TRIGGER` and body token `JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1`. Issue #35 remains OPEN and was not reopened; issue #33 remains OPEN.
+- **Run/job/source:** Build #159 / Actions run [43376503987](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/43376503987), workflow `374946166`, event `issues`, attempt 1; build job `131724120379`; immutable checkout SHA `cdca38b9e4f2f99006db8feae40c07c6f9bdfb0a`. Run created 2026-11-13T06:07:27Z.
+- **Preflight:** Build #158 is terminal FAILED; zero queued/in-progress Actions runs and zero open PRs before trigger. Main tree 133 entries, `truncated=false`. Workflow blob unchanged `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12`. Android `versionName "Telegram @horizontalzzz"` exact. Release ID `403010611` and tag `jexfyz-latest` remain Build #157 source `10d106537e92060e0aac3fc17fd37f56e746bcd5` with its prior verified APK/source asset pair intact.
+- **Included repair:** only `test/floating_monitor_layout_contract_test.dart` changed from failed Build #158 checkout, correcting the Indonesian Horizon role assertion at the static and widget levels from `Pengembangan Aplikasi & Perakit` to the approved `Pengembang Aplikasi & Perakit`. Production App source, UI layout, localization function, BLE/Firmware behavior, workflow and Gradle were untouched.
+- **Initial live job state:** steps 1 `Set up job`, 2 `Checkout repository` and 3 `Set up Java 17` SUCCESS; step 4 `Set up Flutter` IN_PROGRESS; steps 5–21 pending; post-job cleanup pending. No analyzer/test/package/release result is asserted yet.
+- **Next:** continue inspecting only run `43376503987` / job `131724120379`; record actual analyzer/test/Gradle/signing/source ZIP/Release/downloaded asset evidence. No second trigger while it is active.
+- **Evidence boundary:** no Firmware compile/BIN, Firebase change, OTA, flashing, physical BLE/device/NVS/rail/LED, thermal/electrical cooling or OEM visual acceptance occurred.
