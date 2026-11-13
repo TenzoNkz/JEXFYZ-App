@@ -12,8 +12,8 @@
 | Updated | 2026-11-13 (Asia/Jakarta) |
 | Last completed milestone | Build #159 all workflow gates 1–21 and cleanup 39–43 passed; APK/source ZIP published and re-downloaded verification passed; Release/tag/source SHA parity confirmed |
 | Result | Build #159 SUCCESS / RELEASED. Flutter 187/187; analyzer 23 infos, 0 warnings/errors; Android Gradle BUILD SUCCESSFUL; obfuscated APK, one-signer V1/V2/V3 pinned-cert, matching source ZIP, Release/tag and downloaded asset checks verified. |
-| Latest App source commit | `a5d45866bb244a2f260330a0e2ea332c391a9fcd` (four UI refinements; latest main currently has documentation-only commits on top) |
-| Last verified package | Build #157 — source `10d106537e92060e0aac3fc17fd37f56e746bcd5` |
+| Latest App source/package commit | `cdca38b9e4f2f99006db8feae40c07c6f9bdfb0a` (Build #159 immutable package SHA; contains four UI refinements and test-only About assertion repair) |
+| Last verified package | Build #159 — source `cdca38b9e4f2f99006db8feae40c07c6f9bdfb0a`; Release `403010611`, tag `jexfyz-latest` |
 | Validation | Hosted Build #159 validates immutable source `cdca38b9e4f2f99006db8feae40c07c6f9bdfb0a`: analyzer passed (23 infos / 0 warnings / 0 errors), Flutter 187/187, Gradle BUILD SUCCESSFUL, gates 1–21 and cleanup 39–43 passed, Release/tag/source parity and downloaded APK/ZIP integrity/signature checks passed. Native Android JUnit tasks NO-SOURCE; dart format absent from workflow. |
 | Blocker | None for App CI/release. Physical install/OEM visual review, BLE/device behavior, Firmware compile/BIN, Firebase, OTA/flash, NVS/rail/LED and thermal/electrical validation remain NOT RUN / NOT VERIFIED and outside this Build App session. |
 | Next action | Owner installs Build #159 and supplies actual Android screenshots/physical acceptance at 350-dp/420-dp, EN/ID, Light/Dark and BLE/Lock Voltage flows. No further App Build unless App source changes. |
