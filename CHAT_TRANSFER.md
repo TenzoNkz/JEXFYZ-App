@@ -1,28 +1,28 @@
-## CURRENT CHECKPOINT — BUILD #159 ACTIVE / FLUTTER SETUP — 2026-11-13
+## CURRENT CHECKPOINT — BUILD #159 ACTIVE / ANDROID GRADLE GATE — 2026-11-13
 
 **Mode:** Eksekusi Build App! — explicit owner authorization remains active for guarded App Build/QC/release and justified App-scope repairs only. No Firmware compilation/BIN, Firebase mutation, OTA, flashing or device operation.
 
 ### Current run and source evidence
 
 - **Repository/branch:** TenzoNkz/JEXFYZ-App / main.
-- **Immutable Build #159 checkout:** cdca38b9e4f2f99006db8feae40c07c6f9bdfb0a; includes the two-assertion test-only fix commit 2c75c5b96db21937ec66c46f954d672a45384a7f plus docs ledger/checkpoint commits.
-- **Trigger:** owner-authored Issue [#36](https://github.com/TenzoNkz/JEXFYZ-App/issues/36), opened 2026-11-13T06:07:25Z with exact guarded title/token. Issues #33 and #35 are still OPEN and were not reopened. Exactly one run was observed for this trigger.
-- **Actions:** [Build #159 / run 43376503987](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/43376503987), workflow 374946166, event issues, attempt 1; build job 131724120379; run created 2026-11-13T06:07:27Z.
-- **Current job state:** steps 1–3 success; step 4 Set up Flutter IN_PROGRESS; steps 5–21 pending. Continue only this run; no duplicate trigger.
-- **Immediately preceding failure:** Build #158 / run 43375621769, job 131721325458, source 285f3d6ea29378e9be4c711ede1705bf4abd821a, terminal FAILED at Flutter test gate: analyzer 23 infos, 0 warnings/errors; tests 185 passed / 2 failed. Both were stale Indonesian About role string assertions. Android Gradle and release gates were skipped, so no artifact or Release mutation.
-- **Repair:** commit 2c75c5b96db21937ec66c46f954d672a45384a7f changed only test/floating_monitor_layout_contract_test.dart (two literals at lines 495 and 546), aligning tests with the current approved/source phrase Pengembang Aplikasi & Perakit. Production source untouched. Failure and repair are preserved in APP_BUILD_REPORT.md.
-- **Build #157 remains published baseline:** run 43247876115, source 10d106537e92060e0aac3fc17fd37f56e746bcd5, Release ID 403010611, tag jexfyz-latest, original one APK + one source ZIP pair. Do not call it a Build #159 result.
-- **Preflight and protected config:** recursive main tree 133 entries, truncated=false; zero active/queued runs and open PR count 0 before trigger; workflow blob 9dc1e61ba49f19cad4edbb99a832d5333d9f0f12 unchanged; Android versionName "Telegram @horizontalzzz" preserved. Release/tag remained on Build #157 source before trigger.
-- **Workflow guard:** exact issues.opened/reopened + repository-owner/title/token condition; no push/PR path; current analyzer/test/Gradle/obfuscated APK/V1-V2-V3/pinned cert/source ZIP/Release parity/downloaded asset gates unchanged.
-- **Ledger:** APP_BUILD_REPORT.md includes terminal Build #158 failure/repair and Build #159 trigger/run initial state; latest ledger update commit bba0da9afddb2201eb27690257267be578f88a2d.
+- **Immutable Build #159 checkout:** cdca38b9e4f2f99006db8feae40c07c6f9bdfb0a; contains only the two-literal test repair in executable/test scope, plus docs milestones.
+- **Trigger:** owner-authored Issue #36 opened 2026-11-13T06:07:25Z with exact guarded title/token. Issues #33 and #35 remain OPEN and were not reopened. Exactly one run for this attempt.
+- **Actions:** [Build #159 / run 43376503987](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/43376503987), workflow 374946166, event issues, attempt 1; job 131724120379.
+- **Current gate:** steps 1–13 SUCCESS, including toolchain, signing prep, App security/architecture audit, dependencies, Dart analyzer and Flutter test gate. Step 14 Android unit-test gate IN_PROGRESS. Steps 15–21 pending. Continue only this run.
+- **Counts/log:** analyzer and Flutter test step statuses are SUCCESS, but exact info/warning/error/test counts are not yet captured from the complete terminal log; active job log archive was not yet available. Do not infer counts.
+- **Immediately preceding failed run:** Build #158 / run 43375621769, source 285f3d6ea29378e9be4c711ede1705bf4abd821a; terminal FAILED at Flutter tests (185 pass / 2 fail). Two old assertions expected Pengembangan Aplikasi & Perakit instead of the current approved/source phrase Pengembang Aplikasi & Perakit. Android/release gates skipped; no package.
+- **Repair:** commit 2c75c5b96db21937ec66c46f954d672a45384a7f changed only test/floating_monitor_layout_contract_test.dart (2 assertions). Production source/UI unchanged. #158 failure remains documented as failure.
+- **Release baseline:** Build #157 / run 43247876115, source 10d106537e92060e0aac3fc17fd37f56e746bcd5; Release ID 403010611 / tag jexfyz-latest. Before #159, the two existing verified assets were APK 55,980,123 bytes (SHA-256 24a42feb2ec8968209ac5dd764c6acb789c09fb0fc9a26df8e7d4bf5e1652aef) and source ZIP 2,932,445 bytes (SHA-256 3b6f0a84a760b26587ca39a946f14383f2acee933fb5b30247270713a32e6a06).
+- **Preflight:** main tree 133 entries / truncated=false; no active run/open PR before trigger; workflow blob 9dc1e61ba49f19cad4edbb99a832d5333d9f0f12 unchanged; Android versionName "Telegram @horizontalzzz" exact.
+- **Ledger:** APP_BUILD_REPORT.md records #158 failure/repair and #159 trigger plus progress. Latest report update commit 7ceb92cee4c70f7d6592711f869fd4a60c31f8de.
 
 ### Continuation
 
-- **Next completed gate to inspect:** Flutter setup, then Gradle, dependency/audit/analyzer and Flutter suite. Record analyzer diagnostics/test counts only from complete job evidence.
-- **If test gate fails:** inspect exact failing tests and compare assertions to approved current source; preserve #159 failure and repair only an App-scope root cause; retry only after this concrete repair and a fresh preflight.
-- **If all gates pass:** verify all workflow steps 1–21 and cleanup, analyzer warnings/errors, test count, Gradle NO-SOURCE scope, obfuscated APK, V1/V2/V3 one-signer/pinned cert, source ZIP integrity/marker, exactly one APK plus one source ZIP, Release/tag/source SHA parity, and final downloaded asset digests/signature.
+- **Next:** continue the same run 43376503987 / job 131724120379. Wait for Android Gradle step 14 terminal state, then follow APK, signing, source ZIP, Release/tag and downloaded asset gates.
+- At terminal completion, read the complete job log for precise analyzer/test/Gradle/asset details. Verify all steps 1–21 and cleanup; confirm Release/tag exactly matches run source SHA and downloaded assets.
+- Do not retry while active. On a new failure, retain it and inspect actual evidence before any justified App-only repair.
 - **Formatter caveat:** workflow has no Dart formatter step; no dart format result is implied.
-- **Evidence boundary:** App CI/release is separate from Firmware compilation/BIN, Firebase, OTA/flash, physical BLE/device, NVS/rail/LED, thermal/electrical cooling and OEM visual acceptance. These remain NOT RUN / UNVERIFIED.
+- **Evidence boundary:** App CI/release does not establish Firmware compile/BIN, Firebase, OTA/flash, physical BLE/device, NVS/rail/LED, cooling/electrical or OEM visual acceptance. These remain NOT RUN / UNVERIFIED.
 
 ---
 
