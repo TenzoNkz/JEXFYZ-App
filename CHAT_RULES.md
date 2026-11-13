@@ -11,3 +11,5 @@ Quick command map:
 - Chat Stuck! — recover only an already-authorized in-progress operation; never widen scope.
 
 For chat-limit transfers use exactly the two copy-ready blocks in [CHAT_TRANSFER_PROMPTS.md](CHAT_TRANSFER_PROMPTS.md). The live checkpoint is [CHAT_TRANSFER.md](CHAT_TRANSFER.md).
+
+For every JE X FYZ project message, open `SESSION STATUS = IN_PROGRESS` at the start, refresh at meaningful milestones, and close with the actual result. `00_WORK_STATUS.md` distinguishes the current interaction/work item from any external Actions operation. Follow MASTER_PROMPT.md Section 2A; this is event-driven, not a background heartbeat.
