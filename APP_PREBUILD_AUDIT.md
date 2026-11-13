@@ -1,3 +1,19 @@
+## Build #160 failure triage and focused Statistics repair — Build #161 pre-trigger — 2026-11-13
+
+**Status: #160 FAILED AT FLUTTER TEST GATE / CONCRETE APP + TEST REPAIRS COMMITTED / #161 PRE-TRIGGER QC PENDING.**
+
+- Build #160: Actions run `43427419461`, job `131892170041`, immutable source SHA `24c6393364cade3d6093aebb6c52904f1af66396`; trigger Issue #37. Terminal failure at step 13 `flutter test`; analyzer passed with 23 info deprecations, 0 warnings, 0 errors; Flutter 185 passed / 3 failed. Android Gradle/package/sign/release gates were skipped; no artifact or Release mutation.
+- **Stale source-contract assertion:** `Statistics diagrams refresh once per second without throttling data capture` still asserted literal `height: 160,`; the current chart uses data-dependent adaptive height with 160-dp minimum/fallback. Unit tests for whole-degree ticks and chart height passed.
+- **Stale offscreen finder:** `renders active cooling run sections in the compact Home canvas` asserted `usage-session-elapsed` after scrolling the ListView header out of view. It already verified the timer and `00:10` value before scroll; the second assertion was redundant.
+- **Real UI overflow:** multi-session `DropdownButton` selected child contains status + date/time on two lines but was `isDense: true`, causing a RenderFlex overflow of 8 px. Source commit `7784b2cfb0d327bdd8db15122b6b224c03fc87b9` changes it to `isDense: false`, preserving the normal 48-dp control height.
+- **Regression repair:** test commit `4823b76f62edbb82d982baf381922bfa265147b2` replaces fixed chart-height assertion with adaptive-height contract checks, removes only the duplicated offscreen timer lookup (pre-scroll timer/value assertion remains), and asserts multi-session selector height >=48 dp while retaining no-exception assertion.
+- **Scope:** compare from failed run checkout to repair HEAD shows only `lib/usage_statistics.dart` and `test/usage_statistics_test.dart` as executable/test paths; remaining differences are Markdown ledger/checkpoint updates. No About, Fan native, Firmware, Gradle/configuration, dependency, workflow or Release change in this repair. Android `versionName "Telegram @horizontalzzz"` unchanged.
+- **Build #159** remains the latest verified package and exact Release/tag target. Build #160 stays historically FAILED and must not be relabelled as success.
+- **Next:** fresh preflight on current main, no concurrent/queued Actions run and no PR, verify only the two repair paths after #160, Issue #37 remains OPEN (never reopen), exact issue guard, versionName and Release baseline. Then one NEW owner-authored issue is needed for guarded Build #161. Do not weaken gates.
+- Local Dart/Flutter/Gradle/ADB are unavailable; new repairs are NOT YET HOSTED-REVALIDATED. Workflow has no formatter step. Firmware/BIN, Firebase, OTA/flash, physical BLE/device, NVS/rail/LED, thermal/electrical and OEM visual evidence remain outside this App Build.
+
+---
+
 ## Build #160 pre-trigger candidate — 2026-11-13
 
 **Status: PRE-TRIGGER / HOSTED QC REQUIRED.** Owner explicitly authorized `Eksekusi Build App!` in the current conversation. The authorization covers only the guarded App Build/QC/release pipeline and justified App-scope repairs.
