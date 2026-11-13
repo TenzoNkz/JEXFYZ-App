@@ -1,13 +1,13 @@
-## Immediate next step — Guarded QC for About handle correction and current App source — 2026-11-13
+## Immediate next step — Owner install and visual/device acceptance of Build #162 — 2026-11-14
 
-The requested About credit casing is now corrected on `main`: Horizon displays exactly `@horizontalzzz` (lowercase h).
+**Guarded App Build #162 is COMPLETED / SUCCESS.** Do not start another Build for the same source.
 
-- Source commit: `bb0cffec50eceafa2d522f7507288635f6989bab`; test commit: `bc1a33b68daa99bdb339fa07d1d902af7ddd8855`.
-- Regression asserts the lowercase handle and rejects `@Horizontalzzz` in source, English UI and Indonesian UI.
-- Android Gradle `versionName "Telegram @horizontalzzz"` is unchanged and remains protected.
-- This source/test change is static-source-checked only; formatter, Flutter tests, analyzer and Gradle are NOT RUN because Dart/Flutter/Gradle/ADB are unavailable.
-- The Usage Statistics refinement and preceding Floating Monitor Fan correction also remain newer than Build #159. Build #159 is still the latest verified package; current main changes are NOT RELEASED.
-- **Next:** owner separately issues `Eksekusi Build App!` to run guarded App QC for current main. Do not trigger a build from Eksekusi Full.
+- Actions run [43430275967](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/43430275967), job `131901744336`, terminal success on immutable source `6854d8eb58a5f077cbc99749a35d37a4f55b8efa`. Steps 1–21 and cleanup 39–43 succeeded.
+- Analyzer: 23 info-level issues; 0 warning/error gate failures. Flutter: 188/188 passed. Gradle: `BUILD SUCCESSFUL in 3m56s`, 162 actionable tasks. Native App JUnit tasks were `NO-SOURCE`.
+- Release tag `jexfyz-latest` points to the exact source. APK SHA-256 `56c08bd490e52a8616627613675141a91c14ab6893cca0e1e54d5e5ac1a053f2`; source ZIP SHA-256 `86bd61edfe59acd6063367f7b8704356d2bf192d8c55c150f0f0e6b6285db42e`. Downloaded assets, source marker and APK V1/V2/V3 signatures were verified.
+- Included: About handle `@horizontalzzz`, Usage Statistics refinement/regressions and native Floating Monitor Fan icon correction. Android Gradle `versionName "Telegram @horizontalzzz"` remains exact.
+- **Next owner action:** install Build #162, then review screenshots and actual device behavior (350-dp/420-dp, EN/ID, Light/Dark, constrained height and relevant About/Statistics/Floating Monitor screens). CI success is not device/visual acceptance.
+- No Firmware compile/BIN, Firebase, OTA, flash or device operation was performed by the build workflow.
 
 ---
 
