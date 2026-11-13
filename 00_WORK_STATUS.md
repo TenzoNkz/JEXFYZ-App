@@ -11,12 +11,12 @@
 | Work item | Guarded App Build/QC for the latest verified main source and release provenance |
 | Updated | 2026-11-13 (Asia/Jakarta) |
 | Last completed milestone | 20 static source assertions passed; 187-test inventory recounted; APP_NOTES, DESIGN_NOTES, PROJECT_STATE, HANDOVER and CHAT_TRANSFER reconciled |
-| Result | Build session started. No new Actions run has been triggered yet; pre-trigger checks show the latest published package is still Build #157 on older source. |
+| Result | Build #158 is active. Steps 1–2 succeeded; step 3 Java 17 setup is in progress. No package or Release mutation is asserted yet. |
 | Latest App source commit | `a5d45866bb244a2f260330a0e2ea332c391a9fcd` (four UI refinements; latest main currently has documentation-only commits on top) |
 | Last verified package | Build #157 — source `10d106537e92060e0aac3fc17fd37f56e746bcd5` |
 | Validation | Existing static read-back only for `a5d4586`; hosted analyzer/tests/Gradle/signing/release for latest main are pending this authorized Build App attempt. Formatter remains absent from the workflow. |
 | Blocker | None established before trigger. If runner, permissions, secrets, signing, dependency service or a workflow gate blocks, stop and record exact evidence. |
-| Next action | Finish pre-trigger checks; save the pre-trigger ledger/checkpoint; create exactly one owner-authored issue with the guarded title/token; inspect that single run through all gates and final asset verification. |
+| Next action | Continue inspecting only run 43375621769 / job 131721325458; record each gate/log; verify APK, source ZIP, signatures, Release/tag SHA parity and downloaded asset digests at terminal state. |
 
 ## Status meanings
 
