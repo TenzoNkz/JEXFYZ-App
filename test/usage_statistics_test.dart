@@ -889,7 +889,17 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(peltierHitArea);
       await tester.pump();
-      expect(find.text('Waktu dipilih'), findsOneWidget);
+      final selectedDock = find.byKey(
+        const ValueKey<String>('usage-selected-time-dock'),
+      );
+      expect(selectedDock, findsOneWidget);
+      expect(
+        find.descendant(
+          of: selectedDock,
+          matching: find.text('Waktu dipilih'),
+        ),
+        findsOneWidget,
+      );
       for (final label in [
         'Baterai HP',
         'Hotside',
@@ -898,12 +908,11 @@ void main() {
         'Peltier',
         'Kecepatan Kipas',
       ]) {
-        expect(find.text(label), findsOneWidget);
+        expect(
+          find.descendant(of: selectedDock, matching: find.text(label)),
+          findsOneWidget,
+        );
       }
-      final selectedDock = find.byKey(
-        const ValueKey<String>('usage-selected-time-dock'),
-      );
-      expect(selectedDock, findsOneWidget);
       expect(tester.getSize(selectedDock).height, lessThanOrEqualTo(200));
       final clearCursor = find.byTooltip('Hapus waktu pilihan');
       expect(clearCursor, findsOneWidget);
