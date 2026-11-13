@@ -6,17 +6,17 @@
 
 | Field | Value |
 |---|---|
-| **STATUS** | **WAITING_OWNER** |
+| **STATUS** | **IN_PROGRESS** |
 | Mode | Eksekusi Full |
-| Work item | Repo-wide hygiene audit and native Floating Monitor Fan icon correction + regression test |
+| Work item | Usage Statistics UI refinement: timer cleanup, six-chart readability, 1°C temperature ticks, timeline simplification, selected-time dock and bilingual copy; tests + canonical notes |
 | Updated | 2026-11-13 (Asia/Jakarta) |
-| Last completed milestone | Fixed duplicate native F icon branch, added unique icon-map regression, audited 52 Markdown docs and 12 skill mirrors, and updated canonical project memory |
-| Result | Build #159 remains latest verified package. Owner reports V7.2 + Build #159 installed and safe (USER-REPORTED). Native F icon source/test repair is committed but not built. |
-| Latest App source/package commit | `aff8b8ec2796d03432f4f8b000f6e70205eccf48` (test commit; native source fix is `e0b68c3e98a5d75fe40c71bc0a7647712615c33d`) |
+| Last completed milestone | Loaded current checkpoint and inspected Usage Statistics source, tests and design constraints. Current implementation retains six metrics, shared cursor, session/gap semantics and SQLite-backed telemetry. |
+| Result | Implementation not yet committed. Scope is App source/tests/docs only; no Build App, APK/Release, Firmware/BIN, Firebase, OTA, flash or device work. |
+| Starting main HEAD | `382fba7156d5b5d044f1de50bdc2f0bc6a7f41dc` (verified through current file/search refs; confirm again at commit time) |
 | Last verified package | Build #159 — source `cdca38b9e4f2f99006db8feae40c07c6f9bdfb0a`; Release `403010611`, tag `jexfyz-latest` |
-| Validation | Build #159 hosted CI passed on its immutable source. Native patch/source read-back and static test-contract inspection passed; current test inventory 188. New Flutter test, analyzer and Kotlin/Gradle compile are NOT RUN. |
-| Blocker | Local Dart/Flutter/Gradle/ADB are absent. Patch needs a separate owner-authorized guarded App Build to validate and package. No App Build, Firmware/BIN, Firebase, OTA or device operation is authorized here. |
-| Next action | Owner separately issues Eksekusi Build App! to validate current main; inspect duplicate-branch warning is gone and all gates pass. Do not trigger or publish from this Eksekusi Full session. |
+| Validation | Code review only so far. Flutter/Dart toolchain is unavailable in this runtime; formatter, Flutter tests, analyzer, Android Gradle and device rendering are NOT RUN. |
+| Blocker | No local Dart/Flutter/Gradle/ADB toolchain. A separate Eksekusi Build App! is required after source changes for hosted QC/package; this session must not trigger it. |
+| Next action | Implement the approved Usage Statistics visual changes without altering telemetry, database schema, analytics, session/gap continuity or safety; add/update regressions and canonical checkpoints. |
 
 ## Status meanings
 
