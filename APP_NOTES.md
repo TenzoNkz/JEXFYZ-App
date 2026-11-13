@@ -1,3 +1,9 @@
+## Live source boundary — recovered Chat Stuck state — 2026-11-13
+
+- Repository `TenzoNkz/JEXFYZ-App`, branch `main`; documentation snapshot before this update is `77b44b3fd171e7d4ff246fa5fc910868269f47ca`. App source/test remains identical to Build #157 source `10d106537e92060e0aac3fc17fd37f56e746bcd5`; GitHub compare is 26 commits ahead / 0 behind and all six changed paths are Markdown.
+- Current executable blobs: `lib/main.dart` `a948a5b104507c082a6f844ba6d64d759ccd63df`; `lib/floating_monitor.dart` `9dc2b065d560bae0aa3d43f0c8fc0809e12d0cf1`; `test/widget_test.dart` `189bdeddf0163b3a71d6661e57625d15dcd5d160`; `test/floating_monitor_layout_contract_test.dart` `bd7b5b2e789b2df6c372ddd6a1a7b46a4905ddb2`.
+- Three approved App UI changes remain **SOURCE PENDING**: fixed one-line Lock Voltage row; Special Thanks/About content and credit alignment; Peltier modal bottom anchor. No executable file was modified in Diskusi/Chat Stuck recovery.
+
 ## Owner UI decisions — Lock Voltage Settings row and About credits — 2026-11-13
 
 - **Lock Voltage:** current _voltageLockSettingRow() renders a subtitle for sync/unsupported/unsaved/active states and replaces the Switch with a spinner while busy. Owner requested a fixed one-line card with no permanent extra copy and only the Switch animating. Next implementation: remove subtitle rendering; keep the card and neutral lock glyph static; keep the Switch visible for a known state and disable it while busy/not-ready; let state.active continue to follow P1 VOLTAGE_LOCK telemetry. Keep unknown-state tooltip and icon-only NVS retry tooltip; do not change Firmware authority, persistence, gating or retry logic.
