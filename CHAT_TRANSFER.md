@@ -4,7 +4,7 @@
 
 ### Build #161 — terminal Flutter test failure preserved
 
-- **Run/job/source:** Build #161 / [run 43428480911](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/43428480911), workflow 374946166, event issues, attempt 1; job 131895713640; immutable source SHA 798845adf013f6cacd217c9d71f9bdfb0eebc62d4; trigger Issue #38.
+- **Run/job/source:** Build #161 / [run 43428480911](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/43428480911), workflow 374946166, event issues, attempt 1; job 131895713640; immutable source SHA 798845adf013f6cacd217c9d71a7208d57b64e94; trigger Issue #38.
 - **Terminal:** completed FAILURE at step 13 `Run Flutter tests`. Steps 1–12 SUCCESS, analyzer 23 infos / 0 warnings / 0 errors; Flutter 187 passed / 1 failed. Android Gradle and gates 14–21 skipped; cleanup 39–43 passed. No artifact/Release mutation.
 - **Verified #160 repair:** the previously overflowing multiple-session dropdown test now passes after `isDense: false` for the two-line status/date selected child. Adaptive chart-height and pre-scroll timer coverage tests also pass.
 - **Only remaining failure:** widget test `Usage Statistics page renders active cooling run sections in the compact Home canvas`, test line 901, globally searched `Tegangan` with `findsOneWidget`. Actual output found two correct labels: Activity timeline Voltage and selected-time dock Voltage. This is a stale global finder, not a production UI defect.
