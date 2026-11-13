@@ -1,26 +1,29 @@
-## CURRENT CHECKPOINT — BUILD #161 FAILED / BUILD #162 PRE-TRIGGER AFTER FINAL TEST FIX — 2026-11-13
+## CURRENT CHECKPOINT — BUILD #161 FAILED / BUILD #162 PRE-TRIGGER AFTER FINAL TEST-FINDER FIX — 2026-11-13
 
 **Mode:** Eksekusi Build App! — explicit owner authorization remains active for guarded App Build/QC/release and justified App-scope repairs only. No Firmware compilation/BIN, Firebase mutation, OTA, flashing or device operation.
 
-### Build #161 — terminal Flutter test failure preserved
+### Preserved terminal Build #160 and #161 failures
 
-- **Run/job/source:** Build #161 / [run 43428480911](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/43428480911), workflow 374946166, event issues, attempt 1; job 131895713640; immutable source SHA 798845adf013f6cacd217c9d71a7208d57b64e94; trigger Issue #38.
-- **Terminal:** completed FAILURE at step 13 `Run Flutter tests`. Steps 1–12 SUCCESS, analyzer 23 infos / 0 warnings / 0 errors; Flutter 187 passed / 1 failed. Android Gradle and gates 14–21 skipped; cleanup 39–43 passed. No artifact/Release mutation.
-- **Verified #160 repair:** the previously overflowing multiple-session dropdown test now passes after `isDense: false` for the two-line status/date selected child. Adaptive chart-height and pre-scroll timer coverage tests also pass.
-- **Only remaining failure:** widget test `Usage Statistics page renders active cooling run sections in the compact Home canvas`, test line 901, globally searched `Tegangan` with `findsOneWidget`. Actual output found two correct labels: Activity timeline Voltage and selected-time dock Voltage. This is a stale global finder, not a production UI defect.
-- **Test-only repair:** commit `16286e41a98ecea2f11ab5f0155f03f10bcc5d51` changes only `test/usage_statistics_test.dart`; it scopes the Waktu dipilih and six selected-time metric label lookups to `find.descendant(of: selectedDock, matching: ...)`. Four activity-lane key checks, selected dock, 48-dp close action, dock height and clear behavior remain asserted.
-- **Preserved history:** Build #161 remains FAILED (187/1), Build #160 remains FAILED (185/3), and neither is relabelled success. Full diagnostics/repair commits are append-only in APP_BUILD_REPORT.md.
-- **Executable scope since #161 checkout:** one test file only (`test/usage_statistics_test.dart`); no production source/native change after #161 checkout. The #160 source fix `7784b2c` remains in candidate and was validated by #161's passing dropdown test.
+- **Build #160:** run `43427419461`, job `131892170041`, source `24c6393364cade3d6093aebb6c52904f1af66396`, FAILED at Flutter test gate (185 pass / 3 fail). Analyzer 23 infos / 0 warnings/errors. Stale fixed-height assertion, redundant offscreen timer finder and real 8-dp multi-session dropdown overflow. Android Gradle/release gates skipped.
+- **#160 repair:** source commit `7784b2cfb0d327bdd8db15122b6b224c03fc87b9` changes multi-session dropdown to `isDense: false` for two-line selected status/date (normal 48-dp control height); test commit `4823b76f62edbb82d982baf381922bfa265147b2` updates adaptive chart contract, removes duplicate offscreen timer lookup but retains pre-scroll timer/value check, and asserts selector height >=48 dp.
+- **Build #161:** run `43428480911`, job `131895713640`, exact immutable checkout SHA `798845adf013f6cacd217c9d71a7208d57b64e94`, FAILED at Flutter test gate (187 pass / 1 fail). Analyzer 23 infos / 0 warnings/errors. The only remaining failure was a global `find.text('Tegangan')` assertion; actual UI correctly had one label in Activity and one in selected-time dock. Android Gradle/release gates skipped.
+- **#161 final test repair:** commit `16286e41a98ecea2f11ab5f0155f03f10bcc5d51` changes only `test/usage_statistics_test.dart`, scoping `Waktu dipilih` and all six metric labels to descendants of `usage-selected-time-dock`. The Activity lane key checks, selected dock size/close/clear coverage remain. No production source changed after #161.
+- Both failures remain historical FAILED; neither is relabelled as success. Their exact logs, causes and repair commits are preserved append-only in APP_BUILD_REPORT.md.
 
-### Build #162 pre-trigger
+### Build #162 pre-trigger candidate and preflight
 
-- **Candidate code source:** App changes from pre-Build #160 (About lowercase @horizontalzzz, Statistics redesign, native Fan icon fix) plus Build #160 source repair `7784b2cfb0d327bdd8db15122b6b224c03fc87b9` and Statistics test corrections `4823b76f62edbb82d982baf381922bfa265147b2`; final Build #161 failure test correction `16286e41a98ecea2f11ab5f0155f03f10bcc5d51`.
-- **Authorization:** owner's explicit `Eksekusi Build App!` remains active; one guarded retry follows this concrete isolated test-finder correction. No broad retries.
-- **Required preflight:** verify #161 terminal; final main HEAD/tree; executable/test diff from failed #161 contains only `test/usage_statistics_test.dart`; no active/queued Actions runs, zero open PR; Issue #38 still OPEN (never reopen), issues #33/#35/#36/#37 remain historical OPEN; workflow blob `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12` unchanged; Android `versionName "Telegram @horizontalzzz"`; Release ID 403010611/tag jexfyz-latest remain Build #159 source and assets.
-- **Trigger:** after fresh preflight and ledger save, create exactly one NEW owner-authored issue with exact title `JE X FYZ — EKSEKUSI BUILD APP TRIGGER` and body token `JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1`. Capture exact issue/run/job/checkout SHA. Do not reuse any existing open trigger issue.
-- **Ledger:** APP_BUILD_REPORT.md records #161 terminal failure and exact one-file test correction; latest report commit `31960b250cd1da43fee58001627184dca3910740`.
-- **Formatter:** no Dart format gate exists; no `dart format` result is claimed. Local Dart/Flutter/Gradle/ADB are unavailable.
-- **Evidence boundary:** #161 did not run Android Gradle or publish an APK. Firmware compile/BIN, Firebase, OTA/flash, physical BLE/device/NVS/rail/LED, thermal/electrical and OEM visual acceptance remain NOT RUN / NOT VERIFIED.
+- **Candidate main HEAD:** `d420fe719909c3d474403185cc179b573dadd07a`; recursive tree 133 entries, `truncated=false`.
+- **Compare from #161 failed checkout:** 13 commits ahead / 0 behind, five paths changed. Only executable/test path is `test/usage_statistics_test.dart`; the other four changed paths are Markdown ledger/checkpoint files: `00_WORK_STATUS.md`, `APP_BUILD_REPORT.md`, `APP_PREBUILD_AUDIT.md`, `CHAT_TRANSFER.md`. No production App/native/Firmware/Gradle/config/dependency/workflow/release change after #161.
+- **Authorization:** explicit `Eksekusi Build App!` continues to authorize one guarded retry after the isolated test-finder correction.
+- **Actions before trigger:** #161 terminal FAILURE; zero active/queued/waiting/requested/pending runs; zero open PRs.
+- **Existing trigger issues:** #33, #35, #36, #37 and #38 remain OPEN with the expected title/token; do not reopen/reuse any. Issue #38 was the #161 retry.
+- **Guard/version:** workflow blob `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12` unchanged, exact owner/title/token issues.opened/reopened guard, no push/PR trigger. Android `versionName "Telegram @horizontalzzz"` unchanged; Flutter app version `1.0.0+3`.
+- **Release baseline:** Release ID `403010611` and tag `jexfyz-latest` both target Build #159 source `cdca38b9e4f2f99006db8feae40c07c6f9bdfb0eebc62d4` (prior Release source must be read from the Release/tag endpoint when doing final pretrigger validation; exact Build #159 source is `cdca38b9e4f2f99006db8feae40c07c6f9bdfb0eebc62d4` only if API confirms—do not use an unverified transcription). Existing two assets remain APK + matching source ZIP; authoritative exact digests are in APP_BUILD_REPORT.md.
+- **Ledger:** APP_BUILD_REPORT.md records #161 failure and #162 pre-trigger; latest report commit `ac1c56535810bdcefa33e1b987b4ee35354203f8`.
+- **State:** PRE-TRIGGER. No #162 issue/run created. Immediately re-fetch main HEAD/tree, zero active runs/open PRs, complete issue list, workflow guard, Android versionName, Release/tag/assets, and read back checkpoint/ledger. If unchanged, create exactly one NEW owner-authored issue with exact title `JE X FYZ — EKSEKUSI BUILD APP TRIGGER` and body token `JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1`. Capture issue/run/job/source SHA; inspect only that run.
+- **Test inventory:** 188 declarations over 9 Dart test files is not execution evidence. Final test-finder correction is only static/readback verified; Build #162 must validate the complete suite.
+- **Formatter caveat:** workflow has no Dart formatter gate; `dart format` is not claimed. Local Dart/Flutter/Gradle/ADB are unavailable.
+- **Evidence boundary:** App CI/release is separate from Firmware compile/BIN, Firebase, OTA/flash, physical BLE/device/NVS/rail/LED, thermal/electrical and OEM visual acceptance. These remain NOT RUN / NOT VERIFIED.
 
 ---
 
