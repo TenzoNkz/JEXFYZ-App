@@ -1,52 +1,77 @@
 # 00_WORK_STATUS — JE X FYZ / JE Cooler
 
-> **This is the first file-level work marker in the repository root.** The value below describes the latest recorded chat work session, not the overall completion of the product.
+> Single current snapshot for JE X FYZ project interactions. This file records the latest persisted observation, not a continuously running heartbeat or overall product completion.
 
 ## Current marker
 
 | Field | Value |
 |---|---|
 | **STATUS** | **IN_PROGRESS** |
-| Mode | Eksekusi Full |
-| Work item | Implement per-interaction, milestone and terminal-state lifecycle for JE X FYZ work status |
+| SESSION STATUS | IN_PROGRESS |
+| WORK STATUS | IN_PROGRESS |
+| Mode | Eksekusi Full! |
+| Request / work item | Implement per-interaction, milestone and terminal-state lifecycle for JE X FYZ work status |
 | Started | 2026-11-14 06:26 Asia/Jakarta |
-| Updated | 2026-11-14 Asia/Jakarta |
-| Current phase | Defining canonical protocol and updating Master Prompt, transfer prompts and current-state records |
-| Last completed milestone | Reconciled Build #162 Actions run 43430275967 / job 131901744336: job completed SUCCESS; all required steps 1–21 and cleanup 39–43 completed SUCCESS |
-| Separate external operation | Build #162 / run 43430275967 / source `6854d8eb58a5f077cbc99749a35d37a4f55b8efa` |
-| External operation status | **COMPLETED / SUCCESS** — APK, signature, source ZIP, Release/tag and downloaded-asset verification gates completed |
-| Result | Current status task remains IN_PROGRESS. Build #162 is independently verified complete; it must no longer be represented as an active process. |
-| Blocker | No blocker to documentation change. This environment cannot emit GitHub updates automatically on its own; status will be persisted at each assistant-handled start/milestone/close. |
-| Next action | Apply and verify the new status lifecycle protocol; close this Full interaction with a truthful terminal status. |
+| Last updated | 2026-11-14 06:26 Asia/Jakarta |
+| Current phase | Canonical protocol, prompts, checkpoint, Build ledger and current-state docs updated; final consistency review pending |
+| Last completed milestone | Reconciled Build #162 run 43430275967 / job 131901744336 as terminal SUCCESS; wrote the new lifecycle into MASTER_PROMPT and both transfer prompts |
+| Last verified main checkpoint | Status protocol and documentation writes on branch `main`; final HEAD/read-back will be recorded at closure |
+| EXTERNAL OPERATION | Build #162 / run 43430275967 / source `6854d8eb58a5f077cbc99749a35d37a4f55b8efa` |
+| EXTERNAL OPERATION STATUS | **COMPLETED / SUCCESS** — steps 1–21 and cleanup 39–43; APK, signatures, source ZIP, Release/tag and download verification passed |
+| Result / evidence | Work-status documentation update is in progress. Build #162 is a separate, verified completed operation; it is not an active process. |
+| Blocker | None identified. Status is event-driven; GitHub cannot receive ChatGPT messages or write a heartbeat while the assistant is disconnected/frozen. |
+| Next action | Finish final read-back/consistency checks, then set SESSION STATUS and WORK STATUS to COMPLETED before the final response. |
 
-## Status meanings
+## Status model
 
-- **IN_PROGRESS** — a substantive Diskusi, Eksekusi Full or Build App task has started and its requested scope has not been closed.
-- **COMPLETED** — the selected mode's scope is finished, its durable checkpoint is saved and the final repository state has been re-read. This does not mean the entire JE Cooler project or a later release is complete.
-- **BLOCKED** — work is unfinished because a concrete tool, runner, validation result, service or other dependency prevents progress. Record the blocker and exact next action.
-- **WAITING_OWNER** — work is unfinished and requires an owner decision, input or a new authorization.
-- **RECOVERY_REQUIRED** — a `Chat Stuck!` recovery has found an unfinished prior session. Continue only within that session's last valid authorization.
+`STATUS` is a compatibility alias for `WORK STATUS`. Always keep the more specific fields below populated.
+
+### Session status — the current owner message/interaction
+
+- **IN_PROGRESS** — opened at the beginning of every JE X FYZ project-related owner message, before extended loading/research/execution.
+- **COMPLETED** — this interaction has been handled and its result/checkpoint has been saved and verified.
+- **BLOCKED** — this interaction cannot proceed because a concrete tool, service, permission, runner or environment dependency is unavailable.
+- **WAITING_OWNER** — a specific decision, input or new authorization is required from the owner.
+- **FAILED** — an attempted acceptance objective ended unsuccessfully and no in-scope repair completed it.
+- **CANCELLED** — the owner explicitly stopped/cancelled the interaction.
+- **RECOVERY_REQUIRED** — a prior interaction ended unexpectedly before a terminal close; verify it before resuming.
+
+### Work status — the requested objective across steps or chats
+
+- **IN_PROGRESS** — the requested work item still has authorized work or a verified external process underway.
+- **COMPLETED** — all requested acceptance criteria and available required checks are complete; this does not mean the entire product is complete.
+- **BLOCKED** — completion is prevented by a concrete dependency/tool/permission/service/runner issue.
+- **WAITING_OWNER** — work is paused for a precise owner decision/input/authorization.
+- **FAILED** — the work item reached an unsuccessful terminal result with no safe in-scope repair.
+- **CANCELLED** — the owner cancelled the work item.
+- **RECOVERY_REQUIRED** — the previous work item was interrupted and its last state/authorization must be reconciled.
+
+### External operation status — only for an actual process
+
+- **NOT_APPLICABLE** — no independent external process exists.
+- **QUEUED** — an external operation is confirmed queued.
+- **IN_PROGRESS** — an actual run/job/process is confirmed active by its live status.
+- **COMPLETED / SUCCESS** — the external operation reached successful terminal state.
+- **FAILED** or **CANCELLED** — the external operation reached that terminal state.
+- **UNKNOWN** — current live state could not be verified; never infer from an old checkpoint.
 
 ## Update protocol
 
-1. **At the start of every substantive work session**, set this marker to `IN_PROGRESS`, record the selected mode, task, start date and last verified checkpoint. Do this before substantive edits or side effects.
-2. **At every meaningful milestone**, refresh the last completed milestone, current step, evidence and last known commit/checkpoint. Keep the status `IN_PROGRESS` until the requested scope is closed.
-3. **At the end of the session**, set `COMPLETED` only after the work for that mode is complete, required available checks have been run, canonical notes/checkpoint are saved, and GitHub read-back verifies the final state. Otherwise use `BLOCKED` or `WAITING_OWNER`.
-4. **During `Chat Stuck!` recovery**, read this file first. If it says `IN_PROGRESS`, mark the prior work `RECOVERY_REQUIRED`, read `CHAT_TRANSFER.md`, verify live main/Actions and resume only a recoverable, already-authorized scope. Once recovery is underway, update the marker to `IN_PROGRESS` with the recovered scope.
-5. Keep this file as a **single current snapshot**, not an append-only log. Detailed engineering state belongs in `CHAT_TRANSFER.md`; release attempts and artifact evidence belong in `APP_BUILD_REPORT.md`; historical decisions belong in the relevant subject notes and `CHANGELOG.md`.
+1. **Every JE X FYZ project-related owner message** opens with SESSION STATUS = IN_PROGRESS. This includes explicit mode commands, ordinary project questions, corrections, follow-ups and stop/cancel instructions, whether in a new or existing chat. Unrelated non-project conversation does not update this file.
+2. First read this file; immediately persist the new interaction, work item, mode, Asia/Jakarta timestamp, current phase, last verified checkpoint and next action as IN_PROGRESS before extended loading or execution. Preserve an existing independent external operation in its own fields.
+3. Update this snapshot after every meaningful milestone, actual tool/test result, commit, blocker, permission/authorization change or external-operation state transition. Update `Last updated` using the current Asia/Jakarta time and report the actual last verified evidence.
+4. At closure, set SESSION STATUS and WORK STATUS independently. A short answer still gets a start and terminal close. If a real external operation remains active after the current interaction ends, SESSION STATUS may be COMPLETED while WORK STATUS and EXTERNAL OPERATION STATUS remain IN_PROGRESS; record its exact run/job and next monitoring action.
+5. If the previous session/work status was IN_PROGRESS when a new chat starts, verify live Actions/process state first. Record the unfinished prior item as RECOVERY_REQUIRED in CHAT_TRANSFER when appropriate, then begin the new interaction as IN_PROGRESS. Never assume a frozen chat is still running or repeat an irreversible side effect.
+6. If the opening or closing status write fails, report that persistence failure explicitly. Do not claim GitHub is synchronized; avoid irreversible operations until the marker can be persisted.
 
-## Important limitation: not a live process monitor
+## Automation boundary
 
-GitHub cannot tell whether a ChatGPT conversation is still generating, has frozen, or was closed unexpectedly. There is no automatic heartbeat from the chat to this repository.
+This process is automatic in the assistant's handling of project messages, but **not** a GitHub webhook or background monitor. GitHub cannot receive ordinary ChatGPT messages directly, and no status write occurs while ChatGPT is disconnected, frozen or not executing a tool call. Updates are therefore event-driven at interaction start, real milestones/state transitions and closure—not per-second. `Last updated` is the timestamp of the last successful persistence.
 
-- If a chat is interrupted between updates, this marker remains at its last committed value—usually `IN_PROGRESS`. That is a durable indication that the session was not formally closed, **not proof that a background process is still running**.
-- The `Updated` date and last completed milestone show how fresh the information is. A new `Chat Stuck!` session must inspect this marker, `CHAT_TRANSFER.md`, live GitHub state and any actual Actions run before deciding what can safely resume.
-- A status becomes `COMPLETED` only when the closing update has been committed and verified. The marker remains useful even when the final chat response is never delivered.
+## Canonical references
 
-## Canonical links
-
+- [Authoritative status lifecycle and mode policy](MASTER_PROMPT.md)
 - [Detailed continuation checkpoint](CHAT_TRANSFER.md)
 - [Current project state](PROJECT_STATE.md)
 - [Immediate handover](HANDOVER.md)
-- [Operating rules and authorization](MASTER_PROMPT.md)
-- [Build attempt and release evidence](APP_BUILD_REPORT.md)
+- [App Build attempt/evidence ledger](APP_BUILD_REPORT.md)
