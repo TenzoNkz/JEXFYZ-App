@@ -1,3 +1,12 @@
+## 2026-11-13 — Correct About Telegram handle casing (source implemented; QC pending)
+
+- Corrected the Horizon / About Telegram handle in `lib/floating_monitor.dart` from `@Horizontalzzz` to the exact owner-requested `@horizontalzzz`.
+- Updated the source-contract assertion and both English/Indonesian About widget assertions to require the exact lowercase spelling and reject the capital-H variant.
+- Corrected active About references in APP_NOTES.md and DESIGN_NOTES.md. Immutable archives were intentionally left unchanged.
+- Android Gradle `versionName "Telegram @horizontalzzz"` was not modified; its protected value remains exact.
+- Source commit: `bb0cffec50eceafa2d522f7507288635f6989bab`; test commit: `bc1a33b68daa99bdb339fa07d1d902af7ddd8855`.
+- GitHub read-back/static inspection only. Flutter/Dart are unavailable in this runtime; formatter, focused/full tests, analyzer and Android Gradle are NOT RUN. Build #159 remains the latest verified APK; the correction is NOT RELEASED. No Build App, Firmware, BIN, Firebase, OTA, flash or device operation occurred.
+
 ## 2026-11-13 — Refine Usage Statistics dashboard (source implemented; QC pending)
 
 - Combined session status, start time and duration into one compact header. The session selector remains in that header and no longer lists duplicate elapsed durations.
