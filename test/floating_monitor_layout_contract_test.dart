@@ -524,7 +524,8 @@ void main() {
     expect(settingsSource, contains('CrossAxisAlignment.stretch'));
     expect(settingsSource, contains('Design Inspiration'));
     expect(settingsSource, contains('3D Design & Printing'));
-    expect(settingsSource, contains('@Horizontalzzz'));
+    expect(settingsSource, contains('@horizontalzzz'));
+    expect(settingsSource, isNot(contains('@Horizontalzzz')));
     expect(settingsSource, contains('@FYZ737'));
     expect(settingsSource, contains('@Logos3dMichael'));
     expect(settingsSource, isNot(contains("'JE Cooler'")));
@@ -552,7 +553,8 @@ void main() {
     expect(find.byType(Card), findsOneWidget);
     expect(find.text('App Developer & Builder'), findsOneWidget);
     expect(find.text('Horizon'), findsOneWidget);
-    expect(find.text('@Horizontalzzz'), findsOneWidget);
+    expect(find.text('@horizontalzzz'), findsOneWidget);
+    expect(find.text('@Horizontalzzz'), findsNothing);
     expect(find.text('Design Inspiration'), findsOneWidget);
     expect(find.text('FYZ'), findsOneWidget);
     expect(find.text('@FYZ737'), findsOneWidget);
@@ -574,7 +576,8 @@ void main() {
     expect(find.text('Pengembang Aplikasi & Perakit'), findsOneWidget);
     expect(find.text('Inspirasi Desain'), findsOneWidget);
     expect(find.text('Desain & Pencetakan 3D'), findsOneWidget);
-    expect(find.text('@Horizontalzzz'), findsOneWidget);
+    expect(find.text('@horizontalzzz'), findsOneWidget);
+    expect(find.text('@Horizontalzzz'), findsNothing);
     expect(find.text('@FYZ737'), findsOneWidget);
     expect(find.text('@Logos3dMichael'), findsOneWidget);
     expect(tester.takeException(), isNull);
