@@ -10,13 +10,13 @@
 | Mode | Eksekusi Build App |
 | Work item | Guarded App Build/QC for the latest verified main source and release provenance |
 | Updated | 2026-11-13 (Asia/Jakarta) |
-| Last completed milestone | Build #159 completed analyzer and Flutter test gates successfully; Android Gradle unit-test gate is now active on immutable source cdca38b9e4f2f99006db8feae40c07c6f9bdfb0a |
-| Result | Build #159 steps 1–13 are SUCCESS, including analyzer and Flutter tests. Step 14 Android Gradle gate is IN_PROGRESS; steps 15–21 remain pending. No package or Release result yet. |
+| Last completed milestone | Build #159 steps 1–14 succeeded; Android Gradle unit-test gate completed at 06:11:54Z and obfuscated APK build has started |
+| Result | Build #159 steps 1–14 are SUCCESS. Step 15 obfuscated release APK build is IN_PROGRESS; gates 16–21 remain pending. No Release result yet. |
 | Latest App source commit | `a5d45866bb244a2f260330a0e2ea332c391a9fcd` (four UI refinements; latest main currently has documentation-only commits on top) |
 | Last verified package | Build #157 — source `10d106537e92060e0aac3fc17fd37f56e746bcd5` |
 | Validation | Existing static read-back only for `a5d4586`; hosted analyzer/tests/Gradle/signing/release for latest main are pending this authorized Build App attempt. Formatter remains absent from the workflow. |
 | Blocker | None established before trigger. If runner, permissions, secrets, signing, dependency service or a workflow gate blocks, stop and record exact evidence. |
-| Next action | Continue inspecting only run 43376503987 / job 131724120379; record Gradle and later APK/sign/source ZIP/Release/download verification. No duplicate trigger while active. |
+| Next action | Continue inspecting only run 43376503987 / job 131724120379; verify APK, signing/certificate, source ZIP, Release/tag parity and downloaded asset checksums. No duplicate trigger while active. |
 
 ## Status meanings
 
