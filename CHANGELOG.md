@@ -1,3 +1,13 @@
+## 2026-11-13 — Fix native Floating Monitor Fan icon branch; full repository audit
+
+- A Build #159 Android compiler warning identified a duplicate `"F"` branch in `FloatingMonitorService.kt:738`. The first gauge-like branch made the later three-blade Fan glyph unreachable. Removed the obsolete first branch; Floating Monitor F continues to mean Fan Speed, not FPS.
+- Added a regression contract in `test/floating_monitor_layout_contract_test.dart` requiring exactly one icon branch for each live metric `B/H/V/A/P/F` and checking the three-blade Fan drawing path.
+- Source/test commits: `e0b68c3e98a5d75fe40c71bc0a7647712615c33d` and `aff8b8ec2796d03432f4f8b000f6e70205eccf48`. GitHub read-back/static contract inspection only; Flutter tests, formatter, analyzer and Android/Kotlin compile were NOT RUN for the patch because the runtime lacks Dart/Flutter/Gradle/ADB.
+- Full repository inventory: 133 recursive tree entries, 88 blobs, 52 Markdown files, 12 canonical skills and 12 byte-identical mirrors; exactly one active versioned Firmware sketch. Active root and canonical-skill relative links have no actionable missing targets. Immutable archive references were preserved.
+- Repo governance backlog identified but not changed: main metadata reports `protected=false`; workflow actions use version tags rather than full SHA pins; Kotlin/Gradle deprecation warnings remain. These need separate permission/compatibility validation.
+- **USER-REPORTED:** owner reports Firmware V7.2 updated, Build #159 installed and cooler/App safe in use. This does not independently prove source-to-BIN identity, Firmware compile, OTA/flash, BLE security or thermal/electrical acceptance.
+- No App Build/Release, Firmware, BIN, Firebase, OTA, flashing or physical device operation was performed in this task.
+
 ## 2026-11-12 — Bound Usage Statistics writer ingress and hard-cap chart rendering (source implemented; QC pending)
 
 - Replaced wait-for-admission queue behavior with a hard 64 normal + 8 reserved control + 1 critical endSession slot (73 total). Producers never wait for a queue slot; excess incoming writes are rejected immediately, counted and shown through a localized history-incomplete warning. Accepted operations remain FIFO. Only endSession can use the critical slot; Clear History uses reserved control capacity and surfaces queue rejection through its existing UI error path.

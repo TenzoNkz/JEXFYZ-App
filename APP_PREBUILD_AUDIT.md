@@ -1,3 +1,16 @@
+## Current App pre-build audit — native Floating Monitor icon repair — 2026-11-13
+
+**Disposition: WAITING_OWNER_FOR_GUARDED_APP_QC.** Build #159 is the latest verified package, but a new native App-only correction is now on main and has not been compiled or packaged.
+
+- Build #159 run `43376503987` completed SUCCESS on package source `cdca38b9e4f2f99006db8feae40c07c6f9bdfb0a`: analyzer 23 infos / zero warnings/errors, Flutter 187/187, Android Gradle success. Kotlin emitted a duplicate `"F"` branch warning in `FloatingMonitorService.kt:738`.
+- The duplicate branch was verified in live source. The earlier gauge-like `"F"` branch was removed; the remaining three-blade branch correctly represents Floating Monitor Fan Speed. Source commit: `e0b68c3e98a5d75fe40c71bc0a7647712615c33d`.
+- A regression assertion in `test/floating_monitor_layout_contract_test.dart` now checks the unique `B/H/V/A/P/F` icon map and three-blade Fan glyph. Test commit: `aff8b8ec2796d03432f4f8b000f6e70205eccf48`.
+- Current suite inventory is **188 declarations** across 9 Dart test files. This new regression has not been run. The runtime lacks Dart, Flutter, Gradle and ADB; formatter, focused/full Flutter tests, analyzer and Android Gradle are **BLOCKED / NOT RUN** for the patch.
+- No workflow, Gradle property, dependency, Firmware source, BIN, Firebase, OTA or Release was changed. No App Build was triggered.
+- Build #159 is not evidence for the new Kotlin source. The next gate requires a separate owner-issued `Eksekusi Build App!` and actual log review. Keep the existing issue/title/token guard and all workflow gates unchanged.
+
+---
+
 ## Build #154 analyzer result and source repair — 2026-11-12
 
 The first explicit owner-authorized guarded App Build attempt used checkout SHA `dd7e75f1597e14c3d929b1ca78825dc806aef25d` and failed at the Dart analyzer. Exact output: 29 issues, consisting of six errors, zero warnings and 23 non-fatal deprecation infos. Five diagnostics were cascading missing-`MethodChannel` errors caused by the absent `package:flutter/services.dart` import in `lib/floating_monitor.dart`; the sixth was `fontFamily` supplied to unsupported `ThemeData.copyWith` in `lib/main.dart`. Tests and all downstream packaging/release gates were skipped; no Release mutation occurred.

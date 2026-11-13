@@ -1,13 +1,13 @@
 # JE X FYZ — Firmware Technical Reference
 
-Last reconciled: 2026-11-12 (Asia/Jakarta). Source identity and behavior are rechecked against live main before every task. This is the current technical reference; previous-version algorithms belong in CHANGELOG.md.
+Last reconciled: 2026-11-13 (Asia/Jakarta). Source identity and behavior are rechecked against live main before every task. This is the current technical reference; previous-version algorithms belong in CHANGELOG.md.
 
 ## Current source and evidence
 
 - Active source: firmware/JEXFYZ-V7.2.ino.
 - Embedded version: FW_VERSION="V7.2".
 - Current source blob: 140e758e7101cadc3ccc58cc5c52e49534b0032c.
-- The owner-reported V7.1 compile/Online OTA applies to the previous revision and is not evidence for V7.2. V7.2 compilation, BIN provenance, installation and physical behavior remain UNVERIFIED.
+- The owner reported on 2026-11-13 that Firmware V7.2 has been updated and the latest App Build #159 installed safely (USER-REPORTED). Exact installed BIN-to-source identity, independent compile logs, NVS/rail/Touch/LED verification and thermal/electrical behavior remain UNVERIFIED.
 - Target toolchain: ESP32-C3 Super Mini / ESP32-C3 Dev Module; Arduino-ESP32 Core 3.3.7.
 - Build #124 is Android App release evidence only, not a Firmware compile.
 

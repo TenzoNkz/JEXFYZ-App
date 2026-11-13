@@ -4,6 +4,14 @@ Durable hardware/user requirements live here. The source-level architecture and 
 
 ## Production baseline and evidence
 
+### Latest owner field report — 2026-11-13 (USER-REPORTED)
+
+- The owner reports that Firmware V7.2 has now been updated on the cooler and the latest App (Build #159) has been installed; the system has been safe in the owner's use so far.
+- This supersedes the earlier V7.1 field report as the latest owner-reported state. It does **not** independently prove Arduino-ESP32 Core 3.3.7 compilation, exact source-to-BIN identity, the update path, NVS power-cycle behavior, BLE security, selector/rail/NTC behavior, or thermal/electrical performance.
+- Current source remains `firmware/JEXFYZ-V7.2.ino` with `FW_VERSION="V7.2"`. No Firmware source, BIN, Firebase, OTA, flashing or device operation was changed or performed in this App-repository audit.
+- BLE App-only identity authorization remains BLOCKED / NOT IMPLEMENTED. Successful owner use does not establish cryptographic official-App-only command authorization.
+
+
 - Owner reports the sold/shipped unit uses App Build #124 and Firmware V7.1, compiled and updated through Online OTA. This is USER-REPORTED.
 - The App package is independently evidenced by Actions run 39386733061, packaged source 7d4e7262c6a3474eefa8ccb58b08f070df3ac15a. This does not independently verify Firmware compilation, source-to-BIN identity, installed version, physical OTA/reboot, BLE recovery or electrical/thermal behavior.
 - Active editable Firmware source on main: firmware/JEXFYZ-V7.2.ino; FW_VERSION="V7.2"; source blob 140e758e7101cadc3ccc58cc5c52e49534b0032c. This is source-only evidence; V7.2 has not been compiled or installed. The V7.1 shipped-unit report remains historical USER-REPORTED evidence.

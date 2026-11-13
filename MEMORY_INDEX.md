@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — Documentation Map & Retention Policy
 
-Last reconciled: 2026-11-12 (Asia/Jakarta). This file is the navigation and retention index, not an alternate operating ruleset or current-state ledger. Read MASTER_PROMPT.md for all operating instructions. Verify current implementation against live main/source/tests and current Actions/Release evidence.
+Last reconciled: 2026-11-13 (Asia/Jakarta). This file is the navigation and retention index, not an alternate operating ruleset or current-state ledger. Read MASTER_PROMPT.md for all operating instructions. Verify current implementation against live main/source/tests and current Actions/Release evidence.
 
 ## Authority order
 
@@ -44,6 +44,13 @@ Last reconciled: 2026-11-12 (Asia/Jakarta). This file is the navigation and rete
 | SKILLS_INDEX.md | Catalogue of portable project skills and capability boundaries | Active capability index | KEEP; update with skill additions/removals |
 | .agents/skills/*/SKILL.md | Canonical repository skills for OpenAI Codex-compatible discovery | Active skill library | KEEP one focused workflow per skill; load progressively |
 | .github/skills/*/SKILL.md | Byte-identical GitHub Copilot mirrors; the `code-review` skill is eligible for Copilot code review use | Active skill mirrors | KEEP synchronized with `.agents/skills`; verify exact content equality |
+
+## Markdown and skill-mirror audit — 2026-11-13
+
+- Live recursive `main` tree at the start of this audit: **133 entries, not truncated; 88 blobs; 52 Markdown files**. The 52 Markdown files classify as 24 root-level policy/index/subject/checkpoint/ledger documents, 12 canonical `.agents/skills` definitions, 12 `.github/skills` mirrors, 1 Firmware technical reference and 3 immutable archives.
+- All 12 canonical/mirror skill pairs were checked from the recursive tree; each pair has the same Git blob SHA. The active root-document and canonical-skill relative-link scan found no actionable missing paths.
+- Some relative paths embedded in the three immutable archive snapshots point to files from their historical pre-cleanup context. Those historical references were not rewritten; archive content remains immutable by policy.
+- No Markdown file was moved, renamed or deleted. Build ledgers and archive evidence remain intact.
 
 ## Markdown audit — 2026-11-07
 

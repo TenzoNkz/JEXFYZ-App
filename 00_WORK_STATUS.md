@@ -6,17 +6,17 @@
 
 | Field | Value |
 |---|---|
-| **STATUS** | **IN_PROGRESS** |
+| **STATUS** | **WAITING_OWNER** |
 | Mode | Eksekusi Full |
-| Work item | Broad repository hygiene, App/source/test static audit, workflow/dependency/doc consistency, and safe scoped repairs |
+| Work item | Repo-wide hygiene audit and native Floating Monitor Fan icon correction + regression test |
 | Updated | 2026-11-13 (Asia/Jakarta) |
-| Last completed milestone | Restored Build #159 checkpoint; verified live main HEAD `8442650e5512c187416dcc139e26459691f0ca41`, complete 133-entry tree and no active Actions run |
-| Result | Build #159 is the latest verified App release. Owner reports Firmware V7.2 and the latest App are installed and safe (USER-REPORTED). Broad repository audit and remediation are in progress. |
-| Latest App source/package commit | `cdca38b9e4f2f99006db8feae40c07c6f9bdfb0a` (Build #159 immutable package source) |
+| Last completed milestone | Fixed duplicate native F icon branch, added unique icon-map regression, audited 52 Markdown docs and 12 skill mirrors, and updated canonical project memory |
+| Result | Build #159 remains latest verified package. Owner reports V7.2 + Build #159 installed and safe (USER-REPORTED). Native F icon source/test repair is committed but not built. |
+| Latest App source/package commit | `aff8b8ec2796d03432f4f8b000f6e70205eccf48` (test commit; native source fix is `e0b68c3e98a5d75fe40c71bc0a7647712615c33d`) |
 | Last verified package | Build #159 — source `cdca38b9e4f2f99006db8feae40c07c6f9bdfb0a`; Release `403010611`, tag `jexfyz-latest` |
-| Validation | Build #159 hosted CI passed (187/187 Flutter, analyzer, Gradle, release/signature/source integrity). New audit's local static checks/tests not yet run. |
-| Blocker | No blocker for repository read/write. Local Dart/Flutter/Gradle/ADB availability will be checked. No App Build/Release, Firmware/BIN, Firebase, OTA, flashing or device operations are authorized. |
-| Next action | Complete full tree/Markdown/link/skill-mirror/source/workflow/dependency audit; fix only supported in-scope defects; update canonical memory and verify final tree/HEAD. |
+| Validation | Build #159 hosted CI passed on its immutable source. Native patch/source read-back and static test-contract inspection passed; current test inventory 188. New Flutter test, analyzer and Kotlin/Gradle compile are NOT RUN. |
+| Blocker | Local Dart/Flutter/Gradle/ADB are absent. Patch needs a separate owner-authorized guarded App Build to validate and package. No App Build, Firmware/BIN, Firebase, OTA or device operation is authorized here. |
+| Next action | Owner separately issues Eksekusi Build App! to validate current main; inspect duplicate-branch warning is gone and all gates pass. Do not trigger or publish from this Eksekusi Full session. |
 
 ## Status meanings
 

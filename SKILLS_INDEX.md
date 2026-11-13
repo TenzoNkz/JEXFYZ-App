@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — Skills & Capability Index
 
-Last reconciled: 2026-11-07 (Asia/Jakarta). This is the discovery map for reusable agent skills and the actual tool capabilities available to project chats. The operating authority remains MASTER_PROMPT.md.
+Last reconciled: 2026-11-13 (Asia/Jakarta). This is the discovery map for reusable agent skills and the actual tool capabilities available to project chats. The operating authority remains MASTER_PROMPT.md.
 
 ## Skill locations and loading
 
@@ -60,13 +60,11 @@ For non-trivial UI changes, load the product-design skill plus the Flutter engin
 
 ## Current execution-environment snapshot
 
-Checked on 2026-11-07 in the active container: `python3` and `git` are available. `flutter`, `dart`, `gradle`, `adb`, `arduino-cli` and `idf.py` are not installed in this environment. This is a runtime-specific snapshot, not a permanent repository fact; re-check command availability at the start of any task that needs those tools.
+- Checked 2026-11-13: Git, Python 3 and Java are available in the current runtime. Dart, Flutter, Gradle, ADB, Arduino CLI and ESP-IDF are absent. GitHub repository read/write is available through the connector; local Flutter/Android/Firmware compilation and physical-device validation cannot be claimed from this runtime.
+- The connected GitHub Actions workflow can validate and publish the App, but its only current App workflow is the guarded Build/QC/release pipeline rather than a validation-only job. It must not be triggered from Diskusi or Eksekusi Full.
+- No toolchain was installed and no local build/test command was attempted in this audit.
 
-Consequences for this environment:
-- Python-based calculations, static source checks, text parsing, report generation and Git operations are available.
-- Local Flutter formatting/tests/analyzer, Android Gradle builds, ADB device validation, Arduino compilation and ESP-IDF builds cannot be claimed or executed here while those tools remain absent.
-- GitHub Actions logs and CI can be inspected through the connected GitHub tools; a workflow can only be triggered/re-run under its own explicit authorization and available permissions.
-- Physical USB, cooler, phone and instrument access is not present. Device/hardware evidence must come from owner-provided measurements, photos/logs or an explicitly available external test system.
+
 ## High-rigor work pattern
 
 1. Scope: restate the requested outcome, mode, protected invariants and stop conditions.

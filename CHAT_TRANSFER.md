@@ -1,4 +1,35 @@
-## CURRENT CHECKPOINT — BUILD #159 SUCCESS / RELEASE VERIFIED — 2026-11-13
+## CURRENT CHECKPOINT — REPO AUDIT + FLOATING MONITOR FAN ICON FIX / WAITING OWNER BUILD QC — 2026-11-13
+
+**Mode:** `Eksekusi Full!` — App-native source, regression test, static repository audit and canonical documentation only. No App Build/Release, Firmware, BIN, Firebase, OTA, flashing or device operation was authorized or performed.
+
+### Current source and verified-release boundary
+
+- **Repository/branch:** `TenzoNkz/JEXFYZ-App` / `main`.
+- **Latest verified package:** Build #159 / Actions run `43376503987` / exact package source `cdca38b9e4f2f99006db8feae40c07c6f9bdfb0a`; Release/tag `jexfyz-latest` point to that source. CI passed analyzer (23 infos / 0 warnings / 0 errors), Flutter 187/187 and Android Gradle; native Android JUnit tasks were `NO-SOURCE`.
+- **USER-REPORTED field state:** owner reports Firmware V7.2 updated, Build #159 installed and system safe in use. This is not independent compile/BIN/physical verification.
+- **Confirmed Build #159 issue:** Kotlin compiler warned `FloatingMonitorService.kt:738:17 Duplicate branch condition in 'when'`. `drawIcon()` had two `"F"` cases; the first drew a gauge, the later one drew the Fan. Since Floating Monitor F is Fan Speed (not FPS), the first branch was unreachable and misleading.
+- **Source correction:** removed the first duplicate gauge branch; retained the three-blade Fan glyph. Commit `e0b68c3e98a5d75fe40c71bc0a7647712615c33d`.
+- **Regression correction:** added a test requiring exactly `B/H/V/A/P/F` unique metric branches and the three-blade Fan drawing contract. Commit `aff8b8ec2796d03432f4f8b000f6e70205eccf48`. Current source/test inventory is **188 declarations** across 9 test files; the new test has not run.
+- **Release boundary:** the native correction is newer than Build #159 and is **NOT RELEASED**. The latest package and the new source checkpoint must not be conflated.
+
+### Repository audit
+
+- Complete recursive tree: 133 entries, not truncated; 88 blobs and 52 Markdown files. Exactly one active versioned Firmware sketch.
+- The 12 `.agents/skills` canonical files and 12 `.github/skills` mirrors have matching blob IDs.
+- Active documentation/canonical skills link audit found no actionable missing relative paths. Historical references in immutable archive snapshots were left untouched.
+- Main branch metadata reports `protected=false`; branch-protection detail access was denied to this integration. Workflow refs are tag-based, not full-SHA-pinned. These are governance hardening recommendations; no repository settings or workflow changed.
+- Build #159 non-blocking backlog: Kotlin 2.2.20 support deprecation; deprecated Gradle flags; deprecated Notification priority APIs. No toolchain upgrade attempted.
+- Known security gap: BLE Just Works + `SYNC_READY` still does not authenticate official App identity; `BLE_APP_AUTH.md` remains BLOCKED / NOT IMPLEMENTED.
+
+### Validation and exact next action
+
+- **Static source/read-back:** native branch now has one F branch and exact six-branch map; test source is present and the proposed contract is statically checked.
+- **NOT RUN:** Dart formatter, focused/full Flutter tests, Flutter analyzer, Kotlin/Android Gradle compile, screenshots and device validation. This runtime has Git/Python/Java but no Dart/Flutter/Gradle/ADB.
+- **Next:** owner must separately issue `Eksekusi Build App!` to run the guarded workflow on current `main`, confirm the duplicate-branch warning is gone and tests/analyzer/Gradle pass, then publish a package if all gates pass. This recommendation is not Build authorization.
+
+---
+
+## LAST VERIFIED APP BUILD — BUILD #159 SUCCESS / RELEASE VERIFIED — 2026-11-13
 
 **Mode:** `Eksekusi Build App!` — selected App Build/QC scope is COMPLETED. This authorized scope covered the guarded App workflow, App analyzer/tests/Android Gradle, obfuscated APK, signing, matching source archive and Release integrity. No Firmware compilation/BIN, Firebase mutation, OTA, flashing or device operation was performed or authorized.
 

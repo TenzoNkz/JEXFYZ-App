@@ -10,8 +10,17 @@
 - **Signing:** one RSA-4096 signer, JE X FYZ DN, pinned certificate SHA-256 `dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0`; V1/JAR, V2 and V3 pass. Certificate is self-signed; jarsigner reports PKIX chain validation failure, so it is not publicly CA-trusted.
 - **Protected version:** Android Gradle `versionName "Telegram @horizontalzzz"` is unchanged; Flutter app version is `1.0.0+3`.
 - **Failure history:** Build #158 remains FAILED (185 passed / 2 stale About role assertions); its failure is preserved in APP_BUILD_REPORT.md. The two test-only corrections are verified by Build #159. Do not overwrite or relabel the failed attempt.
-- **Formatter/visual boundary:** the guarded workflow has no Dart formatter step; `dart format` is not claimed. Four refinements are included in the verified package, but actual Android/OEM screenshot acceptance remains **VISUAL NOT VERIFIED** pending owner screenshots at 350-dp/420-dp, EN/ID and Light/Dark. Physical BLE/device and Firmware/BIN/OTA evidence remain outside App CI.
+- **Formatter/visual boundary:** the guarded workflow has no Dart formatter step; `dart format` is not claimed. Owner reports Build #159 installed (USER-REPORTED); actual Android/OEM screenshot acceptance remains **VISUAL NOT VERIFIED** pending matched 350-dp/420-dp, EN/ID and Light/Dark screenshots. Physical BLE/device and Firmware/BIN/OTA evidence remain outside App CI.
 
+
+### Owner field report and native Floating Monitor follow-up — 2026-11-13
+
+- **USER-REPORTED field state:** the owner reports Firmware V7.2 has been updated and the latest App (Build #159) has been installed and is operating safely so far. This is not independently observed device/thermal/BLE validation.
+- **Build #159 remains the latest verified package:** run `43376503987`, immutable source `cdca38b9e4f2f99006db8feae40c07c6f9bdfb0a`. It does not contain the subsequent native icon correction below.
+- **Native Floating Monitor correction:** Build #159 Android compilation warned about duplicate `"F"` branches in `FloatingMonitorService.kt:738`. The earlier gauge-like branch was removed; the three-blade Fan glyph branch is now the sole `F` mapping. This matches the App contract that Floating Monitor `F` means Fan Speed, not FPS.
+- **Regression source:** `test/floating_monitor_layout_contract_test.dart` now checks the exact unique `B/H/V/A/P/F` icon branch map and the three-blade Fan drawing path. The suite inventory is now **188 declarations** across 9 Dart test files; this new test has NOT RUN.
+- **Patch commits:** native App source `e0b68c3e98a5d75fe40c71bc0a7647712615c33d`; regression test `aff8b8ec2796d03432f4f8b000f6e70205eccf48`. The patch is **NOT RELEASED**.
+- **Validation boundary:** GitHub read-back and static source-contract inspection only. This runtime has no Dart, Flutter, Gradle or ADB; Flutter tests, analyzer and Kotlin/Android compilation did not run on the patch. A separate owner-issued `Eksekusi Build App!` is required to validate and package it. No Build, Release, Firmware, BIN, Firebase, OTA or device operation was triggered.
 
 ### Implemented UI contracts
 

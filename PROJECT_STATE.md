@@ -12,7 +12,21 @@
 - **Historical failed run:** Build #158 remains FAILED at Flutter tests (185 passed / 2 failed) because of two stale Indonesian About role assertions. Only those two test literals were repaired; Build #159 validates the correction. Preserve #158 as a failed attempt in APP_BUILD_REPORT.md.
 - **Formatter/cache caveats:** workflow has no Dart formatter step; `dart format` is not claimed. Optional post-job cache writes were denied for lack of token writable scope but did not fail the build or cleanup.
 - **Visual and physical status:** the package now contains the four refinements, but actual screenshots/OEM visual acceptance at 350-dp/420-dp, portrait/constrained height, EN/ID and Light/Dark remain **VISUAL NOT VERIFIED**. Physical installation/BLE/device, Firmware V7.2 compile/BIN, Firebase, OTA/flash, NVS/rail/LED and thermal/electrical cooling remain **NOT RUN / NOT VERIFIED**.
-- **Next owner action:** install Build #159 and provide device screenshots/physical review for the visual and BLE/Lock Voltage acceptance matrix. No additional App Build is required unless App source changes.
+- **Owner-reported field action:** Build #159 has since been reported installed and safe in use (USER-REPORTED); screenshots/OEM visual acceptance and BLE/Lock Voltage physical acceptance remain NOT VERIFIED. The new native Floating Monitor icon correction is not in Build #159 and needs a separately authorized Build App after validation.
+
+---
+
+## Latest field report and repository hygiene — 2026-11-13
+
+- **USER-REPORTED:** owner says Firmware V7.2 has been updated, Build #159 is installed, and the cooler/App have been safe in use so far. Do not promote this into independently verified Firmware compilation/BIN provenance, BLE/OTA/thermal testing, or screenshot acceptance.
+- **Verified package:** Build #159 / run `43376503987` / source `cdca38b9e4f2f99006db8feae40c07c6f9bdfb0a` remains the latest verified App Release. Owner-reported installation is a separate evidence class.
+- **Native App correction on main:** removed the unreachable duplicate `"F"` branch in `FloatingMonitorService.kt` so Floating Monitor Fan metric uses its three-blade Fan glyph. Source commit `e0b68c3e98a5d75fe40c71bc0a7647712615c33d`; regression-test commit `aff8b8ec2796d03432f4f8b000f6e70205eccf48`. The new assertion locks the unique B/H/V/A/P/F icon mapping. It is **SOURCE IMPLEMENTED / STATIC SOURCE CHECKED / NOT YET RELEASED**.
+- **Repository structure:** complete recursive main tree contained 133 entries, 88 blobs and 52 Markdown files; exactly one active versioned Firmware sketch. The 12 canonical `.agents/skills` files and 12 `.github/skills` mirrors share identical blob IDs. No files were moved/deleted.
+- **Markdown/link audit:** no actionable missing relative links were found in active root documentation or the 12 canonical skills. Historical relative targets inside immutable archive snapshots were left unchanged. No archives or historical ledgers were edited.
+- **Governance findings:** GitHub branch metadata reports `main.protected=false`; the branch-protection details endpoint was not accessible to this integration, so no additional rules are inferred. The guarded workflow references Actions by version tags (for example `actions/checkout@v6`, `subosito/flutter-action@v2`) rather than full reviewed commit SHAs; SHA pinning is a future supply-chain hardening recommendation, not changed here.
+- **Android toolchain backlog:** Build #159 logs also show non-blocking Kotlin 2.2.20 support deprecation, deprecated Gradle properties (`android.enableJetifier`, `android.builtInKotlin`, `android.newDsl`), and deprecated Notification priority APIs. These were not upgraded because doing so requires compatibility research and a full validated App Build.
+- **Known security boundary:** BLE Just Works bonding plus `SYNC_READY` is still not cryptographic proof of official App identity; BLE App-only authorization remains BLOCKED / NOT IMPLEMENTED.
+- **Validation limitation:** GitHub read-back/static checks only for the native correction; the current runtime lacks Dart, Flutter, Gradle and ADB. No Flutter tests, analyzer, Kotlin compile, APK Build or screenshot validation ran for the patch. A separate owner-issued `Eksekusi Build App!` is required before packaging.
 
 ---
 
