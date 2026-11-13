@@ -7,18 +7,14 @@
 | Field | Value |
 |---|---|
 | **STATUS** | **IN_PROGRESS** |
-| Mode | Eksekusi Build App |
-| Work item | Guarded Build #160 App QC/release for current main: About handle, Usage Statistics refresh, and native Floating Monitor Fan icon correction |
-| Updated | 2026-11-13 (Asia/Jakarta) |
-| Last completed milestone | Build #162 Flutter test gate completed SUCCESS; Android Gradle unit-test gate is now active on immutable source 6854d8eb58a5f077cbc99749a35d37a4f55b8efa |
-| Result | Build #162 steps 1–13 SUCCESS, including Dart analyzer and Flutter tests. Step 14 Android Gradle gate IN_PROGRESS; APK/signing/source ZIP/Release/download gates pending. |
-| Latest candidate source commits | About `bb0cffec50eceafa2d522f7507288635f6989bab`; Statistics `f32c1278308bea7cedd4f150255d2128cac138bb`; native Fan `e0b68c3e98a5d75fe40c71bc0a7647712615c33d` |
-| Latest regression test commits | About `bc1a33b68daa99bdb339fa07d1d902af7ddd8855`; Statistics `b560403877fd2080db2019fc04d86d67020418dd`; native Fan `aff8b8ec2796d03432f4f8b000f6e70205eccf48` |
-| Test inventory | 188 declarations across 9 Dart test files. About, Statistics and native Fan regression changes are written, NOT RUN on current candidate. |
-| Last verified package | Build #159 — source `cdca38b9e4f2f99006db8feae40c07c6f9bdfb0a`; Release `403010611`, tag `jexfyz-latest`. Current About casing correction, Usage Statistics refinement and native Fan fix are not included. |
-| Validation | GitHub source/test/doc read-back and static checks passed. No Dart, Flutter, Gradle or ADB executable is available; formatter, Flutter tests, analyzer and Android Gradle are NOT RUN. |
-| Blocker | No unresolved source blocker known after the narrow repair; hosted Flutter test gate must revalidate. Local Dart/Flutter/Gradle/ADB are unavailable. |
-| Next action | Continue inspecting only Actions run 43430275967 / job 131901744336; verify Gradle, APK, V1/V2/V3 signing, source ZIP, Release/tag parity and downloaded assets. No duplicate trigger while active. |
+| Mode | Eksekusi Full |
+| Work item | Redesign work-status lifecycle: per-chat/per-command start, milestone refresh, truthful terminal states, and interruption/recovery handling |
+| Updated | 2026-11-14 (Asia/Jakarta) |
+| Starting main HEAD | `c5d250d70fe47d75ac54b426b5b5559df428ecae` |
+| Last completed milestone | Loaded current status/checkpoint and documentation-governance skill; confirmed recorded Build #162 job has completed successfully, pending final evidence reconciliation |
+| Result | This Full-session policy/documentation task is now active. Build #162 is a separate prior operation; no new Build, Release, Firmware/BIN, Firebase, OTA, flash or device action is authorized. |
+| Blocker | No source blocker known. Final Build #162 completion evidence and exact current HEAD will be rechecked before closing this session. |
+| Next action | Define a two-level session/operation status model, write mandatory per-chat start/milestone/terminal protocol in MASTER_PROMPT.md and both transfer prompts, and reconcile active-state fields/checkpoint semantics. |
 
 ## Status meanings
 
