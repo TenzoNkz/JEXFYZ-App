@@ -1,4 +1,19 @@
-## Build #161 failure triage / Build #162 pre-trigger — 2026-11-13
+## CURRENT RELEASE GATE — BUILD #162 SUCCESS / EXECUTABLE SOURCE QC COMPLETE — 2026-11-13
+
+**Status: GUARDED APP QC + RELEASE COMPLETED SUCCESSFULLY.** Exact immutable tested/package source is `6854d8eb58a5f077cbc99749a35d37a4f55b8efa`.
+
+- Run [43430275967](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/43430275967), job `131901744336`, terminal `completed / success`; workflow steps 1–21 and post-job cleanup 39–43 all SUCCESS.
+- Dart analyzer: 23 info-level issues; 0 warnings/errors. Flutter suite: **188/188 passed**.
+- Android Gradle unit-test gate: `BUILD SUCCESSFUL in 3m56s`, 162 actionable tasks. Native App JUnit compile/process/test tasks are `NO-SOURCE`; do not imply Android native JUnit coverage.
+- APK and source ZIP: matching assets published to `jexfyz-latest`, tag points to exact source SHA, downloaded identities/checksums verified. APK SHA-256 `56c08bd490e52a8616627613675141a91c14ab6893cca0e1e54d5e5ac1a053f2`; source ZIP SHA-256 `86bd61edfe59acd6063367f7b8704356d2bf192d8c55c150f0f0e6b6285db42e`. APK signatures V1/V2/V3 and the pinned JE X FYZ certificate passed.
+- Candidate includes lowercase About handle, Usage Statistics UI/test updates and the native Floating Monitor Fan correction. Protected Android `versionName "Telegram @horizontalzzz"` remains unchanged.
+- Main commits following the immutable package source are documentation-only in the inspected history; no later executable App/test path changes were identified.
+- **Remaining evidence gap:** owner installation of Build #162, OEM screenshots and physical BLE/device/thermal/electrical acceptance are not established by CI. Firmware/BIN, Firebase, OTA or flashing were not run.
+- Do not reopen the historical #160/#161 failures or the #162 progress snapshots as current status. Their history remains intact below; this record is the terminal result.
+
+---
+
+## HISTORICAL — Build #161 failure triage / Build #162 pre-trigger — 2026-11-13
 
 **Status: #161 FAILED AT FLUTTER TEST GATE / ONE TEST-ONLY REPAIR COMMITTED / #162 PRE-TRIGGER QC PENDING.**
 
