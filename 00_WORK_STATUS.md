@@ -6,17 +6,20 @@
 
 | Field | Value |
 |---|---|
-| **STATUS** | **IN_PROGRESS** |
+| **STATUS** | **WAITING_OWNER** |
 | Mode | Eksekusi Full |
-| Work item | Usage Statistics UI refinement: timer cleanup, six-chart readability, 1°C temperature ticks, timeline simplification, selected-time dock and bilingual copy; tests + canonical notes |
+| Work item | Usage Statistics visual refinement + regression source + project checkpoint |
 | Updated | 2026-11-13 (Asia/Jakarta) |
-| Last completed milestone | Loaded current checkpoint and inspected Usage Statistics source, tests and design constraints. Current implementation retains six metrics, shared cursor, session/gap semantics and SQLite-backed telemetry. |
-| Result | Implementation not yet committed. Scope is App source/tests/docs only; no Build App, APK/Release, Firmware/BIN, Firebase, OTA, flash or device work. |
-| Starting main HEAD | `382fba7156d5b5d044f1de50bdc2f0bc6a7f41dc` (verified through current file/search refs; confirm again at commit time) |
-| Last verified package | Build #159 — source `cdca38b9e4f2f99006db8feae40c07c6f9bdfb0a`; Release `403010611`, tag `jexfyz-latest` |
-| Validation | Code review only so far. Flutter/Dart toolchain is unavailable in this runtime; formatter, Flutter tests, analyzer, Android Gradle and device rendering are NOT RUN. |
-| Blocker | No local Dart/Flutter/Gradle/ADB toolchain. A separate Eksekusi Build App! is required after source changes for hosted QC/package; this session must not trigger it. |
-| Next action | Implement the approved Usage Statistics visual changes without altering telemetry, database schema, analytics, session/gap continuity or safety; add/update regressions and canonical checkpoints. |
+| Last completed milestone | Implemented one primary session timer/header; 1°C data-based temperature axes; removed visible Observed / More details / Last sample; retained Min/Avg/Max, four activity lanes and six-field cursor dock; updated 188-test regression inventory and canonical docs |
+| Result | Source and tests are committed/read back. Static checks passed. No Build App, Release, Actions trigger, Firmware/BIN, Firebase, OTA, flash or device operation occurred. |
+| Latest App source commit | `f32c1278308bea7cedd4f150255d2128cac138bb`; source blob `64fa93a39516126bbce04b3f031fcdc7f4e4381f` |
+| Latest Usage Statistics test commit | `b560403877fd2080db2019fc04d86d67020418dd`; test blob `259ba2e64a540a04c7f798f3688b2f1c225ccb9b` |
+| Test inventory | 188 declarations across 9 Dart test files (2/12/5/5/27/3/13/24/97); declarations only, NOT execution. |
+| Last verified package | Build #159 — source `cdca38b9e4f2f99006db8feae40c07c6f9bdfb0a`; Release `403010611`, tag `jexfyz-latest`. Current Usage Statistics and preceding native Fan fixes are not included. |
+| Validation | GitHub read-back and static source checks only. Dart/Flutter/Gradle/ADB are absent; formatter, focused/full tests, analyzer, Android Gradle and screenshots are NOT RUN. |
+| Blocker | Hosted validation/package needs a separate owner-authorized guarded App Build. Visual acceptance requires screenshots after package/device install. |
+| Next action | Owner separately issues `Eksekusi Build App!` to validate this exact current main and package only if all gates pass. Do not trigger it from this Full session. |
+
 
 ## Status meanings
 
