@@ -1,3 +1,18 @@
+## Current App pre-build audit — Usage Statistics presentation refresh — 2026-11-13
+
+**Disposition: SOURCE IMPLEMENTED / WAITING FOR SEPARATE GUARDED APP QC.** This record supersedes the prior native Floating Monitor-only pre-build focus for the next App QC pass. No workflow or release action was initiated.
+
+- Source commits: `9b9262d934ff2ab6575256b264f8bf851280dddf` (Statistics screen/chart redesign), `364f5c3c1b777606647c3d85777091314988ea7f` (remove durations from session picker), `f32c1278308bea7cedd4f150255d2128cac138bb` (remove obsolete details-only formatter). Regression commits: `6c85166731fde4d6e72d44ab82d6a3a10826918a` (axis/details/timer coverage) and `b560403877fd2080db2019fc04d86d67020418dd` (localized chart titles and six selected-time fields).
+- The session status, start date/time and elapsed duration now share one header. Multiple-session selection remains in that header; dropdown options no longer duplicate elapsed durations.
+- Temperature plots label every whole degree (1°C spacing), derive the scale from observed Battery/Hotside measurements and grow the plot height when a wider range needs more labels. The Hotside limit is informational and does not flatten the observed-data scale.
+- Min/Avg/Max remain; Observed, More details and Last sample are removed from the visible dashboard. All four operating lanes and the shared six-metric cursor remain. The selected-time readout is a compact two-row / three-column dock with a 48-dp close target and locale-aware values.
+- Invariants preserved: authoritative telemetry, raw one-second samples, SQLite schema/retention, bounded recorder queue, P1 freshness, session continuity, explicit invalid/missing-data gaps, event analytics and chart decimation.
+- Test inventory read from all 9 Dart test files: **188 declarations**. Added/updated regression assertions exist; this is not a pass. No Dart/Flutter/Gradle/ADB toolchain is present in the execution runtime. `dart format`, focused/full `flutter test`, `flutter analyze`, Android Gradle, Android rendering and screenshots are **NOT RUN**.
+- Latest verified package remains Build #159, immutable source `cdca38b9e4f2f99006db8feae40c07c6f9bdfb0a`, Release ID `403010611`. It predates and does not contain this refinement or the preceding native Fan icon repair. Current changes are **NOT RELEASED** and **VISUAL NOT VERIFIED**.
+- Next action: owner separately issues `Eksekusi Build App!` for the guarded hosted QC path. Do not treat this Full session or the presence of source/test code as Build authorization.
+
+---
+
 ## Current App pre-build audit — native Floating Monitor icon repair — 2026-11-13
 
 **Disposition: WAITING_OWNER_FOR_GUARDED_APP_QC.** Build #159 is the latest verified package, but a new native App-only correction is now on main and has not been compiled or packaged.
