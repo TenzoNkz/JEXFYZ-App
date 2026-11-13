@@ -1,4 +1,4 @@
-## CURRENT CHECKPOINT — BUILD #162 ACTIVE / FLUTTER TESTS RUNNING — 2026-11-13
+## CURRENT CHECKPOINT — BUILD #162 ACTIVE / ANDROID GRADLE GATE — 2026-11-13
 
 **Mode:** Eksekusi Build App! — explicit owner authorization remains active for guarded App Build/QC/release and justified App-scope repairs only. No Firmware compilation/BIN, Firebase mutation, OTA, flashing or device operation.
 
@@ -7,21 +7,20 @@
 - **Repository/branch:** TenzoNkz/JEXFYZ-App / main.
 - **Trigger/run/job:** Issue #39 / [Build #162 run 43430275967](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/43430275967), workflow 374946166, event issues, attempt 1; job 131901744336.
 - **Immutable checkout SHA:** 6854d8eb58a5f077cbc99749a35d37a4f55b8efa; exact match to main at pre-trigger.
-- **Current gates:** steps 1–12 SUCCESS, including toolchain, security/architecture audit, dependencies and Dart analyzer. Step 13 Flutter tests IN_PROGRESS. Steps 14–21 pending.
-- **Exact logs:** analyzer result is SUCCESS; exact info/warning/error counts and Flutter pass/fail total await terminal log retrieval. No downstream Gradle/APK/release outcome yet.
-- **Failures preserved:** Build #160 remains FAILED (185 passed/3 failed), Build #161 remains FAILED (187 passed/1 failed). Their causes and repairs remain append-only in APP_BUILD_REPORT.md. Do not relabel either failure.
-- **Latest test corrections included:** dropdown dense sizing disabled for the two-line selected item in source commit 7784b2c; minimum-height/adaptive-chart and lazy-list test correction 4823b76; final test finder scoping commit 16286e41a98ecea2f11ab5f0155f03f10bcc5d51 scopes Waktu dipilih/six metric labels to selected dock, keeping activity lane keys and dock clear/height assertions.
-- **Candidate source features:** About handle lowercase @horizontalzzz; Usage Statistics compact one-session header/timer + 1°C adaptive axes, removed observed/details/last sample, retained Min/Avg/Max/activity/six-metric cursor; native Floating Monitor F maps only to Fan glyph.
-- **Release baseline:** Release ID 403010611 / tag jexfyz-latest still on Build #159 source cdca38b9e4f2f99006db8feae40c07c6f9bdfb0a until #162 step 21 succeeds.
-- **Ledger:** APP_BUILD_REPORT.md includes #162 trigger/run/source, setup/audit/dependencies/analyzer passed and test gate active. Latest progress update commit 9bde00d981e52f02c7cbbf66c52bb6c4af57a414.
+- **Current gates:** steps 1–13 SUCCESS, including setup, security/architecture audit, dependencies, Dart analyzer and Flutter tests. Step 14 Android unit-test gate IN_PROGRESS. Steps 15–21 pending.
+- **Exact logs/counts:** analyzer and Flutter step statuses are SUCCESS; exact info/warning/error and Flutter test totals await complete terminal log retrieval. No Gradle/APK/release gate result yet.
+- **Previous failures and repairs remain preserved:** #160 FAILED (185 pass / 3 fail); #161 FAILED (187 pass / 1 global cursor-label finder). #162 includes session dropdown isDense:false repair, >=48-dp control regression, adaptive chart-height contract, removal of duplicate offscreen timer finder, and selected-time dock descendant label finders.
+- **Candidate App features:** About handle lowercase @horizontalzzz; Statistics single header/timer, adaptive 1°C axes, no Observed/More details/Last sample, retain Min/Avg/Max/activity/six metrics; native Floating Monitor F branch maps to Fan glyph.
+- **Release baseline:** Build #159 still latest verified release until #162 step 21 succeeds; Release ID 403010611/tag jexfyz-latest point to source cdca38b9e4f2f99006db8feae40c07c6f9bdfb0a.
+- **Ledger:** APP_BUILD_REPORT.md records Build #162 steps 1–13 success and Android gate active; latest report progress commit 5e05bedf230f6c0b030891c6d883aa1d48d9b034.
 
 ### Continuation
 
-- Inspect only run 43430275967 / job 131901744336. Obtain complete logs at job terminal and record analyzer counts, Flutter suite result and exact failed tests if any.
-- If Flutter passes, continue Android Gradle, obfuscated APK, V1/V2/V3/pinned certificate, corresponding source ZIP, Release/tag/source parity and final downloaded asset verification.
-- Do not trigger another issue while #162 is active. Preserve all prior failures.
+- Inspect only run 43430275967 / job 131901744336; continue through Android Gradle, obfuscated APK, V1/V2/V3 pinned certificate, source ZIP, Release/tag/source parity and downloaded asset checks.
+- At terminal state retrieve complete logs; record exact analyzer/test totals and Android NO-SOURCE coverage. No duplicate trigger while active.
+- If a new gate fails, preserve it and repair only an evidenced App-scope cause without weakening checks.
 - Workflow has no Dart formatter step; dart format is not implied. Local Dart/Flutter/Gradle/ADB are unavailable.
-- Firmware compile/BIN, Firebase, OTA/flash, physical BLE/device/NVS/rail/LED, thermal/electrical and OEM visual validation remain outside this Build App workflow.
+- Firmware compile/BIN, Firebase, OTA/flash, physical BLE/device/NVS/rail/LED, thermal/electrical and OEM screenshot acceptance remain outside App Build and unverified.
 
 ---
 
