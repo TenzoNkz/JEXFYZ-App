@@ -13,7 +13,7 @@
 Repository snapshot at recovery: `77b44b3fd171e7d4ff246fa5fc910868269f47ca`; current source/test remains Build #157 SHA `10d106537e92060e0aac3fc17fd37f56e746bcd5` (six documentation-only changed paths, 26 commits ahead / 0 behind). Latest documentation update follows this snapshot; no source/test changes have been made.
 
 
-The owner has approved three App-only presentation changes, all still **SOURCE PENDING**:
+The owner has approved four App-only presentation changes, all still **SOURCE PENDING**:
 
 1. **Peltier safety modal:** bottom-center inside the existing SafeArea; keep current card size/style and FAN-first safety transaction.
 2. **Lock Voltage Settings:** fixed one-line card; no visible state subtitle; static neutral lock icon; Switch stays visible and is disabled while busy; only the Switch animates on authoritative P1 state update. Preserve unavailable-state tooltip and icon-only NVS retry.
