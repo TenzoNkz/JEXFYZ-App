@@ -1,3 +1,20 @@
+## CURRENT VERIFIED APP RELEASE — BUILD #162 SUCCESS — 2026-11-13
+
+- **Build/run/job:** Build #162 / [Actions run 43430275967](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/43430275967) / job `131901744336`, terminal `completed / success`.
+- **Immutable packaged source:** `6854d8eb58a5f077cbc99749a35d37a4f55b8efa`. Main commits after this source checkpoint are documentation-only; no later App source/test path changes were identified in the inspected post-run commits.
+- **Included App fixes:** About shows Horizon handle exactly `@horizontalzzz` in English and Indonesian; Usage Statistics presentation refresh and its regression repairs; Floating Monitor Fan metric uses the correct Fan glyph.
+- **Hosted QC:** Dart analyzer passed with 23 info-level issues; 0 warnings/errors gate failure. Flutter suite: **188/188 passed**. Android Gradle `:app:testDebugUnitTest`: `BUILD SUCCESSFUL in 3m56s`, 162 actionable tasks (161 executed, 1 up-to-date).
+- **Native Android coverage caveat:** `:app:compileDebugUnitTestKotlin`, `:app:compileDebugUnitTestJavaWithJavac`, `:app:processDebugUnitTestJavaRes` and `:app:testDebugUnitTest` were `NO-SOURCE`; no native App JUnit tests ran. Notification-priority Kotlin deprecations and Gradle 10 deprecation notice remain non-blocking.
+- **Release/tag:** `jexfyz-latest` targets exact source `6854d8eb58a5f077cbc99749a35d37a4f55b8efa`; exactly one APK and one matching source ZIP were published and then downloaded for identity/integrity verification.
+- **APK SHA-256:** `56c08bd490e52a8616627613675141a91c14ab6893cca0e1e54d5e5ac1a053f2`.
+- **Source ZIP SHA-256:** `86bd61edfe59acd6063367f7b8704356d2bf192d8c55c150f0f0e6b6285db42e`; ZIP integrity and embedded source marker passed.
+- **Signing:** original and downloaded APKs passed V1/JAR, V2 and V3 checks; one signer; pinned certificate SHA-256 `dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0`.
+- **Protected Android identity:** Gradle `versionName "Telegram @horizontalzzz"` remains unchanged. Flutter app version remains `1.0.0+3`.
+- **Evidence boundary:** Build #162 is **VERIFIED CI / RELEASE SUCCESS**, not physical-device validation. Owner installation of Build #162, OEM screenshots, BLE/thermal/electrical behavior and all Firmware/BIN/Firebase/OTA/flash operations remain NOT VERIFIED / NOT RUN.
+- **Exact next action:** owner installs Build #162 and supplies/inspects the requested visual/device evidence. No new Build is needed for this exact packaged source SHA absent further source changes.
+
+---
+
 ## CURRENT APP SOURCE — ABOUT TELEGRAM HANDLE CASE FIX / QC PENDING — 2026-11-13
 
 - **Exact About handle:** Horizon is displayed as `@horizontalzzz` in both English and Indonesian. Prior capital-H rendering `@Horizontalzzz` is removed from the active About source and regression contract.
