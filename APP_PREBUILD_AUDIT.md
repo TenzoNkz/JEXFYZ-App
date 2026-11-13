@@ -1,3 +1,17 @@
+## Build #160 pre-trigger candidate — 2026-11-13
+
+**Status: PRE-TRIGGER / HOSTED QC REQUIRED.** Owner explicitly authorized `Eksekusi Build App!` in the current conversation. The authorization covers only the guarded App Build/QC/release pipeline and justified App-scope repairs.
+
+- Candidate main before final pre-trigger ledger updates: `3d3c3d4550afaf577dfdeae44d5cfc45f8e18428`; tree 133 entries, not truncated. Re-fetch live main immediately before the trigger.
+- **Included code/test changes after Build #159:** exact lowercase About handle `@horizontalzzz` and EN/ID regression; Usage Statistics single session header/timer, whole-degree observed-data axes/adaptive chart height, removal of Observed/More details/Last sample while retaining Min/Avg/Max, four activity lanes and six-field selected-time dock; native Floating Monitor duplicate-F icon branch removed so F maps only to the three-blade Fan icon; corresponding regression checks. Details/commit IDs and full compare are in APP_BUILD_REPORT.md and the top of CHAT_TRANSFER.md.
+- **Preflight:** Build #159 run `43376503987` terminal SUCCESS; #158 run `43375621769` terminal FAILURE preserved; no active/queued Actions run, no open PR; issues #33, #35, #36 remain OPEN and were not reopened. Workflow blob `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12` unchanged, exact issue/title/token guard, no push/PR trigger. Release ID `403010611` / tag `jexfyz-latest` still target Build #159 source `cdca38b9e4f2f99006db8feae40c07c6f9bdfb0a`.
+- **Protected values:** Android Gradle `versionName "Telegram @horizontalzzz"` unchanged; Flutter app version `1.0.0+3`.
+- **Validation:** 188 test declarations across 9 Dart test files is inventory only. Local Dart/Flutter/Gradle/ADB are unavailable. New candidate code/tests have static GitHub read-back only; hosted analyzer, Flutter tests, Android Gradle, APK/signing, source ZIP, Release/tag and downloaded-asset checks are pending. Workflow has no Dart formatter step.
+- **State:** no Build #160 issue or run created yet. After final re-fetch verifies main HEAD/tree, zero active runs/open PRs, exact guard, protected version and unchanged Release baseline, create exactly one owner-authored issue with title `JE X FYZ — EKSEKUSI BUILD APP TRIGGER` and body token `JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1`.
+- Firmware compile/BIN, Firebase, OTA/flash, device/BLE/OEM visuals, NVS/rail/LED and thermal/electrical validation remain outside this App Build and will not be inferred from CI.
+
+---
+
 ## Current source correction — About Telegram handle casing — 2026-11-13
 
 - Owner-specified About handle is exactly `@horizontalzzz`. The active `lib/floating_monitor.dart` value now uses that spelling; the regression checks reject the former `@Horizontalzzz` form in both English and Indonesian UI.
