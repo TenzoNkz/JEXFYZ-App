@@ -1,36 +1,30 @@
-## CURRENT CHECKPOINT — BUILD #160 PRE-TRIGGER / CURRENT MAIN APP QC — 2026-11-13
+## CURRENT CHECKPOINT — BUILD #160 ACTIVE / JAVA 17 SETUP — 2026-11-13
 
-**Mode:** `Eksekusi Build App!` — owner explicitly authorizes guarded App Build/QC/release and justified App-scope repairs only. No Firmware compilation/BIN, Firebase mutation, OTA, flashing or device operation.
+**Mode:** Eksekusi Build App! — explicit owner authorization is active for guarded App Build/QC/release and justified App-scope repairs only. No Firmware compilation/BIN, Firebase mutation, OTA, flashing or device operation.
 
-### Candidate source and changes since Build #159
+### Current run and immutable source
 
-- **Repository/branch:** `TenzoNkz/JEXFYZ-App` / `main`.
-- **Pre-trigger main HEAD:** `3d3c3d4550afaf577dfdeae44d5cfc45f8e18428` (work-session marker already set to IN_PROGRESS). Re-fetch HEAD immediately before issue creation; the issue event must check out the latest SHA.
-- **Tree:** 133 entries, recursive listing `truncated=false`.
-- **Compare to Build #159 source `cdca38b9e4f2f99006db8feae40c07c6f9bdfb0a`:** 53 commits ahead / 0 behind, 18 changed paths. Executable/test paths are exactly:
-  - `lib/floating_monitor.dart`: About Horizon Telegram handle is now exact lowercase `@horizontalzzz` (commit `bb0cffec50eceafa2d522f7507288635f6989bab`); regression asserts it and rejects capital-H in source and English/Indonesian About widgets (test commit `bc1a33b68daa99bdb339fa07d1d902af7ddd8855`).
-  - `lib/usage_statistics.dart`: compact Statistics refresh (commits `9b9262d934ff2ab6575256b264f8bf851280dddf`, `364f5c3c1b777606647c3d85777091314988ea7f`, `f32c1278308bea7cedd4f150255d2128cac138bb`). One session header owns selector/status/start/time/elapsed duration; dropdown no longer duplicates duration. Temperature axes use whole 1°C ticks and observed-data bounds with adaptive height; Hotside limit remains informational and is drawn only if within the data scale. Observed, More details and Last sample visible content removed; Min/Avg/Max, four activity lanes and synchronized six-metric cursor retained. Cursor dock remains compact with a 48-dp close control and locale-aware values.
-  - `test/usage_statistics_test.dart`: Statistics regression updates (commits `6c85166731fde4d6e72d44ab82d6a3a10826918a`, `b560403877fd2080db2019fc04d86d67020418dd`), including 1°C ticks, chart height, EN/ID headings, one timer, removed copy and six cursor fields.
-  - `android/app/src/main/kotlin/com/horizontalzzz/jexfyz/FloatingMonitorService.kt`: removed unreachable duplicate gauge `"F"` icon branch; sole F branch now draws the three-blade Fan Speed glyph (commit `e0b68c3e98a5d75fe40c71bc0a7647712615c33d`).
-  - `test/floating_monitor_layout_contract_test.dart`: regression requires unique `B/H/V/A/P/F` branches and Fan glyph (commits `aff8b8ec2796d03432f4f8b000f6e70205eccf48` and About handle test commit above).
-- Remaining changed paths in the compare are Markdown documentation only; no Gradle/build config, dependency, workflow, Firmware source, Firebase or release-logic change. No changes to raw 1-Hz collection, SQLite schema v2/retention, recorder queue, P1 freshness/session continuity, explicit gaps, analytics input or chart decimation were intended.
+- **Repository/branch:** TenzoNkz/JEXFYZ-App / main.
+- **Trigger:** owner-authored Issue #37 opened 2026-11-13T12:42:11Z with exact guarded title and token. Issues #33, #35 and #36 remain OPEN and were not reopened. Exactly one new run was observed.
+- **Actions:** [Build #160 / run 43427419461](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/43427419461), workflow 374946166, event issues, attempt 1; job 131892170041; run created 2026-11-13T12:42:14Z.
+- **Immutable checkout source SHA:** 24c6393364cade3d6093aebb6c52904f1af66396, exact match to live main HEAD at final pre-trigger re-fetch.
+- **Initial gate state:** steps 1 Set up job and 2 Checkout repository SUCCESS; step 3 Set up Java 17 IN_PROGRESS; steps 4–21 PENDING. No analyzer/test/Gradle/package/release result is asserted yet. Continue only this run.
+- **Workflow:** blob 9dc1e61ba49f19cad4edbb99a832d5333d9f0f12; complete 545-line workflow read. Trigger remains issues.opened/reopened with repo-owner, exact-title and token guard; no push/PR release route. Security audit, dependency, analyzer, Flutter, Android Gradle, obfuscated APK, V1/V2/V3 signing, pinned certificate, source ZIP, Release/tag parity and downloaded-asset gates unchanged.
+- **Preflight:** tree 133 entries, truncated=false; zero active/queued/waiting/requested Actions runs; zero open PRs; Release ID 403010611 and tag jexfyz-latest remained on previous Build #159 source cdca38b9e4f2f99006db8feae40c07c6f9bdfb0a with exactly two verified assets; Android versionName "Telegram @horizontalzzz" exact.
+- **Candidate executable/test changes since Build #159:** About lowercase @horizontalzzz; Usage Statistics one-header/one-timer redesign, 1°C observed-data chart axes and adaptive height, remove Observed/More details/Last sample while retaining Min/Avg/Max, four activity timelines and six-field cursor; native Floating Monitor duplicate F branch removed so F draws the three-blade Fan icon; matching About/Statistics/native tests. Commit details are in the pre-trigger checkpoint and APP_PREBUILD_AUDIT.md.
+- **Test inventory:** 188 declarations / 9 Dart test files; inventory only, not execution.
+- **Ledger:** APP_BUILD_REPORT.md appended Build #160 trigger/source/job and initial step state in commit f0155be748545538e6e2b2d086755a963fdc3393.
 
-### Guarded workflow and preflight
+### Continuation and release baseline
 
-- **Workflow:** `.github/workflows/jexfyz-app-build-trigger.yml`, full 545 lines re-read. Blob `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12`; issue `opened/reopened` only; guard still requires repository owner, exact title `JE X FYZ — EKSEKUSI BUILD APP TRIGGER` and token `JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1`. No push/PR trigger. Gates unchanged: audit, pub get, analyzer, Flutter suite, Android Gradle, obfuscated APK, V1/V2/V3 signing, pinned cert, source ZIP, Release/tag parity, downloaded digest/signature verification.
-- **Actions before trigger:** latest #159 run `43376503987` completed SUCCESS; #158 `43375621769` remains FAILED. No active/queued/waiting/requested/pending runs. No open PRs.
-- **Existing trigger issues:** #33, #35 and #36 are OPEN with the exact title/token and were not reopened. Do not reuse any; create exactly one new owner-authored issue for #160 after final SHA preflight.
-- **Release baseline:** Release ID `403010611` / tag `jexfyz-latest` still targets Build #159 source `cdca38b9e4f2f99006db8feae40c07c6f9bdfb0a`, exactly two assets. APK 55,914,587 bytes / SHA-256 `02bef5960e0b23bea360d2cf8a0532e7dbd202e05f5420e055c98b4dc7a61321`; source ZIP 2,932,978 bytes / SHA-256 `5dbb29ebc7629775835bc65d655069a1a077f6d3240114387c965b5ad4789558`.
-- **Protected Android version:** `versionName "Telegram @horizontalzzz"` is exact and unchanged; Flutter app version is `1.0.0+3`.
-- **Test inventory:** 188 declarations across 9 Dart test files; declaration count is not execution evidence. Local runtime lacks Dart, Flutter, Gradle and ADB, so formatter/tests/analyzer/Gradle must be established by hosted workflow. Workflow has no formatter step; do not claim `dart format`.
-- **Candidate validation status:** the About, Usage Statistics and Kotlin Fan changes are source/test committed and statically re-read; NOT YET HOSTED-VALIDATED and NOT RELEASED. Build #159 does not contain them.
-
-### Exact continuation
-
-- **State:** PRE-TRIGGER for Build #160. No new issue/run has been created at this checkpoint.
-- **Next:** re-fetch `main` HEAD/tree, Actions active filters, open PRs/issues, workflow blob, Android versionName and Release/tag/assets immediately before trigger. If unchanged and no run is active, create exactly one new owner-authored issue with the exact guard title/body. Capture its issue number, run ID, immutable head SHA and job ID; inspect only that run.
-- **Repair/retry discipline:** #158 failure remains preserved (185 pass / 2 stale About test strings); test-only repair was validated in #159. Do not rewrite failures or weaken gates. Repair only an actual new App-scope finding after reviewing the full log.
-- **Evidence boundary:** CI/release will cover hosted App source/tests/Gradle/signing/asset provenance only. Android native JUnit may remain `NO-SOURCE`; physical installation/BLE/OEM visual, Firmware V7.2 compile/BIN, Firebase, OTA/flash, NVS/rail/LED and thermal/electrical behavior are separate and NOT VERIFIED by this Build App run.
+- Inspect only run 43427419461 / job 131892170041. Update APP_BUILD_REPORT.md, CHAT_TRANSFER.md and 00_WORK_STATUS.md at each meaningful gate. Never start a duplicate run.
+- If a gate fails, preserve the failure and inspect the exact job log; repair only a demonstrated App-scope cause without weakening tests/security/signing gates.
+- Previous verified package Build #159 remains the live Release until this run reaches step 21 successfully:
+  - APK 55,914,587 bytes; SHA-256 02bef5960e0b23bea360d2cf8a0532e7dbd202e05f5420e055c98b4dc7a61321.
+  - Source ZIP 2,932,978 bytes; SHA-256 5dbb29ebc7629775835bc65d655069a1a077f6d3240114387c965b5ad4789558.
+- On success verify all steps 1–21 and cleanup; exact analyzer/test counts; Gradle NO-SOURCE/native coverage; APK obfuscation; one signer/V1/V2/V3/pinned cert; source ZIP integrity/marker; exactly one APK and one source ZIP; Release/tag/source SHA; downloaded bytes/digests and downloaded signature.
+- Workflow has no Dart formatter step; `dart format` is not implied. Local Dart/Flutter/Gradle/ADB are unavailable.
+- **Evidence boundary:** Build App CI is not Firmware compile/BIN, Firebase, OTA/flash, BLE/device/NVS/rail/LED, thermal/electrical or OEM screenshot acceptance. Those remain NOT RUN / NOT VERIFIED by this workflow.
 
 ---
 
