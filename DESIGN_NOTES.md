@@ -1,3 +1,16 @@
+## Owner-approved Usage Statistics presentation refresh — implemented in source, QC pending — 2026-11-13
+
+This is the latest presentation contract and supersedes the earlier visible Observed / More details / Last sample presentation notes below.
+
+- Use one compact session header for status, start date/time and the single primary elapsed duration. If there are multiple sessions, expose the selector inside this same header; dropdown options show session status and start time, not an additional duration.
+- Battery and Hotside remain independent measured temperature charts. Label the Y axis at every integer degree with 1°C spacing. Derive each plot range from its valid observed temperature data, padded by one degree; do not include a distant Hotside limit in the scale. Increase plot height when a wider actual range needs more label rows. Keep the configured limit label, and draw its dashed reference only when the reference lies inside the plotted data range.
+- Keep Min / Average / Max. Remove Observed, the More details disclosure and the Last sample footer from the visible dashboard. The four activity lanes remain Voltage, Adaptive Mode, Peltier and Fan Speed, with one shared elapsed-time axis and cursor.
+- Preserve all secondary summaries and state durations in analytics even though their More details text block is removed. Do not discard data or weaken the storage/analytics contract to simplify presentation.
+- Selected time remains a bottom SafeArea dock with six synchronized values in two rows of three columns. Keep the selected timestamp prominent, labels secondary, values tabular/bold, a compact surface and a 48-dp icon-only clear action. It must not cover a disproportionate amount of the screen.
+- Localize chart headings, metric labels, ON/OFF states and numeric temperatures. Indonesian decimal separator is comma; English is dot. Retain the existing JE theme, Phosphor icon family, compact 360-dp canvas and Light/Dark semantic colors.
+- Preserve actual telemetry values, raw 1-Hz collection, SQLite schema/retention, recorder queue, session boundaries, HOT-based P1 freshness, invalid/null gaps, chart decimation and shared tap/drag cursor. Never interpolate across a gap or session.
+- Regression source now covers whole-degree labels/range height, absence of redundant dashboard text, one session duration, bilingual chart titles and all six selected-time fields. Current suite inventory is 188 declarations / 9 files; tests are written but NOT RUN here. Formatter/analyzer/Gradle and physical screenshots remain NOT RUN. Build #159 does not contain this refinement; it requires separate guarded App QC and owner-side visual acceptance.
+
 # JE X FYZ / JE Cooler — Approved Design Contract
 
 This document stores owner-approved, screen-specific visual constraints, not a build history. Live App source determines current implementation. PRODUCT_DESIGN_CONSTITUTION.md defines cross-screen design principles; VISUAL_QUALITY_GATE.md defines evidence-based acceptance. CHANGELOG.md / APP_BUILD_REPORT.md retain dated validation evidence.
