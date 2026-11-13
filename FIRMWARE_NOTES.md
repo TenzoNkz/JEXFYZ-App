@@ -12,9 +12,9 @@ Durable hardware/user requirements live here. The source-level architecture and 
 - BLE App-only identity authorization remains BLOCKED / NOT IMPLEMENTED. Successful owner use does not establish cryptographic official-App-only command authorization.
 
 
-- Owner reports the sold/shipped unit uses App Build #124 and Firmware V7.1, compiled and updated through Online OTA. This is USER-REPORTED.
+- Historical field report (earlier shipment baseline): owner reported App Build #124 + Firmware V7.1, compiled and updated through Online OTA. This is historical USER-REPORTED evidence and is superseded in recency by the 2026-11-13 V7.2 + Build #159 owner report above; neither report alone establishes independent source-to-BIN provenance or physical validation.
 - The App package is independently evidenced by Actions run 39386733061, packaged source 7d4e7262c6a3474eefa8ccb58b08f070df3ac15a. This does not independently verify Firmware compilation, source-to-BIN identity, installed version, physical OTA/reboot, BLE recovery or electrical/thermal behavior.
-- Active editable Firmware source on main: firmware/JEXFYZ-V7.2.ino; FW_VERSION="V7.2"; source blob 140e758e7101cadc3ccc58cc5c52e49534b0032c. This is source-only evidence; V7.2 has not been compiled or installed. The V7.1 shipped-unit report remains historical USER-REPORTED evidence.
+- Active editable Firmware source on main: firmware/JEXFYZ-V7.2.ino; FW_VERSION="V7.2"; source blob 140e758e7101cadc3ccc58cc5c52e49534b0032c. Source evidence confirms the tracked sketch/version only. The owner subsequently reports a V7.2 update (USER-REPORTED); independent compilation, BIN provenance and installed binary identity remain UNVERIFIED.
 - The unit is not available for routine physical repair. Avoid discretionary release/update risk.
 
 ## BLE authorization — BLOCKED / NOT IMPLEMENTED
