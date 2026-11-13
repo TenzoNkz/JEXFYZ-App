@@ -2298,8 +2298,6 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
     final start = DateTime.fromMillisecondsSinceEpoch(
       session.startedAtMs,
     ).toLocal();
-    final durationEnd = session.endedAtMs ?? session.lastSeenAtMs;
-    final elapsed = formatUsageElapsed(durationEnd - session.startedAtMs);
     final prefix = session.isActive
         ? JexText.phrase('Active · ', 'Aktif · ', language)
         : '';
@@ -2310,9 +2308,7 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
         ' ' +
         _twoDigits(start.hour) +
         ':' +
-        _twoDigits(start.minute) +
-        ' · ' +
-        elapsed;
+        _twoDigits(start.minute);
   }
 
   String _sessionStartLabel(UsageStatsSession session) {
