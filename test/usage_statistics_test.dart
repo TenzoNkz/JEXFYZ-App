@@ -921,6 +921,18 @@ void main() {
           find.byKey(const ValueKey<String>('usage-session-elapsed')),
         );
         expect(elapsedHeader.data, '00:10');
+        expect(
+          tester.widget<AppBar>(find.byType(AppBar).first).centerTitle,
+          isTrue,
+        );
+        for (final label in ['Min', 'Rata-rata', 'Maks']) {
+          final labels = tester.widgetList<Text>(find.text(label));
+          expect(labels, isNotEmpty);
+          expect(
+            labels.every((text) => text.textAlign == TextAlign.center),
+            isTrue,
+          );
+        }
         for (final key in <Key>[
           const ValueKey<String>('usage-temperature-chart-battery'),
           const ValueKey<String>('usage-temperature-chart-hotside'),
@@ -936,6 +948,26 @@ void main() {
         );
         await tester.pumpAndSettle();
         expect(profileHeadingLight, findsOneWidget);
+        final activityAxisStart = find.byKey(
+          const ValueKey<String>('usage-profile-time-axis-start'),
+        );
+        final voltageHitArea = find.byKey(
+          const ValueKey<String>('usage-profile-timeline-hit-area-voltage'),
+        );
+        expect(activityAxisStart, findsOneWidget);
+        expect(voltageHitArea, findsOneWidget);
+        expect(
+          tester.getTopLeft(activityAxisStart).dx,
+          closeTo(tester.getTopLeft(voltageHitArea).dx + 34, 1),
+        );
+        expect(
+          tester.getSize(
+            find.byKey(
+              const ValueKey<String>('usage-profile-timeline-track-voltage'),
+            ),
+          ).height,
+          34,
+        );
         expect(find.text('Rincian'), findsNothing);
         expect(find.text('More details'), findsNothing);
         expect(find.textContaining('Rata-rata kipas'), findsNothing);
@@ -975,6 +1007,14 @@ void main() {
           ),
           findsOneWidget,
         );
+        final selectedHeading = find.byKey(
+          const ValueKey<String>('usage-selected-time-heading'),
+        );
+        expect(selectedHeading, findsOneWidget);
+        expect(
+          tester.getCenter(selectedHeading).dx,
+          closeTo(tester.getCenter(selectedDock).dx, 1),
+        );
         for (final label in [
           'Baterai HP',
           'Hotside',
@@ -983,10 +1023,12 @@ void main() {
           'Peltier',
           'Kecepatan Kipas',
         ]) {
-          expect(
-            find.descendant(of: selectedDock, matching: find.text(label)),
-            findsOneWidget,
+          final metricLabel = find.descendant(
+            of: selectedDock,
+            matching: find.text(label),
           );
+          expect(metricLabel, findsOneWidget);
+          expect(tester.widget<Text>(metricLabel).textAlign, TextAlign.center);
         }
         expect(tester.getSize(selectedDock).height, lessThanOrEqualTo(200));
         final clearCursor = find.byTooltip('Hapus waktu pilihan');

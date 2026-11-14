@@ -17,6 +17,11 @@ import 'app_settings.dart';
 /// Refresh cadence for the Statistics diagrams; collection and persistence are independent.
 const Duration usageStatisticsDiagramRefreshInterval = Duration(seconds: 1);
 
+// Shared plot gutters keep chart lines, state lanes, elapsed labels and cursors aligned.
+const double _usageChartPlotLeftInset = 34.0;
+const double _usageChartPlotRightInset = 8.0;
+const double _usageTimelineStateBarHeight = 18.0;
+
 /// Physical output telemetry, not a BLE connection or selected mode, defines operation.
 bool usageCoolerIsActive({required bool fanOn, required bool peltierOn}) =>
     fanOn || peltierOn;
@@ -2120,6 +2125,7 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
 
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: Text(
           JexText.phrase('Usage Statistics', 'Statistik Penggunaan', language),
         ),
@@ -2157,7 +2163,7 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
                   elevation: 2,
                   borderRadius: BorderRadius.circular(14),
                   child: Padding(
-                    padding: const EdgeInsets.fromLTRB(12, 10, 12, 4),
+                    padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
                     child: _sharedCursorReadout(summary, language, scheme),
                   ),
                 ),
@@ -2488,10 +2494,11 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
     if (snapshot == null || width <= 0 || snapshot.toMs <= snapshot.fromMs) {
       return;
     }
-    const plotLeft = 34.0;
-    const plotRight = 8.0;
-    final plotWidth = math.max(1.0, width - plotLeft - plotRight).toDouble();
-    final fraction = ((localX - plotLeft) / plotWidth)
+    final plotWidth = math.max(
+      1.0,
+      width - _usageChartPlotLeftInset - _usageChartPlotRightInset,
+    ).toDouble();
+    final fraction = ((localX - _usageChartPlotLeftInset) / plotWidth)
         .clamp(0.0, 1.0)
         .toDouble();
     final timestamp =
@@ -2554,13 +2561,15 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
 
     Widget metric(String label, String value) => Expanded(
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 3),
+        padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
               label,
+              textAlign: TextAlign.center,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: Theme.of(
@@ -2570,6 +2579,7 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
             const SizedBox(height: 2),
             Text(
               value,
+              textAlign: TextAlign.center,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: Theme.of(context).textTheme.titleSmall?.copyWith(
@@ -2584,40 +2594,66 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
 
     return Column(
       mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Row(
-          children: [
-            Expanded(
-              child: Text(
-                JexText.phrase('Selected time', 'Waktu dipilih', language),
-                style: Theme.of(
-                  context,
-                ).textTheme.labelMedium?.copyWith(fontWeight: FontWeight.w700),
+        SizedBox(
+          height: 48,
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 48),
+                child: Center(
+                  child: Row(
+                    key: const ValueKey<String>('usage-selected-time-heading'),
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Flexible(
+                        child: Text(
+                          JexText.phrase(
+                            'Selected time',
+                            'Waktu dipilih',
+                            language,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: Theme.of(context).textTheme.labelMedium
+                              ?.copyWith(fontWeight: FontWeight.w700),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        _axisTime(timestamp, snapshot.fromMs),
+                        style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                          fontWeight: FontWeight.w800,
+                          fontFeatures: const [FontFeature.tabularFigures()],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
-            ),
-            Text(
-              _axisTime(timestamp, snapshot.fromMs),
-              style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                fontWeight: FontWeight.w800,
-                fontFeatures: const [FontFeature.tabularFigures()],
+              Align(
+                alignment: Alignment.centerRight,
+                child: IconButton(
+                  tooltip: JexText.phrase(
+                    'Clear selected time',
+                    'Hapus waktu pilihan',
+                    language,
+                  ),
+                  constraints: const BoxConstraints.tightFor(
+                    width: 48,
+                    height: 48,
+                  ),
+                  padding: EdgeInsets.zero,
+                  onPressed: () => setState(() => _selectedTimestampMs = null),
+                  icon: const Icon(PhosphorIconsRegular.x, size: 17),
+                ),
               ),
-            ),
-            const SizedBox(width: 2),
-            IconButton(
-              tooltip: JexText.phrase(
-                'Clear selected time',
-                'Hapus waktu pilihan',
-                language,
-              ),
-              constraints: const BoxConstraints.tightFor(width: 48, height: 48),
-              padding: EdgeInsets.zero,
-              onPressed: () => setState(() => _selectedTimestampMs = null),
-              icon: const Icon(PhosphorIconsRegular.x, size: 17),
-            ),
-          ],
+            ],
+          ),
         ),
-        const SizedBox(height: 2),
+        const SizedBox(height: 4),
         Row(
           children: [
             metric(
@@ -2631,6 +2667,7 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
             ),
           ],
         ),
+        const SizedBox(height: 6),
         Row(
           children: [
             metric(
@@ -2845,24 +2882,33 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
           currentValue: latestText(summary.fanSpeedSegments, percentage: true),
         ),
         const SizedBox(height: 3),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              _axisTime(_snapshot!.fromMs, _snapshot!.fromMs),
-              style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                color: scheme.onSurfaceVariant,
-                fontFeatures: const [FontFeature.tabularFigures()],
+        Padding(
+          key: const ValueKey<String>('usage-profile-time-axis'),
+          padding: const EdgeInsets.only(
+            left: _usageChartPlotLeftInset,
+            right: _usageChartPlotRightInset,
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                _axisTime(_snapshot!.fromMs, _snapshot!.fromMs),
+                key: const ValueKey<String>('usage-profile-time-axis-start'),
+                style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                  color: scheme.onSurfaceVariant,
+                  fontFeatures: const [FontFeature.tabularFigures()],
+                ),
               ),
-            ),
-            Text(
-              _axisTime(_snapshot!.toMs, _snapshot!.fromMs),
-              style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                color: scheme.onSurfaceVariant,
-                fontFeatures: const [FontFeature.tabularFigures()],
+              Text(
+                _axisTime(_snapshot!.toMs, _snapshot!.fromMs),
+                key: const ValueKey<String>('usage-profile-time-axis-end'),
+                style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                  color: scheme.onSurfaceVariant,
+                  fontFeatures: const [FontFeature.tabularFigures()],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ],
     );
@@ -2896,6 +2942,7 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
           ),
           const SizedBox(height: 5),
           SizedBox(
+            key: ValueKey<String>('usage-profile-timeline-track-$lane'),
             height: lane == 'fan_speed' ? 54 : 34,
             width: double.infinity,
             child: LayoutBuilder(
@@ -2938,10 +2985,12 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
 
   Widget _summaryValue(String label, String value) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisSize: MainAxisSize.min,
       children: [
         Text(
           label,
+          textAlign: TextAlign.center,
           style: Theme.of(context).textTheme.labelSmall?.copyWith(
             color: Theme.of(context).colorScheme.onSurfaceVariant,
           ),
@@ -2949,6 +2998,7 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
         const SizedBox(height: 2),
         Text(
           value,
+          textAlign: TextAlign.center,
           style: Theme.of(context).textTheme.titleSmall?.copyWith(
             fontWeight: FontWeight.w700,
             fontFeatures: const [FontFeature.tabularFigures()],
@@ -3091,8 +3141,8 @@ class _UsageLinePainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    const left = 34.0;
-    const right = 8.0;
+    const left = _usageChartPlotLeftInset;
+    const right = _usageChartPlotRightInset;
     const top = 8.0;
     const bottom = 22.0;
     final plot = Rect.fromLTRB(
@@ -3376,8 +3426,8 @@ class _UsageTimelinePainter extends CustomPainter {
     final baseline = Paint()
       ..color = scheme.outlineVariant.withValues(alpha: 0.65)
       ..strokeWidth = 0.8;
-    const left = 34.0;
-    const right = 8.0;
+    const left = _usageChartPlotLeftInset;
+    const right = _usageChartPlotRightInset;
     canvas.drawLine(
       Offset(left, size.height - 1),
       Offset(size.width - right, size.height - 1),
@@ -3477,16 +3527,16 @@ class _UsageTimelinePainter extends CustomPainter {
             default:
               color = scheme.outline;
           }
-          top = 3;
-          bottom = size.height - 3;
+          top = (size.height - _usageTimelineStateBarHeight) / 2;
+          bottom = top + _usageTimelineStateBarHeight;
           break;
         case 'adaptive':
         case 'peltier':
           color = segment.textValue?.toUpperCase() == 'ON'
               ? const Color(0xFF26966D)
               : scheme.outlineVariant;
-          top = 3;
-          bottom = size.height - 3;
+          top = (size.height - _usageTimelineStateBarHeight) / 2;
+          bottom = top + _usageTimelineStateBarHeight;
           break;
         default:
           color = scheme.primary;
@@ -3506,7 +3556,7 @@ class _UsageTimelinePainter extends CustomPainter {
             math.max(start + 1, end).toDouble(),
             bottom,
           ),
-          const Radius.circular(2),
+          const Radius.circular(4),
         ),
         Paint()..color = color,
       );
