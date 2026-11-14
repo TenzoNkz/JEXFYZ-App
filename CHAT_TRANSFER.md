@@ -1,12 +1,12 @@
-## CURRENT CHECKPOINT — DISKUSI SOURCE AUDIT / LOCALIZATION RECOVERY — 2026-11-14
+## CURRENT CHECKPOINT — JAWABAN GEMINI / LOCALIZATION REVIEW RECONCILED — 2026-11-15
 
 **Current mode:** Diskusi! — general engineering, read-only for executable source, tests, app/native configuration, workflows, builds/releases and Firmware/device operations. The prior owner-granted Eksekusi Full! authorization is present in history, but this incoming interaction selected Diskusi and did not use that implementation permission.
 
-**Session result:** this Diskusi audit is complete. **Work item: WAITING_OWNER** for a new explicit Eksekusi Full! command before applying copy/test changes. The prior interrupted parser was not persisted; the audit parser has now been rebuilt from live source. No source/test changes, test runs, Actions triggers or other external side effects occurred in this interaction.
+**Session result:** Gemini's localization answer has been source-cross-checked and this review is complete. **Work item: WAITING_OWNER** for a new explicit Eksekusi Full! command before applying copy/test changes. The prior interrupted parser was not persisted; the audit parser has now been rebuilt from live source. No source/test changes, test runs, Actions triggers or other external side effects occurred in this interaction.
 
 ### Current live evidence
 
-- Current main HEAD before documentation closeout: 088e18e3995f0564cbca970f830a5a7b027320b3; recursive tree: **137 entries, truncated=false**.
+- Current main HEAD at incoming Jawaban Gemini session: `cef1de09f9e71e581dc51766758a017ba0745b3c`; recursive tree: **137 entries, truncated=false**. Compare from source baseline `873a825020659dadcac2e5c7242e759209776414`: 33 ahead / 0 behind; all eight changed paths are Markdown.
 - The documentation-memory updates made during this Diskusi touch only APP_NOTES.md, PROJECT_STATE.md, CHAT_TRANSFER.md and HANDOVER.md. They are Markdown-only commits; executable source remains at 873a825. Final main HEAD/tree is verified during status closeout and recorded in 00_WORK_STATUS.md.
 - A copy-ready Gemini second-opinion prompt is supplied in the final response; it has **not** been sent to Gemini.
 - Compared from code baseline 873a825020659dadcac2e5c7242e759209776414: **18 commits ahead / 0 behind**, exactly eight changed paths and all eight are Markdown. App/Dart/Kotlin/Firmware source, tests, config and workflows remain unchanged from the baseline.
@@ -30,6 +30,16 @@
 5. OTA size mismatch: Firmware emits UPLOAD_SIZE_MISMATCH_<received>_<expected>; App preserves the two numeric values and their order, but current “uploaded X / Y bytes” copy does not clearly label which is received vs expected. Future wording should explicitly name both counts and preserve order.
 6. Copy candidates requiring review, not yet approved: fullSyncFailed (“Could not complete device sync.”), resetDeepSleep (“low-power sleep”), language labels Indonesia / Indonesian, and OTA stage terms such as Range retry / image verification.
 7. About-credit correction against live owner-approved subject note: current contract is App Developer & Builder / Pengembang Aplikasi & Perakit. The older suggestion to restore App Development & Build conflicts with the current APP_NOTES.md contract and is rejected as stale. DEVELOPED BY HORIZON / DIKEMBANGKAN OLEH HORIZON is a separate Home subtitle.
+
+### Gemini response cross-check — 2026-11-15
+
+- Accept thermal Safety → Keselamatan, Safety checks passed → Pemeriksaan keselamatan berhasil, the clearer Fan-before-cooling title, full-sync and sleep copy, and context-aware Adaptive/Peltier status mapping. These are copy/state-presentation changes, not proof of a broken hardware safety interlock.
+- Correct severity: no P0 finding. Use P2 for thermal terminology/success copy, state ontology and OTA diagnostics; P3 for Fan title/body wording because the supporting body and FAN:ON → ACK → PELTIER:ON flow already preserve the prerequisite.
+- Native HUD A becomes Active/Inactive (AKTIF/NONAKTIF), P remains ON/OFF (HIDUP/MATI); F remains numeric while running and OFF/MATI only when off. Its measured text width, WRAP_CONTENT and requestLayout are present, so fixed-pill clipping is not proven; screenshot fit remains unverified.
+- Keep BLE session lifecycle separate (Connected/Disconnected, Syncing/Ready), and OS permissions separate from user preferences. Preserve Lock Voltage Firmware authority and switch behavior.
+- OTA values are received then expected. Current main has one caller each for otaUploaded/otaBytes; a full template needs explicit interpolation because JexText.of does not interpolate.
+- Language picker proposal is linguistically valid but WAITING_OWNER: source/tests currently require English / Indonesia. Preserve enum/storage IDs. Preserve Bluetooth notification, Floating Monitor / Monitor Melayang and App Developer & Builder / Pengembang Aplikasi & Perakit contracts.
+- Test gaps: current widget test still expects A/P identical; Usage Statistics has no localized A/P assertions; native notification test checks channel update hooks but not exact body text; Safety Indonesian and OTA mismatch output lack direct checks. Add dictionary and inline placeholder parity plus dynamic lookup coverage under a separately authorized Eksekusi Full.
 
 ### Next action
 
