@@ -43,7 +43,7 @@
 
 ---
 
-## Build #160 pre-trigger candidate — 2026-11-13
+## Historical Build #160 pre-trigger candidate — superseded by Build #162 — 2026-11-13
 
 **Status: PRE-TRIGGER / HOSTED QC REQUIRED.** Owner explicitly authorized `Eksekusi Build App!` in the current conversation. The authorization covers only the guarded App Build/QC/release pipeline and justified App-scope repairs.
 
@@ -52,7 +52,7 @@
 - **Preflight:** Build #159 run `43376503987` terminal SUCCESS; #158 run `43375621769` terminal FAILURE preserved; no active/queued Actions run, no open PR; issues #33, #35, #36 remain OPEN and were not reopened. Workflow blob `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12` unchanged, exact issue/title/token guard, no push/PR trigger. Release ID `403010611` / tag `jexfyz-latest` still target Build #159 source `cdca38b9e4f2f99006db8feae40c07c6f9bdfb0a`.
 - **Protected values:** Android Gradle `versionName "Telegram @horizontalzzz"` unchanged; Flutter app version `1.0.0+3`.
 - **Validation:** 188 test declarations across 9 Dart test files is inventory only. Local Dart/Flutter/Gradle/ADB are unavailable. New candidate code/tests have static GitHub read-back only; hosted analyzer, Flutter tests, Android Gradle, APK/signing, source ZIP, Release/tag and downloaded-asset checks are pending. Workflow has no Dart formatter step.
-- **State:** no Build #160 issue or run created yet. After final re-fetch verifies main HEAD/tree, zero active runs/open PRs, exact guard, protected version and unchanged Release baseline, create exactly one owner-authored issue with title `JE X FYZ — EKSEKUSI BUILD APP TRIGGER` and body token `JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1`.
+- **Subsequent resolution:** this Build #160 candidate led to failed historical attempts #160/#161 and was superseded by the owner-authorized Build #162, which completed successfully. Do not reuse this pre-trigger instruction or create another trigger from this historical block.
 - Firmware compile/BIN, Firebase, OTA/flash, device/BLE/OEM visuals, NVS/rail/LED and thermal/electrical validation remain outside this App Build and will not be inferred from CI.
 
 ---
@@ -75,7 +75,7 @@
 - Invariants preserved: authoritative telemetry, raw one-second samples, SQLite schema/retention, bounded recorder queue, P1 freshness, session continuity, explicit invalid/missing-data gaps, event analytics and chart decimation.
 - Test inventory read from all 9 Dart test files: **188 declarations**. Added/updated regression assertions exist; this is not a pass. No Dart/Flutter/Gradle/ADB toolchain is present in the execution runtime. `dart format`, focused/full `flutter test`, `flutter analyze`, Android Gradle, Android rendering and screenshots are **NOT RUN**.
 - **Subsequent resolution:** Build #162 / run `43430275967` / source `6854d8eb58a5f077cbc99749a35d37a4f55b8efa` includes the Usage Statistics refinement and native Fan correction; the 188/188 Flutter suite passed, analyzer and Android Gradle gates succeeded, and matching APK/source ZIP were released. Current screenshot/OEM visual acceptance is still **VISUAL NOT VERIFIED**.
-- Next action: owner separately issues `Eksekusi Build App!` for the guarded hosted QC path. Do not treat this Full session or the presence of source/test code as Build authorization.
+- **Subsequent resolution:** the owner separately authorized and completed Build #162; its 188/188 Flutter tests, analyzer and Android Gradle gates passed and its matching APK/source ZIP were released. This historical pre-build next action is closed.
 
 ---
 
@@ -86,9 +86,9 @@
 - Build #159 run `43376503987` completed SUCCESS on package source `cdca38b9e4f2f99006db8feae40c07c6f9bdfb0a`: analyzer 23 infos / zero warnings/errors, Flutter 187/187, Android Gradle success. Kotlin emitted a duplicate `"F"` branch warning in `FloatingMonitorService.kt:738`.
 - The duplicate branch was verified in live source. The earlier gauge-like `"F"` branch was removed; the remaining three-blade branch correctly represents Floating Monitor Fan Speed. Source commit: `e0b68c3e98a5d75fe40c71bc0a7647712615c33d`.
 - A regression assertion in `test/floating_monitor_layout_contract_test.dart` now checks the unique `B/H/V/A/P/F` icon map and three-blade Fan glyph. Test commit: `aff8b8ec2796d03432f4f8b000f6e70205eccf48`.
-- Current suite inventory is **188 declarations** across 9 Dart test files. This new regression has not been run. The runtime lacks Dart, Flutter, Gradle and ADB; formatter, focused/full Flutter tests, analyzer and Android Gradle are **BLOCKED / NOT RUN** for the patch.
+- At this pre-build snapshot, the new regression had not yet run and the local runtime lacked Dart, Flutter, Gradle and ADB. **Subsequent resolution:** Build #162 included the correction and passed the full 188/188 Flutter suite plus analyzer and Android Gradle gates.
 - No workflow, Gradle property, dependency, Firmware source, BIN, Firebase, OTA or Release was changed by this historical source repair. The later Build #162 was a separate, owner-authorized guarded App Build.
-- Build #159 is not evidence for the new Kotlin source. The next gate requires a separate owner-issued `Eksekusi Build App!` and actual log review. Keep the existing issue/title/token guard and all workflow gates unchanged.
+- Build #159 alone was not evidence for the new Kotlin source. Build #162 subsequently compiled and packaged the correction on exact source `6854d8eb58a5f077cbc99749a35d37a4f55b8efa`; its Android Gradle and Flutter gates succeeded. Preserve the existing issue/title/token guard and all workflow gates unchanged.
 
 ---
 
