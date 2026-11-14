@@ -2494,10 +2494,9 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
     if (snapshot == null || width <= 0 || snapshot.toMs <= snapshot.fromMs) {
       return;
     }
-    final plotWidth = math.max(
-      1.0,
-      width - _usageChartPlotLeftInset - _usageChartPlotRightInset,
-    ).toDouble();
+    final plotWidth = math
+        .max(1.0, width - _usageChartPlotLeftInset - _usageChartPlotRightInset)
+        .toDouble();
     final fraction = ((localX - _usageChartPlotLeftInset) / plotWidth)
         .clamp(0.0, 1.0)
         .toDouble();

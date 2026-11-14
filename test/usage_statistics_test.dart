@@ -961,11 +961,15 @@ void main() {
           closeTo(tester.getTopLeft(voltageHitArea).dx + 34, 1),
         );
         expect(
-          tester.getSize(
-            find.byKey(
-              const ValueKey<String>('usage-profile-timeline-track-voltage'),
-            ),
-          ).height,
+          tester
+              .getSize(
+                find.byKey(
+                  const ValueKey<String>(
+                    'usage-profile-timeline-track-voltage',
+                  ),
+                ),
+              )
+              .height,
           34,
         );
         expect(find.text('Rincian'), findsNothing);
