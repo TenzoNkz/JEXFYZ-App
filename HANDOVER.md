@@ -5,9 +5,9 @@ The documentation source-of-truth sync for Build #162 is complete. The current p
 ### Completed in the current Eksekusi Full session
 
 - `BUILD_NOTES.md`: Build #162 is now the current verified release record; Build #159 remains below as previous release history.
-- `APP_NOTES.md`: current App behavior/data contracts now point to Build #162 and explicitly separate CI, visual and physical-device evidence.
-- `DESIGN_NOTES.md`: the current Usage Statistics presentation contract reflects Build #162's 188/188 hosted test result; visual acceptance remains pending.
-- `APP_PREBUILD_AUDIT.md`: pre-Build #162 snapshots that previously read as current/QC pending are labelled historical and linked to the later #162 result.
+- `APP_NOTES.md`: current App contracts, 188/188 test evidence and Build #162 device-acceptance boundary are reconciled.
+- `DESIGN_NOTES.md`: current Statistics, Peltier and Home-tab contracts reflect Build #162's 188/188 hosted test result; visual acceptance remains pending.
+- `APP_PREBUILD_AUDIT.md`: superseded pre-Build #162 snapshots and obsolete trigger instructions are marked historical and linked to the verified #162 result.
 - `PROJECT_STATE.md`: condensed to a current-only snapshot below 100 lines. Build failure/attempt history remains in `APP_BUILD_REPORT.md`; immutable archives and history ledgers were not deleted or rewritten.
 
 ### Remaining confirmed work
@@ -27,17 +27,17 @@ No Build App/APK/Release, Firmware compile/BIN/Firebase/OTA/flash, or device ope
 
 ---
 
-## Previous immediate next step — Guarded QC for Usage Statistics presentation refresh — 2026-11-13
+## Historical pre-Build #162 source follow-up — Usage Statistics presentation refresh — 2026-11-13
 
-**Current App source is newer than Build #159.** The current Full session has implemented the requested Usage Statistics presentation changes on `main`, but has not run any local or hosted Flutter/Android validation and has not packaged a release.
+**Historical state before Build #162:** the current source contained the Usage Statistics refresh but had not yet passed guarded App QC. Build #162 subsequently validated and packaged it.
 
 - UI source: `lib/usage_statistics.dart`, latest code cleanup commit `f32c1278308bea7cedd4f150255d2128cac138bb`; intermediate main UI commits `9b9262d934ff2ab6575256b264f8bf851280dddf` and `364f5c3c1b777606647c3d85777091314988ea7f`.
 - Regression source: `test/usage_statistics_test.dart`, latest test commit `b560403877fd2080db2019fc04d86d67020418dd`; test inventory remains **188 declarations across 9 files**.
 - Implemented: one elapsed session timer in one header; selector menu excludes secondary duration; Battery/Hotside Y axes have 1°C whole-degree ticks and data-based ranges; Observed/More details/Last sample removed; Min/Avg/Max, four activity lanes and the six-field selected-time dock retained and tidied; EN/ID labels and decimal separators improved.
 - Telemetry, raw sample cadence, SQLite schema/retention, queue, session/gap handling, P1 freshness, analytics and Firmware remain unchanged.
-- **NOT RUN:** Dart formatter, focused/full Flutter tests, analyzer, Android Gradle, screenshots and device acceptance. The runtime has no Dart/Flutter/Gradle/ADB.
-- Build #159 / source `cdca38b9e4f2f99006db8feae40c07c6f9bdfb0a` remains the latest verified APK; this source patch is **NOT RELEASED** and **VISUAL NOT VERIFIED**.
-- **Next:** owner separately issues `Eksekusi Build App!` to run the guarded App QC/package process. Do not trigger it from this Full session.
+- **At that snapshot:** Dart formatter, tests, analyzer and Android Gradle were not run locally because the runtime lacked the toolchain. **Subsequent resolution:** Build #162 passed Flutter 188/188, analyzer and Android Gradle; the workflow still has no Dart formatter gate. Screenshots/device acceptance remain unverified.
+- **Subsequent resolution:** Build #162 / source `6854d8eb58a5f077cbc99749a35d37a4f55b8efa` packages this source state. It is VERIFIED CI / RELEASE SUCCESS; actual visual/device acceptance remains **NOT VERIFIED**.
+- The historical next step was completed by the separately authorized Build #162. No new Build App is required for the already packaged immutable source.
 
 ---
 
