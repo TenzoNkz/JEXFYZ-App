@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — Current Project State
 
-Last reconciled: 2026-11-14 (Asia/Jakarta), after the source-driven localization audit / Validation Only run #16. This file is current truth only. Build-by-build history belongs in APP_BUILD_REPORT.md and CHANGELOG.md; detailed execution evidence belongs in CHAT_TRANSFER.md and APP_PREBUILD_AUDIT.md.
+Last reconciled: 2026-11-15 (Asia/Jakarta), after the Gemini localization response was cross-checked against current-main source. This file is current truth only. Build-by-build history belongs in APP_BUILD_REPORT.md and CHANGELOG.md; detailed execution evidence belongs in CHAT_TRANSFER.md and APP_PREBUILD_AUDIT.md.
 
 ## Repository baseline
 
@@ -68,3 +68,13 @@ Last reconciled: 2026-11-14 (Asia/Jakarta), after the source-driven localization
 
 - Usage Statistics source refinement and hosted Validation Only #16 are complete; all 188 tests passed. Build #162 remains the latest packaged App and predates this source change. The next package step, if desired, is a separate owner-authorized `Eksekusi Build App!`; visual acceptance then requires real Android screenshots.
 - Firmware compile/BIN/Firebase/OTA/flash and device operations remain separately gated.
+
+
+## Gemini localization response cross-check — 2026-11-15
+
+- Gemini's copy/state recommendations are mostly supported, but its P0 classifications are rejected: no functional safety/interlock defect is shown. Thermal terminology and success-message accuracy are P2 copy findings; Fan title polish is P3; domain-state and OTA clarity are P2.
+- Adaptive is a logical mode; Peltier is a physical output. Native HUD now has source-based content measurement, `WRAP_CONTENT` and `requestLayout()` on data/language updates, so fixed-pill clipping is not proven. A horizontal six-metric overlay may still grow beyond a comfortable viewport and needs actual screenshot review.
+- Fan metric F stays numeric while running and shows OFF/MATI when off. BLE session lifecycle and OS permission state must not be folded into generic mode/preference categories.
+- OTA mismatch received/expected order is verified; `otaUploaded` and `otaBytes` have only one call site each in current main. Any placeholder template needs explicit interpolation.
+- Language-picker display change remains WAITING_OWNER because current source/test contract is English / Indonesia. Preserve enum/storage IDs. Preserve Floating Monitor / Monitor Melayang and App Developer & Builder / Pengembang Aplikasi & Perakit.
+- Test gaps are recorded in APP_NOTES.md and the active CHAT_TRANSFER checkpoint. This was source/documentation review only; no source/tests were changed or run.
