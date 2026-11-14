@@ -6,21 +6,21 @@
 
 | Field | Value |
 |---|---|
-| **STATUS** | **IN_PROGRESS** |
-| SESSION STATUS | IN_PROGRESS |
-| WORK STATUS | IN_PROGRESS |
+| **STATUS** | **COMPLETED** |
+| SESSION STATUS | COMPLETED |
+| WORK STATUS | WAITING_OWNER |
 | Mode | Eksekusi Full! |
 | Request / work item | Create manual non-publishing Flutter validation workflow at `.github/workflows/jexfyz-app-validation.yml`; run validations only through the isolated workflow when manually dispatched; never Build App/Release or touch Firmware/device |
 | Started | 2026-11-14 (Asia/Jakarta) |
-| Last updated | 2026-11-14 08:04 (Asia/Jakarta) |
-| Current phase | New manual validation-only workflow committed; YAML, trigger/permission/command constraints and Bash scripts statically validated; final diff/Actions verification and durable checkpoint updates in progress |
-| Last completed milestone | Created `.github/workflows/jexfyz-app-validation.yml` on main; workflow_dispatch-only, contents-read permission, Flutter 3.47.2, pub get, formatter, analyzer, full tests, separate gate outcomes, pinned action SHAs; PyYAML/BaseLoader and Bash syntax checks passed |
-| Last verified main checkpoint | `fc325d6b4fa6878963938257e140e07673885555` — validation workflow create commit; final repository verification and docs checkpoint remain in progress |
-| EXTERNAL OPERATION | No new operation; historical Build #162 / run 43430275967 / source `6854d8eb58a5f077cbc99749a35d37a4f55b8efa` |
-| EXTERNAL OPERATION STATUS | **NOT_APPLICABLE (no active or new operation)** |
-| Result / evidence | PyYAML 6.0.3 STATIC CHECK PASS for retrieved analysis_options.yaml and pubspec excerpt; live lockfile confirms flutter_lints 6.0.0. Actions latest remains #162 completed/success; no active/new run observed. Flutter pub get, analyzer, formatter, Flutter tests and actionlint were BLOCKED / NOT RUN. |
-| Blocker | `actionlint` is not installed, so full GitHub Actions lint/schema validation is unavailable locally; manual workflow run has intentionally not been dispatched |
-| Next action | Verify exact final workflow and complete diff, confirm no Build App run was triggered, update CHAT_TRANSFER plus audit/state/handover, close status without dispatching the new validation workflow |
+| Last updated | 2026-11-14 08:08 (Asia/Jakarta) |
+| Current phase | Manual validation-only workflow and durable checkpoint docs committed; final main tree/diff/read-back and Actions inventory verified; awaiting owner manual dispatch; no build/release/device operation performed |
+| Last completed milestone | Added `.github/workflows/jexfyz-app-validation.yml` (commit `fc325d6b4fa6878963938257e140e07673885555`); PyYAML/BaseLoader, structural policy checks and Bash `-n` checks passed; verified existing release workflow unchanged, tree complete (135 entries), no Actions run created; CHAT_TRANSFER, PROJECT_STATE, HANDOVER and APP_PREBUILD_AUDIT updated |
+| Last verified main checkpoint | `25c746e2453ae2e27953a622045dd5a066ba3968` — workflow and durable project checkpoint documentation committed and read back; this status close will be the next commit |
+| EXTERNAL OPERATION | No new validation run; historical Build #162 / run 43430275967 / source `6854d8eb58a5f077cbc99749a35d37a4f55b8efa` remains latest completed App build |
+| EXTERNAL OPERATION STATUS | **NOT_APPLICABLE (validation workflow intentionally not dispatched)** |
+| Result / evidence | New workflow is manual-only, contents:read, Flutter 3.47.2, locked pub get, read-only formatter, analyzer and all Flutter tests; individual quality gate outcomes are aggregated into a final failing status if any gate fails. YAML and embedded shell static checks PASS. Actual pub get/analyzer/formatter/tests and actionlint remain NOT RUN; no Build App or device operations were run. |
+| Blocker | `actionlint` is not installed, so full Actions schema lint was not run. The Flutter validation workflow has not run because it is intentionally `workflow_dispatch` only and the connected GitHub tools expose no dispatch action; owner manual dispatch is required. |
+| Next action | Owner opens Actions → JE X FYZ — Validation Only → Run workflow, selects `main`, and starts the non-publishing validation. After terminal completion, inspect the run's exact source SHA and dependency/formatter/analyzer/test outcomes; do not run `jexfyz-app-build-trigger.yml`. |
 
 ## Status model
 
