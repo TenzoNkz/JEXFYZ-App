@@ -225,7 +225,7 @@ void main() {
     ]) {
       expect(
         containsDartFragment(
-          settings,
+          floating,
           'JexFixedScalePage(compactUi: true, child: $page())',
         ),
         isTrue,
