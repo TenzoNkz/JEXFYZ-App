@@ -89,11 +89,16 @@ jobs:
           set -euo pipefail
           mkdir -p "$RUNNER_TEMP/jexfyz-format-preview"
           dart format lib test
-          git diff --check
-          git diff --binary > "$RUNNER_TEMP/jexfyz-format-preview/jexfyz-dart-format.patch"
-          git diff --stat > "$RUNNER_TEMP/jexfyz-format-preview/format-stat.txt"
+          git diff --check -- lib test
+          git diff --binary -- lib test > "$RUNNER_TEMP/jexfyz-format-preview/jexfyz-dart-format.patch"
+          git diff --stat -- lib test > "$RUNNER_TEMP/jexfyz-format-preview/format-stat.txt"
+          git diff --name-only -- lib test > "$RUNNER_TEMP/jexfyz-format-preview/format-files.txt"
           test -s "$RUNNER_TEMP/jexfyz-format-preview/jexfyz-dart-format.patch"
-          echo "Prepared a formatting-only patch for review; repository source has not been committed or published."
+          if grep -Ev '^(lib|test)/' "$RUNNER_TEMP/jexfyz-format-preview/format-files.txt"; then
+            echo "Unexpected path outside lib/ and test/ in formatter preview." >&2
+            exit 1
+          fi
+          echo "Prepared a formatter-only patch scoped to lib/ and test/; no repository source has been committed or published."
 
       - name: Upload formatter patch preview (non-publishing)
         id: formatter_preview_upload
