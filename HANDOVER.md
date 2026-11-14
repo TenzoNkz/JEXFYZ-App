@@ -1,6 +1,6 @@
 ## Completed checkpoint — Validation Only run #14 is green — 2026-11-14
 
-**Current main HEAD:** `20676552cbfbb3276a6d7a7bc5f2541c13245c48`; recursive tree: 137 entries, not truncated.
+**Latest verified source commit:** `20676552cbfbb3276a6d7a7bc5f2541c13245c48` (formatter-only; parent test-fix commit `ce86848cee9dafe703db3b4b3a5ebdad1be70bc1`). Subsequent commits `30a9f86b7eca00d7e617c0c9902eb1fc9516623d` and `5e8b0efa3fea2ac3d72c5e53c85ae2ea85d985a7` are documentation/status-only. Recursive tree remains 137 entries, not truncated.
 
 **Test-only fix:** commit `ce86848cee9dafe703db3b4b3a5ebdad1be70bc1` made the Connection 42x42 and 40x40 touch-target matchers tolerant of Dart formatting whitespace and trailing commas without changing exact dimensions.
 
