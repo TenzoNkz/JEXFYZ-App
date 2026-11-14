@@ -1,4 +1,4 @@
-| Last updated | 2026-11-14 10:30 (Asia/Jakarta) |
+| Last updated | 2026-11-14 10:34 (Asia/Jakarta) |
 
 > Single current snapshot for JE X FYZ project interactions. This file records the latest persisted observation, not a continuously running heartbeat or overall product completion.
 
@@ -13,14 +13,14 @@
 | Request / work item | Refine Usage Statistics screen layout: alignment, graph/statistic spacing, Activity timelines and Selected time detail panel; preserve recording/calculation/selection behavior |
 | Started | 2026-11-14 10:17 (Asia/Jakarta) |
 | Last updated | 2026-11-14 09:43 (Asia/Jakarta) |
-| Current phase | IN_PROGRESS. UI/test commit `b4b57e83261c0b1fcb7873efa8544c3410ad0208` is on main; hosted Validation Only #15 / 43551929306 is active against that exact SHA. Waiting for dependency/format/analyzer/test gates; no App Build, Release or Firmware/device action. |
-| Last completed milestone | Committed and read back `lib/usage_statistics.dart` + `test/usage_statistics_test.dart` in `b4b57e8`; recursive tree delta was only those two files plus parent directory tree hashes, 137 entries, no additions/removals. |
+| Current phase | IN_PROGRESS. Validation Only #15 / 43551929306 completed with run conclusion FAILURE only because its formatter-only commit guard detected a newer status-marker commit. Dependency resolution, formatter final verification, analyzer and 188 Flutter tests passed. The exact format-only preview patch was downloaded and reviewed: only 7 lines in lib/usage_statistics.dart and 14 lines in test/usage_statistics_test.dart; no logic or other paths. Apply this patch on latest main and rerun validation; no Build App/APK/Release. |
+| Last completed milestone | Run #15 terminal failure reconciled from live API/logs; artifact 14096353334 reviewed and confirmed only the two expected Dart files and formatter-only changes. Source/test implementation commit remains `b4b57e83261c0b1fcb7873efa8544c3410ad0208`. |
 | Last verified main checkpoint | `b4b57e83261c0b1fcb7873efa8544c3410ad0208` — Usage Statistics alignment refinement and regression tests, parent `58ffc6a8beb1fe461be6c0aacfda50e8ddc95f9e`. |
 | EXTERNAL OPERATION | Validation Only run #15 / 43551929306 / source `b4b57e83261c0b1fcb7873efa8544c3410ad0208` |
-| EXTERNAL OPERATION STATUS | **IN_PROGRESS — run #15 / 43551929306** |
-| Result / evidence | Source/test read-back PASS. Validation Only run #15 was observed `in_progress` for exact source SHA `b4b57e...`; terminal results pending. No local Flutter/Dart runtime is available; hosted CI is the execution evidence. |
+| EXTERNAL OPERATION STATUS | **COMPLETED / FAILURE — run #15 / 43551929306; 188 tests and quality gates passed, formatter commit refused by exact-HEAD guard** |
+| Result / evidence | Run #15 on source `b4b57e...`: locked dependencies PASS; final format verification PASS; analyzer PASS; Flutter 188/188 PASS; formatter preview PASS; commit step FAILURE because remote main had advanced from `b4b57e8` to `f1cde10` due mandatory status checkpoint write. Workflow behaved safely and made no formatter commit. Artifact `14096353334` independently inspected: only formatting diffs in the two authorized Dart paths. |
 | Blocker | None for this recovery request. Non-blocking project items: 119 analyzer info findings; actionlint not run; physical/OEM acceptance not established. |
-| Next action | Inspect run #15 jobs/logs and terminal dependency, formatter, analyzer and Flutter test outcomes; address any in-scope regression before closing. |
+| Next action | Apply the exact reviewed formatter-only preview to latest main, verify no non-format changes, commit with expected-HEAD protection, and inspect the resulting Validation Only run through terminal completion without intervening main writes. |
 
 ## Status model
 
