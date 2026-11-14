@@ -395,3 +395,39 @@ Purpose: canonical current App/UI/BLE/telemetry contract. Current source defines
 - Existing localization tests verify dictionary field presence and selected examples; they do not establish semantic equivalence for all dictionary/inline/native strings. No tests were run in this Diskusi session.
 
 **Status:** STATIC SOURCE CHECK / discussion-only audit. No executable source, tests, config, workflow, build, release, Firmware, BIN, Firebase, OTA, flash or device operation was changed or triggered. A separate Eksekusi Full! is needed before source/test implementation.
+
+
+## Gemini localization answer cross-check — 2026-11-15 (Diskusi only)
+
+**Evidence baseline:** current main at the incoming review was `cef1de09f9e71e581dc51766758a017ba0745b3c`, recursive tree 137 entries / `truncated=false`. Compare against executable source baseline `873a825020659dadcac2e5c7242e759209776414`: 33 commits ahead / 0 behind; all eight changed paths are Markdown. The live Dart/Kotlin/Firmware source and tests therefore still match the source inspected in the preceding localization audit.
+
+### Gemini recommendations accepted with corrections
+
+- Thermal/physical Safety should use `Keselamatan`: correct `peltierSafety` to `Keselamatan Peltier` and `sensorErrorCoolingLocked` to `... demi keselamatan`. `Keamanan` is less precise in this thermal-protection context. This is a user-facing terminology defect, not evidence of a failed safety function.
+- The Fan prerequisite title should explicitly state timing. Preferred concise pair: EN `The fan must be on before cooling starts.`; ID `Kipas harus menyala sebelum pendinginan dimulai.`. The current supporting body already says Fan is confirmed ON before Peltier starts, and the source flow remains FAN:ON → successful ACK → PELTIER:ON. Therefore this is a title-clarity fix, not a broken interlock.
+- For that body sentence, prefer natural prose `Kipas akan dipastikan menyala sebelum Peltier mulai bekerja.` rather than inserting an uppercase badge word `HIDUP` into a full sentence. Keep HIDUP/MATI for compact physical-output badges.
+- `Safety checks passed.` → `Pemeriksaan keselamatan berhasil.` is accepted; current `Pemeriksaan keselamatan normal.` describes a condition rather than a successful check.
+- Split state presentation by semantic domain: Usage Statistics should show Adaptive as a logical mode (`Active/Inactive` / `AKTIF/NONAKTIF`) and Peltier as a physical output (`ON/OFF` / `HIDUP/MATI`). Keep Voltage labels (5V/9V/12V) unchanged. Native HUD should likewise map A separately from P.
+- Keep Fan metric F's actual behavior: when running it displays the numeric PWM speed, not an ON label; when off it displays OFF/MATI. Thus the P/F physical-output glossary applies to F's off state only.
+- OTA full-sentence proposal is accepted: EN `OTA failed: {receivedBytes} bytes received; {expectedBytes} bytes expected.`; ID `OTA gagal: {receivedBytes} byte diterima; {expectedBytes} byte diharapkan.`. Firmware emits `UPLOAD_SIZE_MISMATCH_<received>_<expected>`; App uses parts[3] then parts[4]. A source sweep confirms `otaUploaded` and `otaBytes` each have one dictionary definition and one App call site, so Gemini's unknown-caller concern is not present in current main. The new placeholders require a real formatter/helper; `JexText.of()` does not interpolate placeholders by itself.
+- `fullSyncFailed`: prefer `Tidak dapat menyelesaikan sinkronisasi perangkat.`. `resetDeepSleep`: prefer `Perangkat kembali aktif dari mode tidur hemat daya.`.
+- Bluetooth notification copy (`Bluetooth connected · device session active` / `Bluetooth terhubung · sesi perangkat aktif`) is correct and should remain. Preserve `Floating Monitor / Monitor Melayang` and the current About role `App Developer & Builder / Pengembang Aplikasi & Perakit`.
+
+### Corrections to Gemini's taxonomy, severity and assumptions
+
+- **No P0 finding is substantiated.** The current findings are copy/terminology/state-presentation inconsistencies. They do not show an immediate hardware safety failure, broken Fan interlock, unsafe Peltier output, security compromise or data loss. Using the repo code-review severity rubric, thermal terminology and misleading success wording are P2; the prerequisite title/body polish is P3; state presentation and OTA diagnostics clarity are P2.
+- Do not classify `BLE Device Session` as a logical operating mode. Use lifecycle states such as Connected/Disconnected, Syncing/Ready/Not Ready. Likewise, OS permission state (Granted/Not Granted/Not Requested) is distinct from an App preference Enabled/Disabled.
+- Lock Voltage is Firmware-owned and authoritative. A compact descriptive status may say Active/Inactive, but do not mechanically replace its owner-approved Settings Switch or all ON/OFF control affordances. Preserve the existing rule that unknown/disconnected state is not inferred as OFF.
+- Native HUD truncation is not demonstrated by source: `itemWidth()` measures the current localized text, `onMeasure()` sizes to content, WindowManager uses `WRAP_CONTENT`, and `applyData()` calls `requestLayout()` when language/data changes. Longer labels can still expand a horizontal six-metric overlay beyond a comfortable viewport; verify actual screenshots at supported sizes/orientations before claiming visual acceptance. Do not abbreviate `NONAKTIF` speculatively.
+- Language labels: `Indonesian` in English UI and `Bahasa Inggris / Bahasa Indonesia` in Indonesian UI are linguistically clearer. However, current source comment and widget test explicitly lock the display to `English / Indonesia` in both locales. This is an owner-facing display-contract decision, not authorized by the Gemini answer alone. Preserve enum/storage IDs `english` and `indonesia`; wait for owner approval before changing labels/assertions.
+
+### Regression coverage: confirmed gaps and exact follow-up
+
+- Existing `test/widget_test.dart` asserts the Peltier title's current pair, language labels and global ON/OFF values. Its Floating Monitor state test currently expects A and P both to be ON/HIDUP; update it only alongside approved per-domain mapping, keeping F numeric when on and OFF/MATI when off.
+- Existing Usage Statistics tests verify activity/session calculations, but do not assert the localized Adaptive-vs-Peltier formatter result. Add explicit paired EN/ID cases, plus unknown/null preservation.
+- Existing `device_copy_notification_contract_test.dart` checks native channel-language update hooks, not the exact bilingual notification body/channel copy. Add exact copy contracts for the connected-device sentence and Floating Monitor / Monitor Melayang.
+- Current widget tests assert the English `Safety checks passed.` result but do not assert the corrected Indonesian result. Add both-language checks. Add exact terminology assertions for thermal Safety entries and the Fan prerequisite pair; avoid a simplistic global scan if future Safety/security contexts differ.
+- Add OTA mismatch formatter tests for received/expected order in both locales, malformed event fallback and both numeric values. Add dictionary placeholder parity (354 entries), literal inline phrase parity (166 call sites), and explicit tests for non-literal/dynamic phrase/lookup branches. Existing dictionary structure tests only check locale-field presence.
+- Test HUD text measurement/layout contract for longer translated values, but retain actual Android screenshot verification as a separate gate. A Dart source-contract/widget test is not a native Android runtime or OEM visual test.
+
+**Outcome:** Gemini's main wording/state direction is useful and mostly accepted, with the above qualifications. The source/test changes remain unimplemented. No formatter, Flutter tests, analyzer, Android Gradle, Build App, Kotlin native test, Firmware compile, BIN, Firebase, OTA, flash or device check was run in this Diskusi review.
