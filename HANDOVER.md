@@ -1,6 +1,6 @@
-## Immediate next step — Manual validation-only workflow (new authorization required) — 2026-11-14
+## Immediate next step — Manually run Validation Only — 2026-11-14
 
-The latest non-release SDK bootstrap attempt is blocked by absent Flutter/Dart binaries and unavailable external DNS/network. Do not trigger the guarded App Build workflow. Recommended path: add `.github/workflows/jexfyz-app-validation.yml` with only `workflow_dispatch`, read-only permissions and Flutter 3.47.2; implementation requires a new explicit `Eksekusi Full!` authorization. No workflow was created in the current Diskusi session.
+The separate `.github/workflows/jexfyz-app-validation.yml` is now committed on `main` (workflow commit `fc325d6b4fa6878963938257e140e07673885555`). It is triggered only by `workflow_dispatch`, uses `contents: read`, installs Flutter 3.47.2, resolves the lockfile, runs the read-only formatter check, analyzer and full Flutter tests, and summarizes all outcomes. Actions are pinned to full commit SHAs. YAML/BaseLoader and every embedded Bash syntax check passed. `actionlint` is unavailable, and the workflow has not been dispatched yet. Do not trigger the guarded Build App workflow.
 
 ### Completed changes
 
@@ -24,6 +24,14 @@ The latest non-release SDK bootstrap attempt is blocked by absent Flutter/Dart b
 - `flutter pub get`, post-lint `flutter analyze`, `dart format`, `flutter test` and `actionlint` remain **BLOCKED / NOT RUN**. Formatter baseline and post-lint diagnostic baseline are not established. No source, test or workflow change was made.
 - Next step: use a separately provisioned non-release Flutter 3.47.2 environment and execute the four Flutter/Dart commands recorded in the current `CHAT_TRANSFER.md` checkpoint. Do not trigger Build App for this validation.
 
+
+### Next action — owner manual dispatch
+
+1. Open GitHub Actions → **JE X FYZ — Validation Only**.
+2. Select **Run workflow**, choose branch `main`, and start the validation.
+3. After completion, inspect the exact tested source SHA and dependency/formatter/analyzer/test outputs. Do not interpret this as an APK/Release build.
+
+No workflow run was started by the assistant because the workflow is intentionally manual-only. The connected GitHub tools available here do not expose the workflow-dispatch action.
 
 ### Remaining work — must not be inferred as passed
 

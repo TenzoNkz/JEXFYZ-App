@@ -1,3 +1,34 @@
+## CURRENT CHECKPOINT — EKSEKUSI FULL / MANUAL NON-PUBLISHING VALIDATION WORKFLOW ADDED — 2026-11-14
+
+**Mode:** `Eksekusi Full!` — the owner explicitly authorized only `.github/workflows/jexfyz-app-validation.yml`. The new workflow was committed; it was not dispatched by this session. No App source/tests/business logic, existing release workflow, APK/AAB, Gradle, signing, Release, Firmware, Firebase, OTA, flash or device operation was changed or run.
+
+### Live repository and workflow
+
+- **Repository:** `TenzoNkz/JEXFYZ-App`, branch `main`.
+- **Workflow file commit:** `fc325d6b4fa6878963938257e140e07673885555`; blob `d901565ce77967314348c18f70c69d4a28b02965`.
+- **Workflow name:** `JE X FYZ — Validation Only`.
+- **Trigger:** only `workflow_dispatch`; no issue, push, pull_request or schedule trigger.
+- **Permissions:** `contents: read` only.
+- **Runner/toolchain:** `ubuntu-24.04`, Flutter `3.47.2` stable. Actions are pinned to verified full commit SHAs: `actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803` (v6) and `subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2` (v2).
+- **Steps:** verify Flutter/Dart versions; `flutter pub get --enforce-lockfile`; read-only `dart format --output=none --set-exit-if-changed lib test`; `flutter analyze --no-fatal-infos`; and the complete `flutter test` suite. Formatter/analyzer/tests each retain their own outcome and continue independently after a quality failure; the final job-summary step reports all outcomes and fails the job if dependency resolution or any quality check did not succeed.
+- No APK/AAB build, Gradle, Java/signing, artifact/release publishing, Firebase, Firmware, OTA, flash or device steps exist in the new file. The existing guarded release workflow was left untouched.
+
+### Static verification and execution boundary
+
+- PyYAML 6.0.3 BaseLoader parsed the exact GitHub read-back YAML: **PASS**.
+- Assertions verified the sole `workflow_dispatch` trigger, `contents: read`, Flutter `3.47.2`, all four commands, independent quality-gate continuation/final failure aggregation and full-SHA action pins: **PASS**.
+- `bash -n` syntax check passed for every embedded shell script: **PASS**.
+- Forbidden-operation scan found no APK build, Gradle, signing, Release action, Firebase, Firmware, OTA, ADB or device command.
+- `actionlint` is not installed in the current runtime. Full GitHub Actions schema lint is **NOT RUN**.
+- The workflow was intentionally **NOT DISPATCHED** in this interaction. Therefore `flutter pub get`, formatter, post-lint analyzer and Flutter tests have not executed yet; lint/formatter baselines remain pending. The Actions inventory remained 337 runs with Build #162 as latest, and no new run was created.
+- The new workflow must be launched manually from GitHub **Actions → JE X FYZ — Validation Only → Run workflow**, branch `main`. Capture its run ID, tested source SHA, all individual outputs and final job result. A successful validation run must not be confused with an APK/release build.
+
+### Exact next action
+
+Owner manually dispatches the new validation workflow on `main`. After the run reaches a terminal state, inspect its exact source SHA and logs, report formatter/analyzer/test outcomes independently, then review only proven lint/format findings. Do not invoke `jexfyz-app-build-trigger.yml`.
+
+---
+
 ## CURRENT CHECKPOINT — DISKUSI / NEXT NON-RELEASE VALIDATION PATH — 2026-11-14
 
 **Mode:** `Diskusi!` — read-only engineering decision. No workflow, App source, tests or executable configuration was changed. Only continuity documentation and the status marker were updated. No Build App, APK/Release, Firmware/device operation or new Actions run was started.

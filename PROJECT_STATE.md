@@ -5,11 +5,11 @@ Last reconciled: 2026-11-14 (Asia/Jakarta). This file is current truth only. Bui
 ## Repository baseline
 
 - Canonical repository/branch: `TenzoNkz/JEXFYZ-App` / `main`.
-- Current recursive tree before this authorized policy patch: 133 entries, 52 Markdown files, `truncated=false`; one guarded App release workflow; one active sketch at `firmware/JEXFYZ-V7.2.ino`.
+- Current recursive tree after adding the validation-only workflow: 135 entries, `truncated=false`; two workflows under `.github/workflows/` (the existing guarded App release workflow and the new manual-only validation workflow); one active sketch at `firmware/JEXFYZ-V7.2.ino`.
 - Twelve canonical `.agents/skills` definitions and twelve `.github/skills` mirrors remain byte-identical.
 - Root `analysis_options.yaml` is now present and includes `package:flutter_lints/flutter.yaml`. `flutter_lints 6.0.0` was already a direct dev dependency and is locked in `pubspec.lock`.
 - The guarded release workflow still has issue-only opened/reopened triggers; there is no push/PR auto-release path. Its concurrency policy is now job-level under the guarded build job, not workflow-level.
-- No Dart/Flutter SDK or actionlint binary is installed in the current execution runtime; no SDK/cache was found in the common runtime directories checked, and network DNS/download attempts could not reach GitHub or Flutter's artifact host. The only repository workflow is the guarded App Build/QC/Release pipeline; no non-publishing validation workflow exists.
+- No Dart/Flutter SDK or actionlint binary is installed in the current ChatGPT execution runtime; no SDK/cache was found in the common runtime directories checked, and SDK bootstrap failed on unavailable DNS/network. The new hosted validation workflow uses Flutter 3.47.2 on manual dispatch; it has not yet been run.
 
 ## Latest verified App package — Build #162 SUCCESS
 
@@ -32,8 +32,8 @@ Last reconciled: 2026-11-14 (Asia/Jakarta). This file is current truth only. Bui
 
 1. **P1 workflow concurrency — FIXED in current main:** workflow-level concurrency was removed. `jexfyz-cooler-build` now exists only under `jobs.build`, after the unchanged owner-login, exact-title and body-token guard. It sets `cancel-in-progress: false` and `queue: max`, allowing one active plus up to 100 pending guarded release jobs. All original event triggers and release gates remain. The workflow was not run by this session.
 2. **P2 lint policy — ENABLED; diagnostic audit PENDING:** root `analysis_options.yaml` includes the locked `flutter_lints 6.0.0` rule set. Build #162's 23 info-level findings predate this configuration and are not a post-activation baseline. Flutter/Dart are unavailable here, so new diagnostics are **NOT RUN**.
-3. **P2 formatter baseline — NOT ESTABLISHED:** the guarded workflow still has no Dart formatter step. On an SDK-equipped checkout, run `dart format --output=none --set-exit-if-changed lib test`; format and review a formatting-only diff if needed, then repeat until clean. Add a blocking formatter gate only after the clean baseline is recorded.
-4. **CI/governance:** a non-publishing validation workflow, persisted coverage artifact, reviewed full-SHA action pinning and main-branch protection remain open. Do not run or repurpose the release workflow as a validation-only task.
+3. **P2 formatter baseline — NOT ESTABLISHED:** the new manual validation-only workflow now runs `dart format --output=none --set-exit-if-changed lib test` on Flutter 3.47.2, without changing source. The workflow has not yet been dispatched, so no formatter result exists. If it reports formatting differences, review and commit only a formatting-only change under a separate explicit scope, then rerun until clean. Do not add a blocking gate to the release workflow until the clean baseline is recorded.
+4. **CI/governance:** a separate manually dispatched, non-publishing Flutter validation workflow now exists and its actions are pinned to full commit SHAs. Its first run is pending owner dispatch. Coverage artifact persistence and main-branch protection remain open; do not repurpose the release workflow as a validation-only task.
 5. **P2 tests:** retain the 188-test suite and add real FlutterBluePlus/plugin-channel lifecycle tests, native MethodChannel/service tests where meaningful, and a real SQLite v1→v2 fixture migration test. Do not add empty native JUnit tests solely to avoid `NO-SOURCE`.
 6. **P2 maintainability:** extract lower-coupling data/UI seams incrementally only after regression tests exist. BLE coordinator extraction is high-risk and should be late, not a mechanical rewrite.
 
@@ -46,5 +46,5 @@ Last reconciled: 2026-11-14 (Asia/Jakarta). This file is current truth only. Bui
 
 ## Immediate next action
 
-- Preferred next step: add a separate manually dispatched, non-publishing workflow at `.github/workflows/jexfyz-app-validation.yml` (requires a new explicit `Eksekusi Full!` authorization). It should use read-only permissions and Flutter 3.47.2 to run `flutter pub get --enforce-lockfile`, `dart format --output=none --set-exit-if-changed lib test`, `flutter analyze --no-fatal-infos` and `flutter test --coverage`; no APK/AAB, Gradle, signing, Firebase, Release or Firmware/device steps. Once committed to main, the owner can launch it under Actions → JE X FYZ — Validation Only → Run workflow. Record its source SHA and each command's exit code; do not reuse the guarded Build App workflow.
+- The new `.github/workflows/jexfyz-app-validation.yml` is committed to `main` and has passed YAML/embedded-shell static validation. Manually dispatch it from Actions → JE X FYZ — Validation Only → Run workflow using `main`. Inspect the exact tested source SHA and individual dependency/formatter/analyzer/test results once the run completes. No Build App workflow is required or permitted for this validation.
 - Do not invoke Build App/APK/Release for this task. Firmware compile/BIN/Firebase/OTA/flash and device operations remain separately gated.
