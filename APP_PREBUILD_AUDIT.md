@@ -57,16 +57,16 @@
 
 ---
 
-## Current source correction — About Telegram handle casing — 2026-11-13
+## Historical pre-Build #162 source correction — About Telegram handle casing — 2026-11-13
 
 - Owner-specified About handle is exactly `@horizontalzzz`. The active `lib/floating_monitor.dart` value now uses that spelling; the regression checks reject the former `@Horizontalzzz` form in both English and Indonesian UI.
 - Commits: source `bb0cffec50eceafa2d522f7507288635f6989bab`; test `bc1a33b68daa99bdb339fa07d1d902af7ddd8855`.
 - Protected Android Gradle `versionName "Telegram @horizontalzzz"` was not changed.
-- Static read-back only. Formatter, Flutter tests, analyzer and Gradle are NOT RUN. This does not change the existing guarded-QC hold or authorize an App Build. Build #159 remains the latest verified package.
+- At this pre-build snapshot, evidence was static read-back and guarded QC was still pending. The change was subsequently included and validated in Build #162 (188/188 Flutter tests, analyzer 23 infos / zero warnings/errors and Android Gradle success). This historical note does not authorize another Build App.
 
-## Current App pre-build audit — Usage Statistics presentation refresh — 2026-11-13
+## Historical pre-Build #162 audit — Usage Statistics presentation refresh — 2026-11-13
 
-**Disposition: SOURCE IMPLEMENTED / WAITING FOR SEPARATE GUARDED APP QC.** This record supersedes the prior native Floating Monitor-only pre-build focus for the next App QC pass. No workflow or release action was initiated.
+**Historical disposition at the time: SOURCE IMPLEMENTED / GUARDED APP QC PENDING.** Build #162 subsequently validated and released this source/test state. No workflow or release action was initiated by this historical audit entry.
 
 - Source commits: `9b9262d934ff2ab6575256b264f8bf851280dddf` (Statistics screen/chart redesign), `364f5c3c1b777606647c3d85777091314988ea7f` (remove durations from session picker), `f32c1278308bea7cedd4f150255d2128cac138bb` (remove obsolete details-only formatter). Regression commits: `6c85166731fde4d6e72d44ab82d6a3a10826918a` (axis/details/timer coverage) and `b560403877fd2080db2019fc04d86d67020418dd` (localized chart titles and six selected-time fields).
 - The session status, start date/time and elapsed duration now share one header. Multiple-session selection remains in that header; dropdown options no longer duplicate elapsed durations.
@@ -74,20 +74,20 @@
 - Min/Avg/Max remain; Observed, More details and Last sample are removed from the visible dashboard. All four operating lanes and the shared six-metric cursor remain. The selected-time readout is a compact two-row / three-column dock with a 48-dp close target and locale-aware values.
 - Invariants preserved: authoritative telemetry, raw one-second samples, SQLite schema/retention, bounded recorder queue, P1 freshness, session continuity, explicit invalid/missing-data gaps, event analytics and chart decimation.
 - Test inventory read from all 9 Dart test files: **188 declarations**. Added/updated regression assertions exist; this is not a pass. No Dart/Flutter/Gradle/ADB toolchain is present in the execution runtime. `dart format`, focused/full `flutter test`, `flutter analyze`, Android Gradle, Android rendering and screenshots are **NOT RUN**.
-- Latest verified package remains Build #159, immutable source `cdca38b9e4f2f99006db8feae40c07c6f9bdfb0a`, Release ID `403010611`. It predates and does not contain this refinement or the preceding native Fan icon repair. Current changes are **NOT RELEASED** and **VISUAL NOT VERIFIED**.
+- **Subsequent resolution:** Build #162 / run `43430275967` / source `6854d8eb58a5f077cbc99749a35d37a4f55b8efa` includes the Usage Statistics refinement and native Fan correction; the 188/188 Flutter suite passed, analyzer and Android Gradle gates succeeded, and matching APK/source ZIP were released. Current screenshot/OEM visual acceptance is still **VISUAL NOT VERIFIED**.
 - Next action: owner separately issues `Eksekusi Build App!` for the guarded hosted QC path. Do not treat this Full session or the presence of source/test code as Build authorization.
 
 ---
 
-## Current App pre-build audit — native Floating Monitor icon repair — 2026-11-13
+## Historical pre-Build #162 audit — native Floating Monitor icon repair — 2026-11-13
 
-**Disposition: WAITING_OWNER_FOR_GUARDED_APP_QC.** Build #159 is the latest verified package, but a new native App-only correction is now on main and has not been compiled or packaged.
+**Historical disposition at the time: WAITING_OWNER_FOR_GUARDED_APP_QC.** Build #162 subsequently compiled, validated and packaged the native App correction described here.
 
 - Build #159 run `43376503987` completed SUCCESS on package source `cdca38b9e4f2f99006db8feae40c07c6f9bdfb0a`: analyzer 23 infos / zero warnings/errors, Flutter 187/187, Android Gradle success. Kotlin emitted a duplicate `"F"` branch warning in `FloatingMonitorService.kt:738`.
 - The duplicate branch was verified in live source. The earlier gauge-like `"F"` branch was removed; the remaining three-blade branch correctly represents Floating Monitor Fan Speed. Source commit: `e0b68c3e98a5d75fe40c71bc0a7647712615c33d`.
 - A regression assertion in `test/floating_monitor_layout_contract_test.dart` now checks the unique `B/H/V/A/P/F` icon map and three-blade Fan glyph. Test commit: `aff8b8ec2796d03432f4f8b000f6e70205eccf48`.
 - Current suite inventory is **188 declarations** across 9 Dart test files. This new regression has not been run. The runtime lacks Dart, Flutter, Gradle and ADB; formatter, focused/full Flutter tests, analyzer and Android Gradle are **BLOCKED / NOT RUN** for the patch.
-- No workflow, Gradle property, dependency, Firmware source, BIN, Firebase, OTA or Release was changed. No App Build was triggered.
+- No workflow, Gradle property, dependency, Firmware source, BIN, Firebase, OTA or Release was changed by this historical source repair. The later Build #162 was a separate, owner-authorized guarded App Build.
 - Build #159 is not evidence for the new Kotlin source. The next gate requires a separate owner-issued `Eksekusi Build App!` and actual log review. Keep the existing issue/title/token guard and all workflow gates unchanged.
 
 ---
@@ -111,7 +111,7 @@ The earlier HOLD was the pre-trigger recommendation made during the preceding Fu
 
 ---
 
-# JE Cooler App — Full Pre-Build Audit
+# Historical JE Cooler App — Full Pre-Build Audit (2026-11-12; superseded by Build #162 QC)
 
 **Audit date:** 2026-11-12 (Asia/Jakarta)  
 **Mode:** `@Thinking Eksekusi Full!` — App source, regression tests and documentation only; no Build/Release, workflow trigger, Firmware or device operation.  
