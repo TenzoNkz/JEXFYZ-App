@@ -1,4 +1,4 @@
-| Last updated | 2026-11-14 08:49 (Asia/Jakarta) |
+| Last updated | 2026-11-14 08:52 (Asia/Jakarta) |
 
 > Single current snapshot for JE X FYZ project interactions. This file records the latest persisted observation, not a continuously running heartbeat or overall product completion.
 
@@ -13,14 +13,14 @@
 | Request / work item | Resume authorized non-publishing validation repair; inspect seven remaining Flutter test failures on run #7 and fix only test-side source-contract matching; no App Build/Release or Firmware/device operation |
 | Started | 2026-11-14 08:44 (Asia/Jakarta) |
 | Last updated | 2026-11-14 08:30 (Asia/Jakarta) |
-| Current phase | Run #7 terminal failure reconciled. Applying precise test-only matcher fixes for Dart formatter's trailing commas and multiline call layout; no App source/business logic changes. |
-| Last completed milestone | Run #7 / 43542261220 / SHA `305a34be525ebf2b0e244d909e1e7fb404d2c6fb`: locked Pub PASS; formatter final PASS; analyzer PASS (119 infos, 0 warnings/errors); tests 181/188 PASS. Failure logs identify seven test-only assertions; no formatter-only commit. Current main has only status commits after tested SHA. |
-| Last verified main checkpoint | `0b9621ffc3581e666070abbf9c302f5adf0da58d` — live main read before the next test-only patch |
-| EXTERNAL OPERATION | Validation Only run #7 / 43542261220 completed; no active run; Build #162 remains latest App package |
-| EXTERNAL OPERATION STATUS | **COMPLETED / FAILURE — run #7, 181 passed / 7 failed; Pub, formatter final and analyzer passed; formatter commit skipped** |
-| Result / evidence | Seven remaining failures are caused by format-sensitive source-contract expectations: trailing commas in formatted wrapper/LED/notify calls, multiline W900/Tamper theme tokens, an expected comma on a painter call that has no trailing comma, and a fragile Home header slice. The semantic constants, routes, typography roles and 48-dp touch target remain present in source. |
-| Blocker | Full Flutter test suite still fails 7 source-contract assertions; only test files are authorized for repair. `actionlint` not installed. |
-| Next action | Patch only `test/floating_monitor_layout_contract_test.dart` and `test/widget_test.dart` to tolerate Dart formatter layout while preserving exact contract tokens/copy/counts; push on main triggers Validation Only run #8. Formatter commit remains gated on all 188 tests passing. |
+| Current phase | Run #8 terminal failure reconciled (183/188 tests passed); five source-contract test cases remain. Applying targeted test-only repairs for Settings/Connection route formatting, painter argument comma, Tamper primaryTextTheme, bilingual Notify copy and Home navigation-section boundaries. |
+| Last completed milestone | Validation Only run #8 / 43542869188 on SHA `0b9621ffc3581e666070abbf9c302f5adf0da58d`: Pub PASS; formatter final PASS; analyzer PASS; Flutter tests 183 passed / 5 failed. Formatter commit correctly skipped. Run #8 fixed route and W900 tokens, LED height matcher and Home fan call comma; remaining failures are detailed in the live log. |
+| Last verified main checkpoint | `183dc7c0a8802308ce2dfa69d59fdcf56759a5f3` — current main after run #8 test-only matcher commit and status checkpoint |
+| EXTERNAL OPERATION | Validation Only run #8 / 43542869188 / source `0b9621ffc3581e666070abbf9c302f5adf0da58d` |
+| EXTERNAL OPERATION STATUS | **COMPLETED / FAILURE — Pub/formatter/analyzer PASS; 183/188 Flutter tests PASS; 5 test cases failed; formatter commit skipped** |
+| Result / evidence | Run #8 failures: Floating Settings compact route fragment (test line 270); painter `_depthPaintColor` fragment still expects no comma while formatted call has comma; Tamper primaryTextTheme fragment is split by formatter; Home Notify bilingual `JexText.phrase` fragments are multiline; Home tabs test slices from first `height: 48` header instead of the tab navigation region. No App production source or business logic changes. |
+| Blocker | Five test cases remain red due source-contract matching and an incorrect Home navigation source range. Keep edits in test files only; never relax asserted semantics. `actionlint` unavailable. |
+| Next action | Patch only `test/floating_monitor_layout_contract_test.dart` and `test/widget_test.dart`; use whitespace-aware regexes for route/theme/Notify calls, restore the expected painter trailing comma, and anchor Home navigation by `_tab` calls before `_buildTabContent`. Commit with expected-head guard so push triggers run #9. |
 
 ## Status model
 
