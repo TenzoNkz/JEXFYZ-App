@@ -1,23 +1,24 @@
-## Owner-approved Usage Statistics presentation refresh — implemented in source, QC pending — 2026-11-13
+## Owner-approved Usage Statistics presentation refresh — included in Build #162; hosted QC passed — 2026-11-13
 
-This is the latest presentation contract and supersedes the earlier visible Observed / More details / Last sample presentation notes below.
+This is the current visible presentation contract. Build #162 packages the implementation and its regression coverage; physical screenshot/OEM acceptance remains separate.
 
-- Use one compact session header for status, start date/time and the single primary elapsed duration. If there are multiple sessions, expose the selector inside this same header; dropdown options show session status and start time, not an additional duration.
-- Battery and Hotside remain independent measured temperature charts. Label the Y axis at every integer degree with 1°C spacing. Derive each plot range from its valid observed temperature data, padded by one degree; do not include a distant Hotside limit in the scale. Increase plot height when a wider actual range needs more label rows. Keep the configured limit label, and draw its dashed reference only when the reference lies inside the plotted data range.
-- Keep Min / Average / Max. Remove Observed, the More details disclosure and the Last sample footer from the visible dashboard. The four activity lanes remain Voltage, Adaptive Mode, Peltier and Fan Speed, with one shared elapsed-time axis and cursor.
-- Preserve all secondary summaries and state durations in analytics even though their More details text block is removed. Do not discard data or weaken the storage/analytics contract to simplify presentation.
-- Selected time remains a bottom SafeArea dock with six synchronized values in two rows of three columns. Keep the selected timestamp prominent, labels secondary, values tabular/bold, a compact surface and a 48-dp icon-only clear action. It must not cover a disproportionate amount of the screen.
-- Localize chart headings, metric labels, ON/OFF states and numeric temperatures. Indonesian decimal separator is comma; English is dot. Retain the existing JE theme, Phosphor icon family, compact 360-dp canvas and Light/Dark semantic colors.
+- Use one compact session header for status, start date/time and the single primary elapsed duration. If multiple sessions exist, expose the selector inside this same header; dropdown options show session status and start time, not a second duration.
+- Battery and Hotside remain independent measured temperature charts. Label the Y axis at every integer degree with 1°C spacing. Derive each plot range from valid observed temperature data, padded by one degree; do not include a distant Hotside limit in the scale. Increase plot height when a wider actual range needs more label rows. Keep the configured limit label, and draw its dashed reference only when it lies inside the plotted data range.
+- Keep Min / Average / Max. Remove Observed, the More details disclosure and the Last sample footer from the visible dashboard. Retain four activity lanes: Voltage, Adaptive Mode, Peltier and Fan Speed, with one shared elapsed-time axis and cursor.
+- Preserve secondary summaries and state durations in analytics even though the More details text block is removed. Do not discard data or weaken storage/analytics contracts to simplify presentation.
+- Selected time remains a bottom SafeArea dock with six synchronized values in two rows of three columns. Keep the selected timestamp prominent, labels secondary, values tabular/bold, a compact surface and a 48-dp icon-only close action.
+- Localize chart headings, metric labels, ON/OFF states and numeric temperatures. Indonesian decimal separator is comma; English is dot. Retain the JE theme, Phosphor icon family, compact 360-dp canvas and Light/Dark semantic colors.
 - Preserve actual telemetry values, raw 1-Hz collection, SQLite schema/retention, recorder queue, session boundaries, HOT-based P1 freshness, invalid/null gaps, chart decimation and shared tap/drag cursor. Never interpolate across a gap or session.
-- Regression source now covers whole-degree labels/range height, absence of redundant dashboard text, one session duration, bilingual chart titles and all six selected-time fields. Current suite inventory is 188 declarations / 9 files; tests are written but NOT RUN here. Formatter/analyzer/Gradle and physical screenshots remain NOT RUN. Build #159 does not contain this refinement; it requires separate guarded App QC and owner-side visual acceptance.
+- **Hosted regression evidence:** Build #162 passed **188/188 Flutter tests**; analyzer had 23 info-level diagnostics and zero warnings/errors; Android Gradle gate succeeded. The workflow has no Dart formatter step, so no formatter pass is claimed.
+- **Visual outcome:** **VISUAL NOT VERIFIED** until actual Build #162 screenshots are reviewed at 350-dp/420-dp, portrait/constrained height, English/Indonesian and Light/Dark.
 
 # JE X FYZ / JE Cooler — Approved Design Contract
 
 This document stores owner-approved, screen-specific visual constraints, not a build history. Live App source determines current implementation. PRODUCT_DESIGN_CONSTITUTION.md defines cross-screen design principles; VISUAL_QUALITY_GATE.md defines evidence-based acceptance. CHANGELOG.md / APP_BUILD_REPORT.md retain dated validation evidence.
 
-## Latest implementation status — four App UI refinements — 2026-11-13
+## Latest implementation status — current App UI is packaged in Build #162 — 2026-11-13
 
-The four owner-approved changes are implemented in App source commit `a5d45866bb244a2f260330a0e2ea332c391a9fcd` and included in verified Build #159 (Actions run `43376503987`, package source SHA `cdca38b9e4f2f99006db8feae40c07c6f9bdfb0a`). Hosted analyzer passed with 23 info-level deprecations, zero warnings/errors; Flutter passed 187/187; Android Gradle passed. The build workflow has no Dart formatter step, so `dart format` is not claimed. Actual Android screenshot/OEM acceptance remains **VISUAL NOT VERIFIED** until the owner reviews the installed package at the specified densities, languages and themes.
+The four owner-approved refinements first introduced in source commit `a5d45866bb244a2f260330a0e2ea332c391a9fcd`, plus the later About handle, Usage Statistics and Floating Monitor Fan corrections, are included in Build #162 on immutable package source `6854d8eb58a5f077cbc99749a35d37a4f55b8efa`. Build #162 passed analyzer (23 info-level diagnostics, zero warnings/errors), Flutter 188/188 and Android Gradle. The build workflow still has no Dart formatter step, so `dart format` is not claimed. Actual Android screenshot/OEM acceptance remains **VISUAL NOT VERIFIED**.
 
 ## Product identity and supplied assets
 
@@ -59,9 +60,9 @@ The four owner-approved changes are implemented in App source commit `a5d45866bb
 **Required visual acceptance:** capture actual app screenshots at 350-dp/420-dp, portrait and constrained height, English/Indonesian and Light/Dark. Verify Peltier copy wrapping, card width/height, button alignment and touch targets; for the picker verify all 60 swatches, scroll to the final rows, localized preview/tooltips, white selection, Cancel and Select. Until those screenshots are reviewed, outcome remains VISUAL NOT VERIFIED.
 - **Authorization:** implemented only within the owner's `Eksekusi Full!` App source/test/documentation scope. A new APK still requires a separate `Eksekusi Build App!`. No Firmware, BIN, Firebase, OTA, flashing or physical device operation occurred.
 
-## Usage Statistics — implemented and included in Build #153 (2026-11-12)
+## Usage Statistics — original Build #153 baseline; current presentation included in Build #162 (2026-11-13)
 
-**Status: BUILD #153 HISTORICAL BASELINE; CURRENT MAIN HAS SOURCE FOLLOW-UPS / TESTS WRITTEN / TEST NOT RUN / VISUAL NOT VERIFIED.** Build #153's 176/176 result applies only to immutable source SHA `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e`, not current main.
+**Status: CURRENT PRESENTATION INCLUDED IN BUILD #162 / 188 OF 188 FLUTTER TESTS PASSED / VISUAL NOT VERIFIED.** Build #153 remains the original implementation baseline only; Build #162 validates the current presentation source and regression suite.
 
 - **Six metric diagrams:** Phone Battery °C and Hotside °C remain separate measured temperature plots; Voltage (5V/9V/12V), Adaptive ON/OFF, Peltier ON/OFF and Fan Speed 0–100% remain four operating timelines, each with its own scale and semantics.
 - **Shared inspection:** one elapsed-session cursor synchronizes Battery, Hotside, Voltage, Adaptive, Peltier and Fan Speed. Preserve the selected time and unknown/gap values as `--`.
@@ -69,17 +70,17 @@ The four owner-approved changes are implemented in App source commit `a5d45866bb
 - **Presentation:** graph-first composition; compact session metadata and cursor; concise last-sample metadata; detailed sampling/storage provenance behind an information affordance; secondary operating durations and Fan aggregates in collapsed details. Keep Min/Avg/Max, Observed coverage and the Hotside limit visible without discarding the useful aggregates.
 - **Capture/storage invariant:** one-second raw collection and explicit gap samples remain. SQLite schema/version 2 and retention remain. Current-main sample + session-freshness updates are transactional. The write queue uses 64 normal + 8 reserved control + 1 critical `endSession` slot (73 maximum), with fail-fast admission. Accepted operations remain FIFO; overflow submissions are rejected and surfaced through a persistent localized warning rather than being silently accepted or evicting accepted work.
 - **Current-main analytics path:** grouped session/metric event index; event identity de-duplication and sorted merge; one summary per live flush; skip per-metric sort when already chronological; binary-search cursor lookup; cached decimated chart points. One selected-session summary/chart-decimation pass still occurs each second. Long-session CPU/memory and queue-backlog soak remain NOT RUN.
-- **Current-main regression source:** selected dock height ≤200 dp plus clear behavior; narrow-range y-axis precision; 12k-per-sensor synthetic long-history with bounded chart rendering; queue capacity/FIFO/rejection; one-summary-per-batch, event identity and ordered merge. Current main has 187 declarations (174 unit/source-contract + 13 widget); they are NOT RUN on the current source. Formatter/analyzer and Android rendering are also NOT RUN.
+- **Current-main regression source:** selected dock height ≤200 dp plus clear behavior; narrow-range y-axis precision; 12k-per-sensor synthetic long-history with bounded chart rendering; queue capacity/FIFO/rejection; one-summary-per-batch, event identity and ordered merge. Build #162 ran the current 188-test suite successfully (188/188). Formatter is not part of the workflow; physical Android rendering and screenshots remain NOT VERIFIED.
 - **Visual acceptance:** **VISUAL NOT VERIFIED** until actual App screenshots are reviewed at 350-dp/420-dp, Light/Dark, English/Indonesian, portrait/constrained height, and representative active/completed/no-data/gap/long-session states.
 
 
 ### Selected-time detail dock — owner screenshot defect (fixed in current main source)
 
-**Status: SOURCE FIX IMPLEMENTED / HEIGHT REGRESSION ADDED / TEST NOT RUN / VISUAL NOT VERIFIED.** Owner screenshot showed the selected-time surface expanding to nearly the entire viewport after chart interaction.
+**Status: IMPLEMENTED AND INCLUDED IN BUILD #162 / HOSTED TEST GATES PASSED / VISUAL NOT VERIFIED.** The owner screenshot showed the selected-time surface expanding to nearly the entire viewport after chart interaction.
 
 - **Correction:** outer readout Column now uses `mainAxisSize: MainAxisSize.min`; the dock remains in `Scaffold.bottomNavigationBar` and retains SafeArea, six metrics, selected elapsed time and 48×48 dp Clear action.
 - **Regression:** current widget test asserts that the selected dock measures no more than 200 dp at normal text scale and disappears after Clear.
-- **Evidence:** source read-back/static contract only. No corrected APK has been rendered; actual Android visual acceptance remains **VISUAL NOT VERIFIED**.
+- **Evidence:** Build #162 packages this fix and its Flutter regression. Actual Android visual acceptance remains **VISUAL NOT VERIFIED** pending owner screenshots.
 
 
 
@@ -89,7 +90,7 @@ The four owner-approved changes are implemented in App source commit `a5d45866bb
 - Current live analytics uses one session/metric event index, event identity set, ordered merge and a single summary per one-second live batch. Event groups are sorted only when not already chronological. Decimated chart points are cached in the summary; cursor lookup uses binary search.
 - SQLite schema/version 2 and retention stay unchanged. Temperature sample insert + matching freshness update are one transaction. The writer uses 64 normal + 8 reserved + 1 critical endSession slot; producers do not wait for admission, overflow is rejected and shown as a persistent recording warning, and accepted work remains FIFO. Raw 1-Hz samples, explicit null gaps and HOT-only P1 coverage remain.
 - **Performance boundary:** current implementation still performs one full selected-session summary and chart-decimation pass per one-second refresh. This is a linear indexed pass rather than the earlier repeated filtering/sorting and per-update summarization. A long-duration Android CPU/memory soak has not been performed.
-- **Status:** SOURCE IMPLEMENTED / REGRESSION SOURCE UPDATED / NOT RUN / VISUAL NOT VERIFIED.
+- **Status:** INCLUDED IN BUILD #162 / 188 OF 188 FLUTTER TESTS PASSED / LONG-DURATION DEVICE SOAK AND VISUAL ACCEPTANCE NOT VERIFIED.
 
 
 ### Peltier safety popup — implemented in Build #153
