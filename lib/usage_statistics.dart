@@ -33,12 +33,12 @@ String formatUsageAxisTick(double value, double tickStep) {
   final decimals = step >= 1
       ? 0
       : step >= 0.1
-          ? 1
-          : step >= 0.01
-              ? 2
-              : step >= 0.001
-                  ? 3
-                  : 4;
+      ? 1
+      : step >= 0.01
+      ? 2
+      : step >= 0.001
+      ? 3
+      : 4;
   return value.toStringAsFixed(decimals);
 }
 
@@ -74,10 +74,7 @@ double usageTemperatureChartHeight({
   required double minimum,
   required double maximum,
 }) {
-  final ticks = usageTemperatureAxisTicks(
-    minimum: minimum,
-    maximum: maximum,
-  );
+  final ticks = usageTemperatureAxisTicks(minimum: minimum, maximum: maximum);
   return math.max(160.0, (ticks.length - 1) * 18.0 + 30.0).toDouble();
 }
 
@@ -148,11 +145,13 @@ int usageSessionCoverageEndMs({
 }) {
   final endedAt = session.endedAtMs;
   if (endedAt != null) return endedAt;
-  return math.min(
-    publishedAtMs,
-    session.lastSeenAtMs +
-        const Duration(milliseconds: 1500).inMilliseconds,
-  ).toInt();
+  return math
+      .min(
+        publishedAtMs,
+        session.lastSeenAtMs +
+            const Duration(milliseconds: 1500).inMilliseconds,
+      )
+      .toInt();
 }
 
 class UsageStatsLiveUpdate {
@@ -168,7 +167,6 @@ class UsageStatsLiveUpdate {
     required this.publishedAtMs,
   });
 }
-
 
 class UsageStatsEvent {
   final int sessionId;
@@ -210,11 +208,9 @@ class UsageStatsSnapshot {
     required this.events,
   });
 
-  const UsageStatsSnapshot.empty({
-    required this.fromMs,
-    required this.toMs,
-  })  : sessions = const [],
-        events = const [];
+  const UsageStatsSnapshot.empty({required this.fromMs, required this.toMs})
+    : sessions = const [],
+      events = const [];
 }
 
 class UsageChartPoint {
@@ -394,8 +390,7 @@ class UsageStatsAnalytics {
       voltageDurationMs: voltageTimes,
       adaptiveOnDurationMs: adaptiveOnMs,
       peltierOnDurationMs: peltierOnMs,
-      fanSpeedAverage:
-          fanObservedMs == 0 ? null : fanWeighted / fanObservedMs,
+      fanSpeedAverage: fanObservedMs == 0 ? null : fanWeighted / fanObservedMs,
       fanSpeedMaximum: fanMaximum,
       voltageSegments: voltage,
       adaptiveSegments: adaptive,
@@ -419,14 +414,18 @@ class UsageStatsAnalytics {
       final lastSeen = session.lastSeenFor(metric);
       if (lastSeen == null) continue;
 
-      final sessionStart = math.max(snapshot.fromMs, session.startedAtMs).toInt();
-      final sessionEnd = math.min(
-        snapshot.toMs,
-        math.min(
-          session.endedAtMs ?? snapshot.toMs,
-          lastSeen + const Duration(milliseconds: 1500).inMilliseconds,
-        ),
-      ).toInt();
+      final sessionStart = math
+          .max(snapshot.fromMs, session.startedAtMs)
+          .toInt();
+      final sessionEnd = math
+          .min(
+            snapshot.toMs,
+            math.min(
+              session.endedAtMs ?? snapshot.toMs,
+              lastSeen + const Duration(milliseconds: 1500).inMilliseconds,
+            ),
+          )
+          .toInt();
       if (sessionEnd <= sessionStart) continue;
 
       final events =
@@ -444,12 +443,14 @@ class UsageStatsAnalytics {
       double? currentValue = previous?.numberValue;
       var cursor = sessionStart;
       if (currentValue != null) {
-        points.add(UsageChartPoint(
-          timestampMs: sessionStart,
-          value: currentValue,
-          sessionId: session.id,
-          breakBefore: true,
-        ));
+        points.add(
+          UsageChartPoint(
+            timestampMs: sessionStart,
+            value: currentValue,
+            sessionId: session.id,
+            breakBefore: true,
+          ),
+        );
       }
 
       for (final event in events) {
@@ -471,12 +472,14 @@ class UsageStatsAnalytics {
         final previousWasValid = currentValue != null;
         cursor = event.timestampMs;
         currentValue = event.numberValue;
-        points.add(UsageChartPoint(
-          timestampMs: event.timestampMs,
-          value: event.numberValue,
-          sessionId: session.id,
-          breakBefore: !previousWasValid || event.numberValue == null,
-        ));
+        points.add(
+          UsageChartPoint(
+            timestampMs: event.timestampMs,
+            value: event.numberValue,
+            sessionId: session.id,
+            breakBefore: !previousWasValid || event.numberValue == null,
+          ),
+        );
       }
 
       final trailingMs = sessionEnd - cursor;
@@ -489,11 +492,13 @@ class UsageStatsAnalytics {
         maximum = maximum == null
             ? currentValue
             : math.max(maximum, currentValue).toDouble();
-        points.add(UsageChartPoint(
-          timestampMs: sessionEnd,
-          value: currentValue,
-          sessionId: session.id,
-        ));
+        points.add(
+          UsageChartPoint(
+            timestampMs: sessionEnd,
+            value: currentValue,
+            sessionId: session.id,
+          ),
+        );
       }
     }
 
@@ -508,10 +513,7 @@ class UsageStatsAnalytics {
     );
   }
 
-  static double? temperatureAt(
-    List<UsageChartPoint> points,
-    int timestampMs,
-  ) {
+  static double? temperatureAt(List<UsageChartPoint> points, int timestampMs) {
     if (points.isEmpty || timestampMs > points.last.timestampMs) return null;
 
     var low = 0;
@@ -553,8 +555,7 @@ class UsageStatsAnalytics {
       final bucketSize = points.length / bucketCount;
       for (var bucket = 0; bucket < bucketCount; bucket++) {
         final start = (bucket * bucketSize).floor();
-        final end =
-            math.min(points.length, ((bucket + 1) * bucketSize).ceil());
+        final end = math.min(points.length, ((bucket + 1) * bucketSize).ceil());
         if (start >= end) continue;
         selectedIndices
           ..add(start)
@@ -599,12 +600,14 @@ class UsageStatsAnalytics {
       if (point.value == null || !breakBefore || point.breakBefore) {
         result.add(point);
       } else {
-        result.add(UsageChartPoint(
-          timestampMs: point.timestampMs,
-          value: point.value,
-          sessionId: point.sessionId,
-          breakBefore: true,
-        ));
+        result.add(
+          UsageChartPoint(
+            timestampMs: point.timestampMs,
+            value: point.value,
+            sessionId: point.sessionId,
+            breakBefore: true,
+          ),
+        );
       }
       previousIndex = index;
     }
@@ -636,16 +639,19 @@ class UsageStatsAnalytics {
     final result = <UsageStateSegment>[];
 
     for (final session in snapshot.sessions) {
-      final sessionStart =
-          math.max(snapshot.fromMs, session.startedAtMs).toInt();
-      final sessionEnd = math.min(
-        snapshot.toMs,
-        math.min(
-          session.endedAtMs ?? snapshot.toMs,
-          session.lastSeenAtMs +
-              const Duration(milliseconds: 1500).inMilliseconds,
-        ),
-      ).toInt();
+      final sessionStart = math
+          .max(snapshot.fromMs, session.startedAtMs)
+          .toInt();
+      final sessionEnd = math
+          .min(
+            snapshot.toMs,
+            math.min(
+              session.endedAtMs ?? snapshot.toMs,
+              session.lastSeenAtMs +
+                  const Duration(milliseconds: 1500).inMilliseconds,
+            ),
+          )
+          .toInt();
       if (sessionEnd <= sessionStart) continue;
 
       final events =
@@ -670,14 +676,16 @@ class UsageStatsAnalytics {
 
         if (event.timestampMs > cursor &&
             (currentText != null || currentNumber != null)) {
-          result.add(UsageStateSegment(
-            startMs: cursor,
-            endMs: event.timestampMs,
-            sessionId: session.id,
-            metric: metric,
-            textValue: currentText,
-            numberValue: currentNumber,
-          ));
+          result.add(
+            UsageStateSegment(
+              startMs: cursor,
+              endMs: event.timestampMs,
+              sessionId: session.id,
+              metric: metric,
+              textValue: currentText,
+              numberValue: currentNumber,
+            ),
+          );
         }
 
         cursor = event.timestampMs;
@@ -687,14 +695,16 @@ class UsageStatsAnalytics {
 
       if (sessionEnd > cursor &&
           (currentText != null || currentNumber != null)) {
-        result.add(UsageStateSegment(
-          startMs: cursor,
-          endMs: sessionEnd,
-          sessionId: session.id,
-          metric: metric,
-          textValue: currentText,
-          numberValue: currentNumber,
-        ));
+        result.add(
+          UsageStateSegment(
+            startMs: cursor,
+            endMs: sessionEnd,
+            sessionId: session.id,
+            metric: metric,
+            textValue: currentText,
+            numberValue: currentNumber,
+          ),
+        );
       }
     }
 
@@ -702,7 +712,6 @@ class UsageStatsAnalytics {
     return result;
   }
 }
-
 
 class UsageStatisticsStore implements UsageStatisticsRepository {
   UsageStatisticsStore._();
@@ -854,8 +863,7 @@ class UsageStatisticsStore implements UsageStatisticsRepository {
           'WHERE ended_at_ms IS NULL',
         );
         final now = DateTime.now().millisecondsSinceEpoch;
-        final cutoff =
-            now - const Duration(days: retentionDays).inMilliseconds;
+        final cutoff = now - const Duration(days: retentionDays).inMilliseconds;
         await database.rawDelete(
           'DELETE FROM usage_events WHERE timestamp_ms < ? '
           'AND id NOT IN (SELECT MAX(id) FROM usage_events '
@@ -962,7 +970,11 @@ class UsageStatisticsStore implements UsageStatisticsRepository {
     required double? value,
   }) async {
     if (metric != 'battery' && metric != 'hotside') {
-      throw ArgumentError.value(metric, 'metric', 'Unsupported temperature metric');
+      throw ArgumentError.value(
+        metric,
+        'metric',
+        'Unsupported temperature metric',
+      );
     }
     await _pruneIfDue(timestampMs);
     final database = await _database;
@@ -1005,7 +1017,6 @@ class UsageStatisticsStore implements UsageStatisticsRepository {
     });
   }
 
-
   Future<void> endSession({
     required int sessionId,
     required int timestampMs,
@@ -1014,10 +1025,7 @@ class UsageStatisticsStore implements UsageStatisticsRepository {
     final database = await _database;
     await database.update(
       'usage_sessions',
-      {
-        'ended_at_ms': timestampMs,
-        'end_reason': reason,
-      },
+      {'ended_at_ms': timestampMs, 'end_reason': reason},
       where: 'id = ? AND ended_at_ms IS NULL',
       whereArgs: [sessionId],
     );
@@ -1059,9 +1067,13 @@ class UsageStatisticsStore implements UsageStatisticsRepository {
     }
 
     final session = UsageStatsSession.fromMap(sessionRows.first);
-    final recordedEnd = session.endedAtMs ??
-        math.min(now, session.lastSeenAtMs +
-            const Duration(milliseconds: 1500).inMilliseconds);
+    final recordedEnd =
+        session.endedAtMs ??
+        math.min(
+          now,
+          session.lastSeenAtMs +
+              const Duration(milliseconds: 1500).inMilliseconds,
+        );
     final end = math.max(session.startedAtMs, recordedEnd).toInt();
 
     final stateRows = await database.query(
@@ -1098,23 +1110,27 @@ class UsageStatisticsStore implements UsageStatisticsRepository {
       final timestamp = (row['timestamp_ms'] as num).toInt();
       if ((row['battery_seen'] as num).toInt() == 1) {
         final raw = row['battery_c'];
-        events.add(UsageStatsEvent(
-          sessionId: id,
-          timestampMs: timestamp,
-          metric: 'battery',
-          numberValue: raw is num ? raw.toDouble() : null,
-          textValue: null,
-        ));
+        events.add(
+          UsageStatsEvent(
+            sessionId: id,
+            timestampMs: timestamp,
+            metric: 'battery',
+            numberValue: raw is num ? raw.toDouble() : null,
+            textValue: null,
+          ),
+        );
       }
       if ((row['hotside_seen'] as num).toInt() == 1) {
         final raw = row['hotside_c'];
-        events.add(UsageStatsEvent(
-          sessionId: id,
-          timestampMs: timestamp,
-          metric: 'hotside',
-          numberValue: raw is num ? raw.toDouble() : null,
-          textValue: null,
-        ));
+        events.add(
+          UsageStatsEvent(
+            sessionId: id,
+            timestampMs: timestamp,
+            metric: 'hotside',
+            numberValue: raw is num ? raw.toDouble() : null,
+            textValue: null,
+          ),
+        );
       }
     }
     events.sort((a, b) {
@@ -1146,9 +1162,9 @@ class UsageStatsWriteQueue {
     this.maxPendingOperations = 64,
     this.reservedControlOperations = 8,
     this.criticalControlOperations = 1,
-  })  : assert(maxPendingOperations > 0),
-        assert(reservedControlOperations >= 0),
-        assert(criticalControlOperations >= 0);
+  }) : assert(maxPendingOperations > 0),
+       assert(reservedControlOperations >= 0),
+       assert(criticalControlOperations >= 0);
 
   final int maxPendingOperations;
   final int reservedControlOperations;
@@ -1173,7 +1189,8 @@ class UsageStatsWriteQueue {
     bool allowCriticalCapacity = false,
     bool failOnReject = false,
   }) {
-    final capacity = maxPendingOperations +
+    final capacity =
+        maxPendingOperations +
         (allowReservedCapacity || allowCriticalCapacity
             ? reservedControlOperations
             : 0) +
@@ -1214,8 +1231,7 @@ class UsageStatsWriteQueue {
 class UsageStatisticsRecorder {
   UsageStatisticsRecorder._();
 
-  static final UsageStatisticsRecorder instance =
-      UsageStatisticsRecorder._();
+  static final UsageStatisticsRecorder instance = UsageStatisticsRecorder._();
 
   final UsageStatisticsStore _store = UsageStatisticsStore.instance;
   final ValueNotifier<int> revisionNotifier = ValueNotifier<int>(0);
@@ -1289,39 +1305,39 @@ class UsageStatisticsRecorder {
     final session = _liveSession(endedAtMs: endedAtMs);
     final coolerId = _coolerId;
     if (session == null || coolerId == null) return;
-    _liveUpdates.add(UsageStatsLiveUpdate(
-      coolerId: coolerId,
-      session: session,
-      events: List<UsageStatsEvent>.unmodifiable(events),
-      publishedAtMs: timestampMs,
-    ));
+    _liveUpdates.add(
+      UsageStatsLiveUpdate(
+        coolerId: coolerId,
+        session: session,
+        events: List<UsageStatsEvent>.unmodifiable(events),
+        publishedAtMs: timestampMs,
+      ),
+    );
   }
-
 
   void _startP1FreshnessWatchdog() {
     _p1FreshnessTimer?.cancel();
-    _p1FreshnessTimer = Timer.periodic(
-      const Duration(milliseconds: 500),
-      (_) {
-        final sessionId = _sessionId;
-        final lastReceipt = _lastP1ReceiptAtMs;
-        if (sessionId == null || lastReceipt == null) return;
-        final now = DateTime.now().millisecondsSinceEpoch;
-        if (now - lastReceipt >
-                const Duration(milliseconds: 2500).inMilliseconds &&
-            _writeQueue.hasCriticalCapacity) {
-          // Keep retrying while control slots are full; otherwise this watchdog
-          // would enqueue duplicate close requests every 500 ms.
-          _p1FreshnessTimer?.cancel();
-          _p1FreshnessTimer = null;
-          unawaited(endSession(
+    _p1FreshnessTimer = Timer.periodic(const Duration(milliseconds: 500), (_) {
+      final sessionId = _sessionId;
+      final lastReceipt = _lastP1ReceiptAtMs;
+      if (sessionId == null || lastReceipt == null) return;
+      final now = DateTime.now().millisecondsSinceEpoch;
+      if (now - lastReceipt >
+              const Duration(milliseconds: 2500).inMilliseconds &&
+          _writeQueue.hasCriticalCapacity) {
+        // Keep retrying while control slots are full; otherwise this watchdog
+        // would enqueue duplicate close requests every 500 ms.
+        _p1FreshnessTimer?.cancel();
+        _p1FreshnessTimer = null;
+        unawaited(
+          endSession(
             reason: 'stale_p1',
-            timestampMs: lastReceipt +
-                const Duration(milliseconds: 1500).inMilliseconds,
-          ));
-        }
-      },
-    );
+            timestampMs:
+                lastReceipt + const Duration(milliseconds: 1500).inMilliseconds,
+          ),
+        );
+      }
+    });
   }
 
   Future<void> startSession({
@@ -1379,18 +1395,57 @@ class UsageStatisticsRecorder {
       _lastP1ReceiptAtMs = now;
       _startP1FreshnessWatchdog();
       final sessionId = _sessionId!;
-      _publishLiveUpdate(timestampMs: now, events: [
-        UsageStatsEvent(sessionId: sessionId, timestampMs: now, metric: 'battery', numberValue: batteryC, textValue: null),
-        UsageStatsEvent(sessionId: sessionId, timestampMs: now, metric: 'hotside', numberValue: hotsideC, textValue: null),
-        if (voltage != null)
-          UsageStatsEvent(sessionId: sessionId, timestampMs: now, metric: 'voltage', numberValue: null, textValue: voltage),
-        if (adaptive != null)
-          UsageStatsEvent(sessionId: sessionId, timestampMs: now, metric: 'adaptive', numberValue: null, textValue: adaptive),
-        if (peltier != null)
-          UsageStatsEvent(sessionId: sessionId, timestampMs: now, metric: 'peltier', numberValue: null, textValue: peltier),
-        if (fanSpeed != null)
-          UsageStatsEvent(sessionId: sessionId, timestampMs: now, metric: 'fan_speed', numberValue: fanSpeed.toDouble(), textValue: null),
-      ]);
+      _publishLiveUpdate(
+        timestampMs: now,
+        events: [
+          UsageStatsEvent(
+            sessionId: sessionId,
+            timestampMs: now,
+            metric: 'battery',
+            numberValue: batteryC,
+            textValue: null,
+          ),
+          UsageStatsEvent(
+            sessionId: sessionId,
+            timestampMs: now,
+            metric: 'hotside',
+            numberValue: hotsideC,
+            textValue: null,
+          ),
+          if (voltage != null)
+            UsageStatsEvent(
+              sessionId: sessionId,
+              timestampMs: now,
+              metric: 'voltage',
+              numberValue: null,
+              textValue: voltage,
+            ),
+          if (adaptive != null)
+            UsageStatsEvent(
+              sessionId: sessionId,
+              timestampMs: now,
+              metric: 'adaptive',
+              numberValue: null,
+              textValue: adaptive,
+            ),
+          if (peltier != null)
+            UsageStatsEvent(
+              sessionId: sessionId,
+              timestampMs: now,
+              metric: 'peltier',
+              numberValue: null,
+              textValue: peltier,
+            ),
+          if (fanSpeed != null)
+            UsageStatsEvent(
+              sessionId: sessionId,
+              timestampMs: now,
+              metric: 'fan_speed',
+              numberValue: fanSpeed.toDouble(),
+              textValue: null,
+            ),
+        ],
+      );
       _notifyChanged();
     }, allowReservedCapacity: true);
   }
@@ -1405,12 +1460,14 @@ class UsageStatisticsRecorder {
 
     final safeValue =
         value != null && value.isFinite && value >= 0 && value <= 100
-            ? value
-            : null;
+        ? value
+        : null;
     final receivedAtMs = DateTime.now().millisecondsSinceEpoch;
-    final previousP1ReceiptAtMs =
-        metric == 'hotside' ? _lastP1ReceiptAtMs : null;
-    final p1ReceiptGap = metric == 'hotside' &&
+    final previousP1ReceiptAtMs = metric == 'hotside'
+        ? _lastP1ReceiptAtMs
+        : null;
+    final p1ReceiptGap =
+        metric == 'hotside' &&
         previousP1ReceiptAtMs != null &&
         receivedAtMs - previousP1ReceiptAtMs >
             const Duration(milliseconds: 2500).inMilliseconds;
@@ -1430,7 +1487,8 @@ class UsageStatisticsRecorder {
       if (sessionId == null) return;
 
       final lastSeen = _lastSensorSeenMs[metric];
-      final sampleGap = lastSeen != null &&
+      final sampleGap =
+          lastSeen != null &&
           receivedAtMs - lastSeen >
               const Duration(milliseconds: 2500).inMilliseconds;
       if (sampleGap) {
@@ -1455,24 +1513,29 @@ class UsageStatisticsRecorder {
       );
       _temperatures[metric] = safeValue;
       _lastSensorSeenMs[metric] = receivedAtMs;
-      _publishLiveUpdate(timestampMs: receivedAtMs, events: [
-        UsageStatsEvent(
-          sessionId: sessionId,
-          timestampMs: receivedAtMs,
-          metric: metric,
-          numberValue: safeValue,
-          textValue: null,
-        ),
-      ]);
+      _publishLiveUpdate(
+        timestampMs: receivedAtMs,
+        events: [
+          UsageStatsEvent(
+            sessionId: sessionId,
+            timestampMs: receivedAtMs,
+            metric: metric,
+            numberValue: safeValue,
+            textValue: null,
+          ),
+        ],
+      );
       _notifyChanged();
     });
   }
 
-  Future<void> recordState({
-    required String metric,
-    required Object? value,
-  }) {
-    if (!const {'voltage', 'adaptive', 'peltier', 'fan_speed'}.contains(metric)) {
+  Future<void> recordState({required String metric, required Object? value}) {
+    if (!const {
+      'voltage',
+      'adaptive',
+      'peltier',
+      'fan_speed',
+    }.contains(metric)) {
       return Future<void>.value();
     }
 
@@ -1494,29 +1557,30 @@ class UsageStatisticsRecorder {
       canonical = value.round().clamp(0, 100).toInt();
     }
 
-    return _enqueue(
-      () async {
-        final sessionId = _sessionId;
-        if (sessionId == null) return;
+    return _enqueue(() async {
+      final sessionId = _sessionId;
+      if (sessionId == null) return;
 
-        final now = DateTime.now().millisecondsSinceEpoch;
-        final previous = _states[metric];
-        if (previous == canonical) {
-          _notifyChanged();
-          return;
-        }
+      final now = DateTime.now().millisecondsSinceEpoch;
+      final previous = _states[metric];
+      if (previous == canonical) {
+        _notifyChanged();
+        return;
+      }
 
-        final numeric = canonical is num ? canonical.toDouble() : null;
-        final text = canonical is String ? canonical : null;
-        await _store.recordEvent(
-          sessionId: sessionId,
-          timestampMs: now,
-          metric: metric,
-          numberValue: numeric,
-          textValue: text,
-        );
-        _states[metric] = canonical;
-        _publishLiveUpdate(timestampMs: now, events: [
+      final numeric = canonical is num ? canonical.toDouble() : null;
+      final text = canonical is String ? canonical : null;
+      await _store.recordEvent(
+        sessionId: sessionId,
+        timestampMs: now,
+        metric: metric,
+        numberValue: numeric,
+        textValue: text,
+      );
+      _states[metric] = canonical;
+      _publishLiveUpdate(
+        timestampMs: now,
+        events: [
           UsageStatsEvent(
             sessionId: sessionId,
             timestampMs: now,
@@ -1524,118 +1588,163 @@ class UsageStatisticsRecorder {
             numberValue: numeric,
             textValue: text,
           ),
-        ]);
-        _notifyChanged();
-      },
-      allowReservedCapacity: metric != 'fan_speed',
-    );
+        ],
+      );
+      _notifyChanged();
+    }, allowReservedCapacity: metric != 'fan_speed');
   }
 
-  Future<void> endSession({
-    String reason = 'disconnected',
-    int? timestampMs,
-  }) {
-    return _enqueue(() async {
-      final id = _sessionId;
-      if (id == null) return;
+  Future<void> endSession({String reason = 'disconnected', int? timestampMs}) {
+    return _enqueue(
+      () async {
+        final id = _sessionId;
+        if (id == null) return;
 
-      final endedAt = timestampMs ?? DateTime.now().millisecondsSinceEpoch;
-      final gapEvents = <UsageStatsEvent>[];
-      for (final metric in const ['battery', 'hotside']) {
-        final lastSeen = _lastSensorSeenMs[metric];
-        if (lastSeen == null ||
-            endedAt - lastSeen <=
-                const Duration(milliseconds: 2500).inMilliseconds) {
-          continue;
+        final endedAt = timestampMs ?? DateTime.now().millisecondsSinceEpoch;
+        final gapEvents = <UsageStatsEvent>[];
+        for (final metric in const ['battery', 'hotside']) {
+          final lastSeen = _lastSensorSeenMs[metric];
+          if (lastSeen == null ||
+              endedAt - lastSeen <=
+                  const Duration(milliseconds: 2500).inMilliseconds) {
+            continue;
+          }
+          final gapAt =
+              lastSeen + const Duration(milliseconds: 1500).inMilliseconds;
+          await _store.recordTemperatureSample(
+            sessionId: id,
+            timestampMs: gapAt,
+            metric: metric,
+            value: null,
+          );
+          _temperatures[metric] = null;
+          gapEvents.add(
+            UsageStatsEvent(
+              sessionId: id,
+              timestampMs: gapAt,
+              metric: metric,
+              numberValue: null,
+              textValue: null,
+            ),
+          );
         }
-        final gapAt = lastSeen +
-            const Duration(milliseconds: 1500).inMilliseconds;
-        await _store.recordTemperatureSample(
+        await _store.endSession(
           sessionId: id,
-          timestampMs: gapAt,
-          metric: metric,
-          value: null,
+          timestampMs: endedAt,
+          reason: reason,
         );
-        _temperatures[metric] = null;
-        gapEvents.add(UsageStatsEvent(
-          sessionId: id,
-          timestampMs: gapAt,
-          metric: metric,
-          numberValue: null,
-          textValue: null,
-        ));
-      }
-      await _store.endSession(
-        sessionId: id,
-        timestampMs: endedAt,
-        reason: reason,
-      );
-      _sessionEndedAtMs = endedAt;
-      _publishLiveUpdate(
-        timestampMs: endedAt,
-        endedAtMs: endedAt,
-        events: gapEvents,
-      );
-      _p1FreshnessTimer?.cancel();
-      _p1FreshnessTimer = null;
-      _sessionId = null;
-      _coolerId = null;
-      _temperatures.clear();
-      _states.clear();
-      _lastSensorSeenMs.clear();
-      _lastP1ReceiptAtMs = null;
-      _sessionStartedAtMs = null;
-      _sessionEndedAtMs = null;
-      _notifyChanged();
-    }, allowReservedCapacity: true, allowCriticalCapacity: true);
+        _sessionEndedAtMs = endedAt;
+        _publishLiveUpdate(
+          timestampMs: endedAt,
+          endedAtMs: endedAt,
+          events: gapEvents,
+        );
+        _p1FreshnessTimer?.cancel();
+        _p1FreshnessTimer = null;
+        _sessionId = null;
+        _coolerId = null;
+        _temperatures.clear();
+        _states.clear();
+        _lastSensorSeenMs.clear();
+        _lastP1ReceiptAtMs = null;
+        _sessionStartedAtMs = null;
+        _sessionEndedAtMs = null;
+        _notifyChanged();
+      },
+      allowReservedCapacity: true,
+      allowCriticalCapacity: true,
+    );
   }
 
   Future<void> clearHistory(String coolerId) {
     final safeId = coolerId.trim();
     if (safeId.isEmpty) return Future<void>.value();
 
-    return _enqueue(() async {
-      final active = _coolerId == safeId;
-      await _store.clearCooler(safeId);
-      if (!active) {
-        _notifyChanged();
-        return;
-      }
+    return _enqueue(
+      () async {
+        final active = _coolerId == safeId;
+        await _store.clearCooler(safeId);
+        if (!active) {
+          _notifyChanged();
+          return;
+        }
 
-      final now = DateTime.now().millisecondsSinceEpoch;
-      _sessionId = await _store.startSession(
-        coolerId: safeId,
-        timestampMs: now,
-        batteryC: _temperatures['battery'],
-        hotsideC: _temperatures['hotside'],
-        voltage: _states['voltage'] as String?,
-        adaptive: _states['adaptive'] as String?,
-        peltier: _states['peltier'] as String?,
-        fanSpeed: (_states['fan_speed'] as num?)?.toInt(),
-      );
-      _lastSensorSeenMs
-        ..clear()
-        ..['battery'] = now
-        ..['hotside'] = now;
-      _sessionStartedAtMs = now;
-      _sessionEndedAtMs = null;
-      _lastP1ReceiptAtMs = now;
-      _startP1FreshnessWatchdog();
-      final sessionId = _sessionId!;
-      _publishLiveUpdate(timestampMs: now, events: [
-        UsageStatsEvent(sessionId: sessionId, timestampMs: now, metric: 'battery', numberValue: _temperatures['battery'], textValue: null),
-        UsageStatsEvent(sessionId: sessionId, timestampMs: now, metric: 'hotside', numberValue: _temperatures['hotside'], textValue: null),
-        if (_states['voltage'] is String)
-          UsageStatsEvent(sessionId: sessionId, timestampMs: now, metric: 'voltage', numberValue: null, textValue: _states['voltage'] as String),
-        if (_states['adaptive'] is String)
-          UsageStatsEvent(sessionId: sessionId, timestampMs: now, metric: 'adaptive', numberValue: null, textValue: _states['adaptive'] as String),
-        if (_states['peltier'] is String)
-          UsageStatsEvent(sessionId: sessionId, timestampMs: now, metric: 'peltier', numberValue: null, textValue: _states['peltier'] as String),
-        if (_states['fan_speed'] is num)
-          UsageStatsEvent(sessionId: sessionId, timestampMs: now, metric: 'fan_speed', numberValue: (_states['fan_speed'] as num).toDouble(), textValue: null),
-      ]);
-      _notifyChanged();
-    }, allowReservedCapacity: true, failOnReject: true);
+        final now = DateTime.now().millisecondsSinceEpoch;
+        _sessionId = await _store.startSession(
+          coolerId: safeId,
+          timestampMs: now,
+          batteryC: _temperatures['battery'],
+          hotsideC: _temperatures['hotside'],
+          voltage: _states['voltage'] as String?,
+          adaptive: _states['adaptive'] as String?,
+          peltier: _states['peltier'] as String?,
+          fanSpeed: (_states['fan_speed'] as num?)?.toInt(),
+        );
+        _lastSensorSeenMs
+          ..clear()
+          ..['battery'] = now
+          ..['hotside'] = now;
+        _sessionStartedAtMs = now;
+        _sessionEndedAtMs = null;
+        _lastP1ReceiptAtMs = now;
+        _startP1FreshnessWatchdog();
+        final sessionId = _sessionId!;
+        _publishLiveUpdate(
+          timestampMs: now,
+          events: [
+            UsageStatsEvent(
+              sessionId: sessionId,
+              timestampMs: now,
+              metric: 'battery',
+              numberValue: _temperatures['battery'],
+              textValue: null,
+            ),
+            UsageStatsEvent(
+              sessionId: sessionId,
+              timestampMs: now,
+              metric: 'hotside',
+              numberValue: _temperatures['hotside'],
+              textValue: null,
+            ),
+            if (_states['voltage'] is String)
+              UsageStatsEvent(
+                sessionId: sessionId,
+                timestampMs: now,
+                metric: 'voltage',
+                numberValue: null,
+                textValue: _states['voltage'] as String,
+              ),
+            if (_states['adaptive'] is String)
+              UsageStatsEvent(
+                sessionId: sessionId,
+                timestampMs: now,
+                metric: 'adaptive',
+                numberValue: null,
+                textValue: _states['adaptive'] as String,
+              ),
+            if (_states['peltier'] is String)
+              UsageStatsEvent(
+                sessionId: sessionId,
+                timestampMs: now,
+                metric: 'peltier',
+                numberValue: null,
+                textValue: _states['peltier'] as String,
+              ),
+            if (_states['fan_speed'] is num)
+              UsageStatsEvent(
+                sessionId: sessionId,
+                timestampMs: now,
+                metric: 'fan_speed',
+                numberValue: (_states['fan_speed'] as num).toDouble(),
+                textValue: null,
+              ),
+          ],
+        );
+        _notifyChanged();
+      },
+      allowReservedCapacity: true,
+      failOnReject: true,
+    );
   }
 }
 
@@ -1657,8 +1766,7 @@ List<UsageStatsEvent> _mergeSortedUsageStatsEvents(
   final merged = <UsageStatsEvent>[];
   var existingIndex = 0;
   var additionIndex = 0;
-  while (existingIndex < existing.length &&
-      additionIndex < additions.length) {
+  while (existingIndex < existing.length && additionIndex < additions.length) {
     if (_compareUsageStatsEvents(
           existing[existingIndex],
           additions[additionIndex],
@@ -1678,9 +1786,7 @@ List<UsageStatsEvent> _mergeSortedUsageStatsEvents(
   return merged;
 }
 
-UsageStatsSnapshot _sortUsageStatsSnapshotEvents(
-  UsageStatsSnapshot snapshot,
-) {
+UsageStatsSnapshot _sortUsageStatsSnapshotEvents(UsageStatsSnapshot snapshot) {
   final events = List<UsageStatsEvent>.of(snapshot.events)
     ..sort(_compareUsageStatsEvents);
   return UsageStatsSnapshot(
@@ -1750,8 +1856,9 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
   void dispose() {
     _liveFlushTimer?.cancel();
     _liveSubscription?.cancel();
-    UsageStatisticsRecorder.instance.revisionNotifier
-        .removeListener(_handleRecorderStatusChange);
+    UsageStatisticsRecorder.instance.revisionNotifier.removeListener(
+      _handleRecorderStatusChange,
+    );
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
@@ -1812,7 +1919,8 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
           ];
         }
 
-        final sameSession = workingSnapshot != null &&
+        final sameSession =
+            workingSnapshot != null &&
             workingSnapshot.sessions.any(
               (session) => session.id == update.session.id,
             );
@@ -1891,7 +1999,8 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
       try {
         final sessions = await _repository.loadSessions(coolerId: coolerId);
         final requestedId = _sessionSelectionPinned ? _selectedSessionId : null;
-        final selectedId = requestedId != null &&
+        final selectedId =
+            requestedId != null &&
                 sessions.any((session) => session.id == requestedId)
             ? requestedId
             : (sessions.isEmpty ? null : sessions.first.id);
@@ -1904,8 +2013,9 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
         final snapshot = loadedSnapshot == null
             ? null
             : _sortUsageStatsSnapshotEvents(loadedSnapshot);
-        final summary =
-            snapshot == null ? null : UsageStatsAnalytics.summarize(snapshot);
+        final summary = snapshot == null
+            ? null
+            : UsageStatsAnalytics.summarize(snapshot);
         final eventKeys = snapshot == null
             ? <String>{}
             : snapshot.events.map(_usageStatsEventKey).toSet();
@@ -1947,16 +2057,20 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (dialogContext) => AlertDialog(
-        title: Text(JexText.phrase(
-          'Clear usage statistics?',
-          'Hapus statistik penggunaan?',
-          language,
-        )),
-        content: Text(JexText.phrase(
-          'This removes the locally stored history for this cooler.',
-          'Ini menghapus riwayat lokal untuk cooler ini.',
-          language,
-        )),
+        title: Text(
+          JexText.phrase(
+            'Clear usage statistics?',
+            'Hapus statistik penggunaan?',
+            language,
+          ),
+        ),
+        content: Text(
+          JexText.phrase(
+            'This removes the locally stored history for this cooler.',
+            'Ini menghapus riwayat lokal untuk cooler ini.',
+            language,
+          ),
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(dialogContext, false),
@@ -2006,14 +2120,16 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(JexText.phrase(
-          'Usage Statistics',
-          'Statistik Penggunaan',
-          language,
-        )),
+        title: Text(
+          JexText.phrase('Usage Statistics', 'Statistik Penggunaan', language),
+        ),
         actions: [
           IconButton(
-            tooltip: JexText.phrase('Statistics information', 'Informasi statistik', language),
+            tooltip: JexText.phrase(
+              'Statistics information',
+              'Informasi statistik',
+              language,
+            ),
             onPressed: _showDataInfo,
             icon: const Icon(PhosphorIconsRegular.info),
           ),
@@ -2168,7 +2284,13 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
       builder: (dialogContext) {
         final scheme = Theme.of(dialogContext).colorScheme;
         return AlertDialog(
-          title: Text(JexText.phrase('About this history', 'Tentang riwayat ini', language)),
+          title: Text(
+            JexText.phrase(
+              'About this history',
+              'Tentang riwayat ini',
+              language,
+            ),
+          ),
           content: Text(
             JexText.phrase(
               'Battery and Hotside are sampled once per second during confirmed cooler operation. Missing or invalid readings remain visible gaps. History is stored locally on this phone.',
@@ -2226,9 +2348,9 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
             _sessionStartLabel(session),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: scheme.onSurfaceVariant,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.bodySmall?.copyWith(color: scheme.onSurfaceVariant),
           ),
         ],
       );
@@ -2293,10 +2415,7 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
     );
   }
 
-  String _sessionOptionLabel(
-    UsageStatsSession session,
-    AppLanguage language,
-  ) {
+  String _sessionOptionLabel(UsageStatsSession session, AppLanguage language) {
     final start = DateTime.fromMillisecondsSinceEpoch(
       session.startedAtMs,
     ).toLocal();
@@ -2339,7 +2458,11 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(PhosphorIconsRegular.chartLineUp, size: 36, color: scheme.onSurfaceVariant),
+          Icon(
+            PhosphorIconsRegular.chartLineUp,
+            size: 36,
+            color: scheme.onSurfaceVariant,
+          ),
           const SizedBox(height: 14),
           Text(
             title,
@@ -2350,14 +2473,11 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
           Text(
             message,
             textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: scheme.onSurfaceVariant,
-                ),
+            style: Theme.of(
+              context,
+            ).textTheme.bodyMedium?.copyWith(color: scheme.onSurfaceVariant),
           ),
-          if (action != null) ...[
-            const SizedBox(height: 8),
-            action,
-          ],
+          if (action != null) ...[const SizedBox(height: 8), action],
         ],
       ),
     );
@@ -2371,9 +2491,11 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
     const plotLeft = 34.0;
     const plotRight = 8.0;
     final plotWidth = math.max(1.0, width - plotLeft - plotRight).toDouble();
-    final fraction =
-        ((localX - plotLeft) / plotWidth).clamp(0.0, 1.0).toDouble();
-    final timestamp = snapshot.fromMs +
+    final fraction = ((localX - plotLeft) / plotWidth)
+        .clamp(0.0, 1.0)
+        .toDouble();
+    final timestamp =
+        snapshot.fromMs +
         ((snapshot.toMs - snapshot.fromMs) * fraction).round();
     if (_selectedTimestampMs == timestamp) return;
     setState(() => _selectedTimestampMs = timestamp);
@@ -2405,12 +2527,30 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
       return const SizedBox.shrink();
     }
 
-    final voltage = UsageStatsAnalytics.stateAt(summary.voltageSegments, timestamp);
-    final adaptive = UsageStatsAnalytics.stateAt(summary.adaptiveSegments, timestamp);
-    final peltier = UsageStatsAnalytics.stateAt(summary.peltierSegments, timestamp);
-    final fan = UsageStatsAnalytics.stateAt(summary.fanSpeedSegments, timestamp);
-    final battery = UsageStatsAnalytics.temperatureAt(summary.battery.points, timestamp);
-    final hotside = UsageStatsAnalytics.temperatureAt(summary.hotside.points, timestamp);
+    final voltage = UsageStatsAnalytics.stateAt(
+      summary.voltageSegments,
+      timestamp,
+    );
+    final adaptive = UsageStatsAnalytics.stateAt(
+      summary.adaptiveSegments,
+      timestamp,
+    );
+    final peltier = UsageStatsAnalytics.stateAt(
+      summary.peltierSegments,
+      timestamp,
+    );
+    final fan = UsageStatsAnalytics.stateAt(
+      summary.fanSpeedSegments,
+      timestamp,
+    );
+    final battery = UsageStatsAnalytics.temperatureAt(
+      summary.battery.points,
+      timestamp,
+    );
+    final hotside = UsageStatsAnalytics.temperatureAt(
+      summary.hotside.points,
+      timestamp,
+    );
 
     Widget metric(String label, String value) => Expanded(
       child: Padding(
@@ -2423,9 +2563,9 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
               label,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                color: scheme.onSurfaceVariant,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.labelSmall?.copyWith(color: scheme.onSurfaceVariant),
             ),
             const SizedBox(height: 2),
             Text(
@@ -2451,9 +2591,9 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
             Expanded(
               child: Text(
                 JexText.phrase('Selected time', 'Waktu dipilih', language),
-                style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                  fontWeight: FontWeight.w700,
-                ),
+                style: Theme.of(
+                  context,
+                ).textTheme.labelMedium?.copyWith(fontWeight: FontWeight.w700),
               ),
             ),
             Text(
@@ -2564,9 +2704,9 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
             JexText.phrase('Limit · ', 'Batas · ', language) +
                 referenceValue.toStringAsFixed(0) +
                 '°C',
-            style: Theme.of(context).textTheme.labelSmall?.copyWith(
-              color: scheme.onSurfaceVariant,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.labelSmall?.copyWith(color: scheme.onSurfaceVariant),
           ),
         ],
         const SizedBox(height: 7),
@@ -2593,7 +2733,9 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
                         constraints.maxWidth,
                       ),
                       child: _AnimatedUsageLineChart(
-                        key: ValueKey<String>('usage-temperature-chart-$metricKey'),
+                        key: ValueKey<String>(
+                          'usage-temperature-chart-$metricKey',
+                        ),
                         points: summary.chartPoints,
                         fromMs: _snapshot!.fromMs,
                         toMs: _snapshot!.toMs,
@@ -2645,6 +2787,7 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
       ],
     );
   }
+
   Widget _profileSection(
     UsageStatsSummary summary,
     AppLanguage language,
@@ -2660,8 +2803,7 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
         return _localizedUsageStateValue(latest.textValue, language);
       }
       if (latest.numberValue != null) {
-        return latest.numberValue!.toStringAsFixed(0) +
-            (percentage ? '%' : '');
+        return latest.numberValue!.toStringAsFixed(0) + (percentage ? '%' : '');
       }
       return '--';
     }
@@ -2801,23 +2943,21 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
         Text(
           label,
           style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
-              ),
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
+          ),
         ),
         const SizedBox(height: 2),
         Text(
           value,
           style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                fontWeight: FontWeight.w700,
-                fontFeatures: const [FontFeature.tabularFigures()],
-              ),
+            fontWeight: FontWeight.w700,
+            fontFeatures: const [FontFeature.tabularFigures()],
+          ),
         ),
       ],
     );
   }
-
 }
-
 
 class _AnimatedUsageLineChart extends StatefulWidget {
   final List<UsageChartPoint> points;
@@ -3000,9 +3140,7 @@ class _UsageLinePainter extends CustomPainter {
 
     double xFor(int timestamp) {
       return plot.left +
-          ((timestamp - fromMs) / (toMs - fromMs))
-                  .clamp(0.0, 1.0)
-                  .toDouble() *
+          ((timestamp - fromMs) / (toMs - fromMs)).clamp(0.0, 1.0).toDouble() *
               plot.width;
     }
 
@@ -3055,7 +3193,8 @@ class _UsageLinePainter extends CustomPainter {
 
       final x = xFor(point.timestampMs);
       final y = yFor(value);
-      final startNew = path == null ||
+      final startNew =
+          path == null ||
           point.breakBefore ||
           (pathSession != null && pathSession != point.sessionId);
       if (startNew) {
@@ -3118,7 +3257,6 @@ class _UsageLinePainter extends CustomPainter {
       oldDelegate.cursorTimestampMs != cursorTimestampMs;
 }
 
-
 class _AnimatedUsageTimeline extends StatefulWidget {
   final List<UsageStateSegment> segments;
   final int fromMs;
@@ -3148,10 +3286,10 @@ class _AnimatedUsageTimelineState extends State<_AnimatedUsageTimeline>
   double? _targetSpeed;
 
   double? get _displayedSpeed => usageInterpolate(
-        _fromSpeed,
-        _targetSpeed,
-        Curves.easeOutCubic.transform(_controller.value),
-      );
+    _fromSpeed,
+    _targetSpeed,
+    Curves.easeOutCubic.transform(_controller.value),
+  );
 
   double? _latestSpeed(List<UsageStateSegment> segments) =>
       segments.isEmpty ? null : segments.last.numberValue;
@@ -3249,10 +3387,8 @@ class _UsageTimelinePainter extends CustomPainter {
     final plotWidth = math.max(1.0, size.width - left - right).toDouble();
     double xFor(int time) =>
         left +
-        ((time - fromMs) / (toMs - fromMs))
-            .clamp(0.0, 1.0)
-            .toDouble() *
-        plotWidth;
+        ((time - fromMs) / (toMs - fromMs)).clamp(0.0, 1.0).toDouble() *
+            plotWidth;
 
     if (lane == 'fan_speed') {
       final grid = Paint()
@@ -3269,15 +3405,15 @@ class _UsageTimelinePainter extends CustomPainter {
       for (var index = 0; index < segments.length; index++) {
         final segment = segments[index];
         final rawSpeed = segment.numberValue ?? 0;
-        final speed = (index == segments.length - 1
-                ? animatedFanSpeed ?? rawSpeed
-                : rawSpeed)
-            .clamp(0, 100)
-            .toDouble();
+        final speed =
+            (index == segments.length - 1
+                    ? animatedFanSpeed ?? rawSpeed
+                    : rawSpeed)
+                .clamp(0, 100)
+                .toDouble();
         final startX = xFor(segment.startMs);
         final endX = xFor(segment.endMs);
-        final y = size.height - 2 -
-            (size.height - 5) * speed / 100;
+        final y = size.height - 2 - (size.height - 5) * speed / 100;
         if (endX <= startX) continue;
         if (!started) {
           area.moveTo(startX, size.height - 2);
@@ -3316,7 +3452,8 @@ class _UsageTimelinePainter extends CustomPainter {
       }
     }
 
-    for (final segment in lane == 'fan_speed' ? const <UsageStateSegment>[] : segments) {
+    for (final segment
+        in lane == 'fan_speed' ? const <UsageStateSegment>[] : segments) {
       final start = xFor(segment.startMs);
       final end = xFor(segment.endMs);
       if (end <= start) continue;
@@ -3354,14 +3491,21 @@ class _UsageTimelinePainter extends CustomPainter {
         default:
           color = scheme.primary;
           final speed = (segment.numberValue ?? 0).clamp(0, 100).toDouble();
-          final height = math.max(2.0, (size.height - 5) * speed / 100).toDouble();
+          final height = math
+              .max(2.0, (size.height - 5) * speed / 100)
+              .toDouble();
           top = size.height - 2 - height;
           bottom = size.height - 2;
       }
 
       canvas.drawRRect(
         RRect.fromRectAndRadius(
-          Rect.fromLTRB(start, top, math.max(start + 1, end).toDouble(), bottom),
+          Rect.fromLTRB(
+            start,
+            top,
+            math.max(start + 1, end).toDouble(),
+            bottom,
+          ),
           const Radius.circular(2),
         ),
         Paint()..color = color,
@@ -3405,4 +3549,3 @@ String _formatTemperature(double? value, AppLanguage language) {
 
 String _axisTime(int timestampMs, int sessionStartMs) =>
     formatUsageElapsed(timestampMs - sessionStartMs);
-

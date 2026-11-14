@@ -14,6 +14,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 // All user-facing application strings are resolved through JexText for full language coverage.
 enum AppLanguage { english, indonesia }
+
 enum AppThemePreset { defaultTheme, light, dark }
 
 // Default is a deliberate hybrid: the Home header is dark while its lower
@@ -69,13 +70,13 @@ class AppSettings {
   // AI-METHOD / SERIALIZATION CONTRACT
   // Serialize only persisted application preferences. Storage names are compatibility keys.
   Map<String, dynamic> toJson() => <String, dynamic>{
-        'language': language.name,
-        'theme': theme.name,
-        'notifySafety': notifySafety,
-        'notifyFirmware': notifyFirmware,
-        'notifyBluetooth': notifyBluetooth,
-        'autoConnect': autoConnect,
-      };
+    'language': language.name,
+    'theme': theme.name,
+    'notifySafety': notifySafety,
+    'notifyFirmware': notifyFirmware,
+    'notifyBluetooth': notifyBluetooth,
+    'autoConnect': autoConnect,
+  };
 
   // AI-METHOD / DESERIALIZATION CONTRACT
   // Parse persisted preferences defensively; malformed or missing data falls back to defaults.
@@ -86,19 +87,31 @@ class AppSettings {
       AppLanguage language = AppLanguage.english;
       AppThemePreset theme = AppThemePreset.defaultTheme;
       try {
-        language = AppLanguage.values.byName(decoded['language']?.toString() ?? '');
+        language = AppLanguage.values.byName(
+          decoded['language']?.toString() ?? '',
+        );
       } catch (_) {}
       try {
-        theme = AppThemePreset.values.byName(decoded['theme']?.toString() ?? '');
+        theme = AppThemePreset.values.byName(
+          decoded['theme']?.toString() ?? '',
+        );
       } catch (_) {}
       return AppSettings(
         language: language,
         theme: theme,
-        notifySafety: decoded['notifySafety'] is bool ? decoded['notifySafety'] as bool : true,
-        notifyFirmware: decoded['notifyFirmware'] is bool ? decoded['notifyFirmware'] as bool : true,
-        notifyBluetooth: decoded['notifyBluetooth'] is bool ? decoded['notifyBluetooth'] as bool : true,
+        notifySafety: decoded['notifySafety'] is bool
+            ? decoded['notifySafety'] as bool
+            : true,
+        notifyFirmware: decoded['notifyFirmware'] is bool
+            ? decoded['notifyFirmware'] as bool
+            : true,
+        notifyBluetooth: decoded['notifyBluetooth'] is bool
+            ? decoded['notifyBluetooth'] as bool
+            : true,
         // Missing/malformed Auto Connect preference falls back to the new Manual default.
-        autoConnect: decoded['autoConnect'] is bool ? decoded['autoConnect'] as bool : false,
+        autoConnect: decoded['autoConnect'] is bool
+            ? decoded['autoConnect'] as bool
+            : false,
       );
     } catch (_) {
       return const AppSettings();
@@ -106,13 +119,18 @@ class AppSettings {
   }
 }
 
-final ValueNotifier<AppLanguage> appLanguageNotifier = ValueNotifier<AppLanguage>(AppLanguage.english);
-final ValueNotifier<AppThemePreset> appThemeNotifier = ValueNotifier<AppThemePreset>(AppThemePreset.defaultTheme);
+final ValueNotifier<AppLanguage> appLanguageNotifier =
+    ValueNotifier<AppLanguage>(AppLanguage.english);
+final ValueNotifier<AppThemePreset> appThemeNotifier =
+    ValueNotifier<AppThemePreset>(AppThemePreset.defaultTheme);
 final ValueNotifier<bool> appNotifySafetyNotifier = ValueNotifier<bool>(true);
 final ValueNotifier<bool> appNotifyFirmwareNotifier = ValueNotifier<bool>(true);
-final ValueNotifier<bool> appNotifyBluetoothNotifier = ValueNotifier<bool>(true);
+final ValueNotifier<bool> appNotifyBluetoothNotifier = ValueNotifier<bool>(
+  true,
+);
 final ValueNotifier<bool> appAutoConnectNotifier = ValueNotifier<bool>(false);
-final ValueNotifier<String?> knownCoolerRemoteIdNotifier = ValueNotifier<String?>(null);
+final ValueNotifier<String?> knownCoolerRemoteIdNotifier =
+    ValueNotifier<String?>(null);
 
 // AI-MEMORY / STORE CONTRACT
 // AppSettingsStore is the only persistence boundary for application-level settings.
@@ -126,7 +144,9 @@ class AppSettingsStore {
   static Future<AppSettings> load() async {
     try {
       final raw = await _storage.read(key: _key);
-      final settings = raw == null ? const AppSettings() : AppSettings.fromJson(raw);
+      final settings = raw == null
+          ? const AppSettings()
+          : AppSettings.fromJson(raw);
       _apply(settings);
       return settings;
     } catch (_) {
@@ -190,8 +210,9 @@ class KnownCoolerStore {
     try {
       final raw = await _storage.read(key: _key);
       final value = raw?.trim();
-      knownCoolerRemoteIdNotifier.value =
-          value == null || value.isEmpty ? null : value;
+      knownCoolerRemoteIdNotifier.value = value == null || value.isEmpty
+          ? null
+          : value;
       return knownCoolerRemoteIdNotifier.value;
     } catch (_) {
       knownCoolerRemoteIdNotifier.value = null;
@@ -231,10 +252,7 @@ class JexText {
       AppLanguage.english: 'Settings',
       AppLanguage.indonesia: 'Pengaturan',
     },
-    'general': {
-      AppLanguage.english: 'General',
-      AppLanguage.indonesia: 'Umum',
-    },
+    'general': {AppLanguage.english: 'General', AppLanguage.indonesia: 'Umum'},
     'device': {
       AppLanguage.english: 'Device',
       AppLanguage.indonesia: 'Perangkat',
@@ -243,10 +261,7 @@ class JexText {
       AppLanguage.english: 'Firmware',
       AppLanguage.indonesia: 'Firmware',
     },
-    'about': {
-      AppLanguage.english: 'About',
-      AppLanguage.indonesia: 'Tentang',
-    },
+    'about': {AppLanguage.english: 'About', AppLanguage.indonesia: 'Tentang'},
     'language': {
       AppLanguage.english: 'Language',
       AppLanguage.indonesia: 'Bahasa',
@@ -267,14 +282,8 @@ class JexText {
       AppLanguage.english: 'Default',
       AppLanguage.indonesia: 'Bawaan',
     },
-    'light': {
-      AppLanguage.english: 'Light',
-      AppLanguage.indonesia: 'Terang',
-    },
-    'dark': {
-      AppLanguage.english: 'Dark',
-      AppLanguage.indonesia: 'Gelap',
-    },
+    'light': {AppLanguage.english: 'Light', AppLanguage.indonesia: 'Terang'},
+    'dark': {AppLanguage.english: 'Dark', AppLanguage.indonesia: 'Gelap'},
     'notifications': {
       AppLanguage.english: 'Notifications',
       AppLanguage.indonesia: 'Notifikasi',
@@ -292,8 +301,10 @@ class JexText {
       AppLanguage.indonesia: 'Pembaruan Firmware',
     },
     'firmwareUpdateAvailableBody': {
-      AppLanguage.english: 'Version {version} is available. Connect your device to update.',
-      AppLanguage.indonesia: 'Versi {version} tersedia. Hubungkan perangkat untuk memperbarui firmware.',
+      AppLanguage.english:
+          'Version {version} is available. Connect your device to update.',
+      AppLanguage.indonesia:
+          'Versi {version} tersedia. Hubungkan perangkat untuk memperbarui firmware.',
     },
     'deviceConnectionNotifications': {
       AppLanguage.english: 'Device connection',
@@ -327,10 +338,7 @@ class JexText {
       AppLanguage.english: 'Control',
       AppLanguage.indonesia: 'Kontrol',
     },
-    'led': {
-      AppLanguage.english: 'LED',
-      AppLanguage.indonesia: 'LED',
-    },
+    'led': {AppLanguage.english: 'LED', AppLanguage.indonesia: 'LED'},
     'temperature': {
       AppLanguage.english: 'Temperature',
       AppLanguage.indonesia: 'Suhu',
@@ -339,14 +347,8 @@ class JexText {
       AppLanguage.english: 'RGB Power',
       AppLanguage.indonesia: 'Daya RGB',
     },
-    'fan': {
-      AppLanguage.english: 'Fan',
-      AppLanguage.indonesia: 'Kipas',
-    },
-    'color': {
-      AppLanguage.english: 'Color',
-      AppLanguage.indonesia: 'Warna',
-    },
+    'fan': {AppLanguage.english: 'Fan', AppLanguage.indonesia: 'Kipas'},
+    'color': {AppLanguage.english: 'Color', AppLanguage.indonesia: 'Warna'},
     'ledColorCandyRed': {
       AppLanguage.english: 'Candy Red',
       AppLanguage.indonesia: 'Merah Permen',
@@ -620,10 +622,7 @@ class JexText {
       AppLanguage.english: 'Custom Color',
       AppLanguage.indonesia: 'Warna Kustom',
     },
-    'ledColorRed': {
-      AppLanguage.english: 'Red',
-      AppLanguage.indonesia: 'Merah',
-    },
+    'ledColorRed': {AppLanguage.english: 'Red', AppLanguage.indonesia: 'Merah'},
     'ledColorOrangeRed': {
       AppLanguage.english: 'Orange Red',
       AppLanguage.indonesia: 'Jingga Kemerahan',
@@ -672,22 +671,13 @@ class JexText {
       AppLanguage.english: 'Display Style',
       AppLanguage.indonesia: 'Gaya Tampilan',
     },
-    'letters': {
-      AppLanguage.english: 'Letters',
-      AppLanguage.indonesia: 'Huruf',
-    },
-    'icons': {
-      AppLanguage.english: 'Icons',
-      AppLanguage.indonesia: 'Ikon',
-    },
+    'letters': {AppLanguage.english: 'Letters', AppLanguage.indonesia: 'Huruf'},
+    'icons': {AppLanguage.english: 'Icons', AppLanguage.indonesia: 'Ikon'},
     'functions': {
       AppLanguage.english: 'Functions',
       AppLanguage.indonesia: 'Fungsi',
     },
-    'size': {
-      AppLanguage.english: 'Size',
-      AppLanguage.indonesia: 'Ukuran',
-    },
+    'size': {AppLanguage.english: 'Size', AppLanguage.indonesia: 'Ukuran'},
     'opacity': {
       AppLanguage.english: 'Opacity',
       AppLanguage.indonesia: 'Transparansi',
@@ -696,14 +686,8 @@ class JexText {
       AppLanguage.english: 'Background Color',
       AppLanguage.indonesia: 'Warna Latar',
     },
-    'black': {
-      AppLanguage.english: 'Black',
-      AppLanguage.indonesia: 'Hitam',
-    },
-    'white': {
-      AppLanguage.english: 'White',
-      AppLanguage.indonesia: 'Putih',
-    },
+    'black': {AppLanguage.english: 'Black', AppLanguage.indonesia: 'Hitam'},
+    'white': {AppLanguage.english: 'White', AppLanguage.indonesia: 'Putih'},
 
     'orientation': {
       AppLanguage.english: 'Orientation',
@@ -717,10 +701,7 @@ class JexText {
       AppLanguage.english: 'Hotside',
       AppLanguage.indonesia: 'Hotside',
     },
-    'volt': {
-      AppLanguage.english: 'Volt',
-      AppLanguage.indonesia: 'Tegangan',
-    },
+    'volt': {AppLanguage.english: 'Volt', AppLanguage.indonesia: 'Tegangan'},
     'adaptive': {
       AppLanguage.english: 'Adaptive',
       AppLanguage.indonesia: 'Adaptif',
@@ -729,10 +710,7 @@ class JexText {
       AppLanguage.english: 'Peltier',
       AppLanguage.indonesia: 'Peltier',
     },
-    'speed': {
-      AppLanguage.english: 'Fan',
-      AppLanguage.indonesia: 'Kipas',
-    },
+    'speed': {AppLanguage.english: 'Fan', AppLanguage.indonesia: 'Kipas'},
     'voltageIndicator': {
       AppLanguage.english: 'Voltage Indicator',
       AppLanguage.indonesia: 'Indikator Tegangan',
@@ -753,10 +731,7 @@ class JexText {
       AppLanguage.english: 'Fan Speed',
       AppLanguage.indonesia: 'Kecepatan Kipas',
     },
-    'notify': {
-      AppLanguage.english: 'STATUS',
-      AppLanguage.indonesia: 'STATUS',
-    },
+    'notify': {AppLanguage.english: 'STATUS', AppLanguage.indonesia: 'STATUS'},
     'notifyBluetooth': {
       AppLanguage.english: 'CONNECTION',
       AppLanguage.indonesia: 'KONEKSI',
@@ -773,10 +748,7 @@ class JexText {
       AppLanguage.english: 'WARNING',
       AppLanguage.indonesia: 'PERINGATAN',
     },
-    'error': {
-      AppLanguage.english: 'ERROR',
-      AppLanguage.indonesia: 'KESALAHAN',
-    },
+    'error': {AppLanguage.english: 'ERROR', AppLanguage.indonesia: 'KESALAHAN'},
     'connecting': {
       AppLanguage.english: 'CONNECTING',
       AppLanguage.indonesia: 'MENGHUBUNGKAN',
@@ -785,10 +757,7 @@ class JexText {
       AppLanguage.english: 'SYNCING',
       AppLanguage.indonesia: 'MENYINKRONKAN',
     },
-    'online': {
-      AppLanguage.english: 'ONLINE',
-      AppLanguage.indonesia: 'ONLINE',
-    },
+    'online': {AppLanguage.english: 'ONLINE', AppLanguage.indonesia: 'ONLINE'},
     'offline': {
       AppLanguage.english: 'OFFLINE',
       AppLanguage.indonesia: 'OFFLINE',
@@ -821,16 +790,14 @@ class JexText {
       AppLanguage.english: '12V Limit',
       AppLanguage.indonesia: 'Batas 12V',
     },
-    'range': {
-      AppLanguage.english: 'Range',
-      AppLanguage.indonesia: 'Rentang',
-    },
+    'range': {AppLanguage.english: 'Range', AppLanguage.indonesia: 'Rentang'},
     'zone9v': {
       AppLanguage.english: '9V Zone',
       AppLanguage.indonesia: 'Zona 9V',
     },
     'lockedAdaptive': {
-      AppLanguage.english: 'Controls are unavailable while Adaptive Mode is on.',
+      AppLanguage.english:
+          'Controls are unavailable while Adaptive Mode is on.',
       AppLanguage.indonesia: 'Kontrol tidak tersedia saat Mode Adaptif aktif.',
     },
     'lowMode': {
@@ -866,21 +833,17 @@ class JexText {
       AppLanguage.indonesia: 'Kipas perlu dinyalakan',
     },
     'peltierCoolingPrerequisite': {
-      AppLanguage.english: 'Peltier needs airflow to remove heat. The fan will be confirmed ON before Peltier starts.',
-      AppLanguage.indonesia: 'Peltier memerlukan aliran udara untuk membuang panas. Kipas akan dikonfirmasi AKTIF sebelum Peltier menyala.',
+      AppLanguage.english:
+          'Peltier needs airflow to remove heat. The fan will be confirmed ON before Peltier starts.',
+      AppLanguage.indonesia:
+          'Peltier memerlukan aliran udara untuk membuang panas. Kipas akan dikonfirmasi AKTIF sebelum Peltier menyala.',
     },
     'turnOnFanAndPeltier': {
       AppLanguage.english: 'Turn on Fan & Peltier',
       AppLanguage.indonesia: 'Nyalakan Kipas & Peltier',
     },
-    'cancel': {
-      AppLanguage.english: 'Cancel',
-      AppLanguage.indonesia: 'Batal',
-    },
-    'select': {
-      AppLanguage.english: 'Select',
-      AppLanguage.indonesia: 'Pilih',
-    },
+    'cancel': {AppLanguage.english: 'Cancel', AppLanguage.indonesia: 'Batal'},
+    'select': {AppLanguage.english: 'Select', AppLanguage.indonesia: 'Pilih'},
     'turnOnFan': {
       AppLanguage.english: 'Turn On Fan',
       AppLanguage.indonesia: 'Nyalakan Kipas',
@@ -889,10 +852,7 @@ class JexText {
       AppLanguage.english: 'Current',
       AppLanguage.indonesia: 'Saat Ini',
     },
-    'latest': {
-      AppLanguage.english: 'Latest',
-      AppLanguage.indonesia: 'Terbaru',
-    },
+    'latest': {AppLanguage.english: 'Latest', AppLanguage.indonesia: 'Terbaru'},
     'updateAvailable': {
       AppLanguage.english: 'Update available.',
       AppLanguage.indonesia: 'Pembaruan tersedia.',
@@ -921,10 +881,7 @@ class JexText {
       AppLanguage.english: 'Hide password',
       AppLanguage.indonesia: 'Sembunyikan kata sandi',
     },
-    'ssid': {
-      AppLanguage.english: 'SSID',
-      AppLanguage.indonesia: 'SSID',
-    },
+    'ssid': {AppLanguage.english: 'SSID', AppLanguage.indonesia: 'SSID'},
     'savedSecurely': {
       AppLanguage.english: 'Saved securely.',
       AppLanguage.indonesia: 'Disimpan dengan aman.',
@@ -942,8 +899,10 @@ class JexText {
       AppLanguage.indonesia: 'Firmware sudah versi terbaru.',
     },
     'otaReconnectFailed': {
-      AppLanguage.english: 'The update finished, but the device could not reconnect.',
-      AppLanguage.indonesia: 'Pembaruan selesai, tetapi perangkat tidak dapat tersambung kembali.',
+      AppLanguage.english:
+          'The update finished, but the device could not reconnect.',
+      AppLanguage.indonesia:
+          'Pembaruan selesai, tetapi perangkat tidak dapat tersambung kembali.',
     },
     'systemReady': {
       AppLanguage.english: 'System ready.',
@@ -963,28 +922,17 @@ class JexText {
     },
     'bluetoothNotReady': {
       AppLanguage.english: 'Bluetooth is unavailable. Check your settings.',
-      AppLanguage.indonesia: 'Bluetooth tidak tersedia. Periksa pengaturan Anda.',
+      AppLanguage.indonesia:
+          'Bluetooth tidak tersedia. Periksa pengaturan Anda.',
     },
     'connectFirst': {
       AppLanguage.english: 'Connect your device to continue.',
       AppLanguage.indonesia: 'Hubungkan perangkat untuk melanjutkan.',
     },
-    'manual': {
-      AppLanguage.english: 'Manual',
-      AppLanguage.indonesia: 'Manual',
-    },
-    'auto': {
-      AppLanguage.english: 'Auto',
-      AppLanguage.indonesia: 'Otomatis',
-    },
-    'on': {
-      AppLanguage.english: 'ON',
-      AppLanguage.indonesia: 'HIDUP',
-    },
-    'off': {
-      AppLanguage.english: 'OFF',
-      AppLanguage.indonesia: 'MATI',
-    },
+    'manual': {AppLanguage.english: 'Manual', AppLanguage.indonesia: 'Manual'},
+    'auto': {AppLanguage.english: 'Auto', AppLanguage.indonesia: 'Otomatis'},
+    'on': {AppLanguage.english: 'ON', AppLanguage.indonesia: 'HIDUP'},
+    'off': {AppLanguage.english: 'OFF', AppLanguage.indonesia: 'MATI'},
     'hSideProtection': {
       AppLanguage.english: 'Hotside Protection',
       AppLanguage.indonesia: 'Perlindungan Hotside',
@@ -1006,64 +954,66 @@ class JexText {
       AppLanguage.indonesia: 'Kecepatan Kipas',
     },
     'hotsideLimitNotConfirmed': {
-      AppLanguage.english: 'The device did not confirm the Hotside limit change.',
-      AppLanguage.indonesia: 'Perangkat belum mengonfirmasi perubahan batas suhu Hotside.',
+      AppLanguage.english:
+          'The device did not confirm the Hotside limit change.',
+      AppLanguage.indonesia:
+          'Perangkat belum mengonfirmasi perubahan batas suhu Hotside.',
     },
     'hotsideLimitFailed': {
       AppLanguage.english: 'Hotside limit update failed.',
       AppLanguage.indonesia: 'Gagal memperbarui batas Hotside.',
     },
     'battery5LimitNotConfirmed': {
-      AppLanguage.english: 'The device did not confirm the 5V battery limit change.',
-      AppLanguage.indonesia: 'Perangkat belum mengonfirmasi perubahan batas baterai 5V.',
+      AppLanguage.english:
+          'The device did not confirm the 5V battery limit change.',
+      AppLanguage.indonesia:
+          'Perangkat belum mengonfirmasi perubahan batas baterai 5V.',
     },
     'battery5LimitFailed': {
       AppLanguage.english: '5V battery limit failed.',
       AppLanguage.indonesia: 'Gagal memperbarui batas baterai 5V.',
     },
     'battery12LimitNotConfirmed': {
-      AppLanguage.english: 'The device did not confirm the 12V battery limit change.',
-      AppLanguage.indonesia: 'Perangkat belum mengonfirmasi perubahan batas baterai 12V.',
+      AppLanguage.english:
+          'The device did not confirm the 12V battery limit change.',
+      AppLanguage.indonesia:
+          'Perangkat belum mengonfirmasi perubahan batas baterai 12V.',
     },
     'battery12LimitFailed': {
       AppLanguage.english: '12V battery limit failed.',
       AppLanguage.indonesia: 'Gagal memperbarui batas baterai 12V.',
     },
-    'closed': {
-      AppLanguage.english: 'Close',
-      AppLanguage.indonesia: 'Tutup',
-    },
-    'retry': {
-      AppLanguage.english: 'Retry',
-      AppLanguage.indonesia: 'Coba Lagi',
-    },
+    'closed': {AppLanguage.english: 'Close', AppLanguage.indonesia: 'Tutup'},
+    'retry': {AppLanguage.english: 'Retry', AppLanguage.indonesia: 'Coba Lagi'},
     'update': {
       AppLanguage.english: 'Update',
       AppLanguage.indonesia: 'Perbarui',
     },
-    'scan': {
-      AppLanguage.english: 'Scan',
-      AppLanguage.indonesia: 'Pindai',
-    },
+    'scan': {AppLanguage.english: 'Scan', AppLanguage.indonesia: 'Pindai'},
     'connectionReady': {
       AppLanguage.english: 'Connection established.',
       AppLanguage.indonesia: 'Koneksi berhasil dibuat.',
     },
     'connectionAccessRequired': {
       AppLanguage.english: 'Bluetooth permission is required to connect.',
-      AppLanguage.indonesia: 'Izin Bluetooth diperlukan untuk menghubungkan perangkat.',
+      AppLanguage.indonesia:
+          'Izin Bluetooth diperlukan untuk menghubungkan perangkat.',
     },
     'deviceNotFound': {
       AppLanguage.english: 'Device not found nearby.',
       AppLanguage.indonesia: 'Perangkat tidak ditemukan di sekitar.',
     },
     'scanFailed': {
-      AppLanguage.english: 'Could not scan for devices. Check Bluetooth permissions.',
-      AppLanguage.indonesia: 'Pemindaian perangkat gagal. Periksa izin Bluetooth.',
+      AppLanguage.english:
+          'Could not scan for devices. Check Bluetooth permissions.',
+      AppLanguage.indonesia:
+          'Pemindaian perangkat gagal. Periksa izin Bluetooth.',
     },
     'notificationSafetyDescription': {
-      AppLanguage.english: 'Send a notification when Hotside reaches the set limit.',
-      AppLanguage.indonesia: 'Kirim notifikasi saat suhu Hotside mencapai batas yang ditetapkan.',
+      AppLanguage.english:
+          'Send a notification when Hotside reaches the set limit.',
+      AppLanguage.indonesia:
+          'Kirim notifikasi saat suhu Hotside mencapai batas yang ditetapkan.',
     },
     'otaFailed': {
       AppLanguage.english: 'Firmware update failed.',
@@ -1087,15 +1037,18 @@ class JexText {
     },
     'resetPanic': {
       AppLanguage.english: 'System error caused a restart.',
-      AppLanguage.indonesia: 'Kesalahan sistem menyebabkan perangkat dimulai ulang.',
+      AppLanguage.indonesia:
+          'Kesalahan sistem menyebabkan perangkat dimulai ulang.',
     },
     'resetSoftware': {
       AppLanguage.english: 'System restarted.',
       AppLanguage.indonesia: 'Sistem dimulai ulang.',
     },
     'resetWatchdog': {
-      AppLanguage.english: 'System restarted automatically after becoming unresponsive.',
-      AppLanguage.indonesia: 'Sistem dimulai ulang secara otomatis setelah tidak merespons.',
+      AppLanguage.english:
+          'System restarted automatically after becoming unresponsive.',
+      AppLanguage.indonesia:
+          'Sistem dimulai ulang secara otomatis setelah tidak merespons.',
     },
     'resetExternal': {
       AppLanguage.english: 'Device restarted.',
@@ -1149,10 +1102,7 @@ class JexText {
       AppLanguage.english: 'Saved securely.',
       AppLanguage.indonesia: 'Disimpan dengan aman.',
     },
-    'close': {
-      AppLanguage.english: 'Close',
-      AppLanguage.indonesia: 'Tutup',
-    },
+    'close': {AppLanguage.english: 'Close', AppLanguage.indonesia: 'Tutup'},
     'updateAction': {
       AppLanguage.english: 'Update',
       AppLanguage.indonesia: 'Perbarui',
@@ -1177,34 +1127,115 @@ class JexText {
       AppLanguage.english: 'App Version',
       AppLanguage.indonesia: 'Versi Aplikasi',
     },
-    'otaFinalizationError': { AppLanguage.english: 'OTA failed: finalization error.', AppLanguage.indonesia: 'OTA gagal: terjadi kesalahan saat finalisasi.' },
-    'otaSizeMismatch': { AppLanguage.english: 'OTA failed: upload size mismatch.', AppLanguage.indonesia: 'OTA gagal: ukuran unggahan tidak cocok.' },
-    'commandRejected': { AppLanguage.english: 'Command failed.', AppLanguage.indonesia: 'Perintah gagal.' },
-    'otaCouldNotStart': { AppLanguage.english: 'OTA could not start: command ', AppLanguage.indonesia: 'OTA tidak dapat dimulai: perintah ' },
-    'rejectedByDevice': { AppLanguage.english: ' was rejected by the device.', AppLanguage.indonesia: ' ditolak oleh perangkat.' },
-    'otaSuccessfulGeneric': { AppLanguage.english: 'OTA successful: ', AppLanguage.indonesia: 'OTA berhasil: ' },
-    'otaFailedGeneric': { AppLanguage.english: 'OTA failed: ', AppLanguage.indonesia: 'OTA gagal: ' },
-    'otaUploaded': { AppLanguage.english: 'OTA failed: uploaded ', AppLanguage.indonesia: 'OTA gagal: ukuran unggahan ' },
-    'otaBytes': { AppLanguage.english: ' bytes.', AppLanguage.indonesia: ' byte.' },
-    'otaLocalSuccessful': { AppLanguage.english: 'Local OTA successful.', AppLanguage.indonesia: 'OTA lokal berhasil.' },
-    'allow': { AppLanguage.english: 'Allow', AppLanguage.indonesia: 'Izinkan' },
-    'unknownError': { AppLanguage.english: 'Unknown error', AppLanguage.indonesia: 'Kesalahan tidak diketahui' },
-    'unknownOtaStage': { AppLanguage.english: 'Unknown stage', AppLanguage.indonesia: 'Tahap tidak diketahui' },
-    'otaModeLocal': { AppLanguage.english: 'Local', AppLanguage.indonesia: 'Lokal' },
-    'otaModeOnline': { AppLanguage.english: 'Online', AppLanguage.indonesia: 'Online' },
-    'otaStageLocalFileCheck': { AppLanguage.english: 'File check', AppLanguage.indonesia: 'Periksa berkas' },
-    'otaStageLocalSizeCheck': { AppLanguage.english: 'Size check', AppLanguage.indonesia: 'Periksa ukuran' },
-    'otaStageLocalUpdateBegin': { AppLanguage.english: 'Update begin', AppLanguage.indonesia: 'Mulai pembaruan' },
-    'otaStageLocalReceive': { AppLanguage.english: 'Receiving', AppLanguage.indonesia: 'Menerima' },
-    'otaStageLocalFlashWrite': { AppLanguage.english: 'Flash write', AppLanguage.indonesia: 'Menulis flash' },
-    'otaStageLocalSizeVerify': { AppLanguage.english: 'Size verify', AppLanguage.indonesia: 'Verifikasi ukuran' },
-    'otaStageLocalFinalize': { AppLanguage.english: 'Finalize', AppLanguage.indonesia: 'Finalisasi' },
-    'otaStageLocalFlashReadback': { AppLanguage.english: 'Flash readback', AppLanguage.indonesia: 'Baca ulang flash' },
-    'otaStageLocalFlashErase': { AppLanguage.english: 'Flash erase', AppLanguage.indonesia: 'Hapus flash' },
-    'otaStageLocalImageVerify': { AppLanguage.english: 'Image verification', AppLanguage.indonesia: 'Verifikasi citra' },
-    'otaStageLocalBootPartition': { AppLanguage.english: 'Boot partition', AppLanguage.indonesia: 'Partisi boot' },
-    'otaStageOnlineWifiConnect': { AppLanguage.english: 'Wi-Fi connect', AppLanguage.indonesia: 'Hubungkan Wi-Fi' },
-    'otaStageOnlineWifiConnected': { AppLanguage.english: 'Wi-Fi connected', AppLanguage.indonesia: 'Wi-Fi terhubung' },
+    'otaFinalizationError': {
+      AppLanguage.english: 'OTA failed: finalization error.',
+      AppLanguage.indonesia: 'OTA gagal: terjadi kesalahan saat finalisasi.',
+    },
+    'otaSizeMismatch': {
+      AppLanguage.english: 'OTA failed: upload size mismatch.',
+      AppLanguage.indonesia: 'OTA gagal: ukuran unggahan tidak cocok.',
+    },
+    'commandRejected': {
+      AppLanguage.english: 'Command failed.',
+      AppLanguage.indonesia: 'Perintah gagal.',
+    },
+    'otaCouldNotStart': {
+      AppLanguage.english: 'OTA could not start: command ',
+      AppLanguage.indonesia: 'OTA tidak dapat dimulai: perintah ',
+    },
+    'rejectedByDevice': {
+      AppLanguage.english: ' was rejected by the device.',
+      AppLanguage.indonesia: ' ditolak oleh perangkat.',
+    },
+    'otaSuccessfulGeneric': {
+      AppLanguage.english: 'OTA successful: ',
+      AppLanguage.indonesia: 'OTA berhasil: ',
+    },
+    'otaFailedGeneric': {
+      AppLanguage.english: 'OTA failed: ',
+      AppLanguage.indonesia: 'OTA gagal: ',
+    },
+    'otaUploaded': {
+      AppLanguage.english: 'OTA failed: uploaded ',
+      AppLanguage.indonesia: 'OTA gagal: ukuran unggahan ',
+    },
+    'otaBytes': {
+      AppLanguage.english: ' bytes.',
+      AppLanguage.indonesia: ' byte.',
+    },
+    'otaLocalSuccessful': {
+      AppLanguage.english: 'Local OTA successful.',
+      AppLanguage.indonesia: 'OTA lokal berhasil.',
+    },
+    'allow': {AppLanguage.english: 'Allow', AppLanguage.indonesia: 'Izinkan'},
+    'unknownError': {
+      AppLanguage.english: 'Unknown error',
+      AppLanguage.indonesia: 'Kesalahan tidak diketahui',
+    },
+    'unknownOtaStage': {
+      AppLanguage.english: 'Unknown stage',
+      AppLanguage.indonesia: 'Tahap tidak diketahui',
+    },
+    'otaModeLocal': {
+      AppLanguage.english: 'Local',
+      AppLanguage.indonesia: 'Lokal',
+    },
+    'otaModeOnline': {
+      AppLanguage.english: 'Online',
+      AppLanguage.indonesia: 'Online',
+    },
+    'otaStageLocalFileCheck': {
+      AppLanguage.english: 'File check',
+      AppLanguage.indonesia: 'Periksa berkas',
+    },
+    'otaStageLocalSizeCheck': {
+      AppLanguage.english: 'Size check',
+      AppLanguage.indonesia: 'Periksa ukuran',
+    },
+    'otaStageLocalUpdateBegin': {
+      AppLanguage.english: 'Update begin',
+      AppLanguage.indonesia: 'Mulai pembaruan',
+    },
+    'otaStageLocalReceive': {
+      AppLanguage.english: 'Receiving',
+      AppLanguage.indonesia: 'Menerima',
+    },
+    'otaStageLocalFlashWrite': {
+      AppLanguage.english: 'Flash write',
+      AppLanguage.indonesia: 'Menulis flash',
+    },
+    'otaStageLocalSizeVerify': {
+      AppLanguage.english: 'Size verify',
+      AppLanguage.indonesia: 'Verifikasi ukuran',
+    },
+    'otaStageLocalFinalize': {
+      AppLanguage.english: 'Finalize',
+      AppLanguage.indonesia: 'Finalisasi',
+    },
+    'otaStageLocalFlashReadback': {
+      AppLanguage.english: 'Flash readback',
+      AppLanguage.indonesia: 'Baca ulang flash',
+    },
+    'otaStageLocalFlashErase': {
+      AppLanguage.english: 'Flash erase',
+      AppLanguage.indonesia: 'Hapus flash',
+    },
+    'otaStageLocalImageVerify': {
+      AppLanguage.english: 'Image verification',
+      AppLanguage.indonesia: 'Verifikasi citra',
+    },
+    'otaStageLocalBootPartition': {
+      AppLanguage.english: 'Boot partition',
+      AppLanguage.indonesia: 'Partisi boot',
+    },
+    'otaStageOnlineWifiConnect': {
+      AppLanguage.english: 'Wi-Fi connect',
+      AppLanguage.indonesia: 'Hubungkan Wi-Fi',
+    },
+    'otaStageOnlineWifiConnected': {
+      AppLanguage.english: 'Wi-Fi connected',
+      AppLanguage.indonesia: 'Wi-Fi terhubung',
+    },
     'otaStageOnlineRequest': {
       AppLanguage.english: 'OTA request',
       AppLanguage.indonesia: 'Permintaan OTA',
@@ -1225,45 +1256,132 @@ class JexText {
       AppLanguage.english: 'Wi-Fi retry 3',
       AppLanguage.indonesia: 'Percobaan Wi-Fi 3',
     },
-    'otaStageOnlineWifiFailed': { AppLanguage.english: 'Wi-Fi failed', AppLanguage.indonesia: 'Wi-Fi gagal' },
-    'otaStageOnlineWifiDropped': { AppLanguage.english: 'Wi-Fi dropped', AppLanguage.indonesia: 'Wi-Fi terputus' },
-    'otaStageOnlineTimeSync': { AppLanguage.english: 'Time sync', AppLanguage.indonesia: 'Sinkronisasi waktu' },
-    'otaStageOnlineGithubConnect': { AppLanguage.english: 'GitHub connect', AppLanguage.indonesia: 'Hubungkan GitHub' },
-    'otaStageOnlineGithubConnected': { AppLanguage.english: 'GitHub connected', AppLanguage.indonesia: 'GitHub terhubung' },
-    'otaStageOnlineHttpUpdate': { AppLanguage.english: 'HTTP update', AppLanguage.indonesia: 'Pembaruan HTTP' },
-    'otaStageOnlineUpdateBegin': { AppLanguage.english: 'Update begin', AppLanguage.indonesia: 'Mulai pembaruan' },
-    'otaStageOnlineDownload': { AppLanguage.english: 'Download', AppLanguage.indonesia: 'Unduh' },
-    'otaStageOnlineDownloadComplete': { AppLanguage.english: 'Download complete', AppLanguage.indonesia: 'Unduhan selesai' },
-    'otaStageOnlineFlashPrepare': { AppLanguage.english: 'Prepare flash', AppLanguage.indonesia: 'Siapkan flash' },
-    'otaStageOnlineFlashFinalize': { AppLanguage.english: 'Finalize flash', AppLanguage.indonesia: 'Finalisasi flash' },
-    'otaStageOnlineFlashSuccess': { AppLanguage.english: 'Flash successful', AppLanguage.indonesia: 'Flash berhasil' },
-    'otaStageOnlineRangeProbe': { AppLanguage.english: 'Range probe', AppLanguage.indonesia: 'Uji rentang' },
-    'otaStageOnlineRangeRequest': { AppLanguage.english: 'Range request', AppLanguage.indonesia: 'Minta rentang' },
-    'otaStageOnlineRangeResponse': { AppLanguage.english: 'Range response', AppLanguage.indonesia: 'Respons rentang' },
-    'otaStageOnlineRangeWrite': { AppLanguage.english: 'Range write', AppLanguage.indonesia: 'Tulis rentang' },
-    'otaStageOnlineRangeRetry': { AppLanguage.english: 'Range retry', AppLanguage.indonesia: 'Ulangi rentang' },
-    'otaStageOnlineRangeResume': { AppLanguage.english: 'Range resume', AppLanguage.indonesia: 'Lanjutkan rentang' },
-    'otaStageOnlineFlashWrite': { AppLanguage.english: 'Flash write', AppLanguage.indonesia: 'Menulis flash' },
-    'otaStageOnlineFlashErase': { AppLanguage.english: 'Flash erase', AppLanguage.indonesia: 'Hapus flash' },
-    'otaStageOnlineFlashReadback': { AppLanguage.english: 'Flash readback', AppLanguage.indonesia: 'Baca ulang flash' },
-    'otaStageOnlineImageValidate': { AppLanguage.english: 'Image validation', AppLanguage.indonesia: 'Validasi citra' },
-    'otaStageOnlineImageVerify': { AppLanguage.english: 'Image verification', AppLanguage.indonesia: 'Verifikasi citra' },
-    'otaStageOnlineBootPartition': { AppLanguage.english: 'Boot partition', AppLanguage.indonesia: 'Partisi boot' },
-    'otaStageOnlineHttpResponse': { AppLanguage.english: 'HTTP response', AppLanguage.indonesia: 'Respons HTTP' },
-    'notConfirmedSuffix': { AppLanguage.english: 'not confirmed.', AppLanguage.indonesia: 'tidak dikonfirmasi.' },
-    'failedSuffix': { AppLanguage.english: 'failed.', AppLanguage.indonesia: 'gagal.' },
+    'otaStageOnlineWifiFailed': {
+      AppLanguage.english: 'Wi-Fi failed',
+      AppLanguage.indonesia: 'Wi-Fi gagal',
+    },
+    'otaStageOnlineWifiDropped': {
+      AppLanguage.english: 'Wi-Fi dropped',
+      AppLanguage.indonesia: 'Wi-Fi terputus',
+    },
+    'otaStageOnlineTimeSync': {
+      AppLanguage.english: 'Time sync',
+      AppLanguage.indonesia: 'Sinkronisasi waktu',
+    },
+    'otaStageOnlineGithubConnect': {
+      AppLanguage.english: 'GitHub connect',
+      AppLanguage.indonesia: 'Hubungkan GitHub',
+    },
+    'otaStageOnlineGithubConnected': {
+      AppLanguage.english: 'GitHub connected',
+      AppLanguage.indonesia: 'GitHub terhubung',
+    },
+    'otaStageOnlineHttpUpdate': {
+      AppLanguage.english: 'HTTP update',
+      AppLanguage.indonesia: 'Pembaruan HTTP',
+    },
+    'otaStageOnlineUpdateBegin': {
+      AppLanguage.english: 'Update begin',
+      AppLanguage.indonesia: 'Mulai pembaruan',
+    },
+    'otaStageOnlineDownload': {
+      AppLanguage.english: 'Download',
+      AppLanguage.indonesia: 'Unduh',
+    },
+    'otaStageOnlineDownloadComplete': {
+      AppLanguage.english: 'Download complete',
+      AppLanguage.indonesia: 'Unduhan selesai',
+    },
+    'otaStageOnlineFlashPrepare': {
+      AppLanguage.english: 'Prepare flash',
+      AppLanguage.indonesia: 'Siapkan flash',
+    },
+    'otaStageOnlineFlashFinalize': {
+      AppLanguage.english: 'Finalize flash',
+      AppLanguage.indonesia: 'Finalisasi flash',
+    },
+    'otaStageOnlineFlashSuccess': {
+      AppLanguage.english: 'Flash successful',
+      AppLanguage.indonesia: 'Flash berhasil',
+    },
+    'otaStageOnlineRangeProbe': {
+      AppLanguage.english: 'Range probe',
+      AppLanguage.indonesia: 'Uji rentang',
+    },
+    'otaStageOnlineRangeRequest': {
+      AppLanguage.english: 'Range request',
+      AppLanguage.indonesia: 'Minta rentang',
+    },
+    'otaStageOnlineRangeResponse': {
+      AppLanguage.english: 'Range response',
+      AppLanguage.indonesia: 'Respons rentang',
+    },
+    'otaStageOnlineRangeWrite': {
+      AppLanguage.english: 'Range write',
+      AppLanguage.indonesia: 'Tulis rentang',
+    },
+    'otaStageOnlineRangeRetry': {
+      AppLanguage.english: 'Range retry',
+      AppLanguage.indonesia: 'Ulangi rentang',
+    },
+    'otaStageOnlineRangeResume': {
+      AppLanguage.english: 'Range resume',
+      AppLanguage.indonesia: 'Lanjutkan rentang',
+    },
+    'otaStageOnlineFlashWrite': {
+      AppLanguage.english: 'Flash write',
+      AppLanguage.indonesia: 'Menulis flash',
+    },
+    'otaStageOnlineFlashErase': {
+      AppLanguage.english: 'Flash erase',
+      AppLanguage.indonesia: 'Hapus flash',
+    },
+    'otaStageOnlineFlashReadback': {
+      AppLanguage.english: 'Flash readback',
+      AppLanguage.indonesia: 'Baca ulang flash',
+    },
+    'otaStageOnlineImageValidate': {
+      AppLanguage.english: 'Image validation',
+      AppLanguage.indonesia: 'Validasi citra',
+    },
+    'otaStageOnlineImageVerify': {
+      AppLanguage.english: 'Image verification',
+      AppLanguage.indonesia: 'Verifikasi citra',
+    },
+    'otaStageOnlineBootPartition': {
+      AppLanguage.english: 'Boot partition',
+      AppLanguage.indonesia: 'Partisi boot',
+    },
+    'otaStageOnlineHttpResponse': {
+      AppLanguage.english: 'HTTP response',
+      AppLanguage.indonesia: 'Respons HTTP',
+    },
+    'notConfirmedSuffix': {
+      AppLanguage.english: 'not confirmed.',
+      AppLanguage.indonesia: 'tidak dikonfirmasi.',
+    },
+    'failedSuffix': {
+      AppLanguage.english: 'failed.',
+      AppLanguage.indonesia: 'gagal.',
+    },
 
     'notificationFirmwareDescription': {
-      AppLanguage.english: 'Send a notification when a firmware update is available.',
-      AppLanguage.indonesia: 'Kirim notifikasi saat pembaruan firmware tersedia.',
+      AppLanguage.english:
+          'Send a notification when a firmware update is available.',
+      AppLanguage.indonesia:
+          'Kirim notifikasi saat pembaruan firmware tersedia.',
     },
     'notificationBluetoothDescription': {
-      AppLanguage.english: 'Send a notification when the device connects or disconnects.',
-      AppLanguage.indonesia: 'Kirim notifikasi saat perangkat terhubung atau terputus.',
+      AppLanguage.english:
+          'Send a notification when the device connects or disconnects.',
+      AppLanguage.indonesia:
+          'Kirim notifikasi saat perangkat terhubung atau terputus.',
     },
     'autoConnectDescription': {
-      AppLanguage.english: 'Connect to the device automatically when available.',
-      AppLanguage.indonesia: 'Sambungkan perangkat secara otomatis saat tersedia.',
+      AppLanguage.english:
+          'Connect to the device automatically when available.',
+      AppLanguage.indonesia:
+          'Sambungkan perangkat secara otomatis saat tersedia.',
     },
     'connection': {
       AppLanguage.english: 'Connection',
@@ -1311,7 +1429,8 @@ class JexText {
     },
     'connectionNeedsAccess': {
       AppLanguage.english: 'Bluetooth permission is required to connect.',
-      AppLanguage.indonesia: 'Izin Bluetooth diperlukan untuk menghubungkan perangkat.',
+      AppLanguage.indonesia:
+          'Izin Bluetooth diperlukan untuk menghubungkan perangkat.',
     },
     'bleServiceDiscoveryFailed': {
       AppLanguage.english: 'The device’s Bluetooth service was not found.',
@@ -1323,7 +1442,8 @@ class JexText {
     },
     'bleHandshakeWriteFailed': {
       AppLanguage.english: 'Could not complete Bluetooth connection setup.',
-      AppLanguage.indonesia: 'Penyiapan koneksi Bluetooth tidak dapat diselesaikan.',
+      AppLanguage.indonesia:
+          'Penyiapan koneksi Bluetooth tidak dapat diselesaikan.',
     },
     'bleSessionNotReady': {
       AppLanguage.english: 'The Bluetooth session is not ready yet.',
@@ -1338,24 +1458,32 @@ class JexText {
       AppLanguage.indonesia: 'Izin Monitor Melayang',
     },
     'floatingPendingConnection': {
-      AppLanguage.english: 'Floating Monitor will appear when the device is connected.',
-      AppLanguage.indonesia: 'Monitor Melayang akan tampil saat perangkat terhubung.',
+      AppLanguage.english:
+          'Floating Monitor will appear when the device is connected.',
+      AppLanguage.indonesia:
+          'Monitor Melayang akan tampil saat perangkat terhubung.',
     },
     'floatingPermissionMessage': {
-      AppLanguage.english: 'The app needs permission to display Floating Monitor over other apps. Android will open the display-over-other-apps setting.',
-      AppLanguage.indonesia: 'Aplikasi memerlukan izin untuk menampilkan Monitor Melayang di atas aplikasi lain. Android akan membuka pengaturan tampilan di atas aplikasi lain.',
+      AppLanguage.english:
+          'The app needs permission to display Floating Monitor over other apps. Android will open the display-over-other-apps setting.',
+      AppLanguage.indonesia:
+          'Aplikasi memerlukan izin untuk menampilkan Monitor Melayang di atas aplikasi lain. Android akan membuka pengaturan tampilan di atas aplikasi lain.',
     },
     'overlayPermissionDenied': {
       AppLanguage.english: 'Overlay permission was not granted.',
       AppLanguage.indonesia: 'Izin tampilan mengambang belum diberikan.',
     },
     'overlaySettingsFailed': {
-      AppLanguage.english: 'Could not open the Android overlay permission settings.',
-      AppLanguage.indonesia: 'Pengaturan izin tampilan mengambang Android tidak dapat dibuka.',
+      AppLanguage.english:
+          'Could not open the Android overlay permission settings.',
+      AppLanguage.indonesia:
+          'Pengaturan izin tampilan mengambang Android tidak dapat dibuka.',
     },
     'floatingStartFailed': {
-      AppLanguage.english: 'Floating Monitor could not be started. Check its permissions and try again.',
-      AppLanguage.indonesia: 'Monitor Melayang tidak dapat dijalankan. Periksa izinnya, lalu coba lagi.',
+      AppLanguage.english:
+          'Floating Monitor could not be started. Check its permissions and try again.',
+      AppLanguage.indonesia:
+          'Monitor Melayang tidak dapat dijalankan. Periksa izinnya, lalu coba lagi.',
     },
     'synchronizingDevice': {
       AppLanguage.english: 'Syncing device…',
@@ -1366,8 +1494,10 @@ class JexText {
       AppLanguage.indonesia: 'Memeriksa pembacaan suhu…',
     },
     'sensorErrorCoolingLocked': {
-      AppLanguage.english: 'Temperature sensor error. Cooling has been disabled for safety.',
-      AppLanguage.indonesia: 'Sensor suhu bermasalah. Pendinginan dinonaktifkan demi keamanan.',
+      AppLanguage.english:
+          'Temperature sensor error. Cooling has been disabled for safety.',
+      AppLanguage.indonesia:
+          'Sensor suhu bermasalah. Pendinginan dinonaktifkan demi keamanan.',
     },
     'hotsideProtectionActive': {
       AppLanguage.english: 'Hotside protection is active. Peltier is paused.',
@@ -1427,28 +1557,29 @@ class JexText {
     },
     'commandNotConfirmed': {
       AppLanguage.english: 'Action not confirmed. Check device status.',
-      AppLanguage.indonesia: 'Tindakan belum terkonfirmasi. Periksa status perangkat.',
+      AppLanguage.indonesia:
+          'Tindakan belum terkonfirmasi. Periksa status perangkat.',
     },
     'commandFailed': {
       AppLanguage.english: 'Action failed. Check device status and try again.',
-      AppLanguage.indonesia: 'Tindakan gagal. Periksa status perangkat, lalu coba lagi.',
+      AppLanguage.indonesia:
+          'Tindakan gagal. Periksa status perangkat, lalu coba lagi.',
     },
     'firmware': {
       AppLanguage.english: 'Firmware',
       AppLanguage.indonesia: 'Firmware',
     },
     'firmwareMetadataCheckFailed': {
-      AppLanguage.english: 'Could not load firmware information. Please try again later.',
-      AppLanguage.indonesia: 'Informasi firmware tidak dapat dimuat. Silakan coba lagi nanti.',
+      AppLanguage.english:
+          'Could not load firmware information. Please try again later.',
+      AppLanguage.indonesia:
+          'Informasi firmware tidak dapat dimuat. Silakan coba lagi nanti.',
     },
     'leftRight': {
       AppLanguage.english: 'Left / Right',
       AppLanguage.indonesia: 'Kiri / Kanan',
     },
-    'mode': {
-      AppLanguage.english: 'Mode',
-      AppLanguage.indonesia: 'Mode',
-    },
+    'mode': {AppLanguage.english: 'Mode', AppLanguage.indonesia: 'Mode'},
     'adaptiveProfile': {
       AppLanguage.english: 'Profile',
       AppLanguage.indonesia: 'Profil',
@@ -1457,12 +1588,32 @@ class JexText {
       AppLanguage.english: 'Adaptive Switch',
       AppLanguage.indonesia: 'Sakelar Adaptif',
     },
-    'location': { AppLanguage.english: 'Location', AppLanguage.indonesia: 'Lokasi' },
-    'currentValue': { AppLanguage.english: 'Current', AppLanguage.indonesia: 'Saat Ini' },
-    'latestValue': { AppLanguage.english: 'Latest', AppLanguage.indonesia: 'Terbaru' },
-    'waitingForDevice': { AppLanguage.english: 'Waiting for device...', AppLanguage.indonesia: 'Menunggu perangkat...' },
-    'upToDateSentence': { AppLanguage.english: 'Up to date.', AppLanguage.indonesia: 'Sudah terbaru.' },
-    'firmwareMetadataUnavailableSentence': { AppLanguage.english: 'Could not load firmware information. Please try again later.', AppLanguage.indonesia: 'Informasi firmware tidak dapat dimuat. Silakan coba lagi nanti.' },
+    'location': {
+      AppLanguage.english: 'Location',
+      AppLanguage.indonesia: 'Lokasi',
+    },
+    'currentValue': {
+      AppLanguage.english: 'Current',
+      AppLanguage.indonesia: 'Saat Ini',
+    },
+    'latestValue': {
+      AppLanguage.english: 'Latest',
+      AppLanguage.indonesia: 'Terbaru',
+    },
+    'waitingForDevice': {
+      AppLanguage.english: 'Waiting for device...',
+      AppLanguage.indonesia: 'Menunggu perangkat...',
+    },
+    'upToDateSentence': {
+      AppLanguage.english: 'Up to date.',
+      AppLanguage.indonesia: 'Sudah terbaru.',
+    },
+    'firmwareMetadataUnavailableSentence': {
+      AppLanguage.english:
+          'Could not load firmware information. Please try again later.',
+      AppLanguage.indonesia:
+          'Informasi firmware tidak dapat dimuat. Silakan coba lagi nanti.',
+    },
   };
 
   // AI-METHOD / PHRASE CONTRACT
@@ -1483,7 +1634,10 @@ class JexText {
     final lang = language ?? appLanguageNotifier.value;
     final translations = _values[key];
     assert(translations != null, 'Missing JexText localization key "$key".');
-    assert(translations?.containsKey(lang) ?? false, 'Missing ${lang.name} translation for JexText key "$key".');
+    assert(
+      translations?.containsKey(lang) ?? false,
+      'Missing ${lang.name} translation for JexText key "$key".',
+    );
     return translations?[lang] ?? key;
   }
 
@@ -1503,7 +1657,8 @@ class JexText {
     for (final variants in _values.values) {
       final english = variants[AppLanguage.english];
       final indonesia = variants[AppLanguage.indonesia];
-      if (english == null || indonesia == null || english == indonesia) continue;
+      if (english == null || indonesia == null || english == indonesia)
+        continue;
 
       String? candidate;
       if (raw == english) candidate = indonesia;
@@ -1528,10 +1683,14 @@ ThemeData buildJexTheme(AppThemePreset preset) {
   final isDark = !isLight;
   final background = isLight
       ? const Color(0xFFEEF0F4)
-      : (preset == AppThemePreset.dark ? const Color(0xFF0C0E12) : const Color(0xFF0F1013));
+      : (preset == AppThemePreset.dark
+            ? const Color(0xFF0C0E12)
+            : const Color(0xFF0F1013));
   final surface = isLight
       ? const Color(0xFFFFFFFF)
-      : (preset == AppThemePreset.dark ? const Color(0xFF171A20) : const Color(0xFF191B20));
+      : (preset == AppThemePreset.dark
+            ? const Color(0xFF171A20)
+            : const Color(0xFF191B20));
   // AI-THEME / LIGHT-CONTRAST-CONTRACT
   // Light mode uses near-black semantic text on white/light surfaces, mirroring Android system light mode.
   // Dark mode keeps the inverse relationship: near-white text on dark surfaces.
@@ -1555,9 +1714,13 @@ ThemeData buildJexTheme(AppThemePreset preset) {
       surface: surface,
       onSurface: foreground,
       onSurfaceVariant: muted,
-      surfaceContainerHighest: isDark ? const Color(0xFF242831) : const Color(0xFFE4E7EC),
+      surfaceContainerHighest: isDark
+          ? const Color(0xFF242831)
+          : const Color(0xFFE4E7EC),
       outline: isDark ? const Color(0xFF383D47) : const Color(0xFFD6DAE1),
-      outlineVariant: isDark ? const Color(0xFF2B3039) : const Color(0xFFDDE1E7),
+      outlineVariant: isDark
+          ? const Color(0xFF2B3039)
+          : const Color(0xFFDDE1E7),
       error: const Color(0xFFFF5267),
       onError: Colors.white,
     ),
@@ -1567,7 +1730,11 @@ ThemeData buildJexTheme(AppThemePreset preset) {
       elevation: 0,
       centerTitle: false,
       surfaceTintColor: Colors.transparent,
-      titleTextStyle: TextStyle(color: foreground, fontSize: 20, fontWeight: FontWeight.w900),
+      titleTextStyle: TextStyle(
+        color: foreground,
+        fontSize: 20,
+        fontWeight: FontWeight.w900,
+      ),
       iconTheme: IconThemeData(color: foreground),
     ),
     listTileTheme: ListTileThemeData(
@@ -1583,11 +1750,15 @@ ThemeData buildJexTheme(AppThemePreset preset) {
       hintStyle: TextStyle(color: muted),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(14),
-        borderSide: BorderSide(color: isDark ? const Color(0xFF343944) : const Color(0xFFD4D8DF)),
+        borderSide: BorderSide(
+          color: isDark ? const Color(0xFF343944) : const Color(0xFFD4D8DF),
+        ),
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(14),
-        borderSide: BorderSide(color: isDark ? const Color(0xFF343944) : const Color(0xFFDDE0E6)),
+        borderSide: BorderSide(
+          color: isDark ? const Color(0xFF343944) : const Color(0xFFDDE0E6),
+        ),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(14),
@@ -1617,19 +1788,24 @@ ThemeData buildJexTheme(AppThemePreset preset) {
     sliderTheme: SliderThemeData(
       activeTrackColor: primary,
       thumbColor: primary,
-      inactiveTrackColor: isDark ? const Color(0xFF3A3E48) : const Color(0xFFD9DDE4),
+      inactiveTrackColor: isDark
+          ? const Color(0xFF3A3E48)
+          : const Color(0xFFD9DDE4),
       overlayColor: primary.withValues(alpha: 0.12),
     ),
     dialogTheme: DialogThemeData(
       backgroundColor: surface,
       surfaceTintColor: Colors.transparent,
-      titleTextStyle: TextStyle(color: foreground, fontSize: 20, fontWeight: FontWeight.w900),
+      titleTextStyle: TextStyle(
+        color: foreground,
+        fontSize: 20,
+        fontWeight: FontWeight.w900,
+      ),
       contentTextStyle: TextStyle(color: muted, fontSize: 14),
     ),
-    textTheme: ThemeData(brightness: isDark ? Brightness.dark : Brightness.light).textTheme.apply(
-      bodyColor: foreground,
-      displayColor: foreground,
-    ),
+    textTheme: ThemeData(
+      brightness: isDark ? Brightness.dark : Brightness.light,
+    ).textTheme.apply(bodyColor: foreground, displayColor: foreground),
     fontFamily: 'Roboto',
   );
 }
@@ -1637,7 +1813,10 @@ ThemeData buildJexTheme(AppThemePreset preset) {
 // AI-THEME / COMPACT-SETTINGS-CONTRACT
 // Applies a restrained typography/visual-density reduction only to Settings routes and the
 // Bluetooth Connection sheet. Do not apply this theme globally to Home/Dashboard.
-ThemeData buildJexCompactUiTheme(AppThemePreset preset, {ThemeData? baseTheme}) {
+ThemeData buildJexCompactUiTheme(
+  AppThemePreset preset, {
+  ThemeData? baseTheme,
+}) {
   final base = baseTheme ?? buildJexTheme(preset);
   final text = base.textTheme;
   final foreground = base.colorScheme.onSurface;
@@ -1668,10 +1847,7 @@ ThemeData buildJexCompactUiTheme(AppThemePreset preset, {ThemeData? baseTheme}) 
         fontSize: 13,
         fontWeight: FontWeight.w700,
       ),
-      subtitleTextStyle: text.bodySmall?.copyWith(
-        color: muted,
-        fontSize: 11,
-      ),
+      subtitleTextStyle: text.bodySmall?.copyWith(color: muted, fontSize: 11),
     ),
   );
 }

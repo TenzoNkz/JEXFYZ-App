@@ -12,64 +12,81 @@ import '../lib/floating_monitor.dart';
 import '../lib/app_settings.dart';
 
 void main() {
-  test('Floating Monitor normalizes and persists compact size, opacity and background', () {
-    const defaults = FloatingConfig();
-    expect(defaults.size, closeTo(0.6, 0.0001));
-    expect(defaults.opacity, closeTo(0.9, 0.0001));
-    expect(defaults.backgroundColor, FloatingBackgroundColor.black);
-    expect(defaults.style, FloatingDisplayStyle.letters);
+  test(
+    'Floating Monitor normalizes and persists compact size, opacity and background',
+    () {
+      const defaults = FloatingConfig();
+      expect(defaults.size, closeTo(0.6, 0.0001));
+      expect(defaults.opacity, closeTo(0.9, 0.0001));
+      expect(defaults.backgroundColor, FloatingBackgroundColor.black);
+      expect(defaults.style, FloatingDisplayStyle.letters);
 
-    final smallest = FloatingConfig.fromJson(
-      '{"enabled":true,"size":0.1,"opacity":0,"backgroundColor":"white"}',
-    );
-    expect(smallest.size, closeTo(0.3, 0.0001));
-    expect(smallest.opacity, 0);
-    expect(smallest.backgroundColor, FloatingBackgroundColor.white);
-    expect(smallest.toMap()['backgroundColor'], 'white');
+      final smallest = FloatingConfig.fromJson(
+        '{"enabled":true,"size":0.1,"opacity":0,"backgroundColor":"white"}',
+      );
+      expect(smallest.size, closeTo(0.3, 0.0001));
+      expect(smallest.opacity, 0);
+      expect(smallest.backgroundColor, FloatingBackgroundColor.white);
+      expect(smallest.toMap()['backgroundColor'], 'white');
 
-    final largest = FloatingConfig.fromJson(
-      '{"size":1.8,"opacity":1.4,"backgroundColor":"unknown"}',
-    );
-    expect(largest.size, closeTo(1.0, 0.0001));
+      final largest = FloatingConfig.fromJson(
+        '{"size":1.8,"opacity":1.4,"backgroundColor":"unknown"}',
+      );
+      expect(largest.size, closeTo(1.0, 0.0001));
 
-    final stepped = FloatingConfig.fromJson('{"size":0.63,"style":"icons"}');
-    expect(stepped.size, closeTo(0.65, 0.0001));
-    expect(stepped.opacity, closeTo(0.9, 0.0001));
-    expect(stepped.style, FloatingDisplayStyle.letters);
-    expect(stepped.toMap()['style'], 'letters');
+      final stepped = FloatingConfig.fromJson('{"size":0.63,"style":"icons"}');
+      expect(stepped.size, closeTo(0.65, 0.0001));
+      expect(stepped.opacity, closeTo(0.9, 0.0001));
+      expect(stepped.style, FloatingDisplayStyle.letters);
+      expect(stepped.toMap()['style'], 'letters');
 
-    final legacyOpacity = FloatingConfig.fromJson('{"size":0.63,"opacity":0.18}');
-    expect(legacyOpacity.size, closeTo(0.65, 0.0001));
-    expect(legacyOpacity.opacity, closeTo(0.20, 0.0001));
-    expect(legacyOpacity.copyWith(opacity: 0.33).opacity, closeTo(0.35, 0.0001));
-    expect(largest.opacity, 1);
-    expect(largest.backgroundColor, FloatingBackgroundColor.black);
-  });
+      final legacyOpacity = FloatingConfig.fromJson(
+        '{"size":0.63,"opacity":0.18}',
+      );
+      expect(legacyOpacity.size, closeTo(0.65, 0.0001));
+      expect(legacyOpacity.opacity, closeTo(0.20, 0.0001));
+      expect(
+        legacyOpacity.copyWith(opacity: 0.33).opacity,
+        closeTo(0.35, 0.0001),
+      );
+      expect(largest.opacity, 1);
+      expect(largest.backgroundColor, FloatingBackgroundColor.black);
+    },
+  );
 
-  test('Floating Monitor legacy configuration migrates S to F and drops old FPS F', () {
-    final migrated = FloatingConfig.fromJson(
-      '{"order":["F","B","H","V","A","P","S"],"selected":["S"]}',
-    );
-    expect(migrated.order, <String>['B', 'H', 'V', 'A', 'P', 'F']);
-    expect(migrated.selected, <String>{'F'});
-    expect(migrated.toMap()['metricSchemaVersion'], FloatingMetric.schemaVersion);
-  });
+  test(
+    'Floating Monitor legacy configuration migrates S to F and drops old FPS F',
+    () {
+      final migrated = FloatingConfig.fromJson(
+        '{"order":["F","B","H","V","A","P","S"],"selected":["S"]}',
+      );
+      expect(migrated.order, <String>['B', 'H', 'V', 'A', 'P', 'F']);
+      expect(migrated.selected, <String>{'F'});
+      expect(
+        migrated.toMap()['metricSchemaVersion'],
+        FloatingMetric.schemaVersion,
+      );
+    },
+  );
 
-  test('Floating Monitor native reconciliation is single-flight and lifecycle-bound', () {
-    final source = File('lib/floating_monitor.dart').readAsStringSync();
-    final start = source.indexOf('void _startRuntimeSync()');
-    final end = source.indexOf('void dispose()', start);
-    expect(start, isNonNegative);
-    expect(end, greaterThan(start));
-    final runtime = source.substring(start, end);
+  test(
+    'Floating Monitor native reconciliation is single-flight and lifecycle-bound',
+    () {
+      final source = File('lib/floating_monitor.dart').readAsStringSync();
+      final start = source.indexOf('void _startRuntimeSync()');
+      final end = source.indexOf('void dispose()', start);
+      expect(start, isNonNegative);
+      expect(end, greaterThan(start));
+      final runtime = source.substring(start, end);
 
-    expect(runtime, contains('Duration(seconds: 3)'));
-    expect(runtime, contains('_runtimeSyncInFlight'));
-    expect(runtime, contains('finally'));
-    expect(runtime, isNot(contains('Duration(milliseconds: 300)')));
-    expect(source, contains('runtimeTimer?.cancel();'));
-    expect(source, contains('WidgetsBindingObserver'));
-  });
+      expect(runtime, contains('Duration(seconds: 3)'));
+      expect(runtime, contains('_runtimeSyncInFlight'));
+      expect(runtime, contains('finally'));
+      expect(runtime, isNot(contains('Duration(milliseconds: 300)')));
+      expect(source, contains('runtimeTimer?.cancel();'));
+      expect(source, contains('WidgetsBindingObserver'));
+    },
+  );
 
   test('Floating Monitor settings show live numeric values and opacity marks', () {
     final floating = File('lib/floating_monitor.dart').readAsStringSync();
@@ -81,11 +98,21 @@ void main() {
     expect(floating, isNot(contains('size.toDouble().clamp(0.3, 0.8)')));
     expect(floating, isNot(contains('nativeSize.toDouble().clamp(0.3, 0.8)')));
     expect(floating, contains('nativeSize.toDouble().clamp(0.3, 1.0)'));
-    expect(floating, contains('class JexFixedScalePage extends StatelessWidget'));
-    expect(floating, contains('final scale = constraints.maxWidth / designWidth;'));
     expect(
       floating,
-      isNot(contains('(constraints.maxWidth / designWidth).clamp(0.0, 1.0).toDouble()')),
+      contains('class JexFixedScalePage extends StatelessWidget'),
+    );
+    expect(
+      floating,
+      contains('final scale = constraints.maxWidth / designWidth;'),
+    );
+    expect(
+      floating,
+      isNot(
+        contains(
+          '(constraints.maxWidth / designWidth).clamp(0.0, 1.0).toDouble()',
+        ),
+      ),
     );
     expect(floating, contains('size: Size(designWidth, designHeight)'));
     expect(floating, contains('padding: EdgeInsets.fromLTRB('));
@@ -164,218 +191,292 @@ void main() {
     expect(settings, contains("'white':"));
   });
 
-  test('Settings and Connection use compact visual tokens without changing the DPI canvas', () {
-    final floating = File('lib/floating_monitor.dart').readAsStringSync();
-    final appSettings = File('lib/app_settings.dart').readAsStringSync();
-    final main = File('lib/main.dart').readAsStringSync();
+  test(
+    'Settings and Connection use compact visual tokens without changing the DPI canvas',
+    () {
+      final floating = File('lib/floating_monitor.dart').readAsStringSync();
+      final appSettings = File('lib/app_settings.dart').readAsStringSync();
+      final main = File('lib/main.dart').readAsStringSync();
 
-    final settingsStart = floating.indexOf('class SettingsPage extends StatelessWidget');
-    final settingsEnd = floating.indexOf('// AI-MEMORY / LANGUAGE-PAGE-CONTRACT', settingsStart);
-    expect(settingsStart, isNonNegative);
-    expect(settingsEnd, greaterThan(settingsStart));
-    final settings = floating.substring(settingsStart, settingsEnd);
-    expect(settings, contains('data: buildJexCompactUiTheme(preset)'));
-    expect(settings, contains('EdgeInsets.fromLTRB(8, 10, 8, 5)'));
-    expect(settings, contains('EdgeInsets.symmetric(horizontal: 12, vertical: 10)'));
-    expect(settings, contains('fontSize: 13'));
-    expect(settings, contains('fontSize: 11'));
-    expect(settings, contains('size: 19'));
-    expect(settings, contains('size: 16'));
-
-    final floatingSettingsStart = floating.indexOf('class _FloatingSettingsPageState');
-    final floatingSettingsEnd = floating.indexOf(
-      'class JexFixedScalePage extends StatelessWidget',
-      floatingSettingsStart,
-    );
-    expect(floatingSettingsStart, isNonNegative);
-    expect(floatingSettingsEnd, greaterThan(floatingSettingsStart));
-    final floatingSettings = floating.substring(floatingSettingsStart, floatingSettingsEnd);
-    expect(floatingSettings, contains("JexText.of('functions', lang)"));
-    expect(floatingSettings, contains("JexText.of('backgroundColor', lang)"));
-    expect(floatingSettings, contains("JexText.of('orientation', lang)"));
-    expect(
-      containsDartFragment(
-        floatingSettings,
-        'fontSize: 11, fontWeight: FontWeight.w900',
-      ),
-      isTrue,
-    );
-    expect(
-      RegExp(r'fontSize:\s*10,\s*fontWeight:\s*FontWeight\.w800')
-          .hasMatch(floatingSettings),
-      isTrue,
-    );
-    expect(floatingSettings, contains('valueLabel'));
-    expect(
-      RegExp(r'fontSize:\s*10,\s*fontWeight:\s*FontWeight\.w900')
-          .hasMatch(floatingSettings),
-      isTrue,
-    );
-
-    expect(floating, contains('final bool compactUi;'));
-    expect(floating, contains('this.compactUi = false'));
-    expect(floating, contains('buildJexCompactUiTheme('));
-    expect(floating, contains('baseTheme: Theme.of(context)'));
-    for (final page in [
-      'LanguageSettingsPage',
-      'AppearanceSettingsPage',
-      'NotificationsSettingsPage',
-      'BluetoothSettingsPage',
-      'FloatingSettingsPage',
-    ]) {
-      final routePattern = RegExp(
-        'JexFixedScalePage\\s*\\(\\s*compactUi:\\s*true,\\s*child:\\s*${RegExp.escape(page)}\\s*\\(\\s*\\)\\s*,?\\s*\\)',
+      final settingsStart = floating.indexOf(
+        'class SettingsPage extends StatelessWidget',
       );
-      expect(routePattern.hasMatch(floating), isTrue, reason: 'Missing fixed-scale route for $page');
-    }
+      final settingsEnd = floating.indexOf(
+        '// AI-MEMORY / LANGUAGE-PAGE-CONTRACT',
+        settingsStart,
+      );
+      expect(settingsStart, isNonNegative);
+      expect(settingsEnd, greaterThan(settingsStart));
+      final settings = floating.substring(settingsStart, settingsEnd);
+      expect(settings, contains('data: buildJexCompactUiTheme(preset)'));
+      expect(settings, contains('EdgeInsets.fromLTRB(8, 10, 8, 5)'));
+      expect(
+        settings,
+        contains('EdgeInsets.symmetric(horizontal: 12, vertical: 10)'),
+      );
+      expect(settings, contains('fontSize: 13'));
+      expect(settings, contains('fontSize: 11'));
+      expect(settings, contains('size: 19'));
+      expect(settings, contains('size: 16'));
 
-    expect(appSettings, contains('ThemeData buildJexCompactUiTheme('));
-    expect(appSettings, contains('AppThemePreset preset'));
-    expect(appSettings, contains('ThemeData? baseTheme'));
-    expect(appSettings, contains('fontSize: 18'));
-    expect(appSettings, contains('fontSize: 13'));
-    expect(appSettings, contains('fontSize: 12'));
-    expect(appSettings, contains('fontSize: 11'));
-    expect(appSettings, contains('VisualDensity(horizontal: -0.5, vertical: -0.5)'));
+      final floatingSettingsStart = floating.indexOf(
+        'class _FloatingSettingsPageState',
+      );
+      final floatingSettingsEnd = floating.indexOf(
+        'class JexFixedScalePage extends StatelessWidget',
+        floatingSettingsStart,
+      );
+      expect(floatingSettingsStart, isNonNegative);
+      expect(floatingSettingsEnd, greaterThan(floatingSettingsStart));
+      final floatingSettings = floating.substring(
+        floatingSettingsStart,
+        floatingSettingsEnd,
+      );
+      expect(floatingSettings, contains("JexText.of('functions', lang)"));
+      expect(floatingSettings, contains("JexText.of('backgroundColor', lang)"));
+      expect(floatingSettings, contains("JexText.of('orientation', lang)"));
+      expect(
+        containsDartFragment(
+          floatingSettings,
+          'fontSize: 11, fontWeight: FontWeight.w900',
+        ),
+        isTrue,
+      );
+      expect(
+        RegExp(
+          r'fontSize:\s*10,\s*fontWeight:\s*FontWeight\.w800',
+        ).hasMatch(floatingSettings),
+        isTrue,
+      );
+      expect(floatingSettings, contains('valueLabel'));
+      expect(
+        RegExp(
+          r'fontSize:\s*10,\s*fontWeight:\s*FontWeight\.w900',
+        ).hasMatch(floatingSettings),
+        isTrue,
+      );
 
-    expect(main, contains('compactUi: true,\n          child: SettingsPage('));
-    final connectionStart = main.indexOf('class _ConnectionSheetContentState');
-    final connectionEnd = main.indexOf('class StaticSwitcher', connectionStart);
-    expect(connectionStart, isNonNegative);
-    expect(connectionEnd, greaterThan(connectionStart));
-    final connection = main.substring(connectionStart, connectionEnd);
-    expect(connection, contains('height: 60,'));
-    expect(connection, contains('fontSize: 16,'));
-    expect(connection, contains('fontSize: 9.5,'));
-    final devicesStart = connection.indexOf("JexText.of('devices', lang)");
-    final devicesEnd = connection.indexOf('IconButton(', devicesStart);
-    expect(devicesStart, isNonNegative);
-    expect(devicesEnd, greaterThan(devicesStart));
-    final devicesLabel = connection.substring(devicesStart, devicesEnd);
-    expect(devicesLabel, contains('fontSize: 13,'));
+      expect(floating, contains('final bool compactUi;'));
+      expect(floating, contains('this.compactUi = false'));
+      expect(floating, contains('buildJexCompactUiTheme('));
+      expect(floating, contains('baseTheme: Theme.of(context)'));
+      for (final page in [
+        'LanguageSettingsPage',
+        'AppearanceSettingsPage',
+        'NotificationsSettingsPage',
+        'BluetoothSettingsPage',
+        'FloatingSettingsPage',
+      ]) {
+        final routePattern = RegExp(
+          'JexFixedScalePage\\s*\\(\\s*compactUi:\\s*true,\\s*child:\\s*${RegExp.escape(page)}\\s*\\(\\s*\\)\\s*,?\\s*\\)',
+        );
+        expect(
+          routePattern.hasMatch(floating),
+          isTrue,
+          reason: 'Missing fixed-scale route for $page',
+        );
+      }
 
-    final emptyStateHelper =
-        connection.indexOf('connectionScanEmptyStateMessageKey(');
-    expect(emptyStateHelper, isNonNegative);
-    final emptyStateMessage = connection.indexOf(
-      'JexText.of(messageKey, lang)',
-      emptyStateHelper,
-    );
-    final emptyStateLayoutEnd =
-        connection.indexOf('const SizedBox(height: 10)', emptyStateMessage);
-    expect(emptyStateMessage, greaterThan(emptyStateHelper));
-    expect(emptyStateLayoutEnd, greaterThan(emptyStateMessage));
-    expect(
-      connection.substring(emptyStateMessage, emptyStateLayoutEnd),
-      contains('fontSize: 12,'),
-    );
-    expect(connection, contains('height: 42'));
-    expect(
-      RegExp(
-        r'tightFor\s*\(\s*width:\s*42\s*,\s*height:\s*42\s*,?\s*\)',
-      ).hasMatch(connection),
-      isTrue,
-    );
-    expect(
-      RegExp(
-        r'tightFor\s*\(\s*width:\s*40\s*,\s*height:\s*40\s*,?\s*\)',
-      ).hasMatch(connection),
-      isTrue,
-    );
-    expect(
-      containsDartFragment(
+      expect(appSettings, contains('ThemeData buildJexCompactUiTheme('));
+      expect(appSettings, contains('AppThemePreset preset'));
+      expect(appSettings, contains('ThemeData? baseTheme'));
+      expect(appSettings, contains('fontSize: 18'));
+      expect(appSettings, contains('fontSize: 13'));
+      expect(appSettings, contains('fontSize: 12'));
+      expect(appSettings, contains('fontSize: 11'));
+      expect(
+        appSettings,
+        contains('VisualDensity(horizontal: -0.5, vertical: -0.5)'),
+      );
+
+      expect(
         main,
-        'compactUi: true, child: _ConnectionSheetContent(',
-      ),
-      isTrue,
-    );
-    expect(main, contains('stream: FlutterBluePlus.isScanning'));
-    expect(main, contains('stream: FlutterBluePlus.onScanResults'));
-    expect(main, contains('key: ValueKey<int>(_scanGeneration)'));
-    expect(main, contains('_scanErrorKey'));
-    expect(main, contains('ConnectionScanCoordinator();'));
-    expect(main, contains('beginPassiveAttempt()'));
-    expect(main, contains('isPassiveAttemptCurrent(attempt)'));
-    expect(main, contains('isConnectionHandoffActive'));
-    expect(main, contains('hasActivePassiveAttempt'));
-    expect(main, contains('hasActiveOneShotAttempt'));
-    expect(main, contains('beginOneShotAttempt()'));
-    expect(main, contains('isOneShotAttemptCurrent(attempt)'));
-    expect(main, contains('finishOneShotAttempt(attempt)'));
-    expect(main, contains('beginConnectionHandoff();'));
-    expect(main, contains('completeConnectionHandoff();'));
-    expect(main, contains('runSerialized(() async {'));
-    expect(main, contains('onDeviceSelected:'));
-    expect(main, contains('_finishManualConnectionSheet'));
-    expect(main, contains('_prepareManualConnectionSheet'));
-    expect(main, contains('Future<bool> _startScanFromSheet()'));
+        contains('compactUi: true,\n          child: SettingsPage('),
+      );
+      final connectionStart = main.indexOf(
+        'class _ConnectionSheetContentState',
+      );
+      final connectionEnd = main.indexOf(
+        'class StaticSwitcher',
+        connectionStart,
+      );
+      expect(connectionStart, isNonNegative);
+      expect(connectionEnd, greaterThan(connectionStart));
+      final connection = main.substring(connectionStart, connectionEnd);
+      expect(connection, contains('height: 60,'));
+      expect(connection, contains('fontSize: 16,'));
+      expect(connection, contains('fontSize: 9.5,'));
+      final devicesStart = connection.indexOf("JexText.of('devices', lang)");
+      final devicesEnd = connection.indexOf('IconButton(', devicesStart);
+      expect(devicesStart, isNonNegative);
+      expect(devicesEnd, greaterThan(devicesStart));
+      final devicesLabel = connection.substring(devicesStart, devicesEnd);
+      expect(devicesLabel, contains('fontSize: 13,'));
 
-    final passiveStart = main.indexOf('void _startDisconnectRediscovery()');
-    final passiveEnd = main.indexOf('void _handleBleDisconnected()', passiveStart);
-    expect(passiveStart, isNonNegative);
-    expect(passiveEnd, greaterThan(passiveStart));
-    final passiveScanner = main.substring(passiveStart, passiveEnd);
-    final startScanCall =
-        passiveScanner.indexOf('await FlutterBluePlus.startScan(');
-    final scanCompletionWait =
-        passiveScanner.indexOf('await FlutterBluePlus.isScanning', startScanCall);
-    final finishAttempt = passiveScanner.indexOf(
-      '_connectionScanCoordinator.finishPassiveAttempt(attempt)',
-      scanCompletionWait,
-    );
-    expect(startScanCall, isNonNegative);
-    expect(scanCompletionWait, greaterThan(startScanCall));
-    expect(finishAttempt, greaterThan(scanCompletionWait));
+      final emptyStateHelper = connection.indexOf(
+        'connectionScanEmptyStateMessageKey(',
+      );
+      expect(emptyStateHelper, isNonNegative);
+      final emptyStateMessage = connection.indexOf(
+        'JexText.of(messageKey, lang)',
+        emptyStateHelper,
+      );
+      final emptyStateLayoutEnd = connection.indexOf(
+        'const SizedBox(height: 10)',
+        emptyStateMessage,
+      );
+      expect(emptyStateMessage, greaterThan(emptyStateHelper));
+      expect(emptyStateLayoutEnd, greaterThan(emptyStateMessage));
+      expect(
+        connection.substring(emptyStateMessage, emptyStateLayoutEnd),
+        contains('fontSize: 12,'),
+      );
+      expect(connection, contains('height: 42'));
+      expect(
+        RegExp(
+          r'tightFor\s*\(\s*width:\s*42\s*,\s*height:\s*42\s*,?\s*\)',
+        ).hasMatch(connection),
+        isTrue,
+      );
+      expect(
+        RegExp(
+          r'tightFor\s*\(\s*width:\s*40\s*,\s*height:\s*40\s*,?\s*\)',
+        ).hasMatch(connection),
+        isTrue,
+      );
+      expect(
+        containsDartFragment(
+          main,
+          'compactUi: true, child: _ConnectionSheetContent(',
+        ),
+        isTrue,
+      );
+      expect(main, contains('stream: FlutterBluePlus.isScanning'));
+      expect(main, contains('stream: FlutterBluePlus.onScanResults'));
+      expect(main, contains('key: ValueKey<int>(_scanGeneration)'));
+      expect(main, contains('_scanErrorKey'));
+      expect(main, contains('ConnectionScanCoordinator();'));
+      expect(main, contains('beginPassiveAttempt()'));
+      expect(main, contains('isPassiveAttemptCurrent(attempt)'));
+      expect(main, contains('isConnectionHandoffActive'));
+      expect(main, contains('hasActivePassiveAttempt'));
+      expect(main, contains('hasActiveOneShotAttempt'));
+      expect(main, contains('beginOneShotAttempt()'));
+      expect(main, contains('isOneShotAttemptCurrent(attempt)'));
+      expect(main, contains('finishOneShotAttempt(attempt)'));
+      expect(main, contains('beginConnectionHandoff();'));
+      expect(main, contains('completeConnectionHandoff();'));
+      expect(main, contains('runSerialized(() async {'));
+      expect(main, contains('onDeviceSelected:'));
+      expect(main, contains('_finishManualConnectionSheet'));
+      expect(main, contains('_prepareManualConnectionSheet'));
+      expect(main, contains('Future<bool> _startScanFromSheet()'));
 
-    final oneShotStart = main.indexOf('Future<void> _scanAndConnect(');
-    final oneShotEnd = main.indexOf(
-      'Future<void> _connect(BluetoothDevice target) async',
-      oneShotStart,
-    );
-    expect(oneShotStart, isNonNegative);
-    expect(oneShotEnd, greaterThan(oneShotStart));
-    final oneShotScanner = main.substring(oneShotStart, oneShotEnd);
-    final oneShotReservation = oneShotScanner.indexOf('beginOneShotAttempt()');
-    final firstPermissionAwait =
-        oneShotScanner.indexOf('await Permission.bluetoothScan.status');
-    expect(oneShotReservation, isNonNegative);
-    expect(firstPermissionAwait, greaterThan(oneShotReservation));
-    expect(oneShotScanner, contains('if (!isCurrentAttempt()) return;'));
-    expect(
-      oneShotScanner.split('FlutterBluePlus.onScanResults.listen(').length - 1,
-      2,
-    );
-    expect(
-      oneShotScanner,
-      isNot(contains('FlutterBluePlus.scanResults.listen(')),
-    );
-    expect(
-      oneShotScanner.split('() => FlutterBluePlus.startScan(').length - 1,
-      2,
-    );
-    expect(oneShotScanner, isNot(contains('await FlutterBluePlus.startScan(')));
-    expect(oneShotScanner, isNot(contains('await FlutterBluePlus.stopScan(')));
-    expect(oneShotScanner, contains('() => FlutterBluePlus.stopScan()'));
+      final passiveStart = main.indexOf('void _startDisconnectRediscovery()');
+      final passiveEnd = main.indexOf(
+        'void _handleBleDisconnected()',
+        passiveStart,
+      );
+      expect(passiveStart, isNonNegative);
+      expect(passiveEnd, greaterThan(passiveStart));
+      final passiveScanner = main.substring(passiveStart, passiveEnd);
+      final startScanCall = passiveScanner.indexOf(
+        'await FlutterBluePlus.startScan(',
+      );
+      final scanCompletionWait = passiveScanner.indexOf(
+        'await FlutterBluePlus.isScanning',
+        startScanCall,
+      );
+      final finishAttempt = passiveScanner.indexOf(
+        '_connectionScanCoordinator.finishPassiveAttempt(attempt)',
+        scanCompletionWait,
+      );
+      expect(startScanCall, isNonNegative);
+      expect(scanCompletionWait, greaterThan(startScanCall));
+      expect(finishAttempt, greaterThan(scanCompletionWait));
 
-    final oneShotCommandStart =
-        main.indexOf('Future<bool> _runOneShotScannerCommand(');
-    final oneShotCommandEnd =
-        main.indexOf('Future<void> _scanAndConnect(', oneShotCommandStart);
-    expect(oneShotCommandStart, isNonNegative);
-    expect(oneShotCommandEnd, greaterThan(oneShotCommandStart));
-    final oneShotCommand = main.substring(oneShotCommandStart, oneShotCommandEnd);
-    expect(oneShotCommand, contains('_connectionScanCoordinator.runSerialized('));
-    expect(oneShotCommand, contains('isOneShotAttemptCurrent(attempt)'));
+      final oneShotStart = main.indexOf('Future<void> _scanAndConnect(');
+      final oneShotEnd = main.indexOf(
+        'Future<void> _connect(BluetoothDevice target) async',
+        oneShotStart,
+      );
+      expect(oneShotStart, isNonNegative);
+      expect(oneShotEnd, greaterThan(oneShotStart));
+      final oneShotScanner = main.substring(oneShotStart, oneShotEnd);
+      final oneShotReservation = oneShotScanner.indexOf(
+        'beginOneShotAttempt()',
+      );
+      final firstPermissionAwait = oneShotScanner.indexOf(
+        'await Permission.bluetoothScan.status',
+      );
+      expect(oneShotReservation, isNonNegative);
+      expect(firstPermissionAwait, greaterThan(oneShotReservation));
+      expect(oneShotScanner, contains('if (!isCurrentAttempt()) return;'));
+      expect(
+        oneShotScanner.split('FlutterBluePlus.onScanResults.listen(').length -
+            1,
+        2,
+      );
+      expect(
+        oneShotScanner,
+        isNot(contains('FlutterBluePlus.scanResults.listen(')),
+      );
+      expect(
+        oneShotScanner.split('() => FlutterBluePlus.startScan(').length - 1,
+        2,
+      );
+      expect(
+        oneShotScanner,
+        isNot(contains('await FlutterBluePlus.startScan(')),
+      );
+      expect(
+        oneShotScanner,
+        isNot(contains('await FlutterBluePlus.stopScan(')),
+      );
+      expect(oneShotScanner, contains('() => FlutterBluePlus.stopScan()'));
 
-    expect(connection, contains('onPressed: _requestScan,'));
-    expect(connection, isNot(contains('onPressed: widget.onScan')));
-    expect(connection, contains('WidgetsBinding.instance.addPostFrameCallback'));
-    expect(connection, isNot(contains('if (FlutterBluePlus.isScanningNow)')));
+      final oneShotCommandStart = main.indexOf(
+        'Future<bool> _runOneShotScannerCommand(',
+      );
+      final oneShotCommandEnd = main.indexOf(
+        'Future<void> _scanAndConnect(',
+        oneShotCommandStart,
+      );
+      expect(oneShotCommandStart, isNonNegative);
+      expect(oneShotCommandEnd, greaterThan(oneShotCommandStart));
+      final oneShotCommand = main.substring(
+        oneShotCommandStart,
+        oneShotCommandEnd,
+      );
+      expect(
+        oneShotCommand,
+        contains('_connectionScanCoordinator.runSerialized('),
+      );
+      expect(oneShotCommand, contains('isOneShotAttemptCurrent(attempt)'));
 
-    // The existing DPI master-canvas scale is left intact; compactness is typography/density only.
-    expect(floating, contains('final scale = constraints.maxWidth / designWidth;'));
-    expect(floating, isNot(contains('(constraints.maxWidth / designWidth).clamp(0.0, 1.0).toDouble()')));
-  });
+      expect(connection, contains('onPressed: _requestScan,'));
+      expect(connection, isNot(contains('onPressed: widget.onScan')));
+      expect(
+        connection,
+        contains('WidgetsBinding.instance.addPostFrameCallback'),
+      );
+      expect(connection, isNot(contains('if (FlutterBluePlus.isScanningNow)')));
+
+      // The existing DPI master-canvas scale is left intact; compactness is typography/density only.
+      expect(
+        floating,
+        contains('final scale = constraints.maxWidth / designWidth;'),
+      );
+      expect(
+        floating,
+        isNot(
+          contains(
+            '(constraints.maxWidth / designWidth).clamp(0.0, 1.0).toDouble()',
+          ),
+        ),
+      );
+    },
+  );
 
   testWidgets(
     'Compact fixed-scale pages preserve the Home canvas across density changes',
@@ -404,7 +505,9 @@ void main() {
                 builder: (context) {
                   logicalCanvasSize = MediaQuery.sizeOf(context);
                   compactTheme = Theme.of(context);
-                  return const SizedBox.expand(key: ValueKey<String>('scale-probe'));
+                  return const SizedBox.expand(
+                    key: ValueKey<String>('scale-probe'),
+                  );
                 },
               ),
             ),
@@ -415,8 +518,14 @@ void main() {
         expect(compactTheme!.textTheme.titleLarge!.fontSize, 18);
         expect(compactTheme!.textTheme.bodyLarge!.fontSize, 13);
         expect(compactTheme!.brightness, inheritedTheme.brightness);
-        expect(compactTheme!.colorScheme.primary, inheritedTheme.colorScheme.primary);
-        expect(compactTheme!.colorScheme.surface, inheritedTheme.colorScheme.surface);
+        expect(
+          compactTheme!.colorScheme.primary,
+          inheritedTheme.colorScheme.primary,
+        );
+        expect(
+          compactTheme!.colorScheme.surface,
+          inheritedTheme.colorScheme.surface,
+        );
       }
 
       await pumpAtDensity(1080 / 420);
@@ -434,11 +543,15 @@ void main() {
       );
       expect(canvasTransform.transform.storage[0], closeTo(420 / 360, 0.01));
       expect(
-        360.0 * canvasTransform.transform.storage[0] * tester.view.devicePixelRatio,
+        360.0 *
+            canvasTransform.transform.storage[0] *
+            tester.view.devicePixelRatio,
         closeTo(1080.0, 0.01),
       );
       expect(
-        800.0 * canvasTransform.transform.storage[0] * tester.view.devicePixelRatio,
+        800.0 *
+            canvasTransform.transform.storage[0] *
+            tester.view.devicePixelRatio,
         closeTo(2400.0, 0.01),
       );
 
@@ -457,75 +570,101 @@ void main() {
       );
       expect(canvasTransform.transform.storage[0], closeTo(350 / 360, 0.01));
       expect(
-        360.0 * canvasTransform.transform.storage[0] * tester.view.devicePixelRatio,
+        360.0 *
+            canvasTransform.transform.storage[0] *
+            tester.view.devicePixelRatio,
         closeTo(1080.0, 0.01),
       );
       expect(
-        800.0 * canvasTransform.transform.storage[0] * tester.view.devicePixelRatio,
+        800.0 *
+            canvasTransform.transform.storage[0] *
+            tester.view.devicePixelRatio,
         closeTo(2400.0, 0.01),
       );
     },
   );
 
-  test('Native Floating Monitor centers text inside a freely draggable compact box', () {
-    final native = File(
-      'android/app/src/main/kotlin/com/horizontalzzz/jexfyz/FloatingMonitorService.kt',
-    ).readAsStringSync();
+  test(
+    'Native Floating Monitor centers text inside a freely draggable compact box',
+    () {
+      final native = File(
+        'android/app/src/main/kotlin/com/horizontalzzz/jexfyz/FloatingMonitorService.kt',
+      ).readAsStringSync();
 
-    expect(native, contains('gravity = Gravity.TOP or Gravity.START'));
-    expect(native, contains('layoutParams.x = downX + dx.roundToInt()'));
-    expect(native, contains('layoutParams.y = downY + dy.roundToInt()'));
-    expect(native, contains('var cursor = (width - contentWidth) / 2f'));
-    expect(native, contains('val leftX = dp(8f * scale)'));
-    expect(native, isNot(contains('val centeredX = (width - itemWidth(metric)) / 2f')));
-    expect(native, contains('config.style = "letters"'));
-    expect(native, contains('config.enabled && data.connected'));
-    expect(native, contains('if (config.enabled && data.connected) ensureOverlay() else removeOverlay()'));
-    expect(native, contains('config.backgroundColor == "white"'));
-    expect(native, contains('coerceIn(0.3f, 1.0f)'));
-    expect(native, contains('coerceIn(0.0f, 1.0f)'));
-    expect(native, isNot(contains('Gravity.CENTER_HORIZONTAL')));
-  });
+      expect(native, contains('gravity = Gravity.TOP or Gravity.START'));
+      expect(native, contains('layoutParams.x = downX + dx.roundToInt()'));
+      expect(native, contains('layoutParams.y = downY + dy.roundToInt()'));
+      expect(native, contains('var cursor = (width - contentWidth) / 2f'));
+      expect(native, contains('val leftX = dp(8f * scale)'));
+      expect(
+        native,
+        isNot(contains('val centeredX = (width - itemWidth(metric)) / 2f')),
+      );
+      expect(native, contains('config.style = "letters"'));
+      expect(native, contains('config.enabled && data.connected'));
+      expect(
+        native,
+        contains(
+          'if (config.enabled && data.connected) ensureOverlay() else removeOverlay()',
+        ),
+      );
+      expect(native, contains('config.backgroundColor == "white"'));
+      expect(native, contains('coerceIn(0.3f, 1.0f)'));
+      expect(native, contains('coerceIn(0.0f, 1.0f)'));
+      expect(native, isNot(contains('Gravity.CENTER_HORIZONTAL')));
+    },
+  );
 
+  test(
+    'Native Floating Monitor maps each live metric to exactly one icon branch',
+    () {
+      final native = File(
+        'android/app/src/main/kotlin/com/horizontalzzz/jexfyz/FloatingMonitorService.kt',
+      ).readAsStringSync();
+      final drawIconStart = native.indexOf('private fun drawIcon(');
+      final drawIconEnd = native.indexOf(
+        '\n        // AI-METHOD / GESTURE-CONTRACT',
+        drawIconStart,
+      );
+      expect(drawIconStart, isNonNegative);
+      expect(drawIconEnd, greaterThan(drawIconStart));
 
-  test('Native Floating Monitor maps each live metric to exactly one icon branch', () {
-    final native = File(
-      'android/app/src/main/kotlin/com/horizontalzzz/jexfyz/FloatingMonitorService.kt',
-    ).readAsStringSync();
-    final drawIconStart = native.indexOf('private fun drawIcon(');
-    final drawIconEnd = native.indexOf(
-      '\n        // AI-METHOD / GESTURE-CONTRACT',
-      drawIconStart,
-    );
-    expect(drawIconStart, isNonNegative);
-    expect(drawIconEnd, greaterThan(drawIconStart));
+      final drawIcon = native.substring(drawIconStart, drawIconEnd);
+      final metricBranches = RegExp(
+        r'^\s*"([^"]+)"\s*->',
+        multiLine: true,
+      ).allMatches(drawIcon).map((match) => match.group(1)).toList();
 
-    final drawIcon = native.substring(drawIconStart, drawIconEnd);
-    final metricBranches = RegExp(
-      r'^\s*"([^"]+)"\s*->',
-      multiLine: true,
-    ).allMatches(drawIcon).map((match) => match.group(1)).toList();
-
-    expect(metricBranches, ['B', 'H', 'V', 'A', 'P', 'F']);
-    expect(metricBranches.toSet().length, metricBranches.length);
-    expect(drawIcon, contains('for (angle in 0 until 360 step 120)'));
-    expect(
-      drawIcon,
-      contains('canvas.drawCircle(cx, cy, dp(2.5f * scale), iconPaint)'),
-    );
-  });
+      expect(metricBranches, ['B', 'H', 'V', 'A', 'P', 'F']);
+      expect(metricBranches.toSet().length, metricBranches.length);
+      expect(drawIcon, contains('for (angle in 0 until 360 step 120)'));
+      expect(
+        drawIcon,
+        contains('canvas.drawCircle(cx, cy, dp(2.5f * scale), iconPaint)'),
+      );
+    },
+  );
 
   test('Settings uses concise horizontal rows and meaningful values', () {
     final settingsSource = File('lib/floating_monitor.dart').readAsStringSync();
     final localizationSource = File('lib/app_settings.dart').readAsStringSync();
-    final settingsStart = settingsSource.indexOf('class SettingsPage extends StatelessWidget');
-    final settingsEnd = settingsSource.indexOf('class AboutSettingsPage', settingsStart);
+    final settingsStart = settingsSource.indexOf(
+      'class SettingsPage extends StatelessWidget',
+    );
+    final settingsEnd = settingsSource.indexOf(
+      'class AboutSettingsPage',
+      settingsStart,
+    );
     expect(settingsStart, isNonNegative);
     expect(settingsEnd, greaterThan(settingsStart));
     final settingsPage = settingsSource.substring(settingsStart, settingsEnd);
 
-    final lockCard = settingsPage.indexOf('_voltageLockSettingRow(context, language, state)');
-    final generalSection = settingsPage.indexOf("JexText.of('general', language)");
+    final lockCard = settingsPage.indexOf(
+      '_voltageLockSettingRow(context, language, state)',
+    );
+    final generalSection = settingsPage.indexOf(
+      "JexText.of('general', language)",
+    );
     expect(lockCard, isNonNegative);
     expect(generalSection, greaterThan(lockCard));
     expect(settingsPage, isNot(contains('DeviceDiagnosticsPage')));
@@ -552,7 +691,9 @@ void main() {
       compactDartSource("JexText.of('about', language)"),
     );
     final aboutCard = compactSettingsPage.indexOf(
-      compactDartSource('Card(\n                margin: const EdgeInsets.only(top: 8)'),
+      compactDartSource(
+        'Card(\n                margin: const EdgeInsets.only(top: 8)',
+      ),
     );
     expect(firmwareSection, isNonNegative);
     expect(aboutCard, greaterThan(firmwareSection));
@@ -594,56 +735,67 @@ void main() {
     expect(localizationSource, contains("'peltierFanRequiredTitle': {"));
   });
 
-  testWidgets('About page renders localized Special Thanks credits with one aligned left edge', (tester) async {
-    final previousLanguage = appLanguageNotifier.value;
-    addTearDown(() => appLanguageNotifier.value = previousLanguage);
-    appLanguageNotifier.value = AppLanguage.english;
+  testWidgets(
+    'About page renders localized Special Thanks credits with one aligned left edge',
+    (tester) async {
+      final previousLanguage = appLanguageNotifier.value;
+      addTearDown(() => appLanguageNotifier.value = previousLanguage);
+      appLanguageNotifier.value = AppLanguage.english;
 
-    await tester.pumpWidget(
-      MaterialApp(
-        theme: ThemeData.light(useMaterial3: true),
-        home: const AboutSettingsPage(),
-      ),
-    );
-    await tester.pumpAndSettle();
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: ThemeData.light(useMaterial3: true),
+          home: const AboutSettingsPage(),
+        ),
+      );
+      await tester.pumpAndSettle();
 
-    expect(find.text('About'), findsOneWidget);
-    expect(find.text('Special Thanks'), findsOneWidget);
-    expect(find.text('JE Cooler'), findsNothing);
-    expect(find.byType(Card), findsOneWidget);
-    expect(find.text('App Developer & Builder'), findsOneWidget);
-    expect(find.text('Horizon'), findsOneWidget);
-    expect(find.text('@horizontalzzz'), findsOneWidget);
-    expect(find.text('@Horizontalzzz'), findsNothing);
-    expect(find.text('Design Inspiration'), findsOneWidget);
-    expect(find.text('FYZ'), findsOneWidget);
-    expect(find.text('@FYZ737'), findsOneWidget);
-    expect(find.text('3D Design & Printing'), findsOneWidget);
-    expect(find.text('Logos'), findsOneWidget);
-    expect(find.text('@Logos3dMichael'), findsOneWidget);
+      expect(find.text('About'), findsOneWidget);
+      expect(find.text('Special Thanks'), findsOneWidget);
+      expect(find.text('JE Cooler'), findsNothing);
+      expect(find.byType(Card), findsOneWidget);
+      expect(find.text('App Developer & Builder'), findsOneWidget);
+      expect(find.text('Horizon'), findsOneWidget);
+      expect(find.text('@horizontalzzz'), findsOneWidget);
+      expect(find.text('@Horizontalzzz'), findsNothing);
+      expect(find.text('Design Inspiration'), findsOneWidget);
+      expect(find.text('FYZ'), findsOneWidget);
+      expect(find.text('@FYZ737'), findsOneWidget);
+      expect(find.text('3D Design & Printing'), findsOneWidget);
+      expect(find.text('Logos'), findsOneWidget);
+      expect(find.text('@Logos3dMichael'), findsOneWidget);
 
-    final firstRoleLeft = tester.getTopLeft(find.text('App Developer & Builder')).dx;
-    final secondRoleLeft = tester.getTopLeft(find.text('Design Inspiration')).dx;
-    final thirdRoleLeft = tester.getTopLeft(find.text('3D Design & Printing')).dx;
-    expect(secondRoleLeft, closeTo(firstRoleLeft, 0.01));
-    expect(thirdRoleLeft, closeTo(firstRoleLeft, 0.01));
+      final firstRoleLeft = tester
+          .getTopLeft(find.text('App Developer & Builder'))
+          .dx;
+      final secondRoleLeft = tester
+          .getTopLeft(find.text('Design Inspiration'))
+          .dx;
+      final thirdRoleLeft = tester
+          .getTopLeft(find.text('3D Design & Printing'))
+          .dx;
+      expect(secondRoleLeft, closeTo(firstRoleLeft, 0.01));
+      expect(thirdRoleLeft, closeTo(firstRoleLeft, 0.01));
 
-    appLanguageNotifier.value = AppLanguage.indonesia;
-    await tester.pumpAndSettle();
-    expect(find.text('Tentang'), findsOneWidget);
-    expect(find.text('Ucapan Terima Kasih'), findsOneWidget);
-    expect(find.text('JE Cooler'), findsNothing);
-    expect(find.text('Pengembang Aplikasi & Perakit'), findsOneWidget);
-    expect(find.text('Inspirasi Desain'), findsOneWidget);
-    expect(find.text('Desain & Pencetakan 3D'), findsOneWidget);
-    expect(find.text('@horizontalzzz'), findsOneWidget);
-    expect(find.text('@Horizontalzzz'), findsNothing);
-    expect(find.text('@FYZ737'), findsOneWidget);
-    expect(find.text('@Logos3dMichael'), findsOneWidget);
-    expect(tester.takeException(), isNull);
-  });
+      appLanguageNotifier.value = AppLanguage.indonesia;
+      await tester.pumpAndSettle();
+      expect(find.text('Tentang'), findsOneWidget);
+      expect(find.text('Ucapan Terima Kasih'), findsOneWidget);
+      expect(find.text('JE Cooler'), findsNothing);
+      expect(find.text('Pengembang Aplikasi & Perakit'), findsOneWidget);
+      expect(find.text('Inspirasi Desain'), findsOneWidget);
+      expect(find.text('Desain & Pencetakan 3D'), findsOneWidget);
+      expect(find.text('@horizontalzzz'), findsOneWidget);
+      expect(find.text('@Horizontalzzz'), findsNothing);
+      expect(find.text('@FYZ737'), findsOneWidget);
+      expect(find.text('@Logos3dMichael'), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    },
+  );
 
-  testWidgets('Settings values share one line and redundant copy is absent', (tester) async {
+  testWidgets('Settings values share one line and redundant copy is absent', (
+    tester,
+  ) async {
     final previousLanguage = appLanguageNotifier.value;
     final previousTheme = appThemeNotifier.value;
     final previousAutoConnect = appAutoConnectNotifier.value;
@@ -688,20 +840,121 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets('Lock Voltage stays one line and only its authoritative Switch changes state', (tester) async {
-    final previousLanguage = appLanguageNotifier.value;
-    final previousLock = voltageLockSettingsNotifier.value;
-    addTearDown(() {
-      appLanguageNotifier.value = previousLanguage;
-      voltageLockSettingsNotifier.value = previousLock;
-    });
+  testWidgets(
+    'Lock Voltage stays one line and only its authoritative Switch changes state',
+    (tester) async {
+      final previousLanguage = appLanguageNotifier.value;
+      final previousLock = voltageLockSettingsNotifier.value;
+      addTearDown(() {
+        appLanguageNotifier.value = previousLanguage;
+        voltageLockSettingsNotifier.value = previousLock;
+      });
 
-    Future<double> pumpLockState(
-      VoltageLockSettingsState state, {
-      AppLanguage language = AppLanguage.english,
-    }) async {
-      appLanguageNotifier.value = language;
-      voltageLockSettingsNotifier.value = state;
+      Future<double> pumpLockState(
+        VoltageLockSettingsState state, {
+        AppLanguage language = AppLanguage.english,
+      }) async {
+        appLanguageNotifier.value = language;
+        voltageLockSettingsNotifier.value = state;
+        await tester.pumpWidget(
+          MaterialApp(
+            theme: ThemeData.dark(useMaterial3: true),
+            home: SettingsPage(
+              currentFirmwareVersion: 'V7.2',
+              onOpenFirmwareUpdate: () async {},
+              onVoltageLockChanged: (_) async {},
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+        expect(find.text('Not synchronized'), findsNothing);
+        expect(find.text('Firmware V7.2+ required'), findsNothing);
+        expect(find.text('Active · not saved'), findsNothing);
+        expect(find.text('5V limit · Adaptive OFF'), findsNothing);
+        expect(
+          find.byKey(const ValueKey<String>('voltage-lock-card')),
+          findsOneWidget,
+        );
+        return tester
+            .getSize(find.byKey(const ValueKey<String>('voltage-lock-card')))
+            .height;
+      }
+
+      await pumpLockState(const VoltageLockSettingsState());
+      expect(find.byType(Switch), findsNothing);
+      expect(find.byType(Tooltip), findsWidgets);
+
+      await pumpLockState(
+        const VoltageLockSettingsState(sessionReady: true, known: false),
+      );
+      final unavailableTooltip = tester
+          .widgetList<Tooltip>(find.byType(Tooltip))
+          .firstWhere(
+            (tooltip) => tooltip.message == 'Firmware V7.2+ required',
+          );
+      expect(unavailableTooltip.message, 'Firmware V7.2+ required');
+
+      await pumpLockState(
+        const VoltageLockSettingsState(
+          sessionReady: true,
+          known: true,
+          active: true,
+          saved: false,
+        ),
+      );
+      expect(find.byType(Switch), findsOneWidget);
+      expect(find.byTooltip('Retry saving Lock Voltage'), findsOneWidget);
+
+      final offHeight = await pumpLockState(
+        const VoltageLockSettingsState(
+          sessionReady: true,
+          known: true,
+          active: false,
+          saved: true,
+        ),
+      );
+      expect(find.byType(Switch), findsOneWidget);
+
+      final onHeight = await pumpLockState(
+        const VoltageLockSettingsState(
+          sessionReady: true,
+          known: true,
+          active: true,
+          saved: true,
+        ),
+      );
+      expect(find.byType(Switch), findsOneWidget);
+      expect(onHeight, closeTo(offHeight, 0.01));
+
+      await pumpLockState(
+        const VoltageLockSettingsState(
+          sessionReady: true,
+          known: true,
+          active: true,
+          saved: true,
+          busy: true,
+        ),
+      );
+      final busySwitch = tester.widget<Switch>(find.byType(Switch));
+      expect(busySwitch.value, isTrue);
+      expect(busySwitch.onChanged, isNull);
+      expect(find.byType(CircularProgressIndicator), findsNothing);
+
+      await pumpLockState(
+        const VoltageLockSettingsState(sessionReady: true, known: false),
+        language: AppLanguage.indonesia,
+      );
+      final localizedTooltip = tester
+          .widgetList<Tooltip>(find.byType(Tooltip))
+          .firstWhere((tooltip) => tooltip.message == 'Perlu Firmware V7.2+');
+      expect(localizedTooltip.message, 'Perlu Firmware V7.2+');
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  testWidgets(
+    'Settings shows a known Firmware version as the right-side value',
+    (tester) async {
       await tester.pumpWidget(
         MaterialApp(
           theme: ThemeData.dark(useMaterial3: true),
@@ -713,96 +966,8 @@ void main() {
         ),
       );
       await tester.pumpAndSettle();
-      expect(find.text('Not synchronized'), findsNothing);
-      expect(find.text('Firmware V7.2+ required'), findsNothing);
-      expect(find.text('Active · not saved'), findsNothing);
-      expect(find.text('5V limit · Adaptive OFF'), findsNothing);
-      expect(find.byKey(const ValueKey<String>('voltage-lock-card')), findsOneWidget);
-      return tester.getSize(find.byKey(const ValueKey<String>('voltage-lock-card'))).height;
-    }
-
-    await pumpLockState(const VoltageLockSettingsState());
-    expect(find.byType(Switch), findsNothing);
-    expect(find.byType(Tooltip), findsWidgets);
-
-    await pumpLockState(
-      const VoltageLockSettingsState(sessionReady: true, known: false),
-    );
-    final unavailableTooltip = tester.widgetList<Tooltip>(find.byType(Tooltip))
-        .firstWhere((tooltip) => tooltip.message == 'Firmware V7.2+ required');
-    expect(unavailableTooltip.message, 'Firmware V7.2+ required');
-
-    await pumpLockState(
-      const VoltageLockSettingsState(
-        sessionReady: true,
-        known: true,
-        active: true,
-        saved: false,
-      ),
-    );
-    expect(find.byType(Switch), findsOneWidget);
-    expect(find.byTooltip('Retry saving Lock Voltage'), findsOneWidget);
-
-    final offHeight = await pumpLockState(
-      const VoltageLockSettingsState(
-        sessionReady: true,
-        known: true,
-        active: false,
-        saved: true,
-      ),
-    );
-    expect(find.byType(Switch), findsOneWidget);
-
-    final onHeight = await pumpLockState(
-      const VoltageLockSettingsState(
-        sessionReady: true,
-        known: true,
-        active: true,
-        saved: true,
-      ),
-    );
-    expect(find.byType(Switch), findsOneWidget);
-    expect(onHeight, closeTo(offHeight, 0.01));
-
-    await pumpLockState(
-      const VoltageLockSettingsState(
-        sessionReady: true,
-        known: true,
-        active: true,
-        saved: true,
-        busy: true,
-      ),
-    );
-    final busySwitch = tester.widget<Switch>(find.byType(Switch));
-    expect(busySwitch.value, isTrue);
-    expect(busySwitch.onChanged, isNull);
-    expect(find.byType(CircularProgressIndicator), findsNothing);
-
-    await pumpLockState(
-      const VoltageLockSettingsState(sessionReady: true, known: false),
-      language: AppLanguage.indonesia,
-    );
-    final localizedTooltip = tester.widgetList<Tooltip>(find.byType(Tooltip))
-        .firstWhere((tooltip) => tooltip.message == 'Perlu Firmware V7.2+');
-    expect(localizedTooltip.message, 'Perlu Firmware V7.2+');
-    expect(tester.takeException(), isNull);
-  });
-
-  testWidgets('Settings shows a known Firmware version as the right-side value', (tester) async {
-    await tester.pumpWidget(
-      MaterialApp(
-        theme: ThemeData.dark(useMaterial3: true),
-        home: SettingsPage(
-          currentFirmwareVersion: 'V7.2',
-          onOpenFirmwareUpdate: () async {},
-          onVoltageLockChanged: (_) async {},
-        ),
-      ),
-    );
-    await tester.pumpAndSettle();
-    expect(find.text('V7.2'), findsOneWidget);
-    expect(tester.takeException(), isNull);
-  });
-
-
+      expect(find.text('V7.2'), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    },
+  );
 }

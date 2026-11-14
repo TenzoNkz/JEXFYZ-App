@@ -74,7 +74,6 @@ import 'connection_scan_coordinator.dart';
 import 'floating_monitor.dart';
 import 'usage_statistics.dart';
 
-
 // Premium icon system: Phosphor Icons (Regular/Bold).
 // Material Icons are intentionally not used by JE X FYZ UI controls.
 // --- PRODUCT/INTEGRATION CONSTANTS: identity, BLE UUIDs, OTA endpoint, UI limits ---
@@ -106,8 +105,10 @@ String localizedOtaFailureSummary(
   String? mode,
   String? stage,
 }) {
-  final base = JexText.of('otaFailed', language)
-      .replaceFirst(RegExp(r'[.!]\s*$'), '');
+  final base = JexText.of(
+    'otaFailed',
+    language,
+  ).replaceFirst(RegExp(r'[.!]\s*$'), '');
   final details = <String>[base];
   final unknownStage = JexText.of('unknownOtaStage', language);
   for (final candidate in <String?>[mode, stage]) {
@@ -128,23 +129,25 @@ String localizedOtaSuccessSummary(
   String? mode,
   String? version,
 }) {
-  final base = JexText.of('otaSuccessful', language)
-      .replaceFirst(RegExp(r'[.!]\s*$'), '');
+  final base = JexText.of(
+    'otaSuccessful',
+    language,
+  ).replaceFirst(RegExp(r'[.!]\s*$'), '');
   final details = <String>[base];
   final normalizedMode = mode?.trim() ?? '';
   if (normalizedMode.isNotEmpty && normalizedMode.toUpperCase() != 'OTA') {
     details.add(normalizedMode);
   }
   final normalizedVersion = version?.trim() ?? '';
-  if (RegExp(r'^[A-Za-z0-9][A-Za-z0-9._+\-]{0,31}$')
-      .hasMatch(normalizedVersion)) {
+  if (RegExp(
+    r'^[A-Za-z0-9][A-Za-z0-9._+\-]{0,31}$',
+  ).hasMatch(normalizedVersion)) {
     details.add(normalizedVersion);
   }
   return details.join(' • ');
 }
 
-bool isSupportedP1Protocol(String value) =>
-    value.trim().toUpperCase() == 'P1';
+bool isSupportedP1Protocol(String value) => value.trim().toUpperCase() == 'P1';
 
 int peltierRearmTarget(int hotLimit) => hotLimit - 1;
 
@@ -156,8 +159,12 @@ String normalizeLedColor(String value) {
 String peltierRearmNotice(int hotLimit, AppLanguage language) {
   final target = peltierRearmTarget(hotLimit);
   return JexText.phrase(
-    'Peltier is locked for safety. Cool Hotside to ≤ ' + target.toString() + '°C, then try again.',
-    'Peltier dikunci demi keselamatan. Turunkan suhu Hotside hingga ≤ ' + target.toString() + '°C, lalu coba lagi.',
+    'Peltier is locked for safety. Cool Hotside to ≤ ' +
+        target.toString() +
+        '°C, then try again.',
+    'Peltier dikunci demi keselamatan. Turunkan suhu Hotside hingga ≤ ' +
+        target.toString() +
+        '°C, lalu coba lagi.',
     language,
   );
 }
@@ -184,8 +191,16 @@ String homeHotsideLimitNotice(
   final value = parseHomeTemperatureCelsius(temperature);
   final current = value == null ? temperature.trim() : value.toStringAsFixed(1);
   return JexText.phrase(
-    'Hotside limit reached: ' + current + '°C (limit ' + hotLimit.toString() + '°C).',
-    'Batas suhu Hotside tercapai: ' + current + '°C (batas ' + hotLimit.toString() + '°C).',
+    'Hotside limit reached: ' +
+        current +
+        '°C (limit ' +
+        hotLimit.toString() +
+        '°C).',
+    'Batas suhu Hotside tercapai: ' +
+        current +
+        '°C (batas ' +
+        hotLimit.toString() +
+        '°C).',
     language,
   );
 }
@@ -210,23 +225,29 @@ String homeFanSpeedChangedNotice(
 }) {
   if (currentSpeed < previousSpeed) {
     return JexText.phrase(
-      'Fan speed reduced to ',
-      'Kecepatan kipas diturunkan ke ',
-      language,
-    ) + currentSpeed.toString() + '%.';
+          'Fan speed reduced to ',
+          'Kecepatan kipas diturunkan ke ',
+          language,
+        ) +
+        currentSpeed.toString() +
+        '%.';
   }
   if (currentSpeed > previousSpeed) {
     return JexText.phrase(
-      'Fan speed increased to ',
-      'Kecepatan kipas dinaikkan ke ',
-      language,
-    ) + currentSpeed.toString() + '%.';
+          'Fan speed increased to ',
+          'Kecepatan kipas dinaikkan ke ',
+          language,
+        ) +
+        currentSpeed.toString() +
+        '%.';
   }
   return JexText.phrase(
-    'Fan speed set to ',
-    'Kecepatan kipas diatur ke ',
-    language,
-  ) + currentSpeed.toString() + '%.';
+        'Fan speed set to ',
+        'Kecepatan kipas diatur ke ',
+        language,
+      ) +
+      currentSpeed.toString() +
+      '%.';
 }
 
 /// One telemetry transition becomes one localized sentence; values never accumulate.
@@ -239,15 +260,25 @@ String? homeNotifyForTelemetryChange({
   if (previousValue == currentValue) return null;
   switch (key) {
     case 'VOLTAGE':
-      return JexText.phrase('Voltage set to ', 'Tegangan diatur ke ', language) +
+      return JexText.phrase(
+            'Voltage set to ',
+            'Tegangan diatur ke ',
+            language,
+          ) +
           currentValue +
           '.';
     case 'FAN':
       return JexText.of(currentValue == 'ON' ? 'fanOn' : 'fanOff', language);
     case 'PELTIER':
-      return JexText.of(currentValue == 'ON' ? 'peltierOn' : 'peltierOff', language);
+      return JexText.of(
+        currentValue == 'ON' ? 'peltierOn' : 'peltierOff',
+        language,
+      );
     case 'ADAPTIVE':
-      return JexText.of(currentValue == 'ON' ? 'adaptiveOn' : 'adaptiveOff', language);
+      return JexText.of(
+        currentValue == 'ON' ? 'adaptiveOn' : 'adaptiveOff',
+        language,
+      );
     case 'SAFETY':
       if (currentValue.trim().toUpperCase() == 'OK') {
         return JexText.phrase(
@@ -273,10 +304,12 @@ String? homeNotifyForTelemetryChange({
       return JexText.of('modeUpdated', language);
     case 'BRIGHTNESS':
       return JexText.phrase(
-        'LED brightness set to ',
-        'Kecerahan LED diatur ke ',
-        language,
-      ) + currentValue + '%.';
+            'LED brightness set to ',
+            'Kecerahan LED diatur ke ',
+            language,
+          ) +
+          currentValue +
+          '%.';
     case 'RGB_COLOR':
       return JexText.of('colorUpdated', language);
     case 'ADAPTIVE_PROFILE':
@@ -284,17 +317,21 @@ String? homeNotifyForTelemetryChange({
           ? JexText.phrase('Battery', 'Baterai', language)
           : 'Hotside';
       return JexText.phrase(
-        'Adaptive profile set to ',
-        'Profil Adaptif diatur ke ',
-        language,
-      ) + profile + '.';
+            'Adaptive profile set to ',
+            'Profil Adaptif diatur ke ',
+            language,
+          ) +
+          profile +
+          '.';
     case 'ADAPTIVE_CEILING':
       final ceiling = currentValue.trim().toUpperCase();
       return JexText.phrase(
-        'Adaptive voltage ceiling set to ',
-        'Batas tegangan Adaptif diatur ke ',
-        language,
-      ) + ceiling + '.';
+            'Adaptive voltage ceiling set to ',
+            'Batas tegangan Adaptif diatur ke ',
+            language,
+          ) +
+          ceiling +
+          '.';
     default:
       // HOT/BATTERY temperature samples do not generate ordinary notices.
       return null;
@@ -353,23 +390,29 @@ String relocalizeHomeNotifyMessage(String message, AppLanguage language) {
     final speed = fanSpeedChange.group(3)!;
     if (englishAction == 'reduced' || indonesiaAction == 'diturunkan ke') {
       return JexText.phrase(
-        'Fan speed reduced to ',
-        'Kecepatan kipas diturunkan ke ',
-        language,
-      ) + speed + '%.';
+            'Fan speed reduced to ',
+            'Kecepatan kipas diturunkan ke ',
+            language,
+          ) +
+          speed +
+          '%.';
     }
     if (englishAction == 'increased' || indonesiaAction == 'dinaikkan ke') {
       return JexText.phrase(
-        'Fan speed increased to ',
-        'Kecepatan kipas dinaikkan ke ',
-        language,
-      ) + speed + '%.';
+            'Fan speed increased to ',
+            'Kecepatan kipas dinaikkan ke ',
+            language,
+          ) +
+          speed +
+          '%.';
     }
     return JexText.phrase(
-      'Fan speed set to ',
-      'Kecepatan kipas diatur ke ',
-      language,
-    ) + speed + '%.';
+          'Fan speed set to ',
+          'Kecepatan kipas diatur ke ',
+          language,
+        ) +
+        speed +
+        '%.';
   }
 
   final ledBrightness = RegExp(
@@ -378,10 +421,12 @@ String relocalizeHomeNotifyMessage(String message, AppLanguage language) {
   ).firstMatch(raw);
   if (ledBrightness != null) {
     return JexText.phrase(
-      'LED brightness set to ',
-      'Kecerahan LED diatur ke ',
-      language,
-    ) + ledBrightness.group(1)! + '%.';
+          'LED brightness set to ',
+          'Kecerahan LED diatur ke ',
+          language,
+        ) +
+        ledBrightness.group(1)! +
+        '%.';
   }
 
   final hotsideReached = RegExp(
@@ -390,10 +435,11 @@ String relocalizeHomeNotifyMessage(String message, AppLanguage language) {
   ).firstMatch(raw);
   if (hotsideReached != null) {
     return JexText.phrase(
-      'Hotside limit reached: ',
-      'Batas suhu Hotside tercapai: ',
-      language,
-    ) + hotsideReached.group(1)! +
+          'Hotside limit reached: ',
+          'Batas suhu Hotside tercapai: ',
+          language,
+        ) +
+        hotsideReached.group(1)! +
         '°C (' +
         JexText.phrase('limit ', 'batas ', language) +
         hotsideReached.group(2)! +
@@ -408,14 +454,16 @@ String relocalizeHomeNotifyMessage(String message, AppLanguage language) {
     final rawProfile = adaptiveProfile.group(1)!.toLowerCase();
     final isBattery = rawProfile == 'battery' || rawProfile == 'baterai';
     return JexText.phrase(
-      'Adaptive profile set to ',
-      'Profil Adaptif diatur ke ',
-      language,
-    ) + JexText.phrase(
-      isBattery ? 'Battery' : 'Hotside',
-      isBattery ? 'Baterai' : 'Hotside',
-      language,
-    ) + '.';
+          'Adaptive profile set to ',
+          'Profil Adaptif diatur ke ',
+          language,
+        ) +
+        JexText.phrase(
+          isBattery ? 'Battery' : 'Hotside',
+          isBattery ? 'Baterai' : 'Hotside',
+          language,
+        ) +
+        '.';
   }
 
   final voltage = RegExp(
@@ -433,7 +481,11 @@ String relocalizeHomeNotifyMessage(String message, AppLanguage language) {
     caseSensitive: false,
   ).firstMatch(raw);
   if (fanSpeed != null) {
-    return JexText.phrase('Fan speed set to ', 'Kecepatan kipas diatur ke ', language) +
+    return JexText.phrase(
+          'Fan speed set to ',
+          'Kecepatan kipas diatur ke ',
+          language,
+        ) +
         fanSpeed.group(1)! +
         '%.';
   }
@@ -671,8 +723,10 @@ String normalizeHomeNotifyText(
   if (raw.isEmpty) return '';
 
   // OTA event envelopes have their own parser and must reach it unchanged.
-  if (RegExp(r'^OTA_(?:SUCCESS|FAILED|UP_TO_DATE)\|', caseSensitive: false)
-      .hasMatch(raw)) {
+  if (RegExp(
+    r'^OTA_(?:SUCCESS|FAILED|UP_TO_DATE)\|',
+    caseSensitive: false,
+  ).hasMatch(raw)) {
     return raw;
   }
 
@@ -685,14 +739,19 @@ String normalizeHomeNotifyText(
   if (suffixCode != null) {
     final code = suffixCode.group(1)!.toUpperCase();
     if (_jexKnownNotifyReasonCodes.contains(code)) {
-      return localizedNotifyReason(code, hotLimit: hotLimit, language: language);
+      return localizedNotifyReason(
+        code,
+        hotLimit: hotLimit,
+        language: language,
+      );
     }
     raw = raw.substring(0, suffixCode.start).trim();
   }
 
   const genericIssue = 'Check the device connection, then try again.';
   const genericIssueId = 'Periksa koneksi perangkat, lalu coba lagi.';
-  if (raw.isEmpty) return JexText.phrase(genericIssue, genericIssueId, language);
+  if (raw.isEmpty)
+    return JexText.phrase(genericIssue, genericIssueId, language);
 
   final lower = raw.toLowerCase();
   final confirmationFailed = <String>[
@@ -726,18 +785,26 @@ String normalizeHomeNotifyText(
   }
 
   if (confirmationFailed || commandFailed) {
-    final fanSpeedIssue = lower.contains('fan speed') ||
+    final fanSpeedIssue =
+        lower.contains('fan speed') ||
         lower.contains('fan-speed') ||
         lower.contains('kecepatan kipas');
     final peltierIssue = lower.contains('peltier');
-    final adaptiveIssue = lower.contains('adaptive') || lower.contains('mode adaptif');
-    final voltageIssue = lower.contains('voltage') || lower.contains('tegangan');
+    final adaptiveIssue =
+        lower.contains('adaptive') || lower.contains('mode adaptif');
+    final voltageIssue =
+        lower.contains('voltage') || lower.contains('tegangan');
     final fanIssue = lower.contains('fan') || lower.contains('kipas');
-    final brightnessIssue = lower.contains('brightness') || lower.contains('kecerahan');
-    final colorIssue = lower.contains('color') || lower.contains('colour') || lower.contains('warna');
+    final brightnessIssue =
+        lower.contains('brightness') || lower.contains('kecerahan');
+    final colorIssue =
+        lower.contains('color') ||
+        lower.contains('colour') ||
+        lower.contains('warna');
     final ledIssue = lower.contains('led') || lower.contains('rgb');
     final modeIssue = lower.contains('mode');
-    final temperatureIssue = lower.contains('temperature') ||
+    final temperatureIssue =
+        lower.contains('temperature') ||
         lower.contains('suhu') ||
         lower.contains('hotlimit');
 
@@ -875,7 +942,8 @@ String normalizeHomeNotifyText(
       .replaceAll(RegExp(r'\b[A-Z][A-Z0-9]*(?:_[A-Z0-9]+)+\b'), '')
       .replaceAll(RegExp(r'\s+'), ' ')
       .trim();
-  if (raw.isEmpty) return JexText.phrase(genericIssue, genericIssueId, language);
+  if (raw.isEmpty)
+    return JexText.phrase(genericIssue, genericIssueId, language);
   return raw;
 }
 
@@ -935,14 +1003,13 @@ bool shouldClearStaleNotifyError({
 }) {
   if (!connected || !liveTelemetryReceived) return false;
 
-  final safe = safety.trim().toUpperCase() == 'OK' &&
+  final safe =
+      safety.trim().toUpperCase() == 'OK' &&
       safetyReason.trim().toUpperCase() == 'NONE';
   if (!safe) return false;
 
   final upper = notice.trim().toUpperCase();
-  if (upper.isEmpty ||
-      upper.contains('OTA') ||
-      upper.contains('FIRMWARE')) {
+  if (upper.isEmpty || upper.contains('OTA') || upper.contains('FIRMWARE')) {
     return false;
   }
 
@@ -1105,38 +1172,42 @@ class LedSyncSnapshot {
     final mode = int.tryParse(parts[0].trim());
     final phase = int.tryParse(parts[1].trim());
     final cycle = int.tryParse(parts[2].trim());
-    if (mode == null || mode < 1 || mode > 7 ||
-        phase == null || phase < 0 ||
-        cycle == null || cycle < 1 || cycle > 30000) {
+    if (mode == null ||
+        mode < 1 ||
+        mode > 7 ||
+        phase == null ||
+        phase < 0 ||
+        cycle == null ||
+        cycle < 1 ||
+        cycle > 30000) {
       return null;
     }
-    return LedSyncSnapshot(
-      mode: mode,
-      phaseMs: phase % cycle,
-      cycleMs: cycle,
-    );
+    return LedSyncSnapshot(mode: mode, phaseMs: phase % cycle, cycleMs: cycle);
   }
 }
 
 /// Firmware-owned LED animation timing helpers. Mode IDs stay aligned with firmware.
 int ledAnimationCycleMs(int mode) {
   switch (mode) {
-    case 1: return 1000;
-    case 2: return 2200;
-    case 4: return 1600;
-    case 5: return 900;
-    case 6: return 1800;
-    case 7: return 30000;
+    case 1:
+      return 1000;
+    case 2:
+      return 2200;
+    case 4:
+      return 1600;
+    case 5:
+      return 900;
+    case 6:
+      return 1800;
+    case 7:
+      return 30000;
   }
   return 1000;
 }
 
 /// Returns normalized per-pixel intensity in the firmware's physical pixel order.
 /// Hardware order is RIGHT TOP->BOTTOM (0..3), then LEFT BOTTOM->TOP (4..7).
-List<double> ledPreviewLevels({
-  required int mode,
-  required int phaseMs,
-}) {
+List<double> ledPreviewLevels({required int mode, required int phaseMs}) {
   final levels = List<double>.filled(8, 0);
   final safeMode = mode.clamp(1, 7).toInt();
   final cycle = ledAnimationCycleMs(safeMode);
@@ -1148,7 +1219,8 @@ List<double> ledPreviewLevels({
       levels.fillRange(0, 8, 1);
     case 2:
       final breathingPhase = phase / 2200.0;
-      final level = .12 + .88 * (.5 + .5 * math.sin(breathingPhase * math.pi * 2));
+      final level =
+          .12 + .88 * (.5 + .5 * math.sin(breathingPhase * math.pi * 2));
       levels.fillRange(0, 8, level);
     case 4:
       final head = phase / 200.0;
@@ -1308,7 +1380,9 @@ class _JexLedStripPreviewState extends State<JexLedStripPreview>
     super.didUpdateWidget(oldWidget);
 
     if (widget.ledCycleMs != oldWidget.ledCycleMs) {
-      controller.duration = Duration(milliseconds: _safeCycle(widget.ledCycleMs));
+      controller.duration = Duration(
+        milliseconds: _safeCycle(widget.ledCycleMs),
+      );
       if (widget.active) controller.repeat();
     }
 
@@ -1335,7 +1409,11 @@ class _JexLedStripPreviewState extends State<JexLedStripPreview>
     super.dispose();
   }
 
-  Widget _modeArrow(BuildContext context, {required bool left, required bool enabled}) {
+  Widget _modeArrow(
+    BuildContext context, {
+    required bool left,
+    required bool enabled,
+  }) {
     final scheme = Theme.of(context).colorScheme;
     return InkWell(
       onTap: enabled ? (left ? widget.onPrevious : widget.onNext) : null,
@@ -1392,12 +1470,14 @@ class _JexLedStripPreviewState extends State<JexLedStripPreview>
       child: AnimatedBuilder(
         animation: controller,
         builder: (_, __) {
-          final elapsed = math.max(
-            0,
-            _phaseClock.elapsedMilliseconds - _phaseAnchorElapsedMs,
-          ).toInt();
+          final elapsed = math
+              .max(0, _phaseClock.elapsedMilliseconds - _phaseAnchorElapsedMs)
+              .toInt();
           final syncedPhase = ((_phaseAnchorMs + elapsed) % cycle).toInt();
-          final levels = ledPreviewLevels(mode: widget.mode, phaseMs: syncedPhase);
+          final levels = ledPreviewLevels(
+            mode: widget.mode,
+            phaseMs: syncedPhase,
+          );
           final colors = ledPreviewColors(
             mode: widget.mode,
             phaseMs: syncedPhase,
@@ -1412,7 +1492,11 @@ class _JexLedStripPreviewState extends State<JexLedStripPreview>
             height: 58,
             child: Row(
               children: [
-                _modeArrow(context, left: true, enabled: widget.previousEnabled),
+                _modeArrow(
+                  context,
+                  left: true,
+                  enabled: widget.previousEnabled,
+                ),
                 const SizedBox(width: 4),
                 _ledColumn(
                   leftSide: true,
@@ -1430,7 +1514,10 @@ class _JexLedStripPreviewState extends State<JexLedStripPreview>
                       child: Container(
                         width: double.infinity,
                         alignment: Alignment.center,
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 10,
+                        ),
                         decoration: BoxDecoration(
                           color: scheme.surface,
                           borderRadius: BorderRadius.circular(12),
@@ -1547,9 +1634,10 @@ class _JexLedStripPainter extends CustomPainter {
       canvas.drawCircle(
         center.translate(-radius * .22, -radius * .22),
         radius * .20,
-        Paint()..color = Colors.white.withValues(
-          alpha: active ? (.12 + .16 * level) : .12,
-        ),
+        Paint()
+          ..color = Colors.white.withValues(
+            alpha: active ? (.12 + .16 * level) : .12,
+          ),
       );
     }
   }
@@ -1623,8 +1711,8 @@ class _JexColorPickerCardState extends State<_JexColorPickerCard> {
     final normalizedSelected = _draftSelected.trim().toUpperCase();
     final selectedColor =
         normalizedSelected.startsWith('#') && normalizedSelected.length == 7
-            ? ledPaletteColor(normalizedSelected)
-            : scheme.surfaceContainerHighest;
+        ? ledPaletteColor(normalizedSelected)
+        : scheme.surfaceContainerHighest;
 
     return Material(
       color: scheme.surface,
@@ -1770,13 +1858,17 @@ class _JexColorPickerCardState extends State<_JexColorPickerCard> {
                                   border: Border.all(
                                     color: isSelected
                                         ? scheme.onSurface
-                                        : (isWhite ? scheme.outline : Colors.transparent),
+                                        : (isWhite
+                                              ? scheme.outline
+                                              : Colors.transparent),
                                     width: isSelected ? 2 : 1,
                                   ),
                                   boxShadow: isSelected
                                       ? [
                                           BoxShadow(
-                                            color: scheme.primary.withValues(alpha: .22),
+                                            color: scheme.primary.withValues(
+                                              alpha: .22,
+                                            ),
                                             blurRadius: 4,
                                             spreadRadius: .5,
                                           ),
@@ -1786,7 +1878,9 @@ class _JexColorPickerCardState extends State<_JexColorPickerCard> {
                                 child: isSelected
                                     ? JexAnimatedIcon.glyph(
                                         icon: PhosphorIconsBold.check,
-                                        color: isWhite ? Colors.black : Colors.white,
+                                        color: isWhite
+                                            ? Colors.black
+                                            : Colors.white,
                                         size: 16,
                                         active: true,
                                       )
@@ -1807,6 +1901,7 @@ class _JexColorPickerCardState extends State<_JexColorPickerCard> {
     );
   }
 }
+
 enum JexAnimatedIconKind {
   battery,
   hotside,
@@ -1827,8 +1922,7 @@ enum JexAnimatedIconKind {
 bool jexIndicatorAnimationActive({
   required bool connected,
   required bool stateActive,
-}) =>
-    connected && stateActive;
+}) => connected && stateActive;
 
 /// Controls autonomous phase loops, not event-driven transitions.
 /// Battery, Hotside and Voltage loop while BLE is online; output icons otherwise
@@ -1995,7 +2089,8 @@ double jexIntegratedFanCycles({
   final u = (transitionTime / transition).clamp(0.0, 1.0).toDouble();
   // Integral(3u² - 2u³) = u³ - 0.5u⁴.
   final easedIntegral = transition * (u * u * u - .5 * u * u * u * u);
-  final transitionedCycles = fromCyclesPerSecond * transitionTime +
+  final transitionedCycles =
+      fromCyclesPerSecond * transitionTime +
       (toCyclesPerSecond - fromCyclesPerSecond) * easedIntegral;
   if (elapsed <= transition) return transitionedCycles;
   return transitionedCycles + toCyclesPerSecond * (elapsed - transition);
@@ -2052,7 +2147,6 @@ double jexTemperatureIndicatorLevel(
   if (temperature == null || !temperature.isFinite) return safeFallback;
   return ((temperature - minC) / (maxC - minC)).clamp(0.0, 1.0).toDouble();
 }
-
 
 const Color jexThermalIceBlue = Color(0xFF65DDFB);
 const Color jexThermalCyan = Color(0xFF42DDD6);
@@ -2123,9 +2217,7 @@ bool jexThermalBatteryFireActive(String value) {
 
 bool jexHotsideFireActive(String value, {required double hotLimit}) {
   final temperature = jexParseTemperatureC(value);
-  return temperature != null &&
-      hotLimit.isFinite &&
-      temperature >= hotLimit;
+  return temperature != null && hotLimit.isFinite && temperature >= hotLimit;
 }
 
 /// Hotside stays ice blue through 30°C and reaches burning red at the configured Hotside limit.
@@ -2211,15 +2303,15 @@ class JexAnimatedIcon extends StatefulWidget {
     this.size = 24,
     this.active = false,
     this.warning = false,
-  })  : connected = false,
-        kind = JexAnimatedIconKind.generic,
-        glyph = icon,
-        level = 1,
-        voltageLevel = 5,
-        valueKnown = false,
-        lightTheme = false,
-        lightSurfaceColor = Colors.white,
-        lightOutlineColor = const Color(0xFF3F444D);
+  }) : connected = false,
+       kind = JexAnimatedIconKind.generic,
+       glyph = icon,
+       level = 1,
+       voltageLevel = 5,
+       valueKnown = false,
+       lightTheme = false,
+       lightSurfaceColor = Colors.white,
+       lightOutlineColor = const Color(0xFF3F444D);
 
   @override
   State<JexAnimatedIcon> createState() => _JexAnimatedIconState();
@@ -2249,7 +2341,8 @@ class _JexFanRotationSimulation extends Simulation {
       );
 
   @override
-  double x(double time) => startPhaseRadians +
+  double x(double time) =>
+      startPhaseRadians +
       math.pi *
           2.0 *
           jexIntegratedFanCycles(
@@ -2288,18 +2381,23 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
   double _fanTargetCyclesPerSecond = 0.0;
 
   double _currentSpeedLevel() => jexSmoothFanSpeedLevel(
-        from: _speedFromLevel,
-        to: _speedTargetLevel,
-        progress: speedLevelTransitionController.value,
-      );
+    from: _speedFromLevel,
+    to: _speedTargetLevel,
+    progress: speedLevelTransitionController.value,
+  );
 
   double _currentIndicatorLevel() {
-    final t = Curves.easeInOutCubic.transform(indicatorLevelTransitionController.value);
-    return _indicatorLevelFrom + (_indicatorLevelTarget - _indicatorLevelFrom) * t;
+    final t = Curves.easeInOutCubic.transform(
+      indicatorLevelTransitionController.value,
+    );
+    return _indicatorLevelFrom +
+        (_indicatorLevelTarget - _indicatorLevelFrom) * t;
   }
 
   double _currentWarningLevel() {
-    final t = Curves.easeInOutCubic.transform(warningTransitionController.value);
+    final t = Curves.easeInOutCubic.transform(
+      warningTransitionController.value,
+    );
     return _warningFromLevel + (_warningTargetLevel - _warningFromLevel) * t;
   }
 
@@ -2313,7 +2411,9 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
   void _retargetIndicatorLevel(double target) {
     _indicatorLevelFrom = _currentIndicatorLevel();
     _indicatorLevelTarget = target.clamp(0.0, 1.0).toDouble();
-    indicatorLevelTransitionController.duration = const Duration(milliseconds: 520);
+    indicatorLevelTransitionController.duration = const Duration(
+      milliseconds: 520,
+    );
     indicatorLevelTransitionController.forward(from: 0);
   }
 
@@ -2330,7 +2430,8 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
     if (!fanPhaseController.isAnimating || simulation == null) {
       return _fanTargetCyclesPerSecond;
     }
-    final elapsedMicros = fanPhaseController.lastElapsedDuration?.inMicroseconds ?? 0;
+    final elapsedMicros =
+        fanPhaseController.lastElapsedDuration?.inMicroseconds ?? 0;
     return simulation.cyclesPerSecondAt(elapsedMicros / 1000000.0);
   }
 
@@ -2559,7 +2660,9 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
       value: widget.active ? 1 : 0,
     );
     _frostFromIntensity = jexPeltierFrostIntensity(widget.voltageLevel);
-    _frostFromParticleCount = jexPeltierFrostParticleCount(widget.voltageLevel).toDouble();
+    _frostFromParticleCount = jexPeltierFrostParticleCount(
+      widget.voltageLevel,
+    ).toDouble();
     frostTransitionController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 420),
@@ -2567,7 +2670,8 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
     if (widget.kind == JexAnimatedIconKind.peltier && widget.active) {
       frostTransitionController.forward(from: 0);
     }
-    final initialSpeedLevel = widget.kind == JexAnimatedIconKind.speed && widget.active
+    final initialSpeedLevel =
+        widget.kind == JexAnimatedIconKind.speed && widget.active
         ? widget.level.clamp(0.0, 1.0).toDouble()
         : 0.0;
     _speedFromLevel = initialSpeedLevel;
@@ -2598,7 +2702,8 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
       _stopAnimationsForDisconnect();
       return;
     }
-    if (widget.warning != oldWidget.warning || widget.connected != oldWidget.connected) {
+    if (widget.warning != oldWidget.warning ||
+        widget.connected != oldWidget.connected) {
       _retargetWarningLevel(widget.connected && widget.warning);
     }
     if (widget.active != oldWidget.active) {
@@ -2623,12 +2728,16 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
       _retargetIndicatorLevel(widget.level);
     }
     final voltageChanged = widget.voltageLevel != oldWidget.voltageLevel;
-    final fanVoltageChanged = widget.kind == JexAnimatedIconKind.fan && voltageChanged;
-    final fanSpeedChanged = widget.kind == JexAnimatedIconKind.fan &&
+    final fanVoltageChanged =
+        widget.kind == JexAnimatedIconKind.fan && voltageChanged;
+    final fanSpeedChanged =
+        widget.kind == JexAnimatedIconKind.fan &&
         widget.level != oldWidget.level;
-    final peltierVisualChanged = widget.kind == JexAnimatedIconKind.peltier &&
+    final peltierVisualChanged =
+        widget.kind == JexAnimatedIconKind.peltier &&
         (voltageChanged || widget.active != oldWidget.active);
-    final speedVisualChanged = widget.kind == JexAnimatedIconKind.speed &&
+    final speedVisualChanged =
+        widget.kind == JexAnimatedIconKind.speed &&
         (oldWidget.kind != JexAnimatedIconKind.speed ||
             widget.active != oldWidget.active ||
             widget.valueKnown != oldWidget.valueKnown ||
@@ -2665,7 +2774,8 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
       _resetFanRotation();
     }
 
-    final fanActivationChanged = widget.kind == JexAnimatedIconKind.fan &&
+    final fanActivationChanged =
+        widget.kind == JexAnimatedIconKind.fan &&
         widget.active != oldWidget.active;
     if (widget.kind == JexAnimatedIconKind.fan &&
         widget.active &&
@@ -2686,11 +2796,19 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
     if (peltierVisualChanged) {
       // Retarget from the currently displayed frost state on voltage or ON/OFF changes.
       // If another change arrives mid-transition, continue from the interpolated value.
-      final previousT = Curves.easeInOutCubic.transform(frostTransitionController.value);
-      final previousIntensity = jexPeltierFrostIntensity(oldWidget.voltageLevel);
-      final previousCount = jexPeltierFrostParticleCount(oldWidget.voltageLevel).toDouble();
-      _frostFromIntensity += (previousIntensity - _frostFromIntensity) * previousT;
-      _frostFromParticleCount += (previousCount - _frostFromParticleCount) * previousT;
+      final previousT = Curves.easeInOutCubic.transform(
+        frostTransitionController.value,
+      );
+      final previousIntensity = jexPeltierFrostIntensity(
+        oldWidget.voltageLevel,
+      );
+      final previousCount = jexPeltierFrostParticleCount(
+        oldWidget.voltageLevel,
+      ).toDouble();
+      _frostFromIntensity +=
+          (previousIntensity - _frostFromIntensity) * previousT;
+      _frostFromParticleCount +=
+          (previousCount - _frostFromParticleCount) * previousT;
       if (widget.active) {
         // Voltage classes interpolate smoothly, but OFF itself never fades the
         // crystal. When OFF, freeze the currently displayed crystal appearance.
@@ -2728,35 +2846,36 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
     // for JE X FYZ status/indicator kinds.
     if (widget.glyph != null) {
       return RepaintBoundary(
-        child: Icon(
-          widget.glyph!,
-          size: widget.size,
-          color: widget.color,
-        ),
+        child: Icon(widget.glyph!, size: widget.size, color: widget.color),
       );
     }
 
     return RepaintBoundary(
       child: AnimatedBuilder(
-        animation: Listenable.merge(
-          <Listenable>[
-            controller,
-            fanPhaseController,
-            activityTransitionController,
-            frostTransitionController,
-            speedLevelTransitionController,
-            indicatorLevelTransitionController,
-            warningTransitionController,
-          ],
-        ),
+        animation: Listenable.merge(<Listenable>[
+          controller,
+          fanPhaseController,
+          activityTransitionController,
+          frostTransitionController,
+          speedLevelTransitionController,
+          indicatorLevelTransitionController,
+          warningTransitionController,
+        ]),
         builder: (_, __) {
-          final frostT = Curves.easeInOutCubic.transform(frostTransitionController.value);
-          final frostTargetIntensity = jexPeltierFrostIntensity(widget.voltageLevel);
-          final frostTargetCount =
-              jexPeltierFrostParticleCount(widget.voltageLevel).toDouble();
-          final frostIntensity = _frostFromIntensity +
+          final frostT = Curves.easeInOutCubic.transform(
+            frostTransitionController.value,
+          );
+          final frostTargetIntensity = jexPeltierFrostIntensity(
+            widget.voltageLevel,
+          );
+          final frostTargetCount = jexPeltierFrostParticleCount(
+            widget.voltageLevel,
+          ).toDouble();
+          final frostIntensity =
+              _frostFromIntensity +
               (frostTargetIntensity - _frostFromIntensity) * frostT;
-          final frostParticleCount = _frostFromParticleCount +
+          final frostParticleCount =
+              _frostFromParticleCount +
               (frostTargetCount - _frostFromParticleCount) * frostT;
           final displayedLevel = widget.kind == JexAnimatedIconKind.speed
               ? _currentSpeedLevel()
@@ -2828,15 +2947,11 @@ class _JexIconPainter extends CustomPainter {
     Color darkColor, {
     required double darkAlpha,
     required double lightAlpha,
-  }) =>
-      lightTheme
-          ? lightOutlineColor.withValues(alpha: lightAlpha)
-          : darkColor.withValues(alpha: darkAlpha);
+  }) => lightTheme
+      ? lightOutlineColor.withValues(alpha: lightAlpha)
+      : darkColor.withValues(alpha: darkAlpha);
 
-  Color _cavityPaintColor(
-    Color darkColor, {
-    required double darkAlpha,
-  }) =>
+  Color _cavityPaintColor(Color darkColor, {required double darkAlpha}) =>
       lightTheme ? lightSurfaceColor : darkColor.withValues(alpha: darkAlpha);
 
   Paint _stroke(double width, Color paintColor) => Paint()
@@ -2887,10 +3002,7 @@ class _JexIconPainter extends CustomPainter {
       final tail = head - segmentLength;
       final segment = Path();
       if (tail < 0) {
-        segment.addPath(
-          metric.extractPath(length + tail, length),
-          Offset.zero,
-        );
+        segment.addPath(metric.extractPath(length + tail, length), Offset.zero);
         if (head > 0) {
           segment.addPath(metric.extractPath(0, head), Offset.zero);
         }
@@ -2901,14 +3013,7 @@ class _JexIconPainter extends CustomPainter {
 
       final pulseStrength = i == 0 ? 1.0 : .58;
       final alpha = pulseStrength * (.55 + .45 * strength);
-      _drawGlow(
-        canvas,
-        segment,
-        edgeColor,
-        s * .105,
-        s * .030,
-        .34 * alpha,
-      );
+      _drawGlow(canvas, segment, edgeColor, s * .105, s * .030, .34 * alpha);
       canvas.drawPath(
         segment,
         _stroke(s * .046, Colors.white.withValues(alpha: .62 * alpha)),
@@ -2921,14 +3026,18 @@ class _JexIconPainter extends CustomPainter {
   }
 
   Path _batterySilhouette(double s) => Path()
-    ..addRRect(RRect.fromRectAndRadius(
-      Rect.fromLTWH(s * .12, s * .26, s * .70, s * .48),
-      Radius.circular(s * .085),
-    ))
-    ..addRRect(RRect.fromRectAndRadius(
-      Rect.fromLTWH(s * .82, s * .405, s * .075, s * .19),
-      Radius.circular(s * .025),
-    ));
+    ..addRRect(
+      RRect.fromRectAndRadius(
+        Rect.fromLTWH(s * .12, s * .26, s * .70, s * .48),
+        Radius.circular(s * .085),
+      ),
+    )
+    ..addRRect(
+      RRect.fromRectAndRadius(
+        Rect.fromLTWH(s * .82, s * .405, s * .075, s * .19),
+        Radius.circular(s * .025),
+      ),
+    );
 
   // One continuous outer contour avoids a seam where the thermometer tube meets its bulb.
   Path _hotsideSilhouette(double s) => Path()
@@ -2964,7 +3073,13 @@ class _JexIconPainter extends CustomPainter {
     ..lineTo(s * .535, s * .285)
     ..close();
 
-  void _drawAdaptiveArrowHead(Canvas canvas, Offset tip, double direction, double length, Color color) {
+  void _drawAdaptiveArrowHead(
+    Canvas canvas,
+    Offset tip,
+    double direction,
+    double length,
+    Color color,
+  ) {
     final wingA = Offset(
       tip.dx - math.cos(direction - .72) * length,
       tip.dy - math.sin(direction - .72) * length,
@@ -2983,7 +3098,13 @@ class _JexIconPainter extends CustomPainter {
 
   // Two directional arcs travel around the cycle instead of morphing into an empty ring.
   // Active Adaptive uses directional arcs; its OFF glyph remains full-colour.
-  void _drawAdaptiveFlow(Canvas canvas, double s, double phase, Color color, double strength) {
+  void _drawAdaptiveFlow(
+    Canvas canvas,
+    double s,
+    double phase,
+    Color color,
+    double strength,
+  ) {
     final center = Offset(s / 2, s / 2);
     final radius = s * .29;
     final orbit = Rect.fromCircle(center: center, radius: radius);
@@ -3020,7 +3141,10 @@ class _JexIconPainter extends CustomPainter {
         _drawGlow(canvas, arcPath, tint, s * .12, s * .035, .16 * flowStrength);
       }
       canvas.drawArc(
-        orbit, start, sweep, false,
+        orbit,
+        start,
+        sweep,
+        false,
         _stroke(
           s * .115,
           _depthPaintColor(
@@ -3030,16 +3154,36 @@ class _JexIconPainter extends CustomPainter {
           ),
         ),
       );
-      canvas.drawArc(orbit, start, sweep, false,
-          _stroke(s * .085, tint.withValues(alpha: .24 + .08 * flowStrength)));
+      canvas.drawArc(
+        orbit,
+        start,
+        sweep,
+        false,
+        _stroke(s * .085, tint.withValues(alpha: .24 + .08 * flowStrength)),
+      );
       canvas.drawArc(orbit, start, sweep, false, _stroke(s * .070, tint));
-      canvas.drawArc(orbit, start, sweep, false,
-          _stroke(s * .022, Colors.white.withValues(alpha: .22 + .26 * flowStrength)));
+      canvas.drawArc(
+        orbit,
+        start,
+        sweep,
+        false,
+        _stroke(
+          s * .022,
+          Colors.white.withValues(alpha: .22 + .26 * flowStrength),
+        ),
+      );
       final end = start + sweep;
-      final tip = Offset(center.dx + math.cos(end) * radius,
-          center.dy + math.sin(end) * radius);
-      _drawAdaptiveArrowHead(canvas, tip, end + math.pi / 2,
-          s * (.135 + .010 * wave), tint);
+      final tip = Offset(
+        center.dx + math.cos(end) * radius,
+        center.dy + math.sin(end) * radius,
+      );
+      _drawAdaptiveArrowHead(
+        canvas,
+        tip,
+        end + math.pi / 2,
+        s * (.135 + .010 * wave),
+        tint,
+      );
     }
   }
 
@@ -3049,9 +3193,18 @@ class _JexIconPainter extends CustomPainter {
     final path = Path();
     for (var i = 0; i < 6; i++) {
       final a = -math.pi / 2 + i * math.pi / 3;
-      final outer = Offset(cx + math.cos(a) * s * .34, cy + math.sin(a) * s * .34);
-      final branchA = Offset(cx + math.cos(a - .24) * s * .22, cy + math.sin(a - .24) * s * .22);
-      final branchB = Offset(cx + math.cos(a + .24) * s * .22, cy + math.sin(a + .24) * s * .22);
+      final outer = Offset(
+        cx + math.cos(a) * s * .34,
+        cy + math.sin(a) * s * .34,
+      );
+      final branchA = Offset(
+        cx + math.cos(a - .24) * s * .22,
+        cy + math.sin(a - .24) * s * .22,
+      );
+      final branchB = Offset(
+        cx + math.cos(a + .24) * s * .22,
+        cy + math.sin(a + .24) * s * .22,
+      );
       path
         ..moveTo(cx, cy)
         ..lineTo(outer.dx, outer.dy)
@@ -3063,8 +3216,10 @@ class _JexIconPainter extends CustomPainter {
   }
 
   Offset _fanPoint(double x, double y, double angle, double cx, double cy) =>
-      Offset(cx + x * math.cos(angle) - y * math.sin(angle),
-          cy + x * math.sin(angle) + y * math.cos(angle));
+      Offset(
+        cx + x * math.cos(angle) - y * math.sin(angle),
+        cy + x * math.sin(angle) + y * math.cos(angle),
+      );
 
   Path _fanSilhouette(double s, double angle) {
     final cx = s / 2;
@@ -3156,11 +3311,7 @@ class _JexIconPainter extends CustomPainter {
     final lanes = thermometer
         ? const <double>[-.72, -.24, .24, .72]
         : const <double>[-.82, -.50, -.18, .18, .50, .82];
-    final emberColor = Color.lerp(
-      hotColor,
-      const Color(0xFFFF7828),
-      .62,
-    )!;
+    final emberColor = Color.lerp(hotColor, const Color(0xFFFF7828), .62)!;
     final roundedFrame = RRect.fromRectAndRadius(
       bounds,
       Radius.circular(s * .22),
@@ -3188,12 +3339,11 @@ class _JexIconPainter extends CustomPainter {
       final fallDistance = bounds.height + s * .18;
       final y = bounds.top - s * .12 + travel * fallDistance;
       final sizePulse = .82 + .18 * math.sin(math.pi * fall);
-      final radiusX = s *
-          (thermometer ? .043 : .047) *
-          sizePulse *
-          (i.isEven ? 1.0 : .88);
+      final radiusX =
+          s * (thermometer ? .043 : .047) * sizePulse * (i.isEven ? 1.0 : .88);
       final radiusY = radiusX * (thermometer ? 1.65 : 1.58);
-      final rotation = .24 * math.sin(fall * math.pi * 2 + i * .71) +
+      final rotation =
+          .24 * math.sin(fall * math.pi * 2 + i * .71) +
           (lane < 0 ? -.08 : .08);
 
       canvas.save();
@@ -3263,12 +3413,7 @@ class _JexIconPainter extends CustomPainter {
 
       final hotCore = Path()
         ..moveTo(-radiusX * .04, -radiusY * .05)
-        ..quadraticBezierTo(
-          radiusX * .19,
-          radiusY * .22,
-          0,
-          radiusY * .42,
-        )
+        ..quadraticBezierTo(radiusX * .19, radiusY * .22, 0, radiusY * .42)
         ..quadraticBezierTo(
           -radiusX * .14,
           radiusY * .22,
@@ -3306,7 +3451,8 @@ class _JexIconPainter extends CustomPainter {
         final outwardAngle = angle + (sign > 0 ? 0 : math.pi);
         for (final branchSide in <double>[-1, 1]) {
           final branchAngle = outwardAngle + branchSide * 2.20;
-          final branchEnd = branchBase +
+          final branchEnd =
+              branchBase +
               Offset(math.cos(branchAngle), math.sin(branchAngle)) *
                   (radius * .34);
           canvas.drawLine(branchBase, branchEnd, paint);
@@ -3337,35 +3483,24 @@ class _JexIconPainter extends CustomPainter {
     canvas.clipRect(Rect.fromLTWH(0, 0, s, s));
     for (var i = 0; i < count; i++) {
       final seed = i * 2.399963229728653;
-      final fall = moving
-          ? (cycle + i / count) % 1.0
-          : .16 + (i / count) * .66;
+      final fall = moving ? (cycle + i / count) % 1.0 : .16 + (i / count) * .66;
       final particleAngle = fall * math.pi * 2 + seed;
-      final drift = math.sin(particleAngle) * .035 +
-          math.sin(particleAngle * 2) * .012;
+      final drift =
+          math.sin(particleAngle) * .035 + math.sin(particleAngle * 2) * .012;
       final x = cx + s * lanes[i % lanes.length] + (moving ? drift * s : 0.0);
       final y = s * (-.12 + fall * 1.24);
-      final radius = s * (.080 + .012 * strength) *
-          (.82 + .10 * (i % 3));
+      final radius = s * (.080 + .012 * strength) * (.82 + .10 * (i % 3));
       final rotation = moving
           ? seed + fall * math.pi * .28 * (i.isEven ? 1.0 : -1.0)
           : seed * .25;
       final edgeFade = moving
           ? jexParticleBoundaryFade(fall, fadeIn: .18, fadeOut: .22)
           : 1.0;
-      final alpha = (.52 + .42 * strength) *
-          (.88 + .12 * ((i % 3) / 2)) *
-          edgeFade;
+      final alpha =
+          (.52 + .42 * strength) * (.88 + .12 * ((i % 3) / 2)) * edgeFade;
       if (alpha <= .01) continue;
       final snowColor = i % 4 == 0 ? Colors.white : frostColor;
-      _drawSnowflake(
-        canvas,
-        Offset(x, y),
-        radius,
-        rotation,
-        snowColor,
-        alpha,
-      );
+      _drawSnowflake(canvas, Offset(x, y), radius, rotation, snowColor, alpha);
     }
     canvas.restore();
   }
@@ -3381,9 +3516,9 @@ class _JexIconPainter extends CustomPainter {
 
     final center = Offset(s / 2, s / 2);
     Offset point(double angle, double radius) => Offset(
-          center.dx + math.cos(angle) * radius,
-          center.dy + math.sin(angle) * radius,
-        );
+      center.dx + math.cos(angle) * radius,
+      center.dy + math.sin(angle) * radius,
+    );
 
     // Three fixed airflow ribbons stay behind the rotor. Their count, geometry,
     // stroke and colour do not respond to voltage/PWM; only the blades accelerate.
@@ -3397,10 +3532,11 @@ class _JexIconPainter extends CustomPainter {
       final start = point(startAngle, radius);
       final end = point(endAngle, radius);
       final tangentScale = radius * sweep * .38;
-      final control1 = start +
+      final control1 =
+          start +
           Offset(-math.sin(startAngle), math.cos(startAngle)) * tangentScale;
-      final control2 = end -
-          Offset(-math.sin(endAngle), math.cos(endAngle)) * tangentScale;
+      final control2 =
+          end - Offset(-math.sin(endAngle), math.cos(endAngle)) * tangentScale;
       final path = Path()
         ..moveTo(start.dx, start.dy)
         ..cubicTo(
@@ -3455,33 +3591,43 @@ class _JexIconPainter extends CustomPainter {
         }
         canvas.drawPath(
           shell.shift(Offset(s * .014, s * .018)),
-          _fill(_depthPaintColor(
-            const Color(0xFF060A10),
-            darkAlpha: .72,
-            lightAlpha: .46,
-          )),
+          _fill(
+            _depthPaintColor(
+              const Color(0xFF060A10),
+              darkAlpha: .72,
+              lightAlpha: .46,
+            ),
+          ),
         );
-        canvas.drawPath(shell, _stroke(s * .092, Colors.white.withValues(alpha: .16)));
+        canvas.drawPath(
+          shell,
+          _stroke(s * .092, Colors.white.withValues(alpha: .16)),
+        );
         _drawGlow(
-          canvas, shell, jexThermalRed, s * .10, s * .035,
+          canvas,
+          shell,
+          jexThermalRed,
+          s * .10,
+          s * .035,
           active ? .16 * warningStrength : 0.0,
         );
         canvas.drawPath(shell, _fill(mainColor.withValues(alpha: .16)));
-        canvas.drawPath(shell, _stroke(s * .045, mainColor.withValues(alpha: opacity)));
+        canvas.drawPath(
+          shell,
+          _stroke(s * .045, mainColor.withValues(alpha: opacity)),
+        );
         final inner = RRect.fromRectAndRadius(
           Rect.fromLTWH(s * .17, s * .31, s * .60, s * .38),
           Radius.circular(s * .055),
         );
         canvas.drawRRect(
           inner,
-          _fill(
-            _cavityPaintColor(
-              const Color(0xFF09121A),
-              darkAlpha: .92,
-            ),
-          ),
+          _fill(_cavityPaintColor(const Color(0xFF09121A), darkAlpha: .92)),
         );
-        canvas.drawRRect(inner, _stroke(s * .022, mainColor.withValues(alpha: .74)));
+        canvas.drawRRect(
+          inner,
+          _stroke(s * .022, mainColor.withValues(alpha: .74)),
+        );
         canvas.save();
         canvas.clipRRect(inner);
         if (!valueKnown) {
@@ -3509,7 +3655,12 @@ class _JexIconPainter extends CustomPainter {
         final fluidHeight = inner.height * safeLevel;
         if (valueKnown && fluidHeight > 0) {
           canvas.drawRect(
-            Rect.fromLTWH(inner.left, inner.bottom - fluidHeight, inner.width, fluidHeight),
+            Rect.fromLTWH(
+              inner.left,
+              inner.bottom - fluidHeight,
+              inner.width,
+              fluidHeight,
+            ),
             _fill(mainColor.withValues(alpha: .86)),
           );
           // Static bevel highlight: the old moving shine/idle scanline is intentionally removed.
@@ -3551,13 +3702,23 @@ class _JexIconPainter extends CustomPainter {
             ),
           ),
         );
-        canvas.drawPath(shell, _stroke(s * .092, Colors.white.withValues(alpha: .16)));
+        canvas.drawPath(
+          shell,
+          _stroke(s * .092, Colors.white.withValues(alpha: .16)),
+        );
         _drawGlow(
-          canvas, shell, jexThermalRed, s * .10, s * .035,
+          canvas,
+          shell,
+          jexThermalRed,
+          s * .10,
+          s * .035,
           active ? .16 * warningStrength : 0.0,
         );
         canvas.drawPath(shell, _fill(mainColor.withValues(alpha: .16)));
-        canvas.drawPath(shell, _stroke(s * .045, mainColor.withValues(alpha: opacity)));
+        canvas.drawPath(
+          shell,
+          _stroke(s * .045, mainColor.withValues(alpha: opacity)),
+        );
         final tubeInner = RRect.fromRectAndRadius(
           Rect.fromLTWH(s * .455, s * .09, s * .09, s * .53),
           Radius.circular(s * .045),
@@ -3566,12 +3727,7 @@ class _JexIconPainter extends CustomPainter {
         canvas.clipPath(shell);
         canvas.drawRRect(
           tubeInner,
-          _fill(
-            _cavityPaintColor(
-              const Color(0xFF09121A),
-              darkAlpha: .94,
-            ),
-          ),
+          _fill(_cavityPaintColor(const Color(0xFF09121A), darkAlpha: .94)),
         );
         canvas.drawRRect(
           tubeInner,
@@ -3596,7 +3752,12 @@ class _JexIconPainter extends CustomPainter {
         final fluidHeight = tubeInner.height * safeLevel;
         if (valueKnown && fluidHeight > 0) {
           canvas.drawRect(
-            Rect.fromLTWH(tubeInner.left, tubeInner.bottom - fluidHeight, tubeInner.width, fluidHeight),
+            Rect.fromLTWH(
+              tubeInner.left,
+              tubeInner.bottom - fluidHeight,
+              tubeInner.width,
+              fluidHeight,
+            ),
             _fill(mainColor.withValues(alpha: .90)),
           );
           final sheenRect = Rect.fromLTWH(
@@ -3605,7 +3766,10 @@ class _JexIconPainter extends CustomPainter {
             tubeInner.width * .34,
             fluidHeight,
           );
-          canvas.drawRect(sheenRect, _fill(Colors.white.withValues(alpha: .28)));
+          canvas.drawRect(
+            sheenRect,
+            _fill(Colors.white.withValues(alpha: .28)),
+          );
         }
         canvas.restore();
         final bulbRadius = s * (valueKnown ? (.040 + .035 * safeLevel) : .055);
@@ -3631,20 +3795,34 @@ class _JexIconPainter extends CustomPainter {
         final bolt = _bolt(s);
         canvas.drawPath(
           bolt.shift(Offset(s * .020, s * .018)),
-          _fill(_depthPaintColor(
-            const Color(0xFF070B12),
-            darkAlpha: .74,
-            lightAlpha: .46,
-          )),
+          _fill(
+            _depthPaintColor(
+              const Color(0xFF070B12),
+              darkAlpha: .74,
+              lightAlpha: .46,
+            ),
+          ),
         );
-        canvas.drawPath(bolt, _fill(mainColor.withValues(alpha: .64 + .24 * safeLevel)));
-        canvas.drawPath(bolt, _stroke(s * .045, Colors.white.withValues(alpha: .18)));
-        canvas.drawPath(bolt, _stroke(s * .022, mainColor.withValues(alpha: opacity)));
+        canvas.drawPath(
+          bolt,
+          _fill(mainColor.withValues(alpha: .64 + .24 * safeLevel)),
+        );
+        canvas.drawPath(
+          bolt,
+          _stroke(s * .045, Colors.white.withValues(alpha: .18)),
+        );
+        canvas.drawPath(
+          bolt,
+          _stroke(s * .022, mainColor.withValues(alpha: opacity)),
+        );
         final innerCore = _boltInnerCore(s);
         canvas.save();
         canvas.clipPath(bolt);
         canvas.drawPath(innerCore, _fill(Colors.white.withValues(alpha: .20)));
-        canvas.drawPath(innerCore, _stroke(s * .012, mainColor.withValues(alpha: .74)));
+        canvas.drawPath(
+          innerCore,
+          _stroke(s * .012, mainColor.withValues(alpha: .74)),
+        );
         canvas.restore();
         if (active) {
           _drawGlow(canvas, bolt, mainColor, s * .10, s * .035, .18);
@@ -3658,8 +3836,9 @@ class _JexIconPainter extends CustomPainter {
 
       case JexAnimatedIconKind.peltier:
         final crystal = _crystalSilhouette(s);
-        final frostPower =
-            (frostIntensityOverride ?? .5).clamp(0.0, 1.0).toDouble();
+        final frostPower = (frostIntensityOverride ?? .5)
+            .clamp(0.0, 1.0)
+            .toDouble();
         final crystalWidth = s * (.058 + .006 * frostPower);
         final snowPhase = active ? angle : 0.0;
         // Keep the primary snowflake anchored; a tiny periodic rock does not compete
@@ -3683,7 +3862,11 @@ class _JexIconPainter extends CustomPainter {
           canvas.translate(-cx, -cy);
         }
         _drawGlow(
-          canvas, crystal, mainColor, crystalWidth * 1.7, s * .028,
+          canvas,
+          crystal,
+          mainColor,
+          crystalWidth * 1.7,
+          s * .028,
           active ? .20 * frostPower : 0.0,
         );
         canvas.drawPath(
@@ -3697,16 +3880,28 @@ class _JexIconPainter extends CustomPainter {
             ),
           ),
         );
-        canvas.drawPath(crystal, _stroke(crystalWidth, mainColor.withValues(alpha: .98)));
         canvas.drawPath(
           crystal,
-          _stroke(crystalWidth * .34, Colors.white.withValues(alpha: active ? .38 : .24)),
+          _stroke(crystalWidth, mainColor.withValues(alpha: .98)),
+        );
+        canvas.drawPath(
+          crystal,
+          _stroke(
+            crystalWidth * .34,
+            Colors.white.withValues(alpha: active ? .38 : .24),
+          ),
         );
         for (var i = 0; i < 6; i++) {
           final a = -math.pi / 2 + i * math.pi / 3;
           final branchPulse = (math.sin(angle * 2 - i * math.pi / 3) + 1) / 2;
-          final outer = Offset(cx + math.cos(a) * s * .34, cy + math.sin(a) * s * .34);
-          final inner = Offset(cx + math.cos(a) * s * .13, cy + math.sin(a) * s * .13);
+          final outer = Offset(
+            cx + math.cos(a) * s * .34,
+            cy + math.sin(a) * s * .34,
+          );
+          final inner = Offset(
+            cx + math.cos(a) * s * .13,
+            cy + math.sin(a) * s * .13,
+          );
           canvas.drawLine(
             inner,
             outer,
@@ -3725,14 +3920,23 @@ class _JexIconPainter extends CustomPainter {
           ..lineTo(cx, cy + s * .052)
           ..lineTo(cx - s * .038, cy)
           ..close();
-        final coreShade =
-            lightTheme ? lightSurfaceColor : const Color(0xFF0C2633);
+        final coreShade = lightTheme
+            ? lightSurfaceColor
+            : const Color(0xFF0C2633);
         canvas.drawPath(
           core,
-          _fill(Color.lerp(mainColor, coreShade, .32)!
-              .withValues(alpha: active ? .86 : .72)),
+          _fill(
+            Color.lerp(
+              mainColor,
+              coreShade,
+              .32,
+            )!.withValues(alpha: active ? .86 : .72),
+          ),
         );
-        canvas.drawPath(core, _stroke(s * .020, Colors.white.withValues(alpha: .76)));
+        canvas.drawPath(
+          core,
+          _stroke(s * .020, Colors.white.withValues(alpha: .76)),
+        );
         final coreFacet = Path()
           ..moveTo(cx, cy - s * .030)
           ..lineTo(cx + s * .020, cy - s * .004)
@@ -3746,7 +3950,9 @@ class _JexIconPainter extends CustomPainter {
       case JexAnimatedIconKind.fan:
         // Airflow fades with the coast transition while the independent rotor simulation
         // continuously decelerates to zero angular velocity.
-        final airflowProgress = active ? strength : (fanCoasting ? strength : 0.0);
+        final airflowProgress = active
+            ? strength
+            : (fanCoasting ? strength : 0.0);
         if (airflowProgress > .005) {
           _drawFanAirflow(canvas, s, mainColor, opacity: airflowProgress);
         }
@@ -3763,12 +3969,20 @@ class _JexIconPainter extends CustomPainter {
           ),
         );
         canvas.drawCircle(
-          Offset(cx, cy), s * .392,
+          Offset(cx, cy),
+          s * .392,
           _stroke(s * .020, mainColor.withValues(alpha: .46)),
         );
         final rotor = _fanSilhouette(s, angle);
         if (active || fanCoasting) {
-          _drawGlow(canvas, rotor, mainColor, s * .075, s * .025, .18 * strength);
+          _drawGlow(
+            canvas,
+            rotor,
+            mainColor,
+            s * .075,
+            s * .025,
+            .18 * strength,
+          );
         }
         canvas.drawPath(rotor, _fill(mainColor.withValues(alpha: .98)));
         canvas.drawPath(
@@ -3782,15 +3996,22 @@ class _JexIconPainter extends CustomPainter {
             ),
           ),
         );
-        canvas.drawPath(rotor, _stroke(s * .012, mainColor.withValues(alpha: .94)));
+        canvas.drawPath(
+          rotor,
+          _stroke(s * .012, mainColor.withValues(alpha: .94)),
+        );
         for (var blade = 0; blade < 3; blade++) {
           canvas.drawPath(
             _fanBladeHighlightPath(s, angle, blade),
-            _stroke(s * .022, Colors.white.withValues(alpha: active ? .42 : .28)),
+            _stroke(
+              s * .022,
+              Colors.white.withValues(alpha: active ? .42 : .28),
+            ),
           );
         }
-        final hubShade =
-            lightTheme ? lightSurfaceColor : const Color(0xFF101319);
+        final hubShade = lightTheme
+            ? lightSurfaceColor
+            : const Color(0xFF101319);
         final hubColor = Color.lerp(mainColor, hubShade, .48)!;
         canvas.drawCircle(
           Offset(cx, cy),
@@ -3821,7 +4042,10 @@ class _JexIconPainter extends CustomPainter {
         const start = math.pi;
         const sweep = math.pi;
         canvas.drawArc(
-          gauge, start, sweep, false,
+          gauge,
+          start,
+          sweep,
+          false,
           _stroke(
             s * .090,
             _depthPaintColor(
@@ -3831,10 +4055,20 @@ class _JexIconPainter extends CustomPainter {
             ),
           ),
         );
-        canvas.drawArc(gauge, start, sweep, false,
-            _stroke(s * .055, mainColor.withValues(alpha: .30)));
-        canvas.drawArc(gauge, start, sweep, false,
-            _stroke(s * .022, Colors.white.withValues(alpha: .18)));
+        canvas.drawArc(
+          gauge,
+          start,
+          sweep,
+          false,
+          _stroke(s * .055, mainColor.withValues(alpha: .30)),
+        );
+        canvas.drawArc(
+          gauge,
+          start,
+          sweep,
+          false,
+          _stroke(s * .022, Colors.white.withValues(alpha: .18)),
+        );
         const tickCount = 11;
         for (var i = 0; i < tickCount; i++) {
           final t = i / (tickCount - 1);
@@ -3851,13 +4085,18 @@ class _JexIconPainter extends CustomPainter {
           canvas.drawLine(
             inner,
             outer,
-            _stroke(s * (majorTick ? .028 : .018),
-                mainColor.withValues(alpha: majorTick ? .92 : .62)),
+            _stroke(
+              s * (majorTick ? .028 : .018),
+              mainColor.withValues(alpha: majorTick ? .92 : .62),
+            ),
           );
           if (majorTick) {
             final tickHighlight = Offset.lerp(inner, outer, .48)!;
-            canvas.drawCircle(tickHighlight, s * .008,
-                _fill(Colors.white.withValues(alpha: .42)));
+            canvas.drawCircle(
+              tickHighlight,
+              s * .008,
+              _fill(Colors.white.withValues(alpha: .42)),
+            );
           }
         }
         if (valueKnown) {
@@ -3891,21 +4130,27 @@ class _JexIconPainter extends CustomPainter {
           s * .062,
           _fill(_cavityPaintColor(const Color(0xFF070B12), darkAlpha: 1.0)),
         );
-        canvas.drawCircle(Offset(cx, cy), s * .050,
-            _stroke(s * .018, mainColor.withValues(alpha: .88)));
-        final speedHubShade =
-            lightTheme ? lightOutlineColor : const Color(0xFF171A22);
+        canvas.drawCircle(
+          Offset(cx, cy),
+          s * .050,
+          _stroke(s * .018, mainColor.withValues(alpha: .88)),
+        );
+        final speedHubShade = lightTheme
+            ? lightOutlineColor
+            : const Color(0xFF171A22);
         canvas.drawCircle(
           Offset(cx, cy),
           s * .034,
           _fill(Color.lerp(mainColor, speedHubShade, .20)!),
         );
         canvas.drawCircle(
-          Offset(cx - s * .008, cy - s * .009), s * .013,
+          Offset(cx - s * .008, cy - s * .009),
+          s * .013,
           _fill(Colors.white.withValues(alpha: valueKnown ? .74 : .36)),
         );
         canvas.drawCircle(
-          Offset(cx, cy), s * .020,
+          Offset(cx, cy),
+          s * .020,
           _fill(mainColor.withValues(alpha: valueKnown ? opacity : .62)),
         );
         break;
@@ -3915,17 +4160,33 @@ class _JexIconPainter extends CustomPainter {
         final wave = Path();
         for (var i = 0; i <= 24; i++) {
           final x = s * (.12 + .76 * i / 24);
-          final y = cy + math.sin(ledAngle - i * math.pi / 8) * s * (.10 + .045 * strength);
-          if (i == 0) wave.moveTo(x, y); else wave.lineTo(x, y);
+          final y =
+              cy +
+              math.sin(ledAngle - i * math.pi / 8) *
+                  s *
+                  (.10 + .045 * strength);
+          if (i == 0)
+            wave.moveTo(x, y);
+          else
+            wave.lineTo(x, y);
         }
-        canvas.drawPath(wave, _stroke(s * .058, mainColor.withValues(alpha: opacity)));
+        canvas.drawPath(
+          wave,
+          _stroke(s * .058, mainColor.withValues(alpha: opacity)),
+        );
         final dotX = active ? s * (-.06 + 1.12 * p) : s * .12;
-        final dotY = cy + math.sin(ledAngle - ((dotX / s - .12) / .76) * math.pi * 3) *
-            s * (.10 + .045 * strength);
+        final dotY =
+            cy +
+            math.sin(ledAngle - ((dotX / s - .12) / .76) * math.pi * 3) *
+                s *
+                (.10 + .045 * strength);
         canvas.save();
         canvas.clipRect(Rect.fromLTWH(0, 0, s, s));
-        canvas.drawCircle(Offset(dotX, dotY), s * .045,
-            _fill(mainColor.withValues(alpha: .82 + .14 * strength)));
+        canvas.drawCircle(
+          Offset(dotX, dotY),
+          s * .045,
+          _fill(mainColor.withValues(alpha: .82 + .14 * strength)),
+        );
         canvas.restore();
         break;
 
@@ -3942,13 +4203,15 @@ class _JexIconPainter extends CustomPainter {
           ..moveTo(s * .20, s * .71)
           ..lineTo(s * .68, s * .29);
         // Connection status is represented by colour, not Bluetooth-icon motion.
-        canvas.drawPath(glyph, _stroke(s * .06, mainColor.withValues(alpha: 1.0)));
+        canvas.drawPath(
+          glyph,
+          _stroke(s * .06, mainColor.withValues(alpha: 1.0)),
+        );
         break;
 
       case JexAnimatedIconKind.generic:
         break;
     }
-
   }
 
   @override
@@ -4090,8 +4353,9 @@ bool isTransientOtaResultEvent(String value) {
 
 // AI-METHOD: parseFirmwareVersion — Parse supported V<major>.<minor> labels only.
 List<int>? parseFirmwareVersion(String version) {
-  final match = RegExp(r'^V(\d+)(?:\.(\d+))?$')
-      .firstMatch(version.trim().toUpperCase());
+  final match = RegExp(
+    r'^V(\d+)(?:\.(\d+))?$',
+  ).firstMatch(version.trim().toUpperCase());
   if (match == null) return null;
   final major = int.tryParse(match.group(1)!);
   final minor = int.tryParse(match.group(2) ?? '0');
@@ -4101,7 +4365,6 @@ List<int>? parseFirmwareVersion(String version) {
 
 // AI-METHOD: isNewerFirmwareVersion — Compatibility/test helper; current OTA policy uses different-version comparison.
 
-
 // AI-METHOD: isDifferentFirmwareVersion — Current OTA availability rule: any valid version different from device version is an OTA target.
 bool isDifferentFirmwareVersion(String latest, String current) {
   final a = parseFirmwareVersion(latest);
@@ -4109,7 +4372,6 @@ bool isDifferentFirmwareVersion(String latest, String current) {
   if (a == null || b == null) return false;
   return a[0] != b[0] || a[1] != b[1];
 }
-
 
 // AI-METHOD: canAutoConnect — Pure policy gate for passive Auto Connect.
 // It must never prompt for permissions, enable Bluetooth, or connect without a known cooler.
@@ -4180,7 +4442,9 @@ class TamperApp extends StatelessWidget {
       theme: darkTheme.copyWith(
         scaffoldBackgroundColor: const Color(0xFF111113),
         textTheme: darkTheme.textTheme.apply(fontFamily: 'Roboto'),
-        primaryTextTheme: darkTheme.primaryTextTheme.apply(fontFamily: 'Roboto'),
+        primaryTextTheme: darkTheme.primaryTextTheme.apply(
+          fontFamily: 'Roboto',
+        ),
       ),
       home: const TamperScreen(),
     );
@@ -4308,8 +4572,9 @@ class DashboardScreen extends StatefulWidget {
 
 class _DashboardScreenState extends State<DashboardScreen>
     with WidgetsBindingObserver {
-  static const MethodChannel batteryChannel =
-      MethodChannel('je_x_fyz/battery_temp');
+  static const MethodChannel batteryChannel = MethodChannel(
+    'je_x_fyz/battery_temp',
+  );
 
   BluetoothDevice? device;
   BluetoothCharacteristic? rx;
@@ -4402,8 +4667,8 @@ class _DashboardScreenState extends State<DashboardScreen>
 
   int tabIndex = 0;
 
-
-  @override  void initState() {
+  @override
+  void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     appAutoConnectNotifier.addListener(_handleAutoConnectPreferenceChanged);
@@ -4428,7 +4693,9 @@ class _DashboardScreenState extends State<DashboardScreen>
     connectionSub?.cancel();
     notificationSub?.cancel();
     batteryTimer?.cancel();
-    unawaited(UsageStatisticsRecorder.instance.endSession(reason: 'dashboard_disposed'));
+    unawaited(
+      UsageStatisticsRecorder.instance.endSession(reason: 'dashboard_disposed'),
+    );
     voltageGuardTimer?.cancel();
     reconnectTimer?.cancel();
     disconnectRediscoveryTimer?.cancel();
@@ -4531,7 +4798,8 @@ class _DashboardScreenState extends State<DashboardScreen>
       final permission = await Permission.locationWhenInUse.status;
       var serviceEnabled = true;
       try {
-        serviceEnabled = await batteryChannel.invokeMethod<bool>(
+        serviceEnabled =
+            await batteryChannel.invokeMethod<bool>(
               'isLocationServiceEnabled',
             ) ??
             false;
@@ -4557,15 +4825,14 @@ class _DashboardScreenState extends State<DashboardScreen>
 
   Future<void> _postNotification(String title, String body, int id) async {
     try {
-      await const MethodChannel('je_x_fyz/notifications').invokeMethod<void>(
-        'showNotification',
-        <String, dynamic>{
-          'title': title,
-          'body': body,
-          'id': id,
-          'language': appLanguageNotifier.value.name,
-        },
-      );
+      await const MethodChannel(
+        'je_x_fyz/notifications',
+      ).invokeMethod<void>('showNotification', <String, dynamic>{
+        'title': title,
+        'body': body,
+        'id': id,
+        'language': appLanguageNotifier.value.name,
+      });
     } catch (e) {
       debugPrint('Notification: $e');
     }
@@ -4590,7 +4857,9 @@ class _DashboardScreenState extends State<DashboardScreen>
       return;
     }
     final config = floatingConfigNotifier.value;
-    if (config.enabled && !_floatingStartAttemptedForSession && !_floatingStartPending) {
+    if (config.enabled &&
+        !_floatingStartAttemptedForSession &&
+        !_floatingStartPending) {
       unawaited(_restoreFloatingMonitorAfterSync());
     } else {
       unawaited(FloatingBridge.updateData(telemetry));
@@ -4613,7 +4882,10 @@ class _DashboardScreenState extends State<DashboardScreen>
       final currentTelemetry = floatingTelemetryNotifier.value;
       if (!currentTelemetry.connected || !connected) return;
       _floatingStartAttemptedForSession = true;
-      final started = await FloatingBridge.start(config, telemetry: currentTelemetry);
+      final started = await FloatingBridge.start(
+        config,
+        telemetry: currentTelemetry,
+      );
       if (!started) return;
       final deadline = DateTime.now().add(const Duration(seconds: 3));
       var ready = false;
@@ -4661,7 +4933,8 @@ class _DashboardScreenState extends State<DashboardScreen>
 
       bool locationService = true;
       try {
-        locationService = await batteryChannel.invokeMethod<bool>(
+        locationService =
+            await batteryChannel.invokeMethod<bool>(
               'isLocationServiceEnabled',
             ) ??
             false;
@@ -4673,13 +4946,14 @@ class _DashboardScreenState extends State<DashboardScreen>
           scan.isGranted &&
           connect.isGranted &&
           adapter == BluetoothAdapterState.on;
-      final locationReady =
-          sdk > 30 || (location.isGranted && locationService);
+      final locationReady = sdk > 30 || (location.isGranted && locationService);
       final ready = bluetoothReady && locationReady;
 
       if (showResult && mounted) {
         _showSnackBar(
-          ready ? JexText.of('connectionReady', appLanguageNotifier.value) : JexText.of('connectionNeedsAccess', appLanguageNotifier.value),
+          ready
+              ? JexText.of('connectionReady', appLanguageNotifier.value)
+              : JexText.of('connectionNeedsAccess', appLanguageNotifier.value),
           color: ready ? Colors.green : Colors.orangeAccent,
         );
       }
@@ -4701,9 +4975,7 @@ class _DashboardScreenState extends State<DashboardScreen>
             : null,
       );
     } catch (e) {
-      debugPrint('Background service ' +
-          (enabled ? 'start' : 'stop') +
-          ': $e');
+      debugPrint('Background service ' + (enabled ? 'start' : 'stop') + ': $e');
     }
   }
 
@@ -4730,7 +5002,8 @@ class _DashboardScreenState extends State<DashboardScreen>
         return;
       }
       await operation();
-      operationCompletedForCurrentAttempt = mounted &&
+      operationCompletedForCurrentAttempt =
+          mounted &&
           _connectionScanCoordinator.isOneShotAttemptCurrent(attempt);
     });
     return operationCompletedForCurrentAttempt;
@@ -4750,8 +5023,7 @@ class _DashboardScreenState extends State<DashboardScreen>
     if (attempt == null) return;
 
     bool isCurrentAttempt() =>
-        mounted &&
-        _connectionScanCoordinator.isOneShotAttemptCurrent(attempt);
+        mounted && _connectionScanCoordinator.isOneShotAttemptCurrent(attempt);
 
     StreamSubscription<List<ScanResult>>? scanSub;
     BluetoothDevice? found;
@@ -4774,7 +5046,8 @@ class _DashboardScreenState extends State<DashboardScreen>
           if (!isCurrentAttempt()) return;
           var serviceEnabled = true;
           try {
-            serviceEnabled = await batteryChannel.invokeMethod<bool>(
+            serviceEnabled =
+                await batteryChannel.invokeMethod<bool>(
                   'isLocationServiceEnabled',
                 ) ??
                 false;
@@ -4841,13 +5114,18 @@ class _DashboardScreenState extends State<DashboardScreen>
               (uuid) => uuid.toString().toLowerCase() == serviceUuid,
             );
             final name = result.advertisementData.advName.trim().toLowerCase();
-            final platformName = result.device.platformName.trim().toLowerCase();
-            final knownMatch = knownCoolerRemoteIdNotifier.value != null &&
+            final platformName = result.device.platformName
+                .trim()
+                .toLowerCase();
+            final knownMatch =
+                knownCoolerRemoteIdNotifier.value != null &&
                 result.device.remoteId.toString() ==
                     knownCoolerRemoteIdNotifier.value;
             final matches = automatic
                 ? (knownMatch && serviceMatch)
-                : (serviceMatch || name == 'je x fyz' || platformName == 'je x fyz');
+                : (serviceMatch ||
+                      name == 'je x fyz' ||
+                      platformName == 'je x fyz');
             if (matches) {
               if (!completer.isCompleted) completer.complete(result.device);
               break;
@@ -4899,9 +5177,14 @@ class _DashboardScreenState extends State<DashboardScreen>
           (results) {
             if (!isCurrentAttempt()) return;
             for (final result in results) {
-              final name = result.advertisementData.advName.trim().toLowerCase();
-              final platformName = result.device.platformName.trim().toLowerCase();
-              final knownMatch = knownCoolerRemoteIdNotifier.value != null &&
+              final name = result.advertisementData.advName
+                  .trim()
+                  .toLowerCase();
+              final platformName = result.device.platformName
+                  .trim()
+                  .toLowerCase();
+              final knownMatch =
+                  knownCoolerRemoteIdNotifier.value != null &&
                   result.device.remoteId.toString() ==
                       knownCoolerRemoteIdNotifier.value;
               final matches = automatic
@@ -5053,9 +5336,8 @@ class _DashboardScreenState extends State<DashboardScreen>
 
     connectionSub = target.connectionState.listen((state) {
       if (state != BluetoothConnectionState.disconnected) return;
-    
 
-  // AI-METHOD: _handleBleDisconnected — Central BLE teardown path; clear stale timers, ACKs, session state, and UI telemetry.
+      // AI-METHOD: _handleBleDisconnected — Central BLE teardown path; clear stale timers, ACKs, session state, and UI telemetry.
       _handleBleDisconnected();
     });
 
@@ -5166,7 +5448,8 @@ class _DashboardScreenState extends State<DashboardScreen>
       final attempt = _connectionScanCoordinator.beginPassiveAttempt();
       if (attempt == null) return;
       bool isCurrentAttempt() =>
-          mounted && _connectionScanCoordinator.isPassiveAttemptCurrent(attempt);
+          mounted &&
+          _connectionScanCoordinator.isPassiveAttemptCurrent(attempt);
 
       try {
         await previousSubscriptionCleanup;
@@ -5187,7 +5470,8 @@ class _DashboardScreenState extends State<DashboardScreen>
           if (!isCurrentAttempt()) return;
           var serviceEnabled = true;
           try {
-            serviceEnabled = await batteryChannel.invokeMethod<bool>(
+            serviceEnabled =
+                await batteryChannel.invokeMethod<bool>(
                   'isLocationServiceEnabled',
                 ) ??
                 false;
@@ -5221,8 +5505,9 @@ class _DashboardScreenState extends State<DashboardScreen>
           await previous?.cancel();
           if (!isCurrentAttempt()) return;
 
-          disconnectRediscoverySub =
-              FlutterBluePlus.onScanResults.listen((results) {
+          disconnectRediscoverySub = FlutterBluePlus.onScanResults.listen((
+            results,
+          ) {
             if (!isCurrentAttempt() || connected || _bleConnecting) return;
             for (final result in results) {
               final serviceMatch = result.advertisementData.serviceUuids.any(
@@ -5257,9 +5542,7 @@ class _DashboardScreenState extends State<DashboardScreen>
         // startScan() resolves once scanning has started. Keep this passive
         // attempt active until the plugin reports that the scan has completed
         // (timeout, connection handoff, manual-sheet pre-emption or stopScan()).
-        await FlutterBluePlus.isScanning
-            .where((scanning) => !scanning)
-            .first;
+        await FlutterBluePlus.isScanning.where((scanning) => !scanning).first;
         if (!isCurrentAttempt()) return;
       } catch (e) {
         if (isCurrentAttempt()) {
@@ -5281,7 +5564,8 @@ class _DashboardScreenState extends State<DashboardScreen>
   // and only when authoritative Firmware output telemetry confirms cooling activity.
   void _startUsageStatisticsSession() {
     final recorder = UsageStatisticsRecorder.instance;
-    final sessionReady = connected &&
+    final sessionReady =
+        connected &&
         dashboardReady &&
         _bleSessionReady &&
         protocolValid &&
@@ -5298,15 +5582,17 @@ class _DashboardScreenState extends State<DashboardScreen>
     final validVoltage = const {'5V', '9V', '12V'}.contains(normalizedVoltage)
         ? normalizedVoltage
         : null;
-    unawaited(recorder.startSession(
-      coolerId: coolerId,
-      batteryC: phoneBatteryValid ? double.tryParse(phoneBatteryTemp) : null,
-      hotsideC: hotsideTemp == '--' ? null : double.tryParse(hotsideTemp),
-      voltage: validVoltage,
-      adaptive: adaptiveOn ? 'ON' : 'OFF',
-      peltier: peltierOn ? 'ON' : 'OFF',
-      fanSpeed: fanOn ? fanSpeed : 0,
-    ));
+    unawaited(
+      recorder.startSession(
+        coolerId: coolerId,
+        batteryC: phoneBatteryValid ? double.tryParse(phoneBatteryTemp) : null,
+        hotsideC: hotsideTemp == '--' ? null : double.tryParse(hotsideTemp),
+        voltage: validVoltage,
+        adaptive: adaptiveOn ? 'ON' : 'OFF',
+        peltier: peltierOn ? 'ON' : 'OFF',
+        fanSpeed: fanOn ? fanSpeed : 0,
+      ),
+    );
   }
 
   // Record only authoritative P1 telemetry after the Dashboard has passed SYNC_READY.
@@ -5319,8 +5605,10 @@ class _DashboardScreenState extends State<DashboardScreen>
     final recorder = UsageStatisticsRecorder.instance;
     final outputStateReported =
         values.containsKey('FAN') || values.containsKey('PELTIER');
-    final coolerActive =
-        usageCoolerIsActive(fanOn: fanOn, peltierOn: peltierOn);
+    final coolerActive = usageCoolerIsActive(
+      fanOn: fanOn,
+      peltierOn: peltierOn,
+    );
 
     // Open the session before recording the state changes that caused the
     // OFF→ON transition. startSession is idempotent for the same cooler.
@@ -5329,43 +5617,45 @@ class _DashboardScreenState extends State<DashboardScreen>
     }
 
     if (values.containsKey('HOT')) {
-      unawaited(recorder.recordTemperature(
-        metric: 'hotside',
-        value: hotsideTemp == '--' ? null : double.tryParse(hotsideTemp),
-      ));
+      unawaited(
+        recorder.recordTemperature(
+          metric: 'hotside',
+          value: hotsideTemp == '--' ? null : double.tryParse(hotsideTemp),
+        ),
+      );
     }
 
     if (values.containsKey('VOLTAGE')) {
       final normalized = voltage.trim().toUpperCase();
       if (const {'5V', '9V', '12V'}.contains(normalized)) {
-        unawaited(recorder.recordState(
-          metric: 'voltage',
-          value: normalized,
-        ));
+        unawaited(recorder.recordState(metric: 'voltage', value: normalized));
       }
     }
 
     if (values.containsKey('ADAPTIVE')) {
-      unawaited(recorder.recordState(
-        metric: 'adaptive',
-        value: adaptiveOn ? 'ON' : 'OFF',
-      ));
+      unawaited(
+        recorder.recordState(
+          metric: 'adaptive',
+          value: adaptiveOn ? 'ON' : 'OFF',
+        ),
+      );
     }
 
     // Peltier state is recorded only from authoritative P1 telemetry.
     if (values.containsKey('PELTIER')) {
-      unawaited(recorder.recordState(
-        metric: 'peltier',
-        value: peltierOn ? 'ON' : 'OFF',
-      ));
+      unawaited(
+        recorder.recordState(
+          metric: 'peltier',
+          value: peltierOn ? 'ON' : 'OFF',
+        ),
+      );
     }
 
     // A stored PWM setting while the physical fan is OFF is represented as 0%.
     if (values.containsKey('FAN') || values.containsKey('FAN_SPEED')) {
-      unawaited(recorder.recordState(
-        metric: 'fan_speed',
-        value: fanOn ? fanSpeed : 0,
-      ));
+      unawaited(
+        recorder.recordState(metric: 'fan_speed', value: fanOn ? fanSpeed : 0),
+      );
     }
 
     // Record any final state/sample carried by the OFF packet before closing
@@ -5376,11 +5666,12 @@ class _DashboardScreenState extends State<DashboardScreen>
   }
 
   void _handleBleDisconnected() {
-    final expectedOtaDisconnect =
-        otaExpectedDisconnect || otaRecoveryActive;
-    unawaited(UsageStatisticsRecorder.instance.endSession(
-      reason: expectedOtaDisconnect ? 'ota_handoff' : 'disconnected',
-    ));
+    final expectedOtaDisconnect = otaExpectedDisconnect || otaRecoveryActive;
+    unawaited(
+      UsageStatisticsRecorder.instance.endSession(
+        reason: expectedOtaDisconnect ? 'ota_handoff' : 'disconnected',
+      ),
+    );
 
     unawaited(_setBackgroundService(false));
     notificationSub?.cancel();
@@ -5445,16 +5736,15 @@ class _DashboardScreenState extends State<DashboardScreen>
     }
 
     if (!expectedOtaDisconnect && appNotifyBluetoothNotifier.value) {
-      unawaited(_postNotification(
-        JexText.of('device', appLanguageNotifier.value),
-        JexText.of('bluetoothDisconnected', appLanguageNotifier.value),
-        2103,
-      ));
+      unawaited(
+        _postNotification(
+          JexText.of('device', appLanguageNotifier.value),
+          JexText.of('bluetoothDisconnected', appLanguageNotifier.value),
+          2103,
+        ),
+      );
     }
   }
-
-
-
 
   // AI-METHOD: _discoverServices — Discover exact JE X FYZ service/RX/TX, enable notifications, and complete SYNC/SYNC_READY.
   Future<void> _discoverServices(BluetoothDevice target) async {
@@ -5462,7 +5752,9 @@ class _DashboardScreenState extends State<DashboardScreen>
     BluetoothCharacteristic? discoveredTx;
 
     for (var discoveryAttempt = 0; discoveryAttempt < 2; discoveryAttempt++) {
-      final services = await target.discoverServices().timeout(const Duration(seconds: 8));
+      final services = await target.discoverServices().timeout(
+        const Duration(seconds: 8),
+      );
       discoveredRx = null;
       discoveredTx = null;
 
@@ -5489,7 +5781,9 @@ class _DashboardScreenState extends State<DashboardScreen>
     }
 
     if (discoveredRx == null || discoveredTx == null) {
-      throw StateError(JexText.of('bleServiceDiscoveryFailed', appLanguageNotifier.value));
+      throw StateError(
+        JexText.of('bleServiceDiscoveryFailed', appLanguageNotifier.value),
+      );
     }
 
     rx = discoveredRx;
@@ -5515,11 +5809,17 @@ class _DashboardScreenState extends State<DashboardScreen>
     // V3.2 keeps the V3.1 atomic SYNC -> SYNC_READY protocol. Give the device
     // several opportunities to drain its automatic connect-time sync and then
     // request a clean snapshot ourselves.
-    for (var attempt = 0; attempt < 5 && !fullSyncReceived && mounted; attempt++) {
+    for (
+      var attempt = 0;
+      attempt < 5 && !fullSyncReceived && mounted;
+      attempt++
+    ) {
       // AI-METHOD: sendCommand — Serialize GATT writes and enforce the pre-session command gate.
       await sendCommand('SYNC', showError: false);
       final deadline = DateTime.now().add(const Duration(milliseconds: 1500));
-      while (mounted && !fullSyncReceived && DateTime.now().isBefore(deadline)) {
+      while (mounted &&
+          !fullSyncReceived &&
+          DateTime.now().isBefore(deadline)) {
         await Future<void>.delayed(const Duration(milliseconds: 40));
       }
     }
@@ -5531,11 +5831,17 @@ class _DashboardScreenState extends State<DashboardScreen>
       await discoveredTx.setNotifyValue(false);
       await discoveredTx.setNotifyValue(true);
 
-      for (var attempt = 0; attempt < 3 && !fullSyncReceived && mounted; attempt++) {
+      for (
+        var attempt = 0;
+        attempt < 3 && !fullSyncReceived && mounted;
+        attempt++
+      ) {
         // AI-METHOD: sendCommand — Serialize GATT writes and enforce the pre-session command gate.
         await sendCommand('SYNC', showError: false);
         final deadline = DateTime.now().add(const Duration(milliseconds: 1000));
-        while (mounted && !fullSyncReceived && DateTime.now().isBefore(deadline)) {
+        while (mounted &&
+            !fullSyncReceived &&
+            DateTime.now().isBefore(deadline)) {
           await Future<void>.delayed(const Duration(milliseconds: 35));
         }
       }
@@ -5553,15 +5859,19 @@ class _DashboardScreenState extends State<DashboardScreen>
     fullSyncReceived = false;
     final readyAccepted = await sendCommand('SYNC_READY', showError: false);
     if (!readyAccepted) {
-      throw StateError(JexText.of('bleHandshakeWriteFailed', appLanguageNotifier.value));
+      throw StateError(
+        JexText.of('bleHandshakeWriteFailed', appLanguageNotifier.value),
+      );
     }
 
-    final readyDeadline = DateTime.now().add(const Duration(milliseconds: 3500));
+    final readyDeadline = DateTime.now().add(
+      const Duration(milliseconds: 3500),
+    );
     while (mounted &&
         !(_syncReadyAck &&
-          fullSyncReceived &&
-          _bleSessionReady &&
-          protocolValid) &&
+            fullSyncReceived &&
+            _bleSessionReady &&
+            protocolValid) &&
         DateTime.now().isBefore(readyDeadline)) {
       await Future<void>.delayed(const Duration(milliseconds: 40));
     }
@@ -5570,7 +5880,9 @@ class _DashboardScreenState extends State<DashboardScreen>
         !fullSyncReceived ||
         !_bleSessionReady ||
         !protocolValid) {
-      throw StateError(JexText.of('bleSessionNotReady', appLanguageNotifier.value));
+      throw StateError(
+        JexText.of('bleSessionNotReady', appLanguageNotifier.value),
+      );
     }
 
     // Final synchronized snapshot includes the phone battery temperature.
@@ -5579,7 +5891,9 @@ class _DashboardScreenState extends State<DashboardScreen>
     fullSyncReceived = false;
     // AI-METHOD: sendCommand — Serialize GATT writes and enforce the pre-session command gate.
     await sendCommand('SYNC', showError: false);
-    final finalSyncDeadline = DateTime.now().add(const Duration(milliseconds: 2500));
+    final finalSyncDeadline = DateTime.now().add(
+      const Duration(milliseconds: 2500),
+    );
     while (mounted &&
         !fullSyncReceived &&
         DateTime.now().isBefore(finalSyncDeadline)) {
@@ -5596,7 +5910,9 @@ class _DashboardScreenState extends State<DashboardScreen>
     final readySnapshot = Map<String, String>.from(_pendingTelemetry);
     _pendingTelemetry.clear();
     final syncedOtaResult = readySnapshot['LAST_OTA_RESULT'] ?? '';
-    final resultEvent = pendingOtaResult.isNotEmpty ? pendingOtaResult : syncedOtaResult;
+    final resultEvent = pendingOtaResult.isNotEmpty
+        ? pendingOtaResult
+        : syncedOtaResult;
     // Format only when displayed so a language change during synchronization uses the current locale.
     final syncedOtaNotice = isTransientOtaResultEvent(resultEvent)
         ? _friendlyOtaResult(resultEvent)
@@ -5627,28 +5943,29 @@ class _DashboardScreenState extends State<DashboardScreen>
       otaExpectedDisconnect = false;
       otaRecoveryScanInProgress = false;
       if (appNotifyBluetoothNotifier.value && syncedOtaNotice.isNotEmpty) {
-        unawaited(_postNotification(
-          JexText.of('device', appLanguageNotifier.value),
-          syncedOtaNotice,
-          2102,
-        ));
+        unawaited(
+          _postNotification(
+            JexText.of('device', appLanguageNotifier.value),
+            syncedOtaNotice,
+            2102,
+          ),
+        );
       }
     } else if (appNotifyBluetoothNotifier.value) {
-      unawaited(_postNotification(
-        JexText.of('device', appLanguageNotifier.value),
-        JexText.of('bluetoothConnected', appLanguageNotifier.value),
-        2102,
-      ));
+      unawaited(
+        _postNotification(
+          JexText.of('device', appLanguageNotifier.value),
+          JexText.of('bluetoothConnected', appLanguageNotifier.value),
+          2102,
+        ),
+      );
     }
     // AI-METHOD: _startBatteryTelemetry — Start the 1 Hz phone-battery heartbeat.
     _startBatteryTelemetry();
     unawaited(_setBackgroundService(true));
 
     if (isUserVisibleResetReason(resetReason)) {
-      _showSnackBar(
-        _friendlyReset(resetReason),
-        color: Colors.orangeAccent,
-      );
+      _showSnackBar(_friendlyReset(resetReason), color: Colors.orangeAccent);
     }
   }
 
@@ -5663,41 +5980,48 @@ class _DashboardScreenState extends State<DashboardScreen>
   // AI-METHOD: sendCommand — Serialize GATT writes and enforce the pre-session command gate.
   Future<bool> sendCommand(String command, {bool showError = true}) {
     final completer = Completer<bool>();
-    _writeQueue = _writeQueue.then((_) async {
-      if (!_bleReady || rx == null) {
-        if (showError && mounted) {
-          _showSnackBar(JexText.of('bluetoothNotReady'), color: Colors.orangeAccent);
-        }
-        if (!completer.isCompleted) completer.complete(false);
-        return;
-      }
+    _writeQueue = _writeQueue
+        .then((_) async {
+          if (!_bleReady || rx == null) {
+            if (showError && mounted) {
+              _showSnackBar(
+                JexText.of('bluetoothNotReady'),
+                color: Colors.orangeAccent,
+              );
+            }
+            if (!completer.isCompleted) completer.complete(false);
+            return;
+          }
 
-      final normalized = command.trim().toUpperCase();
-      if (!_bleSessionReady &&
-          normalized != 'SYNC' &&
-          normalized != 'SYNC_READY') {
-        if (!completer.isCompleted) completer.complete(false);
-        return;
-      }
+          final normalized = command.trim().toUpperCase();
+          if (!_bleSessionReady &&
+              normalized != 'SYNC' &&
+              normalized != 'SYNC_READY') {
+            if (!completer.isCompleted) completer.complete(false);
+            return;
+          }
 
-      final payload = utf8.encode('$command\n');
-      final canNoResponse = rx!.properties.writeWithoutResponse;
-      final requiresResponse = _requiresResponse(command);
+          final payload = utf8.encode('$command\n');
+          final canNoResponse = rx!.properties.writeWithoutResponse;
+          final requiresResponse = _requiresResponse(command);
 
-      try {
-        await rx!.write(
-          payload,
-          withoutResponse: !requiresResponse && canNoResponse,
-        ).timeout(const Duration(seconds: 4));
-        if (!completer.isCompleted) completer.complete(true);
-      } catch (e) {
-        debugPrint('BLE write $command: $e');
+          try {
+            await rx!
+                .write(
+                  payload,
+                  withoutResponse: !requiresResponse && canNoResponse,
+                )
+                .timeout(const Duration(seconds: 4));
+            if (!completer.isCompleted) completer.complete(true);
+          } catch (e) {
+            debugPrint('BLE write $command: $e');
 
-        if (!completer.isCompleted) completer.complete(false);
-      }
-    }).catchError((_) {
-      if (!completer.isCompleted) completer.complete(false);
-    });
+            if (!completer.isCompleted) completer.complete(false);
+          }
+        })
+        .catchError((_) {
+          if (!completer.isCompleted) completer.complete(false);
+        });
     return completer.future;
   }
 
@@ -5728,7 +6052,10 @@ class _DashboardScreenState extends State<DashboardScreen>
     return null;
   }
 
-  Future<String> _waitForAck(String item, {Duration timeout = const Duration(seconds: 3)}) async {
+  Future<String> _waitForAck(
+    String item, {
+    Duration timeout = const Duration(seconds: 3),
+  }) async {
     final completer = Completer<String>();
     (_ackWaiters[item] ??= <Completer<String>>[]).add(completer);
     try {
@@ -5782,8 +6109,7 @@ class _DashboardScreenState extends State<DashboardScreen>
     final reconciled = await _requestFreshSync(
       timeout: const Duration(seconds: 2),
     );
-    return reconciled &&
-        _telemetryValueMatches(expected.key, expected.value);
+    return reconciled && _telemetryValueMatches(expected.key, expected.value);
   }
 
   Future<bool> _sendAndWaitAck(
@@ -5798,29 +6124,30 @@ class _DashboardScreenState extends State<DashboardScreen>
         timeout: timeout,
       ),
     );
-    _commandTransactionQueue = next.then<void>(
-      (_) {},
-      onError: (_) {},
-    );
+    _commandTransactionQueue = next.then<void>((_) {}, onError: (_) {});
     return next;
   }
 
-  MapEntry<String, String>? _expectedTelemetryForCommand(String command) {    final c = command.trim().toUpperCase();
+  MapEntry<String, String>? _expectedTelemetryForCommand(String command) {
+    final c = command.trim().toUpperCase();
     if (c == 'FAN:ON') return const MapEntry('FAN', 'ON');
     if (c == 'FAN:OFF') return const MapEntry('FAN', 'OFF');
     if (c == 'PELTIER:ON') return const MapEntry('PELTIER', 'ON');
     if (c == 'PELTIER:OFF') return const MapEntry('PELTIER', 'OFF');
     if (c == 'ADAPTIVE:ON') return const MapEntry('ADAPTIVE', 'ON');
     if (c == 'ADAPTIVE:OFF') return const MapEntry('ADAPTIVE', 'OFF');
-    if (c.startsWith('VOLTAGE_LOCK:')) return MapEntry('VOLTAGE_LOCK', c.substring(13));
+    if (c.startsWith('VOLTAGE_LOCK:'))
+      return MapEntry('VOLTAGE_LOCK', c.substring(13));
     if (c.startsWith('VOLTAGE:')) return MapEntry('VOLTAGE', c.substring(8));
     if (c == 'RGB:ON') return const MapEntry('RGB', 'ON');
     if (c == 'RGB:OFF') return const MapEntry('RGB', 'OFF');
     if (c.startsWith('MODE:')) return MapEntry('MODE', c.substring(5));
-    if (c.startsWith('BRIGHTNESS:')) return MapEntry('BRIGHTNESS', c.substring(11));
+    if (c.startsWith('BRIGHTNESS:'))
+      return MapEntry('BRIGHTNESS', c.substring(11));
     if (c.startsWith('COLOR:')) return MapEntry('RGB_COLOR', c.substring(6));
     if (c.startsWith('FANSPEED:')) return MapEntry('FAN_SPEED', c.substring(9));
-    if (c.startsWith('HOTLIMIT:')) return MapEntry('TEMP_HOT_LIMIT', c.substring(9));
+    if (c.startsWith('HOTLIMIT:'))
+      return MapEntry('TEMP_HOT_LIMIT', c.substring(9));
     if (c.startsWith('BATT5:')) return MapEntry('BATT_5', c.substring(6));
     if (c.startsWith('BATT12:')) return MapEntry('BATT_12', c.substring(7));
     if (c.startsWith('ADAPTIVE_PROFILE:')) {
@@ -5838,7 +6165,8 @@ class _DashboardScreenState extends State<DashboardScreen>
       case 'ADAPTIVE':
         return adaptiveOn == (expected == 'ON');
       case 'VOLTAGE_LOCK':
-        return voltageLockKnown && voltageLockActive == (expected.toUpperCase() == 'ON');
+        return voltageLockKnown &&
+            voltageLockActive == (expected.toUpperCase() == 'ON');
       case 'VOLTAGE':
         return voltage.toUpperCase() == expected.toUpperCase();
       case 'RGB':
@@ -5864,7 +6192,10 @@ class _DashboardScreenState extends State<DashboardScreen>
     }
   }
 
-  Future<bool> _waitUntil(bool Function() predicate, {Duration timeout = const Duration(seconds: 3)}) async {
+  Future<bool> _waitUntil(
+    bool Function() predicate, {
+    Duration timeout = const Duration(seconds: 3),
+  }) async {
     final deadline = DateTime.now().add(timeout);
     while (mounted && DateTime.now().isBefore(deadline)) {
       if (predicate()) return true;
@@ -5944,7 +6275,8 @@ class _DashboardScreenState extends State<DashboardScreen>
       fullSyncReceived = true;
     }
 
-    while (incomingBuffer.contains('\n') && !incomingBuffer.contains('<SYNC_START>')) {
+    while (incomingBuffer.contains('\n') &&
+        !incomingBuffer.contains('<SYNC_START>')) {
       final nl = incomingBuffer.indexOf('\n');
       final line = incomingBuffer.substring(0, nl).trim();
       incomingBuffer = incomingBuffer.substring(nl + 1);
@@ -5952,8 +6284,13 @@ class _DashboardScreenState extends State<DashboardScreen>
     }
   }
 
-    bool _isAckSuccessReason(String reason) {
-    return reason == 'OK' || reason == 'ACCEPTED' || reason == 'READY' || reason == 'STARTING' || reason == 'ON' || reason == 'OFF';
+  bool _isAckSuccessReason(String reason) {
+    return reason == 'OK' ||
+        reason == 'ACCEPTED' ||
+        reason == 'READY' ||
+        reason == 'STARTING' ||
+        reason == 'ON' ||
+        reason == 'OFF';
   }
 
   String? _friendlyAckSuccess(String item, String reason) {
@@ -5961,18 +6298,23 @@ class _DashboardScreenState extends State<DashboardScreen>
       return reason == 'ON'
           ? JexText.phrase('Cooling started.', 'Pendinginan dimulai.')
           : reason == 'OFF'
-              ? JexText.phrase('Cooling stopped.', 'Pendinginan dihentikan.')
-              : null;
+          ? JexText.phrase('Cooling stopped.', 'Pendinginan dihentikan.')
+          : null;
     }
     if (item == 'TOUCH_ADAPTIVE' && reason == 'OFF') {
-      return JexText.phrase('Adaptive Mode turned OFF.', 'Mode Adaptif dimatikan.');
+      return JexText.phrase(
+        'Adaptive Mode turned OFF.',
+        'Mode Adaptif dimatikan.',
+      );
     }
     return null;
   }
 
-void _handleAckLine(String line) {
+  void _handleAckLine(String line) {
     final parts = line.substring(4).split(';');
-    final item = parts.isNotEmpty ? parts[0].split('=').first.trim().toUpperCase() : '';
+    final item = parts.isNotEmpty
+        ? parts[0].split('=').first.trim().toUpperCase()
+        : '';
     final rawReason = parts.length > 1 && parts[1].startsWith('REASON=')
         ? parts[1].substring(7)
         : 'UNKNOWN';
@@ -6056,8 +6398,10 @@ void _handleAckLine(String line) {
         values.containsKey('SAFETY') ||
         values.containsKey('SAFETY_REASON');
 
-    final previousHotsideAtLimit =
-        homeHotsideLimitReached(hotsideTemp, hotLimit: hotLimit);
+    final previousHotsideAtLimit = homeHotsideLimitReached(
+      hotsideTemp,
+      hotLimit: hotLimit,
+    );
     String? latestTelemetryNotice;
     String? latestSafetyReason;
 
@@ -6096,8 +6440,10 @@ void _handleAckLine(String line) {
         notice = JexText.of('systemReady', appLanguageNotifier.value);
       }
 
-      final hotsideAtLimit =
-          homeHotsideLimitReached(hotsideTemp, hotLimit: hotLimit);
+      final hotsideAtLimit = homeHotsideLimitReached(
+        hotsideTemp,
+        hotLimit: hotLimit,
+      );
       if (hotsideAtLimit) {
         // Safety is authoritative while the threshold is active.
         if (!previousHotsideAtLimit) {
@@ -6107,7 +6453,8 @@ void _handleAckLine(String line) {
             language: appLanguageNotifier.value,
           );
           _homeNotifyRevision++;
-        } else if (latestTelemetryNotice != null || latestSafetyReason != null) {
+        } else if (latestTelemetryNotice != null ||
+            latestSafetyReason != null) {
           // Retire an in-flight ACK without replacing the active safety warning.
           _homeNotifyRevision++;
         }
@@ -6155,11 +6502,13 @@ void _handleAckLine(String line) {
           });
         }
         if (appNotifySafetyNotifier.value) {
-          unawaited(_postNotification(
-            JexText.of('safetyAlert', appLanguageNotifier.value),
-            hotNotice,
-            2101,
-          ));
+          unawaited(
+            _postNotification(
+              JexText.of('safetyAlert', appLanguageNotifier.value),
+              hotNotice,
+              2101,
+            ),
+          );
         }
       }
     }
@@ -6216,7 +6565,9 @@ void _handleAckLine(String line) {
         _bleSessionReady = value == 'READY';
         break;
       case 'VOLTAGE_LOCK':
-        voltageLockKnown = value.trim().toUpperCase() == 'ON' || value.trim().toUpperCase() == 'OFF';
+        voltageLockKnown =
+            value.trim().toUpperCase() == 'ON' ||
+            value.trim().toUpperCase() == 'OFF';
         voltageLockActive = value.trim().toUpperCase() == 'ON';
         _publishVoltageLockSettings();
         break;
@@ -6261,7 +6612,8 @@ void _handleAckLine(String line) {
         // V6.6+ treats LED_SYNC as the atomic owner of mode/phase/cycle.
         // Older firmware sends only MODE plus separate phase fields.
         final activeFirmware = parseFirmwareVersion(firmwareVersion);
-        final atomicLedSync = activeFirmware != null &&
+        final atomicLedSync =
+            activeFirmware != null &&
             (activeFirmware[0] > 6 ||
                 (activeFirmware[0] == 6 && activeFirmware[1] >= 6));
         if (!atomicLedSync) {
@@ -6310,7 +6662,9 @@ void _handleAckLine(String line) {
         otaStage = value;
         break;
       case 'OTA_PROGRESS':
-        otaProgress = (int.tryParse(value) ?? otaProgress).clamp(0, 100).toInt();
+        otaProgress = (int.tryParse(value) ?? otaProgress)
+            .clamp(0, 100)
+            .toInt();
         break;
       case 'OTA_ERROR_CODE':
         otaErrorCode = int.tryParse(value) ?? otaErrorCode;
@@ -6339,11 +6693,15 @@ void _handleAckLine(String line) {
         hotLimitDraft = hotLimit;
         break;
       case 'BATT_5':
-        battery5Limit = (int.tryParse(value) ?? battery5Limit).clamp(20, 30).toInt();
+        battery5Limit = (int.tryParse(value) ?? battery5Limit)
+            .clamp(20, 30)
+            .toInt();
         battery5Draft = battery5Limit;
         break;
       case 'BATT_12':
-        battery12Limit = (int.tryParse(value) ?? battery12Limit).clamp(30, 40).toInt();
+        battery12Limit = (int.tryParse(value) ?? battery12Limit)
+            .clamp(30, 40)
+            .toInt();
         battery12Draft = battery12Limit;
         break;
       case 'NTC_MV':
@@ -6365,28 +6723,29 @@ void _handleAckLine(String line) {
     _pendingPhoneBatteryCommand = command;
     if (_phoneBatteryHeartbeatQueued) return;
     _phoneBatteryHeartbeatQueued = true;
-    _writeQueue = _writeQueue.then((_) async {
-      final pending = _pendingPhoneBatteryCommand;
-      _pendingPhoneBatteryCommand = null;
-      try {
-        if (pending == null || !_bleReady || rx == null) return;
-        final payload = utf8.encode('$pending\n');
-        final canNoResponse = rx!.properties.writeWithoutResponse;
-        await rx!.write(
-          payload,
-          withoutResponse: canNoResponse,
-        ).timeout(const Duration(seconds: 4));
-      } catch (e) {
-        debugPrint('BLE heartbeat $pending: $e');
-      } finally {
-        _phoneBatteryHeartbeatQueued = false;
-        if (_pendingPhoneBatteryCommand != null && _bleReady) {
-          _queuePhoneBatteryHeartbeat(_pendingPhoneBatteryCommand!);
-        }
-      }
-    }).catchError((_) {
-      _phoneBatteryHeartbeatQueued = false;
-    });
+    _writeQueue = _writeQueue
+        .then((_) async {
+          final pending = _pendingPhoneBatteryCommand;
+          _pendingPhoneBatteryCommand = null;
+          try {
+            if (pending == null || !_bleReady || rx == null) return;
+            final payload = utf8.encode('$pending\n');
+            final canNoResponse = rx!.properties.writeWithoutResponse;
+            await rx!
+                .write(payload, withoutResponse: canNoResponse)
+                .timeout(const Duration(seconds: 4));
+          } catch (e) {
+            debugPrint('BLE heartbeat $pending: $e');
+          } finally {
+            _phoneBatteryHeartbeatQueued = false;
+            if (_pendingPhoneBatteryCommand != null && _bleReady) {
+              _queuePhoneBatteryHeartbeat(_pendingPhoneBatteryCommand!);
+            }
+          }
+        })
+        .catchError((_) {
+          _phoneBatteryHeartbeatQueued = false;
+        });
   }
 
   // AI-METHOD: _readBatteryTemperatureOnce — Read phone battery temperature through Android.
@@ -6394,7 +6753,9 @@ void _handleAckLine(String line) {
     if (batteryReadBusy) return;
     batteryReadBusy = true;
     try {
-      final value = await batteryChannel.invokeMethod<dynamic>('getBatteryTemperature');
+      final value = await batteryChannel.invokeMethod<dynamic>(
+        'getBatteryTemperature',
+      );
       final temp = value is num ? value.toDouble() : -1.0;
       final valid = temp >= 0.0 && temp <= 100.0;
       if (updateUi && mounted) {
@@ -6404,10 +6765,12 @@ void _handleAckLine(String line) {
         });
         _publishFloatingTelemetry();
       }
-      unawaited(UsageStatisticsRecorder.instance.recordTemperature(
-        metric: 'battery',
-        value: valid ? temp : null,
-      ));
+      unawaited(
+        UsageStatisticsRecorder.instance.recordTemperature(
+          metric: 'battery',
+          value: valid ? temp : null,
+        ),
+      );
       if (_bleReady) {
         _queuePhoneBatteryHeartbeat(
           valid ? 'PHONE:BT=' + temp.toStringAsFixed(1) : 'PHONE:BT=-1.0',
@@ -6421,10 +6784,12 @@ void _handleAckLine(String line) {
           phoneBatteryTemp = '--';
         });
       }
-      unawaited(UsageStatisticsRecorder.instance.recordTemperature(
-        metric: 'battery',
-        value: null,
-      ));
+      unawaited(
+        UsageStatisticsRecorder.instance.recordTemperature(
+          metric: 'battery',
+          value: null,
+        ),
+      );
     } finally {
       batteryReadBusy = false;
     }
@@ -6456,7 +6821,11 @@ void _handleAckLine(String line) {
   // AI-METHOD: _requestVoltage — Apply the 1-second manual voltage guard.
   Future<void> _requestVoltage(String target) async {
     if (voltageLockKnown && voltageLockActive && target != '5V') {
-      if (mounted) _showSnackBar(_friendlyReason('VOLTAGE_LOCKED'), color: Colors.orangeAccent);
+      if (mounted)
+        _showSnackBar(
+          _friendlyReason('VOLTAGE_LOCKED'),
+          color: Colors.orangeAccent,
+        );
       return;
     }
     if (!connected ||
@@ -6469,19 +6838,24 @@ void _handleAckLine(String line) {
 
     try {
       if (mounted) setState(() => voltageGuardActive = true);
-    voltageGuardTimer?.cancel();
-    voltageGuardTimer = Timer(voltageGuardDuration, () {
-      if (mounted) setState(() => voltageGuardActive = false);
-    });
-    final accepted = await _sendAndConfirm(
-      'VOLTAGE:$target',
-      timeout: const Duration(seconds: 3),
-    );
+      voltageGuardTimer?.cancel();
+      voltageGuardTimer = Timer(voltageGuardDuration, () {
+        if (mounted) setState(() => voltageGuardActive = false);
+      });
+      final accepted = await _sendAndConfirm(
+        'VOLTAGE:$target',
+        timeout: const Duration(seconds: 3),
+      );
       if (!accepted) {
         voltageGuardTimer?.cancel();
         if (mounted) {
           setState(() => voltageGuardActive = false);
-          _showSnackBar(JexText.phrase('The device did not confirm the voltage change.','Perangkat belum mengonfirmasi perubahan tegangan.'));
+          _showSnackBar(
+            JexText.phrase(
+              'The device did not confirm the voltage change.',
+              'Perangkat belum mengonfirmasi perubahan tegangan.',
+            ),
+          );
         }
       }
     } catch (e) {
@@ -6489,7 +6863,12 @@ void _handleAckLine(String line) {
       voltageGuardTimer?.cancel();
       if (mounted) {
         setState(() => voltageGuardActive = false);
-        _showSnackBar(JexText.phrase('Voltage change failed.','Perubahan tegangan gagal diterapkan.'));
+        _showSnackBar(
+          JexText.phrase(
+            'Voltage change failed.',
+            'Perubahan tegangan gagal diterapkan.',
+          ),
+        );
       }
     }
   }
@@ -6500,15 +6879,26 @@ void _handleAckLine(String line) {
   Future<void> _toggleFan(bool enabled) async {
     if (!connected || adaptiveOn) return;
     try {
-      final ok = await _sendAndConfirm(
-        enabled ? 'FAN:ON' : 'FAN:OFF',
-      );
+      final ok = await _sendAndConfirm(enabled ? 'FAN:ON' : 'FAN:OFF');
       if (!ok && mounted) {
-        _showSnackBar(JexText.phrase('The device did not confirm the Fan change.','Perangkat belum mengonfirmasi perubahan kipas.'), color: Colors.orangeAccent);
+        _showSnackBar(
+          JexText.phrase(
+            'The device did not confirm the Fan change.',
+            'Perangkat belum mengonfirmasi perubahan kipas.',
+          ),
+          color: Colors.orangeAccent,
+        );
       }
     } catch (e) {
       debugPrint('Fan command: $e');
-      if (mounted) _showSnackBar(JexText.phrase('Fan command failed.','Perintah kipas gagal dijalankan.'), color: Colors.orangeAccent);
+      if (mounted)
+        _showSnackBar(
+          JexText.phrase(
+            'Fan command failed.',
+            'Perintah kipas gagal dijalankan.',
+          ),
+          color: Colors.orangeAccent,
+        );
     }
   }
 
@@ -6533,45 +6923,49 @@ void _handleAckLine(String line) {
                     final compactHeight = constraints.maxHeight < 520;
                     final scheme = Theme.of(dialogContext).colorScheme;
                     final fontFamily =
-                        Theme.of(dialogContext).textTheme.bodyMedium?.fontFamily ??
-                            'Roboto';
+                        Theme.of(
+                          dialogContext,
+                        ).textTheme.bodyMedium?.fontFamily ??
+                        'Roboto';
                     final verticalPadding = compactHeight ? 11.0 : 14.0;
                     final sectionGap = compactHeight ? 6.0 : 8.0;
 
                     Widget step(IconData icon, String label) => Expanded(
-                          child: Container(
-                            padding: EdgeInsets.symmetric(
-                              vertical: compactHeight ? 6 : 8,
-                              horizontal: 6,
-                            ),
-                            decoration: BoxDecoration(
-                              color: scheme.surfaceContainerHighest.withValues(alpha: .42),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Icon(
-                                  icon,
-                                  size: 18,
-                                  color: scheme.onSurfaceVariant,
-                                ),
-                                const SizedBox(height: 3),
-                                Text(
-                                  label,
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: scheme.onSurface,
-                                    fontFamily: fontFamily,
-                                    decoration: TextDecoration.none,
-                                    fontSize: 10.5,
-                                    fontWeight: FontWeight.w800,
-                                  ),
-                                ),
-                              ],
-                            ),
+                      child: Container(
+                        padding: EdgeInsets.symmetric(
+                          vertical: compactHeight ? 6 : 8,
+                          horizontal: 6,
+                        ),
+                        decoration: BoxDecoration(
+                          color: scheme.surfaceContainerHighest.withValues(
+                            alpha: .42,
                           ),
-                        );
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              icon,
+                              size: 18,
+                              color: scheme.onSurfaceVariant,
+                            ),
+                            const SizedBox(height: 3),
+                            Text(
+                              label,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: scheme.onSurface,
+                                fontFamily: fontFamily,
+                                decoration: TextDecoration.none,
+                                fontSize: 10.5,
+                                fontWeight: FontWeight.w800,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
 
                     return Align(
                       alignment: Alignment.bottomCenter,
@@ -6594,7 +6988,9 @@ void _handleAckLine(String line) {
                               color: scheme.surface,
                               borderRadius: BorderRadius.circular(20),
                               border: Border.all(
-                                color: scheme.outlineVariant.withValues(alpha: .82),
+                                color: scheme.outlineVariant.withValues(
+                                  alpha: .82,
+                                ),
                               ),
                               boxShadow: [
                                 BoxShadow(
@@ -6614,14 +7010,19 @@ void _handleAckLine(String line) {
                                 crossAxisAlignment: CrossAxisAlignment.stretch,
                                 children: [
                                   Row(
-                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
                                     children: [
                                       Container(
                                         width: 40,
                                         height: 40,
                                         decoration: BoxDecoration(
-                                          color: const Color(0xFFD69A38).withValues(alpha: .14),
-                                          borderRadius: BorderRadius.circular(12),
+                                          color: const Color(
+                                            0xFFD69A38,
+                                          ).withValues(alpha: .14),
+                                          borderRadius: BorderRadius.circular(
+                                            12,
+                                          ),
                                         ),
                                         child: const Icon(
                                           PhosphorIconsRegular.fan,
@@ -6668,10 +7069,15 @@ void _handleAckLine(String line) {
                                     children: [
                                       step(
                                         PhosphorIconsRegular.fan,
-                                        JexText.of('fan', appLanguageNotifier.value),
+                                        JexText.of(
+                                          'fan',
+                                          appLanguageNotifier.value,
+                                        ),
                                       ),
                                       Padding(
-                                        padding: const EdgeInsets.symmetric(horizontal: 6),
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 6,
+                                        ),
                                         child: Icon(
                                           PhosphorIconsRegular.arrowRight,
                                           size: 15,
@@ -6680,7 +7086,10 @@ void _handleAckLine(String line) {
                                       ),
                                       step(
                                         PhosphorIconsRegular.snowflake,
-                                        JexText.of('peltier', appLanguageNotifier.value),
+                                        JexText.of(
+                                          'peltier',
+                                          appLanguageNotifier.value,
+                                        ),
                                       ),
                                     ],
                                   ),
@@ -6690,7 +7099,8 @@ void _handleAckLine(String line) {
                                     child: FilledButton.icon(
                                       style: FilledButton.styleFrom(
                                         minimumSize: const Size.fromHeight(48),
-                                        tapTargetSize: MaterialTapTargetSize.padded,
+                                        tapTargetSize:
+                                            MaterialTapTargetSize.padded,
                                         textStyle: TextStyle(
                                           fontFamily: fontFamily,
                                           decoration: TextDecoration.none,
@@ -6698,10 +7108,13 @@ void _handleAckLine(String line) {
                                           fontWeight: FontWeight.w700,
                                         ),
                                         shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(12),
+                                          borderRadius: BorderRadius.circular(
+                                            12,
+                                          ),
                                         ),
                                       ),
-                                      onPressed: () => Navigator.pop(dialogContext, true),
+                                      onPressed: () =>
+                                          Navigator.pop(dialogContext, true),
                                       icon: const Icon(
                                         PhosphorIconsRegular.power,
                                         size: 17,
@@ -6720,7 +7133,8 @@ void _handleAckLine(String line) {
                                     child: TextButton(
                                       style: TextButton.styleFrom(
                                         minimumSize: const Size.fromHeight(48),
-                                        tapTargetSize: MaterialTapTargetSize.padded,
+                                        tapTargetSize:
+                                            MaterialTapTargetSize.padded,
                                         textStyle: TextStyle(
                                           fontFamily: fontFamily,
                                           decoration: TextDecoration.none,
@@ -6728,12 +7142,18 @@ void _handleAckLine(String line) {
                                           fontWeight: FontWeight.w600,
                                         ),
                                         shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(12),
+                                          borderRadius: BorderRadius.circular(
+                                            12,
+                                          ),
                                         ),
                                       ),
-                                      onPressed: () => Navigator.pop(dialogContext, false),
+                                      onPressed: () =>
+                                          Navigator.pop(dialogContext, false),
                                       child: Text(
-                                        JexText.of('cancel', appLanguageNotifier.value),
+                                        JexText.of(
+                                          'cancel',
+                                          appLanguageNotifier.value,
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -6828,28 +7248,43 @@ void _handleAckLine(String line) {
       }
     } catch (e) {
       debugPrint('Peltier command: $e');
-      if (mounted) _showSnackBar(JexText.phrase('Peltier command failed.','Perintah Peltier gagal.'), color: Colors.orangeAccent);
+      if (mounted)
+        _showSnackBar(
+          JexText.phrase('Peltier command failed.', 'Perintah Peltier gagal.'),
+          color: Colors.orangeAccent,
+        );
     }
   }
+
   // AI-METHOD / ADAPTIVE-COMMAND-CONTRACT
   // Send the frozen ADAPTIVE command and wait for telemetry. Firmware determines resulting
   // voltage/safety behavior; Flutter only presents the confirmed state.
   Future<void> _toggleAdaptive(bool enabled) async {
     if (!connected) return;
     if (enabled && voltageLockKnown && voltageLockActive) {
-      _showSnackBar(_friendlyReason('VOLTAGE_LOCKED'), color: Colors.orangeAccent);
+      _showSnackBar(
+        _friendlyReason('VOLTAGE_LOCKED'),
+        color: Colors.orangeAccent,
+      );
       return;
     }
-    if (mounted) setState(() {
-      adaptiveTransitioning = true;
-    });
+    if (mounted)
+      setState(() {
+        adaptiveTransitioning = true;
+      });
     try {
       final ok = await _sendAndConfirm(
         enabled ? 'ADAPTIVE:ON' : 'ADAPTIVE:OFF',
         timeout: const Duration(seconds: 4),
       );
       if (!ok && mounted) {
-        _showSnackBar(JexText.phrase('The device did not confirm the Adaptive Mode change.','Perangkat belum mengonfirmasi perubahan Mode Adaptif.'), color: Colors.orangeAccent);
+        _showSnackBar(
+          JexText.phrase(
+            'The device did not confirm the Adaptive Mode change.',
+            'Perangkat belum mengonfirmasi perubahan Mode Adaptif.',
+          ),
+          color: Colors.orangeAccent,
+        );
       }
     } finally {
       if (mounted) {
@@ -6864,15 +7299,24 @@ void _handleAckLine(String line) {
   Future<void> _setRgb(bool enabled) async {
     if (!connected) return;
     try {
-      final ok = await _sendAndConfirm(
-        'RGB:' + (enabled ? 'ON' : 'OFF'),
-      );
+      final ok = await _sendAndConfirm('RGB:' + (enabled ? 'ON' : 'OFF'));
       if (!ok && mounted) {
-        _showSnackBar(JexText.phrase('The device did not confirm the RGB power change.','Perangkat belum mengonfirmasi perubahan daya RGB.'));
+        _showSnackBar(
+          JexText.phrase(
+            'The device did not confirm the RGB power change.',
+            'Perangkat belum mengonfirmasi perubahan daya RGB.',
+          ),
+        );
       }
     } catch (e) {
       debugPrint('LED power command: $e');
-      if (mounted) _showSnackBar(JexText.phrase('LED power command failed.','Perintah daya LED gagal dijalankan.'));
+      if (mounted)
+        _showSnackBar(
+          JexText.phrase(
+            'LED power command failed.',
+            'Perintah daya LED gagal dijalankan.',
+          ),
+        );
     }
   }
 
@@ -6883,11 +7327,22 @@ void _handleAckLine(String line) {
       final next = ledFirmwareModeForDisplayIndex(displayIndex);
       final ok = await _sendAndConfirm('MODE:$next');
       if (!ok && mounted) {
-        _showSnackBar(JexText.phrase('The device did not confirm the LED mode change.','Perangkat belum mengonfirmasi perubahan mode LED.'));
+        _showSnackBar(
+          JexText.phrase(
+            'The device did not confirm the LED mode change.',
+            'Perangkat belum mengonfirmasi perubahan mode LED.',
+          ),
+        );
       }
     } catch (e) {
       debugPrint('LED mode command: $e');
-      if (mounted) _showSnackBar(JexText.phrase('LED mode command failed.','Perintah mode LED gagal dijalankan.'));
+      if (mounted)
+        _showSnackBar(
+          JexText.phrase(
+            'LED mode command failed.',
+            'Perintah mode LED gagal dijalankan.',
+          ),
+        );
     }
   }
 
@@ -6911,13 +7366,23 @@ void _handleAckLine(String line) {
 
       if (mounted) {
         setState(() => brightness = previous);
-        _showSnackBar(JexText.phrase('The device did not confirm the brightness change.','Perangkat belum mengonfirmasi perubahan kecerahan.'));
+        _showSnackBar(
+          JexText.phrase(
+            'The device did not confirm the brightness change.',
+            'Perangkat belum mengonfirmasi perubahan kecerahan.',
+          ),
+        );
       }
     } catch (e) {
       debugPrint('LED brightness command: $e');
       if (mounted) {
         setState(() => brightness = previous);
-        _showSnackBar(JexText.phrase('LED brightness command failed.','Perintah kecerahan LED gagal dijalankan.'));
+        _showSnackBar(
+          JexText.phrase(
+            'LED brightness command failed.',
+            'Perintah kecerahan LED gagal dijalankan.',
+          ),
+        );
       }
     }
   }
@@ -6933,7 +7398,12 @@ void _handleAckLine(String line) {
       final ok = await _sendAndConfirm('COLOR:' + value.substring(1));
       if (!ok) {
         if (mounted) {
-          _showSnackBar(JexText.phrase('The device did not confirm the color change.','Perangkat belum mengonfirmasi perubahan warna.'));
+          _showSnackBar(
+            JexText.phrase(
+              'The device did not confirm the color change.',
+              'Perangkat belum mengonfirmasi perubahan warna.',
+            ),
+          );
         }
         return false;
       }
@@ -6944,7 +7414,13 @@ void _handleAckLine(String line) {
       return true;
     } catch (e) {
       debugPrint('LED color command: $e');
-      if (mounted) _showSnackBar(JexText.phrase('LED color command failed.','Perintah warna LED gagal dijalankan.'));
+      if (mounted)
+        _showSnackBar(
+          JexText.phrase(
+            'LED color command failed.',
+            'Perintah warna LED gagal dijalankan.',
+          ),
+        );
       return false;
     }
   }
@@ -6961,11 +7437,22 @@ void _handleAckLine(String line) {
       final ok = await _sendAndConfirm('FANSPEED:$next');
       if (!ok && mounted) {
         setState(() => fanSpeedDraft = fanSpeed);
-        _showSnackBar(JexText.phrase('The device did not confirm the fan-speed change.','Perangkat belum mengonfirmasi perubahan kecepatan kipas.'));
+        _showSnackBar(
+          JexText.phrase(
+            'The device did not confirm the fan-speed change.',
+            'Perangkat belum mengonfirmasi perubahan kecepatan kipas.',
+          ),
+        );
       }
     } catch (e) {
       debugPrint('Fan speed command: $e');
-      if (mounted) _showSnackBar(JexText.phrase('Fan speed command failed.','Perintah kecepatan kipas gagal.'));
+      if (mounted)
+        _showSnackBar(
+          JexText.phrase(
+            'Fan speed command failed.',
+            'Perintah kecepatan kipas gagal.',
+          ),
+        );
     }
   }
 
@@ -6978,13 +7465,17 @@ void _handleAckLine(String line) {
       final ok = await _sendAndConfirm('HOTLIMIT:$next');
       if (!ok && mounted) {
         setState(() => hotLimitDraft = hotLimit);
-        _showSnackBar(JexText.of('hotsideLimitNotConfirmed', appLanguageNotifier.value));
+        _showSnackBar(
+          JexText.of('hotsideLimitNotConfirmed', appLanguageNotifier.value),
+        );
       }
     } catch (e) {
       debugPrint('Hotside limit command: $e');
       if (mounted) {
         setState(() => hotLimitDraft = hotLimit);
-        _showSnackBar(JexText.of('hotsideLimitFailed', appLanguageNotifier.value));
+        _showSnackBar(
+          JexText.of('hotsideLimitFailed', appLanguageNotifier.value),
+        );
       }
     }
   }
@@ -6999,13 +7490,17 @@ void _handleAckLine(String line) {
       final ok = await _sendAndConfirm('BATT5:$next');
       if (!ok && mounted) {
         setState(() => battery5Draft = battery5Limit);
-        _showSnackBar(JexText.of('battery5LimitNotConfirmed', appLanguageNotifier.value));
+        _showSnackBar(
+          JexText.of('battery5LimitNotConfirmed', appLanguageNotifier.value),
+        );
       }
     } catch (e) {
       debugPrint('Battery 5V command: $e');
       if (mounted) {
         setState(() => battery5Draft = battery5Limit);
-        _showSnackBar(JexText.of('battery5LimitFailed', appLanguageNotifier.value));
+        _showSnackBar(
+          JexText.of('battery5LimitFailed', appLanguageNotifier.value),
+        );
       }
     }
   }
@@ -7020,20 +7515,25 @@ void _handleAckLine(String line) {
       final ok = await _sendAndConfirm('BATT12:$next');
       if (!ok && mounted) {
         setState(() => battery12Draft = battery12Limit);
-        _showSnackBar(JexText.of('battery12LimitNotConfirmed', appLanguageNotifier.value));
+        _showSnackBar(
+          JexText.of('battery12LimitNotConfirmed', appLanguageNotifier.value),
+        );
       }
     } catch (e) {
       debugPrint('Battery 12V command: $e');
       if (mounted) {
         setState(() => battery12Draft = battery12Limit);
-        _showSnackBar(JexText.of('battery12LimitFailed', appLanguageNotifier.value));
+        _showSnackBar(
+          JexText.of('battery12LimitFailed', appLanguageNotifier.value),
+        );
       }
     }
   }
 
-
   // AI-METHOD: _requestFreshSync — Request a fresh firmware snapshot without replaying local state.
-  Future<bool> _requestFreshSync({Duration timeout = const Duration(seconds: 3)}) async {
+  Future<bool> _requestFreshSync({
+    Duration timeout = const Duration(seconds: 3),
+  }) async {
     fullSyncReceived = false;
     final sent = await sendCommand('SYNC', showError: false);
     if (!sent) return false;
@@ -7042,7 +7542,8 @@ void _handleAckLine(String line) {
 
   void _publishVoltageLockSettings() {
     voltageLockSettingsNotifier.value = VoltageLockSettingsState(
-      sessionReady: connected &&
+      sessionReady:
+          connected &&
           dashboardReady &&
           _bleReady &&
           _bleSessionReady &&
@@ -7074,10 +7575,7 @@ void _handleAckLine(String line) {
       );
       if (!accepted && mounted) {
         final reason = _lastCommandAckReason;
-        _showSnackBar(
-          _friendlyReason(reason),
-          color: Colors.orangeAccent,
-        );
+        _showSnackBar(_friendlyReason(reason), color: Colors.orangeAccent);
       }
     } finally {
       if (mounted) {
@@ -7095,7 +7593,9 @@ void _handleAckLine(String line) {
           compactUi: true,
           child: SettingsPage(
             currentFirmwareVersion: firmwareVersion,
-            coolerId: device?.remoteId.toString() ?? knownCoolerRemoteIdNotifier.value,
+            coolerId:
+                device?.remoteId.toString() ??
+                knownCoolerRemoteIdNotifier.value,
             hotLimit: hotLimit,
             onOpenFirmwareUpdate: _openFirmwareSettings,
             onVoltageLockChanged: _setVoltageLock,
@@ -7106,11 +7606,15 @@ void _handleAckLine(String line) {
   }
 
   Future<void> _setAdaptiveProfile(String profile) async {
-    if (!connected || adaptiveOn || (voltageLockKnown && voltageLockActive)) return;
+    if (!connected || adaptiveOn || (voltageLockKnown && voltageLockActive))
+      return;
     final ok = await _sendAndConfirm('ADAPTIVE_PROFILE:' + profile);
     if (!ok && mounted) {
       _showSnackBar(
-        JexText.phrase('The device did not confirm the Adaptive Profile change.','Perangkat belum mengonfirmasi perubahan Profil Adaptif.'),
+        JexText.phrase(
+          'The device did not confirm the Adaptive Profile change.',
+          'Perangkat belum mengonfirmasi perubahan Profil Adaptif.',
+        ),
         color: Colors.orangeAccent,
       );
     }
@@ -7128,35 +7632,38 @@ void _handleAckLine(String line) {
       pageBuilder: (dialogContext, _, __) {
         return JexFixedScalePage(
           child: PopScope<void>(
-          canPop: false,
-          child: SafeArea(
-            child: LayoutBuilder(
-              builder: (dialogContext, constraints) {
-                // Keep the card compact; only the swatch grid scrolls. Swatches stage
-                // a preview and only Cancel or Select closes the picker.
-                return Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(24, 4, 24, 4),
-                    child: ConstrainedBox(
-                      constraints: BoxConstraints(
-                        maxWidth: 312,
-                        maxHeight: jexLedColorPickerMaxHeight(constraints.maxHeight),
-                      ),
-                      child: _JexColorPickerCard(
-                        colors: ledColorPresets,
-                        selected: rgbColor.toUpperCase(),
-                        onCancel: () {
-                          if (dialogContext.mounted) Navigator.pop(dialogContext);
-                        },
-                        onSelect: _setRgbColor,
+            canPop: false,
+            child: SafeArea(
+              child: LayoutBuilder(
+                builder: (dialogContext, constraints) {
+                  // Keep the card compact; only the swatch grid scrolls. Swatches stage
+                  // a preview and only Cancel or Select closes the picker.
+                  return Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(24, 4, 24, 4),
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(
+                          maxWidth: 312,
+                          maxHeight: jexLedColorPickerMaxHeight(
+                            constraints.maxHeight,
+                          ),
+                        ),
+                        child: _JexColorPickerCard(
+                          colors: ledColorPresets,
+                          selected: rgbColor.toUpperCase(),
+                          onCancel: () {
+                            if (dialogContext.mounted)
+                              Navigator.pop(dialogContext);
+                          },
+                          onSelect: _setRgbColor,
+                        ),
                       ),
                     ),
-                  ),
-                );
-              },
+                  );
+                },
+              ),
             ),
-          ),
           ),
         );
       },
@@ -7228,7 +7735,8 @@ void _handleAckLine(String line) {
         timeout: const Duration(seconds: 4),
       );
       if (!ok) {
-        final ambiguousCloudOtaStart = command == 'CLOUDOTA' &&
+        final ambiguousCloudOtaStart =
+            command == 'CLOUDOTA' &&
             (_lastCommandAckReason == 'TIMEOUT' ||
                 _lastCommandAckReason == 'DISCONNECTED');
         if (ambiguousCloudOtaStart) {
@@ -7294,7 +7802,10 @@ void _handleAckLine(String line) {
         otaRecoveryScanInProgress = false;
         if (mounted) {
           setState(() {
-            notice = JexText.of('otaReconnectFailed', appLanguageNotifier.value);
+            notice = JexText.of(
+              'otaReconnectFailed',
+              appLanguageNotifier.value,
+            );
           });
         }
         return;
@@ -7305,10 +7816,7 @@ void _handleAckLine(String line) {
       attempts++;
 
       try {
-        await _scanAndConnect(
-          automatic: true,
-          otaRecovery: true,
-        );
+        await _scanAndConnect(automatic: true, otaRecovery: true);
       } catch (e) {
         debugPrint('OTA BLE recovery: $e');
       } finally {
@@ -7322,14 +7830,14 @@ void _handleAckLine(String line) {
     });
   }
 
-
   Map<String, String> _otaDiagnosticFields(String raw) {
     final fields = <String, String>{};
     for (final part in raw.split('|')) {
       final index = part.indexOf('=');
       if (index <= 0) continue;
-      fields[part.substring(0, index).trim().toUpperCase()] =
-          part.substring(index + 1).trim();
+      fields[part.substring(0, index).trim().toUpperCase()] = part
+          .substring(index + 1)
+          .trim();
     }
     return fields;
   }
@@ -7450,7 +7958,10 @@ void _handleAckLine(String line) {
           int.tryParse(parts[3]) != null &&
           int.tryParse(parts[4]) != null) {
         return JexText.of('otaUploaded', language) +
-            parts[3] + ' / ' + parts[4] + JexText.of('otaBytes', language);
+            parts[3] +
+            ' / ' +
+            parts[4] +
+            JexText.of('otaBytes', language);
       }
       return JexText.of('otaSizeMismatch', language);
     }
@@ -7461,23 +7972,25 @@ void _handleAckLine(String line) {
     if (upper.contains('FAILED') || upper.contains('ERROR')) {
       return localizedOtaFailureSummary(language);
     }
-    return raw.contains('_')
-        ? JexText.of('deviceStatusUpdate', language)
-        : raw;
+    return raw.contains('_') ? JexText.of('deviceStatusUpdate', language) : raw;
   }
-
-
 
   String _friendlyReset(String value) {
     switch (value) {
-      case 'BROWNOUT': return JexText.of('resetBrownout', appLanguageNotifier.value);
-      case 'PANIC': return JexText.of('resetPanic', appLanguageNotifier.value);
-      case 'SOFTWARE': return JexText.of('resetSoftware', appLanguageNotifier.value);
+      case 'BROWNOUT':
+        return JexText.of('resetBrownout', appLanguageNotifier.value);
+      case 'PANIC':
+        return JexText.of('resetPanic', appLanguageNotifier.value);
+      case 'SOFTWARE':
+        return JexText.of('resetSoftware', appLanguageNotifier.value);
       case 'WDT':
       case 'INT_WDT':
-      case 'TASK_WDT': return JexText.of('resetWatchdog', appLanguageNotifier.value);
-      case 'EXTERNAL': return JexText.of('resetExternal', appLanguageNotifier.value);
-      case 'DEEPSLEEP': return JexText.of('resetDeepSleep', appLanguageNotifier.value);
+      case 'TASK_WDT':
+        return JexText.of('resetWatchdog', appLanguageNotifier.value);
+      case 'EXTERNAL':
+        return JexText.of('resetExternal', appLanguageNotifier.value);
+      case 'DEEPSLEEP':
+        return JexText.of('resetDeepSleep', appLanguageNotifier.value);
       case 'POWER_ON':
       case 'POWERON':
         return JexText.of('resetPowerOn', appLanguageNotifier.value);
@@ -7531,7 +8044,9 @@ void _handleAckLine(String line) {
     const homeHeight = 420.0;
     final scale = media.size.width / designWidth;
     final top = media.padding.top + homeHeight * scale;
-    final sheetHeight = (media.size.height - top).clamp(1.0, media.size.height).toDouble();
+    final sheetHeight = (media.size.height - top)
+        .clamp(1.0, media.size.height)
+        .toDouble();
 
     showModalBottomSheet<void>(
       context: context,
@@ -7586,8 +8101,8 @@ void _handleAckLine(String line) {
         debugPrint('Connection sheet scan cleanup: $e');
       }
     }
-    final resumePassiveReconnect =
-        _connectionScanCoordinator.closeManualSheet();
+    final resumePassiveReconnect = _connectionScanCoordinator
+        .closeManualSheet();
     if (resumePassiveReconnect && scannerStopped && mounted) {
       _startDisconnectRediscovery();
     }
@@ -7642,7 +8157,9 @@ void _handleAckLine(String line) {
     // AI-THEME / DASHBOARD-LIGHT-CONTRAST-CONTRACT
     // Light mode stays colorful while separating surface, outline, and glyph contrast.
     // The accent identifies the metric without becoming a harsh solid block.
-    final mutedText = homeDark ? const Color(0xFFD4D7E0) : const Color(0xFF25282E);
+    final mutedText = homeDark
+        ? const Color(0xFFD4D7E0)
+        : const Color(0xFF25282E);
     return TweenAnimationBuilder<Color?>(
       tween: ColorTween(end: color),
       duration: const Duration(milliseconds: 560),
@@ -7664,114 +8181,117 @@ void _handleAckLine(String line) {
             ? indicatorColor.withValues(alpha: .52)
             : indicatorColor.withValues(alpha: lightOutlineOpacity);
 
-    return Padding(
-      padding: EdgeInsets.zero,
-      child: SizedBox(
-        width: double.infinity,
-        // Keep all seven Home indicator rows at the same 45 dp height.
-        height: 45,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              SizedBox(
-                width: 41,
-                height: 41,
-                child: Center(
-                  child: Container(
-                    width: 38,
-                    height: 38,
-                    decoration: BoxDecoration(
-                      color: indicatorFill,
-                      borderRadius: BorderRadius.circular(9),
-                      border: Border.all(
-                        color: indicatorBorder,
-                        width: homeDark ? 1.1 : 1.25,
-                      ),
-                    ),
-                    child: animatedKind == null
-                        ? JexAnimatedIcon.glyph(
-                            icon: icon,
-                            size: 26,
-                            color: indicatorColor,
-                            active: animationIsActive,
-                            warning: warning,
-                          )
-                        : JexAnimatedIcon(
-                            kind: animatedKind,
-                            size: 26,
-                            color: indicatorColor,
-                            lightTheme: !homeDark,
-                            lightSurfaceColor: theme.colorScheme.surface,
-                            lightOutlineColor: theme.colorScheme.onSurfaceVariant,
-                            connected: connected,
-                            active: animatedKind == JexAnimatedIconKind.speed
-                                ? (animationActive ?? active)
-                                : jexIconAnimationPermitted(
-                                    connected: connected,
-                                    kind: animatedKind,
-                                    stateActive: animationActive ?? active,
-                                  ),
-                            valueKnown: animatedKind != JexAnimatedIconKind.speed ||
-                                (connected && animationValueKnown),
-                            level: level,
-                            voltageLevel: voltageLevel,
-                            warning: warning,
-                          ),
-                  ),
-                ),
-              ),
-              const SizedBox(width: 6),
-              Expanded(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                      height: 13,
-                      child: FittedBox(
-                        alignment: Alignment.centerLeft,
-                        fit: BoxFit.scaleDown,
-                        child: Text(
-                          label,
-                          maxLines: 1,
-                          style: TextStyle(
-                            color: mutedText,
-                            fontSize: 10.5,
-                            fontWeight: FontWeight.w900,
-                            letterSpacing: 0.45,
-                            height: 1.0,
+        return Padding(
+          padding: EdgeInsets.zero,
+          child: SizedBox(
+            width: double.infinity,
+            // Keep all seven Home indicator rows at the same 45 dp height.
+            height: 45,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    width: 41,
+                    height: 41,
+                    child: Center(
+                      child: Container(
+                        width: 38,
+                        height: 38,
+                        decoration: BoxDecoration(
+                          color: indicatorFill,
+                          borderRadius: BorderRadius.circular(9),
+                          border: Border.all(
+                            color: indicatorBorder,
+                            width: homeDark ? 1.1 : 1.25,
                           ),
                         ),
+                        child: animatedKind == null
+                            ? JexAnimatedIcon.glyph(
+                                icon: icon,
+                                size: 26,
+                                color: indicatorColor,
+                                active: animationIsActive,
+                                warning: warning,
+                              )
+                            : JexAnimatedIcon(
+                                kind: animatedKind,
+                                size: 26,
+                                color: indicatorColor,
+                                lightTheme: !homeDark,
+                                lightSurfaceColor: theme.colorScheme.surface,
+                                lightOutlineColor:
+                                    theme.colorScheme.onSurfaceVariant,
+                                connected: connected,
+                                active:
+                                    animatedKind == JexAnimatedIconKind.speed
+                                    ? (animationActive ?? active)
+                                    : jexIconAnimationPermitted(
+                                        connected: connected,
+                                        kind: animatedKind,
+                                        stateActive: animationActive ?? active,
+                                      ),
+                                valueKnown:
+                                    animatedKind != JexAnimatedIconKind.speed ||
+                                    (connected && animationValueKnown),
+                                level: level,
+                                voltageLevel: voltageLevel,
+                                warning: warning,
+                              ),
                       ),
                     ),
-                    const SizedBox(height: 2),
-                    Text(
-                      display,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        // Preserve semantic accents while disconnected; unavailable data is --.
-                        color: homeDark
-                            ? (active
-                                ? indicatorColor
-                                : indicatorColor.withValues(alpha: .82))
-                            : lightTextAccent,
-                        fontSize: 18.5,
-                        fontWeight: FontWeight.w900,
-                        height: 0.95,
-                        letterSpacing: -0.15,
-                      ),
+                  ),
+                  const SizedBox(width: 6),
+                  Expanded(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          height: 13,
+                          child: FittedBox(
+                            alignment: Alignment.centerLeft,
+                            fit: BoxFit.scaleDown,
+                            child: Text(
+                              label,
+                              maxLines: 1,
+                              style: TextStyle(
+                                color: mutedText,
+                                fontSize: 10.5,
+                                fontWeight: FontWeight.w900,
+                                letterSpacing: 0.45,
+                                height: 1.0,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          display,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            // Preserve semantic accents while disconnected; unavailable data is --.
+                            color: homeDark
+                                ? (active
+                                      ? indicatorColor
+                                      : indicatorColor.withValues(alpha: .82))
+                                : lightTextAccent,
+                            fontSize: 18.5,
+                            fontWeight: FontWeight.w900,
+                            height: 0.95,
+                            letterSpacing: -0.15,
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
-        ),
-      ),
-          );
+        );
       },
     );
   }
@@ -7795,10 +8315,10 @@ void _handleAckLine(String line) {
       icon: icon,
       animatedKind: animatedKind,
       animationActive: jexIndicatorAnimationActive(
-      connected: connected,
-      stateActive: runtimeOutputsKnown && value,
-    ),
-    level: runtimeOutputsKnown && fanOn ? fanSpeed / 100 : 0,
+        connected: connected,
+        stateActive: runtimeOutputsKnown && value,
+      ),
+      level: runtimeOutputsKnown && fanOn ? fanSpeed / 100 : 0,
       voltageLevel: jexVoltageAnimationLevel(voltage),
     );
   }
@@ -7824,10 +8344,10 @@ void _handleAckLine(String line) {
       icon: PhosphorIconsRegular.gauge,
       animatedKind: JexAnimatedIconKind.speed,
       animationActive: jexIndicatorAnimationActive(
-      connected: connected,
-      stateActive: runtimeOutputsKnown && fanOn,
-    ),
-    level: connected && runtimeOutputsKnown && fanOn ? fanSpeed / 100 : 0.0,
+        connected: connected,
+        stateActive: runtimeOutputsKnown && fanOn,
+      ),
+      level: connected && runtimeOutputsKnown && fanOn ? fanSpeed / 100 : 0.0,
       animationValueKnown: connected && runtimeOutputsKnown,
     );
   }
@@ -7868,12 +8388,17 @@ void _handleAckLine(String line) {
     if (raw.isEmpty) return '';
 
     final lower = raw.toLowerCase();
-    if (lower == 'scanning for device...' || lower == 'scanning for devices...' || lower == 'scanning for je x fyz...') {
+    if (lower == 'scanning for device...' ||
+        lower == 'scanning for devices...' ||
+        lower == 'scanning for je x fyz...') {
       return JexText.of('scanning');
     }
-    if (lower == 'connecting to the device...' || lower == 'connecting to device...' || lower == 'connecting to je x fyz...') {
+    if (lower == 'connecting to the device...' ||
+        lower == 'connecting to device...' ||
+        lower == 'connecting to je x fyz...') {
       return JexText.of('connectingDevice');
-    }    if (lower == 'device disconnected.') {
+    }
+    if (lower == 'device disconnected.') {
       return JexText.of('bluetoothDisconnected');
     }
     if (lower == 'device not found.' || lower == 'je x fyz was not found.') {
@@ -7885,7 +8410,8 @@ void _handleAckLine(String line) {
     if (lower == 'bluetooth is not ready.') {
       return JexText.of('bluetoothNotReady');
     }
-    if (lower == 'connect your device to continue.' || lower == 'connect to je x fyz first.') {
+    if (lower == 'connect your device to continue.' ||
+        lower == 'connect to je x fyz first.') {
       return JexText.of('connectFirst');
     }
     if (lower.startsWith('reset:')) {
@@ -7896,22 +8422,33 @@ void _handleAckLine(String line) {
       return JexText.of('otaStartRejected');
     }
     if (lower.contains('was not confirmed by the device')) {
-      final prefix = raw.replaceFirst(
-        RegExp(r'\s+was not confirmed by the device\.?[\s\S]*$', caseSensitive: false),
-        '',
-      ).trim();
+      final prefix = raw
+          .replaceFirst(
+            RegExp(
+              r'\s+was not confirmed by the device\.?[\s\S]*$',
+              caseSensitive: false,
+            ),
+            '',
+          )
+          .trim();
       return prefix.isEmpty
           ? JexText.of('commandNotConfirmed', appLanguageNotifier.value)
-          : prefix + ' ' + JexText.of('notConfirmedSuffix', appLanguageNotifier.value);
+          : prefix +
+                ' ' +
+                JexText.of('notConfirmedSuffix', appLanguageNotifier.value);
     }
     if (lower.contains('command failed.')) {
-      final prefix = raw.replaceFirst(
-        RegExp(r'\s+command failed\.?$', caseSensitive: false),
-        '',
-      ).trim();
+      final prefix = raw
+          .replaceFirst(
+            RegExp(r'\s+command failed\.?$', caseSensitive: false),
+            '',
+          )
+          .trim();
       return prefix.isEmpty
           ? JexText.of('commandFailed', appLanguageNotifier.value)
-          : prefix + ' ' + JexText.of('failedSuffix', appLanguageNotifier.value);
+          : prefix +
+                ' ' +
+                JexText.of('failedSuffix', appLanguageNotifier.value);
     }
     return raw;
   }
@@ -7922,7 +8459,8 @@ void _handleAckLine(String line) {
 
     if (!connected && !_bleConnecting) {
       final upper = custom.toUpperCase();
-      final staleValidation = upper == 'VALIDATING TEMPERATURE...' ||
+      final staleValidation =
+          upper == 'VALIDATING TEMPERATURE...' ||
           upper == 'TEMPERATURE SENSORS: VALIDATING...' ||
           upper == 'VALIDATING TEMPERATURE SENSORS...';
       if (custom.isEmpty || staleValidation) {
@@ -7932,8 +8470,7 @@ void _handleAckLine(String line) {
     }
 
     // Hotside threshold is the only live condition that overrides ordinary events.
-    if (connected &&
-        homeHotsideLimitReached(hotsideTemp, hotLimit: hotLimit)) {
+    if (connected && homeHotsideLimitReached(hotsideTemp, hotLimit: hotLimit)) {
       return homeHotsideLimitNotice(
         hotsideTemp,
         hotLimit: hotLimit,
@@ -7943,14 +8480,17 @@ void _handleAckLine(String line) {
     if (connected &&
         (isActiveHomeSafetyReason(safetyReason) ||
             safetyReason.trim().toUpperCase() == 'WAITING_FOR_NTC' ||
-            safetyReason.trim().toUpperCase() == 'WAITING_FOR_SENSOR_VALIDATION')) {
+            safetyReason.trim().toUpperCase() ==
+                'WAITING_FOR_SENSOR_VALIDATION')) {
       return _friendlyReason(safetyReason);
     }
 
     if (custom.isNotEmpty) return custom;
 
-    if (_bleConnecting) return JexText.of('connectingDevice', appLanguageNotifier.value);
-    if (syncing && !dashboardReady) return JexText.of('synchronizingDevice', appLanguageNotifier.value);
+    if (_bleConnecting)
+      return JexText.of('connectingDevice', appLanguageNotifier.value);
+    if (syncing && !dashboardReady)
+      return JexText.of('synchronizingDevice', appLanguageNotifier.value);
 
     return _friendlyReason(safetyReason);
   }
@@ -7966,7 +8506,10 @@ void _handleAckLine(String line) {
     String? message;
 
     if (c.startsWith('VOLTAGE:')) {
-      message = JexText.phrase('Voltage set to ', 'Tegangan diatur ke ', lang) + c.substring(8) + '.';
+      message =
+          JexText.phrase('Voltage set to ', 'Tegangan diatur ke ', lang) +
+          c.substring(8) +
+          '.';
     } else if (c == 'FAN:ON') {
       message = JexText.of('fanOn', lang);
     } else if (c == 'FAN:OFF') {
@@ -7982,8 +8525,16 @@ void _handleAckLine(String line) {
     } else if (c.startsWith('FANSPEED:')) {
       final requested = int.tryParse(c.substring(9));
       message = requested == null
-          ? JexText.phrase('Fan speed updated.', 'Kecepatan kipas diperbarui.', lang)
-          : homeFanSpeedChangedNotice(previousFanSpeed, requested, language: lang);
+          ? JexText.phrase(
+              'Fan speed updated.',
+              'Kecepatan kipas diperbarui.',
+              lang,
+            )
+          : homeFanSpeedChangedNotice(
+              previousFanSpeed,
+              requested,
+              language: lang,
+            );
     } else if (c == 'RGB:ON') {
       message = JexText.of('ledOn', lang);
     } else if (c == 'RGB:OFF') {
@@ -7991,7 +8542,14 @@ void _handleAckLine(String line) {
     } else if (c.startsWith('MODE:')) {
       message = JexText.of('modeUpdated', lang);
     } else if (c.startsWith('BRIGHTNESS:')) {
-      message = JexText.phrase('LED brightness set to ', 'Kecerahan LED diatur ke ', lang) + c.substring(11) + '%.';
+      message =
+          JexText.phrase(
+            'LED brightness set to ',
+            'Kecerahan LED diatur ke ',
+            lang,
+          ) +
+          c.substring(11) +
+          '%.';
     } else if (c.startsWith('COLOR:')) {
       message = JexText.of('colorUpdated', lang);
     } else if (c.startsWith('ADAPTIVE_PROFILE:')) {
@@ -8010,11 +8568,26 @@ void _handleAckLine(String line) {
       );
     } else if (c.startsWith('HOTLIMIT:')) {
       // Keep the existing Temperature-tab limit acknowledgement; do not notify on samples.
-      message = JexText.phrase('Hotside temperature limit set to ', 'Batas suhu Hotside diatur ke ', lang) + c.substring(9) + '°C.';
+      message =
+          JexText.phrase(
+            'Hotside temperature limit set to ',
+            'Batas suhu Hotside diatur ke ',
+            lang,
+          ) +
+          c.substring(9) +
+          '°C.';
     } else if (c.startsWith('BATT5:')) {
-      message = JexText.phrase('5V battery limit updated.', 'Batas baterai 5V diperbarui.', lang);
+      message = JexText.phrase(
+        '5V battery limit updated.',
+        'Batas baterai 5V diperbarui.',
+        lang,
+      );
     } else if (c.startsWith('BATT12:')) {
-      message = JexText.phrase('12V battery limit updated.', 'Batas baterai 12V diperbarui.', lang);
+      message = JexText.phrase(
+        '12V battery limit updated.',
+        'Batas baterai 12V diperbarui.',
+        lang,
+      );
     } else if (c == 'RESET:TEMPERATURE') {
       message = JexText.of('temperatureReset', lang);
     }
@@ -8026,18 +8599,21 @@ void _handleAckLine(String line) {
     }
   }
 
-  String _notifyStateLabel() => JexText.of('notification', appLanguageNotifier.value);
+  String _notifyStateLabel() =>
+      JexText.of('notification', appLanguageNotifier.value);
 
   // AI-METHOD: _homeNotify — Render the localized Home Notification card.
   // Retain the original icon-left / text-left Row; only the connection badge is removed.
   // Keep the 44-dp card geometry; long copy uses two-line ellipsis at readable text sizes.
   Widget _homeNotify() {
     final headerDark = jexHomeHeaderUsesDarkPalette(appThemeNotifier.value);
-    final noticeTextColor =
-        headerDark ? const Color(0xFFF4F6FA) : const Color(0xFF16181D);
+    final noticeTextColor = headerDark
+        ? const Color(0xFFF4F6FA)
+        : const Color(0xFF16181D);
     final custom = notice.trim().toUpperCase();
     final hasError = isNotifyErrorMessage(custom);
-    final warning = connected &&
+    final warning =
+        connected &&
         ((safetyReason != 'NONE' &&
                 safetyReason != 'WAITING_FOR_NTC' &&
                 safetyReason != 'WAITING_FOR_SENSOR_VALIDATION') ||
@@ -8046,13 +8622,13 @@ void _handleAckLine(String line) {
     final icon = hasError
         ? PhosphorIconsBold.xCircle
         : alert
-            ? PhosphorIconsBold.warning
-            : PhosphorIconsRegular.shieldCheck;
+        ? PhosphorIconsBold.warning
+        : PhosphorIconsRegular.shieldCheck;
     final color = hasError
         ? const Color(0xFFFF5164)
         : alert
-            ? const Color(0xFFFFB72B)
-            : const Color(0xFF4DE7B7);
+        ? const Color(0xFFFFB72B)
+        : const Color(0xFF4DE7B7);
     final foregroundColor = jexHomeNotifyForegroundColor(
       darkTheme: headerDark,
       hasError: hasError,
@@ -8124,16 +8700,17 @@ void _handleAckLine(String line) {
                         fontWeight: FontWeight.w800,
                       );
                       TextPainter measure(double fontSize) => TextPainter(
-                            text: TextSpan(
-                              text: message,
-                              style: bodyStyle.copyWith(fontSize: fontSize),
-                            ),
-                            textDirection: Directionality.of(context),
-                            maxLines: 2,
-                            ellipsis: '…',
-                          )..layout(maxWidth: constraints.maxWidth);
+                        text: TextSpan(
+                          text: message,
+                          style: bodyStyle.copyWith(fontSize: fontSize),
+                        ),
+                        textDirection: Directionality.of(context),
+                        maxLines: 2,
+                        ellipsis: '…',
+                      )..layout(maxWidth: constraints.maxWidth);
 
-                      final wraps = measure(10.5).computeLineMetrics().length > 1;
+                      final wraps =
+                          measure(10.5).computeLineMetrics().length > 1;
                       final fontSize = wraps ? 9.5 : 10.5;
                       // Keep NOTIFY readable. Longer copy is ellipsized to two lines,
                       // never reduced to microtype to force the full message into 44 dp.
@@ -8240,13 +8817,17 @@ void _handleAckLine(String line) {
     final rowFill = lightTheme
         ? const Color(0xFFF5F6F8)
         : (neutralRow
-            ? scheme.surfaceContainerHighest.withValues(alpha: .26)
-            : (value ? accent.withValues(alpha: .075) : scheme.surfaceContainerHighest.withValues(alpha: .34)));
+              ? scheme.surfaceContainerHighest.withValues(alpha: .26)
+              : (value
+                    ? accent.withValues(alpha: .075)
+                    : scheme.surfaceContainerHighest.withValues(alpha: .34)));
     final rowBorder = lightTheme
         ? const Color(0xFFDDE1E7)
         : (neutralRow
-            ? scheme.outlineVariant.withValues(alpha: .68)
-            : (value ? accent.withValues(alpha: .28) : scheme.outlineVariant.withValues(alpha: .72)));
+              ? scheme.outlineVariant.withValues(alpha: .68)
+              : (value
+                    ? accent.withValues(alpha: .28)
+                    : scheme.outlineVariant.withValues(alpha: .72)));
     return AnimatedContainer(
       duration: const Duration(milliseconds: 180),
       curve: Curves.easeOutCubic,
@@ -8267,8 +8848,12 @@ void _handleAckLine(String line) {
               color: lightTheme
                   ? const Color(0xFFE9EBEF)
                   : (neutralRow
-                      ? scheme.surfaceContainerHighest.withValues(alpha: .72)
-                      : (value ? accent.withValues(alpha: .12) : scheme.surfaceContainerHighest.withValues(alpha: .72))),
+                        ? scheme.surfaceContainerHighest.withValues(alpha: .72)
+                        : (value
+                              ? accent.withValues(alpha: .12)
+                              : scheme.surfaceContainerHighest.withValues(
+                                  alpha: .72,
+                                ))),
               borderRadius: BorderRadius.circular(14),
             ),
             child: Center(
@@ -8325,7 +8910,9 @@ void _handleAckLine(String line) {
           if (showStateLabel) ...[
             const SizedBox(width: 8),
             Text(
-              stateKnown ? JexText.of(value ? 'on' : 'off', lang) : JexText.of('off', lang),
+              stateKnown
+                  ? JexText.of(value ? 'on' : 'off', lang)
+                  : JexText.of('off', lang),
               style: TextStyle(
                 fontSize: 10,
                 fontWeight: FontWeight.w900,
@@ -8359,7 +8946,9 @@ void _handleAckLine(String line) {
     // Offline fallback is a visual default only, not confirmed hardware telemetry.
     final displayedValue = stateKnown && value;
     return GestureDetector(
-      onTap: enabled && stateKnown ? () => unawaited(onChanged(!displayedValue)) : null,
+      onTap: enabled && stateKnown
+          ? () => unawaited(onChanged(!displayedValue))
+          : null,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 180),
         width: jexSubmenuToggleWidth,
@@ -8371,14 +8960,18 @@ void _handleAckLine(String line) {
               : scheme.surfaceContainerHighest,
           borderRadius: BorderRadius.circular(18),
           border: Border.all(
-            color: displayedValue ? accent.withValues(alpha: .52) : scheme.outlineVariant,
+            color: displayedValue
+                ? accent.withValues(alpha: .52)
+                : scheme.outlineVariant,
             width: 1.2,
           ),
         ),
         child: AnimatedAlign(
           duration: const Duration(milliseconds: 180),
           curve: Curves.easeOutCubic,
-          alignment: displayedValue ? Alignment.centerRight : Alignment.centerLeft,
+          alignment: displayedValue
+              ? Alignment.centerRight
+              : Alignment.centerLeft,
           child: Container(
             width: 24,
             height: 24,
@@ -8386,8 +8979,8 @@ void _handleAckLine(String line) {
               color: displayedValue
                   ? accent
                   : (enabled
-                      ? scheme.onSurfaceVariant
-                      : scheme.onSurfaceVariant.withValues(alpha: .32)),
+                        ? scheme.onSurfaceVariant
+                        : scheme.onSurfaceVariant.withValues(alpha: .32)),
               shape: BoxShape.circle,
               boxShadow: [
                 if (displayedValue)
@@ -8399,7 +8992,11 @@ void _handleAckLine(String line) {
               ],
             ),
             child: displayedValue && showCheck
-                ? const Icon(PhosphorIconsBold.check, size: 15, color: Colors.white)
+                ? const Icon(
+                    PhosphorIconsBold.check,
+                    size: 15,
+                    color: Colors.white,
+                  )
                 : null,
           ),
         ),
@@ -8414,7 +9011,9 @@ void _handleAckLine(String line) {
   }) {
     return ListView(
       key: PageStorageKey<String>(storageKey),
-      physics: const ClampingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+      physics: const ClampingScrollPhysics(
+        parent: AlwaysScrollableScrollPhysics(),
+      ),
       keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
       scrollCacheExtent: const ScrollCacheExtent.pixels(480),
       padding: padding,
@@ -8428,7 +9027,10 @@ void _handleAckLine(String line) {
   // AI-METHOD / VOLTAGE-UI-CONTRACT
   // Voltage stays vertical. Each row is a custom single-select toggle; only one can be active.
   Widget _buildVoltageTab({Key? key}) {
-    final locked = !connected || adaptiveOn || voltageGuardActive ||
+    final locked =
+        !connected ||
+        adaptiveOn ||
+        voltageGuardActive ||
         (voltageLockKnown && voltageLockActive);
     final lang = appLanguageNotifier.value;
 
@@ -8444,14 +9046,28 @@ void _handleAckLine(String line) {
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
               child: Row(
                 children: [
-                  Icon(PhosphorIconsRegular.lock, color: Theme.of(context).colorScheme.primary, size: 18),
+                  Icon(
+                    PhosphorIconsRegular.lock,
+                    color: Theme.of(context).colorScheme.primary,
+                    size: 18,
+                  ),
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
                       voltage == '5V'
-                          ? JexText.phrase('Locked at 5V. Voltage selection is disabled.', 'Terkunci di 5V. Pemilihan tegangan dinonaktifkan.')
-                          : JexText.phrase('Lock active — safely returning to 5V. The value below remains actual device telemetry.', 'Kunci aktif — perangkat sedang kembali ke 5V dengan aman. Nilai di bawah tetap mengikuti telemetri aktual.'),
-                      style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant, fontSize: 10.5, fontWeight: FontWeight.w700),
+                          ? JexText.phrase(
+                              'Locked at 5V. Voltage selection is disabled.',
+                              'Terkunci di 5V. Pemilihan tegangan dinonaktifkan.',
+                            )
+                          : JexText.phrase(
+                              'Lock active — safely returning to 5V. The value below remains actual device telemetry.',
+                              'Kunci aktif — perangkat sedang kembali ke 5V dengan aman. Nilai di bawah tetap mengikuti telemetri aktual.',
+                            ),
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        fontSize: 10.5,
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
                   ),
                 ],
@@ -8465,7 +9081,11 @@ void _handleAckLine(String line) {
                 const SizedBox(height: 8),
                 _voltageChoiceCustom('9V', JexText.of('midMode', lang), locked),
                 const SizedBox(height: 8),
-                _voltageChoiceCustom('12V', JexText.of('highMode', lang), locked),
+                _voltageChoiceCustom(
+                  '12V',
+                  JexText.of('highMode', lang),
+                  locked,
+                ),
               ],
             ),
           ),
@@ -8490,7 +9110,9 @@ void _handleAckLine(String line) {
           // selection is represented only by the shared toggle on the right.
           color: scheme.surfaceContainerHighest.withValues(alpha: .26),
           borderRadius: BorderRadius.circular(18),
-          border: Border.all(color: scheme.outlineVariant.withValues(alpha: .68)),
+          border: Border.all(
+            color: scheme.outlineVariant.withValues(alpha: .68),
+          ),
         ),
         child: Row(
           children: [
@@ -8587,7 +9209,11 @@ void _handleAckLine(String line) {
                   animationLevel: fanSpeed / 100,
                   voltageLevel: jexVoltageAnimationLevel(voltage),
                   value: fanOn,
-                  enabled: connected && runtimeOutputsKnown && !adaptiveOn && !peltierOn,
+                  enabled:
+                      connected &&
+                      runtimeOutputsKnown &&
+                      !adaptiveOn &&
+                      !peltierOn,
                   stateKnown: runtimeOutputsKnown,
                   onChanged: _toggleFan,
                 ),
@@ -8596,7 +9222,9 @@ void _handleAckLine(String line) {
                   duration: const Duration(milliseconds: 180),
                   padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
                   decoration: BoxDecoration(
-                    color: scheme.surfaceContainerHighest.withValues(alpha: .25),
+                    color: scheme.surfaceContainerHighest.withValues(
+                      alpha: .25,
+                    ),
                     borderRadius: BorderRadius.circular(18),
                     border: Border.all(
                       color: scheme.outlineVariant.withValues(alpha: .70),
@@ -8613,7 +9241,9 @@ void _handleAckLine(String line) {
                             connected: connected,
                             active: connected && runtimeOutputsKnown && fanOn,
                             valueKnown: connected && runtimeOutputsKnown,
-                            level: runtimeOutputsKnown && fanOn ? fanSpeed / 100 : 0.0,
+                            level: runtimeOutputsKnown && fanOn
+                                ? fanSpeed / 100
+                                : 0.0,
                             voltageLevel: jexVoltageAnimationLevel(voltage),
                           ),
                           const SizedBox(width: 10),
@@ -8632,7 +9262,9 @@ void _handleAckLine(String line) {
                                 ? JexText.of('off', lang)
                                 : '$fanSpeed%',
                             style: TextStyle(
-                              color: fanOn ? scheme.primary : scheme.onSurfaceVariant,
+                              color: fanOn
+                                  ? scheme.primary
+                                  : scheme.onSurfaceVariant,
                               fontSize: 12,
                               fontWeight: FontWeight.w900,
                             ),
@@ -8647,12 +9279,15 @@ void _handleAckLine(String line) {
                           divisions: 5,
                           value: fanSpeedDraft.clamp(50, 100).toDouble(),
                           activeColor: scheme.primary,
-                          inactiveColor: scheme.onSurface.withValues(alpha: .10),
+                          inactiveColor: scheme.onSurface.withValues(
+                            alpha: .10,
+                          ),
                           onChanged: speedEnabled
                               ? (v) => setState(
-                                    () => fanSpeedDraft =
-                                        ((v / 10).round() * 10).clamp(50, 100).toInt(),
-                                  )
+                                  () => fanSpeedDraft = ((v / 10).round() * 10)
+                                      .clamp(50, 100)
+                                      .toInt(),
+                                )
                               : null,
                           onChangeEnd: speedEnabled ? _setFanSpeed : null,
                         ),
@@ -8673,10 +9308,13 @@ void _handleAckLine(String line) {
   // Custom profile selection replaces Material RadioListTile while preserving commands/state.
   Widget _buildAdaptiveTab({Key? key}) {
     final lang = appLanguageNotifier.value;
-    final locked = adaptiveOn || adaptiveTransitioning ||
+    final locked =
+        adaptiveOn ||
+        adaptiveTransitioning ||
         (voltageLockKnown && voltageLockActive);
-    final group =
-        adaptiveProfile == 'HOTSIDE_BATTERY' ? 'HOTSIDE_BATTERY' : 'HOTSIDE';
+    final group = adaptiveProfile == 'HOTSIDE_BATTERY'
+        ? 'HOTSIDE_BATTERY'
+        : 'HOTSIDE';
 
     return KeyedSubtree(
       key: key,
@@ -8699,7 +9337,9 @@ void _handleAckLine(String line) {
               animationLevel: adaptiveOn ? 1.0 : 0.0,
               voltageLevel: jexVoltageAnimationLevel(voltage),
               value: adaptiveOn,
-              enabled: connected && runtimeOutputsKnown &&
+              enabled:
+                  connected &&
+                  runtimeOutputsKnown &&
                   !(voltageLockKnown && voltageLockActive),
               stateKnown: runtimeOutputsKnown,
               onChanged: _toggleAdaptive,
@@ -8710,12 +9350,23 @@ void _handleAckLine(String line) {
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
               child: Row(
                 children: [
-                  Icon(PhosphorIconsRegular.lock, color: Theme.of(context).colorScheme.primary, size: 18),
+                  Icon(
+                    PhosphorIconsRegular.lock,
+                    color: Theme.of(context).colorScheme.primary,
+                    size: 18,
+                  ),
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
-                      JexText.phrase('Adaptive Mode is forced OFF while Lock Voltage is active.', 'Mode Adaptif dipaksa MATI selama Kunci Tegangan aktif.'),
-                      style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant, fontSize: 10.5, fontWeight: FontWeight.w700),
+                      JexText.phrase(
+                        'Adaptive Mode is forced OFF while Lock Voltage is active.',
+                        'Mode Adaptif dipaksa MATI selama Kunci Tegangan aktif.',
+                      ),
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        fontSize: 10.5,
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
                   ),
                 ],
@@ -8936,25 +9587,36 @@ void _handleAckLine(String line) {
                 ),
                 const SizedBox(height: 9),
                 Container(
-                  padding: const EdgeInsets.fromLTRB(10, 9, 10, 10),                  decoration: BoxDecoration(
-                    color: scheme.surfaceContainerHighest.withValues(alpha: .22),
+                  padding: const EdgeInsets.fromLTRB(10, 9, 10, 10),
+                  decoration: BoxDecoration(
+                    color: scheme.surfaceContainerHighest.withValues(
+                      alpha: .22,
+                    ),
                     borderRadius: BorderRadius.circular(18),
-                    border: Border.all(color: scheme.outlineVariant.withValues(alpha: .68)),
+                    border: Border.all(
+                      color: scheme.outlineVariant.withValues(alpha: .68),
+                    ),
                   ),
                   child: Column(
                     children: [
                       JexLedStripPreview(
                         mode: previewMode,
                         colorHex: rgbColor.toUpperCase(),
-                                        active: rgbOn && connected && supportedMode,
+                        active: rgbOn && connected && supportedMode,
                         ledPhaseMs: ledPhaseMs,
                         ledCycleMs: ledCycleMs,
                         ledSyncRevision: ledSyncRevision,
                         modeName: modeName,
-                        previousEnabled: connected && (modeIndex < 0 || modeIndex > 0),
-                        nextEnabled: connected && (modeIndex < 0 || modeIndex < supportedLedModeIds.length - 1),
-                        onPrevious: () => _setMode(modeIndex < 0 ? 1 : modeIndex - 1),
-                        onNext: () => _setMode(modeIndex < 0 ? 2 : modeIndex + 1),
+                        previousEnabled:
+                            connected && (modeIndex < 0 || modeIndex > 0),
+                        nextEnabled:
+                            connected &&
+                            (modeIndex < 0 ||
+                                modeIndex < supportedLedModeIds.length - 1),
+                        onPrevious: () =>
+                            _setMode(modeIndex < 0 ? 1 : modeIndex - 1),
+                        onNext: () =>
+                            _setMode(modeIndex < 0 ? 2 : modeIndex + 1),
                       ),
                     ],
                   ),
@@ -8963,13 +9625,21 @@ void _handleAckLine(String line) {
                 Container(
                   padding: const EdgeInsets.fromLTRB(11, 8, 11, 7),
                   decoration: BoxDecoration(
-                    color: scheme.surfaceContainerHighest.withValues(alpha: .20),
+                    color: scheme.surfaceContainerHighest.withValues(
+                      alpha: .20,
+                    ),
                     borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: scheme.outlineVariant.withValues(alpha: .60)),
+                    border: Border.all(
+                      color: scheme.outlineVariant.withValues(alpha: .60),
+                    ),
                   ),
                   child: Row(
                     children: [
-                      Icon(PhosphorIconsRegular.sun, size: 19, color: scheme.onSurfaceVariant),
+                      Icon(
+                        PhosphorIconsRegular.sun,
+                        size: 19,
+                        color: scheme.onSurfaceVariant,
+                      ),
                       const SizedBox(width: 8),
                       Expanded(
                         child: Slider(
@@ -8978,7 +9648,9 @@ void _handleAckLine(String line) {
                           divisions: 99,
                           value: brightness.clamp(1, 100).toDouble(),
                           activeColor: scheme.primary,
-                          inactiveColor: scheme.onSurface.withValues(alpha: .10),
+                          inactiveColor: scheme.onSurface.withValues(
+                            alpha: .10,
+                          ),
                           onChanged: connected
                               ? (v) => setState(() => brightness = v.round())
                               : null,
@@ -9010,8 +9682,11 @@ void _handleAckLine(String line) {
               onTap: colorEnabled ? _showLedColorPicker : null,
               borderRadius: BorderRadius.circular(18),
               child: Container(
-                    child: _card(
-                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
+                child: _card(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 14,
+                    vertical: 11,
+                  ),
                   child: Row(
                     children: [
                       Container(
@@ -9054,7 +9729,11 @@ void _handleAckLine(String line) {
                           ],
                         ),
                       ),
-                      Icon(PhosphorIconsRegular.caretRight, color: scheme.onSurfaceVariant, size: 22),
+                      Icon(
+                        PhosphorIconsRegular.caretRight,
+                        color: scheme.onSurfaceVariant,
+                        size: 22,
+                      ),
                     ],
                   ),
                 ),
@@ -9102,7 +9781,8 @@ void _handleAckLine(String line) {
                   value: battery5Draft,
                   min: 20,
                   max: 30,
-                  enabled: connected && !locked && battery5Draft < battery12Limit,
+                  enabled:
+                      connected && !locked && battery5Draft < battery12Limit,
                   onChanged: (v) {
                     if (v < battery12Limit) _setBattery5(v);
                   },
@@ -9110,7 +9790,11 @@ void _handleAckLine(String line) {
                 const SizedBox(height: 8),
                 _lockedZoneRow(
                   title: JexText.of('zone9v', lang),
-                  value: midLow.toString() + '°C → 9V → ' + midHigh.toString() + '°C',
+                  value:
+                      midLow.toString() +
+                      '°C → 9V → ' +
+                      midHigh.toString() +
+                      '°C',
                 ),
                 const SizedBox(height: 8),
                 _temperatureAdjuster(
@@ -9118,7 +9802,8 @@ void _handleAckLine(String line) {
                   value: battery12Draft,
                   min: 30,
                   max: 40,
-                  enabled: connected && !locked && battery12Draft > battery5Limit,
+                  enabled:
+                      connected && !locked && battery12Draft > battery5Limit,
                   onChanged: (v) {
                     if (v > battery5Limit) _setBattery12(v);
                   },
@@ -9185,7 +9870,12 @@ void _handleAckLine(String line) {
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  JexText.of('range', appLanguageNotifier.value) + ' ' + min.toString() + '–' + max.toString() + '°C',
+                  JexText.of('range', appLanguageNotifier.value) +
+                      ' ' +
+                      min.toString() +
+                      '–' +
+                      max.toString() +
+                      '°C',
                   style: TextStyle(
                     color: scheme.onSurfaceVariant,
                     fontSize: 9.5,
@@ -9270,10 +9960,7 @@ void _handleAckLine(String line) {
     );
   }
 
-  Widget _lockedZoneRow({
-    required String title,
-    required String value,
-  }) {
+  Widget _lockedZoneRow({required String title, required String value}) {
     final scheme = Theme.of(context).colorScheme;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
@@ -9344,35 +10031,59 @@ void _handleAckLine(String line) {
     final voltageConfirmedAtFive = voltage == '5V';
     final scheme = Theme.of(context).colorScheme;
     final title = disconnected
-        ? JexText.phrase('CONNECT YOUR DEVICE FIRST', 'HUBUNGKAN PERANGKAT TERLEBIH DAHULU')
+        ? JexText.phrase(
+            'CONNECT YOUR DEVICE FIRST',
+            'HUBUNGKAN PERANGKAT TERLEBIH DAHULU',
+          )
         : adaptiveLocked
-            ? JexText.phrase('LOCKED BY ADAPTIVE MODE', 'TERKUNCI OLEH MODE ADAPTIF')
-            : tabIndex == 0
-                ? (voltageConfirmedAtFive
-                    ? JexText.phrase('VOLTAGE LOCKED AT 5V', 'TEGANGAN TERKUNCI DI 5V')
-                    : JexText.phrase('RETURNING TO 5V', 'SEDANG KEMBALI KE 5V'))
-                : JexText.phrase('ADAPTIVE MODE DISABLED', 'MODE ADAPTIF DINONAKTIFKAN');
+        ? JexText.phrase(
+            'LOCKED BY ADAPTIVE MODE',
+            'TERKUNCI OLEH MODE ADAPTIF',
+          )
+        : tabIndex == 0
+        ? (voltageConfirmedAtFive
+              ? JexText.phrase(
+                  'VOLTAGE LOCKED AT 5V',
+                  'TEGANGAN TERKUNCI DI 5V',
+                )
+              : JexText.phrase('RETURNING TO 5V', 'SEDANG KEMBALI KE 5V'))
+        : JexText.phrase(
+            'ADAPTIVE MODE DISABLED',
+            'MODE ADAPTIF DINONAKTIFKAN',
+          );
     final detail = disconnected
-        ? JexText.phrase('Connect your device to use this menu.', 'Hubungkan perangkat untuk menggunakan menu ini.')
+        ? JexText.phrase(
+            'Connect your device to use this menu.',
+            'Hubungkan perangkat untuk menggunakan menu ini.',
+          )
         : adaptiveLocked
-            ? JexText.phrase('Turn Adaptive Mode off to edit these settings.', 'Matikan Mode Adaptif untuk mengubah pengaturan ini.')
-            : tabIndex == 0
-                ? (voltageConfirmedAtFive
-                    ? JexText.phrase('The device confirms the 5V rail. Higher voltage selections are locked.', 'Perangkat mengonfirmasi tegangan 5V. Pilihan tegangan yang lebih tinggi dikunci.')
-                    : JexText.phrase(
-                        voltage == '--'
-                            ? 'Waiting for confirmed 5V telemetry. The voltage lock remains active.'
-                            : 'The voltage lock is active. The device is safely returning from $voltage to 5V.',
-                        voltage == '--'
-                            ? 'Menunggu telemetri 5V yang terkonfirmasi. Kunci tegangan tetap aktif.'
-                            : 'Kunci tegangan aktif. Perangkat sedang kembali dengan aman dari $voltage ke 5V.',
-                      ))
-                : JexText.phrase('Adaptive Mode is forced OFF while Lock Voltage is active.', 'Mode Adaptif dipaksa MATI selama Kunci Tegangan aktif.');
+        ? JexText.phrase(
+            'Turn Adaptive Mode off to edit these settings.',
+            'Matikan Mode Adaptif untuk mengubah pengaturan ini.',
+          )
+        : tabIndex == 0
+        ? (voltageConfirmedAtFive
+              ? JexText.phrase(
+                  'The device confirms the 5V rail. Higher voltage selections are locked.',
+                  'Perangkat mengonfirmasi tegangan 5V. Pilihan tegangan yang lebih tinggi dikunci.',
+                )
+              : JexText.phrase(
+                  voltage == '--'
+                      ? 'Waiting for confirmed 5V telemetry. The voltage lock remains active.'
+                      : 'The voltage lock is active. The device is safely returning from $voltage to 5V.',
+                  voltage == '--'
+                      ? 'Menunggu telemetri 5V yang terkonfirmasi. Kunci tegangan tetap aktif.'
+                      : 'Kunci tegangan aktif. Perangkat sedang kembali dengan aman dari $voltage ke 5V.',
+                ))
+        : JexText.phrase(
+            'Adaptive Mode is forced OFF while Lock Voltage is active.',
+            'Mode Adaptif dipaksa MATI selama Kunci Tegangan aktif.',
+          );
     final accent = disconnected
         ? const Color(0xFF4D8CFF)
         : adaptiveLocked
-            ? const Color(0xFFC05BFF)
-            : const Color(0xFFD69A38);
+        ? const Color(0xFFC05BFF)
+        : const Color(0xFFD69A38);
     return ClipRect(
       child: Stack(
         fit: StackFit.expand,
@@ -9394,29 +10105,45 @@ void _handleAckLine(String line) {
                   decoration: BoxDecoration(
                     color: scheme.surface.withValues(alpha: .96),
                     borderRadius: BorderRadius.circular(22),
-                    border: Border.all(color: scheme.outlineVariant.withValues(alpha: .92), width: 1.1),
+                    border: Border.all(
+                      color: scheme.outlineVariant.withValues(alpha: .92),
+                      width: 1.1,
+                    ),
                     boxShadow: <BoxShadow>[
-                      BoxShadow(color: Colors.black.withValues(alpha: .12), blurRadius: 20, offset: const Offset(0, 7)),
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: .12),
+                        blurRadius: 20,
+                        offset: const Offset(0, 7),
+                      ),
                     ],
                   ),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(
-                        PhosphorIconsBold.lock,
-                        size: 38,
-                        color: accent,
-                      ),
+                      Icon(PhosphorIconsBold.lock, size: 38, color: accent),
                       const SizedBox(height: 12),
-                      Text(title, textAlign: TextAlign.center, style: TextStyle(
-                        color: scheme.onSurface, fontSize: 14, height: 1.2,
-                        fontWeight: FontWeight.w900, letterSpacing: .25,
-                      )),
+                      Text(
+                        title,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: scheme.onSurface,
+                          fontSize: 14,
+                          height: 1.2,
+                          fontWeight: FontWeight.w900,
+                          letterSpacing: .25,
+                        ),
+                      ),
                       const SizedBox(height: 7),
-                      Text(detail, textAlign: TextAlign.center, style: TextStyle(
-                        color: scheme.onSurfaceVariant, fontSize: 11.5, height: 1.3,
-                        fontWeight: FontWeight.w600,
-                      )),
+                      Text(
+                        detail,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: scheme.onSurfaceVariant,
+                          fontSize: 11.5,
+                          height: 1.3,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -9433,14 +10160,18 @@ void _handleAckLine(String line) {
   // Fan Speed remains visible; its presentation reports OFF/MATI when Fan is OFF.
   // This function owns presentation only, not device-state authority.
   Widget _buildHomeArea(double height) {
-    final batteryValue = connected && phoneBatteryValid ? phoneBatteryTemp : '--';
+    final batteryValue = connected && phoneBatteryValid
+        ? phoneBatteryTemp
+        : '--';
     final hotValue = connected ? hotsideTemp : '--';
     final voltageValue = connected && voltage != '--' ? voltage : '--';
     final adaptiveValue = connected
         ? JexText.of(adaptiveOn ? 'on' : 'off', appLanguageNotifier.value)
         : '--';
     final headerDark = appThemeNotifier.value != AppThemePreset.light;
-    final headerForeground = headerDark ? const Color(0xFFF7F8FC) : const Color(0xFF16181D);
+    final headerForeground = headerDark
+        ? const Color(0xFFF7F8FC)
+        : const Color(0xFF16181D);
 
     return SizedBox(
       width: double.infinity,
@@ -9458,11 +10189,24 @@ void _handleAckLine(String line) {
                     child: Center(
                       child: IconButton(
                         padding: EdgeInsets.zero,
-                        constraints: const BoxConstraints.tightFor(width: 48, height: 48),
-                        tooltip: connected ? JexText.of('disconnect', appLanguageNotifier.value) : JexText.of('bluetooth', appLanguageNotifier.value),
+                        constraints: const BoxConstraints.tightFor(
+                          width: 48,
+                          height: 48,
+                        ),
+                        tooltip: connected
+                            ? JexText.of(
+                                'disconnect',
+                                appLanguageNotifier.value,
+                              )
+                            : JexText.of(
+                                'bluetooth',
+                                appLanguageNotifier.value,
+                              ),
                         icon: JexAnimatedIcon(
                           kind: JexAnimatedIconKind.bluetooth,
-                          color: connected ? const Color(0xFF4D8CFF) : headerForeground,
+                          color: connected
+                              ? const Color(0xFF4D8CFF)
+                              : headerForeground,
                           size: 25,
                           connected: connected,
                           active: jexIconAnimationPermitted(
@@ -9491,10 +10235,15 @@ void _handleAckLine(String line) {
                         ),
                         SizedBox(height: 1),
                         Text(
-                          JexText.of('developedByHorizon', appLanguageNotifier.value),
+                          JexText.of(
+                            'developedByHorizon',
+                            appLanguageNotifier.value,
+                          ),
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                            color: headerDark ? const Color(0xFF737986) : const Color(0xFF40444D),
+                            color: headerDark
+                                ? const Color(0xFF737986)
+                                : const Color(0xFF40444D),
                             fontWeight: FontWeight.w700,
                             fontSize: 6.8,
                             letterSpacing: 1.25,
@@ -9508,8 +10257,14 @@ void _handleAckLine(String line) {
                     child: Center(
                       child: IconButton(
                         padding: EdgeInsets.zero,
-                        constraints: const BoxConstraints.tightFor(width: 48, height: 48),
-                        tooltip: JexText.of('settings', appLanguageNotifier.value),
+                        constraints: const BoxConstraints.tightFor(
+                          width: 48,
+                          height: 48,
+                        ),
+                        tooltip: JexText.of(
+                          'settings',
+                          appLanguageNotifier.value,
+                        ),
                         icon: JexAnimatedIcon.glyph(
                           icon: PhosphorIconsRegular.gear,
                           color: headerForeground,
@@ -9538,74 +10293,83 @@ void _handleAckLine(String line) {
                         child: Padding(
                           padding: const EdgeInsets.only(left: 2, right: 4),
                           child: Column(
-                          children: [
-                          _homeMetric(
-                            JexText.of('batteryTemperature'),
-                            batteryValue,
-                            batteryValue == '--' ? '' : '°C',
-                            color: jexThermalBatteryColor(batteryValue),
-                            icon: PhosphorIconsRegular.batteryHigh,
-                            animatedKind: JexAnimatedIconKind.battery,
-                            level: jexThermalBatteryLevel(batteryValue),
-                            warning: jexThermalBatteryFireActive(batteryValue),
-                          ),
-                          _homeMetric(
-                            JexText.of('hotsideTemperature'),
-                            hotValue,
-                            hotValue == '--' ? '' : '°C',
-                            color: jexHotsideTemperatureColor(
-                              hotValue,
-                              hotLimit: hotLimit.toDouble(),
-                            ),
-                            icon: PhosphorIconsRegular.thermometer,
-                            animatedKind: JexAnimatedIconKind.hotside,
-                            level: jexTemperatureIndicatorLevel(
-                              hotValue,
-                              minC: 30,
-                              maxC: hotLimit.toDouble(),
-                              fallback: 0,
-                            ),
-                            warning: connected && jexHotsideFireActive(
-                              hotValue,
-                              hotLimit: hotLimit.toDouble(),
-                            ),
-                          ),
-                          _homeMetric(
-                            JexText.of('voltageIndicator'),
-                            voltageValue,
-                            '',
-                            color: jexVoltageIndicatorColor(voltageValue),
-                            icon: PhosphorIconsRegular.lightning,
-                            animatedKind: JexAnimatedIconKind.voltage,
-                            level: jexVoltageEnergyLevel(voltageValue),
-                            voltageLevel: jexVoltageAnimationLevel(voltageValue),
-                          ),
-                          _homeMetric(
-                            JexText.of('adaptiveMode'),
-                            adaptiveValue,
-                            '',
-                            color: const Color(0xFFC05BFF),
-                            icon: PhosphorIconsRegular.sparkle,
-                            animatedKind: JexAnimatedIconKind.adaptive,
-                            animationActive: connected && runtimeOutputsKnown && adaptiveOn,
-                            level: adaptiveOn ? 1.0 : 0.0,
-                          ),
-                          _homeStateChip(
-                            label: JexText.of('peltierSwitch'),
-                            value: peltierOn,
-                            icon: PhosphorIconsRegular.snowflake,
-                            color: const Color(0xFF18DFFF),
-                            animatedKind: JexAnimatedIconKind.peltier,
-                          ),
-                          _homeStateChip(
-                            label: JexText.of('fanSwitch'),
-                            value: fanOn,
-                            icon: PhosphorIconsRegular.fan,
-                            color: const Color(0xFF38E3AD),
-                            animatedKind: JexAnimatedIconKind.fan,
-                          ),
-                          _homeFanSpeed(),
-                          ],
+                            children: [
+                              _homeMetric(
+                                JexText.of('batteryTemperature'),
+                                batteryValue,
+                                batteryValue == '--' ? '' : '°C',
+                                color: jexThermalBatteryColor(batteryValue),
+                                icon: PhosphorIconsRegular.batteryHigh,
+                                animatedKind: JexAnimatedIconKind.battery,
+                                level: jexThermalBatteryLevel(batteryValue),
+                                warning: jexThermalBatteryFireActive(
+                                  batteryValue,
+                                ),
+                              ),
+                              _homeMetric(
+                                JexText.of('hotsideTemperature'),
+                                hotValue,
+                                hotValue == '--' ? '' : '°C',
+                                color: jexHotsideTemperatureColor(
+                                  hotValue,
+                                  hotLimit: hotLimit.toDouble(),
+                                ),
+                                icon: PhosphorIconsRegular.thermometer,
+                                animatedKind: JexAnimatedIconKind.hotside,
+                                level: jexTemperatureIndicatorLevel(
+                                  hotValue,
+                                  minC: 30,
+                                  maxC: hotLimit.toDouble(),
+                                  fallback: 0,
+                                ),
+                                warning:
+                                    connected &&
+                                    jexHotsideFireActive(
+                                      hotValue,
+                                      hotLimit: hotLimit.toDouble(),
+                                    ),
+                              ),
+                              _homeMetric(
+                                JexText.of('voltageIndicator'),
+                                voltageValue,
+                                '',
+                                color: jexVoltageIndicatorColor(voltageValue),
+                                icon: PhosphorIconsRegular.lightning,
+                                animatedKind: JexAnimatedIconKind.voltage,
+                                level: jexVoltageEnergyLevel(voltageValue),
+                                voltageLevel: jexVoltageAnimationLevel(
+                                  voltageValue,
+                                ),
+                              ),
+                              _homeMetric(
+                                JexText.of('adaptiveMode'),
+                                adaptiveValue,
+                                '',
+                                color: const Color(0xFFC05BFF),
+                                icon: PhosphorIconsRegular.sparkle,
+                                animatedKind: JexAnimatedIconKind.adaptive,
+                                animationActive:
+                                    connected &&
+                                    runtimeOutputsKnown &&
+                                    adaptiveOn,
+                                level: adaptiveOn ? 1.0 : 0.0,
+                              ),
+                              _homeStateChip(
+                                label: JexText.of('peltierSwitch'),
+                                value: peltierOn,
+                                icon: PhosphorIconsRegular.snowflake,
+                                color: const Color(0xFF18DFFF),
+                                animatedKind: JexAnimatedIconKind.peltier,
+                              ),
+                              _homeStateChip(
+                                label: JexText.of('fanSwitch'),
+                                value: fanOn,
+                                icon: PhosphorIconsRegular.fan,
+                                color: const Color(0xFF38E3AD),
+                                animatedKind: JexAnimatedIconKind.fan,
+                              ),
+                              _homeFanSpeed(),
+                            ],
                           ),
                         ),
                       ),
@@ -9618,8 +10382,9 @@ void _handleAckLine(String line) {
                       alignment: Alignment.centerRight,
                       child: LayoutBuilder(
                         builder: (context, constraints) {
-                          final imageHeight =
-                              (constraints.maxHeight * 0.99).clamp(240.0, 430.0).toDouble();
+                          final imageHeight = (constraints.maxHeight * 0.99)
+                              .clamp(240.0, 430.0)
+                              .toDouble();
                           return Padding(
                             padding: const EdgeInsets.only(left: 2, right: 0),
                             child: Image.asset(
@@ -9664,12 +10429,16 @@ void _handleAckLine(String line) {
                 decoration: BoxDecoration(
                   color: selected
                       ? const Color(0xFF17181C)
-                      : (dark ? const Color(0xFF22242A) : const Color(0xFFE4E7EC)),
+                      : (dark
+                            ? const Color(0xFF22242A)
+                            : const Color(0xFFE4E7EC)),
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
                     color: selected
                         ? const Color(0xFF17181C)
-                        : (dark ? const Color(0xFF30323A) : const Color(0xFFD6DAE1)),
+                        : (dark
+                              ? const Color(0xFF30323A)
+                              : const Color(0xFFD6DAE1)),
                   ),
                 ),
                 child: FittedBox(
@@ -9678,7 +10447,9 @@ void _handleAckLine(String line) {
                     title.toUpperCase(),
                     maxLines: 1,
                     style: TextStyle(
-                      color: selected ? Colors.white : (dark ? Colors.white70 : const Color(0xFF16181D)),
+                      color: selected
+                          ? Colors.white
+                          : (dark ? Colors.white70 : const Color(0xFF16181D)),
                       fontWeight: FontWeight.w900,
                       fontSize: 9,
                       letterSpacing: 0.05,
@@ -9694,10 +10465,10 @@ void _handleAckLine(String line) {
   }
 
   Color _dashboardTopColor() => switch (appThemeNotifier.value) {
-        AppThemePreset.defaultTheme => const Color(0xFF111113),
-        AppThemePreset.light => const Color(0xFFEEF0F4),
-        AppThemePreset.dark => const Color(0xFF101114),
-      };
+    AppThemePreset.defaultTheme => const Color(0xFF111113),
+    AppThemePreset.light => const Color(0xFFEEF0F4),
+    AppThemePreset.dark => const Color(0xFF101114),
+  };
 
   bool get _dashboardDark =>
       jexDashboardContentUsesDarkPalette(appThemeNotifier.value);
@@ -9744,7 +10515,9 @@ void _handleAckLine(String line) {
                             child: Container(
                               width: designWidth,
                               decoration: BoxDecoration(
-                                color: appThemeNotifier.value == AppThemePreset.dark
+                                color:
+                                    appThemeNotifier.value ==
+                                        AppThemePreset.dark
                                     ? const Color(0xFF171A20)
                                     : Colors.white,
                                 borderRadius: const BorderRadius.vertical(
@@ -9757,14 +10530,46 @@ void _handleAckLine(String line) {
                                   SizedBox(
                                     height: 48,
                                     child: Padding(
-                                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 8,
+                                      ),
                                       child: Row(
                                         children: [
-                                          _tab(JexText.of('voltage', appLanguageNotifier.value), 0),
-                                          _tab(JexText.of('control', appLanguageNotifier.value), 1),
-                                          _tab(JexText.of('adaptive', appLanguageNotifier.value), 2),
-                                          _tab(JexText.of('led', appLanguageNotifier.value), 3),
-                                          _tab(JexText.of('temperature', appLanguageNotifier.value), 4),
+                                          _tab(
+                                            JexText.of(
+                                              'voltage',
+                                              appLanguageNotifier.value,
+                                            ),
+                                            0,
+                                          ),
+                                          _tab(
+                                            JexText.of(
+                                              'control',
+                                              appLanguageNotifier.value,
+                                            ),
+                                            1,
+                                          ),
+                                          _tab(
+                                            JexText.of(
+                                              'adaptive',
+                                              appLanguageNotifier.value,
+                                            ),
+                                            2,
+                                          ),
+                                          _tab(
+                                            JexText.of(
+                                              'led',
+                                              appLanguageNotifier.value,
+                                            ),
+                                            3,
+                                          ),
+                                          _tab(
+                                            JexText.of(
+                                              'temperature',
+                                              appLanguageNotifier.value,
+                                            ),
+                                            4,
+                                          ),
                                         ],
                                       ),
                                     ),
@@ -9772,7 +10577,9 @@ void _handleAckLine(String line) {
                                   const SizedBox(height: 8),
                                   Expanded(
                                     child: Padding(
-                                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 8,
+                                      ),
                                       child: _buildTabContent(),
                                     ),
                                   ),
@@ -9811,7 +10618,8 @@ class _ConnectionSheetContent extends StatefulWidget {
   });
 
   @override
-  State<_ConnectionSheetContent> createState() => _ConnectionSheetContentState();
+  State<_ConnectionSheetContent> createState() =>
+      _ConnectionSheetContentState();
 }
 
 class _ConnectionSheetContentState extends State<_ConnectionSheetContent>
@@ -9905,9 +10713,8 @@ class _ConnectionSheetContentState extends State<_ConnectionSheetContent>
 
       bool locationService = false;
       try {
-        locationService = await _channel.invokeMethod<bool>(
-              'isLocationServiceEnabled',
-            ) ??
+        locationService =
+            await _channel.invokeMethod<bool>('isLocationServiceEnabled') ??
             false;
       } catch (_) {}
 
@@ -9943,12 +10750,9 @@ class _ConnectionSheetContentState extends State<_ConnectionSheetContent>
       !_bluetoothDenied && _adapterState == BluetoothAdapterState.on;
 
   bool get _locationDenied =>
-      _androidSdk > 0 &&
-      _androidSdk <= 30 &&
-      !_locationPermission.isGranted;
+      _androidSdk > 0 && _androidSdk <= 30 && !_locationPermission.isGranted;
 
-  bool get _locationOn =>
-      _locationServiceEnabled && !_locationDenied;
+  bool get _locationOn => _locationServiceEnabled && !_locationDenied;
 
   Color _statusColor(bool on, bool denied) {
     if (denied) return const Color(0xFFFF6B7A);
@@ -9985,7 +10789,12 @@ class _ConnectionSheetContentState extends State<_ConnectionSheetContent>
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                JexAnimatedIcon.glyph(icon: icon, size: 18, color: color, active: true),
+                JexAnimatedIcon.glyph(
+                  icon: icon,
+                  size: 18,
+                  color: color,
+                  active: true,
+                ),
                 const SizedBox(width: 6),
                 Flexible(
                   child: Text(
@@ -10006,6 +10815,7 @@ class _ConnectionSheetContentState extends State<_ConnectionSheetContent>
       ),
     );
   }
+
   Future<void> _tapBluetooth() async {
     if (_bluetoothDenied) {
       // Explicit user action retries the Nearby Devices permission request.
@@ -10063,7 +10873,10 @@ class _ConnectionSheetContentState extends State<_ConnectionSheetContent>
                 ),
                 IconButton(
                   padding: EdgeInsets.zero,
-                  constraints: const BoxConstraints.tightFor(width: 42, height: 42),
+                  constraints: const BoxConstraints.tightFor(
+                    width: 42,
+                    height: 42,
+                  ),
                   onPressed: () => Navigator.pop(context),
                   icon: JexAnimatedIcon.glyph(
                     icon: PhosphorIconsRegular.x,
@@ -10080,7 +10893,9 @@ class _ConnectionSheetContentState extends State<_ConnectionSheetContent>
             child: Row(
               children: [
                 _indicator(
-                  label: _bluetoothOn ? JexText.of('bluetoothOn', lang) : JexText.of('bluetoothOff', lang),
+                  label: _bluetoothOn
+                      ? JexText.of('bluetoothOn', lang)
+                      : JexText.of('bluetoothOff', lang),
                   icon: _bluetoothOn
                       ? PhosphorIconsRegular.bluetooth
                       : PhosphorIconsRegular.bluetoothSlash,
@@ -10089,7 +10904,9 @@ class _ConnectionSheetContentState extends State<_ConnectionSheetContent>
                 ),
                 const SizedBox(width: 8),
                 _indicator(
-                  label: _locationOn ? JexText.of('locationOn', lang) : JexText.of('locationOff', lang),
+                  label: _locationOn
+                      ? JexText.of('locationOn', lang)
+                      : JexText.of('locationOff', lang),
                   icon: _locationOn
                       ? PhosphorIconsRegular.mapPin
                       : PhosphorIconsRegular.mapPin,
@@ -10115,7 +10932,10 @@ class _ConnectionSheetContentState extends State<_ConnectionSheetContent>
                 ),
                 IconButton(
                   padding: EdgeInsets.zero,
-                  constraints: const BoxConstraints.tightFor(width: 40, height: 40),
+                  constraints: const BoxConstraints.tightFor(
+                    width: 40,
+                    height: 40,
+                  ),
                   tooltip: JexText.of('scan', lang),
                   onPressed: _requestScan,
                   icon: JexAnimatedIcon.glyph(
@@ -10140,31 +10960,47 @@ class _ConnectionSheetContentState extends State<_ConnectionSheetContent>
                   stream: FlutterBluePlus.onScanResults,
                   initialData: const [],
                   builder: (context, snapshot) {
-                    final filtered = (snapshot.data ?? const <ScanResult>[]).where((r) {
-                      final serviceMatch = r.advertisementData.serviceUuids.any(
-                        (uuid) => uuid.toString().toLowerCase() == serviceUuid,
-                      );
-                      final name = r.device.platformName.trim().toLowerCase();
-                      final advName = r.advertisementData.advName.trim().toLowerCase();
-                      return serviceMatch || name == 'je x fyz' || advName == 'je x fyz';
-                    }).toList();
+                    final filtered = (snapshot.data ?? const <ScanResult>[])
+                        .where((r) {
+                          final serviceMatch = r.advertisementData.serviceUuids
+                              .any(
+                                (uuid) =>
+                                    uuid.toString().toLowerCase() ==
+                                    serviceUuid,
+                              );
+                          final name = r.device.platformName
+                              .trim()
+                              .toLowerCase();
+                          final advName = r.advertisementData.advName
+                              .trim()
+                              .toLowerCase();
+                          return serviceMatch ||
+                              name == 'je x fyz' ||
+                              advName == 'je x fyz';
+                        })
+                        .toList();
 
                     if (filtered.isEmpty) {
-                      final permissionRequired = _bluetoothDenied || _locationDenied;
+                      final permissionRequired =
+                          _bluetoothDenied || _locationDenied;
                       final bluetoothUnavailable =
                           _adapterState != BluetoothAdapterState.on ||
                           (locationRequired && !_locationServiceEnabled);
-                      final scanning = !_scanAttempted ||
+                      final scanning =
+                          !_scanAttempted ||
                           _scanRequestInFlight ||
                           pluginScanning;
-                      final errorKey = snapshot.hasError ? 'scanFailed' : _scanErrorKey;
+                      final errorKey = snapshot.hasError
+                          ? 'scanFailed'
+                          : _scanErrorKey;
                       final messageKey = connectionScanEmptyStateMessageKey(
                         permissionRequired: permissionRequired,
                         bluetoothUnavailable: bluetoothUnavailable,
                         scanning: scanning,
                         errorKey: errorKey,
                       );
-                      final unavailable = permissionRequired || bluetoothUnavailable;
+                      final unavailable =
+                          permissionRequired || bluetoothUnavailable;
                       final failed = errorKey == 'scanFailed';
 
                       return Center(
@@ -10178,8 +11014,8 @@ class _ConnectionSheetContentState extends State<_ConnectionSheetContent>
                               color: unavailable
                                   ? btColor
                                   : failed
-                                      ? scheme.error
-                                      : const Color(0xFF5C9DFF),
+                                  ? scheme.error
+                                  : const Color(0xFF5C9DFF),
                               size: 32,
                               active: !unavailable && !failed && scanning,
                               warning: unavailable || failed,
@@ -10189,14 +11025,18 @@ class _ConnectionSheetContentState extends State<_ConnectionSheetContent>
                               JexText.of(messageKey, lang),
                               textAlign: TextAlign.center,
                               style: TextStyle(
-                                color: failed ? scheme.error : scheme.onSurfaceVariant,
+                                color: failed
+                                    ? scheme.error
+                                    : scheme.onSurfaceVariant,
                                 fontSize: 12,
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
                             const SizedBox(height: 10),
                             FilledButton.icon(
-                              onPressed: unavailable || scanning ? null : _requestScan,
+                              onPressed: unavailable || scanning
+                                  ? null
+                                  : _requestScan,
                               icon: JexAnimatedIcon.glyph(
                                 icon: PhosphorIconsRegular.arrowClockwise,
                                 color: Theme.of(context).colorScheme.onPrimary,
@@ -10213,8 +11053,10 @@ class _ConnectionSheetContentState extends State<_ConnectionSheetContent>
                     return ListView.separated(
                       padding: const EdgeInsets.fromLTRB(8, 2, 8, 12),
                       itemCount: filtered.length,
-                      separatorBuilder: (_, __) =>
-                          Divider(color: scheme.outlineVariant.withValues(alpha: .55), height: 1),
+                      separatorBuilder: (_, __) => Divider(
+                        color: scheme.outlineVariant.withValues(alpha: .55),
+                        height: 1,
+                      ),
                       itemBuilder: (_, index) {
                         final result = filtered[index];
                         final name = result.device.platformName.isNotEmpty
@@ -10229,7 +11071,8 @@ class _ConnectionSheetContentState extends State<_ConnectionSheetContent>
                             active: true,
                           ),
                           title: Text(
-                            name.trim().isEmpty || name.trim().toLowerCase() == 'je x fyz'
+                            name.trim().isEmpty ||
+                                    name.trim().toLowerCase() == 'je x fyz'
                                 ? JexText.of('device', lang)
                                 : name,
                             style: TextStyle(
@@ -10302,7 +11145,13 @@ class StaticScale extends StatelessWidget {
 // --- OTA UI: external firmware metadata/credentials; firmware performs flashing ---
 class FirmwareUpdateDialog extends StatefulWidget {
   final String currentVersion;
-  final Future<void> Function(String ssid, String password, String url, String version) onUpdate;
+  final Future<void> Function(
+    String ssid,
+    String password,
+    String url,
+    String version,
+  )
+  onUpdate;
 
   const FirmwareUpdateDialog({
     super.key,
@@ -10380,20 +11229,22 @@ class _FirmwareUpdateDialogState extends State<FirmwareUpdateDialog> {
       // Keep this REST request independent from Play Integrity/App Check so the
       // sideloaded production APK can read the update metadata reliably.
       // App Check remains enabled for the rest of the application's Firebase layer.
-      final response = await request.close().timeout(const Duration(seconds: 12));
-      final body = await response.transform(utf8.decoder).join().timeout(
+      final response = await request.close().timeout(
         const Duration(seconds: 12),
       );
+      final body = await response
+          .transform(utf8.decoder)
+          .join()
+          .timeout(const Duration(seconds: 12));
 
       if (response.statusCode != HttpStatus.ok) {
         final detail = body.trim();
-        final reason = response.statusCode == HttpStatus.unauthorized ||
+        final reason =
+            response.statusCode == HttpStatus.unauthorized ||
                 response.statusCode == HttpStatus.forbidden
             ? 'Firebase read permission/App Check rejected'
             : 'Firebase HTTP ' + response.statusCode.toString();
-        throw StateError(
-          reason + (detail.isEmpty ? '' : ': ' + detail),
-        );
+        throw StateError(reason + (detail.isEmpty ? '' : ': ' + detail));
       }
 
       final decoded = jsonDecode(body);
@@ -10405,11 +11256,11 @@ class _FirmwareUpdateDialogState extends State<FirmwareUpdateDialog> {
       final version = data['version']?.toString().trim() ?? '';
       final url = data['url']?.toString().trim() ?? '';
       final parsedUrl = Uri.tryParse(url);
-      final validUrl = parsedUrl != null &&
+      final validUrl =
+          parsedUrl != null &&
           parsedUrl.scheme == 'https' &&
           parsedUrl.host == 'raw.githubusercontent.com' &&
-          parsedUrl.path ==
-              '/TenzoNkz/JEXFYZ-Firmware/main/JEXFYZ.cpp.bin';
+          parsedUrl.path == '/TenzoNkz/JEXFYZ-Firmware/main/JEXFYZ.cpp.bin';
 
       if (parseFirmwareVersion(version) == null || !validUrl) {
         throw StateError(
@@ -10429,20 +11280,22 @@ class _FirmwareUpdateDialogState extends State<FirmwareUpdateDialog> {
       });
 
       if (updateAvailable && appNotifyFirmwareNotifier.value) {
-        final shouldNotify =
-            await AppSettingsStore.shouldNotifyFirmware(version);
+        final shouldNotify = await AppSettingsStore.shouldNotifyFirmware(
+          version,
+        );
         if (shouldNotify) {
           try {
-            await const MethodChannel('je_x_fyz/notifications').invokeMethod<void>(
-              'showNotification',
-              <String, dynamic>{
-                'title': JexText.of('firmwareUpdate', appLanguageNotifier.value),
-                'body': JexText.of('firmwareUpdateAvailableBody', appLanguageNotifier.value)
-                    .replaceAll('{version}', version),
-                'id': 2104,
-                'language': appLanguageNotifier.value.name,
-              },
-            );
+            await const MethodChannel(
+              'je_x_fyz/notifications',
+            ).invokeMethod<void>('showNotification', <String, dynamic>{
+              'title': JexText.of('firmwareUpdate', appLanguageNotifier.value),
+              'body': JexText.of(
+                'firmwareUpdateAvailableBody',
+                appLanguageNotifier.value,
+              ).replaceAll('{version}', version),
+              'id': 2104,
+              'language': appLanguageNotifier.value.name,
+            });
             await AppSettingsStore.markFirmwareNotified(version);
           } catch (e) {
             debugPrint('Firmware notification: $e');
@@ -10467,23 +11320,42 @@ class _FirmwareUpdateDialogState extends State<FirmwareUpdateDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      title: Text(JexText.of('firmware', appLanguageNotifier.value), style: const TextStyle(fontWeight: FontWeight.bold)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      title: Text(
+        JexText.of('firmware', appLanguageNotifier.value),
+        style: const TextStyle(fontWeight: FontWeight.bold),
+      ),
       content: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(JexText.of('currentVersion', appLanguageNotifier.value) + ': ' + widget.currentVersion),
+            Text(
+              JexText.of('currentVersion', appLanguageNotifier.value) +
+                  ': ' +
+                  widget.currentVersion,
+            ),
             const SizedBox(height: 5),
-            Text(JexText.of('latestVersion', appLanguageNotifier.value) + ': ' + (latestVersion.isEmpty ? '--' : latestVersion)),
+            Text(
+              JexText.of('latestVersion', appLanguageNotifier.value) +
+                  ': ' +
+                  (latestVersion.isEmpty ? '--' : latestVersion),
+            ),
             const SizedBox(height: 16),
             if (status == 'CHECKING')
-              const Center(child: CircularProgressIndicator(color: Colors.blueAccent))
+              const Center(
+                child: CircularProgressIndicator(color: Colors.blueAccent),
+              )
             else if (status == 'FAILED')
               Text(
-                JexText.of('firmwareMetadataCheckFailed', appLanguageNotifier.value),
-                style: const TextStyle(color: Colors.redAccent, fontWeight: FontWeight.bold),
+                JexText.of(
+                  'firmwareMetadataCheckFailed',
+                  appLanguageNotifier.value,
+                ),
+                style: const TextStyle(
+                  color: Colors.redAccent,
+                  fontWeight: FontWeight.bold,
+                ),
               )
             else if (!updateAvailable)
               Text(
@@ -10493,18 +11365,24 @@ class _FirmwareUpdateDialogState extends State<FirmwareUpdateDialog> {
                 style: const TextStyle(fontWeight: FontWeight.bold),
               )
             else ...[
-              Text(JexText.of('updateAvailableSentence', appLanguageNotifier.value), style: const TextStyle(fontWeight: FontWeight.bold)),
+              Text(
+                JexText.of(
+                  'updateAvailableSentence',
+                  appLanguageNotifier.value,
+                ),
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
               const SizedBox(height: 12),
               TextField(
                 controller: ssid,
                 decoration: InputDecoration(
                   labelText: JexText.of('ssid', appLanguageNotifier.value),
                   prefixIcon: JexAnimatedIcon.glyph(
-          icon: PhosphorIconsRegular.wifiHigh,
-          color: Theme.of(context).colorScheme.onSurfaceVariant,
-          size: 20,
-          active: true,
-        ),
+                    icon: PhosphorIconsRegular.wifiHigh,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    size: 20,
+                    active: true,
+                  ),
                 ),
               ),
               const SizedBox(height: 8),
@@ -10530,25 +11408,37 @@ class _FirmwareUpdateDialogState extends State<FirmwareUpdateDialog> {
                       });
                     },
                     icon: Icon(
-                      passwordVisible ? PhosphorIconsRegular.eyeSlash : PhosphorIconsRegular.eye,
+                      passwordVisible
+                          ? PhosphorIconsRegular.eyeSlash
+                          : PhosphorIconsRegular.eye,
                     ),
                   ),
                 ),
               ),
               const SizedBox(height: 6),
-              Text(JexText.of('savedSecurelySentence', appLanguageNotifier.value), style: const TextStyle(fontSize: 9)),
+              Text(
+                JexText.of('savedSecurelySentence', appLanguageNotifier.value),
+                style: const TextStyle(fontSize: 9),
+              ),
             ],
           ],
         ),
       ),
       actions: [
-        TextButton(onPressed: () => Navigator.pop(context), child: Text(JexText.of('close', appLanguageNotifier.value))),
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: Text(JexText.of('close', appLanguageNotifier.value)),
+        ),
         if (status == 'FAILED')
-          FilledButton(onPressed: _checkFirebase, child: Text(JexText.of('retry', appLanguageNotifier.value))),
+          FilledButton(
+            onPressed: _checkFirebase,
+            child: Text(JexText.of('retry', appLanguageNotifier.value)),
+          ),
         if (updateAvailable)
           FilledButton(
             onPressed: () async {
-              final s = ssid.text.trim();              final p = password.text;
+              final s = ssid.text.trim();
+              final p = password.text;
               if (s.isEmpty || p.isEmpty) return;
               await storage.write(key: 'jexfyz_wifi_ssid', value: s);
               await storage.write(key: 'jexfyz_wifi_pass', value: p);

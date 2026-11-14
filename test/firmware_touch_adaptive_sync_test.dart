@@ -16,7 +16,9 @@ void main() {
     expect(end, greaterThan(start));
 
     final touchHandler = source.substring(start, end);
-    final stateChange = touchHandler.indexOf('setAdaptiveState(false, reason);');
+    final stateChange = touchHandler.indexOf(
+      'setAdaptiveState(false, reason);',
+    );
     final successAck = touchHandler.indexOf(
       'sendAck("TOUCH_ADAPTIVE", true, "OFF");',
       stateChange,
@@ -26,8 +28,16 @@ void main() {
     expect(successAck, greaterThan(stateChange));
 
     final publication = touchHandler.substring(stateChange, successAck);
-    expect(publication, contains('sendDelta("ADAPTIVE", boolText(adaptiveOn));'));
-    expect(publication, contains('sendDelta("ADAPTIVE_CEILING", voltageToString(adaptiveCeiling));'));
+    expect(
+      publication,
+      contains('sendDelta("ADAPTIVE", boolText(adaptiveOn));'),
+    );
+    expect(
+      publication,
+      contains(
+        'sendDelta("ADAPTIVE_CEILING", voltageToString(adaptiveCeiling));',
+      ),
+    );
     expect(publication, contains('sendDelta("FAN", boolText(fanOn));'));
     expect(publication, contains('sendDelta("PELTIER", boolText(peltierOn));'));
     expect(publication, contains('sendDelta("FAN_SPEED", String(fanPwm));'));
@@ -36,7 +46,10 @@ void main() {
   test('App consumes Adaptive telemetry as the shared displayed state', () {
     final source = File('lib/main.dart').readAsStringSync();
 
-    expect(source, contains("case 'ADAPTIVE':\n        adaptiveOn = value == 'ON';"));
+    expect(
+      source,
+      contains("case 'ADAPTIVE':\n        adaptiveOn = value == 'ON';"),
+    );
     expect(source, contains('adaptiveOn: connected && adaptiveOn,'));
   });
   test('V7.2 Touch single tap follows actual rail in a one-way cycle', () {
@@ -48,9 +61,11 @@ void main() {
     final handler = source.substring(start, end);
     expect(handler, contains('currentVoltage == Voltage::V5'));
     expect(handler, contains('? Voltage::V9'));
-    expect(handler, contains('currentVoltage == Voltage::V9 ? Voltage::V12 : Voltage::V5'));
+    expect(
+      handler,
+      contains('currentVoltage == Voltage::V9 ? Voltage::V12 : Voltage::V5'),
+    );
     expect(handler, isNot(contains('touchVoltageAscending')));
     expect(handler, contains('triggerVoltageLockRejectionFlash()'));
   });
-
 }

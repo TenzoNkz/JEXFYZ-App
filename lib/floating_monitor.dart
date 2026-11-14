@@ -45,6 +45,7 @@ final ValueNotifier<VoltageLockSettingsState> voltageLockSettingsNotifier =
     ValueNotifier<VoltageLockSettingsState>(const VoltageLockSettingsState());
 
 enum FloatingDisplayStyle { letters, icons }
+
 enum FloatingBackgroundColor { black, white }
 
 // Size is persisted in 0.05x increments for a predictable native overlay scale.
@@ -111,16 +112,16 @@ class FloatingConfig {
   // AI-METHOD / TELEMETRY-SERIALIZATION-CONTRACT
   // Serialize live telemetry plus the App-selected language for native rendering.
   Map<String, dynamic> toMap() => <String, dynamic>{
-        'enabled': enabled,
-        'style': style.name,
-        'metricSchemaVersion': FloatingMetric.schemaVersion,
-        'order': order,
-        'selected': selected.toList(),
-        'size': size,
-        'opacity': opacity,
-        'backgroundColor': backgroundColor.name,
-        'horizontal': horizontal,
-      };
+    'enabled': enabled,
+    'style': style.name,
+    'metricSchemaVersion': FloatingMetric.schemaVersion,
+    'order': order,
+    'selected': selected.toList(),
+    'size': size,
+    'opacity': opacity,
+    'backgroundColor': backgroundColor.name,
+    'horizontal': horizontal,
+  };
 
   String toJson() => jsonEncode(toMap());
 
@@ -130,22 +131,33 @@ class FloatingConfig {
     try {
       final decoded = jsonDecode(raw);
       if (decoded is! Map) return const FloatingConfig();
-      final storedSchema = (decoded['metricSchemaVersion'] as num?)?.toInt() ?? 1;
+      final storedSchema =
+          (decoded['metricSchemaVersion'] as num?)?.toInt() ?? 1;
       final legacyMetrics = storedSchema < FloatingMetric.schemaVersion;
       final rawOrder = decoded['order'];
       final rawSelected = decoded['selected'];
       final order = rawOrder is List
           ? rawOrder
-              .map((e) => FloatingMetric.fromStored(e.toString(), legacy: legacyMetrics))
-              .whereType<String>()
-              .toSet()
-              .toList()
+                .map(
+                  (e) => FloatingMetric.fromStored(
+                    e.toString(),
+                    legacy: legacyMetrics,
+                  ),
+                )
+                .whereType<String>()
+                .toSet()
+                .toList()
           : List<String>.from(FloatingMetric.defaultOrder);
       final selected = rawSelected is List
           ? rawSelected
-              .map((e) => FloatingMetric.fromStored(e.toString(), legacy: legacyMetrics))
-              .whereType<String>()
-              .toSet()
+                .map(
+                  (e) => FloatingMetric.fromStored(
+                    e.toString(),
+                    legacy: legacyMetrics,
+                  ),
+                )
+                .whereType<String>()
+                .toSet()
           : FloatingMetric.defaultOrder.toSet();
       for (final metric in FloatingMetric.defaultOrder) {
         if (!order.contains(metric)) order.add(metric);
@@ -154,14 +166,22 @@ class FloatingConfig {
           ? FloatingBackgroundColor.white
           : FloatingBackgroundColor.black;
       return FloatingConfig(
-        enabled: decoded['enabled'] is bool ? decoded['enabled'] as bool : false,
+        enabled: decoded['enabled'] is bool
+            ? decoded['enabled'] as bool
+            : false,
         style: FloatingDisplayStyle.letters,
         order: order,
         selected: selected,
-        size: _normalizeFloatingSize((decoded['size'] as num?)?.toDouble() ?? 0.6),
-        opacity: _normalizeFloatingOpacity((decoded['opacity'] as num?)?.toDouble() ?? 0.9),
+        size: _normalizeFloatingSize(
+          (decoded['size'] as num?)?.toDouble() ?? 0.6,
+        ),
+        opacity: _normalizeFloatingOpacity(
+          (decoded['opacity'] as num?)?.toDouble() ?? 0.9,
+        ),
         backgroundColor: backgroundColor,
-        horizontal: decoded['horizontal'] is bool ? decoded['horizontal'] as bool : true,
+        horizontal: decoded['horizontal'] is bool
+            ? decoded['horizontal'] as bool
+            : true,
       );
     } catch (_) {
       return const FloatingConfig();
@@ -171,7 +191,14 @@ class FloatingConfig {
 
 class FloatingMetric {
   static const int schemaVersion = 2;
-  static const List<String> defaultOrder = <String>['B', 'H', 'V', 'A', 'P', 'F'];
+  static const List<String> defaultOrder = <String>[
+    'B',
+    'H',
+    'V',
+    'A',
+    'P',
+    'F',
+  ];
 
   // Legacy schema v1 used F for FPS and S for Fan Speed. Drop old FPS
   // selections and migrate the old Speed identifier to the new F identifier.
@@ -213,16 +240,16 @@ class FloatingTelemetry {
   });
 
   Map<String, dynamic> toMap() => <String, dynamic>{
-        'battery': battery,
-        'hotside': hotside,
-        'voltage': voltage,
-        'fanOn': fanOn,
-        'speed': speed,
-        'adaptiveOn': adaptiveOn,
-        'peltierOn': peltierOn,
-        'connected': connected,
-        'language': appLanguageNotifier.value.name,
-      };
+    'battery': battery,
+    'hotside': hotside,
+    'voltage': voltage,
+    'fanOn': fanOn,
+    'speed': speed,
+    'adaptiveOn': adaptiveOn,
+    'peltierOn': peltierOn,
+    'connected': connected,
+    'language': appLanguageNotifier.value.name,
+  };
 }
 
 // AI-METHOD / METRIC-VISIBILITY-CONTRACT
@@ -234,13 +261,20 @@ bool floatingMetricVisible(String metric, FloatingTelemetry telemetry) {
 
 // AI-METHOD / METRIC-STATUS-CONTRACT
 // Adaptive and Peltier are independent firmware-backed states; only Speed is gated by Fan.
-String floatingMetricStatus(String metric, FloatingTelemetry telemetry, AppLanguage language) {
+String floatingMetricStatus(
+  String metric,
+  FloatingTelemetry telemetry,
+  AppLanguage language,
+) {
   // Output flags are authoritative only while the shared BLE session is connected.
   if (!telemetry.connected) return '--';
   return switch (metric) {
     'A' => JexText.of(telemetry.adaptiveOn ? 'on' : 'off', language),
     'P' => JexText.of(telemetry.peltierOn ? 'on' : 'off', language),
-    'F' => telemetry.fanOn ? telemetry.speed.toString() : JexText.of('off', language),
+    'F' =>
+      telemetry.fanOn
+          ? telemetry.speed.toString()
+          : JexText.of('off', language),
     _ => '--',
   };
 }
@@ -261,7 +295,9 @@ class FloatingStore {
   static Future<FloatingConfig> load() async {
     try {
       final raw = await _storage.read(key: _key);
-      final value = raw == null ? const FloatingConfig() : FloatingConfig.fromJson(raw);
+      final value = raw == null
+          ? const FloatingConfig()
+          : FloatingConfig.fromJson(raw);
       floatingConfigNotifier.value = value;
       return value;
     } catch (_) {
@@ -340,7 +376,10 @@ class FloatingBridge {
   // Forward the latest Flutter overlay configuration to the already-running native service.
   static Future<void> updateConfig(FloatingConfig config) async {
     try {
-      await _channel.invokeMethod<void>('updateFloatingConfig', config.toJson());
+      await _channel.invokeMethod<void>(
+        'updateFloatingConfig',
+        config.toJson(),
+      );
     } catch (_) {}
   }
 
@@ -348,7 +387,10 @@ class FloatingBridge {
   // Forward live telemetry and the selected UI language to the native overlay.
   static Future<void> updateData(FloatingTelemetry telemetry) async {
     try {
-      await _channel.invokeMethod<void>('updateFloatingData', jsonEncode(telemetry.toMap()));
+      await _channel.invokeMethod<void>(
+        'updateFloatingData',
+        jsonEncode(telemetry.toMap()),
+      );
     } catch (_) {}
   }
 
@@ -356,17 +398,14 @@ class FloatingBridge {
   // Read native service/window diagnostics for startup confirmation and runtime reconciliation.
   static Future<Map<String, dynamic>?> runtimeState() async {
     try {
-      final value =
-          await _channel.invokeMethod<dynamic>('getFloatingRuntimeState');
+      final value = await _channel.invokeMethod<dynamic>(
+        'getFloatingRuntimeState',
+      );
       if (value is Map) return Map<String, dynamic>.from(value);
     } catch (_) {}
     return null;
   }
-
-
 }
-
-
 
 // AI-MEMORY / SETTINGS-PAGE-CONTRACT
 // User configuration screen for Floating Monitor; native overlay execution stays outside Flutter.
@@ -380,7 +419,8 @@ class FloatingSettingsPage extends StatefulWidget {
 // AI-MEMORY / SETTINGS STATE
 // This page coordinates user intent with native permission/runtime state.
 // It persists enabled=true only after native runtime confirmation.
-class _FloatingSettingsPageState extends State<FloatingSettingsPage> with WidgetsBindingObserver {
+class _FloatingSettingsPageState extends State<FloatingSettingsPage>
+    with WidgetsBindingObserver {
   late FloatingConfig config;
   bool loading = true;
   bool _waitingForOverlayPermission = false;
@@ -432,7 +472,9 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(JexText.of('overlayPermissionDenied', appLanguageNotifier.value)),
+            content: Text(
+              JexText.of('overlayPermissionDenied', appLanguageNotifier.value),
+            ),
           ),
         );
         setState(() {});
@@ -489,11 +531,16 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
       // Dashboard restores the overlay only after its full BLE/P1 sync gate opens.
       if (!floatingTelemetryNotifier.value.connected) return;
       if (!await FloatingBridge.hasPermission()) return;
-      final started = await FloatingBridge.start(config, telemetry: floatingTelemetryNotifier.value);
+      final started = await FloatingBridge.start(
+        config,
+        telemetry: floatingTelemetryNotifier.value,
+      );
       final running = started && await _waitForRuntimeReady();
       if (!running) {
         await FloatingBridge.stop();
-        if (!floatingTelemetryNotifier.value.connected || !await FloatingBridge.hasPermission()) return;
+        if (!floatingTelemetryNotifier.value.connected ||
+            !await FloatingBridge.hasPermission())
+          return;
         config = config.copyWith(enabled: false);
         await FloatingStore.save(config);
       } else {
@@ -517,7 +564,9 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
   // AI-METHOD / STARTUP-VERIFY CONTRACT
   // Wait for the native service plus actual attached overlay state; hudView existence alone
   // is intentionally insufficient.
-  Future<bool> _waitForRuntimeReady({Duration timeout = const Duration(seconds: 3)}) async {
+  Future<bool> _waitForRuntimeReady({
+    Duration timeout = const Duration(seconds: 3),
+  }) async {
     final deadline = DateTime.now().add(timeout);
     while (DateTime.now().isBefore(deadline)) {
       final state = await FloatingBridge.runtimeState();
@@ -556,7 +605,14 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
       await FloatingStore.save(config);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(JexText.of('floatingPendingConnection', appLanguageNotifier.value))),
+          SnackBar(
+            content: Text(
+              JexText.of(
+                'floatingPendingConnection',
+                appLanguageNotifier.value,
+              ),
+            ),
+          ),
         );
         setState(() {});
       }
@@ -570,19 +626,29 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
         builder: (dialogContext) {
           return JexFixedScalePage(
             child: AlertDialog(
-            title: Text(JexText.of('floatingPermissionTitle', appLanguageNotifier.value)),
-            content: Text(JexText.of('floatingPermissionMessage', appLanguageNotifier.value)),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(dialogContext, false),
-                child: Text(JexText.of('cancel', appLanguageNotifier.value)),
+              title: Text(
+                JexText.of(
+                  'floatingPermissionTitle',
+                  appLanguageNotifier.value,
+                ),
               ),
-              FilledButton(
-                onPressed: () => Navigator.pop(dialogContext, true),
-                child: Text(JexText.of('allow', appLanguageNotifier.value)),
+              content: Text(
+                JexText.of(
+                  'floatingPermissionMessage',
+                  appLanguageNotifier.value,
+                ),
               ),
-            ],
-          ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(dialogContext, false),
+                  child: Text(JexText.of('cancel', appLanguageNotifier.value)),
+                ),
+                FilledButton(
+                  onPressed: () => Navigator.pop(dialogContext, true),
+                  child: Text(JexText.of('allow', appLanguageNotifier.value)),
+                ),
+              ],
+            ),
           );
         },
       );
@@ -595,7 +661,9 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
         _waitingForOverlayPermission = false;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(JexText.of('overlaySettingsFailed', appLanguageNotifier.value)),
+            content: Text(
+              JexText.of('overlaySettingsFailed', appLanguageNotifier.value),
+            ),
           ),
         );
       }
@@ -604,7 +672,10 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
 
     config = await _normalizeSelection(config);
     final next = config.copyWith(enabled: true);
-    final started = await FloatingBridge.start(next, telemetry: floatingTelemetryNotifier.value);
+    final started = await FloatingBridge.start(
+      next,
+      telemetry: floatingTelemetryNotifier.value,
+    );
     final running = started && await _waitForRuntimeReady();
     if (!running) {
       await FloatingBridge.stop();
@@ -612,7 +683,11 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
       await FloatingStore.save(config);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(JexText.of('floatingStartFailed', appLanguageNotifier.value))),
+          SnackBar(
+            content: Text(
+              JexText.of('floatingStartFailed', appLanguageNotifier.value),
+            ),
+          ),
         );
         setState(() {});
       }
@@ -649,10 +724,14 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
     try {
       if (!await FloatingBridge.hasPermission()) return;
       final state = await FloatingBridge.runtimeState();
-      if (!mounted || state == null || !floatingTelemetryNotifier.value.connected) return;
+      if (!mounted ||
+          state == null ||
+          !floatingTelemetryNotifier.value.connected)
+        return;
 
       final serviceRunning = state['service_running'] ?? state['running'];
-      final overlayAttached = state['view_attached_to_window'] ?? state['overlay'];
+      final overlayAttached =
+          state['view_attached_to_window'] ?? state['overlay'];
       if (serviceRunning != true || overlayAttached != true) {
         runtimeTimer?.cancel();
         runtimeTimer = null;
@@ -746,7 +825,10 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
                     children: [
                       Text(
                         JexText.of('functions', lang),
-                        style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w900),
+                        style: const TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w900,
+                        ),
                       ),
                       const SizedBox(height: 4),
                       ReorderableListView.builder(
@@ -764,13 +846,21 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
                               contentPadding: EdgeInsets.zero,
                               leading: JexAnimatedGlyph(
                                 icon: PhosphorIconsRegular.dotsSixVertical,
-                                color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.onSurfaceVariant,
                                 size: 20,
                               ),
-                              title: Text(_metricLabel(metric, lang), style: const TextStyle(fontWeight: FontWeight.w800)),
+                              title: Text(
+                                _metricLabel(metric, lang),
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w800,
+                                ),
+                              ),
                               trailing: Checkbox(
                                 value: checked,
-                                onChanged: (value) => _toggleMetric(metric, value == true),
+                                onChanged: (value) =>
+                                    _toggleMetric(metric, value == true),
                               ),
                               dense: true,
                             ),
@@ -787,7 +877,8 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
                         divisions: 14,
                         minLabel: '0.30×',
                         maxLabel: '1.00×',
-                        onChanged: (value) => _apply(config.copyWith(size: value)),
+                        onChanged: (value) =>
+                            _apply(config.copyWith(size: value)),
                       ),
                       _sliderRow(
                         label: JexText.of('opacity', lang),
@@ -798,12 +889,16 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
                         divisions: 20,
                         minLabel: '0%',
                         maxLabel: '100%',
-                        onChanged: (value) => _apply(config.copyWith(opacity: value)),
+                        onChanged: (value) =>
+                            _apply(config.copyWith(opacity: value)),
                       ),
                       const SizedBox(height: 10),
                       Text(
                         JexText.of('backgroundColor', lang),
-                        style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w900),
+                        style: const TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w900,
+                        ),
                       ),
                       const SizedBox(height: 7),
                       SegmentedButton<FloatingBackgroundColor>(
@@ -819,17 +914,24 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
                             icon: const Icon(PhosphorIconsRegular.sun),
                           ),
                         ],
-                        selected: <FloatingBackgroundColor>{config.backgroundColor},
+                        selected: <FloatingBackgroundColor>{
+                          config.backgroundColor,
+                        },
                         onSelectionChanged: (value) {
                           if (value.isNotEmpty) {
-                            _apply(config.copyWith(backgroundColor: value.first));
+                            _apply(
+                              config.copyWith(backgroundColor: value.first),
+                            );
                           }
                         },
                       ),
                       const SizedBox(height: 12),
                       Text(
                         JexText.of('orientation', lang),
-                        style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w900),
+                        style: const TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w900,
+                        ),
                       ),
                       const SizedBox(height: 7),
                       SegmentedButton<bool>(
@@ -897,10 +999,28 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
     required ValueChanged<double> onChanged,
   }) {
     final scaleLabels = <Widget>[
-      Text(minLabel, style: TextStyle(fontSize: 10, color: Theme.of(context).colorScheme.onSurfaceVariant)),
+      Text(
+        minLabel,
+        style: TextStyle(
+          fontSize: 10,
+          color: Theme.of(context).colorScheme.onSurfaceVariant,
+        ),
+      ),
       if (midLabel != null)
-        Text(midLabel, style: TextStyle(fontSize: 10, color: Theme.of(context).colorScheme.onSurfaceVariant)),
-      Text(maxLabel, style: TextStyle(fontSize: 10, color: Theme.of(context).colorScheme.onSurfaceVariant)),
+        Text(
+          midLabel,
+          style: TextStyle(
+            fontSize: 10,
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
+          ),
+        ),
+      Text(
+        maxLabel,
+        style: TextStyle(
+          fontSize: 10,
+          color: Theme.of(context).colorScheme.onSurfaceVariant,
+        ),
+      ),
     ];
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 3),
@@ -912,7 +1032,10 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
               Expanded(
                 child: Text(
                   label,
-                  style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w800),
+                  style: const TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.w800,
+                  ),
                 ),
               ),
               DecoratedBox(
@@ -921,10 +1044,16 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
                   borderRadius: BorderRadius.circular(7),
                 ),
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 3,
+                  ),
                   child: Text(
                     valueLabel,
-                    style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w900),
+                    style: const TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.w900,
+                    ),
                   ),
                 ),
               ),
@@ -968,7 +1097,8 @@ class JexFixedScalePage extends StatelessWidget {
       child: LayoutBuilder(
         builder: (context, constraints) {
           const designWidth = 360.0;
-          if (constraints.maxWidth <= 0 || constraints.maxHeight <= 0) return child;
+          if (constraints.maxWidth <= 0 || constraints.maxHeight <= 0)
+            return child;
 
           // Match Home's master canvas: keep the logical width fixed and
           // compensate for density/Smallest Width changes with one uniform scale.
@@ -1064,144 +1194,162 @@ class SettingsPage extends StatelessWidget {
         return Theme(
           data: buildJexCompactUiTheme(preset),
           child: Scaffold(
-          appBar: AppBar(title: Text(JexText.of('settings', language))),
-          body: ListView(
-            padding: const EdgeInsets.fromLTRB(14, 8, 14, 28),
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(bottom: 6),
-                child: ValueListenableBuilder<VoltageLockSettingsState>(
-                  valueListenable: voltageLockSettingsNotifier,
-                  builder: (context, state, _) =>
-                      _voltageLockSettingRow(context, language, state),
+            appBar: AppBar(title: Text(JexText.of('settings', language))),
+            body: ListView(
+              padding: const EdgeInsets.fromLTRB(14, 8, 14, 28),
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 6),
+                  child: ValueListenableBuilder<VoltageLockSettingsState>(
+                    valueListenable: voltageLockSettingsNotifier,
+                    builder: (context, state, _) =>
+                        _voltageLockSettingRow(context, language, state),
+                  ),
                 ),
-              ),
-              _section(context, JexText.of('general', language), [
-                _item(context, PhosphorIconsRegular.translate, JexText.of('language', language),
+                _section(context, JexText.of('general', language), [
+                  _item(
+                    context,
+                    PhosphorIconsRegular.translate,
+                    JexText.of('language', language),
                     language == AppLanguage.english
                         ? JexText.of('languageEnglish', language)
                         : JexText.of('languageIndonesia', language),
-                    () => Navigator.of(context).push(MaterialPageRoute<void>(
-                          builder: (_) => const JexFixedScalePage(compactUi: true, child: LanguageSettingsPage()),
-                        ))),
-                _item(
-                  context,
-                  PhosphorIconsRegular.sun,
-                  JexText.of('appearance', language),
-                  JexText.of(
-                    switch (appThemeNotifier.value) {
-                      AppThemePreset.defaultTheme => 'default',
-                      AppThemePreset.light => 'light',
-                      AppThemePreset.dark => 'dark',
-                    },
-                    language,
-                  ),
-                  () => Navigator.of(context).push(
-                    MaterialPageRoute<void>(
-                      builder: (_) => const JexFixedScalePage(compactUi: true, child: AppearanceSettingsPage()),
-                    ),
-                  ),
-                ),
-                _item(
-                  context,
-                  PhosphorIconsRegular.bell,
-                  JexText.of('notifications', language),
-                  '',
-                  () => Navigator.of(context).push(
-                    MaterialPageRoute<void>(
-                      builder: (_) => const JexFixedScalePage(compactUi: true, child: NotificationsSettingsPage()),
-                    ),
-                  ),
-                ),
-              ]),
-              _section(context, JexText.of('device', language), [
-                _item(
-                  context,
-                  PhosphorIconsRegular.bluetooth,
-                  JexText.of('bluetooth', language),
-                  appAutoConnectNotifier.value
-                      ? JexText.of('auto', language)
-                      : JexText.of('manual', language),
-                  () => Navigator.of(context).push(
-                    MaterialPageRoute<void>(
-                      builder: (_) => const JexFixedScalePage(compactUi: true, child: BluetoothSettingsPage()),
-                    ),
-                  ),
-                ),
-                _item(
-                  context,
-                  PhosphorIconsRegular.stack,
-                  JexText.of('floatingMonitor', language),
-                  floatingConfigNotifier.value.enabled
-                      ? JexText.of('on', language)
-                      : JexText.of('off', language),
-                  () => Navigator.of(context).push(
-                    MaterialPageRoute<void>(
-                      builder: (_) => const JexFixedScalePage(compactUi: true, child: FloatingSettingsPage()),
-                    ),
-                  ),
-                ),
-              ]),
-              _section(
-                context,
-                JexText.phrase('Statistics', 'Statistik', language),
-                [
-                  _item(
-                    context,
-                    PhosphorIconsRegular.chartLineUp,
-                    JexText.phrase(
-                      'Usage Statistics',
-                      'Statistik Penggunaan',
-                      language,
-                    ),
-                    '',
                     () => Navigator.of(context).push(
                       MaterialPageRoute<void>(
-                        builder: (_) => JexFixedScalePage(
+                        builder: (_) => const JexFixedScalePage(
                           compactUi: true,
-                          child: UsageStatisticsPage(
-                            coolerId: coolerId,
-                            hotLimit: hotLimit,
-                          ),
+                          child: LanguageSettingsPage(),
                         ),
                       ),
                     ),
                   ),
-                ],
-              ),
-              _section(context, JexText.of('firmwareSection', language), [
-                _item(
+                  _item(
+                    context,
+                    PhosphorIconsRegular.sun,
+                    JexText.of('appearance', language),
+                    JexText.of(switch (appThemeNotifier.value) {
+                      AppThemePreset.defaultTheme => 'default',
+                      AppThemePreset.light => 'light',
+                      AppThemePreset.dark => 'dark',
+                    }, language),
+                    () => Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (_) => const JexFixedScalePage(
+                          compactUi: true,
+                          child: AppearanceSettingsPage(),
+                        ),
+                      ),
+                    ),
+                  ),
+                  _item(
+                    context,
+                    PhosphorIconsRegular.bell,
+                    JexText.of('notifications', language),
+                    '',
+                    () => Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (_) => const JexFixedScalePage(
+                          compactUi: true,
+                          child: NotificationsSettingsPage(),
+                        ),
+                      ),
+                    ),
+                  ),
+                ]),
+                _section(context, JexText.of('device', language), [
+                  _item(
+                    context,
+                    PhosphorIconsRegular.bluetooth,
+                    JexText.of('bluetooth', language),
+                    appAutoConnectNotifier.value
+                        ? JexText.of('auto', language)
+                        : JexText.of('manual', language),
+                    () => Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (_) => const JexFixedScalePage(
+                          compactUi: true,
+                          child: BluetoothSettingsPage(),
+                        ),
+                      ),
+                    ),
+                  ),
+                  _item(
+                    context,
+                    PhosphorIconsRegular.stack,
+                    JexText.of('floatingMonitor', language),
+                    floatingConfigNotifier.value.enabled
+                        ? JexText.of('on', language)
+                        : JexText.of('off', language),
+                    () => Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (_) => const JexFixedScalePage(
+                          compactUi: true,
+                          child: FloatingSettingsPage(),
+                        ),
+                      ),
+                    ),
+                  ),
+                ]),
+                _section(
                   context,
-                  PhosphorIconsRegular.uploadSimple,
-                  JexText.of('firmwareUpdate', language),
-                  currentFirmwareVersion.trim().isEmpty || currentFirmwareVersion.trim() == 'V?'
-                      ? ''
-                      : currentFirmwareVersion.trim(),
-                  () => unawaited(onOpenFirmwareUpdate()),
+                  JexText.phrase('Statistics', 'Statistik', language),
+                  [
+                    _item(
+                      context,
+                      PhosphorIconsRegular.chartLineUp,
+                      JexText.phrase(
+                        'Usage Statistics',
+                        'Statistik Penggunaan',
+                        language,
+                      ),
+                      '',
+                      () => Navigator.of(context).push(
+                        MaterialPageRoute<void>(
+                          builder: (_) => JexFixedScalePage(
+                            compactUi: true,
+                            child: UsageStatisticsPage(
+                              coolerId: coolerId,
+                              hotLimit: hotLimit,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              ]),
-              Card(
-                margin: const EdgeInsets.only(top: 8),
-                elevation: 0,
-                clipBehavior: Clip.antiAlias,
-                child: _item(
-                  context,
-                  PhosphorIconsRegular.info,
-                  JexText.of('about', language),
-                  '',
-                  () => Navigator.of(context).push(
-                    MaterialPageRoute<void>(
-                      builder: (_) => const JexFixedScalePage(
-                        compactUi: true,
-                        child: AboutSettingsPage(),
+                _section(context, JexText.of('firmwareSection', language), [
+                  _item(
+                    context,
+                    PhosphorIconsRegular.uploadSimple,
+                    JexText.of('firmwareUpdate', language),
+                    currentFirmwareVersion.trim().isEmpty ||
+                            currentFirmwareVersion.trim() == 'V?'
+                        ? ''
+                        : currentFirmwareVersion.trim(),
+                    () => unawaited(onOpenFirmwareUpdate()),
+                  ),
+                ]),
+                Card(
+                  margin: const EdgeInsets.only(top: 8),
+                  elevation: 0,
+                  clipBehavior: Clip.antiAlias,
+                  child: _item(
+                    context,
+                    PhosphorIconsRegular.info,
+                    JexText.of('about', language),
+                    '',
+                    () => Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (_) => const JexFixedScalePage(
+                          compactUi: true,
+                          child: AboutSettingsPage(),
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
-
-            ],
-          ),
+              ],
+            ),
           ),
         );
       },
@@ -1310,7 +1458,15 @@ class SettingsPage extends StatelessWidget {
       children: [
         Padding(
           padding: const EdgeInsets.fromLTRB(8, 10, 8, 5),
-          child: Text(title.toUpperCase(), style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 0.9, color: Theme.of(context).colorScheme.onSurfaceVariant)),
+          child: Text(
+            title.toUpperCase(),
+            style: TextStyle(
+              fontSize: 9,
+              fontWeight: FontWeight.w900,
+              letterSpacing: 0.9,
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+            ),
+          ),
         ),
         Card(
           margin: EdgeInsets.zero,
@@ -1320,7 +1476,8 @@ class SettingsPage extends StatelessWidget {
             children: [
               for (var i = 0; i < children.length; i++) ...[
                 children[i],
-                if (i != children.length - 1) const Divider(height: 1, indent: 52),
+                if (i != children.length - 1)
+                  const Divider(height: 1, indent: 52),
               ],
             ],
           ),
@@ -1462,7 +1619,11 @@ class AboutSettingsPage extends StatelessWidget {
             padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
             children: [
               Text(
-                JexText.phrase('Special Thanks', 'Ucapan Terima Kasih', language),
+                JexText.phrase(
+                  'Special Thanks',
+                  'Ucapan Terima Kasih',
+                  language,
+                ),
                 style: Theme.of(context).textTheme.titleLarge?.copyWith(
                   color: scheme.onSurface,
                   fontWeight: FontWeight.w800,
@@ -1479,21 +1640,33 @@ class AboutSettingsPage extends StatelessWidget {
                   children: [
                     _credit(
                       context,
-                      role: JexText.phrase('App Developer & Builder', 'Pengembang Aplikasi & Perakit', language),
+                      role: JexText.phrase(
+                        'App Developer & Builder',
+                        'Pengembang Aplikasi & Perakit',
+                        language,
+                      ),
                       name: 'Horizon',
                       handle: '@horizontalzzz',
                       last: false,
                     ),
                     _credit(
                       context,
-                      role: JexText.phrase('Design Inspiration', 'Inspirasi Desain', language),
+                      role: JexText.phrase(
+                        'Design Inspiration',
+                        'Inspirasi Desain',
+                        language,
+                      ),
                       name: 'FYZ',
                       handle: '@FYZ737',
                       last: false,
                     ),
                     _credit(
                       context,
-                      role: JexText.phrase('3D Design & Printing', 'Desain & Pencetakan 3D', language),
+                      role: JexText.phrase(
+                        '3D Design & Printing',
+                        'Desain & Pencetakan 3D',
+                        language,
+                      ),
                       name: 'Logos',
                       handle: '@Logos3dMichael',
                       last: true,
@@ -1629,11 +1802,13 @@ class NotificationsSettingsPage extends StatelessWidget {
   Future<void> _set(String key, bool value) async {
     if (value) {
       try {
-        final granted = await const MethodChannel('je_x_fyz/notifications')
-                .invokeMethod<bool>(
-                  'requestNotificationPermission',
-                  <String, dynamic>{'language': appLanguageNotifier.value.name},
-                ) ??
+        final granted =
+            await const MethodChannel(
+              'je_x_fyz/notifications',
+            ).invokeMethod<bool>(
+              'requestNotificationPermission',
+              <String, dynamic>{'language': appLanguageNotifier.value.name},
+            ) ??
             false;
         if (!granted) return;
       } catch (_) {
@@ -1668,24 +1843,34 @@ class NotificationsSettingsPage extends StatelessWidget {
           builder: (context, _, __) => ValueListenableBuilder<bool>(
             valueListenable: appNotifyBluetoothNotifier,
             builder: (context, _, __) => Scaffold(
-              appBar: AppBar(title: Text(JexText.of('notifications', language))),
+              appBar: AppBar(
+                title: Text(JexText.of('notifications', language)),
+              ),
               body: ListView(
                 children: [
                   SwitchListTile(
                     title: Text(JexText.of('safetyAlert', language)),
-                    subtitle: Text(JexText.of('notificationSafetyDescription', language)),
+                    subtitle: Text(
+                      JexText.of('notificationSafetyDescription', language),
+                    ),
                     value: appNotifySafetyNotifier.value,
                     onChanged: (value) => _set('safety', value),
                   ),
                   SwitchListTile(
                     title: Text(JexText.of('firmwareUpdate', language)),
-                    subtitle: Text(JexText.of('notificationFirmwareDescription', language)),
+                    subtitle: Text(
+                      JexText.of('notificationFirmwareDescription', language),
+                    ),
                     value: appNotifyFirmwareNotifier.value,
                     onChanged: (value) => _set('firmware', value),
                   ),
                   SwitchListTile(
-                    title: Text(JexText.of('deviceConnectionNotifications', language)),
-                    subtitle: Text(JexText.of('notificationBluetoothDescription', language)),
+                    title: Text(
+                      JexText.of('deviceConnectionNotifications', language),
+                    ),
+                    subtitle: Text(
+                      JexText.of('notificationBluetoothDescription', language),
+                    ),
                     value: appNotifyBluetoothNotifier.value,
                     onChanged: (value) => _set('bluetooth', value),
                   ),
@@ -1758,7 +1943,8 @@ class ValueListenableBuilder2<A, B> extends StatelessWidget {
       valueListenable: first,
       builder: (context, firstValue, _) => ValueListenableBuilder<B>(
         valueListenable: second,
-        builder: (context, secondValue, __) => builder(context, firstValue, secondValue),
+        builder: (context, secondValue, __) =>
+            builder(context, firstValue, secondValue),
       ),
     );
   }

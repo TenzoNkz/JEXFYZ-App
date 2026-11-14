@@ -13,19 +13,26 @@ void main() {
   });
 
   test('stale Peltier re-arm notice clears after healthy safety telemetry', () {
-    expect(shouldClearStaleNotifyError(
-      connected: true,
-      safety: 'OK',
-      safetyReason: 'NONE',
-      liveTelemetryReceived: true,
-      notice: 'Peltier is locked. Hotside must cool to <= 43°C before restart.',
-    ), isTrue);
-    expect(shouldClearStaleNotifyError(
-      connected: true,
-      safety: 'LOCKED',
-      safetyReason: 'PELTIER_SAFETY_LATCH',
-      liveTelemetryReceived: true,
-      notice: 'Peltier is locked.',
-    ), isFalse);
+    expect(
+      shouldClearStaleNotifyError(
+        connected: true,
+        safety: 'OK',
+        safetyReason: 'NONE',
+        liveTelemetryReceived: true,
+        notice:
+            'Peltier is locked. Hotside must cool to <= 43°C before restart.',
+      ),
+      isTrue,
+    );
+    expect(
+      shouldClearStaleNotifyError(
+        connected: true,
+        safety: 'LOCKED',
+        safetyReason: 'PELTIER_SAFETY_LATCH',
+        liveTelemetryReceived: true,
+        notice: 'Peltier is locked.',
+      ),
+      isFalse,
+    );
   });
 }
