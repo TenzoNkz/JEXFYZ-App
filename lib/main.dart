@@ -258,14 +258,10 @@ String? formatOtaUploadSizeMismatch(String event, AppLanguage language) {
     caseSensitive: false,
   ).firstMatch(event.trim());
   if (match == null) return null;
-  return JexText.format(
-    'otaSizeMismatchDetailed',
-    {
-      'receivedBytes': match.group(1)!,
-      'expectedBytes': match.group(2)!,
-    },
-    language,
-  );
+  return JexText.format('otaSizeMismatchDetailed', {
+    'receivedBytes': match.group(1)!,
+    'expectedBytes': match.group(2)!,
+  }, language);
 }
 
 /// One telemetry transition becomes one localized sentence; values never accumulate.

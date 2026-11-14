@@ -182,22 +182,37 @@ UsageStatsSnapshot _sampleSnapshot() {
 
 void main() {
   group('Usage Statistics analytics', () {
-
     test('state labels distinguish logical modes from physical outputs', () {
       expect(
-        usageStateLabel('ON', AppLanguage.english, domain: UsageStateDomain.logicalMode),
+        usageStateLabel(
+          'ON',
+          AppLanguage.english,
+          domain: UsageStateDomain.logicalMode,
+        ),
         'Active',
       );
       expect(
-        usageStateLabel('OFF', AppLanguage.english, domain: UsageStateDomain.logicalMode),
+        usageStateLabel(
+          'OFF',
+          AppLanguage.english,
+          domain: UsageStateDomain.logicalMode,
+        ),
         'Inactive',
       );
       expect(
-        usageStateLabel('ON', AppLanguage.indonesia, domain: UsageStateDomain.logicalMode),
+        usageStateLabel(
+          'ON',
+          AppLanguage.indonesia,
+          domain: UsageStateDomain.logicalMode,
+        ),
         'AKTIF',
       );
       expect(
-        usageStateLabel('OFF', AppLanguage.indonesia, domain: UsageStateDomain.logicalMode),
+        usageStateLabel(
+          'OFF',
+          AppLanguage.indonesia,
+          domain: UsageStateDomain.logicalMode,
+        ),
         'NONAKTIF',
       );
       expect(usageStateLabel('ON', AppLanguage.english), 'ON');

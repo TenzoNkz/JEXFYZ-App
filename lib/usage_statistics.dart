@@ -2689,10 +2689,7 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
                 domain: UsageStateDomain.logicalMode,
               ),
             ),
-            metric(
-              'Peltier',
-              usageStateLabel(peltier?.textValue, language),
-            ),
+            metric('Peltier', usageStateLabel(peltier?.textValue, language)),
             metric(
               JexText.phrase('Fan Speed', 'Kecepatan Kipas', language),
               fan?.numberValue == null

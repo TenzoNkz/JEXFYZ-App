@@ -1057,7 +1057,8 @@ class JexText {
     },
     'resetDeepSleep': {
       AppLanguage.english: 'Device resumed from low-power sleep.',
-      AppLanguage.indonesia: 'Perangkat kembali aktif dari mode tidur hemat daya.',
+      AppLanguage.indonesia:
+          'Perangkat kembali aktif dari mode tidur hemat daya.',
     },
     'resetPowerOn': {
       AppLanguage.english: 'Device started.',
@@ -1450,7 +1451,8 @@ class JexText {
     },
     'fullSyncFailed': {
       AppLanguage.english: 'Could not complete device sync.',
-      AppLanguage.indonesia: 'Tidak dapat menyelesaikan sinkronisasi perangkat.',
+      AppLanguage.indonesia:
+          'Tidak dapat menyelesaikan sinkronisasi perangkat.',
     },
     'floatingPermissionTitle': {
       AppLanguage.english: 'Floating Monitor Permission',

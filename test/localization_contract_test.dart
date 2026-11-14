@@ -13,33 +13,36 @@ Set<String> _placeholders(String value) => RegExp(
 
 void main() {
   group('Localization contracts', () {
-    test('dictionary entries provide both locales and matching placeholders', () {
-      final source = File('lib/app_settings.dart').readAsStringSync();
-      final entries = RegExp(
-        r"'([^']+)'\s*:\s*\{([\s\S]*?)\},",
-      ).allMatches(source).toList();
-      expect(entries.length, greaterThanOrEqualTo(350));
+    test(
+      'dictionary entries provide both locales and matching placeholders',
+      () {
+        final source = File('lib/app_settings.dart').readAsStringSync();
+        final entries = RegExp(
+          r"'([^']+)'\s*:\s*\{([\s\S]*?)\},",
+        ).allMatches(source).toList();
+        expect(entries.length, greaterThanOrEqualTo(350));
 
-      for (final entry in entries) {
-        final key = entry.group(1)!;
-        final translations = entry.group(2)!;
-        final english = RegExp(
-          r"AppLanguage\.english:\s*'((?:\\.|[^'\\])*)'",
-          dotAll: true,
-        ).firstMatch(translations)?.group(1);
-        final indonesia = RegExp(
-          r"AppLanguage\.indonesia:\s*'((?:\\.|[^'\\])*)'",
-          dotAll: true,
-        ).firstMatch(translations)?.group(1);
-        expect(english, isNotNull, reason: 'Missing English copy: $key');
-        expect(indonesia, isNotNull, reason: 'Missing Indonesian copy: $key');
-        expect(
-          _placeholders(english!),
-          _placeholders(indonesia!),
-          reason: 'Placeholder mismatch: $key',
-        );
-      }
-    });
+        for (final entry in entries) {
+          final key = entry.group(1)!;
+          final translations = entry.group(2)!;
+          final english = RegExp(
+            r"AppLanguage\.english:\s*'((?:\\.|[^'\\])*)'",
+            dotAll: true,
+          ).firstMatch(translations)?.group(1);
+          final indonesia = RegExp(
+            r"AppLanguage\.indonesia:\s*'((?:\\.|[^'\\])*)'",
+            dotAll: true,
+          ).firstMatch(translations)?.group(1);
+          expect(english, isNotNull, reason: 'Missing English copy: $key');
+          expect(indonesia, isNotNull, reason: 'Missing Indonesian copy: $key');
+          expect(
+            _placeholders(english!),
+            _placeholders(indonesia!),
+            reason: 'Placeholder mismatch: $key',
+          );
+        }
+      },
+    );
 
     test('literal inline phrase pairs preserve placeholder parity', () {
       const paths = <String>[
@@ -86,8 +89,14 @@ void main() {
     });
 
     test('approved safety and prerequisite copy remains equivalent', () {
-      expect(JexText.of('peltierSafety', AppLanguage.english), 'Peltier Safety');
-      expect(JexText.of('peltierSafety', AppLanguage.indonesia), 'Keselamatan Peltier');
+      expect(
+        JexText.of('peltierSafety', AppLanguage.english),
+        'Peltier Safety',
+      );
+      expect(
+        JexText.of('peltierSafety', AppLanguage.indonesia),
+        'Keselamatan Peltier',
+      );
       expect(
         JexText.of('sensorErrorCoolingLocked', AppLanguage.indonesia),
         'Sensor suhu bermasalah. Pendinginan dinonaktifkan demi keselamatan.',
@@ -116,7 +125,11 @@ void main() {
         'OTA failed: 120400 bytes received; 131072 bytes expected.',
       );
       expect(
-        JexText.format('otaSizeMismatchDetailed', values, AppLanguage.indonesia),
+        JexText.format(
+          'otaSizeMismatchDetailed',
+          values,
+          AppLanguage.indonesia,
+        ),
         'OTA gagal: 120400 byte diterima; 131072 byte diharapkan.',
       );
     });
@@ -144,11 +157,19 @@ void main() {
 
     test('Usage Statistics state domains remain distinct', () {
       expect(
-        usageStateLabel('ON', AppLanguage.english, domain: UsageStateDomain.logicalMode),
+        usageStateLabel(
+          'ON',
+          AppLanguage.english,
+          domain: UsageStateDomain.logicalMode,
+        ),
         'Active',
       );
       expect(
-        usageStateLabel('OFF', AppLanguage.indonesia, domain: UsageStateDomain.logicalMode),
+        usageStateLabel(
+          'OFF',
+          AppLanguage.indonesia,
+          domain: UsageStateDomain.logicalMode,
+        ),
         'NONAKTIF',
       );
       expect(usageStateLabel('ON', AppLanguage.indonesia), 'HIDUP');
