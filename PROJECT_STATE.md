@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — Current Project State
 
-Last reconciled: 2026-11-14 (Asia/Jakarta), after Usage Statistics alignment / Validation Only run #16. This file is current truth only. Build-by-build history belongs in APP_BUILD_REPORT.md and CHANGELOG.md; detailed execution evidence belongs in CHAT_TRANSFER.md and APP_PREBUILD_AUDIT.md.
+Last reconciled: 2026-11-14 (Asia/Jakarta), after the source-driven localization audit / Validation Only run #16. This file is current truth only. Build-by-build history belongs in APP_BUILD_REPORT.md and CHANGELOG.md; detailed execution evidence belongs in CHAT_TRANSFER.md and APP_PREBUILD_AUDIT.md.
 
 ## Repository baseline
 
@@ -31,18 +31,17 @@ Last reconciled: 2026-11-14 (Asia/Jakarta), after Usage Statistics alignment / V
 - Gemini's uploaded report did not receive source attachments and is not an exhaustive audit; its Part C contains only prompt examples. Live-source cross-check confirms recommendations on language labels, Safety/Keselamatan, Fan prerequisite title, successful safety-check wording, full sync, Deep Sleep and About credit.
 - Reject its proposal to keep Floating Monitor untranslated in Indonesian; owner-approved source contract is Floating Monitor / Monitor Melayang. Reject its one-count OTA suggestion: the event contains received and expected byte counts and both must be preserved.
 - State terminology needs per-metric mapping: physical outputs vs logical modes/locks vs user preferences. Current Usage Statistics generic mapper treats Peltier and Adaptive identically; current native HUD also shares A/P state text.
-- The next authorized implementation should finish a complete catalog + inline + dynamic + Kotlin review, then add semantic, placeholder, state-mapping and viewport regression tests. No source edits made in this review.
+- The next implementation step requires a separate explicit Eksekusi Full! command: finish the complete catalog + inline + dynamic + Kotlin semantic review, then add semantic, placeholder, state-mapping and viewport regression tests. The current Diskusi session did not authorize source edits.
 
 ## Localization review — pending owner-approved wording
 
 - English is currently the default App locale; JexText contains 354 bilingual dictionary keys, and Flutter contains 166 actual inline JexText.phrase() call sites (116 main, 10 Floating Monitor, 40 Usage Statistics). The prior 167 count included one source comment. Native foreground-service/Floating Monitor notification copy is separately bilingual.
-- A source-driven Diskusi audit on 2026-11-14 confirmed translation issues for thermal Safety (Keamanan), the Fan-before-cooling title, and Safety checks passed.; it also identified cross-surface Adaptive/Peltier state-word inconsistencies and unclear received/expected OTA byte labels. All 354 dictionary pairs are structurally complete and the static placeholder check found no dictionary-pair mismatches. Full semantic review of every string remains incomplete; no source/test changes were made.
+- A source-driven Diskusi audit on 2026-11-14 confirmed translation issues for thermal Safety (Keamanan), the Fan-before-cooling title, and the Safety checks passed. sentence; it also identified cross-surface Adaptive/Peltier state-word inconsistencies and unclear received/expected OTA byte labels. All 354 dictionary pairs are structurally complete and the static placeholder check found no dictionary-pair mismatches. Full semantic review of every string remains incomplete; no source/test changes were made.
 - Existing tests check translation-field presence and selected key examples, not semantic equivalence of every string. The Gemini handoff prompt is prepared in the 2026-11-14 conversation; Gemini has not been contacted.
 
 ## Current App architecture and contracts
 
 - Current About credit contract remains App Developer & Builder / Pengembang Aplikasi & Perakit as recorded in APP_NOTES.md. Earlier discussion/checkpoint text proposing App Development & Build is stale and is not the approved current wording.
-
 
 - Inventory: seven Dart App source files, nine Dart test files / 188 test declarations, four Kotlin source files, one active Firmware sketch. Largest Dart files: `main.dart` 10,564 lines, `usage_statistics.dart` 3,409, `floating_monitor.dart` 1,766 and `app_settings.dart` 1,678.
 - Usage Statistics uses local SQLite schema v2 with a v1→v2 `onUpgrade`, 30-day retention, raw 1-Hz Battery/Hotside samples, explicit gaps, HOT-only P1 freshness, session continuity and a bounded FIFO writer queue (64 normal + 8 reserved + 1 critical endSession slot). A full selected-session summary/decimation pass still runs each second; long-duration CPU/memory and storage-pressure soak remain unverified.
