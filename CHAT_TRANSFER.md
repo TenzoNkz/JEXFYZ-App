@@ -1,4 +1,41 @@
-## CURRENT CHECKPOINT — EKSEKUSI FULL / BUILD #162 DOCUMENTATION GOVERNANCE — 2026-11-14
+## CURRENT CHECKPOINT — EKSEKUSI FULL / CONCURRENCY FIX + FLUTTER LINT ACTIVATION — 2026-11-14
+
+**Mode:** `Eksekusi Full!` — explicit owner authorization covered only the guarded release workflow concurrency policy and root Flutter analyzer configuration/quality baseline. No Build App, Actions run, APK/Release, Firmware/device operation was triggered.
+
+### Live baseline
+
+- **Repository:** `TenzoNkz/JEXFYZ-App`, branch `main`.
+- **Build #162 remains the latest verified package:** run `43430275967`, job `131901744336`, immutable release source `6854d8eb58a5f077cbc99749a35d37a4f55b8efa`, Flutter 188/188, analyzer 23 infos / zero warnings/errors, Android Gradle success. This predates the new analyzer options; it is not a post-lint run.
+- **Local environment:** Git and Python/PyYAML 6.0.3 are installed. `dart`, `flutter` and `actionlint` are absent.
+
+### Authorized changes committed
+
+- `.github/workflows/jexfyz-app-build-trigger.yml` — commit `52c87f9ee2ec8def71ff9e1e6e448ca1df0a1297`, workflow blob `41c0b7c1f18c0e2d0aa30028c7fc0e8f0554e4ba`.
+  - Removed the global workflow-level `concurrency` block.
+  - Added concurrency only under `jobs.build`, after the exact unchanged owner-login, title and token `if` guard.
+  - Set `group: jexfyz-cooler-build`, `cancel-in-progress: false`, `queue: max`.
+  - Original issue opened/reopened trigger and all release/signing/test/artifact gates remain. Nonmatching issue events skip the guarded job and do not enter the release concurrency queue.
+- Root `analysis_options.yaml` — commit `65a3053393f2ab31726ae40cf187b737c915bb7b`, blob `26a17a80d98bcde51b90f61ee57eb2ab59b4ea90`.
+  - Contains `include: package:flutter_lints/flutter.yaml`.
+  - Reuses direct dev dependency `flutter_lints ^6.0.0`, exact locked version `6.0.0`; no pubspec or lockfile change.
+- Durable notes: `APP_PREBUILD_AUDIT.md` commit `3d773331fe820898c4b60a9cfbb646f855b7d3a1`; `PROJECT_STATE.md` commit `035b4a42a50fc220ad7681470a9c98e7bcb6ab84`; `HANDOVER.md` commit `c3d9823f6d66a3ad7d780b73b263ca783deaadeb`.
+
+### Validation performed and remaining
+
+- GitHub read-back verified the exact guard appears once and before job concurrency; the old workflow-level group is absent; the job-level group appears once before `runs-on`; original release step names remain.
+- PyYAML 6.0.3 parsed the new `analysis_options.yaml` and the modified job-level guard/concurrency YAML fragment.
+- Official GitHub documentation confirms job-level concurrency, up to 100 pending entries with `queue: max`, and the incompatibility of `queue: max` with `cancel-in-progress: true`. `queue: max` FIFO ordering is based on when jobs start waiting on the group, not necessarily event dispatch time.
+- **Not run:** full actionlint/GitHub workflow schema check; `flutter pub get`; post-activation `flutter analyze --no-fatal-infos`; `dart format`; Flutter tests. These were unavailable or explicitly outside the no-Build-App instruction. No business logic or Dart source/test file was changed.
+- **Formatter baseline is NOT ESTABLISHED.** On an SDK-equipped checkout, first run `dart format --output=none --set-exit-if-changed lib test`. If it reports changes, run `dart format lib test`, inspect a formatting-only diff, and repeat the check until clean. Add a blocking CI formatter gate only after a clean baseline is recorded.
+- **Lint diagnostic baseline is NOT ESTABLISHED.** Build #162's 23 info-level results were collected before the root lint include and cannot be treated as post-activation evidence. Run `flutter analyze --no-fatal-infos` after `flutter pub get` and classify every new lint before any suppression or business-logic edit.
+
+### Exact next action
+
+Use an SDK-equipped, non-release validation environment on the exact current main to run the post-lint analyzer and formatter baseline. Do not start the guarded App release workflow, do not create an issue trigger, and do not perform Firmware/device operations.
+
+---
+
+## Previous checkpoint — EKSEKUSI FULL / BUILD #162 DOCUMENTATION GOVERNANCE — 2026-11-14
 
 **Mode:** `Eksekusi Full!` — this interaction executed the concrete documentation reconciliation scope. It did not modify App/Firmware source, tests, configuration or workflow, and did not run Build App or device operations.
 
