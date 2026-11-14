@@ -1,4 +1,20 @@
-## Current verified App release — Build #159 SUCCESS (2026-11-13)
+## Current verified App release — Build #162 SUCCESS (2026-11-13)
+
+- **Run / job:** [Build #162 / Actions run 43430275967](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/43430275967), job `131901744336`, attempt 1; terminal SUCCESS. Required workflow steps 1–21 and post-job cleanup 39–43 succeeded.
+- **Immutable package source:** `6854d8eb58a5f077cbc99749a35d37a4f55b8efa`. Release ID `403010611` and tag `jexfyz-latest` target this exact SHA.
+- **Hosted validation:** security/architecture audit passed; Dart analyzer **23 info-level findings / 0 warnings / 0 errors**; Flutter suite **188/188 passed**; Android Gradle `:app:testDebugUnitTest` gate **BUILD SUCCESSFUL in 3m56s**.
+- **Native Android caveat:** Kotlin/Java JUnit compile, resource processing and test tasks were `NO-SOURCE`; no native Android App JUnit test case executed. Kotlin Notification-priority and Gradle 10 deprecation notices remain non-blocking.
+- **APK:** `JEXFYZ-release.apk`, obfuscated with split debug info; **55,881,819 bytes**; SHA-256 `56c08bd490e52a8616627613675141a91c14ab6893cca0e1e54d5e5ac1a053f2`. [Download APK](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-release.apk).
+- **Corresponding source ZIP:** **2,933,316 bytes**; SHA-256 `86bd61edfe59acd6063367f7b8704356d2bf192d8c55c150f0f0e6b6285db42e`. [Download source ZIP](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-corresponding-source.zip). The downloaded ZIP integrity and source marker passed.
+- **Release signing:** original and downloaded APKs passed V1/JAR, V2 and V3 verification with one signer and pinned certificate SHA-256 `dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0`. The certificate is self-signed; it is not publicly CA-trusted.
+- **Included source changes:** exact lowercase About handle, Usage Statistics presentation/selector/timeline/readout changes and the Floating Monitor Fan glyph correction are included in this package.
+- **Protected version:** Android Gradle `versionName "Telegram @horizontalzzz"` remains unchanged; Flutter version is `1.0.0+3`.
+- **History:** Build #160 and #161 remain failed historical attempts; preserve their diagnostics in APP_BUILD_REPORT.md. Build #162 is the verified success, not a reason to rewrite earlier failures.
+- **Formatter/visual boundary:** the release workflow has no Dart formatter step; no formatter result is claimed. Build #162 installation by the owner and actual 350-dp/420-dp, EN/ID, Light/Dark screenshots remain **NOT VERIFIED**. App CI does not prove physical BLE, cooling/thermal/electrical, Firmware, BIN, Firebase, OTA, flash or OEM behavior.
+
+---
+
+## Previous verified App release — Build #159 SUCCESS (2026-11-13)
 
 - **Run:** [43376503987](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/43376503987), job 131724120379, attempt 1, immutable source SHA `cdca38b9e4f2f99006db8feae40c07c6f9bdfb0a`. All required workflow steps 1–21 and cleanup 39–43 passed.
 - **Validation:** security/architecture audit passed; Dart analyzer **23 infos / 0 warnings / 0 errors**; Flutter suite **187/187 passed**; Android Gradle **BUILD SUCCESSFUL in 2m51s**.
