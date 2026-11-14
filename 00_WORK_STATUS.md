@@ -1,4 +1,4 @@
-| Last updated | 2026-11-14 08:47 (Asia/Jakarta) |
+| Last updated | 2026-11-14 08:48 (Asia/Jakarta) |
 
 > Single current snapshot for JE X FYZ project interactions. This file records the latest persisted observation, not a continuously running heartbeat or overall product completion.
 
@@ -13,14 +13,14 @@
 | Request / work item | Resume authorized non-publishing validation repair; inspect seven remaining Flutter test failures on run #7 and fix only test-side source-contract matching; no App Build/Release or Firmware/device operation |
 | Started | 2026-11-14 08:44 (Asia/Jakarta) |
 | Last updated | 2026-11-14 08:30 (Asia/Jakarta) |
-| Current phase | Recovery reconciled: Validation Only run #7 / 43542261220 is terminal FAILED on source `305a34be525ebf2b0e244d909e1e7fb404d2c6fb`; locked dependencies PASS, formatter final PASS after 14-file formatting, analyzer PASS (119 infos / 0 warnings / 0 errors), Flutter tests 181 passed / 7 failed; formatter commit skipped. Resuming test-only contract repair. |
-| Last completed milestone | Run #7 / 43542261220 / job 132285271473: pub resolution PASS; formatter precheck initially found changes, formatter apply PASS (17 files formatted, 14 changed), final formatter PASS (0 changed), analyzer PASS (119 infos / 0 warnings / 0 errors), Flutter tests 181 passed / 7 failed. Preview artifact 14092655612 uploaded; commit step skipped. |
-| Last verified main checkpoint | `463e6c804717954b331e29e9e8636f3a913b0ba9` — current main HEAD after status-only recovery write; tested source remains run #7 SHA `305a34be525ebf2b0e244d909e1e7fb404d2c6fb` |
-| EXTERNAL OPERATION | Validation Only run #7 / 43542261220 / job 132285271473 / source `305a34be525ebf2b0e244d909e1e7fb404d2c6fb` |
-| EXTERNAL OPERATION STATUS | **FAILED — test gate: 181 passed / 7 failed; all other required gates passed; formatter commit skipped** |
+| Current phase | Run #7 completed; formatter final clean, analyzer success and test count improved to 181/188; 7 source-contract failures remain from formatter trailing commas and one outdated style token. No formatter commit. Applying narrowly scoped test-only corrections. |
+| Last completed milestone | Run #7 / 43542261220 / job 132285271473 on SHA `305a34be525ebf2b0e244d909e1e7fb404d2c6fb`: Pub PASS; formatter auto-apply + final check PASS (17 files formatted, 14 changed); analyzer PASS (119 infos / 0 warnings / 0 errors); Flutter tests 181 passed / 7 failed. Failures: floating page wrapper matcher trailing comma, fontSize 10/w900 still exact string, LED picker matcher trailing comma, cavity painter expected comma not present, Tamper theme regex too strict, Home Fan notice matcher trailing comma, Home tab 48-dp regex trailing comma. Formatter commit skipped by guard; source remains unchanged. |
+| Last verified main checkpoint | `305a34be525ebf2b0e244d909e1e7fb404d2c6fb` — test-only regex correction commit triggering run #7; formatter source commit still not made |
+| EXTERNAL OPERATION | Validation Only run #7 / 43542261220 completed; no active run; Build #162 remains latest App package |
+| EXTERNAL OPERATION STATUS | **COMPLETED / FAILURE — Validation Only run #7; Pub, formatter and analyzer passed; 181 tests passed / 7 failed; formatter commit skipped** |
 | Result / evidence | GitHub Actions live run metadata confirms event `push`, branch `main`, terminal `completed/failure`, attempt 1, exact SHA above. Job logs confirm `flutter pub get --enforce-lockfile` PASS; formatter final check PASS; `flutter analyze --no-fatal-infos` PASS (119 infos, 0 warnings, 0 errors); `flutter test` FAILED (181 passed / 7 failed). A 134,755-byte formatter preview artifact was uploaded; no formatter-only commit was made. |
-| Blocker | Seven source-contract tests still fail after formatter output; inspect exact matcher/source boundaries and patch only tests without weakening product assertions. |
-| Next action | Inspect the seven failing test assertions against the exact 14-file formatter diff; revise only whitespace/section extraction brittleness, then validate again through the existing non-publishing workflow. No App Build or Firmware/device work. |
+| Blocker | 7 test assertions still need exact whitespace/trailing-comma handling; formatter commit remains gated until all 188 tests pass. `actionlint` unavailable locally. |
+| Next action | Allow optional trailing commas in formatter-aware regexes, replace residual fontSize exact-line matcher, simplify Tamper theme assertion to stable tokens, update painter call to actual no-trailing-comma syntax, and rerun automatic validation. No business logic or Build App. |
 
 ## Status model
 
