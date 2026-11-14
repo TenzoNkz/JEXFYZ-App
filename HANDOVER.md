@@ -1,39 +1,29 @@
-## Immediate next step — Owner selects scope after Gemini review — 2026-11-14
+## Immediate next step — Explicit scope for workflow and quality-gate hardening — 2026-11-14
 
-Gemini's independent review has been cross-checked against live `main` and the prior Build #162 evidence. The full disposition and repository evidence are at the top of `CHAT_TRANSFER.md`.
+The documentation source-of-truth sync for Build #162 is complete. The current project snapshot is `PROJECT_STATE.md`; the full execution/cross-check evidence is at the top of `CHAT_TRANSFER.md`.
 
-**Primary fix to prioritize:** move the concurrency group from workflow scope to the guarded `jobs.build` scope. Disable cancellation of a running release. Select queue policy explicitly: GitHub's default retains only one pending job, so a later valid trigger may replace the previous pending one; use `queue: max` if every valid owner-triggered release should wait FIFO (maximum 100 pending). Preserve the existing owner/title/body-token guard and every artifact/signature/release gate.
+### Completed in the current Eksekusi Full session
 
-**Next quality baseline:** add root `analysis_options.yaml` with `include: package:flutter_lints/flutter.yaml`; stage the newly enabled diagnostics before enforcing them, and add a formatter gate only after formatting is normalized.
+- `BUILD_NOTES.md`: Build #162 is now the current verified release record; Build #159 remains below as previous release history.
+- `APP_NOTES.md`: current App behavior/data contracts now point to Build #162 and explicitly separate CI, visual and physical-device evidence.
+- `DESIGN_NOTES.md`: the current Usage Statistics presentation contract reflects Build #162's 188/188 hosted test result; visual acceptance remains pending.
+- `APP_PREBUILD_AUDIT.md`: pre-Build #162 snapshots that previously read as current/QC pending are labelled historical and linked to the later #162 result.
+- `PROJECT_STATE.md`: condensed to a current-only snapshot below 100 lines. Build failure/attempt history remains in `APP_BUILD_REPORT.md`; immutable archives and history ledgers were not deleted or rewritten.
 
-**Documentation correction:** reconcile `APP_NOTES.md`, `BUILD_NOTES.md`, `DESIGN_NOTES.md`, `APP_PREBUILD_AUDIT.md` and `PROJECT_STATE.md` with verified Build #162 provenance. Do not just replace every Build #159 string; separate latest package, current source and owner/device validation states. Preserve failure/history ledgers.
+### Remaining confirmed work
 
-**Further improvements:** create non-publishing validation CI; add behavior-level tests for BLE/plugin channels, native MethodChannel/service lifecycle, and an actual SQLite v1-to-v2 migration fixture; publish a coverage baseline; then consider incremental module extraction. Pin reviewed GitHub Actions dependencies to full SHAs or use a supported workflow dependency lockfile. Consider required branch checks after validation CI is stable.
+1. **P1 release concurrency defect:** the current workflow still has workflow-level `concurrency.group: jexfyz-cooler-build` and `cancel-in-progress: true`, before the owner/title/body-token job guard. Move concurrency into the guarded `jobs.build`; do not cancel a running release. Explicitly choose queue policy; use `queue: max` if every valid trigger must queue FIFO (up to 100 pending). Preserve the manual owner/title/token guard and every release gate.
+2. **P2 lint/format baseline:** root `analysis_options.yaml` is absent while `flutter_lints` is declared. Add the documented include, stage the new diagnostics, normalize formatting and then add a formatter gate.
+3. **CI/governance:** add non-publishing validation CI, meaningful BLE/MethodChannel/SQLite migration tests, a persisted coverage baseline and reviewed full-SHA action pinning. Consider branch protection after validation checks are stable.
+4. **Source modularization:** defer broad extraction until regression coverage is strengthened. Start with low-coupling boundaries; BLE coordinator is high-risk and should be last.
 
-**Corrections to Gemini's extra hypotheses:** the current code already includes SQLite v1→v2 `onUpgrade`, BLE subscription/timer cancellation and generation invalidation, and Android 12+ plus legacy runtime permission declarations/requests. These are not proven defects. Test the lifecycle/migration/permission paths, because current tests do not fully exercise the real plugin/native/device behavior. `MainActivity.kt` has custom MethodChannels and native services; Android JUnit `NO-SOURCE` is not itself a failing gate, but it is also inaccurate to say no Kotlin native bridge code exists.
+### Authorization boundary
 
-**Evidence boundary:** compare from Build #162 source `6854d8eb58a5f077cbc99749a35d37a4f55b8efa` to the review-start main HEAD `c13aa2d6127abe6c5bdc7bcc5fcd7736800b643f` reported 31 commits ahead / 0 behind, with only Markdown files changed. Build #162's 188/188 test and App release evidence remains applicable to current executable/test source. No code, test, config or workflow changes were made in this Diskusi review.
+This session changed Markdown documentation only. The command `Eksekusi Full!` selects the implementation mode but does not expand an unspecified scope. The workflow and root analyzer configuration were therefore left unchanged because this turn did not explicitly authorize those CI/configuration files. To continue, owner must explicitly authorize:
+- `.github/workflows/jexfyz-app-build-trigger.yml` concurrency policy;
+- adding root `analysis_options.yaml` and any related non-publishing validation workflow, if included.
 
-**Authorization:** implementation must be a separate explicit command that names workflow/config/test/doc scope. App packaging and release still require the separate `Eksekusi Build App!` path. Do not trigger any build from this review.
-
----
-
-## Immediate next step — Return independent Gemini review of the repository audit — 2026-11-14
-
-The comprehensive read-only audit of `TenzoNkz/JEXFYZ-App` has been completed against current main HEAD `763961ae46727887a73037ba46c50d38ac3cfdc6`. Full evidence and ranked findings are in the active top checkpoint of `CHAT_TRANSFER.md`.
-
-**Highest priority confirmed finding:** the Build workflow listens to every issue opened/reopened event, but global workflow-level concurrency has one fixed group with `cancel-in-progress: true`; the owner/title/body-token guard is only at the build-job level. An unrelated issue event can therefore cancel an active guarded release before its job is skipped. Proposed fix is to scope concurrency to the guarded job and stop cancelling active releases; preserve the existing manual guard and all release gates.
-
-Other material findings:
-- `flutter_lints` is declared but root `analysis_options.yaml` is absent; no formatter gate and no separate non-publishing CI workflow exist.
-- Current docs disagree on the latest release: APP_NOTES/BUILD_NOTES say Build #159; DESIGN_NOTES and lower APP_PREBUILD_AUDIT sections still say QC pending despite Build #162 success.
-- PROJECT_STATE.md is 70 KB / 397 lines with a long historical build sequence, despite its current-only role.
-- `main.dart` is 10,564 lines; Usage Statistics, Floating Monitor and settings modules also bundle multiple responsibilities. Recommend incremental extraction, not a rewrite.
-- Build #162 passed 188/188 Flutter tests and release gates, but native Android JUnit tasks were NO-SOURCE; no hardware/visual proof. BLE App-only authentication remains unimplemented, and Online OTA's `setInsecure()` remains a documented TLS identity risk.
-
-**Gemini:** no direct Gemini connector is available. A self-contained copy-ready second-opinion prompt is in the current conversation. Owner should paste it into Gemini and return the complete answer for verification.
-
-**Scope:** Diskusi only. No executable source, tests, config, workflow, release, Firmware/BIN, Firebase, OTA, flash or device change was made. After the Gemini review, select a separate authorized implementation scope; do not infer Build App permission from this audit.
+No Build App/APK/Release, Firmware compile/BIN/Firebase/OTA/flash, or device operation is authorized here. Any package/release must still use the separate `Eksekusi Build App!` path.
 
 ---
 
