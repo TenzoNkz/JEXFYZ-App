@@ -1,0 +1,103 @@
+# Non-publishing Flutter/Dart validation only. This workflow never builds or releases the App.
+name: JE X FYZ — Validation Only
+
+on:
+  workflow_dispatch:
+
+# The validation job needs repository read access only.
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Flutter quality checks (non-publishing)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout selected revision
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2
+        with:
+          flutter-version: "3.47.2"
+          channel: stable
+          cache: true
+
+      - name: Verify Flutter and Dart toolchain
+        shell: bash
+        run: |
+          set -euo pipefail
+          flutter --version
+          dart --version
+
+      - name: Resolve locked dependencies
+        id: dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          flutter pub get --enforce-lockfile
+
+      # Keep each quality gate observable and allow the remaining checks to run
+      # even when one gate fails. The final summary step restores a failing job.
+      - name: Check Dart formatting (read-only)
+        id: formatter
+        if: ${{ !cancelled() && steps.dependencies.outcome == 'success' }}
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -euo pipefail
+          dart format --output=none --set-exit-if-changed lib test
+
+      - name: Analyze Flutter and Dart source
+        id: analyzer
+        if: ${{ !cancelled() && steps.dependencies.outcome == 'success' }}
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -euo pipefail
+          flutter analyze --no-fatal-infos
+
+      - name: Run all Flutter tests
+        id: flutter_tests
+        if: ${{ !cancelled() && steps.dependencies.outcome == 'success' }}
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -euo pipefail
+          flutter test
+
+      - name: Summarize validation results
+        if: ${{ always() }}
+        shell: bash
+        env:
+          SOURCE_SHA: ${{ github.sha }}
+          DEPENDENCIES_OUTCOME: ${{ steps.dependencies.outcome }}
+          FORMATTER_OUTCOME: ${{ steps.formatter.outcome }}
+          ANALYZER_OUTCOME: ${{ steps.analyzer.outcome }}
+          FLUTTER_TESTS_OUTCOME: ${{ steps.flutter_tests.outcome }}
+        run: |
+          set -euo pipefail
+
+          {
+            echo "## JE X FYZ — Validation Only"
+            echo
+            echo "Source SHA: `$SOURCE_SHA`"
+            echo
+            echo "| Check | Outcome |"
+            echo "|---|---|"
+            echo "| Locked dependency resolution | $DEPENDENCIES_OUTCOME |"
+            echo "| Dart formatter | $FORMATTER_OUTCOME |"
+            echo "| Flutter analyzer | $ANALYZER_OUTCOME |"
+            echo "| Flutter tests | $FLUTTER_TESTS_OUTCOME |"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          failed=0
+          for outcome in "$DEPENDENCIES_OUTCOME" "$FORMATTER_OUTCOME" "$ANALYZER_OUTCOME" "$FLUTTER_TESTS_OUTCOME"; do
+            if [[ "$outcome" != "success" ]]; then
+              failed=1
+            fi
+          done
+
+          exit "$failed"
