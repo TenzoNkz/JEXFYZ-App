@@ -1,0 +1,2 @@
+# JE X FYZ Dart analysis policy. Keep lint rules sourced from the locked flutter_lints package.
+include: package:flutter_lints/flutter.yaml
