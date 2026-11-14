@@ -78,6 +78,33 @@ jobs:
           set -euo pipefail
           flutter test
 
+      # Produce a formatting-only patch after checks have run. This changes only
+      # the ephemeral runner workspace; the artifact is reviewed before any source commit.
+      - name: Prepare formatter patch for review
+        id: formatter_preview
+        if: ${{ !cancelled() && steps.dependencies.outcome == 'success' && steps.formatter.outcome == 'failure' }}
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/jexfyz-format-preview"
+          dart format lib test
+          git diff --check
+          git diff --binary > "$RUNNER_TEMP/jexfyz-format-preview/jexfyz-dart-format.patch"
+          git diff --stat > "$RUNNER_TEMP/jexfyz-format-preview/format-stat.txt"
+          test -s "$RUNNER_TEMP/jexfyz-format-preview/jexfyz-dart-format.patch"
+          echo "Prepared a formatting-only patch for review; repository source has not been committed or published."
+
+      - name: Upload formatter patch preview (non-publishing)
+        id: formatter_preview_upload
+        if: ${{ !cancelled() && steps.formatter_preview.outcome == 'success' }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: jexfyz-dart-format-preview
+          path: ${{ runner.temp }}/jexfyz-format-preview/
+          if-no-files-found: error
+          retention-days: 7
+
       - name: Summarize validation results
         if: ${{ always() }}
         shell: bash
@@ -85,6 +112,7 @@ jobs:
           SOURCE_SHA: ${{ github.sha }}
           DEPENDENCIES_OUTCOME: ${{ steps.dependencies.outcome }}
           FORMATTER_OUTCOME: ${{ steps.formatter.outcome }}
+          FORMATTER_PREVIEW_OUTCOME: ${{ steps.formatter_preview.outcome }}
           ANALYZER_OUTCOME: ${{ steps.analyzer.outcome }}
           FLUTTER_TESTS_OUTCOME: ${{ steps.flutter_tests.outcome }}
         run: |
@@ -93,12 +121,13 @@ jobs:
           {
             echo "## JE X FYZ — Validation Only"
             echo
-            echo "Source SHA: `$SOURCE_SHA`"
+            echo "Source SHA: $SOURCE_SHA"
             echo
             echo "| Check | Outcome |"
             echo "|---|---|"
             echo "| Locked dependency resolution | $DEPENDENCIES_OUTCOME |"
             echo "| Dart formatter | $FORMATTER_OUTCOME |"
+            echo "| Formatter patch preview | $FORMATTER_PREVIEW_OUTCOME |"
             echo "| Flutter analyzer | $ANALYZER_OUTCOME |"
             echo "| Flutter tests | $FLUTTER_TESTS_OUTCOME |"
           } >> "$GITHUB_STEP_SUMMARY"
