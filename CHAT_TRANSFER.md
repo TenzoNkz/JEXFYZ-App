@@ -1,3 +1,81 @@
+## CURRENT CHECKPOINT — GEMINI SECOND OPINION CROSS-CHECK — 2026-11-14
+
+**Mode:** `Diskusi!` — read-only review. No App/Firmware source, tests, configuration, workflow, release, Firebase/OTA, BIN, flash or device changes were made.
+
+### Live repository and evidence boundary
+
+- **Repository:** `TenzoNkz/JEXFYZ-App`, branch `main`.
+- **Review HEAD after opening status marker:** `c13aa2d6127abe6c5bdc7bcc5fcd7736800b643f`.
+- **Build #162 immutable release source:** `6854d8eb58a5f077cbc99749a35d37a4f55b8efa`.
+- GitHub compare from the Build #162 source to the review HEAD returned **31 commits ahead / 0 behind**, and every changed path in the complete compare response was Markdown documentation. No Dart, test, Kotlin, Android config, pubspec, workflow or Firmware source changed after the Build #162 source. Build #162 remains valid verification for the current executable/test source.
+- Build #162 evidence from the prior verified audit remains: Actions run `43430275967`, Flutter **188/188 passed**, 23 analyzer info-level diagnostics, no analyzer warning/error gate failure, Gradle `BUILD SUCCESSFUL`; native Android app JUnit tasks were `NO-SOURCE`.
+- This is a targeted second-opinion source check, not proof that every path/device state is defect-free.
+
+### Gemini findings — independent disposition
+
+**1. Workflow-level concurrency cancellation — CONFIRMED, highest priority (P1).**
+
+- Live workflow `.github/workflows/jexfyz-app-build-trigger.yml` still places `concurrency.group: jexfyz-cooler-build` and `cancel-in-progress: true` at workflow scope. Issue events are not filtered until `jobs.build.if`.
+- A non-matching issue event can therefore enter the workflow concurrency group and cancel the active valid release before the guarded build job is skipped. Treat as an urgent release-pipeline availability/integrity defect. Gemini's P0 label is incident-severity policy, not a new technical fact; P1 remains the audit disposition absent evidence of an active exploitation/incident.
+- Job-level concurrency under the guarded `build` job is the correct direction. **Additional correction to Gemini:** `cancel-in-progress: false` protects the running job, but the default concurrency queue keeps only one pending item; a later valid trigger replaces the prior pending trigger. GitHub supports `queue: max` (up to 100 pending) for job/workflow concurrency. Decide explicitly whether valid release triggers should queue FIFO; for lossless queueing, use job-level concurrency with `cancel-in-progress: false` and `queue: max`, preserving owner/title/body-token guards and all release gates. See GitHub concurrency semantics: https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax
+- No workflow edit was made in Diskusi.
+
+**2. Flutter lint/format baseline — CONFIRMED (P2).**
+
+- `flutter_lints: ^6.0.0` is declared; prior complete root inventory found no root `analysis_options.yaml`. The package's recommended lint set is therefore not enabled through the documented include.
+- Correction: analyzer is not “blind”; standard Dart analyzer errors/warnings and configured diagnostics still operate. The gap is the recommended Flutter lint ruleset and a formatter gate, not the absence of all static analysis. Flutter's documented activation is `include: package:flutter_lints/flutter.yaml` in root `analysis_options.yaml`: https://docs.flutter.dev/release/breaking-changes/flutter-lints-package
+- Add the lint baseline in stages; first record current diagnostics, triage/fix violations without business-logic changes, then make the chosen baseline non-regressing. Add `dart format --output=none --set-exit-if-changed .` only after existing formatting has been normalized. No config or source edit was made.
+
+**3. Documentation drift — CONFIRMED; Gemini's proposed scope is incomplete (P2/P3).**
+
+- Live `APP_NOTES.md` and `BUILD_NOTES.md` still title Build #159 as the current verified package, while Build #162 is the latest verified package.
+- The prior audit also identified stale active-looking sections in `DESIGN_NOTES.md` and `APP_PREBUILD_AUDIT.md`, plus historical chronology in `PROJECT_STATE.md` despite its current-state role.
+- Do not merely replace “159” with “162” globally: separate latest published package provenance from post-package source status, superseded UI snapshots and still-open physical/device acceptance. Preserve failed-build evidence. `APP_BUILD_REPORT.md` and `CHANGELOG.md` remain history ledgers; do not truncate/delete them. Reconcile the current-state docs to exact Build #162 source `6854d8e...`.
+
+**4. Source concentration and incremental modularization — CONFIRMED as maintainability risk, not proof of defects (P1/P2).**
+
+- Inventory remains `lib/main.dart` 10,564 lines; `lib/usage_statistics.dart` 3,409 lines; `lib/floating_monitor.dart` 1,766 lines. Size alone does not demonstrate faulty coupling or leaks.
+- A database/data-layer extraction from Usage Statistics is a reasonable first candidate, but preserve SQLite v2, its migration, write-queue FIFO/capacity/rejection semantics, transaction boundaries, telemetry freshness and session rules. Treat a `database_provider.dart` name as an option, not a predetermined architecture.
+- Extract Floating Monitor before BLE only if code ownership/interfaces and existing tests make the boundary clear. BLE coordinator extraction is highest-risk and should follow focused state/lifecycle tests. Avoid a global folder rewrite or singleton refactor.
+- Firmware V7.2 remains out of scope; do not split the single sketch based only on file size or this review.
+
+**5. Tests and coverage — PARTIALLY CONFIRMED; Gemini overgeneralizes the current suite.**
+
+- 188/188 Flutter tests passed in Build #162. The suite is not exclusively `dart:io` string matching: `connection_scan_coordinator_test.dart` exercises FIFO scanner serialization, stale ownership and recovery behavior; Usage Statistics tests cover analytics, decimation and bounded write-queue behavior; widget tests exercise multiple UI behaviors.
+- Structural tests are still present and do not prove plugin/native runtime behavior. Current inspection found a mocked `je_x_fyz/security` MethodChannel in widget tests, but did not find a FlutterBluePlus BLE plugin channel mock or a real SQLite migration fixture test.
+- `flutter test --coverage` is a sound baseline step, but retain/upload `coverage/lcov.info` (or publish a report); the command alone does not establish a useful persisted baseline. Do not impose a percentage threshold until the current coverage distribution is understood.
+- Native Android `NO-SOURCE` is not a failed gate and is not automatically a defect. However, Gemini's assertion that no custom Kotlin platform-channel logic exists is false: `MainActivity.kt` defines battery/system, Floating Monitor, security and notification channels, and the app has native foreground services. Add targeted Dart mock-channel and Kotlin/service tests where they exercise real native contracts; do not add empty JUnit tests just to silence `NO-SOURCE`.
+
+**6. Action pinning / repository governance — CONFIRMED as hardening work (P2), not evidence of compromise.**
+
+- Workflow still references mutable tags: `actions/checkout@v6`, `actions/setup-java@v6`, `subosito/flutter-action@v2`, `gradle/actions/setup-gradle@v6`.
+- Pin reviewed third-party actions to verified full-length commit SHAs, or use GitHub's workflow dependency lockfile where supported. Pinning does not establish that an action is malicious; it makes the dependency immutable after review. Official guidance: https://docs.github.com/en/actions/reference/security/secure-use
+- Previous repository metadata reported `main` as unprotected. A validation-only workflow plus required branch checks is a separate governance improvement; it must not publish/sign APKs and must not replace the guarded Build App route.
+- A CI diff check for the 12 mirrored `.agents/skills` and `.github/skills` files is reasonable preventative governance; they were identical at the audit snapshot.
+
+### New Gemini hypotheses independently checked
+
+- **BLE subscription leak:** not established by file size. Current `DashboardScreenState.dispose()` cancels its connection, notification and rediscovery subscriptions and timers; scanner cleanup cancels one-shot subscriptions and invalidates stale passive/one-shot attempts. This is positive lifecycle evidence, not a proof against all async races. Add behavioral tests for dispose/reconnect/error/race paths.
+- **SQLite migration missing:** contradicted by source. Usage Statistics opens schema version 2 and has `onUpgrade` for oldVersion < 2; it creates `usage_samples`, migrates v1 battery/hotside events into sparse samples and removes migrated temperature events. Existing test asserts the migration contract text; a real v1 database fixture upgrade test is still recommended. No data-loss defect is established by this inspection.
+- **Android 12+ BLE permission omission:** no obvious declaration/request omission found. Manifest contains Android 12+ `BLUETOOTH_SCAN` (`neverForLocation`) and `BLUETOOTH_CONNECT`; legacy Bluetooth/location declarations are capped at SDK 30. Dart requests Scan/Connect and gates legacy Location permission/service checks on SDK <= 30. Validate on API 30 and API 31+ / OEM devices; static presence is not runtime proof.
+
+### Agreed remediation order (requires a separate explicit execution authorization)
+
+1. Move concurrency to the guarded build job; set active-run cancellation off and explicitly choose pending queue policy (recommended lossless policy: `queue: max`).
+2. Add root Flutter lint configuration and staged formatter/analyzer baseline.
+3. Reconcile APP_NOTES, BUILD_NOTES, DESIGN_NOTES, APP_PREBUILD_AUDIT and current-state/history boundaries against Build #162.
+4. Add a non-publishing validation workflow, tests for real BLE/MethodChannel/SQLite migration lifecycle and a persisted coverage baseline.
+5. Only then begin incremental modularization, starting from lower-coupling data/UI seams, with regression gates before BLE coordinator extraction.
+6. Pin action dependencies and add the optional skill-mirror parity check; consider branch protection after required CI is stable.
+
+### Final disposition
+
+- Gemini independently validates the primary concurrency, lint, documentation, source concentration, coverage and action-pinning findings.
+- Important corrections: pending-run replacement still exists with `cancel-in-progress: false` unless `queue: max` is selected; analyzer is not fully blind; test suite is not all source-string matching; custom Kotlin channels/services exist; SQLite v1→v2 migration exists; BLE runtime permission declarations/requests exist; no leak or data-loss defect was proven.
+- This interaction remains **Diskusi/read-only**. Only checkpoint/status Markdown updates are allowed. No code/workflow/config/test changes or build were performed.
+
+---
+
 ## CURRENT CHECKPOINT — COMPREHENSIVE REPO AUDIT / GEMINI SECOND OPINION PENDING — 2026-11-14
 
 **Mode:** `Diskusi!` — read-only repository analysis. No App/Firmware source, tests, config, workflow, release or device operation was changed or run in this audit.
