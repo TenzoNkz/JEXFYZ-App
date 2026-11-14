@@ -1,4 +1,15 @@
-## Completed checkpoint — Usage Statistics alignment / Validation Only #16 green — 2026-11-14
+## Current handover — English-master localization audit / Gemini review — 2026-11-14
+
+- Diskusi audit completed against source baseline `873a825020659dadcac2e5c7242e759209776414`; no source or tests changed.
+- Inventory: 354 English/Indonesian catalog keys, 167 inline `JexText.phrase()` pairs and 260 `JexText.of()` call sites; native foreground-service/HUD copy is separately maintained in Kotlin.
+- Highest-priority review candidates: language label Indonesia/Indonesian, Safety vs Keamanan/Keselamatan, missing “before cooling” in the Fan prerequisite title, “Safety checks passed” → “Pemeriksaan ... normal”, OTA byte-count fragment, resetDeepSleep, fullSyncFailed and About credit-role mismatch. State labels also vary by surface.
+- Existing tests validate both-language entry presence and selected examples, not the linguistic correctness of every pair. Existing language-name/power-state assertions must be revised only if the owner approves a changed display contract; keep enum/storage values stable.
+- **Next:** paste the Gemini handoff prompt from the current conversation and attach `lib/app_settings.dart`, `lib/main.dart`, `lib/floating_monitor.dart`, `lib/usage_statistics.dart`, the two native service files, `test/widget_test.dart` and `APP_NOTES.md`. Gemini has no GitHub access.
+- Bring the reply back as `Jawaban Gemini!` for a source-grounded review. Do not apply changes until a separate `Eksekusi Full!` command.
+
+---
+
+## Historical handover — Usage Statistics alignment / Validation Only #16 green — 2026-11-14
 
 - Source UI/test commit: `b4b57e83261c0b1fcb7873efa8544c3410ad0208`; format-only follow-up: `873a825020659dadcac2e5c7242e759209776414`.
 - Validation Only [run 43552255469](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/43552255469), job `132317129708`, exact source `873a825020659dadcac2e5c7242e759209776414`, terminal SUCCESS: locked dependencies PASS; Dart formatter 17 files / 0 changed; analyzer 119 infos / 0 warnings/errors; Flutter 188/188 PASS.

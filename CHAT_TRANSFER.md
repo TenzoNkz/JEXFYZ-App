@@ -1,4 +1,37 @@
-## CURRENT CHECKPOINT — EKSEKUSI FULL / USAGE STATISTICS ALIGNMENT COMPLETE — 2026-11-14
+## CURRENT CHECKPOINT — DISKUSI / ENGLISH–INDONESIAN LANGUAGE AUDIT COMPLETE — 2026-11-14
+
+**Work status: DISCUSSION AUDIT COMPLETE; implementation not started.** The owner requested English as the master language and Indonesian translations that preserve exact meaning while remaining natural. This checkpoint records source-derived findings and the Gemini handoff boundary only.
+
+### Verified localization architecture
+
+- Repository: `TenzoNkz/JEXFYZ-App`; code/test baseline inspected: `873a825020659dadcac2e5c7242e759209776414`. Current main documentation/status commits are later; no executable source changed during this audit.
+- English is the default `AppSettings` locale. `JexText.phrase(English, Indonesian)` makes the first string the English copy.
+- `lib/app_settings.dart`: 354 keys, each with English and Indonesian entries.
+- Flutter call sites: 167 inline `JexText.phrase()` occurrences; 260 `JexText.of()` occurrences (some are dynamic lookup keys).
+- Native foreground-service/HUD localization also exists in `JeForegroundService.kt` and `FloatingMonitorService.kt`.
+- Tests verify dictionary field presence and selected key examples, not the grammar/semantic equivalence of all strings. Current tests explicitly lock language labels to `English / Indonesia` and state labels to `HIDUP / MATI`.
+
+### Priority language findings
+
+1. Language display label “Indonesia” in English UI should be reviewed as “Indonesian”; Indonesian UI may use “Bahasa Inggris / Bahasa Indonesia”. Do not rename enum/storage IDs.
+2. “Peltier Safety” → “Keamanan Peltier” and “disabled for safety” → “demi keamanan” conflict with the rest of the product's “Keselamatan” usage.
+3. “Fan required before cooling” → “Kipas perlu dinyalakan” omits the before-cooling clause.
+4. “Safety checks passed.” → “Pemeriksaan keselamatan normal.” changes passed/succeeded into normal.
+5. OTA upload-size fragment needs review as a complete assembled sentence.
+6. “Could not complete device sync” / “Sinkronisasi perangkat tidak selesai” and “low-power sleep” / “mode hemat daya” need more exact natural equivalents.
+7. About credit differs from the existing approved APP_NOTES wording: “App Developer & Builder” / “Pengembang Aplikasi & Perakit” vs “App Development & Build” / “Pengembangan Aplikasi & Build”.
+8. State terminology differs across catalog, Usage Statistics and native HUD: HIDUP/MATI vs AKTIF/NONAKTIF. Define context-aware grammar and one approved usage rule.
+9. Review remaining OTA-stage technical terminology such as Dual Chase, Wi-Fi retry and Range retry.
+
+### Next action
+
+Use the prepared Gemini handoff prompt from this conversation. The owner must attach the source files listed in that prompt because Gemini has no GitHub access. Return Gemini's response as `Jawaban Gemini!`; validate each suggestion against current source and owner-approved terminology before authorizing any source/test change.
+
+No executable source, test, configuration, workflow, native Android code, Build App, APK/Release, Firmware/BIN, Firebase, OTA, flash or device operation was changed or run in this Diskusi.
+
+---
+
+## HISTORICAL CHECKPOINT — USAGE STATISTICS ALIGNMENT / VALIDATION ONLY #16 — 2026-11-14
 
 **Work status: COMPLETED.** The owner-requested Usage Statistics layout/alignment refinement is implemented and hosted non-publishing validation passed. No App Build/APK/AAB/Release, Firmware compile/BIN, Firebase, OTA, flash or physical-device operation was performed.
 

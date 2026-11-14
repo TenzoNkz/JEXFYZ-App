@@ -324,3 +324,31 @@ Purpose: canonical current App/UI/BLE/telemetry contract. Current source defines
 - No capture, BLE/P1, telemetry, session, SQL schema, retention, queue, aggregate, temperature range, Hotside limit, null-gap, cursor selection or sensor-truth logic was intentionally changed.
 - Implementation commit `b4b57e83261c0b1fcb7873efa8544c3410ad0208`; formatter-only follow-up `873a825020659dadcac2e5c7242e759209776414`. Validation Only run #16 / job `132317129708` passed on exact formatted source `873a825020659dadcac2e5c7242e759209776414`: locked dependencies, clean formatter, analyzer (119 infos, zero warnings/errors), and 188/188 Flutter tests.
 - This source is not included in Build #162. Android screenshot/OEM acceptance remains VISUAL NOT VERIFIED until a new separately authorized App package is installed and inspected.
+
+
+### Owner request — English-master language quality audit (Diskusi only) — 2026-11-14
+
+**Owner direction:** English is the master copy. Every user-facing English phrase must be grammatically correct and serve as the semantic source for its Indonesian translation. Indonesian may use natural Indonesian grammar, but must not add, omit, weaken or change the meaning, condition, subject, action, timing, certainty or safety severity.
+
+**STATIC SOURCE AUDIT — source code/test baseline `873a825020659dadcac2e5c7242e759209776414`:**
+- `AppSettings()` defaults to `AppLanguage.english`; `JexText.phrase(english, indonesia)` chooses its first argument for English.
+- `lib/app_settings.dart` contains 354 localization keys, each with both `AppLanguage.english` and `AppLanguage.indonesia` values.
+- Flutter call sites include 167 inline bilingual `JexText.phrase()` calls across `main.dart`, `floating_monitor.dart` and `usage_statistics.dart`, plus 260 `JexText.of()` call sites. Some lookup keys are dynamic (LED color presets and OTA stage labels); static literal-only checks cannot establish all runtime paths.
+- Native foreground-service/Floating Monitor notification text is bilingual but maintained separately in `JeForegroundService.kt` and `FloatingMonitorService.kt`.
+- Existing `test/widget_test.dart` verifies that all dictionary entries contain both locales and tests selected terminology; it does not judge the semantic accuracy or grammar of every pair. It currently explicitly requires display labels `English / Indonesia` and ON/OFF labels `HIDUP / MATI` in Indonesian.
+- Internal enum/storage identifiers `english` and `indonesia` are compatibility values; a display-label correction must not casually rename them. Preserve protocol tokens, IDs, UUIDs, brand names, technical values, placeholders and unit symbols.
+
+**Concrete review candidates (not yet owner-approved corrections):**
+- Language picker: English UI currently labels the language `Indonesia`; recommended review is `Indonesian`. In the Indonesian UI, consider `Bahasa Inggris / Bahasa Indonesia`. Update display copy/tests only if approved; retain the internal enum/storage identifier.
+- `peltierFanRequiredTitle`: “Fan required before cooling” → “Kipas perlu dinyalakan” omits the explicit before-cooling relationship.
+- `peltierSafety` and `sensorErrorCoolingLocked`: “Safety” is translated as `Keamanan` in these keys while other safety copy uses `Keselamatan`; standardize based on safety meaning, not security.
+- `otaUploaded` + `otaBytes`: the Indonesian fragment describes “ukuran unggahan” while the English fragment says “uploaded [N] bytes”; review the whole assembled sentence, not fragments independently.
+- `fullSyncFailed`: “Could not complete device sync.” is rendered “Sinkronisasi perangkat tidak selesai.”; review a more natural exact equivalent such as “Tidak dapat menyelesaikan sinkronisasi perangkat.”
+- `resetDeepSleep`: Indonesian wording omits the explicit sleep state in “low-power sleep”.
+- `main.dart` inline phrase at the safety notice path: “Safety checks passed.” → “Pemeriksaan keselamatan normal.” changes “passed” into “normal”.
+- About credit source uses “App Developer & Builder” / “Pengembang Aplikasi & Perakit”, while the prior approved APP_NOTES wording is “App Development & Build” / “Pengembangan Aplikasi & Build”. Resolve the role wording against owner intent.
+- State terminology differs by surface: catalog/native HUD uses `HIDUP/MATI`, Usage Statistics uses `AKTIF/NONAKTIF`, and full-sentence notifications use `aktif/nonaktif`. Decide a context-aware consistent glossary; do not mechanically force one word where the UI meaning differs.
+- Review less severe technical labels such as “Dual Chase” / “Chase Ganda”, “Wi-Fi retry” / “Percobaan Wi-Fi”, and “Range retry” / “Ulangi rentang” for clarity and consistent OTA terminology.
+
+**Proposed process:** review all 354 catalog pairs, all 167 inline phrase pairs, dynamic lookup contexts and native notification/service copy. Produce a bilingual terminology glossary and an exhaustive correction table before source edits. This is a discussion/audit record only: no executable source, tests, config, native code, workflow, build or release was changed or run. Gemini has not been contacted; a copy-ready handoff prompt was prepared for the owner to paste with the source attachments.
+

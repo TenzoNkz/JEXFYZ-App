@@ -26,6 +26,12 @@ Last reconciled: 2026-11-14 (Asia/Jakarta), after Usage Statistics alignment / V
 - Main includes the alignment refinement at `b4b57e83261c0b1fcb7873efa8544c3410ad0208` plus formatter-only commit `873a825020659dadcac2e5c7242e759209776414`; run #16 / `43552255469` verified this exact source. AppBar, summary strips, Activity plot time labels, Selected time dock and state-bar proportions are aligned; data and interaction contracts remain unchanged.
 - This is not in Build #162. Actual Android/OEM screenshot acceptance is still **VISUAL NOT VERIFIED** and requires a separately authorized new App package plus owner-side installation/screenshots.
 
+## Localization review — pending owner-approved wording
+
+- English is currently the default App locale; `JexText` contains 354 bilingual dictionary keys, and Flutter also contains 167 inline English/Indonesian phrase pairs. Native foreground-service/Floating Monitor notification copy is separately bilingual.
+- A Diskusi source audit identified terminology/grammar review candidates, including language-name display, Safety vs Keamanan/Keselamatan, the Fan prerequisite title, safety-check wording, OTA byte-count composition, sleep-state wording and About credits. This is a review, not an approved source change.
+- Existing tests check translation-field presence and selected key examples, not semantic equivalence of every string. The Gemini handoff prompt is prepared in the 2026-11-14 conversation; Gemini has not been contacted.
+
 ## Current App architecture and contracts
 
 - Inventory: seven Dart App source files, nine Dart test files / 188 test declarations, four Kotlin source files, one active Firmware sketch. Largest Dart files: `main.dart` 10,564 lines, `usage_statistics.dart` 3,409, `floating_monitor.dart` 1,766 and `app_settings.dart` 1,678.
