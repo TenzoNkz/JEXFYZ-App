@@ -12,15 +12,15 @@
 | Mode | Eksekusi Full! |
 | Request / work item | Make non-publishing Flutter validation run automatically without owner manual dispatch; trigger and inspect validation only, never Build App/Release or Firmware/device |
 | Started | 2026-11-14 (Asia/Jakarta) |
-| Last updated | 2026-11-14 08:14 (Asia/Jakarta) |
-| Current phase | Push-only automatic trigger committed; Validation Only run #2 is queued/in progress on exact current SHA; monitoring job steps and dependency/quality gates |
-| Last completed milestone | Replaced manual trigger with push-to-main path filters covering validation workflow, analysis/dependency manifests, lib, test and assets; GitHub automatically created Validation Only run #2 / 43539313774 / SHA `886eb7aa356ce2fa52d06d2cf06cbbca72074410`; job `132275871853` started, checkout succeeded, Flutter setup in progress |
-| Last verified main checkpoint | `886eb7aa356ce2fa52d06d2cf06cbbca72074410` — automatic trigger commit; new Actions run and job state verified by GitHub API |
+| Last updated | 2026-11-14 08:16 (Asia/Jakarta) |
+| Current phase | Automatic Validation Only run #2 completed; Pub, analyzer and tests passed; formatter detected 13 Dart files needing format; summary also failed from Bash backtick expansion; patch-generation and summary fix underway |
+| Last completed milestone | Automatic Validation Only run #2 / 43539313774 / job 132275871853 completed on SHA `886eb7aa356ce2fa52d06d2cf06cbbca72074410`; `flutter pub get --enforce-lockfile` PASS, analyzer PASS (99 infos / 0 warnings / 0 errors), Flutter tests PASS (188/188), formatter check FAIL (13 changed of 16 files); summary step failed because unescaped backticks attempted to execute the SHA. Run #1 logs independently confirm same outcomes. |
+| Last verified main checkpoint | `886eb7aa356ce2fa52d06d2cf06cbbca72074410` — exact App source SHA tested by automatic Validation Only run #2; current main also has later status/doc commits only |
 | EXTERNAL OPERATION | No new validation run; historical Build #162 / run 43430275967 / source `6854d8eb58a5f077cbc99749a35d37a4f55b8efa` remains latest completed App build |
-| EXTERNAL OPERATION STATUS | **IN_PROGRESS — Validation Only run #2 / 43539313774 / job 132275871853 / source `886eb7aa356ce2fa52d06d2cf06cbbca72074410`** |
+| EXTERNAL OPERATION STATUS | **COMPLETED / FAILURE — Validation Only run #2 / 43539313774; checks completed, overall failure due formatter and summary-shell bug** |
 | Result / evidence | New workflow is manual-only, contents:read, Flutter 3.47.2, locked pub get, read-only formatter, analyzer and all Flutter tests; individual quality gate outcomes are aggregated into a final failing status if any gate fails. YAML and embedded shell static checks PASS. Actual pub get/analyzer/formatter/tests and actionlint remain NOT RUN; no Build App or device operations were run. |
-| Blocker | No blocker reported by the live job yet; Flutter setup is still in progress. `actionlint` remains unavailable locally. |
-| Next action | Monitor run `43539313774` job `132275871853` to terminal state; fetch steps/logs; verify exact source SHA and independent Pub/formatter/analyzer/test outcomes. Do not rerun release workflow. |
+| Blocker | Formatting baseline is not clean: 13 Dart files differ under `dart format`; exact patch needs capture/review. Summary script treats backtick-wrapped SHA as a shell command. `actionlint` is unavailable locally. |
+| Next action | Fix summary echo by removing shell-interpreted backticks; add a formatter-only patch preview artifact for review without committing/altering source in CI; commit workflow fix and let the push filter start the next validation run automatically. Then inspect patch, apply only formatting-only changes if verified and rerun. Do not invoke Build App. |
 
 ## Status model
 
