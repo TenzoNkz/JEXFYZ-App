@@ -12,15 +12,15 @@
 | Mode | Eksekusi Full! |
 | Request / work item | Make non-publishing Flutter validation run automatically without owner manual dispatch; trigger and inspect validation only, never Build App/Release or Firmware/device |
 | Started | 2026-11-14 (Asia/Jakarta) |
-| Last updated | 2026-11-14 08:12 (Asia/Jakarta) |
-| Current phase | Reconcile new no-manual requirement with workflow_dispatch-only configuration; revise validation trigger to safe automatic push-only-on-main for relevant App paths; then verify it triggers and inspect run |
-| Last completed milestone | Prior manual-only validation workflow created and statically validated; owner now explicitly requires self-starting automatic validation with no manual dispatch |
-| Last verified main checkpoint | `1e6422c59215bed03a33f22f94e6ea9c222f3704` — latest closed workflow implementation checkpoint; live main will be verified before trigger changes |
+| Last updated | 2026-11-14 08:14 (Asia/Jakarta) |
+| Current phase | Push-only automatic trigger committed; Validation Only run #2 is queued/in progress on exact current SHA; monitoring job steps and dependency/quality gates |
+| Last completed milestone | Replaced manual trigger with push-to-main path filters covering validation workflow, analysis/dependency manifests, lib, test and assets; GitHub automatically created Validation Only run #2 / 43539313774 / SHA `886eb7aa356ce2fa52d06d2cf06cbbca72074410`; job `132275871853` started, checkout succeeded, Flutter setup in progress |
+| Last verified main checkpoint | `886eb7aa356ce2fa52d06d2cf06cbbca72074410` — automatic trigger commit; new Actions run and job state verified by GitHub API |
 | EXTERNAL OPERATION | No new validation run; historical Build #162 / run 43430275967 / source `6854d8eb58a5f077cbc99749a35d37a4f55b8efa` remains latest completed App build |
-| EXTERNAL OPERATION STATUS | **NOT_APPLICABLE (no validation run has been triggered in this interaction yet)** |
+| EXTERNAL OPERATION STATUS | **IN_PROGRESS — Validation Only run #2 / 43539313774 / job 132275871853 / source `886eb7aa356ce2fa52d06d2cf06cbbca72074410`** |
 | Result / evidence | New workflow is manual-only, contents:read, Flutter 3.47.2, locked pub get, read-only formatter, analyzer and all Flutter tests; individual quality gate outcomes are aggregated into a final failing status if any gate fails. YAML and embedded shell static checks PASS. Actual pub get/analyzer/formatter/tests and actionlint remain NOT RUN; no Build App or device operations were run. |
-| Blocker | GitHub connection exposes no workflow-dispatch action. Need automatic push-trigger path; ensure only the non-publishing validation workflow responds to this push and release workflow remains issue-only. |
-| Next action | Verify GitHub event semantics, change validation workflow from manual-only to narrow automatic push trigger on main (include workflow file for first run), commit once, verify Actions auto-run and inspect run/jobs/logs; no manual dispatch or Build App. |
+| Blocker | No blocker reported by the live job yet; Flutter setup is still in progress. `actionlint` remains unavailable locally. |
+| Next action | Monitor run `43539313774` job `132275871853` to terminal state; fetch steps/logs; verify exact source SHA and independent Pub/formatter/analyzer/test outcomes. Do not rerun release workflow. |
 
 ## Status model
 
