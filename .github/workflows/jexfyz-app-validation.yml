@@ -2,7 +2,17 @@
 name: JE X FYZ — Validation Only
 
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/jexfyz-app-validation.yml"
+      - "analysis_options.yaml"
+      - "pubspec.yaml"
+      - "pubspec.lock"
+      - "lib/**"
+      - "test/**"
+      - "assets/**"
 
 # The validation job needs repository read access only.
 permissions:
