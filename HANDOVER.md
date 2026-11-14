@@ -41,16 +41,16 @@ No Build App/APK/Release, Firmware compile/BIN/Firebase/OTA/flash, or device ope
 
 ---
 
-## Previous source follow-up — Floating Monitor Fan icon repair — 2026-11-13
+## Historical pre-Build #162 source follow-up — Floating Monitor Fan icon repair — 2026-11-13
 
-**Latest verified package remains Build #159.** The owner reports Firmware V7.2 and Build #159 are installed and the system is safe in use (USER-REPORTED). The latest repository change is newer than that APK.
+**Historical state before Build #162:** Build #159 was the latest verified package when the Fan icon repair was made. The owner reported Firmware V7.2 and Build #159 installed and safe in use (USER-REPORTED); this remains a report about that earlier version, not proof of Build #162 installation.
 
 - **Confirmed defect:** Build #159 Android compiler warned `FloatingMonitorService.kt:738:17 Duplicate branch condition in 'when'`. Two `"F"` branches existed in native `drawIcon()`; the first gauge branch made the later fan-blade branch unreachable.
 - **Repair on main:** removed the redundant gauge branch and retained the three-blade Fan icon. Source commit `e0b68c3e98a5d75fe40c71bc0a7647712615c33d`.
 - **Regression source:** `test/floating_monitor_layout_contract_test.dart` now requires one unique icon branch for each metric `B/H/V/A/P/F` and checks the Fan glyph. Test commit `aff8b8ec2796d03432f4f8b000f6e70205eccf48`.
-- **Release status:** this patch is NOT in Build #159 and has not been packaged. No new Build/Release was triggered.
-- **Validation:** local Dart/Flutter/Gradle/ADB are absent. Static GitHub read-back only; test, analyzer and Kotlin compile are NOT RUN. Build #159's old compiler warning is the evidence that motivated the patch, not proof that the new code compiles.
-- **Next action:** owner must separately issue `Eksekusi Build App!` to validate current main through the guarded App workflow and publish a new package only if all gates pass. This is a recommendation, not an authorization.
+- **Subsequent resolution:** Build #162 / source `6854d8eb58a5f077cbc99749a35d37a4f55b8efa` included and packaged this correction; the Build #162 Android Gradle and 188/188 Flutter gates passed.
+- **At the time:** local Dart/Flutter/Gradle/ADB were absent, so that source session had only static read-back. **Subsequent resolution:** Build #162 compiled the Kotlin change and passed analyzer, 188/188 Flutter tests and Android Gradle. Actual phone/OEM behavior remains separate.
+- The historical next action was completed by the owner's separate Build #162 authorization. No additional Build App is needed for this immutable package.
 
 ### Remaining repository hardening backlog
 
@@ -60,7 +60,7 @@ No Build App/APK/Release, Firmware compile/BIN/Firebase/OTA/flash, or device ope
 - BLE App-only identity remains BLOCKED / NOT IMPLEMENTED; do not infer it is solved by successful V7.2 installation or normal BLE bonding.
 
 
-## Historical App release — Build #157 SUCCESS (superseded by Build #159)
+## Historical App release — Build #157 SUCCESS (superseded by Build #162)
 
 - Actions run [43247876115](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/43247876115), job 131285336987, attempt 1; immutable package source SHA `10d106537e92060e0aac3fc17fd37f56e746bcd5`. All workflow gates 1–21 and cleanup 39–43 passed.
 - QC: analyzer **23 infos / 0 warnings / 0 errors**; Flutter **187/187 tests passed**; Android Gradle `BUILD SUCCESSFUL in 3m19s`.
