@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — Documentation Map & Retention Policy
 
-Last reconciled: 2026-11-13 (Asia/Jakarta). This file is the navigation and retention index, not an alternate operating ruleset or current-state ledger. Read MASTER_PROMPT.md for all operating instructions. Verify current implementation against live main/source/tests and current Actions/Release evidence.
+Last reconciled: 2026-11-14 (Asia/Jakarta). This file is the navigation and retention index, not an alternate operating ruleset or current-state ledger. Read MASTER_PROMPT.md for all operating instructions. Verify current implementation against live main/source/tests and current Actions/Release evidence.
 
 ## Authority order
 
@@ -21,7 +21,7 @@ Last reconciled: 2026-11-13 (Asia/Jakarta). This file is the navigation and rete
 | CHAT_TRANSFER_PROMPTS.md | Exactly two copy-ready LOAD + CONTINUE prompts | Active templates | KEEP exactly two prompts; no historical prompt library |
 | CHAT_TRANSFER.md | Rolling latest verified checkpoint for chat continuation | Active checkpoint | KEEP concise/current; not a transcript |
 | MEMORY_INDEX.md | This authority map, file classification and retention policy | Active index | KEEP; update whenever Markdown structure changes |
-| PROJECT_STATE.md | Current-only product/source/release/validation truth | Active state | KEEP concise; remove superseded narratives |
+| PROJECT_STATE.md | Current-only product/source/release/validation truth | Active state | KEEP below 100 lines; move build chronology to APP_BUILD_REPORT / CHANGELOG |
 | HANDOVER.md | Immediate next action and nearest blockers | Active handover | KEEP short; no duplicate history |
 | APP_NOTES.md | Current App behavior, BLE, telemetry, language and notification contracts | Active subject reference | KEEP; detailed implementation must match source |
 | APP_PREBUILD_AUDIT.md | Rolling static pre-build audit, prioritized source risks, acceptance matrix and build-readiness decision | Active audit ledger | KEEP while the current source has open pre-build findings; update after each remediation pass and close only after verified acceptance |
@@ -44,6 +44,17 @@ Last reconciled: 2026-11-13 (Asia/Jakarta). This file is the navigation and rete
 | SKILLS_INDEX.md | Catalogue of portable project skills and capability boundaries | Active capability index | KEEP; update with skill additions/removals |
 | .agents/skills/*/SKILL.md | Canonical repository skills for OpenAI Codex-compatible discovery | Active skill library | KEEP one focused workflow per skill; load progressively |
 | .github/skills/*/SKILL.md | Byte-identical GitHub Copilot mirrors; the `code-review` skill is eligible for Copilot code review use | Active skill mirrors | KEEP synchronized with `.agents/skills`; verify exact content equality |
+
+## Reconciliation — 2026-11-14
+
+- Current verified App release is Build #162 / Actions run `43430275967` / source `6854d8eb58a5f077cbc99749a35d37a4f55b8efa`. `BUILD_NOTES.md` and `APP_NOTES.md` now identify it as current; older Build #159/pre-Build #162 snapshots remain historical.
+- `DESIGN_NOTES.md` now identifies the Usage Statistics presentation contract as included in Build #162 with 188/188 hosted Flutter tests passed; physical screenshot/OEM acceptance remains separate.
+- `APP_PREBUILD_AUDIT.md` keeps the current Build #162 success gate at the top and marks superseded pre-build/QC-pending snapshots as historical.
+- `PROJECT_STATE.md` is condensed to a current-only summary under 100 lines. `APP_BUILD_REPORT.md`, `CHANGELOG.md` and immutable `archive/*.md` files remain retained; none were truncated, moved or deleted.
+- Main's recursive tree at the start of this documentation pass contained 133 entries and 52 Markdown files, `truncated=false`. The 12 canonical `.agents/skills` and 12 `.github/skills` mirrors remain byte-identical. The earlier active-link audit found no actionable missing relative paths.
+- The P1 workflow concurrency cancellation issue, missing Flutter lint configuration/formatter gate, absent non-publishing validation workflow and action SHA-pinning backlog remain open. Workflow/configuration changes were not made in this documentation-only scope; see `CHAT_TRANSFER.md` and `HANDOVER.md`.
+
+---
 
 ## Markdown and skill-mirror audit — 2026-11-13
 
