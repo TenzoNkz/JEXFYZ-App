@@ -1,10 +1,11 @@
-## Current handover — Gemini report reconciled against source — 2026-11-14
+## Current handover — localization source audit reconciled — 2026-11-14
 
-- Gemini report is PARTIAL: the report itself says no source attachments were provided and its correction table contains only prompt excerpts. It did not inspect all 354 keys, 167 inline phrase pairs, dynamic branches or native strings.
-- Confirmed: English language label should be `Indonesian`; thermal `Safety` should use `Keselamatan`; improve the Fan-before-cooling title; correct `Safety checks passed`; improve full device sync and low-power sleep phrasing; restore owner-approved `App Development & Build` About credit.
-- Reject: Gemini suggestion to keep `Floating Monitor` untranslated (APP_NOTES requires `Floating Monitor / Monitor Melayang`).
-- Reject: its single-count OTA phrase. Actual source and active sketch establish received bytes then expected bytes; both values must be retained as one localized sentence.
-- State taxonomy is conceptually useful, but map hardware outputs (Peltier/Fan/LED), logical modes/locks (Adaptive/Lock Voltage) and settings preferences separately. Current Usage Statistics helper collapses Peltier and Adaptive into the same Indonesian state words; native A/P HUD likewise shares the same display values.
-- Existing Fan ACK-before-Peltier sequence and detailed UI text preserve the actual prerequisite; the title wording needs improvement but is not evidence of a broken hardware interlock.
-- **Next:** a separate owner-authorized `Eksekusi Full!` should produce the exhaustive correction matrix, apply approved copy in a single controlled localization pass, add semantic/placeholder/native tests, and run analyzer + all Flutter tests. This review made no source/test/build changes.
+- Live source baseline: 873a825020659dadcac2e5c7242e759209776414; current main before documentation closeout was 088e18e3995f0564cbca970f830a5a7b027320b3. The 18 intervening commits were Markdown-only.
+- Correct inventory: 354 dictionary entries, 166 real inline JexText.phrase() calls (116 main / 10 Floating Monitor / 40 Usage Statistics), and 260 JexText.of() call sites. Previous 167 count included one comment. All dictionary pairs have both locales and static placeholder parity.
+- Confirmed copy issues: thermal Safety → Keselamatan; Fan-before-cooling title omits its timing relationship; “Safety checks passed.” → “Pemeriksaan keselamatan normal.” is not equivalent.
+- State wording is inconsistent: Usage Statistics maps Adaptive and Peltier to the same AKTIF/NONAKTIF; native HUD maps both to HIDUP/MATI. Define per-metric physical-output vs logical-mode mapping before changes.
+- OTA UPLOAD_SIZE_MISMATCH order is received bytes then expected bytes. Both numbers render, but the visible copy should label both explicitly.
+- Preserve current owner-approved About role App Developer & Builder / Pengembang Aplikasi & Perakit and Floating Monitor / Monitor Melayang. Do not use stale contrary wording from old checkpoint/Gemini recommendations.
+- Validation Only #16 is success against source 873a825 (formatter clean, analyzer 119 infos / 0 warnings/errors, 188/188 tests). No localization changes were tested; Build #162 source is older. No tests/build were run in this Diskusi.
 
+**Next:** recommend Lanjut Eksekusi Full! to complete the semantic matrix, implement approved copy and regression tests. This is not authorized by the current Diskusi command; wait for the owner's explicit mode command. App Build and Firmware/device operations remain separately gated.
