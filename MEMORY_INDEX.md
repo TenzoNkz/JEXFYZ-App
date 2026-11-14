@@ -52,7 +52,7 @@ Last reconciled: 2026-11-14 (Asia/Jakarta). This file is the navigation and rete
 - `APP_PREBUILD_AUDIT.md` keeps the current Build #162 success gate at the top and marks superseded pre-build/QC-pending snapshots as historical.
 - `PROJECT_STATE.md` is condensed to a current-only summary under 100 lines. `APP_BUILD_REPORT.md`, `CHANGELOG.md` and immutable `archive/*.md` files remain retained; none were truncated, moved or deleted.
 - Main's recursive tree at the start of this documentation pass contained 133 entries and 52 Markdown files, `truncated=false`. The 12 canonical `.agents/skills` and 12 `.github/skills` mirrors remain byte-identical. The earlier active-link audit found no actionable missing relative paths.
-- The P1 workflow concurrency cancellation issue, missing Flutter lint configuration/formatter gate, absent non-publishing validation workflow and action SHA-pinning backlog remain open. Workflow/configuration changes were not made in this documentation-only scope; see `CHAT_TRANSFER.md` and `HANDOVER.md`.
+- The P1 workflow concurrency cancellation issue is now fixed in `.github/workflows/jexfyz-app-build-trigger.yml`; root `analysis_options.yaml` now enables the locked `flutter_lints 6.0.0` rule set. Post-activation analyzer diagnostics and a clean formatter baseline remain NOT RUN because the current runtime has no Dart/Flutter SDK. No formatter gate or non-publishing validation workflow was added. See `CHAT_TRANSFER.md`, `HANDOVER.md` and `APP_PREBUILD_AUDIT.md`.
 
 ---
 
