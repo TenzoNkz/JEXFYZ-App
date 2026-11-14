@@ -12,15 +12,15 @@
 | Mode | Eksekusi Full! |
 | Request / work item | Create manual non-publishing Flutter validation workflow at `.github/workflows/jexfyz-app-validation.yml`; run validations only through the isolated workflow when manually dispatched; never Build App/Release or touch Firmware/device |
 | Started | 2026-11-14 (Asia/Jakarta) |
-| Last updated | 2026-11-14 08:01 (Asia/Jakarta) |
-| Current phase | Opening authorized workflow-only implementation; checking exact main HEAD, current build workflow/toolchain conventions and relevant workflow skill before writing |
-| Last completed milestone | Owner explicitly authorized the exact validation workflow path, manual-only trigger and no-build/no-release constraints; prior recommendation already recorded in project docs |
-| Last verified main checkpoint | Live main read is pending after opening status commit |
+| Last updated | 2026-11-14 08:04 (Asia/Jakarta) |
+| Current phase | New manual validation-only workflow committed; YAML, trigger/permission/command constraints and Bash scripts statically validated; final diff/Actions verification and durable checkpoint updates in progress |
+| Last completed milestone | Created `.github/workflows/jexfyz-app-validation.yml` on main; workflow_dispatch-only, contents-read permission, Flutter 3.47.2, pub get, formatter, analyzer, full tests, separate gate outcomes, pinned action SHAs; PyYAML/BaseLoader and Bash syntax checks passed |
+| Last verified main checkpoint | `fc325d6b4fa6878963938257e140e07673885555` — validation workflow create commit; final repository verification and docs checkpoint remain in progress |
 | EXTERNAL OPERATION | No new operation; historical Build #162 / run 43430275967 / source `6854d8eb58a5f077cbc99749a35d37a4f55b8efa` |
 | EXTERNAL OPERATION STATUS | **NOT_APPLICABLE (no active or new operation)** |
 | Result / evidence | PyYAML 6.0.3 STATIC CHECK PASS for retrieved analysis_options.yaml and pubspec excerpt; live lockfile confirms flutter_lints 6.0.0. Actions latest remains #162 completed/success; no active/new run observed. Flutter pub get, analyzer, formatter, Flutter tests and actionlint were BLOCKED / NOT RUN. |
-| Blocker | None identified yet; workflow must remain manual-only, read-only, and free of package build/publish/device steps |
-| Next action | Fetch live main/tree and full guarded build workflow, inspect GitHub Actions skill guidance, add only the authorized workflow file, perform static validation and commit it without dispatching a run |
+| Blocker | `actionlint` is not installed, so full GitHub Actions lint/schema validation is unavailable locally; manual workflow run has intentionally not been dispatched |
+| Next action | Verify exact final workflow and complete diff, confirm no Build App run was triggered, update CHAT_TRANSFER plus audit/state/handover, close status without dispatching the new validation workflow |
 
 ## Status model
 
