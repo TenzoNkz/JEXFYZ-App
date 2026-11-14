@@ -1,45 +1,37 @@
-## CURRENT CHECKPOINT — CHAT STUCK RECOVERY / LOCALIZATION IMPLEMENTATION IN PROGRESS — 2026-11-14
+## CURRENT CHECKPOINT — DISKUSI SOURCE AUDIT / LOCALIZATION RECOVERY — 2026-11-14
 
-**Current mode:** `Chat Stuck!` recovering the explicit `Eksekusi Full!` authorization recorded in commit `7277092884ff7669e86dfbf92381bab1e6606fed`. Authorized scope is comprehensive App localization across Dart/Flutter copy, native Android notification/HUD strings, regression tests and canonical project documentation.
+**Current mode:** Diskusi! — general engineering, read-only for executable source, tests, app/native configuration, workflows, builds/releases and Firmware/device operations. The prior owner-granted Eksekusi Full! authorization is present in history, but this incoming interaction selected Diskusi and did not use that implementation permission.
 
-**Prior interaction disposition: RECOVERY_REQUIRED.** The previous attempt ended while constructing a local parser. Parser state existed only in memory and was not persisted. No source blobs, source commits, test runs, workflow triggers or other side effects were created by that interrupted attempt. Rebuild the parser from current live source; do not infer or reuse unsaved parser output.
+**Session result:** this Diskusi audit is complete. **Work item: WAITING_OWNER** for a new explicit Eksekusi Full! command before applying copy/test changes. The prior interrupted parser was not persisted; the audit parser has now been rebuilt from live source. No source/test changes, test runs, Actions triggers or other external side effects occurred in this interaction.
 
-### Live recovery evidence
+### Current live evidence
 
-- Current `main` HEAD before this checkpoint update: `d0891df1e20acc39e2a4934fac8a26aa6fa702c7`; recursive tree: 137 entries, `truncated=false`.
-- Previous comparison from source baseline `873a825020659dadcac2e5c7242e759209776414` to `be22a43a8e06794118a1dbbf43fe577249788af0`: 15 commits ahead / 0 behind and exactly eight changed Markdown paths. The latest additional commit only updates `00_WORK_STATUS.md`; executable source, tests, app/native config and workflows remain unchanged from the baseline.
-- Latest relevant Actions run is Validation Only #16 / `43552255469`, job `132317129708`, completed SUCCESS against `873a825`. The 100 most recent main-branch workflow runs returned are all completed. No active external operation was found; open PR search returned zero.
-- Current release remains Build #162, Release ID `403010611`, tag `jexfyz-latest`, target/source `6854d8eb58a5f077cbc99749a35d37a4f55b8efa`. The localization changes are not in that package; this task does not authorize a new build.
+- Current main HEAD before documentation closeout: 088e18e3995f0564cbca970f830a5a7b027320b3; recursive tree: **137 entries, truncated=false**.
+- Compared from code baseline 873a825020659dadcac2e5c7242e759209776414: **18 commits ahead / 0 behind**, exactly eight changed paths and all eight are Markdown. App/Dart/Kotlin/Firmware source, tests, config and workflows remain unchanged from the baseline.
+- Latest Validation Only is run #16 / 43552255469, job 132317129708, completed SUCCESS on source 873a825: locked dependencies PASS, formatter clean (17 Dart files, 0 changed), analyzer PASS (119 infos, zero warnings/errors), Flutter tests **188/188 PASS**. This is CI evidence for that source SHA, not for localization changes that have not been made.
+- The latest 100 main-branch workflow runs returned are all completed. No open PR was found. No active external process was observed.
+- Latest App package remains Build #162, Release ID 403010611, tag jexfyz-latest → source 6854d8eb58a5f077cbc99749a35d37a4f55b8efa. It predates the current source baseline; no build is authorized in Diskusi.
 
-### Recovered acceptance scope
+### Rebuilt localization inventory and evidence
 
-- Review every one of the 354 bilingual dictionary entries in `lib/app_settings.dart`, every one of the 167 inline `JexText.phrase()` pairs across `main.dart`, `floating_monitor.dart` and `usage_statistics.dart`, dynamic lookup branches, and native bilingual strings in `JeForegroundService.kt` and `FloatingMonitorService.kt`.
-- English is the master copy. Indonesian must be natural while preserving subject, action, condition, timing, certainty, quantities, safety severity and placeholders; no semantic strengthening, weakening, addition or omission.
-- Preserve internal locale/storage IDs, BLE/protocol identifiers, brand terms, exact placeholders/units, and owner-approved `Floating Monitor / Monitor Melayang`. Thermal safety is `Keselamatan`, not Security `Keamanan`. Preserve both received and expected OTA byte counts and their order.
-- Define context-aware state words for physical outputs, logical modes/locks and user preferences. Do not mechanically global-replace `HIDUP/MATI` or `AKTIF/NONAKTIF`; explicitly audit Peltier vs Adaptive in Usage Statistics and native HUD.
-- Add semantic/placeholder/state-context/native-language and long-copy regression coverage. Run formatter, focused tests, analyzer and full Flutter suite only if the toolchain or hosted non-publishing Validation Only workflow is available. Never trigger Build App.
-- Exact prior Gemini findings and corrections remain below. Gemini had no repository access and supplied no exhaustive 354/167 audit; only source-cross-checked findings are retained.
+- lib/app_settings.dart: 354 dictionary keys; all 354 have English and Indonesian entries. Static placeholder-set comparison found no mismatch among dictionary pairs.
+- Actual inline JexText.phrase() calls: **166**, not 167 (116 main.dart, 10 floating_monitor.dart, 40 usage_statistics.dart). The older count included a comment on main.dart line 7. There are 260 JexText.of() calls across those three files.
+- Native bilingual strings live separately in JeForegroundService.kt and FloatingMonitorService.kt. The channel/notification copy remains bilingual and owner-approved Floating Monitor / Monitor Melayang must be preserved.
+- Existing tests ensure dictionary English/Indonesian fields exist and check selected examples; they do not judge semantic quality of every translation or exhaustively test native strings.
 
-### Cross-checked recommendations
+### Source-confirmed findings
 
-1. Display language label: EN `Indonesian`; ID `Bahasa Inggris / Bahasa Indonesia`; preserve enum/storage IDs.
-2. Use `Keselamatan` for physical/thermal Safety and reserve `Keamanan` for Security/access/crypto.
-3. Improve the short Fan prerequisite title to explicitly state the fan must be on before cooling starts. The adjacent body and current FAN-ACK-before-PELTIER command sequence already preserve the prerequisite; this is a copy correction, not a proven safety-interlock defect.
-4. Change `Safety checks passed.` translation from `Pemeriksaan keselamatan normal.` to an equivalent of `Pemeriksaan keselamatan berhasil.`.
-5. Improve `fullSyncFailed` and preserve `sleep` in `resetDeepSleep`.
-6. Restore owner-approved About credits `App Development & Build / Pengembangan Aplikasi & Build`.
-7. Define physical ON/OFF, logical Active/Inactive, and preference Enabled/Disabled by control/metric context. The current generic Usage Statistics helper maps Adaptive and Peltier identically to AKTIF/NONAKTIF; native HUD also maps both A/P to HIDUP/MATI, so a precise per-metric mapping is needed.
-8. Improve OTA stage terminology such as Range retry, image verification and Flash readback after confirming stage semantics.
+1. Thermal safety terminology: peltierSafety uses Keamanan Peltier; sensorErrorCoolingLocked uses demi keamanan. In both contexts “Safety” means thermal safety, so use Keselamatan, not Security Keamanan.
+2. peltierFanRequiredTitle: EN Fan required before cooling; ID Kipas perlu dinyalakan drops the before-cooling relationship. The nearby body copy and ordered FAN:ON → successful ACK → PELTIER:ON sequence preserve the operational prerequisite. This is a copy clarity issue, not evidence of a broken safety interlock.
+3. main.dart: EN Safety checks passed.; ID Pemeriksaan keselamatan normal. does not express “passed/succeeded”.
+4. State taxonomy: usage_statistics.dart::_localizedUsageStateValue() maps ON/OFF to AKTIF/NONAKTIF for Adaptive and Peltier. Native HUD FloatingMonitorService.kt::itemText() maps both A (Adaptive) and P (Peltier) to HIDUP/MATI. These surfaces are inconsistent; define separate context-aware words for physical outputs, logical modes/locks and user preferences before aligning them. No global replacement.
+5. OTA size mismatch: Firmware emits UPLOAD_SIZE_MISMATCH_<received>_<expected>; App preserves the two numeric values and their order, but current “uploaded X / Y bytes” copy does not clearly label which is received vs expected. Future wording should explicitly name both counts and preserve order.
+6. Copy candidates requiring review, not yet approved: fullSyncFailed (“Could not complete device sync.”), resetDeepSleep (“low-power sleep”), language labels Indonesia / Indonesian, and OTA stage terms such as Range retry / image verification.
+7. About-credit correction against live owner-approved subject note: current contract is App Developer & Builder / Pengembang Aplikasi & Perakit. The older suggestion to restore App Development & Build conflicts with the current APP_NOTES.md contract and is rejected as stale. DEVELOPED BY HORIZON / DIKEMBANGKAN OLEH HORIZON is a separate Home subtitle.
 
-### Important Gemini corrections
+### Next action
 
-- Reject Gemini's proposal to keep Floating Monitor untranslated in Indonesian. The current owner-approved APP_NOTES contract requires `Floating Monitor / Monitor Melayang`, including native notification/channel strings.
-- Reject the proposed single-count OTA copy. Firmware emits `UPLOAD_SIZE_MISMATCH_<received>_<expected>`; both numeric values and order are required. A whole-sentence candidate is EN `OTA failed: {receivedBytes} bytes received; {expectedBytes} bytes expected.` / ID `OTA gagal: {receivedBytes} byte diterima, sedangkan {expectedBytes} byte diharapkan.`. Check display length.
-- Gemini's P0 label for the Fan prerequisite overstates a wording defect as a hardware safety failure. Existing detail copy and command flow already preserve Fan confirmation before Peltier start.
-
-### Next step
-
-The separate owner authorization for `Eksekusi Full!` is now verified in the live status history (commit `7277092884ff7669e86dfbf92381bab1e6606fed`). Chat Stuck inherits that App-only source/tests/docs scope; it does not authorize packaging or Firmware/device work. Rebuild the parser and complete the source-driven correction matrix from live `main`, then apply scoped language and regression-test changes.
+A separate Eksekusi Full! is recommended to finish the full semantic correction matrix for 354 dictionary entries, 166 inline phrases, dynamic branches and native strings; then implement only owner-approved wording and regression coverage. This is a recommendation, **not an authorization issued by this Diskusi session**. Preserve the no-Build-App / no-Firmware boundary.
 
 ---
 
