@@ -1,3 +1,36 @@
+## CURRENT CHECKPOINT — DISKUSI / NEXT NON-RELEASE VALIDATION PATH — 2026-11-14
+
+**Mode:** `Diskusi!` — read-only engineering decision. No workflow, App source, tests or executable configuration was changed. Only continuity documentation and the status marker were updated. No Build App, APK/Release, Firmware/device operation or new Actions run was started.
+
+### Current evidence
+
+- The latest non-release validation attempt is documented immediately below. Static YAML/dependency checks passed, but the runtime had no Flutter/Dart SDK or cache and could not reach GitHub/Flutter artifact hosts to bootstrap it.
+- Main contains root `analysis_options.yaml` with `include: package:flutter_lints/flutter.yaml`; `flutter_lints 6.0.0` is locked.
+- The current repository workflow inventory contains only `.github/workflows/jexfyz-app-build-trigger.yml`, the guarded App Build/QC/Release pipeline. It must not be invoked to obtain analyzer/formatter/test results.
+- Post-lint `flutter analyze`, `dart format` and `flutter test` therefore remain NOT RUN; formatter and post-lint diagnostic baselines are not established.
+
+### Recommended next step
+
+Prefer adding a **separate manual validation-only GitHub Actions workflow**, rather than trying to bootstrap Flutter inside this restricted runtime or reusing the release pipeline.
+
+Proposed path: `.github/workflows/jexfyz-app-validation.yml`.
+
+Its scope should be tightly restricted:
+- Trigger only with `workflow_dispatch`; no issue trigger, push, pull_request or schedule.
+- Use read-only repository permissions and an isolated Ubuntu hosted runner.
+- Check out the selected branch, install the same Flutter `3.47.2` toolchain used by the existing App pipeline, then run `flutter pub get --enforce-lockfile`.
+- Run all three quality commands without mutating repository source: `dart format --output=none --set-exit-if-changed lib test`, `flutter analyze --no-fatal-infos`, and `flutter test --coverage`. Collect each command's exit code/output so a formatter finding does not hide analyzer or test output; dependency-resolution failure should stop the checks.
+- Optionally upload `coverage/lcov.info` if present. Do not add `flutter build apk`, `flutter build appbundle`, Gradle, signing secrets, Firebase, Release/tag/publishing steps or Firmware/device operations.
+- Keep it manually invoked; do not add required branch protection or automatic PR/push triggers until the validation baseline is stable.
+
+After the workflow file is committed to the default branch, the owner can start it from GitHub **Actions → JE X FYZ — Validation Only → Run workflow**, selecting `main`. GitHub documents that manual workflow runs require `workflow_dispatch` and that the workflow file must exist on the default branch. The run must report and retain the exact source SHA, command outputs and exit codes.
+
+### Authorization boundary
+
+This is a recommendation only. Diskusi did not create the workflow. Implementing the separate validation workflow requires a new `Eksekusi Full!` authorization explicitly naming `.github/workflows/jexfyz-app-validation.yml` and the no-build/no-release requirements. The separate `Eksekusi Build App!` mode remains required for the actual App package/release workflow; it is not needed for this validation-only workflow.
+
+---
+
 ## CURRENT CHECKPOINT — EKSEKUSI FULL / NON-RELEASE FLUTTER VALIDATION ATTEMPT — 2026-11-14
 
 **Mode:** `Eksekusi Full!` — the owner asked to execute the post-lint Flutter/Dart checks independently, without Build App. No Dart source, tests, dependencies or workflow were changed in this attempt. No Build App/APK/Release, Firmware/BIN/Firebase/OTA/flash or device operation was performed.

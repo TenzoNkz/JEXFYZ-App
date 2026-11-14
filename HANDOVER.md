@@ -1,6 +1,6 @@
-## Immediate next step — Post-lint diagnostics and formatter baseline — 2026-11-14
+## Immediate next step — Manual validation-only workflow (new authorization required) — 2026-11-14
 
-The owner's explicitly authorized CI policy changes are committed to `main`. No App Build, Actions workflow run, APK/Release, Firmware or device operation was triggered.
+The latest non-release SDK bootstrap attempt is blocked by absent Flutter/Dart binaries and unavailable external DNS/network. Do not trigger the guarded App Build workflow. Recommended path: add `.github/workflows/jexfyz-app-validation.yml` with only `workflow_dispatch`, read-only permissions and Flutter 3.47.2; implementation requires a new explicit `Eksekusi Full!` authorization. No workflow was created in the current Diskusi session.
 
 ### Completed changes
 
