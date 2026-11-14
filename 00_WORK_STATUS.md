@@ -12,15 +12,15 @@
 | Mode | Eksekusi Full! |
 | Request / work item | Make non-publishing Flutter validation run automatically without owner manual dispatch; trigger and inspect validation only, never Build App/Release or Firmware/device |
 | Started | 2026-11-14 (Asia/Jakarta) |
-| Last updated | 2026-11-14 08:17 (Asia/Jakarta) |
-| Current phase | Summary echo bug fixed and formatter-patch artifact preview added; automatic Validation Only run #3 started on corrected workflow SHA; waiting for dependency/quality gates and patch artifact |
-| Last completed milestone | Run #2 findings captured; summary source-SHA backtick removed; optional formatter preview now runs `dart format lib test` only in ephemeral runner after tests and uploads a 7-day review patch; upload-artifact pinned to full SHA; GitHub automatically created run #3 / 43539667033 / source `6fb0f2be8f648a420bd10aa1a1a3b4070e4547e1` |
+| Last updated | 2026-11-14 08:18 (Asia/Jakarta) |
+| Current phase | Validation Only run #3 completed Flutter/Dart setup, locked dependency resolution, formatter probe and analyzer; full Flutter tests are in progress; patch preview follows tests |
+| Last completed milestone | Run #3 / 43539667033: Flutter setup success, `flutter pub get --enforce-lockfile` success, formatter probe found the same 13/16 files needing formatting, analyzer step succeeded; workflow preview patch and upload are pending after `flutter test` finishes |
 | Last verified main checkpoint | `6fb0f2be8f648a420bd10aa1a1a3b4070e4547e1` — corrected validation workflow commit triggering current automatic run #3 |
 | EXTERNAL OPERATION | No new validation run; historical Build #162 / run 43430275967 / source `6854d8eb58a5f077cbc99749a35d37a4f55b8efa` remains latest completed App build |
 | EXTERNAL OPERATION STATUS | **IN_PROGRESS — Validation Only run #3 / 43539667033 / source `6fb0f2be8f648a420bd10aa1a1a3b4070e4547e1`** |
 | Result / evidence | New workflow is manual-only, contents:read, Flutter 3.47.2, locked pub get, read-only formatter, analyzer and all Flutter tests; individual quality gate outcomes are aggregated into a final failing status if any gate fails. YAML and embedded shell static checks PASS. Actual pub get/analyzer/formatter/tests and actionlint remain NOT RUN; no Build App or device operations were run. |
-| Blocker | Formatter baseline still needs a patch preview and a formatting-only source review; `actionlint` remains unavailable locally. Run #3 is in progress. |
-| Next action | Monitor run #3 and fetch `jexfyz-dart-format-preview` artifact if produced; verify the patch changes only formatting, then apply only the formatter output as a narrow source change and allow push-triggered validation to rerun. Preserve no-build/release/Firmware/device constraints. |
+| Blocker | Formatter baseline is not clean; patch preview pending. Full tests still in progress. `actionlint` remains unavailable locally. |
+| Next action | Monitor run #3 through tests, preview generation, artifact upload and summary; fetch logs and artifact, compare formatter-only patch, then decide any source edit strictly within formatting-only scope. Do not run Build App. |
 
 ## Status model
 
