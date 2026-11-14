@@ -1,81 +1,33 @@
-## Current App source and verified package — Build #159 SUCCESS — 2026-11-13
+## Current App source and verified package — Build #162 SUCCESS — 2026-11-13
 
-- **Four App UI source refinements:** source checkpoint `a5d45866bb244a2f260330a0e2ea332c391a9fcd` on `main`; production source files implement the approved modal, Lock Voltage, About and Home-tab changes listed below.
-- **Test-only repair for hosted validation:** commit `2c75c5b96db21937ec66c46f954d672a45384a7f` updates two stale About Indonesian role assertions to match the approved/source wording `Pengembang Aplikasi & Perakit`. Production source was not changed by this repair.
-- **Latest verified App package:** Build #159, Actions run [43376503987](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/43376503987), job `131724120379`, immutable package source SHA `cdca38b9e4f2f99006db8feae40c07c6f9bdfb0a`. All workflow gates 1–21 and cleanup 39–43 passed.
-- **Hosted validation:** analyzer **23 info-level deprecations / 0 warnings / 0 errors**; Flutter suite **187/187 passed**; Android Gradle `BUILD SUCCESSFUL in 2m51s`. Native Android app JUnit compile/process/test tasks were `NO-SOURCE`; no native Android JUnit cases were executed.
-- **APK:** `JEXFYZ-release.apk`, obfuscated with split debug info; **55,914,587 bytes**, SHA-256 `02bef5960e0b23bea360d2cf8a0532e7dbd202e05f5420e055c98b4dc7a61321`. [Download APK](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-release.apk).
-- **Corresponding source ZIP:** **2,932,978 bytes**, SHA-256 `5dbb29ebc7629775835bc65d655069a1a077f6d3240114387c965b5ad4789558`. [Download source ZIP](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-corresponding-source.zip). ZIP integrity and embedded source marker passed.
-- **Release/tag integrity:** Release ID `403010611` and tag `jexfyz-latest` both point to exact package SHA `cdca38b9e4f2f99006db8feae40c07c6f9bdfb0a`; exactly one APK and one matching source ZIP. Step 21 re-downloaded both, matched hashes and verified ZIP marker/integrity plus downloaded APK V1/V2/V3 and pinned certificate.
-- **Signing:** one RSA-4096 signer, JE X FYZ DN, pinned certificate SHA-256 `dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0`; V1/JAR, V2 and V3 pass. Certificate is self-signed; jarsigner reports PKIX chain validation failure, so it is not publicly CA-trusted.
-- **Protected version:** Android Gradle `versionName "Telegram @horizontalzzz"` is unchanged; Flutter app version is `1.0.0+3`.
-- **Failure history:** Build #158 remains FAILED (185 passed / 2 stale About role assertions); its failure is preserved in APP_BUILD_REPORT.md. The two test-only corrections are verified by Build #159. Do not overwrite or relabel the failed attempt.
-- **Formatter/visual boundary:** the guarded workflow has no Dart formatter step; `dart format` is not claimed. Owner reports Build #159 installed (USER-REPORTED); actual Android/OEM screenshot acceptance remains **VISUAL NOT VERIFIED** pending matched 350-dp/420-dp, EN/ID and Light/Dark screenshots. Physical BLE/device and Firmware/BIN/OTA evidence remain outside App CI.
+- **Latest verified package:** Build #162 / [Actions run 43430275967](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/43430275967) / job `131901744336`, terminal SUCCESS on immutable source `6854d8eb58a5f077cbc99749a35d37a4f55b8efa`.
+- **Current-main parity:** the verified compare from Build #162 source to the main checkpoint before this documentation pass showed 31 commits ahead / 0 behind, with Markdown-only changes. The App source, tests, Android host/configuration, dependencies and Firmware source are unchanged from the Build #162 checkout.
+- **Hosted QC:** Dart analyzer 23 info-level findings / 0 warnings / 0 errors; Flutter **188/188 passed**; Android Gradle `:app:testDebugUnitTest` gate **BUILD SUCCESSFUL in 3m56s**. Native Android app JUnit tasks were `NO-SOURCE`; no native App JUnit case executed.
+- **Release identity:** Release ID `403010611` / tag `jexfyz-latest` resolve to the exact source SHA above. Exactly one APK and one corresponding source ZIP were published and downloaded for verification.
+- **APK:** `JEXFYZ-release.apk`, **55,881,819 bytes**, SHA-256 `56c08bd490e52a8616627613675141a91c14ab6893cca0e1e54d5e5ac1a053f2`. [Download APK](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-release.apk).
+- **Source ZIP:** **2,933,316 bytes**, SHA-256 `86bd61edfe59acd6063367f7b8704356d2bf192d8c55c150f0f0e6b6285db42e`. [Download source ZIP](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-corresponding-source.zip). ZIP integrity and embedded source marker passed.
+- **Signing:** original/downloaded APKs passed V1/JAR, V2 and V3 checks with one signer and pinned certificate SHA-256 `dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0`. The signing certificate is self-signed, not publicly CA-trusted.
+- **Included refinements:** four approved UI changes (Peltier prerequisite card, one-line Firmware-owned Lock Voltage setting, bilingual About credits, compact Home tabs), lowercase About handle `@horizontalzzz`, Usage Statistics presentation/selector/chart/readout changes, and the native Floating Monitor Fan glyph correction.
+- **Protected version:** Android Gradle `versionName "Telegram @horizontalzzz"` remains unchanged; Flutter version is `1.0.0+3`.
+- **Failure history:** Builds #160 and #161 remain failed historical attempts; their evidence stays in the append-only APP_BUILD_REPORT.md. Build #162 is the current verified package and does not overwrite prior failures.
+- **Evidence boundary:** Build #162 is **VERIFIED CI / RELEASE SUCCESS**, not installation, screenshot, OEM, BLE, Firmware, thermal or electrical acceptance. Build #162 owner installation is not confirmed here. Physical-device and Firmware/BIN/Firebase/OTA/flash evidence remain separate and unverified.
 
+## Current approved UI and data contracts — included in Build #162
 
-### Owner field report and native Floating Monitor follow-up — 2026-11-13
+- **Peltier prerequisite:** custom amber prerequisite card; preserve the ordered operation `FAN:ON → successful ACK → PELTIER:ON`. Cancel/barrier dismissal must send no command.
+- **Lock Voltage:** Firmware P1 state is authoritative. Keep one-line Settings card, static neutral lock tile and visible Switch; do not infer OFF while state is unknown/disconnected. Preserve NVS save-failure/retry and actual-voltage telemetry semantics.
+- **About and Home tabs:** About title is localized as Special Thanks / Ucapan Terima Kasih; Horizon role is App Developer & Builder / Pengembang Aplikasi & Perakit and handle is exactly `@horizontalzzz`. Five Home tabs use equal width, 38-dp visible pills within the existing 48-dp row/hit target; the extra Divider is absent with the established 8-dp vertical footprint retained.
+- **Usage Statistics presentation:** one session header/elapsed timer and selector; integer 1°C Battery/Hotside axis labels based on observed data; Min/Avg/Max only; four operating lanes and shared six-metric cursor; compact two-row/three-column selected-time dock with locale-aware values.
+- **Usage Statistics invariants:** SQLite schema v2, v1→v2 `onUpgrade`, 30-day retention, raw 1-Hz observations, explicit null gaps, session continuity, HOT-only P1 freshness, bounded writer queue (64 normal + 8 reserved + 1 critical endSession slot), FIFO accepted writes and explicit overload warning remain intact. One full selected-session summary/decimation pass still runs per one-second batch; long-duration CPU/memory and sustained storage-pressure soak remain unverified.
+- **Bluetooth lifecycle:** Dashboard disposal cancels connection/notification/rediscovery subscriptions and timers; scanner attempts use serialized ownership/generation invalidation. Android 12+ Scan/Connect and legacy pre-Android-12 Bluetooth/Location declarations and request paths exist. Physical/OEM permission and reconnect behavior still require device validation.
+- **Visual acceptance:** **VISUAL NOT VERIFIED** until actual Build #162 screenshots are reviewed at 350-dp/420-dp, portrait/constrained height, English/Indonesian and Light/Dark, with Home, Settings, Bluetooth, Floating Monitor and Usage Statistics states.
 
-- **USER-REPORTED field state:** the owner reports Firmware V7.2 has been updated and the latest App (Build #159) has been installed and is operating safely so far. This is not independently observed device/thermal/BLE validation.
-- **Build #159 remains the latest verified package:** run `43376503987`, immutable source `cdca38b9e4f2f99006db8feae40c07c6f9bdfb0a`. It does not contain the subsequent native icon correction below.
-- **Native Floating Monitor correction:** Build #159 Android compilation warned about duplicate `"F"` branches in `FloatingMonitorService.kt:738`. The earlier gauge-like branch was removed; the three-blade Fan glyph branch is now the sole `F` mapping. This matches the App contract that Floating Monitor `F` means Fan Speed, not FPS.
-- **Regression source:** `test/floating_monitor_layout_contract_test.dart` now checks the exact unique `B/H/V/A/P/F` icon branch map and the three-blade Fan drawing path. The suite inventory is now **188 declarations** across 9 Dart test files; this new test has NOT RUN.
-- **Patch commits:** native App source `e0b68c3e98a5d75fe40c71bc0a7647712615c33d`; regression test `aff8b8ec2796d03432f4f8b000f6e70205eccf48`. The patch is **NOT RELEASED**.
-- **Validation boundary:** GitHub read-back and static source-contract inspection only. This runtime has no Dart, Flutter, Gradle or ADB; Flutter tests, analyzer and Kotlin/Android compilation did not run on the patch. A separate owner-issued `Eksekusi Build App!` is required to validate and package it. No Build, Release, Firmware, BIN, Firebase, OTA or device operation was triggered.
-
-### Usage Statistics presentation refresh — 2026-11-13
-
-**Status: SOURCE + REGRESSION IMPLEMENTED / 188 TEST DECLARATIONS / FLUTTER QC NOT RUN / NOT RELEASED / VISUAL NOT VERIFIED.**
-
-- Merged session status, start date/time and one primary elapsed timer into one compact header. Session selection remains available in the same header dropdown; menu entries show status and start time only, never a second duration.
-- Battery and Hotside charts use whole-degree 1°C Y-axis ticks. The vertical range is derived from observed data, padded one degree; it no longer expands to include a distant Hotside limit. Plot height grows when needed to retain readable spacing. The configured Hotside limit remains visible as text and its dashed line is drawn only when it falls within the current data scale.
-- Removed the secondary Observed statistic, More details disclosure and Last sample footer. Min / Avg / Max remain visible; four Activity lanes (Voltage, Adaptive Mode, Peltier and Fan Speed) and the shared synchronized six-metric cursor remain. Secondary duration and Fan aggregates are still calculated in analytics but are not shown in a second disclosure.
-- Tightened the Selected time dock to a compact two-row / three-column readout with six synchronized values, bold tabular numbers and an icon-only 48-dp close target. ON/OFF and voltage text follow the selected locale; temperature values use comma decimals in Indonesian and dot decimals in English.
-- No change to raw 1-Hz observations, SQLite schema/retention, write queue, session boundaries, P1 freshness, analytics inputs, null gaps, chart decimation, telemetry or Firmware.
-- Source: `lib/usage_statistics.dart` latest commit `f32c1278308bea7cedd4f150255d2128cac138bb`; tests: `test/usage_statistics_test.dart` latest commit `b560403877fd2080db2019fc04d86d67020418dd`. Regression source verifies 1°C ticks, adaptive chart height, removed UI content, one timer, localized chart headings and six cursor fields.
-- Complete test inventory: **188 declarations across 9 Dart test files** (not execution evidence). This runtime lacks Dart/Flutter/Gradle/ADB; formatter, focused/full tests, analyzer, Android Gradle and screenshots are **NOT RUN**. Build #159 / Release #403010611 remains the latest verified package and does not include these changes. A separate owner-authorized `Eksekusi Build App!` is required for hosted QC/package. Visual acceptance remains pending.
-
-### Implemented UI contracts
-
-1. **Peltier prerequisite modal:** `Align(alignment: Alignment.bottomCenter)` inside the existing `JexFixedScalePage → SafeArea → LayoutBuilder`; 16-dp horizontal and 10-dp vertical margin; 296-dp max width; 20-dp radius. Keep Cancel/barrier dismissal command-free and preserve `FAN:ON → successful ACK → PELTIER:ON`.
-2. **Lock Voltage Settings:** one-line card; static neutral lock icon; P1-authoritative `state.active`; Switch remains visible for known state and is disabled when not ready/busy; unknown-state tooltip and icon-only retry are retained.
-3. **About:** localized `Special Thanks / Ucapan Terima Kasih`; full-width stretched credit column; Horizon role `App Developer & Builder / Pengembang Aplikasi & Perakit`; FYZ/Logos names and exact handles preserved.
-4. **Home tabs:** 38-dp visible pill in the retained 48-dp row and hit target; five equal-width tabs retained; Divider removed and replaced by the same 8-dp vertical footprint.
-
-### Usage Statistics current storage/performance contract
-
-- SQLite schema v2, 30-day retention, raw 1-Hz Battery/Hotside observations, explicit null gaps and HOT-only P1 freshness remain.
-- `UsageStatsWriteQueue` has 64 normal pending-operation slots + 8 reserved control slots + 1 critical `endSession` slot (73 total). Admission is synchronous/fail-fast; rejected work increments `rejectedWriteCount` and exposes a persistent localized warning. Accepted operations remain FIFO and are not evicted; Clear History propagates queue-full rejection.
-- A full selected-session summary/chart-decimation pass still runs per one-second live batch. Long-session CPU/memory, sustained writer pressure and 60/120-Hz animation lifecycle/soak remain unmeasured.
-
-## Historical validation follow-up — earlier Usage Statistics source checkpoint — 2026-11-12
-
-
-
-- The source-audit base was `82114a7540a7f225482c67ffb7772894c956b0b1`; subsequent commits in this session updated documentation only. The executable source/test checkpoint is still `6c551c4ff95329e56eca7ce758078c9590b4b726`. No executable source/test/workflow change was made in this review.
-- Recounted the complete 9-file Dart test suite: 187 declarations (174 unit/source-contract + 13 widget). The inventory is not a test pass.
-- Independent Python property simulation exercised 60,726 decimator input-length/budget combinations with randomized nulls and path breaks. Hard point-budget and gap-propagation invariants held; Dart implementation and Flutter behavior remain unexecuted.
-- There are zero Actions runs for the current HEAD and source/test checkpoint. The only workflow is the guarded issue-triggered release pipeline; it runs analyzer/tests/Gradle and publishes release artifacts, but omits formatter and is not a validation-only path.
-- Local `dart`, `flutter`, `gradle` and `adb` are absent; outbound DNS to GitHub and Flutter SDK hosts fails. `dart format`, focused/full `flutter test`, `flutter analyze` and Android Gradle are **BLOCKED / NOT RUN**. Do not describe the current source as compile- or test-verified.
-- At the source-audit base, main was 96 commits ahead / 0 behind the Build #153 source baseline; subsequent review commits are documentation-only. Build #153 still points to `1834a78e20273c9ea6cd51ad4d52b64370c5bd9e`; it does not validate current main.
-
-## Usage Statistics implementation details — source changes dated 2026-11-12
-
-**Status: SOURCE + REGRESSION IMPLEMENTED / 187 TESTS WRITTEN / FLUTTER VALIDATION NOT RUN / VISUAL NOT VERIFIED.** Current source/test code checkpoint: `6c551c4ff95329e56eca7ce758078c9590b4b726`; source blob `3afd0d8e440b5c4b7c19fb46b825a8a821e5492b`, test blob `fb665eeb3894a613c2a5bbcfb8ae72537b1c37a0`. Build #153 remains the latest published APK; current main is not packaged.
-
-- The selected-time dock now sizes to its content and retains the bottom SafeArea, elapsed time, six synchronized metrics and 48×48 dp clear action. Regression asserts a height ≤200 dp and Clear removes the dock.
-- Temperature charts use a 160-dp plot, 10-dp axis/time labels and tighter section spacing. Y-axis labels now derive decimal precision from tick spacing, avoiding duplicate rounded labels when a temperature range is narrow.
-- Analytics groups by session/metric, de-duplicates event identities, merges ordered events, skips unnecessary event sorting and computes one summary per one-second live batch. Decimated points are cached and cursor lookup uses binary search.
-- SQLite schema v2, 30-day retention, raw 1-Hz observations, null gaps and HOT-only P1 freshness remain. Sample insert + matching session freshness update are transactional. The write queue now has 64 normal slots, 8 reserved control slots and 1 critical session-close slot (73 total); producer submissions never wait for admission. Excess submissions are rejected immediately, increment a rejection counter and surface a persistent localized recording warning. Accepted operations remain FIFO.
-- **Bounded-ingress resolution (source implemented 2026-11-12):** fail-fast admission means unawaited Battery/HOT/Fan-Speed producers do not accumulate suspended Futures outside pendingWriteCount. Regular writes are capped at 64; session lifecycle and Voltage/Adaptive/Peltier control writes can use 8 additional slots. Fan Speed stays within normal capacity. A rejected record is not accepted, increments rejectedWriteCount and sets lastWriteError; accepted operations stay FIFO. Clear History propagates a queue-full StateError to its existing UI error handler rather than reporting success.
-- **Gap-density resolution (source/test implemented 2026-11-12):** decimatePoints(maxPoints: 1600) now enforces result.length <= maxPoints. Any discarded null or breakBefore boundary is propagated as breakBefore=true on the next retained valid point, so the painter starts a new segment instead of bridging the gap. Raw SQLite observations and full-resolution summary inputs are unchanged.
-- Current Usage Statistics tests cover a 12k-per-sensor synthetic history, 24k gap-heavy/alternating chart points across budgets 1–1,600, queue fire-and-forget admission/reserved/critical capacity/rejection/FIFO behavior, rejection propagation, late-HOT/P1-watchdog ordering, localized overload warning, selected-dock height/clear and narrow-axis label precision. The full current suite contains 187 declarations (174 unit/source-contract, 13 widget); none has run on this source yet.
-- No raw telemetry, sampling cadence, database schema, P1 protocol, Firmware or native security behavior was changed. One full selected-session summary/decimation pass still occurs once per second; long-session Android CPU/memory soak and OEM visual acceptance remain pending.
-
+---
 # JE X FYZ / JE Cooler — App Behavior Reference
 
 Purpose: canonical current App/UI/BLE/telemetry contract. Current source defines implementation; DESIGN_NOTES.md holds owner-approved screen-specific visual constraints; PRODUCT_DESIGN_CONSTITUTION.md defines cross-screen design principles; VISUAL_QUALITY_GATE.md defines evidence-based visual acceptance; CHANGELOG.md and APP_BUILD_REPORT.md hold history/evidence.
 
-## Current source and release boundary — checked 2026-11-13
+## Historical source and release snapshot — Build #157 (superseded by Build #162)
 
 - Latest verified App package: **Build #157**, Actions run [43247876115](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/43247876115), immutable package source SHA `10d106537e92060e0aac3fc17fd37f56e746bcd5`. Release ID `403010611` / tag `jexfyz-latest` still target this exact source. Release hashes and full QC evidence are detailed in PROJECT_STATE.md and APP_BUILD_REPORT.md.
 - Build #157 passed the security/architecture audit, analyzer (**23 info-level findings, zero warnings/errors**), and **187/187 Flutter tests**. Android Gradle gate passed (`BUILD SUCCESSFUL in 3m19s`); app native JUnit compile/process/test prerequisites were `NO-SOURCE`, so no native Android JUnit case ran. Hosted CI does not establish screenshot/OEM or physical-device acceptance.
