@@ -1,4 +1,4 @@
-| Last updated | 2026-11-14 10:34 (Asia/Jakarta) |
+| Last updated | 2026-11-14 10:40 (Asia/Jakarta) |
 
 > Single current snapshot for JE X FYZ project interactions. This file records the latest persisted observation, not a continuously running heartbeat or overall product completion.
 
@@ -6,21 +6,21 @@
 
 | Field | Value |
 |---|---|
-| **STATUS** | **IN_PROGRESS** |
-| SESSION STATUS | IN_PROGRESS |
-| WORK STATUS | IN_PROGRESS |
+| **STATUS** | **COMPLETED** |
+| SESSION STATUS | COMPLETED |
+| WORK STATUS | COMPLETED |
 | Mode | Eksekusi Full! |
 | Request / work item | Refine Usage Statistics screen layout: alignment, graph/statistic spacing, Activity timelines and Selected time detail panel; preserve recording/calculation/selection behavior |
 | Started | 2026-11-14 10:17 (Asia/Jakarta) |
-| Last updated | 2026-11-14 09:43 (Asia/Jakarta) |
-| Current phase | IN_PROGRESS. Validation Only #15 / 43551929306 completed with run conclusion FAILURE only because its formatter-only commit guard detected a newer status-marker commit. Dependency resolution, formatter final verification, analyzer and 188 Flutter tests passed. The exact format-only preview patch was downloaded and reviewed: only 7 lines in lib/usage_statistics.dart and 14 lines in test/usage_statistics_test.dart; no logic or other paths. Apply this patch on latest main and rerun validation; no Build App/APK/Release. |
-| Last completed milestone | Run #15 terminal failure reconciled from live API/logs; artifact 14096353334 reviewed and confirmed only the two expected Dart files and formatter-only changes. Source/test implementation commit remains `b4b57e83261c0b1fcb7873efa8544c3410ad0208`. |
-| Last verified main checkpoint | `b4b57e83261c0b1fcb7873efa8544c3410ad0208` — Usage Statistics alignment refinement and regression tests, parent `58ffc6a8beb1fe461be6c0aacfda50e8ddc95f9e`. |
-| EXTERNAL OPERATION | Validation Only run #15 / 43551929306 / source `b4b57e83261c0b1fcb7873efa8544c3410ad0208` |
-| EXTERNAL OPERATION STATUS | **COMPLETED / FAILURE — run #15 / 43551929306; 188 tests and quality gates passed, formatter commit refused by exact-HEAD guard** |
-| Result / evidence | Run #15 on source `b4b57e...`: locked dependencies PASS; final format verification PASS; analyzer PASS; Flutter 188/188 PASS; formatter preview PASS; commit step FAILURE because remote main had advanced from `b4b57e8` to `f1cde10` due mandatory status checkpoint write. Workflow behaved safely and made no formatter commit. Artifact `14096353334` independently inspected: only formatting diffs in the two authorized Dart paths. |
-| Blocker | None for this recovery request. Non-blocking project items: 119 analyzer info findings; actionlint not run; physical/OEM acceptance not established. |
-| Next action | Apply the exact reviewed formatter-only preview to latest main, verify no non-format changes, commit with expected-HEAD protection, and inspect the resulting Validation Only run through terminal completion without intervening main writes. |
+| Last updated | 2026-11-14 10:40 (Asia/Jakarta) |
+| Current phase | COMPLETED. Usage Statistics layout refinement committed (`b4b57e8`), exact formatter-only follow-up committed (`873a825`), and canonical docs/checkpoints committed (`6380b23`). Validation Only #16 / `43552255469` on exact source `873a825020659dadcac2e5c7242e759209776414` completed SUCCESS: locked dependencies PASS; Dart formatter 17 files / 0 changed; analyzer PASS (119 info, 0 warnings/errors); Flutter tests 188/188 PASS. No App Build/APK/Release or Firmware/device operation was run. Visual acceptance remains NOT VERIFIED until a new authorized package is installed and real screenshots are inspected. |
+| Last completed milestone | Source UI/test commit `b4b57e83261c0b1fcb7873efa8544c3410ad0208`; formatter-only commit `873a825020659dadcac2e5c7242e759209776414`; docs commit `6380b23d3068e4a6730bf43a88aa09e642422cec`. Source/read-back and all seven documentation updates verified. Recursive tree 137 entries, `truncated=false`, no added/removed paths. Validation Only #16 terminal SUCCESS, 188/188. |
+| Last verified main checkpoint | `6380b23d3068e4a6730bf43a88aa09e642422cec` — completed source validation + canonical documentation checkpoint; recursive tree 137 entries, not truncated. |
+| EXTERNAL OPERATION | Validation Only run #16 / 43552255469 / job 132317129708 / source `873a825020659dadcac2e5c7242e759209776414` |
+| EXTERNAL OPERATION STATUS | **COMPLETED / SUCCESS — run #16 / 43552255469** |
+| Result / evidence | Run #16 terminal `completed / success`; `flutter pub get --enforce-lockfile` PASS; formatter 17 files / 0 changed; `flutter analyze --no-fatal-infos` PASS with 119 infos / zero warnings/errors; `flutter test` 188/188 PASS. App source/test read-back and canonical notes read-back PASS. Build #162 remains latest package; no APK/release operation. |
+| Blocker | None for the authorized source/UI and hosted-validation scope. Remaining evidence gap: actual Android rendering not yet verified; a new package requires separate `Eksekusi Build App!` authorization. |
+| Next action | Recommend owner separately issue `Eksekusi Build App!` to package current main source, then install it and review screenshots at 350/420-dp, EN/ID, Light/Dark and cursor states. Recommendation only; no build authorization is implied. |
 
 ## Status model
 
