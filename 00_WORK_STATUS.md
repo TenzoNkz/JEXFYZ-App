@@ -6,21 +6,21 @@
 
 | Field | Value |
 |---|---|
-| **STATUS** | **IN_PROGRESS** |
-| SESSION STATUS | IN_PROGRESS |
-| WORK STATUS | IN_PROGRESS |
+| **STATUS** | **COMPLETED** |
+| SESSION STATUS | COMPLETED |
+| WORK STATUS | WAITING_OWNER |
 | Mode | Diskusi! |
 | Request / work item | Decide the safest practical next step to obtain post-lint Flutter/Dart validation without Build App or Firmware/device operations |
 | Started | 2026-11-14 (Asia/Jakarta) |
-| Last updated | 2026-11-14 07:50 (Asia/Jakarta) |
-| Current phase | Reviewing latest validation blocker and choosing a practical non-release validation path; Diskusi is read-only for workflow/source/config changes |
-| Last completed milestone | Latest checkpoint documents static YAML pass, absent Flutter/Dart SDK/cache, unavailable SDK download network and absence of a non-publishing validation workflow |
-| Last verified main checkpoint | `f88893364b379207f403f7a2f94176eda4e4a834` — latest validation-attempt checkpoint and terminal status commit |
+| Last updated | 2026-11-14 07:53 (Asia/Jakarta) |
+| Current phase | Recommended separate manual validation-only workflow and documented authorization boundary; no source/workflow changes made in Diskusi |
+| Last completed milestone | Committed recommendation for `.github/workflows/jexfyz-app-validation.yml`: workflow_dispatch only, read-only, Flutter 3.47.2, pub get/analyze/format/test and no build/release steps; supporting audit, state and handover docs verified |
+| Last verified main checkpoint | `cefc979f30910372778edea2d1195b96416d9d4a` — Diskusi recommendation and documentation checkpoint; current status close is being committed |
 | EXTERNAL OPERATION | No new operation; historical Build #162 / run 43430275967 / source `6854d8eb58a5f077cbc99749a35d37a4f55b8efa` |
 | EXTERNAL OPERATION STATUS | **NOT_APPLICABLE (no active or new operation)** |
 | Result / evidence | PyYAML 6.0.3 STATIC CHECK PASS for retrieved analysis_options.yaml and pubspec excerpt; live lockfile confirms flutter_lints 6.0.0. Actions latest remains #162 completed/success; no active/new run observed. Flutter pub get, analyzer, formatter, Flutter tests and actionlint were BLOCKED / NOT RUN. |
 | Blocker | Post-lint analyzer/formatter/test evidence remains unavailable in this runtime. No non-publishing validation workflow exists; only the guarded Build App/QC/Release pipeline, which must not be reused. |
-| Next action | Recommend a dedicated manual `workflow_dispatch` validation-only workflow (no APK/Gradle/signing/release steps). This requires a separate Eksekusi Full authorization to add `.github/workflows/jexfyz-app-validation.yml`; do not edit it in Diskusi. |
+| Next action | Owner to issue a new `Eksekusi Full!` authorization explicitly naming `.github/workflows/jexfyz-app-validation.yml` and limiting it to manual non-publishing validation; otherwise use an already available external Flutter 3.47.2 environment. |
 
 ## Status model
 
