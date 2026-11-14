@@ -1,13 +1,24 @@
-## CURRENT CHECKPOINT — JAWABAN GEMINI REVIEWED / SOURCE CROSS-CHECK COMPLETE — 2026-11-14
+## CURRENT CHECKPOINT — CHAT STUCK RECOVERY / LOCALIZATION IMPLEMENTATION IN PROGRESS — 2026-11-14
 
-**Work status: REVIEW COMPLETE; no source implementation.** The owner supplied Gemini's language-audit report. It is a partial second opinion: Gemini explicitly says no source files were attached, so the exhaustive 354-key / 167-inline-phrase table was not performed. Its architecture/glossary ideas have been reconciled against live App and Firmware source here.
+**Current mode:** `Chat Stuck!` recovering the explicit `Eksekusi Full!` authorization recorded in commit `7277092884ff7669e86dfbf92381bab1e6606fed`. Authorized scope is comprehensive App localization across Dart/Flutter copy, native Android notification/HUD strings, regression tests and canonical project documentation.
 
-### Current evidence
+**Prior interaction disposition: RECOVERY_REQUIRED.** The previous attempt ended while constructing a local parser. Parser state existed only in memory and was not persisted. No source blobs, source commits, test runs, workflow triggers or other side effects were created by that interrupted attempt. Rebuild the parser from current live source; do not infer or reuse unsaved parser output.
 
-- Executable-source baseline cross-checked: `873a825020659dadcac2e5c7242e759209776414`; current main advanced only with documentation/status commits during this review.
-- Inventory remains 354 JexText dictionary keys, 167 inline JexText.phrase() call sites, 260 JexText.of() call sites, plus bilingual native foreground-service/HUD copy.
-- The uploaded Gemini report is not an exhaustive language audit; Part C records only supplied examples and marks remaining rows pending source attachments.
-- No executable source, test, native code, Firmware, workflow, APK or Release was changed/run.
+### Live recovery evidence
+
+- Current `main` HEAD before this checkpoint update: `d0891df1e20acc39e2a4934fac8a26aa6fa702c7`; recursive tree: 137 entries, `truncated=false`.
+- Previous comparison from source baseline `873a825020659dadcac2e5c7242e759209776414` to `be22a43a8e06794118a1dbbf43fe577249788af0`: 15 commits ahead / 0 behind and exactly eight changed Markdown paths. The latest additional commit only updates `00_WORK_STATUS.md`; executable source, tests, app/native config and workflows remain unchanged from the baseline.
+- Latest relevant Actions run is Validation Only #16 / `43552255469`, job `132317129708`, completed SUCCESS against `873a825`. The 100 most recent main-branch workflow runs returned are all completed. No active external operation was found; open PR search returned zero.
+- Current release remains Build #162, Release ID `403010611`, tag `jexfyz-latest`, target/source `6854d8eb58a5f077cbc99749a35d37a4f55b8efa`. The localization changes are not in that package; this task does not authorize a new build.
+
+### Recovered acceptance scope
+
+- Review every one of the 354 bilingual dictionary entries in `lib/app_settings.dart`, every one of the 167 inline `JexText.phrase()` pairs across `main.dart`, `floating_monitor.dart` and `usage_statistics.dart`, dynamic lookup branches, and native bilingual strings in `JeForegroundService.kt` and `FloatingMonitorService.kt`.
+- English is the master copy. Indonesian must be natural while preserving subject, action, condition, timing, certainty, quantities, safety severity and placeholders; no semantic strengthening, weakening, addition or omission.
+- Preserve internal locale/storage IDs, BLE/protocol identifiers, brand terms, exact placeholders/units, and owner-approved `Floating Monitor / Monitor Melayang`. Thermal safety is `Keselamatan`, not Security `Keamanan`. Preserve both received and expected OTA byte counts and their order.
+- Define context-aware state words for physical outputs, logical modes/locks and user preferences. Do not mechanically global-replace `HIDUP/MATI` or `AKTIF/NONAKTIF`; explicitly audit Peltier vs Adaptive in Usage Statistics and native HUD.
+- Add semantic/placeholder/state-context/native-language and long-copy regression coverage. Run formatter, focused tests, analyzer and full Flutter suite only if the toolchain or hosted non-publishing Validation Only workflow is available. Never trigger Build App.
+- Exact prior Gemini findings and corrections remain below. Gemini had no repository access and supplied no exhaustive 354/167 audit; only source-cross-checked findings are retained.
 
 ### Cross-checked recommendations
 
@@ -28,7 +39,7 @@
 
 ### Next step
 
-Use this adjudicated issue list as the scope for a dedicated `Eksekusi Full!` only after owner authorization. The full correction matrix still needs every catalog entry, inline pair, dynamic branch and native string reviewed, followed by regression tests. No source changes are authorized by this completed `Jawaban Gemini!` review.
+The separate owner authorization for `Eksekusi Full!` is now verified in the live status history (commit `7277092884ff7669e86dfbf92381bab1e6606fed`). Chat Stuck inherits that App-only source/tests/docs scope; it does not authorize packaging or Firmware/device work. Rebuild the parser and complete the source-driven correction matrix from live `main`, then apply scoped language and regression-test changes.
 
 ---
 
