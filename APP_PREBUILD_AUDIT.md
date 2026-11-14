@@ -1,3 +1,20 @@
+## CURRENT NON-PUBLISHING VALIDATION — RUN #13 FAILED / TWO TEST-ONLY MATCHERS REMAIN — 2026-11-14
+
+**Status:** hosted post-lint Flutter validation is operational; full test gate is not yet green. Latest tested source `8ff48761b1d6d0b2a1ed4e7ce2a71a2f10f199e0`; [run 43544366132](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/43544366132), job `132292043440`, terminal failure.
+
+- Locked dependency resolution PASS. Dart formatter precheck detected drift, formatted 17 files (14 changed), and post-format verification passed. The patch preview uploaded; formatter-only commit skipped because the test suite was not green.
+- `flutter analyze --no-fatal-infos`: PASS, 119 informational findings / zero warnings / zero errors.
+- `flutter test`: 187 passed / 1 failed. Only failure: exact single-line contains matchers for `tightFor(width: 42, height: 42)` and the 40x40 companion in `test/floating_monitor_layout_contract_test.dart`; formatted source uses line breaks and optional trailing commas. The exact dimensions exist in live `_ConnectionSheetContentState`.
+- Authorized repair changes only those two test assertions into regex checks that accept formatter whitespace and trailing commas while preserving exact dimensions. No App production-source or workflow changes.
+- Runs #7–#13 progressively reduced source-contract failures from seven to one. Run #13 is current evidence; earlier failures remain historical.
+- Flutter/Dart and `actionlint` are unavailable locally. Hosted Actions provide the executed Flutter evidence. Build #162 remains latest packaged App; no APK/AAB Build, Release, Firmware or device action is included.
+
+### Immediate next action
+
+Commit test-only regex repairs and synchronized notes atomically with expected-HEAD protection. Verify Validation Only run #14 and any clean formatter-only follow-up. Do not update `main` during an active validation, because the auto-format commit uses an exact-source-HEAD guard. No Build App, Firmware, OTA or device operations.
+
+---
+
 ## CURRENT RELEASE GATE — BUILD #162 SUCCESS / EXECUTABLE SOURCE QC COMPLETE — 2026-11-13
 
 **Status: GUARDED APP QC + RELEASE COMPLETED SUCCESSFULLY.** Exact immutable tested/package source is `6854d8eb58a5f077cbc99749a35d37a4f55b8efa`.

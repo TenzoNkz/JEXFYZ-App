@@ -1,6 +1,49 @@
-## CURRENT CHECKPOINT — EKSEKUSI FULL / MANUAL NON-PUBLISHING VALIDATION WORKFLOW ADDED — 2026-11-14
+## CURRENT CHECKPOINT — EKSEKUSI FULL / VALIDATION ONLY / FORMATTER-TOLERANT TEST REPAIR — 2026-11-14
 
-**Mode:** `Eksekusi Full!` — the owner explicitly authorized only `.github/workflows/jexfyz-app-validation.yml`. The new workflow was committed; it was not dispatched by this session. No App source/tests/business logic, existing release workflow, APK/AAB, Gradle, signing, Release, Firmware, Firebase, OTA, flash or device operation was changed or run.
+**Mode and authorization:** `Eksekusi Full!` continues through `Chat Stuck!` recovery. Inherited scope is limited to non-publishing Flutter/Dart validation and test-only repairs for formatter-sensitive source-contract assertions. No App production code, workflow, App Build/APK/AAB/Release, Firmware/BIN, Firebase, OTA, flash or device operation is in scope.
+
+### Live repository
+
+- Repository/branch: `TenzoNkz/JEXFYZ-App` / `main`.
+- Parent main HEAD: `8ff48761b1d6d0b2a1ed4e7ce2a71a2f10f199e0`; recursive tree 137 entries, `truncated=false`.
+- Latest packaged App remains Build #162 on source `6854d8eb58a5f077cbc99749a35d37a4f55b8efa`; this is not a release task.
+- `.github/workflows/jexfyz-app-validation.yml` is push-triggered for configured `main` paths. It uses Flutter 3.47.2, resolves the lockfile, formats/verifies, analyzes and tests. A formatter-only commit is allowed only when all tests pass and remote main still equals the exact tested SHA.
+- The guarded App Build workflow remains separately issue-triggered with its owner/title/body-token guard. Relevant normal pushes do not trigger App Build.
+
+### Hosted validation history
+
+| Run | Tested source SHA | Tests | Result |
+|---|---|---:|---|
+| #7 / 43542261220 | `305a34be525ebf2b0e244d909e1e7fb404d2c6fb` | 181/188 | Failed; seven source-contract assertions |
+| #8 / 43542869188 | `0b9621ffc3581e666070abbf9c302f5adf0da58d` | 183/188 | Failed; five source-contract assertions |
+| #9 / 43543245325 | `28539d5ffd719d25b8cc2ecf5e090e0138df1943` | 187/188 | Failed; compact settings/connection contract |
+| #10 / 43543559892 | `e42de26f43dfe596b7e335b6f8b9da00a2ad1df0` | 187/188 | Failed; same remaining contract |
+| #11 / 43543764671 | `d5be9df30c600e6502611748433bbe0a5e763ebd` | 187/188 | Failed; fixed-scale route matcher |
+| #12 / 43544036494 | `ba60c4e79e484994df47be7cf5aba34c4e9cb48d` | 187/188 | Failed; fixed-scale wrapper matcher |
+| #13 / 43544366132 | `8ff48761b1d6d0b2a1ed4e7ce2a71a2f10f199e0` | 187/188 | Failed; exact touch-target source fragments |
+
+### Run #13 gates and remaining correction
+
+- Locked dependency resolution PASS. Formatter precheck found drift; hosted Dart formatted 17 files (14 changed); post-format check PASS. Formatter preview uploaded; formatter-only commit skipped because one test failed.
+- `flutter analyze --no-fatal-infos` PASS: 119 informational diagnostics, zero warnings, zero errors.
+- `flutter test`: 187 passed / 1 failed. The two exact source checks for `tightFor(width: 42, height: 42)` and `tightFor(width: 40, height: 40)` in `_ConnectionSheetContentState` do not tolerate Dart formatter whitespace/trailing commas. Both dimensions are present in live `lib/main.dart`.
+- This commit changes only those two assertions to regex checks with whitespace and optional trailing-comma tolerance, preserving exact 42x42 / 40x40 dimensions. No App behavior or production source is modified.
+
+### Next action
+
+The test-only repair and project memory are committed atomically with expected-HEAD protection. The `test/**` change should start Validation Only run #14. Verify its exact SHA, job, dependency/formatter/analyzer/test outputs and final conclusion. If 188/188 passes, inspect any formatter-only commit and the follow-up clean run. Do not update `main` while validation is active because formatter commit uses an exact-HEAD guard.
+
+### Evidence boundary
+
+- Flutter/Dart and `actionlint` are unavailable locally; hosted Actions provide all executed Flutter evidence. No local Flutter test/build ran.
+- 119 analyzer info-level findings remain; no warnings/errors. `actionlint` was not run.
+- Build #162 remains latest packaged App. Owner installation, OEM visual acceptance and physical-device validation are separate and unverified.
+
+---
+
+## SUPERSEDED CHECKPOINT — INITIAL MANUAL VALIDATION WORKFLOW DESIGN — 2026-11-14
+
+**Historical note:** Initial manual-only workflow plan; later superseded by the push-triggered Validation Only workflow. The new workflow was committed; it was not dispatched by this session. No App source/tests/business logic, existing release workflow, APK/AAB, Gradle, signing, Release, Firmware, Firebase, OTA, flash or device operation was changed or run.
 
 ### Live repository and workflow
 
@@ -26,6 +69,7 @@
 ### Exact next action
 
 Owner manually dispatches the new validation workflow on `main`. After the run reaches a terminal state, inspect its exact source SHA and logs, report formatter/analyzer/test outcomes independently, then review only proven lint/format findings. Do not invoke `jexfyz-app-build-trigger.yml`.
+
 
 ---
 

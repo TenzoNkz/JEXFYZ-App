@@ -1,4 +1,20 @@
-## Immediate next step — Manually run Validation Only — 2026-11-14
+## Immediate next step — Validate the formatter-tolerant Connection touch-target assertions — 2026-11-14
+
+**Current main parent:** `8ff48761b1d6d0b2a1ed4e7ce2a71a2f10f199e0`; tree 137 entries, not truncated.
+
+**Latest hosted evidence:** Validation Only run #13 / `43544366132`, terminal failure. Dependencies PASS; formatter apply and final check PASS; analyzer PASS (119 infos / 0 warnings/errors); Flutter tests 187/188. Formatter preview was uploaded; formatter commit skipped.
+
+**Only failure:** exact single-line contains checks for `tightFor(width: 42, height: 42)` and `tightFor(width: 40, height: 40)` in `test/floating_monitor_layout_contract_test.dart`. Dart formatter wraps named arguments and adds optional trailing commas. Both source dimensions are present.
+
+**Repair:** replace only these two test assertions with whitespace-tolerant RegExp checks that preserve exact 42x42 and 40x40 dimensions and accept an optional trailing comma. No `lib/`, UI, BLE, workflow or release changes.
+
+**Next:** atomically commit test and checkpoint changes with expected-HEAD lease; inspect push-triggered Validation Only run #14. Do not push further main changes while the validation job or formatter-only follow-up runs because formatter commit requires the exact tested HEAD.
+
+**Boundary:** no Build App/APK/AAB/Release, Firmware/BIN, Firebase, OTA, flash or device operations. Build #162 remains the latest verified package; visual/device acceptance is not implied.
+
+---
+
+## SUPERSEDED HANDOVER — Initial manual Validation Only design — 2026-11-14
 
 The separate `.github/workflows/jexfyz-app-validation.yml` is now committed on `main` (workflow commit `fc325d6b4fa6878963938257e140e07673885555`). It is triggered only by `workflow_dispatch`, uses `contents: read`, installs Flutter 3.47.2, resolves the lockfile, runs the read-only formatter check, analyzer and full Flutter tests, and summarizes all outcomes. Actions are pinned to full commit SHAs. YAML/BaseLoader and every embedded Bash syntax check passed. `actionlint` is unavailable, and the workflow has not been dispatched yet. Do not trigger the guarded Build App workflow.
 
@@ -41,6 +57,10 @@ No workflow run was started by the assistant because the workflow is intentional
 4. A separate non-publishing validation workflow and coverage artifact remain optional future CI improvements and were not added under this authorization.
 
 No `Eksekusi Build App!`, Build/APK/Release, Firmware compile/BIN, Firebase, OTA/flash or device operation was performed. The latest verified package remains Build #162; its owner installation and visual/device acceptance remain separate evidence.
+
+---
+
+
 
 ---
 

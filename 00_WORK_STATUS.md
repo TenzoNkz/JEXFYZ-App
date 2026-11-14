@@ -1,4 +1,4 @@
-| Last updated | 2026-11-14 09:04 (Asia/Jakarta) |
+| Last updated | 2026-11-14 09:15 (Asia/Jakarta) |
 
 > Single current snapshot for JE X FYZ project interactions. This file records the latest persisted observation, not a continuously running heartbeat or overall product completion.
 
@@ -10,17 +10,17 @@
 | SESSION STATUS | IN_PROGRESS |
 | WORK STATUS | IN_PROGRESS |
 | Mode | Eksekusi Full! + Chat Stuck! recovery |
-| Request / work item | Continue the authorized test-only formatter-contract repair; reconcile Validation Only runs #9–#10 and monitor run #11 on latest main SHA; no App Build/Release or Firmware/device operations |
+| Request / work item | Continue the authorized test-only formatter-contract repair; reconcile Validation Only run #13 and fix two Connection touch-target matcher assertions; no App Build/Release or Firmware/device operations |
 | Started | 2026-11-14 08:44 (Asia/Jakarta) |
-| Last updated | 2026-11-14 08:30 (Asia/Jakarta) |
-| Current phase | Validation Only run #12 terminal failure reconciled: Pub/formatter/analyzer PASS, Flutter tests 187/188; one Settings fixed-scale wrapper test still fails due the outer widget's optional formatter trailing comma. Applying a narrow regex fix in test source only. |
-| Last completed milestone | Run #12 / 43544036494 on source `ba60c4e79e484994df47be7cf5aba34c4e9cb48d`: dependency resolution PASS; formatter apply and final check PASS; analyzer PASS; Flutter tests 187 passed / 1 failed; formatter commit skipped. Previous #11 also 187/188 on `d5be9df30c600e6502611748433bbe0a5e763ebd`. |
-| Last verified main checkpoint | `ba60c4e79e484994df47be7cf5aba34c4e9cb48d` — live main at run #12 terminal; recursive tree 137 entries, truncated=false |
-| EXTERNAL OPERATION | Validation Only run #12 / 43544036494 / source `ba60c4e79e484994df47be7cf5aba34c4e9cb48d` |
-| EXTERNAL OPERATION STATUS | **COMPLETED / FAILURE — Pub/formatter/analyzer PASS; 187/188 Flutter tests PASS; formatter commit skipped** |
-| Result / evidence | One remaining failure at `test/floating_monitor_layout_contract_test.dart` formatted line 270: the loop checks `JexFixedScalePage(... child: $page())` with a whitespace compactor, but Dart formats the child call as `...Page(),)` with an outer trailing comma, so the literal fragment does not match. Static source confirms all five wrappers remain present under `SettingsPage`. No App production code or business logic changed. |
-| Blocker | One source-contract regex still needs to accept the Dart formatter's optional trailing comma after the child widget invocation. `actionlint` remains unavailable. |
-| Next action | Replace the one `containsDartFragment` route-loop assertion in `test/floating_monitor_layout_contract_test.dart` with a RegExp allowing optional outer trailing comma while preserving each exact page class and `compactUi: true`; commit with expected HEAD and allow Validation Only run #13. |
+| Last updated | 2026-11-14 09:15 (Asia/Jakarta) |
+| Current phase | Validation Only run #13 terminal FAILED on source `8ff48761b1d6d0b2a1ed4e7ce2a71a2f10f199e0`. Dependencies PASS; formatter apply/final PASS; analyzer PASS (119 infos / 0 warnings / 0 errors); Flutter tests 187/188. Only test failure: exact 42x42 and 40x40 `tightFor` contains matchers are not formatter-tolerant. This commit changes only those two test assertions and project memory. |
+| Last completed milestone | Validation Only run #13 / 43544366132, job 132292043440, source `8ff48761b1d6d0b2a1ed4e7ce2a71a2f10f199e0`: dependency resolution PASS; 17 files checked / 14 formatted; final formatter PASS; analyzer PASS (119 info, zero warnings/errors); tests 187 passed / 1 failed; formatter preview uploaded, commit skipped. |
+| Last verified main checkpoint | `8ff48761b1d6d0b2a1ed4e7ce2a71a2f10f199e0` — current main HEAD; recursive tree 137 entries, `truncated=false`. |
+| EXTERNAL OPERATION | Expected push-triggered Validation Only run #14 after test-path commit; parent SHA `8ff48761b1d6d0b2a1ed4e7ce2a71a2f10f199e0` |
+| EXTERNAL OPERATION STATUS | **QUEUED / EXPECTED — run #14 should start from the test-only push; verify its actual ID/status after commit** |
+| Result / evidence | Run #13 completed/failure. Log: exact `tightFor(width: 42, height: 42)` matcher failed inside `_ConnectionSheetContentState`; the source's 42x42 and 40x40 calls are present. Hosted formatter expands named args to multiline and trailing-comma form. No App production source, workflow, build or release changed. |
+| Blocker | Two test-only `tightFor` contains checks need whitespace and optional trailing-comma tolerance while preserving exact 42x42 and 40x40 dimensions. Flutter/Dart and actionlint unavailable locally. |
+| Next action | Verify Validation Only run #14 after this atomic test+memory commit. Do not update main while run #14 or a formatter-only follow-up is active; the workflow guards the source HEAD before committing formatting. No Build App/Firmware/OTA/device action. |
 
 ## Status model
 

@@ -270,8 +270,18 @@ void main() {
       contains('fontSize: 12,'),
     );
     expect(connection, contains('height: 42'));
-    expect(connection, contains('tightFor(width: 42, height: 42)'));
-    expect(connection, contains('tightFor(width: 40, height: 40)'));
+    expect(
+      RegExp(
+        r'tightFor\s*\(\s*width:\s*42\s*,\s*height:\s*42\s*,?\s*\)',
+      ).hasMatch(connection),
+      isTrue,
+    );
+    expect(
+      RegExp(
+        r'tightFor\s*\(\s*width:\s*40\s*,\s*height:\s*40\s*,?\s*\)',
+      ).hasMatch(connection),
+      isTrue,
+    );
     expect(
       containsDartFragment(
         main,

@@ -5,11 +5,11 @@ Last reconciled: 2026-11-14 (Asia/Jakarta). This file is current truth only. Bui
 ## Repository baseline
 
 - Canonical repository/branch: `TenzoNkz/JEXFYZ-App` / `main`.
-- Current recursive tree after adding the validation-only workflow: 135 entries, `truncated=false`; two workflows under `.github/workflows/` (the existing guarded App release workflow and the new manual-only validation workflow); one active sketch at `firmware/JEXFYZ-V7.2.ino`.
+- Current recursive tree: 137 entries, `truncated=false`; two workflows under `.github/workflows/` (guarded App release and push-triggered non-publishing Validation Only); one active sketch at `firmware/JEXFYZ-V7.2.ino`.
 - Twelve canonical `.agents/skills` definitions and twelve `.github/skills` mirrors remain byte-identical.
 - Root `analysis_options.yaml` is now present and includes `package:flutter_lints/flutter.yaml`. `flutter_lints 6.0.0` was already a direct dev dependency and is locked in `pubspec.lock`.
-- The guarded release workflow still has issue-only opened/reopened triggers; there is no push/PR auto-release path. Its concurrency policy is now job-level under the guarded build job, not workflow-level.
-- No Dart/Flutter SDK or actionlint binary is installed in the current ChatGPT execution runtime; no SDK/cache was found in the common runtime directories checked, and SDK bootstrap failed on unavailable DNS/network. The new hosted validation workflow uses Flutter 3.47.2 on manual dispatch; it has not yet been run.
+- The guarded App release workflow keeps issue-only opened/reopened triggers and its owner/title/body-token guard; relevant pushes start Validation Only, not App Build/Release. Release concurrency is job-level under the guarded build job.
+- Flutter/Dart and actionlint are unavailable in this ChatGPT runtime. Hosted Validation Only runs on Flutter 3.47.2 have executed through run #13; no local Flutter test/build or actionlint check ran.
 
 ## Latest verified App package — Build #162 SUCCESS
 
@@ -31,9 +31,9 @@ Last reconciled: 2026-11-14 (Asia/Jakarta). This file is current truth only. Bui
 ## Confirmed repository hardening state
 
 1. **P1 workflow concurrency — FIXED in current main:** workflow-level concurrency was removed. `jexfyz-cooler-build` now exists only under `jobs.build`, after the unchanged owner-login, exact-title and body-token guard. It sets `cancel-in-progress: false` and `queue: max`, allowing one active plus up to 100 pending guarded release jobs. All original event triggers and release gates remain. The workflow was not run by this session.
-2. **P2 lint policy — ENABLED; diagnostic audit PENDING:** root `analysis_options.yaml` includes the locked `flutter_lints 6.0.0` rule set. Build #162's 23 info-level findings predate this configuration and are not a post-activation baseline. Flutter/Dart are unavailable here, so new diagnostics are **NOT RUN**.
-3. **P2 formatter baseline — NOT ESTABLISHED:** the new manual validation-only workflow now runs `dart format --output=none --set-exit-if-changed lib test` on Flutter 3.47.2, without changing source. The workflow has not yet been dispatched, so no formatter result exists. If it reports formatting differences, review and commit only a formatting-only change under a separate explicit scope, then rerun until clean. Do not add a blocking gate to the release workflow until the clean baseline is recorded.
-4. **CI/governance:** a separate manually dispatched, non-publishing Flutter validation workflow now exists and its actions are pinned to full commit SHAs. Its first run is pending owner dispatch. Coverage artifact persistence and main-branch protection remain open; do not repurpose the release workflow as a validation-only task.
+2. **P2 lint policy — ENABLED; hosted baseline measured:** root `analysis_options.yaml` includes locked `flutter_lints 6.0.0`. Validation Only runs #7–#13 report 119 info-level findings and zero warnings/errors. Build #162's 23 infos predate this rule set.
+3. **P2 formatter baseline — drift detected:** hosted Validation Only formats 17 files (14 changed) and the post-format check passes. Formatter-only `lib/`/`test/` commit is gated on all tests passing and exact remote HEAD; it has not committed because one test remains red.
+4. **CI/governance:** separate push-triggered non-publishing Flutter Validation Only workflow exists on configured `main` paths with pinned action SHAs. Coverage retention and branch protection remain open; it never builds/releases the App.
 5. **P2 tests:** retain the 188-test suite and add real FlutterBluePlus/plugin-channel lifecycle tests, native MethodChannel/service tests where meaningful, and a real SQLite v1→v2 fixture migration test. Do not add empty native JUnit tests solely to avoid `NO-SOURCE`.
 6. **P2 maintainability:** extract lower-coupling data/UI seams incrementally only after regression tests exist. BLE coordinator extraction is high-risk and should be late, not a mechanical rewrite.
 
@@ -46,5 +46,5 @@ Last reconciled: 2026-11-14 (Asia/Jakarta). This file is current truth only. Bui
 
 ## Immediate next action
 
-- The new `.github/workflows/jexfyz-app-validation.yml` is committed to `main` and has passed YAML/embedded-shell static validation. Manually dispatch it from Actions → JE X FYZ — Validation Only → Run workflow using `main`. Inspect the exact tested source SHA and individual dependency/formatter/analyzer/test results once the run completes. No Build App workflow is required or permitted for this validation.
+- Replace the two `tightFor` assertions in `test/floating_monitor_layout_contract_test.dart` with whitespace/trailing-comma-tolerant regexes retaining exact 42x42 and 40x40 dimensions. Commit test + memory, then inspect Validation Only run #14. Do not invoke the guarded Build App workflow.
 - Do not invoke Build App/APK/Release for this task. Firmware compile/BIN/Firebase/OTA/flash and device operations remain separately gated.
