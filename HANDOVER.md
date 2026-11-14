@@ -15,6 +15,16 @@ The owner's explicitly authorized CI policy changes are committed to `main`. No 
 - PyYAML 6.0.3 parsed `analysis_options.yaml` and the modified job guard/concurrency fragment successfully.
 - `flutter`, `dart` and `actionlint` are not installed in this execution runtime. No full workflow schema validator, post-activation Dart analyzer, formatter or Flutter tests ran. No code, tests, or business logic were changed.
 
+### Latest non-release validation attempt — 2026-11-14
+
+- Checked live `main` at opening SHA `1879925c6b5ba3718d05b5599ba3a61d3765f6a2`; recursive tree was complete (134 entries, not truncated). The only change before this attempt was the opening status marker.
+- No `flutter`, `dart` or `actionlint` executable or cached SDK was present in the runtime locations checked. Direct shell DNS access to GitHub failed, and Flutter artifact metadata download from `storage.googleapis.com` failed, so SDK bootstrap and `flutter pub get` could not proceed.
+- PyYAML 6.0.3 parsed the retrieved lint config and asserted its exact include. A parsed `pubspec.yaml` excerpt confirmed the Dart constraint and `flutter_lints ^6.0.0`; live `pubspec.lock` confirms `6.0.0`. **STATIC CHECK PASS only.**
+- Current Actions inspection shows 337 runs, latest Build #162 completed/success; no active/new run. The only workflow is the guarded release pipeline. It was not triggered or rerun.
+- `flutter pub get`, post-lint `flutter analyze`, `dart format`, `flutter test` and `actionlint` remain **BLOCKED / NOT RUN**. Formatter baseline and post-lint diagnostic baseline are not established. No source, test or workflow change was made.
+- Next step: use a separately provisioned non-release Flutter 3.47.2 environment and execute the four Flutter/Dart commands recorded in the current `CHAT_TRANSFER.md` checkpoint. Do not trigger Build App for this validation.
+
+
 ### Remaining work — must not be inferred as passed
 
 1. Run `flutter analyze --no-fatal-infos` after resolving packages on the exact current main to measure the new `flutter_lints` diagnostics. Build #162's 23 info-level findings were produced before this lint configuration and are not the post-activation baseline.

@@ -9,7 +9,7 @@ Last reconciled: 2026-11-14 (Asia/Jakarta). This file is current truth only. Bui
 - Twelve canonical `.agents/skills` definitions and twelve `.github/skills` mirrors remain byte-identical.
 - Root `analysis_options.yaml` is now present and includes `package:flutter_lints/flutter.yaml`. `flutter_lints 6.0.0` was already a direct dev dependency and is locked in `pubspec.lock`.
 - The guarded release workflow still has issue-only opened/reopened triggers; there is no push/PR auto-release path. Its concurrency policy is now job-level under the guarded build job, not workflow-level.
-- No Dart/Flutter SDK or actionlint binary is installed in the current execution runtime.
+- No Dart/Flutter SDK or actionlint binary is installed in the current execution runtime; no SDK/cache was found in the common runtime directories checked, and network DNS/download attempts could not reach GitHub or Flutter's artifact host. The only repository workflow is the guarded App Build/QC/Release pipeline; no non-publishing validation workflow exists.
 
 ## Latest verified App package — Build #162 SUCCESS
 
@@ -46,5 +46,5 @@ Last reconciled: 2026-11-14 (Asia/Jakarta). This file is current truth only. Bui
 
 ## Immediate next action
 
-- Obtain an SDK-equipped, non-release validation environment to run post-lint `flutter analyze --no-fatal-infos`, `dart format --output=none --set-exit-if-changed lib test`, and the Flutter suite on exact current main. Triage new diagnostics without altering business logic; establish clean formatting before adding a formatter gate.
+- Run checks on an independently provisioned non-release checkout/runner with Flutter 3.47.2, compatible Dart SDK and network access or a complete Pub cache. The current ChatGPT shell has no SDK and cannot resolve the external hosts needed to bootstrap it. On the exact current main SHA, run `flutter pub get`, `flutter analyze --no-fatal-infos`, `dart format --output=none --set-exit-if-changed lib test`, and `flutter test`; retain the source SHA and exit codes. Review only verified lint/format findings; add no formatter gate until the baseline is clean. Do not reuse the guarded Build App workflow for validation.
 - Do not invoke Build App/APK/Release for this task. Firmware compile/BIN/Firebase/OTA/flash and device operations remain separately gated.

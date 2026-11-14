@@ -1,3 +1,36 @@
+## CURRENT CHECKPOINT — EKSEKUSI FULL / NON-RELEASE FLUTTER VALIDATION ATTEMPT — 2026-11-14
+
+**Mode:** `Eksekusi Full!` — the owner asked to execute the post-lint Flutter/Dart checks independently, without Build App. No Dart source, tests, dependencies or workflow were changed in this attempt. No Build App/APK/Release, Firmware/BIN/Firebase/OTA/flash or device operation was performed.
+
+### Live baseline
+
+- **Repository:** `TenzoNkz/JEXFYZ-App`, branch `main`. Opening HEAD was `1879925c6b5ba3718d05b5599ba3a61d3765f6a2`; recursive tree had 134 entries and `truncated=false`. The only commit between the preceding closed session and this opening checkpoint was the required `00_WORK_STATUS.md` IN_PROGRESS marker.
+- Root `analysis_options.yaml` remains blob `26a17a80d98bcde51b90f61ee57eb2ab59b4ea90`, with `include: package:flutter_lints/flutter.yaml`.
+- `pubspec.yaml` declares Dart SDK `>=3.9.0 <4.0.0` and direct dev dependency `flutter_lints ^6.0.0`; `pubspec.lock` confirms exact `flutter_lints 6.0.0`. The only App workflow pins Flutter `3.47.2`.
+- The latest verified packaged release remains Build #162, run `43430275967`, source `6854d8eb58a5f077cbc99749a35d37a4f55b8efa`. Its 23 info diagnostics and 188/188 test result predate the new lint include and are not a post-activation baseline.
+
+### Execution attempt and evidence
+
+- Local runtime inspection found no `flutter`, `dart` or `actionlint` executable and no SDK/cache directory in the usual runtime locations checked (`/opt`, `/usr/local`, `/usr/lib`, `/home/oai`, `/root`, `/mnt/data`, `/openai`).
+- SDK bootstrap was attempted without changing the repository: shell access to GitHub failed DNS resolution, and downloading Flutter's Linux release metadata from `storage.googleapis.com` also failed. This runtime therefore cannot install Flutter/Dart or resolve Pub packages from the network.
+- PyYAML 6.0.3 **STATIC CHECK PASS**: the retrieved `analysis_options.yaml` parsed and its include value matched exactly; the retrieved `pubspec.yaml` excerpt parsed and asserted the Dart SDK constraint plus `flutter_lints ^6.0.0`; the live lockfile separately confirms `flutter_lints 6.0.0`. This is YAML/source evidence only, not package resolution or Dart analysis.
+- The recursive tree contains only the existing guarded `.github/workflows/jexfyz-app-build-trigger.yml`; no separate non-publishing validation workflow exists. Actions inspection returned 337 total runs; latest is Build #162 completed/success, with #161 and #160 historical failures. No active run or new run was observed. The release pipeline was not rerun or triggered as a substitute for validation.
+
+### Not run / not established
+
+- `flutter pub get`
+- `flutter analyze --no-fatal-infos` — post-lint diagnostics remain **NOT RUN**.
+- `dart format --output=none --set-exit-if-changed lib test` — formatter baseline remains **NOT ESTABLISHED**.
+- `flutter test` — current-main tests remain **NOT RUN** in this interaction.
+- `actionlint` / full GitHub Actions schema validation — **NOT RUN**.
+- No lint suppression, formatter edit, business-logic edit, source/test change or workflow change was made. No Build App or device operation occurred.
+
+### Exact next action
+
+Use an independently provisioned **non-release** checkout/runner with Flutter `3.47.2`, compatible Dart SDK and network access or a complete Pub cache, on the exact current `main` SHA. Run `flutter pub get`, `flutter analyze --no-fatal-infos`, `dart format --output=none --set-exit-if-changed lib test`, then `flutter test`; retain exact source SHA, command output and exit codes. Review only verified diagnostics and formatting-only changes. Do not add a blocking formatter gate until the baseline is clean, and do not invoke the guarded App Build workflow for this work.
+
+---
+
 ## CURRENT CHECKPOINT — EKSEKUSI FULL / CONCURRENCY FIX + FLUTTER LINT ACTIVATION — 2026-11-14
 
 **Mode:** `Eksekusi Full!` — explicit owner authorization covered only the guarded release workflow concurrency policy and root Flutter analyzer configuration/quality baseline. No Build App, Actions run, APK/Release, Firmware/device operation was triggered.

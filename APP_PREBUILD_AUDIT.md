@@ -251,7 +251,8 @@ Evidence is classified as **STATIC SOURCE CHECK** unless explicitly stated other
 
 - The current workflow runs flutter analyze --no-fatal-infos, flutter test, Android Gradle and release signing/package gates; no Dart formatter step exists.
 - Root analysis_options.yaml now activates the locked flutter_lints 6.0.0 set, but the post-activation flutter analyze diagnostics are not yet measured. The previous Build #162 count of 23 infos is pre-lint and must not be treated as the new baseline.
-- Dart/Flutter are unavailable in the current runtime. Establish the exact-source formatter baseline with `dart format --output=none --set-exit-if-changed lib test`; if it fails, format the Dart files, review the formatting-only diff, then rerun until clean. Add a blocking CI formatter gate only after this baseline is recorded.
+- Dart/Flutter are unavailable in the current runtime. A 2026-11-14 non-release attempt also confirmed no cached SDK in the runtime locations checked and failed DNS/download access to GitHub and Flutter's artifact host; therefore SDK bootstrap and package resolution could not run. The only repository workflow is the guarded App Build/QC/Release pipeline, not a validation-only workflow, and was not invoked. A PyYAML static parse of the retrieved lint config passed, but this does not establish analyzer or formatter status.
+- Establish the exact-source formatter baseline on a separately provisioned non-release Flutter 3.47.2 environment with `dart format --output=none --set-exit-if-changed lib test`; if it fails, format the Dart files, review the formatting-only diff, then rerun until clean. Add a blocking CI formatter gate only after this baseline is recorded.
 
 
 ### P2.1 — Typography and microcopy hierarchy
