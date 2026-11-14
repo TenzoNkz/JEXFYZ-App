@@ -106,31 +106,31 @@ void main() {
     expect(floating, contains('TextScaler.noScaling'));
     expect(
       RegExp(
-        r'JexFixedScalePage\(\s*compactUi:\s*true,\s*child:\s*LanguageSettingsPage\(\)\s*\)',
+        r'JexFixedScalePage\(\s*compactUi:\s*true,\s*child:\s*LanguageSettingsPage\(\)\s*,?\s*\)',
       ).hasMatch(floating),
       isTrue,
     );
     expect(
       RegExp(
-        r'JexFixedScalePage\(\s*compactUi:\s*true,\s*child:\s*AppearanceSettingsPage\(\)\s*\)',
+        r'JexFixedScalePage\(\s*compactUi:\s*true,\s*child:\s*AppearanceSettingsPage\(\)\s*,?\s*\)',
       ).hasMatch(floating),
       isTrue,
     );
     expect(
       RegExp(
-        r'JexFixedScalePage\(\s*compactUi:\s*true,\s*child:\s*NotificationsSettingsPage\(\)\s*\)',
+        r'JexFixedScalePage\(\s*compactUi:\s*true,\s*child:\s*NotificationsSettingsPage\(\)\s*,?\s*\)',
       ).hasMatch(floating),
       isTrue,
     );
     expect(
       RegExp(
-        r'JexFixedScalePage\(\s*compactUi:\s*true,\s*child:\s*BluetoothSettingsPage\(\)\s*\)',
+        r'JexFixedScalePage\(\s*compactUi:\s*true,\s*child:\s*BluetoothSettingsPage\(\)\s*,?\s*\)',
       ).hasMatch(floating),
       isTrue,
     );
     expect(
       RegExp(
-        r'JexFixedScalePage\(\s*compactUi:\s*true,\s*child:\s*FloatingSettingsPage\(\)\s*\)',
+        r'JexFixedScalePage\(\s*compactUi:\s*true,\s*child:\s*FloatingSettingsPage\(\)\s*,?\s*\)',
       ).hasMatch(floating),
       isTrue,
     );
@@ -206,7 +206,11 @@ void main() {
       isTrue,
     );
     expect(floatingSettings, contains('valueLabel'));
-    expect(floatingSettings, contains('fontSize: 10, fontWeight: FontWeight.w900'));
+    expect(
+      RegExp(r'fontSize:\s*10,\s*fontWeight:\s*FontWeight\.w900')
+          .hasMatch(floatingSettings),
+      isTrue,
+    );
 
     expect(floating, contains('final bool compactUi;'));
     expect(floating, contains('this.compactUi = false'));

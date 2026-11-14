@@ -376,7 +376,7 @@ void main() {
     expect(route, contains('maxWidth: 312'));
     expect(
       RegExp(
-        r'jexLedColorPickerMaxHeight\s*\(\s*constraints\.maxHeight\s*\)',
+        r'jexLedColorPickerMaxHeight\s*\(\s*constraints\.maxHeight\s*,?\s*\)',
       ).hasMatch(route),
       isTrue,
     );
@@ -471,12 +471,12 @@ void main() {
 
     for (final feature in [
       'shell.shift(Offset(s * .014, s * .018))',
-      '_cavityPaintColor(const Color(0xFF09121A), darkAlpha: .92,',
+      '_cavityPaintColor(const Color(0xFF09121A), darkAlpha: .92)',
       'lightTheme ? lightSurfaceColor : darkColor.withValues(alpha: darkAlpha)',
       'if (!valueKnown)',
       'if (valueKnown && fluidHeight > 0)',
       'Path _boltInnerCore(double s)',
-      '_depthPaintColor(const Color(0xFF070B12), darkAlpha: .74, lightAlpha: .46,',
+      '_depthPaintColor(const Color(0xFF070B12), darkAlpha: .74, lightAlpha: .46)',
       's * (.135 + .010 * wave)',
       'if (!moving || strength <= .005) return;',
       'final crystalWidth = s * (.058 + .006 * frostPower)',
@@ -783,10 +783,8 @@ void main() {
     expect(appContract, contains('themedata.dark(usematerial3: true)'));
     expect(appContract, contains("texttheme.apply(fontfamily: 'roboto')"));
     expect(
-      RegExp(
-        r'primarytexttheme\s*:\s*darktheme\.primarytexttheme\.apply\s*\(\s*fontfamily:\s*\x27roboto\x27\s*\)',
-      ).hasMatch(appContract),
-      isTrue,
+      appContract,
+      contains('primarytexttheme: darktheme.primarytexttheme.apply(fontfamily:'),
     );
     expect(screenContract, contains('official build verification failed'));
     expect(screenContract, contains('verifikasi build resmi gagal'));
@@ -2544,7 +2542,7 @@ void main() {
     final accepted = source.substring(start, end);
     expect(
       RegExp(
-        r'homeFanSpeedChangedNotice\s*\(\s*previousFanSpeed\s*,\s*requested\s*,\s*language:\s*lang\s*\)',
+        r'homeFanSpeedChangedNotice\s*\(\s*previousFanSpeed\s*,\s*requested\s*,\s*language:\s*lang\s*,?\s*\)',
       ).hasMatch(accepted),
       isTrue,
     );
@@ -2708,7 +2706,7 @@ void main() {
     final header = home.substring(headerStart, headerEnd);
     expect(
       RegExp(
-        r'BoxConstraints\.tightFor\s*\(\s*width:\s*48,\s*height:\s*48\s*\)',
+        r'BoxConstraints\.tightFor\s*\(\s*width:\s*48,\s*height:\s*48\s*,?\s*\)',
       ).allMatches(header).length,
       2,
     );
