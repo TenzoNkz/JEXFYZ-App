@@ -1,4 +1,4 @@
-| Last updated | 2026-11-14 09:58 (Asia/Jakarta) |
+| Last updated | 2026-11-14 10:17 (Asia/Jakarta) |
 
 > Single current snapshot for JE X FYZ project interactions. This file records the latest persisted observation, not a continuously running heartbeat or overall product completion.
 
@@ -6,21 +6,21 @@
 
 | Field | Value |
 |---|---|
-| **STATUS** | **COMPLETED** |
-| SESSION STATUS | COMPLETED |
-| WORK STATUS | COMPLETED |
-| Mode | Diskusi! |
-| Request / work item | Explain the purpose and limits of Validation Only versus the separate Build App workflow |
-| Started | 2026-11-14 09:56 (Asia/Jakarta) |
+| **STATUS** | **IN_PROGRESS** |
+| SESSION STATUS | IN_PROGRESS |
+| WORK STATUS | IN_PROGRESS |
+| Mode | Eksekusi Full! |
+| Request / work item | Refine Usage Statistics screen layout: alignment, graph/statistic spacing, Activity timelines and Selected time detail panel; preserve recording/calculation/selection behavior |
+| Started | 2026-11-14 10:17 (Asia/Jakarta) |
 | Last updated | 2026-11-14 09:43 (Asia/Jakarta) |
-| Current phase | COMPLETED. Explained that Validation Only resolves locked dependencies, checks and auto-applies Dart formatting, runs analyzer and the Flutter suite, and may commit formatter-only changes; it does not debug/repair arbitrary source or produce an APK. No source, test, config, workflow, Actions or Release operation was started. |
-| Last completed milestone | Discussion clarified: the `Eksekusi Full!` test-only matcher repair plus run #14 green validation is persisted; 14 Dart files were format-only changes, not 14 broken-file repairs. Build App remains a separate guarded package/QC/release path. |
+| Current phase | IN_PROGRESS. Opening scope: review uploaded screenshots and live Usage Statistics source/tests/design contracts; implement only scoped App UI and regression tests, then validate available hosted checks. No Build App/APK/Release or Firmware/device operation. |
+| Last completed milestone | Prior Validation Only run #14 remains completed/success; this new UI refinement has just opened. |
 | Last verified main checkpoint | `692d0affba4ca7581a26946ec8f02145bde16ff2` — last prior implementation/validation checkpoint; this interaction's opening status write `75b6d447937adcd376a456a103879774fe519b3f` is status-only. |
 | EXTERNAL OPERATION | Validation Only run #14 / 43545258942 / job 132294979691 / source `ce86848cee9dafe703db3b4b3a5ebdad1be70bc1`; formatter commit `20676552cbfbb3276a6d7a7bc5f2541c13245c48` |
 | EXTERNAL OPERATION STATUS | **COMPLETED / SUCCESS — run #14 / 43545258942; job 132294979691; no later active run** |
 | Result / evidence | Validation Only run #14 / 43545258942 remains completed/success on source `ce86848...`: locked dependencies PASS; formatting applied to 14 files and final formatter check PASS; analyzer 119 infos, zero warnings/errors; 188 tests passed; formatter-only commit `20676552...`. This proves the recorded validation gates for that revision, not APK packaging, Android release signing, UI rendering or device acceptance. No new run/build was started in this discussion. |
 | Blocker | None for this recovery request. Non-blocking project items: 119 analyzer info findings; actionlint not run; physical/OEM acceptance not established. |
-| Next action | No pending action for this question. A new APK from current `main` requires a separate explicit `Eksekusi Build App!`; recommendation only, not authorization. |
+| Next action | Load complete operating policy, active checkpoint, current source/tests and mandatory product-design references; establish exact source behavior before changing layout. |
 
 ## Status model
 
