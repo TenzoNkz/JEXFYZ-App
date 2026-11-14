@@ -28,6 +28,11 @@
 - **Not run:** full actionlint/GitHub workflow schema check; `flutter pub get`; post-activation `flutter analyze --no-fatal-infos`; `dart format`; Flutter tests. These were unavailable or explicitly outside the no-Build-App instruction. No business logic or Dart source/test file was changed.
 - **Formatter baseline is NOT ESTABLISHED.** On an SDK-equipped checkout, first run `dart format --output=none --set-exit-if-changed lib test`. If it reports changes, run `dart format lib test`, inspect a formatting-only diff, and repeat the check until clean. Add a blocking CI formatter gate only after a clean baseline is recorded.
 - **Lint diagnostic baseline is NOT ESTABLISHED.** Build #162's 23 info-level results were collected before the root lint include and cannot be treated as post-activation evidence. Run `flutter analyze --no-fatal-infos` after `flutter pub get` and classify every new lint before any suppression or business-logic edit.
+- **Final pre-checkpoint repository verification:** main HEAD `a2f6fe0881525b50370b0b10d73231ac561fb723`; recursive tree 134 entries, 52 Markdown, `truncated=false`. Compare from the execution opening main SHA `c9a9a5ba81876e774f6be798086a946e514aaa7f` shows only the authorized workflow/config files plus status/audit/handover/checkpoint Markdown. No `lib/`, `test/`, Android host or Firmware source path changed.
+- Workflow diff from the execution opening blob is exact: only the global concurrency block was removed and the identical guard was followed by the job-level block; all existing release step names were retained. The root lint include parses; package lock remains at `flutter_lints 6.0.0`. Twelve skill mirror pairs still have zero mismatches.
+- Actions total remained 337 with Build #162 as latest (`completed/success`); #160/#161 remain historical failures. Zero open PRs. No run was created or triggered in this session.
+- Durable policy remediation commits: workflow `52c87f9ee2ec8def71ff9e1e6e448ca1df0a1297`; config `65a3053393f2ab31726ae40cf187b737c915bb7b`; audit `3d773331fe820898c4b60a9cfbb646f855b7d3a1`; current state `035b4a42a50fc220ad7681470a9c98e7bcb6ab84`; handover `c3d9823f6d66a3ad7d780b73b263ca783deaadeb`; index `a2f6fe0881525b50370b0b10d73231ac561fb723`.
+
 
 ### Exact next action
 
