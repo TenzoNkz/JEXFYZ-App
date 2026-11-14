@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — Current Project State
 
-Last reconciled: 2026-11-14 (Asia/Jakarta). This file is current truth only. Build-by-build history belongs in APP_BUILD_REPORT.md and CHANGELOG.md; detailed execution evidence belongs in CHAT_TRANSFER.md and APP_PREBUILD_AUDIT.md.
+Last reconciled: 2026-11-14 (Asia/Jakarta), after Validation Only run #14. This file is current truth only. Build-by-build history belongs in APP_BUILD_REPORT.md and CHANGELOG.md; detailed execution evidence belongs in CHAT_TRANSFER.md and APP_PREBUILD_AUDIT.md.
 
 ## Repository baseline
 
@@ -9,7 +9,7 @@ Last reconciled: 2026-11-14 (Asia/Jakarta). This file is current truth only. Bui
 - Twelve canonical `.agents/skills` definitions and twelve `.github/skills` mirrors remain byte-identical.
 - Root `analysis_options.yaml` is now present and includes `package:flutter_lints/flutter.yaml`. `flutter_lints 6.0.0` was already a direct dev dependency and is locked in `pubspec.lock`.
 - The guarded App release workflow keeps issue-only opened/reopened triggers and its owner/title/body-token guard; relevant pushes start Validation Only, not App Build/Release. Release concurrency is job-level under the guarded build job.
-- Flutter/Dart and actionlint are unavailable in this ChatGPT runtime. Hosted Validation Only runs on Flutter 3.47.2 have executed through run #13; no local Flutter test/build or actionlint check ran.
+- Flutter/Dart and actionlint are unavailable in this ChatGPT runtime. Hosted Validation Only run #14 completed on Flutter 3.47.2 with 188/188 tests passed; no local Flutter test/build or actionlint check ran.
 
 ## Latest verified App package — Build #162 SUCCESS
 
@@ -31,8 +31,8 @@ Last reconciled: 2026-11-14 (Asia/Jakarta). This file is current truth only. Bui
 ## Confirmed repository hardening state
 
 1. **P1 workflow concurrency — FIXED in current main:** workflow-level concurrency was removed. `jexfyz-cooler-build` now exists only under `jobs.build`, after the unchanged owner-login, exact-title and body-token guard. It sets `cancel-in-progress: false` and `queue: max`, allowing one active plus up to 100 pending guarded release jobs. All original event triggers and release gates remain. The workflow was not run by this session.
-2. **P2 lint policy — ENABLED; hosted baseline measured:** root `analysis_options.yaml` includes locked `flutter_lints 6.0.0`. Validation Only runs #7–#13 report 119 info-level findings and zero warnings/errors. Build #162's 23 infos predate this rule set.
-3. **P2 formatter baseline — drift detected:** hosted Validation Only formats 17 files (14 changed) and the post-format check passes. Formatter-only `lib/`/`test/` commit is gated on all tests passing and exact remote HEAD; it has not committed because one test remains red.
+2. **P2 lint policy — ENABLED; hosted baseline measured:** root `analysis_options.yaml` includes locked `flutter_lints 6.0.0`. Validation Only run #14 reports 119 info-level findings and zero warnings/errors. Build #162's 23 infos predate this rule set.
+3. **P2 formatter baseline — ESTABLISHED/CLEAN:** hosted Validation Only run #14 formatted 17 checked files (14 changed), then final formatter check passed with zero remaining changes. After all 188 tests passed, workflow committed the formatter-only diff as `20676552cbfbb3276a6d7a7bc5f2541c13245c48`, guarded to `lib/` and `test/` with exact remote-HEAD verification.
 4. **CI/governance:** separate push-triggered non-publishing Flutter Validation Only workflow exists on configured `main` paths with pinned action SHAs. Coverage retention and branch protection remain open; it never builds/releases the App.
 5. **P2 tests:** retain the 188-test suite and add real FlutterBluePlus/plugin-channel lifecycle tests, native MethodChannel/service tests where meaningful, and a real SQLite v1→v2 fixture migration test. Do not add empty native JUnit tests solely to avoid `NO-SOURCE`.
 6. **P2 maintainability:** extract lower-coupling data/UI seams incrementally only after regression tests exist. BLE coordinator extraction is high-risk and should be late, not a mechanical rewrite.
@@ -46,5 +46,5 @@ Last reconciled: 2026-11-14 (Asia/Jakarta). This file is current truth only. Bui
 
 ## Immediate next action
 
-- Replace the two `tightFor` assertions in `test/floating_monitor_layout_contract_test.dart` with whitespace/trailing-comma-tolerant regexes retaining exact 42x42 and 40x40 dimensions. Commit test + memory, then inspect Validation Only run #14. Do not invoke the guarded Build App workflow.
+- No pending task in the Validation Only stream: run #14 passed 188/188 and the formatter-only commit is on `main`. The latest packaged App remains Build #162. Visual/device acceptance or a future App release is a separate task and requires explicit owner authorization.
 - Do not invoke Build App/APK/Release for this task. Firmware compile/BIN/Firebase/OTA/flash and device operations remain separately gated.

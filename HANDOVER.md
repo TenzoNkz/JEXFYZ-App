@@ -1,4 +1,18 @@
-## Immediate next step — Validate the formatter-tolerant Connection touch-target assertions — 2026-11-14
+## Completed checkpoint — Validation Only run #14 is green — 2026-11-14
+
+**Current main HEAD:** `20676552cbfbb3276a6d7a7bc5f2541c13245c48`; recursive tree: 137 entries, not truncated.
+
+**Test-only fix:** commit `ce86848cee9dafe703db3b4b3a5ebdad1be70bc1` made the Connection 42x42 and 40x40 touch-target matchers tolerant of Dart formatting whitespace and trailing commas without changing exact dimensions.
+
+**Validation:** run #14 / `43545258942` on source `ce86848...`, job `132294979691`, completed success. Locked pub resolution PASS; Dart format applied to 14 changed files and final check clean; analyzer PASS (119 infos, 0 warnings/errors); Flutter tests 188/188 PASS; formatter preview, formatter-only commit and final summary PASS.
+
+**Formatter commit:** `20676552cbfbb3276a6d7a7bc5f2541c13245c48`, parent `ce86848...`. The workflow guarded path scope to `lib/` and `test/`, and verified remote HEAD against the tested SHA before committing. Test/analyzer ran on the formatted runner workspace.
+
+**No follow-up required for this validation task.** No Build App, APK/AAB, Release, Firmware/BIN, Firebase, OTA, flash or device operation occurred. Build #162 remains latest packaged App. A future product build or physical acceptance requires a separate owner command.
+
+---
+
+## PREVIOUS HANDOVER — RUN #13 FAILURE BEFORE FINAL TOUCH-TARGET REPAIR — 2026-11-14
 
 **Current main parent:** `8ff48761b1d6d0b2a1ed4e7ce2a71a2f10f199e0`; tree 137 entries, not truncated.
 
@@ -84,4 +98,5 @@ The documentation source-of-truth sync for Build #162 is complete. The current p
 4. Source modularization: defer broad extraction until regression coverage is strengthened.
 
 ---
+
 

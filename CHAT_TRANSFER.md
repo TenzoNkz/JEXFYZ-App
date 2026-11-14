@@ -1,4 +1,39 @@
-## CURRENT CHECKPOINT — EKSEKUSI FULL / VALIDATION ONLY / FORMATTER-TOLERANT TEST REPAIR — 2026-11-14
+## CURRENT CHECKPOINT — EKSEKUSI FULL / VALIDATION ONLY COMPLETE — 2026-11-14
+
+**Work status: COMPLETED.** The inherited test-only formatter-contract repair and non-publishing Flutter/Dart validation are complete. No App Build/APK/AAB/Release, Firmware compile/BIN, Firebase, OTA, flash or physical-device operation was performed.
+
+### Final repository state
+
+- Repository/branch: `TenzoNkz/JEXFYZ-App` / `main`.
+- Final verified main HEAD before this Markdown-only closeout: `20676552cbfbb3276a6d7a7bc5f2541c13245c48` (`style: format Dart sources and tests`). Recursive tree: 137 entries, `truncated=false`.
+- Test-only repair commit: `ce86848cee9dafe703db3b4b3a5ebdad1be70bc1` (`test: tolerate Dart formatter in Connection touch targets`). It changed only the two literal touch-target matchers in `test/floating_monitor_layout_contract_test.dart` plus synchronized project memory.
+- Formatter-only commit from the hosted workflow: `20676552cbfbb3276a6d7a7bc5f2541c13245c48`, parent `ce86848...`. Workflow stages only `lib/` and `test/`, rejects paths outside those directories, checks `git diff --cached --check`, and verifies remote `main` still equals the tested `GITHUB_SHA` before pushing. The actual commit changed 14 files under `lib/`/`test/`.
+- Current packaged release remains Build #162 on source `6854d8eb58a5f077cbc99749a35d37a4f55b8efa`. This validation did not create or publish a new package.
+
+### Final hosted validation — run #14
+
+- Run: [43545258942](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/43545258942), job `132294979691`, tested source SHA `ce86848cee9dafe703db3b4b3a5ebdad1be70bc1`, terminal `completed / success`.
+- `flutter pub get --enforce-lockfile`: PASS.
+- Dart formatting: initial check detected drift; hosted Dart 3.47.2 formatted 17 checked files (14 changed); final formatter check PASS with zero remaining changes.
+- `flutter analyze --no-fatal-infos`: PASS, 119 info-level diagnostics, zero warnings and zero errors.
+- `flutter test`: **188 tests passed**.
+- Formatter preview upload: PASS. Verified formatter-only commit: PASS, SHA `20676552cbfbb3276a6d7a7bc5f2541c13245c48`. Final job summary: PASS.
+- All tests and analyzer ran after formatting had been applied in the workflow workspace; that exact formatter result was then committed by the workflow after the source-HEAD guard passed. The auto-generated commit was not followed by a separate Validation Only run; no later run appears in the Actions inventory at closeout.
+
+### Historical recovery
+
+Runs #7–#13 were failed validation attempts while formatter-sensitive source tests were progressively repaired. Their per-run results remain in the history below and must not be rewritten as successes. Run #14 is the first complete green validation result in this recovery sequence.
+
+### Evidence boundary / remaining risks
+
+- Flutter/Dart were not installed in this ChatGPT runtime; hosted GitHub Actions on Flutter 3.47.2 supplied all actual package/format/analyzer/test execution. No local Flutter test or build was run.
+- The analyzer retains 119 info-level findings; zero warnings/errors. `actionlint` was unavailable/not run.
+- This is source quality validation only. It does not establish Build #162 installation, OEM visual acceptance, BLE/device behavior, thermal/electrical safety or Firmware correctness.
+- No further action is pending for this validation item. Future App Build, Firmware, OTA, flash and device work remains separately authorized.
+
+---
+
+## SUPERSEDED CHECKPOINT — RUN #13 FAILURE BEFORE FINAL TOUCH-TARGET REPAIR — 2026-11-14
 
 **Mode and authorization:** `Eksekusi Full!` continues through `Chat Stuck!` recovery. Inherited scope is limited to non-publishing Flutter/Dart validation and test-only repairs for formatter-sensitive source-contract assertions. No App production code, workflow, App Build/APK/AAB/Release, Firmware/BIN, Firebase, OTA, flash or device operation is in scope.
 

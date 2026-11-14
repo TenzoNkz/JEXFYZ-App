@@ -1,3 +1,24 @@
+## CURRENT NON-PUBLISHING VALIDATION — RUN #14 SUCCESS / FORMATTER BASELINE CLEAN — 2026-11-14
+
+**Status: COMPLETED SUCCESSFULLY.** Validation Only run [43545258942](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/43545258942), job `132294979691`, tested source `ce86848cee9dafe703db3b4b3a5ebdad1be70bc1`, terminal `completed / success`.
+
+- Locked dependency resolution: PASS (`flutter pub get --enforce-lockfile`).
+- Dart formatting: initial check detected drift; Flutter/Dart 3.47.2 formatted 17 files (14 changed); final formatter verification: PASS, no remaining changes.
+- Flutter analyzer: PASS (`flutter analyze --no-fatal-infos`), 119 info-level findings, zero warnings/errors.
+- Flutter tests: **188/188 passed**.
+- Formatter patch preview upload: PASS. Formatter-only commit: PASS, `20676552cbfbb3276a6d7a7bc5f2541c13245c48`, parent `ce86848...`; workflow commit guard verified remote `main` still equaled the tested source SHA and rejected paths outside `lib/`/`test/`.
+- The tested working tree had formatter applied before analyzer and tests; the exact format-only result was then committed. No separate follow-up run was created by the bot's formatter commit; run #14 itself validates the formatted workspace.
+- Final `main` HEAD after formatter commit: `20676552cbfbb3276a6d7a7bc5f2541c13245c48`; recursive tree 137 entries, `truncated=false`.
+- No APK/AAB/Gradle package build, Release/tag publication, Firebase, Firmware/BIN, OTA, flashing or device operation was performed. Build #162 remains latest packaged App.
+
+### Remaining non-blocking items
+
+- 119 info-level analyzer findings remain for later triage; zero warnings/errors.
+- `actionlint` is not available in this runtime and was not run.
+- Physical-device, BLE, thermal/electrical, OEM visual and owner-installation acceptance remain separate, unverified evidence.
+
+---
+
 ## CURRENT NON-PUBLISHING VALIDATION — RUN #13 FAILED / TWO TEST-ONLY MATCHERS REMAIN — 2026-11-14
 
 **Status:** hosted post-lint Flutter validation is operational; full test gate is not yet green. Latest tested source `8ff48761b1d6d0b2a1ed4e7ce2a71a2f10f199e0`; [run 43544366132](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/43544366132), job `132292043440`, terminal failure.
