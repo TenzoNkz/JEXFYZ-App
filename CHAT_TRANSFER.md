@@ -21,6 +21,8 @@
 - `PROJECT_STATE.md` — condensed from 397 lines to a current-only snapshot under 100 lines; old build chronology was not copied or rewritten. Commit: `58f9d59ed4c219646f7b481a137df0e316fa702b`.
 - `HANDOVER.md` — next action now requires explicit workflow/config scope. Commit: `c057afa13f00c536cffb2ad6bdebdc46947ad00e`.
 - `MEMORY_INDEX.md` — role/date map reconciled for Build #162 and the current doc structure. Commit: `d4b9df0e4062b4fe92d06ea20d8334eb0a5cad16`.
+- Follow-up stale-status sweep: `APP_NOTES.md` now records Build #162's 188/188 result and unconfirmed Build #162 installation (commit `e250f942020f4bbc46e71f4b91a3f5b326951a36`); `DESIGN_NOTES.md` updates Peltier/Home contracts to Build #162 (commit `641786c12f634467b9fcabbfe68a06d56386ba94`); `APP_PREBUILD_AUDIT.md` closes obsolete #160/pre-Build #162 handover instructions against the verified result (commit `e382839a29e851a664ca1f33eaa96229a0235e4d`); `HANDOVER.md` marks pre-Build #162 Usage Statistics/Fan steps completed and historical (commits `8d6e619c29050209c03aaf5308f10ca3456b73e2` and `5c7aaeaaf39b5a695463b134ddd93295190f0d5a`).
+- **Final repository verification at this checkpoint:** main HEAD/tree `5c7aaeaaf39b5a695463b134ddd93295190f0d5a`; recursive tree 133 entries / 52 Markdown / not truncated; 12 canonical and 12 mirror SKILL.md blobs with zero mismatches; one guarded workflow and one active V7.2 sketch; no root `analysis_options.yaml`. Compare from Build #162 source: **48 ahead / 0 behind**, and every changed path remains Markdown only. The workflow blob remains `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12`; workflow-level cancellation and lint/formatter gaps are intentionally unresolved.
 
 ### Work intentionally not executed
 
