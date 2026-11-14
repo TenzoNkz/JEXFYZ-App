@@ -476,7 +476,7 @@ void main() {
       'if (!valueKnown)',
       'if (valueKnown && fluidHeight > 0)',
       'Path _boltInnerCore(double s)',
-      '_depthPaintColor(const Color(0xFF070B12), darkAlpha: .74, lightAlpha: .46)',
+      '_depthPaintColor(const Color(0xFF070B12), darkAlpha: .74, lightAlpha: .46,',
       's * (.135 + .010 * wave)',
       'if (!moving || strength <= .005) return;',
       'final crystalWidth = s * (.058 + .006 * frostPower)',
@@ -783,8 +783,11 @@ void main() {
     expect(appContract, contains('themedata.dark(usematerial3: true)'));
     expect(appContract, contains("texttheme.apply(fontfamily: 'roboto')"));
     expect(
-      appContract,
-      contains('primarytexttheme: darktheme.primarytexttheme.apply(fontfamily:'),
+      containsDartFragment(
+        appContract,
+        'primarytexttheme: darktheme.primarytexttheme.apply(fontfamily:',
+      ),
+      isTrue,
     );
     expect(screenContract, contains('official build verification failed'));
     expect(screenContract, contains('verifikasi build resmi gagal'));
@@ -2546,9 +2549,24 @@ void main() {
       ).hasMatch(accepted),
       isTrue,
     );
-    expect(accepted, contains("JexText.phrase('Hotside temperature limit set to ', 'Batas suhu Hotside diatur ke ', lang)"));
-    expect(accepted, contains("JexText.phrase('5V battery limit updated.', 'Batas baterai 5V diperbarui.', lang)"));
-    expect(accepted, contains("JexText.phrase('12V battery limit updated.', 'Batas baterai 12V diperbarui.', lang)"));
+    expect(
+      RegExp(
+        r"JexText\.phrase\s*\(\s*'Hotside temperature limit set to '\s*,\s*'Batas suhu Hotside diatur ke '\s*,\s*lang\s*,?\s*\)",
+      ).hasMatch(accepted),
+      isTrue,
+    );
+    expect(
+      RegExp(
+        r"JexText\.phrase\s*\(\s*'5V battery limit updated\.'\s*,\s*'Batas baterai 5V diperbarui\.'\s*,\s*lang\s*,?\s*\)",
+      ).hasMatch(accepted),
+      isTrue,
+    );
+    expect(
+      RegExp(
+        r"JexText\.phrase\s*\(\s*'12V battery limit updated\.'\s*,\s*'Batas baterai 12V diperbarui\.'\s*,\s*lang\s*,?\s*\)",
+      ).hasMatch(accepted),
+      isTrue,
+    );
   });
 
   test('Localized Notify error detection is language-aware', () {
@@ -2734,8 +2752,14 @@ void main() {
     final tabBoundary = source.substring(menuStart, contentStart);
     expect(tabBoundary, contains('const SizedBox(height: 8),'));
     expect(tabBoundary, isNot(contains('Divider(')));
-    expect(tabBoundary, contains("_tab(JexText.of('voltage'"));
-    expect(tabBoundary, contains("_tab(JexText.of('temperature'"));
+    expect(
+      containsDartFragment(tabBoundary, "_tab(JexText.of('voltage'"),
+      isTrue,
+    );
+    expect(
+      containsDartFragment(tabBoundary, "_tab(JexText.of('temperature'"),
+      isTrue,
+    );
 
     final temperatureStart = source.indexOf('Widget _temperatureButton(');
     final temperatureEnd = source.indexOf('Widget _lockedZoneRow(', temperatureStart);

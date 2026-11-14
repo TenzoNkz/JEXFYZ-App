@@ -276,8 +276,11 @@ void main() {
     expect(connection, contains('tightFor(width: 42, height: 42)'));
     expect(connection, contains('tightFor(width: 40, height: 40)'));
     expect(
-      main,
-      contains('compactUi: true,\n              child: _ConnectionSheetContent('),
+      containsDartFragment(
+        main,
+        'compactUi: true, child: _ConnectionSheetContent(',
+      ),
+      isTrue,
     );
     expect(main, contains('stream: FlutterBluePlus.isScanning'));
     expect(main, contains('stream: FlutterBluePlus.onScanResults'));
