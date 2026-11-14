@@ -223,13 +223,10 @@ void main() {
       'BluetoothSettingsPage',
       'FloatingSettingsPage',
     ]) {
-      expect(
-        containsDartFragment(
-          floating,
-          'JexFixedScalePage(compactUi: true, child: $page())',
-        ),
-        isTrue,
+      final routePattern = RegExp(
+        'JexFixedScalePage\\s*\\(\\s*compactUi:\\s*true,\\s*child:\\s*${RegExp.escape(page)}\\s*\\(\\s*\\)\\s*,?\\s*\\)',
       );
+      expect(routePattern.hasMatch(floating), isTrue, reason: 'Missing fixed-scale route for $page');
     }
 
     expect(appSettings, contains('ThemeData buildJexCompactUiTheme('));
