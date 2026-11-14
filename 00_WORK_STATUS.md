@@ -12,15 +12,15 @@
 | Mode | Eksekusi Full! |
 | Request / work item | Continue non-publishing validation automatically without owner manual dispatch; inspect formatter patch and available Actions execution path; preserve no Build App/Release or Firmware/device boundary |
 | Started | 2026-11-14 (Asia/Jakarta) |
-| Last updated | 2026-11-14 08:22 (Asia/Jakarta) |
-| Current phase | Recovering exact run #4 evidence, formatter patch and current workflow; checking whether Actions can be dispatched or safely automated within available permissions before any code/file mutation |
-| Last completed milestone | Run #4 / 43539966391 / job 132277971487 on SHA `54d98712928a94ae693d803082f3f6d2d8fe1d4b`: locked dependency resolution PASS; formatter pre-check FAIL (13 Dart files); analyzer PASS (99 infos / 0 warnings / 0 errors); Flutter tests PASS (188/188); summary correctly FAILS only due formatter. Artifact `14092205260` (SHA-256 `fa0642c96bd3f82c84feecff19d7d3f20cadb8b5c439811689f1254f9ca8376e`) contains a formatter patch scoped strictly to 13 `lib/` and `test/` Dart files (8,949 insertions / 5,854 deletions), no YAML/config changes. |
-| Last verified main checkpoint | Live main SHA not yet re-fetched; saved run #4 checkpoint SHA `54d98712928a94ae693d803082f3f6d2d8fe1d4b` is a prior checkpoint only and must be reconciled with live main |
-| EXTERNAL OPERATION | No new validation run; historical Build #162 / run 43430275967 / source `6854d8eb58a5f077cbc99749a35d37a4f55b8efa` remains latest completed App build |
-| EXTERNAL OPERATION STATUS | **COMPLETED / FAILURE — Validation Only run #4 / 43539966391; only formatter pre-check remains failing** |
+| Last updated | 2026-11-14 08:30 (Asia/Jakarta) |
+| Current phase | Run #5 applied `dart format lib test` and confirmed clean formatter; analyzer passed with 119 infos / zero warnings / zero errors; 169 tests passed and 19 source-contract/widget checks failed due exact whitespace/line-shape assumptions after formatting; formatter commit correctly skipped. Updating tests to be whitespace-insensitive for code fragments, not changing app logic. |
+| Last completed milestone | Validation Only run #5 / 43540377206 / job 132279294554 on exact SHA `bda0c3bc884a556f106c2db250741d7d65dbb781`: Pub resolution PASS; initial formatter precheck found 13 files; auto-format PASS; final formatter PASS; analyzer PASS (119 infos / 0 warnings / 0 errors); Flutter tests FAIL (169 passed / 19 failed). All 19 failures are source-level assertions using exact spaces/line breaks, plus one dashboard source index; no app behavior assertion or analyzer error was reported. Commit step skipped by gate; no formatting source was committed. |
+| Last verified main checkpoint | `7a73e9fc24756c19000670109e39e91ad1299676` — latest status checkpoint after run #5; App source still unformatted in main because gated commit was skipped |
+| EXTERNAL OPERATION | Validation Only run #5 / 43540377206 completed; no active run; historical Build #162 remains latest App build |
+| EXTERNAL OPERATION STATUS | **COMPLETED / FAILURE — Validation Only run #5; formatter clean only in runner workspace, test suite failed after formatting** |
 | Result / evidence | New workflow is manual-only, contents:read, Flutter 3.47.2, locked pub get, read-only formatter, analyzer and all Flutter tests; individual quality gate outcomes are aggregated into a final failing status if any gate fails. YAML and embedded shell static checks PASS. Actual pub get/analyzer/formatter/tests and actionlint remain NOT RUN; no Build App or device operations were run. |
-| Blocker | Formatter baseline is unclean until the 13-file formatting-only patch is applied and verified. `actionlint` remains unavailable locally. |
-| Next action | Read canonical instructions and current run/workflow evidence; verify available API action can dispatch workflow; do not rerun a stale SHA or add push trigger without reconciling owner's latest automation instruction |
+| Blocker | Dart formatting makes 19 brittle source-contract tests fail because they compare exact whitespace/line wrapping; one dashboard source lookup also searches for a single-line method signature. Need robust whitespace-insensitive source checks and rerun full suite before any source commit. `actionlint` unavailable locally. |
+| Next action | Add a shared test helper to compact whitespace for code-fragment matching, update only the failing source-contract expectations and index/count checks across test files, then let push-triggered run repeat format/analyze/all tests. Commit Dart formatting only after every test passes; no business logic changes and no Build App. |
 
 ## Status model
 
