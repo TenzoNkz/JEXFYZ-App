@@ -6,21 +6,21 @@
 
 | Field | Value |
 |---|---|
-| **STATUS** | **COMPLETED** |
-| SESSION STATUS | COMPLETED |
-| WORK STATUS | WAITING_OWNER |
+| **STATUS** | **IN_PROGRESS** |
+| SESSION STATUS | IN_PROGRESS |
+| WORK STATUS | IN_PROGRESS |
 | Mode | Eksekusi Full! |
-| Request / work item | Create manual non-publishing Flutter validation workflow at `.github/workflows/jexfyz-app-validation.yml`; run validations only through the isolated workflow when manually dispatched; never Build App/Release or touch Firmware/device |
+| Request / work item | Make non-publishing Flutter validation run automatically without owner manual dispatch; trigger and inspect validation only, never Build App/Release or Firmware/device |
 | Started | 2026-11-14 (Asia/Jakarta) |
-| Last updated | 2026-11-14 08:08 (Asia/Jakarta) |
-| Current phase | Manual validation-only workflow and durable checkpoint docs committed; final main tree/diff/read-back and Actions inventory verified; awaiting owner manual dispatch; no build/release/device operation performed |
-| Last completed milestone | Added `.github/workflows/jexfyz-app-validation.yml` (commit `fc325d6b4fa6878963938257e140e07673885555`); PyYAML/BaseLoader, structural policy checks and Bash `-n` checks passed; verified existing release workflow unchanged, tree complete (135 entries), no Actions run created; CHAT_TRANSFER, PROJECT_STATE, HANDOVER and APP_PREBUILD_AUDIT updated |
-| Last verified main checkpoint | `25c746e2453ae2e27953a622045dd5a066ba3968` — workflow and durable project checkpoint documentation committed and read back; this status close will be the next commit |
+| Last updated | 2026-11-14 08:12 (Asia/Jakarta) |
+| Current phase | Reconcile new no-manual requirement with workflow_dispatch-only configuration; revise validation trigger to safe automatic push-only-on-main for relevant App paths; then verify it triggers and inspect run |
+| Last completed milestone | Prior manual-only validation workflow created and statically validated; owner now explicitly requires self-starting automatic validation with no manual dispatch |
+| Last verified main checkpoint | `1e6422c59215bed03a33f22f94e6ea9c222f3704` — latest closed workflow implementation checkpoint; live main will be verified before trigger changes |
 | EXTERNAL OPERATION | No new validation run; historical Build #162 / run 43430275967 / source `6854d8eb58a5f077cbc99749a35d37a4f55b8efa` remains latest completed App build |
-| EXTERNAL OPERATION STATUS | **NOT_APPLICABLE (validation workflow intentionally not dispatched)** |
+| EXTERNAL OPERATION STATUS | **NOT_APPLICABLE (no validation run has been triggered in this interaction yet)** |
 | Result / evidence | New workflow is manual-only, contents:read, Flutter 3.47.2, locked pub get, read-only formatter, analyzer and all Flutter tests; individual quality gate outcomes are aggregated into a final failing status if any gate fails. YAML and embedded shell static checks PASS. Actual pub get/analyzer/formatter/tests and actionlint remain NOT RUN; no Build App or device operations were run. |
-| Blocker | `actionlint` is not installed, so full Actions schema lint was not run. The Flutter validation workflow has not run because it is intentionally `workflow_dispatch` only and the connected GitHub tools expose no dispatch action; owner manual dispatch is required. |
-| Next action | Owner opens Actions → JE X FYZ — Validation Only → Run workflow, selects `main`, and starts the non-publishing validation. After terminal completion, inspect the run's exact source SHA and dependency/formatter/analyzer/test outcomes; do not run `jexfyz-app-build-trigger.yml`. |
+| Blocker | GitHub connection exposes no workflow-dispatch action. Need automatic push-trigger path; ensure only the non-publishing validation workflow responds to this push and release workflow remains issue-only. |
+| Next action | Verify GitHub event semantics, change validation workflow from manual-only to narrow automatic push trigger on main (include workflow file for first run), commit once, verify Actions auto-run and inspect run/jobs/logs; no manual dispatch or Build App. |
 
 ## Status model
 
