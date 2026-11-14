@@ -1,11 +1,9 @@
-## Current handover — localization source audit reconciled — 2026-11-14
+## Current handover — Gemini localization review reconciled — 2026-11-15
 
-- Live source baseline: 873a825020659dadcac2e5c7242e759209776414; current main before documentation closeout was 088e18e3995f0564cbca970f830a5a7b027320b3. The current main documentation state includes this Diskusi's Markdown-only checkpoint updates; final main HEAD/tree is verified at status closeout and recorded in 00_WORK_STATUS.md.
-- Correct inventory: 354 dictionary entries, 166 real inline JexText.phrase() calls (116 main / 10 Floating Monitor / 40 Usage Statistics), and 260 JexText.of() call sites. Previous 167 count included one comment. All dictionary pairs have both locales and static placeholder parity.
-- Confirmed copy issues: thermal Safety → Keselamatan; Fan-before-cooling title omits its timing relationship; “Safety checks passed.” → “Pemeriksaan keselamatan normal.” is not equivalent.
-- State wording is inconsistent: Usage Statistics maps Adaptive and Peltier to the same AKTIF/NONAKTIF; native HUD maps both to HIDUP/MATI. Define per-metric physical-output vs logical-mode mapping before changes.
-- OTA UPLOAD_SIZE_MISMATCH order is received bytes then expected bytes. Both numbers render, but the visible copy should label both explicitly.
-- Preserve current owner-approved About role App Developer & Builder / Pengembang Aplikasi & Perakit and Floating Monitor / Monitor Melayang. Do not use stale contrary wording from old checkpoint/Gemini recommendations.
-- Validation Only #16 is success against source 873a825 (formatter clean, analyzer 119 infos / 0 warnings/errors, 188/188 tests). No localization changes were tested; Build #162 source is older. No tests/build were run in this Diskusi.
+- Cross-check baseline: main `cef1de09f9e71e581dc51766758a017ba0745b3c`; executable source remains at `873a825020659dadcac2e5c7242e759209776414` (33 Markdown-only commits ahead / 0 behind; tree 137 entries, not truncated).
+- Accept: thermal Safety terminology, Safety checks passed translation, Fan title timing, full-sync/deep-sleep copy, Adaptive-vs-Peltier mapping, and explicit received/expected OTA counts. No P0 hardware defect is established; use P2/P3 copy/state priorities.
+- Correct the glossary: A = Adaptive Active/Inactive; P = Peltier ON/OFF; F = numeric speed while on, OFF/MATI when off. BLE session and OS permission states need separate lifecycle categories. Native HUD dynamically measures text and requests layout; actual long-label viewport fit still needs screenshot review.
+- Language picker labels remain a pending owner decision because source/tests currently enforce English / Indonesia. Preserve enum/storage IDs. Keep Bluetooth notification copy, Floating Monitor / Monitor Melayang and App Developer & Builder / Pengembang Aplikasi & Perakit.
+- Tests to update later: existing A/P HUD expectations; Usage Statistics state formatting; exact native notification copy; Indonesian Safety result; OTA mismatch formatting/order; dictionary and inline placeholder parity/dynamic branches.
 
-**Next:** recommend Lanjut Eksekusi Full! to complete the semantic matrix, implement approved copy and regression tests. This is not authorized by the current Diskusi command; wait for the owner's explicit mode command. App Build and Firmware/device operations remain separately gated.
+**Next:** recommend `Lanjut Eksekusi Full!` to implement the source-backed, owner-approved copy/state/test corrections. This is a recommendation only; it is not authorized by this review. App Build and Firmware/device actions remain separately gated.
