@@ -11,6 +11,19 @@
 - **Remaining evidence gap:** owner installation of Build #162, OEM screenshots and physical BLE/device/thermal/electrical acceptance are not established by CI. Firmware/BIN, Firebase, OTA or flashing were not run.
 - Do not reopen the historical #160/#161 failures or the #162 progress snapshots as current status. Their history remains intact below; this record is the terminal result.
 
+## Authorized workflow and Dart quality policy remediation — 2026-11-14
+
+**Status: P1 CONCURRENCY FIXED / FLUTTER LINT POLICY ENABLED / POST-ACTIVATION DIAGNOSTIC AND FORMAT BASELINE NOT RUN.**
+
+- `.github/workflows/jexfyz-app-build-trigger.yml`: removed workflow-level concurrency. The same `jexfyz-cooler-build` group now exists only under `jobs.build`, after the unchanged owner-login, exact-title and body-token `if` guard. It sets `cancel-in-progress: false` and `queue: max`; unrelated issue events are skipped before entering the release-job queue. GitHub documents job-level concurrency and `queue: max` as supporting one active plus up to 100 pending jobs; `queue: max` cannot be combined with `cancel-in-progress: true`.
+- All existing workflow triggers, owner/title/token predicates, release steps, analyzer/test/Gradle gates, production signing, source archive, Release/tag and downloaded-asset integrity checks remain in the workflow. No Build App run was triggered.
+- Root `analysis_options.yaml` is now present with `include: package:flutter_lints/flutter.yaml`. `flutter_lints 6.0.0` was already a direct dev dependency and is locked in `pubspec.lock`; no dependency/lockfile update was required.
+- **New lint diagnostics:** not yet measured. This execution environment has no `dart`, `flutter` or `actionlint` binary. Build #162's 23 info-level analyzer diagnostics predate the newly activated lint policy and are not a post-activation baseline.
+- **Formatter baseline:** not yet established. The first exact-source probe is `dart format --output=none --set-exit-if-changed lib test`. If it reports files, run `dart format lib test`, review a formatting-only diff (no business-logic changes), then repeat the probe until clean. Only after a clean formatter baseline is recorded should a blocking formatter gate be added to CI.
+- **Static validation performed:** PyYAML 6.0.3 parsed the new analysis-options file and the full modified job-level guard/concurrency fragment. Source read-back confirmed the global group is absent, the exact guard occurs once before job concurrency, the queue block occurs once before `runs-on`, all release gate step names are preserved, and `pubspec.lock` remains on flutter_lints 6.0.0. Full GitHub Actions schema validation and Dart/Flutter analyzer/formatter/test execution were unavailable and are not claimed.
+- No Dart/Kotlin/Firmware source or tests were changed. No Actions workflow, Build App, APK/Release, Firmware compile/BIN/Firebase/OTA/flash, or device operation was executed.
+
+---
 ---
 
 ## HISTORICAL — Build #161 failure triage / Build #162 pre-trigger — 2026-11-13
@@ -232,12 +245,13 @@ Evidence is classified as **STATIC SOURCE CHECK** unless explicitly stated other
 - Regression source creates 24,000 alternating valid/null points plus periodic explicit boundaries and session changes, checks budgets 1/2/3/7/8/1599/1600 and verifies no retained line bridges a skipped gap.
 - **Remaining evidence gap:** the Dart test is written but NOT RUN. Large-history UI frame time, allocation, chart rendering and long-session memory need device/Flutter validation.
 
-### P2.9 — Formatting is not a guarded workflow gate
+### P2.9 — Formatter baseline and enforcement
 
-**Status: BLOCKED / NOT RUN / NOT ENFORCED BY CURRENT WORKFLOW.**
+**Status: FORMATTER BASELINE NOT ESTABLISHED / NOT RUN / NOT ENFORCED BY CURRENT WORKFLOW.**
 
-- The current workflow runs flutter analyze --no-fatal-infos, flutter test, Android Gradle and release signing/package gates; no dart format --output=none --set-exit-if-changed step exists.
-- A successful guarded Build App therefore will not prove Dart formatting. Dart is unavailable in the current runtime and the changed files have not been formatted or checked. The changed Dart files still need explicit formatting/check evidence or a separately approved formatter gate.
+- The current workflow runs flutter analyze --no-fatal-infos, flutter test, Android Gradle and release signing/package gates; no Dart formatter step exists.
+- Root analysis_options.yaml now activates the locked flutter_lints 6.0.0 set, but the post-activation flutter analyze diagnostics are not yet measured. The previous Build #162 count of 23 infos is pre-lint and must not be treated as the new baseline.
+- Dart/Flutter are unavailable in the current runtime. Establish the exact-source formatter baseline with `dart format --output=none --set-exit-if-changed lib test`; if it fails, format the Dart files, review the formatting-only diff, then rerun until clean. Add a blocking CI formatter gate only after this baseline is recorded.
 
 
 ### P2.1 — Typography and microcopy hierarchy
@@ -265,12 +279,12 @@ Floating Monitor has a distinct configuration-heavy page with reorderable metric
 
 ### P2.4 — Formatting, lint policy and source structure
 
-- `pubspec.yaml` declares `flutter_lints`, but the recursive tree contains no `analysis_options.yaml`; the recommended lint set is therefore not configured through the standard analysis-options entry point.
-- Current guarded workflow runs `flutter analyze --no-fatal-infos` and `flutter test`, but no Dart formatter check is present.
-- Static scan found 40 lines over 120 characters in `main.dart`, 19 in `usage_statistics.dart`, 16 in `app_settings.dart`, and a compressed pair of statements in `FirmwareUpdateDialog`. A real `dart format` run is still required; line-length inspection is not a formatter substitute.
+- `pubspec.yaml` declares `flutter_lints`; root `analysis_options.yaml` now includes `package:flutter_lints/flutter.yaml`. The new rules are active once dependencies are resolved, but post-activation diagnostics have not yet been run.
+- Current guarded workflow runs `flutter analyze --no-fatal-infos` and `flutter test`, but no Dart formatter check is present. A clean formatter baseline must be measured before adding that gate.
+- The prior static scan found 40 lines over 120 characters in `main.dart`, 19 in `usage_statistics.dart`, 16 in `app_settings.dart`, and a compressed pair of statements in `FirmwareUpdateDialog`. These are leads, not proof of formatter failures; a real `dart format` run is still required.
 - `main.dart` contains ~10.6k lines mixing Dashboard/UI, BLE lifecycle/parsing, commands, notifications and OTA UI. `usage_statistics.dart` combines SQLite persistence, recorder, analytics, screen and painters.
 
-**Recommendation:** format changed Dart files and review analyzer infos. Introduce a lint policy deliberately, after checking the current analyzer baseline. Defer broad file extraction until screen-level source stabilizes; later split UI components from BLE/OTA orchestration in small, test-backed steps. Do not mix a risky architectural rewrite into a visual cleanup.
+**Recommendation:** measure new diagnostics with the activated `flutter_lints` policy, fix verified lints without changing business logic, and record a clean `dart format` result before adding a blocking formatter gate. Defer broad file extraction until screen-level source stabilizes; later split UI components from BLE/OTA orchestration in small, test-backed steps. Do not mix a risky architectural rewrite into a visual cleanup.
 
 ### P2.5 — Design-token audit, not blanket normalization
 
