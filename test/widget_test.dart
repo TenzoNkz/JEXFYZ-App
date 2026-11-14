@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'support/source_contract_helpers.dart';
 import 'dart:math' as math;
 // AI-MEMORY / TEST CONTRACT
 // This file validates deterministic UI helpers, localization contracts, and pure parsing rules.
@@ -32,7 +33,7 @@ void main() {
     expect(dialog, contains('obscureText: !passwordVisible'));
     expect(dialog, contains("passwordVisible ? 'hidePassword' : 'showPassword'"));
     expect(dialog, contains('passwordVisible = !passwordVisible;'));
-    expect(dialog, contains('passwordVisible ? PhosphorIconsRegular.eyeSlash : PhosphorIconsRegular.eye'));
+    expect(containsDartFragment(dialog, 'passwordVisible ? PhosphorIconsRegular.eyeSlash : PhosphorIconsRegular.eye'), isTrue);
     expect(settings, contains("'showPassword': {"));
     expect(settings, contains("AppLanguage.english: 'Show password'"));
     expect(settings, contains("AppLanguage.indonesia: 'Tampilkan kata sandi'"));
@@ -316,7 +317,7 @@ void main() {
     expect(dialog, contains("fontFamily: fontFamily"));
     expect(dialog, isNot(contains('SingleChildScrollView(')));
     expect(dialog, isNot(contains('SlideTransition(')));
-    expect(dialog, contains('Color(0xFFD69A38)'));
+    expect(containsDartFragment(dialog, 'Color(0xFFD69A38)'), isTrue);
     expect(dialog, contains('peltierFanRequiredTitle'));
     expect(dialog, contains('peltierCoolingPrerequisite'));
     expect(dialog, contains('turnOnFanAndPeltier'));
@@ -373,7 +374,7 @@ void main() {
     expect(routeEnd, greaterThan(routeStart));
     final route = source.substring(routeStart, routeEnd);
     expect(route, contains('maxWidth: 312'));
-    expect(route, contains('jexLedColorPickerMaxHeight(constraints.maxHeight)'));
+    expect(containsDartFragment(route, 'jexLedColorPickerMaxHeight(constraints.maxHeight)'), isTrue);
     expect(route, contains('EdgeInsets.fromLTRB(24, 4, 24, 4)'));
 
     final cardStart = source.indexOf('class _JexColorPickerCardState');
@@ -417,7 +418,7 @@ void main() {
       contains('jexHomeHeaderUsesDarkPalette(appThemeNotifier.value)'),
     );
     expect(metric, contains('lightSurfaceColor: theme.colorScheme.surface'));
-    expect(metric, contains('lightOutlineColor: theme.colorScheme.onSurfaceVariant'));
+    expect(containsDartFragment(metric, 'lightOutlineColor: theme.colorScheme.onSurfaceVariant'), isTrue);
 
     final painterStart = source.indexOf('class _JexIconPainter extends CustomPainter {');
     final painterEnd = source.indexOf('const MethodChannel securityChannel', painterStart);
@@ -476,7 +477,7 @@ void main() {
       'const tickCount = 11',
       'if (valueKnown)',
     ]) {
-      expect(normalizedPainter, contains(feature), reason: 'Missing static icon finish: $feature');
+      expect(containsDartFragment(normalizedPainter, feature), isTrue, reason: 'Missing static icon finish: $feature');
     }
 
     final speedStart = painter.indexOf('case JexAnimatedIconKind.speed:');
@@ -700,7 +701,7 @@ void main() {
     expect(painter, contains('valueKnown'));
     expect(painter, contains('const start = math.pi;'));
     expect(painter, contains('const sweep = math.pi;'));
-    expect(source, contains('active: animatedKind == JexAnimatedIconKind.speed'));
+    expect(containsDartFragment(source, 'active: animatedKind == JexAnimatedIconKind.speed'), isTrue);
     expect(source, contains('active: connected && runtimeOutputsKnown && fanOn'));
   });
 
@@ -770,7 +771,7 @@ void main() {
     final screenContract = screenSource.substring(screenStart, screenEnd).toLowerCase();
     expect(appContract, contains('themedata.dark(usematerial3: true)'));
     expect(appContract, contains("texttheme.apply(fontfamily: 'roboto')"));
-    expect(appContract, contains("primarytexttheme.apply(fontfamily: 'roboto')"));
+    expect(containsDartFragment(appContract, "primarytexttheme.apply(fontfamily: 'roboto')"), isTrue);
     expect(screenContract, contains('official build verification failed'));
     expect(screenContract, contains('verifikasi build resmi gagal'));
     expect(screenContract, contains('opendevelopercontact'));
@@ -892,7 +893,8 @@ void main() {
       findsNothing,
     );
     final source = File('lib/main.dart').readAsStringSync();
-    final notifyLabelStart = source.indexOf(
+    final notifyLabelStart = indexOfDartFragment(
+      source,
       "String _notifyStateLabel() => JexText.of('notification', appLanguageNotifier.value);",
     );
     expect(notifyLabelStart, isNonNegative);
@@ -1372,7 +1374,7 @@ void main() {
     final metric = source.substring(metricStart, metricEnd);
 
     expect(metric, contains('height: 45,'));
-    expect(metric, contains('width: 41,\n                height: 41,'));
+    expect(containsDartFragment(metric, 'width: 41,\n                height: 41,'), isTrue);
     expect(metric, contains('width: 38,\n                    height: 38,'));
   });
 
@@ -1819,7 +1821,7 @@ void main() {
     expect(source, contains('widget.modeName.toUpperCase()'));
     expect(source, isNot(contains('widget.modeNumber')));
     expect(source, contains('ledColorDisplayName(rgbColor, lang)'));
-    expect(source, contains("stateKnown ? JexText.of(value ? 'on' : 'off', lang) : JexText.of('off', lang)"));
+    expect(containsDartFragment(source, "stateKnown ? JexText.of(value ? 'on' : 'off', lang) : JexText.of('off', lang)"), isTrue);
     expect(source, contains('final displayedValue = stateKnown && value;'));
     final colorDialogStart = source.indexOf('Future<void> _showLedColorPicker() async {');
     final colorDialogEnd = source.indexOf('// AI-METHOD: _openFirmwareSettings', colorDialogStart);
@@ -1905,7 +1907,7 @@ void main() {
     expect(voltage, isNot(contains('sheen')));
     expect(voltage, isNot(contains('spark')));
     expect(bluetooth, contains('final glyph = Path()'));
-    expect(bluetooth, contains('canvas.drawPath(glyph'));
+    expect(containsDartFragment(bluetooth, 'canvas.drawPath(glyph'), isTrue);
     expect(bluetooth, isNot(contains('drawArc')));
     expect(bluetooth, isNot(contains('drawCircle')));
   });
@@ -2023,7 +2025,7 @@ void main() {
     final bluetoothStart = painter.indexOf('case JexAnimatedIconKind.bluetooth:');
     final bluetoothEnd = painter.indexOf('case JexAnimatedIconKind.generic:', bluetoothStart);
     final bluetooth = painter.substring(bluetoothStart, bluetoothEnd);
-    expect(bluetooth, contains('canvas.drawPath(glyph'));
+    expect(containsDartFragment(bluetooth, 'canvas.drawPath(glyph'), isTrue);
     expect(bluetooth, isNot(contains('drawCircle')));
     expect(bluetooth, isNot(contains('drawArc')));
   });
@@ -2518,7 +2520,7 @@ void main() {
     expect(start, isNonNegative);
     expect(end, greaterThan(start));
     final accepted = source.substring(start, end);
-    expect(accepted, contains('homeFanSpeedChangedNotice(previousFanSpeed, requested, language: lang)'));
+    expect(containsDartFragment(accepted, 'homeFanSpeedChangedNotice(previousFanSpeed, requested, language: lang)'), isTrue);
     expect(accepted, contains("JexText.phrase('Hotside temperature limit set to ', 'Batas suhu Hotside diatur ke ', lang)"));
     expect(accepted, contains("JexText.phrase('5V battery limit updated.', 'Batas baterai 5V diperbarui.', lang)"));
     expect(accepted, contains("JexText.phrase('12V battery limit updated.', 'Batas baterai 12V diperbarui.', lang)"));
@@ -2677,7 +2679,7 @@ void main() {
     expect(headerStart, isNonNegative);
     expect(headerEnd, greaterThan(headerStart));
     final header = home.substring(headerStart, headerEnd);
-    expect(header.split('tightFor(width: 48, height: 48)').length - 1, 2);
+    expect(countDartFragments(header, 'tightFor(width: 48, height: 48)'), 2);
     expect(header, contains('size: 25'));
 
     final tabStart = source.indexOf('Widget _tab(String title, int index) {');

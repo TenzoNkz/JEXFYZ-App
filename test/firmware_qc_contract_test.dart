@@ -3,6 +3,7 @@
 // A passing Flutter contract test is not an Arduino compile, BIN identity check, OTA run, or hardware test.
 
 import 'dart:io';
+import 'support/source_contract_helpers.dart';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:jexfyz_cooler/app_settings.dart';
@@ -455,7 +456,13 @@ void main() {
     expect(source, contains("if (c.startsWith('VOLTAGE:')) return MapEntry('VOLTAGE', c.substring(8));"));
     expect(source, contains("case 'VOLTAGE':\n        return voltage.toUpperCase() == expected.toUpperCase();"));
     expect(source, contains('runtimeOutputsKnown = false;'));
-    expect(source, contains("stateKnown ? JexText.of(value ? 'on' : 'off', lang) : JexText.of('off', lang)"));
+    expect(
+      containsDartFragment(
+        source,
+        "stateKnown ? JexText.of(value ? 'on' : 'off', lang) : JexText.of('off', lang)",
+      ),
+      isTrue,
+    );
     expect(source, contains('final displayedValue = stateKnown && value;'));
     expect(source, contains('alignment: displayedValue ? Alignment.centerRight : Alignment.centerLeft'));
   });

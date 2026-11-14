@@ -3,6 +3,7 @@
 // Android WindowManager attachment, OEM permissions, overlays, and live telemetry require device validation.
 
 import 'dart:io';
+import 'support/source_contract_helpers.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -167,7 +168,13 @@ void main() {
     expect(floatingSettings, contains("JexText.of('functions', lang)"));
     expect(floatingSettings, contains("JexText.of('backgroundColor', lang)"));
     expect(floatingSettings, contains("JexText.of('orientation', lang)"));
-    expect(floatingSettings, contains('fontSize: 11, fontWeight: FontWeight.w900'));
+    expect(
+      containsDartFragment(
+        floatingSettings,
+        'fontSize: 11, fontWeight: FontWeight.w900',
+      ),
+      isTrue,
+    );
     expect(floatingSettings, contains('fontSize: 10, fontWeight: FontWeight.w800'));
     expect(floatingSettings, contains('valueLabel'));
     expect(floatingSettings, contains('fontSize: 10, fontWeight: FontWeight.w900'));
@@ -184,8 +191,11 @@ void main() {
       'FloatingSettingsPage',
     ]) {
       expect(
-        settings,
-        contains('JexFixedScalePage(compactUi: true, child: $page())'),
+        containsDartFragment(
+          settings,
+          'JexFixedScalePage(compactUi: true, child: $page())',
+        ),
+        isTrue,
       );
     }
 
@@ -491,9 +501,16 @@ void main() {
     expect(lockLayout, isNot(contains('CircularProgressIndicator')));
     expect(lockLayout, contains('color: scheme.onSurfaceVariant'));
 
-    final firmwareSection = settingsPage.indexOf("JexText.of('firmwareSection', language)");
-    final aboutRow = settingsPage.indexOf("JexText.of('about', language)");
-    final aboutCard = settingsPage.indexOf('Card(\n                margin: const EdgeInsets.only(top: 8)');
+    final compactSettingsPage = compactDartSource(settingsPage);
+    final firmwareSection = compactSettingsPage.indexOf(
+      compactDartSource("JexText.of('firmwareSection', language)"),
+    );
+    final aboutRow = compactSettingsPage.indexOf(
+      compactDartSource("JexText.of('about', language)"),
+    );
+    final aboutCard = compactSettingsPage.indexOf(
+      compactDartSource('Card(\n                margin: const EdgeInsets.only(top: 8)'),
+    );
     expect(firmwareSection, isNonNegative);
     expect(aboutCard, greaterThan(firmwareSection));
     expect(aboutRow, greaterThan(aboutCard));

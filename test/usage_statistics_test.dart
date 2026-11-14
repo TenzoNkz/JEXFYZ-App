@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'support/source_contract_helpers.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -507,8 +508,8 @@ void main() {
       contains('failOnReject ? Future<void>.error(error) : Future<void>.value()'),
     );
     expect(
-      usage,
-      contains('allowReservedCapacity: true, failOnReject: true'),
+      containsDartFragment(usage, 'allowReservedCapacity: true, failOnReject: true'),
+      isTrue,
     );
     expect(usage, contains('final p1ReceiptGap ='));
     expect(usage, contains('final sampleGap ='));
