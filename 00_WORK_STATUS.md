@@ -12,15 +12,15 @@
 | Mode | Eksekusi Full! |
 | Request / work item | Make non-publishing Flutter validation run automatically without owner manual dispatch; trigger and inspect validation only, never Build App/Release or Firmware/device |
 | Started | 2026-11-14 (Asia/Jakarta) |
-| Last updated | 2026-11-14 08:18 (Asia/Jakarta) |
-| Current phase | Validation Only run #3 completed Flutter/Dart setup, locked dependency resolution, formatter probe and analyzer; full Flutter tests are in progress; patch preview follows tests |
-| Last completed milestone | Run #3 / 43539667033: Flutter setup success, `flutter pub get --enforce-lockfile` success, formatter probe found the same 13/16 files needing formatting, analyzer step succeeded; workflow preview patch and upload are pending after `flutter test` finishes |
-| Last verified main checkpoint | `6fb0f2be8f648a420bd10aa1a1a3b4070e4547e1` — corrected validation workflow commit triggering current automatic run #3 |
+| Last updated | 2026-11-14 08:22 (Asia/Jakarta) |
+| Current phase | Validation Only run #4 completed with Pub/analyzer/tests success; formatter check still finds 13 Dart files; restricted patch artifact confirmed exactly 13 lib/test files and no config changes; preparing safe auto-format verification/commit path |
+| Last completed milestone | Run #4 / 43539966391 / job 132277971487 on SHA `54d98712928a94ae693d803082f3f6d2d8fe1d4b`: locked dependency resolution PASS; formatter pre-check FAIL (13 Dart files); analyzer PASS (99 infos / 0 warnings / 0 errors); Flutter tests PASS (188/188); summary correctly FAILS only due formatter. Artifact `14092205260` (SHA-256 `fa0642c96bd3f82c84feecff19d7d3f20cadb8b5c439811689f1254f9ca8376e`) contains a formatter patch scoped strictly to 13 `lib/` and `test/` Dart files (8,949 insertions / 5,854 deletions), no YAML/config changes. |
+| Last verified main checkpoint | `54d98712928a94ae693d803082f3f6d2d8fe1d4b` — path-restricted formatter preview workflow commit; run #4 confirms Pub/analyzer/tests and produces the scoped formatting patch |
 | EXTERNAL OPERATION | No new validation run; historical Build #162 / run 43430275967 / source `6854d8eb58a5f077cbc99749a35d37a4f55b8efa` remains latest completed App build |
-| EXTERNAL OPERATION STATUS | **IN_PROGRESS — Validation Only run #3 / 43539667033 / source `6fb0f2be8f648a420bd10aa1a1a3b4070e4547e1`** |
+| EXTERNAL OPERATION STATUS | **COMPLETED / FAILURE — Validation Only run #4 / 43539966391; only formatter pre-check remains failing** |
 | Result / evidence | New workflow is manual-only, contents:read, Flutter 3.47.2, locked pub get, read-only formatter, analyzer and all Flutter tests; individual quality gate outcomes are aggregated into a final failing status if any gate fails. YAML and embedded shell static checks PASS. Actual pub get/analyzer/formatter/tests and actionlint remain NOT RUN; no Build App or device operations were run. |
-| Blocker | Formatter baseline is not clean; patch preview pending. Full tests still in progress. `actionlint` remains unavailable locally. |
-| Next action | Monitor run #3 through tests, preview generation, artifact upload and summary; fetch logs and artifact, compare formatter-only patch, then decide any source edit strictly within formatting-only scope. Do not run Build App. |
+| Blocker | Formatter baseline is unclean until the 13-file formatting-only patch is applied and verified. `actionlint` remains unavailable locally. |
+| Next action | Update validation workflow to apply `dart format lib test` in the runner, rerun formatter check, analyzer and tests on the formatted working tree, and commit only staged `lib/` and `test/` formatting changes with a guarded main-head check if every gate passes. No business logic changes; auto commit uses no release/build step. |
 
 ## Status model
 
