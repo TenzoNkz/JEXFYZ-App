@@ -154,5 +154,11 @@ void main() {
         'fun updateNotificationChannelLanguage(context: Context, language: String)',
       ),
     );
+    expect(foreground, contains('Bluetooth connected · device session active'));
+    expect(foreground, contains('Bluetooth terhubung · sesi perangkat aktif'));
+    expect(floating, contains('"Floating Monitor"'));
+    expect(floating, contains('"Monitor Melayang"'));
+    expect(floating, contains('activeModeText'));
+    expect(floating, contains('inactiveModeText'));
   });
 }

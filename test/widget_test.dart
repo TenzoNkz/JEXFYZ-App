@@ -397,11 +397,11 @@ void main() {
       expect(dialog, isNot(contains('AlertDialog(')));
       expect(
         JexText.of('peltierFanRequiredTitle', AppLanguage.english),
-        'Fan required before cooling',
+        'Fan must be ON before cooling.',
       );
       expect(
         JexText.of('peltierFanRequiredTitle', AppLanguage.indonesia),
-        'Kipas perlu dinyalakan',
+        'Kipas harus menyala sebelum pendinginan.',
       );
       expect(
         JexText.of('turnOnFanAndPeltier', AppLanguage.english),
@@ -1268,11 +1268,11 @@ void main() {
       );
       expect(
         JexText.of('adaptiveOn', AppLanguage.english),
-        'Adaptive Mode ON.',
+        'Adaptive Mode active.',
       );
       expect(
         JexText.of('adaptiveOff', AppLanguage.english),
-        'Adaptive Mode OFF.',
+        'Adaptive Mode inactive.',
       );
       expect(JexText.of('fanSpeedLabel', AppLanguage.english), 'Fan Speed');
       expect(
@@ -1611,11 +1611,11 @@ void main() {
       expect(floatingMetricVisible('F', telemetry), isTrue);
       expect(floatingMetricVisible('A', telemetry), isTrue);
       expect(floatingMetricVisible('P', telemetry), isTrue);
-      expect(floatingMetricStatus('A', telemetry, AppLanguage.english), 'ON');
+      expect(floatingMetricStatus('A', telemetry, AppLanguage.english), 'ACTIVE');
       expect(floatingMetricStatus('P', telemetry, AppLanguage.english), 'ON');
       expect(
         floatingMetricStatus('A', telemetry, AppLanguage.indonesia),
-        'HIDUP',
+        'AKTIF',
       );
       expect(
         floatingMetricStatus('P', telemetry, AppLanguage.indonesia),
@@ -1628,6 +1628,35 @@ void main() {
       );
     },
   );
+
+
+  test('Floating Monitor separates logical Adaptive from physical Peltier states', () {
+    const adaptiveOff = FloatingTelemetry(
+      fanOn: true,
+      speed: 70,
+      adaptiveOn: false,
+      peltierOn: false,
+      connected: true,
+    );
+    expect(
+      floatingMetricStatus('A', adaptiveOff, AppLanguage.english),
+      'INACTIVE',
+    );
+    expect(
+      floatingMetricStatus('A', adaptiveOff, AppLanguage.indonesia),
+      'NONAKTIF',
+    );
+    expect(floatingMetricStatus('P', adaptiveOff, AppLanguage.english), 'OFF');
+    expect(floatingMetricStatus('P', adaptiveOff, AppLanguage.indonesia), 'MATI');
+    const disconnected = FloatingTelemetry(
+      fanOn: false,
+      speed: 0,
+      adaptiveOn: false,
+      peltierOn: false,
+      connected: false,
+    );
+    expect(floatingMetricStatus('A', disconnected, AppLanguage.indonesia), '--');
+  });
 
   test(
     'Floating Monitor settings keeps overlay controls and removes FPS and Shizuku UI',
@@ -3070,7 +3099,7 @@ void main() {
           currentValue: 'ON',
           language: AppLanguage.english,
         ),
-        'Adaptive Mode ON.',
+        'Adaptive Mode active.',
       );
       expect(
         homeNotifyForTelemetryChange(

@@ -26,6 +26,33 @@ const double _usageTimelineStateBarHeight = 18.0;
 bool usageCoolerIsActive({required bool fanOn, required bool peltierOn}) =>
     fanOn || peltierOn;
 
+enum UsageStateDomain { hardwareOutput, logicalMode }
+
+/// Localize a recorded ON/OFF state according to the thing whose state is shown.
+/// Unknown values remain unknown; voltage and numeric values remain unchanged.
+String usageStateLabel(
+  String? value,
+  AppLanguage language, {
+  UsageStateDomain domain = UsageStateDomain.hardwareOutput,
+}) {
+  final normalized = value?.trim().toUpperCase();
+  if (normalized == null || normalized.isEmpty) return '--';
+  if (normalized == 'ON' || normalized == 'OFF') {
+    final enabled = normalized == 'ON';
+    if (domain == UsageStateDomain.logicalMode) {
+      return JexText.phrase(
+        enabled ? 'Active' : 'Inactive',
+        enabled ? 'AKTIF' : 'NONAKTIF',
+        language,
+      );
+    }
+    return JexText.of(enabled ? 'on' : 'off', language);
+  }
+  final voltage = RegExp(r'^(\d+(?:\.\d+)?)\s*V$').firstMatch(normalized);
+  if (voltage != null) return '${voltage.group(1)} V';
+  return value!.trim();
+}
+
 double usageInterpolate(double? from, double? to, double progress) {
   if (to == null) return 0;
   if (from == null) return to;
@@ -2507,21 +2534,6 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
     setState(() => _selectedTimestampMs = timestamp);
   }
 
-  String _localizedUsageStateValue(String? value, AppLanguage language) {
-    final normalized = value?.trim().toUpperCase();
-    if (normalized == null || normalized.isEmpty) return '--';
-    if (normalized == 'ON') {
-      return JexText.phrase('ON', 'AKTIF', language);
-    }
-    if (normalized == 'OFF') {
-      return JexText.phrase('OFF', 'NONAKTIF', language);
-    }
-
-    final voltage = RegExp(r'^(\d+(?:\.\d+)?)\s*V$').firstMatch(normalized);
-    if (voltage != null) return '${voltage.group(1)} V';
-    return value!.trim();
-  }
-
   Widget _sharedCursorReadout(
     UsageStatsSummary summary,
     AppLanguage language,
@@ -2662,7 +2674,7 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
             metric('Hotside', _formatTemperature(hotside, language)),
             metric(
               JexText.phrase('Voltage', 'Tegangan', language),
-              _localizedUsageStateValue(voltage?.textValue, language),
+              usageStateLabel(voltage?.textValue, language),
             ),
           ],
         ),
@@ -2671,11 +2683,15 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
           children: [
             metric(
               JexText.phrase('Adaptive', 'Adaptif', language),
-              _localizedUsageStateValue(adaptive?.textValue, language),
+              usageStateLabel(
+                adaptive?.textValue,
+                language,
+                domain: UsageStateDomain.logicalMode,
+              ),
             ),
             metric(
               'Peltier',
-              _localizedUsageStateValue(peltier?.textValue, language),
+              usageStateLabel(peltier?.textValue, language),
             ),
             metric(
               JexText.phrase('Fan Speed', 'Kecepatan Kipas', language),
@@ -2832,11 +2848,12 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
     String latestText(
       List<UsageStateSegment> values, {
       bool percentage = false,
+      UsageStateDomain domain = UsageStateDomain.hardwareOutput,
     }) {
       if (values.isEmpty) return '--';
       final latest = values.last;
       if (latest.textValue != null) {
-        return _localizedUsageStateValue(latest.textValue, language);
+        return usageStateLabel(latest.textValue, language, domain: domain);
       }
       if (latest.numberValue != null) {
         return latest.numberValue!.toStringAsFixed(0) + (percentage ? '%' : '');
@@ -2864,7 +2881,10 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
           summary.adaptiveSegments,
           scheme,
           lane: 'adaptive',
-          currentValue: latestText(summary.adaptiveSegments),
+          currentValue: latestText(
+            summary.adaptiveSegments,
+            domain: UsageStateDomain.logicalMode,
+          ),
         ),
         _timelineLane(
           JexText.phrase('Peltier', 'Peltier', language),

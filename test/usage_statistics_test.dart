@@ -182,6 +182,32 @@ UsageStatsSnapshot _sampleSnapshot() {
 
 void main() {
   group('Usage Statistics analytics', () {
+
+    test('state labels distinguish logical modes from physical outputs', () {
+      expect(
+        usageStateLabel('ON', AppLanguage.english, domain: UsageStateDomain.logicalMode),
+        'Active',
+      );
+      expect(
+        usageStateLabel('OFF', AppLanguage.english, domain: UsageStateDomain.logicalMode),
+        'Inactive',
+      );
+      expect(
+        usageStateLabel('ON', AppLanguage.indonesia, domain: UsageStateDomain.logicalMode),
+        'AKTIF',
+      );
+      expect(
+        usageStateLabel('OFF', AppLanguage.indonesia, domain: UsageStateDomain.logicalMode),
+        'NONAKTIF',
+      );
+      expect(usageStateLabel('ON', AppLanguage.english), 'ON');
+      expect(usageStateLabel('OFF', AppLanguage.english), 'OFF');
+      expect(usageStateLabel('ON', AppLanguage.indonesia), 'HIDUP');
+      expect(usageStateLabel('OFF', AppLanguage.indonesia), 'MATI');
+      expect(usageStateLabel('12V', AppLanguage.english), '12 V');
+      expect(usageStateLabel(null, AppLanguage.indonesia), '--');
+      expect(usageStateLabel('  ', AppLanguage.english), '--');
+    });
     test('temperature axes label every degree and scale to observed data', () {
       final ticks = usageTemperatureAxisTicks(minimum: 31.5, maximum: 31.6);
 

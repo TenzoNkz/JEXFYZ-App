@@ -250,6 +250,24 @@ String homeFanSpeedChangedNotice(
       '%.';
 }
 
+/// Format Firmware upload-size mismatch events with received/expected values in fixed order.
+/// Returns null for malformed events so the existing generic fallback remains available.
+String? formatOtaUploadSizeMismatch(String event, AppLanguage language) {
+  final match = RegExp(
+    r'^UPLOAD_SIZE_MISMATCH_(\d+)_(\d+)$',
+    caseSensitive: false,
+  ).firstMatch(event.trim());
+  if (match == null) return null;
+  return JexText.format(
+    'otaSizeMismatchDetailed',
+    {
+      'receivedBytes': match.group(1)!,
+      'expectedBytes': match.group(2)!,
+    },
+    language,
+  );
+}
+
 /// One telemetry transition becomes one localized sentence; values never accumulate.
 String? homeNotifyForTelemetryChange({
   required String key,
@@ -283,7 +301,7 @@ String? homeNotifyForTelemetryChange({
       if (currentValue.trim().toUpperCase() == 'OK') {
         return JexText.phrase(
           'Safety checks passed.',
-          'Pemeriksaan keselamatan normal.',
+          'Pemeriksaan keselamatan berhasil.',
           language,
         );
       }
@@ -7953,17 +7971,8 @@ class _DashboardScreenState extends State<DashboardScreen>
       return localizedOtaSuccessSummary(language);
     }
     if (upper.startsWith('UPLOAD_SIZE_MISMATCH_')) {
-      final parts = raw.split('_');
-      if (parts.length >= 5 &&
-          int.tryParse(parts[3]) != null &&
-          int.tryParse(parts[4]) != null) {
-        return JexText.of('otaUploaded', language) +
-            parts[3] +
-            ' / ' +
-            parts[4] +
-            JexText.of('otaBytes', language);
-      }
-      return JexText.of('otaSizeMismatch', language);
+      return formatOtaUploadSizeMismatch(raw, language) ??
+          JexText.of('otaSizeMismatch', language);
     }
     if (upper.startsWith('OTA_END_ERROR_')) {
       // Detailed suffixes belong in internal diagnostics, not the Home status card.

@@ -1,8 +1,9 @@
 // AI-MEMORY / FILE CONTRACT
 // File: app_settings.dart
 // Owns: persisted App preferences, language/theme notifiers, and the single JexText localization table.
-// Localization contract: language names are English/Indonesia; English power states are ON/OFF;
-// Indonesian power states are HIDUP/MATI.
+// Display language names remain English/Indonesia until the owner approves a change.
+// Physical outputs use ON/OFF (EN) and HIDUP/MATI (ID); Adaptive uses ACTIVE/INACTIVE
+// (EN) and AKTIF/NONAKTIF (ID).
 // Technical identifiers (BLE, P1, OTA, RGB, LED and NTC) remain untranslated.
 // BLE protocol tokens are never localized here; this file only defines user-facing presentation.
 // Storage keys are compatibility contracts and must not be changed casually.
@@ -244,7 +245,7 @@ class KnownCoolerStore {
 // AI-MEMORY / LOCALIZATION CONTRACT
 // Every visible application string must come from this table or JexText.phrase().
 // Never translate frozen protocol tokens such as FAN:ON or RGB:OFF.
-// Power states use ON/OFF in English and HIDUP/MATI in Indonesian. Floating metric F is labelled Fan/Kipas; PWM control retains Fan Speed/Kecepatan Kipas.
+// Physical output states use ON/OFF (EN) and HIDUP/MATI (ID). Adaptive Mode uses Active/Inactive (EN) and AKTIF/NONAKTIF (ID). Floating metric F remains numeric while the Fan runs; PWM control retains Fan Speed/Kecepatan Kipas.
 // Language-selector presentation is always English / Indonesia.
 class JexText {
   static const Map<String, Map<AppLanguage, String>> _values = {
@@ -822,21 +823,21 @@ class JexText {
     },
     'peltierSafety': {
       AppLanguage.english: 'Peltier Safety',
-      AppLanguage.indonesia: 'Keamanan Peltier',
+      AppLanguage.indonesia: 'Keselamatan Peltier',
     },
     'fanRequiredPeltier': {
       AppLanguage.english: 'Turn on the fan before enabling Peltier.',
       AppLanguage.indonesia: 'Nyalakan kipas sebelum mengaktifkan Peltier.',
     },
     'peltierFanRequiredTitle': {
-      AppLanguage.english: 'Fan required before cooling',
-      AppLanguage.indonesia: 'Kipas perlu dinyalakan',
+      AppLanguage.english: 'Fan must be ON before cooling.',
+      AppLanguage.indonesia: 'Kipas harus menyala sebelum pendinginan.',
     },
     'peltierCoolingPrerequisite': {
       AppLanguage.english:
-          'Peltier needs airflow to remove heat. The fan will be confirmed ON before Peltier starts.',
+          'Peltier needs airflow to remove heat. The fan must be confirmed ON before Peltier starts.',
       AppLanguage.indonesia:
-          'Peltier memerlukan aliran udara untuk membuang panas. Kipas akan dikonfirmasi AKTIF sebelum Peltier menyala.',
+          'Peltier memerlukan aliran udara untuk membuang panas. Kipas harus dipastikan menyala sebelum Peltier mulai bekerja.',
     },
     'turnOnFanAndPeltier': {
       AppLanguage.english: 'Turn on Fan & Peltier',
@@ -1056,7 +1057,7 @@ class JexText {
     },
     'resetDeepSleep': {
       AppLanguage.english: 'Device resumed from low-power sleep.',
-      AppLanguage.indonesia: 'Perangkat kembali aktif dari mode hemat daya.',
+      AppLanguage.indonesia: 'Perangkat kembali aktif dari mode tidur hemat daya.',
     },
     'resetPowerOn': {
       AppLanguage.english: 'Device started.',
@@ -1155,13 +1156,11 @@ class JexText {
       AppLanguage.english: 'OTA failed: ',
       AppLanguage.indonesia: 'OTA gagal: ',
     },
-    'otaUploaded': {
-      AppLanguage.english: 'OTA failed: uploaded ',
-      AppLanguage.indonesia: 'OTA gagal: ukuran unggahan ',
-    },
-    'otaBytes': {
-      AppLanguage.english: ' bytes.',
-      AppLanguage.indonesia: ' byte.',
+    'otaSizeMismatchDetailed': {
+      AppLanguage.english:
+          'OTA failed: {receivedBytes} bytes received; {expectedBytes} bytes expected.',
+      AppLanguage.indonesia:
+          'OTA gagal: {receivedBytes} byte diterima; {expectedBytes} byte diharapkan.',
     },
     'otaLocalSuccessful': {
       AppLanguage.english: 'Local OTA successful.',
@@ -1451,7 +1450,7 @@ class JexText {
     },
     'fullSyncFailed': {
       AppLanguage.english: 'Could not complete device sync.',
-      AppLanguage.indonesia: 'Sinkronisasi perangkat tidak selesai.',
+      AppLanguage.indonesia: 'Tidak dapat menyelesaikan sinkronisasi perangkat.',
     },
     'floatingPermissionTitle': {
       AppLanguage.english: 'Floating Monitor Permission',
@@ -1497,7 +1496,7 @@ class JexText {
       AppLanguage.english:
           'Temperature sensor error. Cooling has been disabled for safety.',
       AppLanguage.indonesia:
-          'Sensor suhu bermasalah. Pendinginan dinonaktifkan demi keamanan.',
+          'Sensor suhu bermasalah. Pendinginan dinonaktifkan demi keselamatan.',
     },
     'hotsideProtectionActive': {
       AppLanguage.english: 'Hotside protection is active. Peltier is paused.',
@@ -1524,11 +1523,11 @@ class JexText {
       AppLanguage.indonesia: 'Peltier nonaktif.',
     },
     'adaptiveOn': {
-      AppLanguage.english: 'Adaptive Mode ON.',
+      AppLanguage.english: 'Adaptive Mode active.',
       AppLanguage.indonesia: 'Mode Adaptif aktif.',
     },
     'adaptiveOff': {
-      AppLanguage.english: 'Adaptive Mode OFF.',
+      AppLanguage.english: 'Adaptive Mode inactive.',
       AppLanguage.indonesia: 'Mode Adaptif nonaktif.',
     },
     'ledOn': {
@@ -1639,6 +1638,24 @@ class JexText {
       'Missing ${lang.name} translation for JexText key "$key".',
     );
     return translations?[lang] ?? key;
+  }
+
+  // Resolve named placeholders after selecting the active locale.
+  // `of()` and `phrase()` intentionally do not interpolate values.
+  static String format(
+    String key,
+    Map<String, String> values, [
+    AppLanguage? language,
+  ]) {
+    var result = of(key, language);
+    for (final entry in values.entries) {
+      result = result.replaceAll('{' + '${entry.key}' + '}', entry.value);
+    }
+    assert(
+      !RegExp(r'\{[A-Za-z][A-Za-z0-9_]*\}').hasMatch(result),
+      'Unresolved localization placeholder in JexText key "$key".',
+    );
+    return result;
   }
 
   // AI-METHOD / RELOCALIZATION CONTRACT
