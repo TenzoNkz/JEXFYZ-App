@@ -1,3 +1,14 @@
+## 2026-11-14 — Align Usage Statistics layout and readouts (source implemented; hosted validation passed; not released)
+
+- Centered the Usage Statistics AppBar title and the Min/Avg/Max label/value strip. Activity elapsed-time labels now use the same 34-dp left / 8-dp right plot gutters as temperature charts, Activity timelines and shared cursor mapping.
+- Reworked the selected-time bottom dock so its heading/time cluster is optically centered independently of the 48×48-dp close action; centered all six label/value columns and regularized compact padding.
+- Reduced Voltage/Adaptive/Peltier timeline state bars to 18 dp and vertically centered them within the existing 34-dp interaction lane; Fan Speed plot and hit-area geometry remain unchanged.
+- Added widget regressions for centered AppBar/summary labels, Activity axis-to-plot alignment, centered Selected time header and centered metric labels. No data capture, SQL, analytics, BLE/P1, session, telemetry, gaps, Hotside limit or cursor behavior was changed.
+- Source/test commit `b4b57e83261c0b1fcb7873efa8544c3410ad0208`; verified format-only commit `873a825020659dadcac2e5c7242e759209776414`. Only `lib/usage_statistics.dart` and `test/usage_statistics_test.dart` were changed; tree remains 137 entries with no added/removed files.
+- Validation Only run #16 / `43552255469`, job `132317129708`, exact source `873a825020659dadcac2e5c7242e759209776414`, SUCCESS: locked dependencies PASS; formatter 17 files / 0 changes; analyzer 119 infos, zero warnings/errors; Flutter 188/188 PASS.
+- An intermediate run #15 ended failure only because the workflow's exact-HEAD formatter commit guard rejected after a status checkpoint advanced main. The artifact contained only formatter changes in the same two Dart paths; those were applied and run #16 passed cleanly.
+- Build #162 remains latest packaged APK. This refinement is NOT RELEASED and actual Android screenshot/OEM acceptance remains **VISUAL NOT VERIFIED** until a future separately authorized App Build is installed and inspected. No App Build, Firmware, BIN, Firebase, OTA, flash or device operation was run.
+
 ## 2026-11-13 — Correct About Telegram handle casing (source implemented; QC pending)
 
 - Corrected the Horizon / About Telegram handle in `lib/floating_monitor.dart` from `@Horizontalzzz` to the exact owner-requested `@horizontalzzz`.

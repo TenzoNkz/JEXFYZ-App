@@ -314,3 +314,13 @@ Purpose: canonical current App/UI/BLE/telemetry contract. Current source defines
 - Avoid putting every graph in an extra card; prioritize plot readability, consistent scales/axes, modest grid lines, true state steps and existing semantic colors. Do not add ornamental legends, gradients, glow or fake smooth curves.
 - Required chart acceptance: 350/420 dp; EN/ID; Light/Dark; 1/multiple sessions; active/completed; empty/error; storage-write warning; missing/invalid sensor gaps; Hotside limit; cursor off/on; long session duration and long localized strings. Update existing widget tests, which currently cover a limited combination (ID at 350/light and 420/dark) and one interactive cursor path. Actual screenshots required for visual acceptance.
 - Execution remains staged: agreed Lock Voltage UI, Peltier popup, About; Statistics redesign; shared UI system/polish audit; Device Diagnostics after data-source audit; end-to-end visual QA. No App source/tests modified or run in this Diskusi.
+
+
+## Usage Statistics alignment refinement — source and hosted validation — 2026-11-14
+
+- The owner screenshots exposed centering/alignment inconsistencies in the AppBar, temperature Min/Avg/Max strip, Activity elapsed axis and Selected time readout. The current main source centers the AppBar title and each metric summary; the Activity axis labels share the plot gutters used by chart/timeline/cursor geometry.
+- The Selected time dock now centers its heading/time cluster and all six labels/values while retaining two rows of three, bottom SafeArea, fixed 48×48 dp clear control and the existing compact dock limit. The close target is reserved independently at the right edge.
+- Voltage/Adaptive/Peltier timeline state segments are thinner and vertically centered within the existing 34-dp interaction lane. Fan Speed plot semantics and height are unchanged.
+- No capture, BLE/P1, telemetry, session, SQL schema, retention, queue, aggregate, temperature range, Hotside limit, null-gap, cursor selection or sensor-truth logic was intentionally changed.
+- Implementation commit `b4b57e83261c0b1fcb7873efa8544c3410ad0208`; formatter-only follow-up `873a825020659dadcac2e5c7242e759209776414`. Validation Only run #16 / job `132317129708` passed on exact formatted source `873a825020659dadcac2e5c7242e759209776414`: locked dependencies, clean formatter, analyzer (119 infos, zero warnings/errors), and 188/188 Flutter tests.
+- This source is not included in Build #162. Android screenshot/OEM acceptance remains VISUAL NOT VERIFIED until a new separately authorized App package is installed and inspected.

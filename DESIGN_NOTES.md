@@ -1,6 +1,21 @@
-## Owner-approved Usage Statistics presentation refresh — included in Build #162; hosted QC passed — 2026-11-13
+## Usage Statistics alignment refinement — current main source / not yet packaged — 2026-11-14
 
-This is the current visible presentation contract. Build #162 packages the implementation and its regression coverage; physical screenshot/OEM acceptance remains separate.
+**Status: SOURCE IMPLEMENTED / VERIFIED CI / VISUAL NOT VERIFIED / NOT RELEASED.** This is an alignment and presentation refinement on top of the previously approved Build #162 Usage Statistics design; it does not replace the six-metric or telemetry contracts below.
+
+- **Problem evidence:** the supplied Android screenshots showed left-aligned Min/Avg/Max and selected-time readouts within equal columns, a Selected time heading/time pair that was not optically centered, Activity elapsed labels that did not share the chart plot gutters, and overly heavy discrete state bars.
+- **Layout correction:** center the Usage Statistics AppBar title; center each Min/Avg/Max label/value pair; align Activity start/end labels with the same 34-dp left and 8-dp right plot insets used by temperature chart, timeline and shared cursor geometry.
+- **Selected-time dock:** center the heading/time cluster independently from the trailing 48×48 dp close action, center all six values and labels in the existing two-row/three-column arrangement, and regularize vertical padding. Keep dock in the bottom SafeArea and preserve its existing height limit.
+- **Activity lanes:** render Voltage, Adaptive and Peltier state bars at 18 dp and vertically centered within the existing 34-dp gesture lane. The interaction/hit area remains 34 dp; Fan Speed remains its own 54-dp plot.
+- **Protected invariants:** no change to raw 1-Hz capture, SQLite schema/retention, recorder queue, event analytics, timestamp weighting, Hotside threshold semantics, session/P1 boundaries, authoritative telemetry, null gaps, decimation, interpolation rules, tap/drag timestamp mapping or six metric values. The cursor and plotted x positions now use shared gutter constants.
+- **Source/test commits:** UI implementation and widget regressions `b4b57e83261c0b1fcb7873efa8544c3410ad0208`; verified format-only follow-up `873a825020659dadcac2e5c7242e759209776414`. Only `lib/usage_statistics.dart` and `test/usage_statistics_test.dart` changed in the executable/test commits; no file was added/removed.
+- **Hosted validation:** [Validation Only run #16](`https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/43552255469`) / job `132317129708`, source `873a825020659dadcac2e5c7242e759209776414`, terminal SUCCESS. Locked dependencies PASS; formatter verified 17 files / 0 changed; analyzer PASS with 119 info-level findings and zero warnings/errors; Flutter **188/188 tests passed**.
+- **Superseded intermediate attempt:** run #15 / `43551929306` ran analyzer/tests successfully (188/188) but ended failure because the required in-progress status checkpoint advanced main before the workflow's formatter-only commit guard. That guard correctly refused the commit. Its artifact was inspected and contained only the two Dart formatter hunks; those exact format-only changes were applied in `873a825020659dadcac2e5c7242e759209776414`, then #16 verified the clean state with no formatter commit required.
+- **Visual outcome:** **VISUAL NOT VERIFIED.** CI/widget tests do not prove Android rendering. Build #162 remains the latest packaged APK and does not include this later alignment refinement. Actual screenshot review requires a separately authorized Build App, installation and matching 350-dp/420-dp, EN/ID, Light/Dark and selected-cursor screenshots.
+
+---
+## PREVIOUS PACKAGE CHECKPOINT — Usage Statistics presentation included in Build #162 — 2026-11-13
+
+This describes the Build #162 package baseline. The current main alignment refinement is documented at the top of this file; Build #162 itself remains unchanged.
 
 - Use one compact session header for status, start date/time and the single primary elapsed duration. If multiple sessions exist, expose the selector inside this same header; dropdown options show session status and start time, not a second duration.
 - Battery and Hotside remain independent measured temperature charts. Label the Y axis at every integer degree with 1°C spacing. Derive each plot range from valid observed temperature data, padded by one degree; do not include a distant Hotside limit in the scale. Increase plot height when a wider actual range needs more label rows. Keep the configured limit label, and draw its dashed reference only when it lies inside the plotted data range.

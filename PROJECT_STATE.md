@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — Current Project State
 
-Last reconciled: 2026-11-14 (Asia/Jakarta), after Validation Only run #14. This file is current truth only. Build-by-build history belongs in APP_BUILD_REPORT.md and CHANGELOG.md; detailed execution evidence belongs in CHAT_TRANSFER.md and APP_PREBUILD_AUDIT.md.
+Last reconciled: 2026-11-14 (Asia/Jakarta), after Usage Statistics alignment / Validation Only run #16. This file is current truth only. Build-by-build history belongs in APP_BUILD_REPORT.md and CHANGELOG.md; detailed execution evidence belongs in CHAT_TRANSFER.md and APP_PREBUILD_AUDIT.md.
 
 ## Repository baseline
 
@@ -9,7 +9,7 @@ Last reconciled: 2026-11-14 (Asia/Jakarta), after Validation Only run #14. This 
 - Twelve canonical `.agents/skills` definitions and twelve `.github/skills` mirrors remain byte-identical.
 - Root `analysis_options.yaml` is now present and includes `package:flutter_lints/flutter.yaml`. `flutter_lints 6.0.0` was already a direct dev dependency and is locked in `pubspec.lock`.
 - The guarded App release workflow keeps issue-only opened/reopened triggers and its owner/title/body-token guard; relevant pushes start Validation Only, not App Build/Release. Release concurrency is job-level under the guarded build job.
-- Flutter/Dart and actionlint are unavailable in this ChatGPT runtime. Hosted Validation Only run #14 completed on Flutter 3.47.2 with 188/188 tests passed; no local Flutter test/build or actionlint check ran.
+- Flutter/Dart and actionlint are unavailable in this ChatGPT runtime. Hosted Validation Only run #16 completed on Flutter 3.47.2 against `${formatSha}`: clean formatter (17 files / 0 changed), analyzer 119 infos / 0 warnings/errors, and 188/188 Flutter tests passed. No local Flutter test/build or actionlint check ran.
 
 ## Latest verified App package — Build #162 SUCCESS
 
@@ -20,6 +20,11 @@ Last reconciled: 2026-11-14 (Asia/Jakarta), after Validation Only run #14. This 
 - **Corresponding source ZIP:** SHA-256 `86bd61edfe59acd6063367f7b8704356d2bf192d8c55c150f0f0e6b6285db42e`; downloaded ZIP integrity/source marker passed.
 - Build #160 and #161 remain failed historical attempts. Never rewrite them as success. See APP_BUILD_REPORT.md.
 - Build #162 owner installation is not independently confirmed. Visual acceptance at 350-dp/420-dp, portrait/constrained height, English/Indonesian and Light/Dark remains **VISUAL NOT VERIFIED**.
+
+## Latest non-packaged Usage Statistics refinement
+
+- Main includes the alignment refinement at `b4b57e83261c0b1fcb7873efa8544c3410ad0208` plus formatter-only commit `873a825020659dadcac2e5c7242e759209776414`; run #16 / `43552255469` verified this exact source. AppBar, summary strips, Activity plot time labels, Selected time dock and state-bar proportions are aligned; data and interaction contracts remain unchanged.
+- This is not in Build #162. Actual Android/OEM screenshot acceptance is still **VISUAL NOT VERIFIED** and requires a separately authorized new App package plus owner-side installation/screenshots.
 
 ## Current App architecture and contracts
 
@@ -46,5 +51,5 @@ Last reconciled: 2026-11-14 (Asia/Jakarta), after Validation Only run #14. This 
 
 ## Immediate next action
 
-- No pending task in the Validation Only stream: run #14 passed 188/188 and the formatter-only commit is on `main`. The latest packaged App remains Build #162. Visual/device acceptance or a future App release is a separate task and requires explicit owner authorization.
-- Do not invoke Build App/APK/Release for this task. Firmware compile/BIN/Firebase/OTA/flash and device operations remain separately gated.
+- Usage Statistics source refinement and hosted Validation Only #16 are complete; all 188 tests passed. Build #162 remains the latest packaged App and predates this source change. The next package step, if desired, is a separate owner-authorized `Eksekusi Build App!`; visual acceptance then requires real Android screenshots.
+- Firmware compile/BIN/Firebase/OTA/flash and device operations remain separately gated.

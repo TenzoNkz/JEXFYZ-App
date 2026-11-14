@@ -1,4 +1,35 @@
-## CURRENT CHECKPOINT — EKSEKUSI FULL / VALIDATION ONLY COMPLETE — 2026-11-14
+## CURRENT CHECKPOINT — EKSEKUSI FULL / USAGE STATISTICS ALIGNMENT COMPLETE — 2026-11-14
+
+**Work status: COMPLETED.** The owner-requested Usage Statistics layout/alignment refinement is implemented and hosted non-publishing validation passed. No App Build/APK/AAB/Release, Firmware compile/BIN, Firebase, OTA, flash or physical-device operation was performed.
+
+### Implementation and source state
+
+- Repository/branch: `TenzoNkz/JEXFYZ-App` / `main`.
+- UI commit: `b4b57e83261c0b1fcb7873efa8544c3410ad0208` (`fix(ui): align Usage Statistics charts and readouts`).
+- Format-only follow-up: `873a825020659dadcac2e5c7242e759209776414` (`style: apply verified Dart formatter output`); parent is the latest status-only checkpoint commit preceding formatting. Run #16 tested this exact source SHA.
+- Executable/test paths changed: `lib/usage_statistics.dart` and `test/usage_statistics_test.dart` only. Recursive tree remains 137 entries with no added or removed paths.
+- UI changes: centered AppBar title, centered Min/Avg/Max, shared chart/cursor/activity plot gutters, aligned Activity elapsed labels, centered Selected time header and six metric readouts, and slimmer 18-dp Voltage/Adaptive/Peltier bars within the unchanged 34-dp pointer lane.
+- No data capture, persistence, analytics, BLE/P1, telemetry truth, session boundary, gap, threshold, metric mapping or cursor-selection behavior was changed.
+
+### Hosted validation
+
+- **Validation Only run #16:** [43552255469](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/43552255469), job `132317129708`, source SHA `873a825020659dadcac2e5c7242e759209776414`, terminal `completed / success`.
+- `flutter pub get --enforce-lockfile`: PASS.
+- Dart formatter: 17 files checked, **0 changed**; final check PASS.
+- `flutter analyze --no-fatal-infos`: PASS, 119 info-level findings, zero warnings/errors.
+- `flutter test`: **188/188 passed**.
+- No formatter preview/commit was required in run #16 because the source was already clean.
+- Run #15 / `43551929306` is preserved as an intermediate failed workflow attempt: its dependencies, formatter, analyzer and 188 tests passed, but the workflow's exact-source formatter-commit guard refused an auto-commit after an in-progress status checkpoint advanced main. The artifact was inspected; the only diffs were formatter changes to the two authorized Dart paths, then applied as `873a825020659dadcac2e5c7242e759209776414` and run #16 passed cleanly.
+
+### Visual and release boundary
+
+- **VISUAL NOT VERIFIED:** widget tests and CI are not Android screenshot evidence. The layout changes still need actual screenshots at 350-dp/420-dp, English/Indonesian, Light/Dark, with cursor off/on and both top/dashboard and Activity/dock visible.
+- Build #162 remains the latest packaged APK and does not contain this refinement. A separate `Eksekusi Build App!` is required before a new APK/release. That command has not been given here.
+- No Firmware, BIN, Firebase, OTA, flashing, physical BLE/thermal/electrical or device operation occurred.
+
+---
+
+## HISTORICAL CHECKPOINT — EKSEKUSI FULL / VALIDATION ONLY RUN #14 COMPLETE — 2026-11-14
 
 **Work status: COMPLETED.** The inherited test-only formatter-contract repair and non-publishing Flutter/Dart validation are complete. No App Build/APK/AAB/Release, Firmware compile/BIN, Firebase, OTA, flash or physical-device operation was performed.
 

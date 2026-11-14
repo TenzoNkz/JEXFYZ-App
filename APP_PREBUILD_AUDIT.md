@@ -1,3 +1,18 @@
+## CURRENT APP SOURCE — USAGE STATISTICS ALIGNMENT / VALIDATION ONLY #16 SUCCESS — 2026-11-14
+
+**Status: SOURCE + REGRESSION TESTS IMPLEMENTED / HOSTED VALIDATION GREEN / NOT RELEASED / VISUAL NOT VERIFIED.**
+
+- Source implementation commit: `b4b57e83261c0b1fcb7873efa8544c3410ad0208`; format-only follow-up: `873a825020659dadcac2e5c7242e759209776414`. Only `lib/usage_statistics.dart` and `test/usage_statistics_test.dart` changed.
+- [Validation Only run #16](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/43552255469), job `132317129708`, exact source SHA `873a825020659dadcac2e5c7242e759209776414`, terminal SUCCESS. Locked dependency resolution PASS; Dart formatter checked 17 files with 0 changes; Flutter analyzer PASS (119 info-level findings, zero warnings/errors); Flutter tests **188/188 PASS**.
+- Changes center the Usage Statistics AppBar, Min/Avg/Max strip and Selected time labels/values; align the Activity time axis with the chart/timeline/cursor plot gutters; and reduce Voltage/Adaptive/Peltier state-bar thickness while keeping the 34-dp interaction lane.
+- No collection, SQLite, aggregation, session, BLE/P1, telemetry, safety, gap, Hotside limit or cursor behavior was changed.
+- Run #15 had a workflow-only failure at the exact-HEAD formatter commit guard after a checkpoint write advanced main; its test suite had passed 188/188 and its artifact was inspected/reviewed. The exact formatter-only diff was applied and run #16 passed cleanly.
+- **Still required for a package:** separately authorized guarded `Eksekusi Build App!`. Build #162 remains the latest package and predates this UI refinement. No APK/Gradle package build, Release/tag publication or signing operation occurred in this task.
+- **Visual evidence gap:** CI/widget tests do not establish real Android rendering. Capture and review screenshots after a new package is installed at 350-dp/420-dp, EN/ID, Light/Dark, normal scrolling and Selected time cursor states. Current outcome: **VISUAL NOT VERIFIED**.
+- No Firmware compile/BIN, Firebase, OTA, flash, physical device or thermal/electrical validation occurred.
+
+---
+
 ## CURRENT NON-PUBLISHING VALIDATION — RUN #14 SUCCESS / FORMATTER BASELINE CLEAN — 2026-11-14
 
 **Status: COMPLETED SUCCESSFULLY.** Validation Only run [43545258942](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/43545258942), job `132294979691`, tested source `ce86848cee9dafe703db3b4b3a5ebdad1be70bc1`, terminal `completed / success`.

@@ -1,14 +1,12 @@
-## Completed checkpoint — Validation Only run #14 is green — 2026-11-14
+## Completed checkpoint — Usage Statistics alignment / Validation Only #16 green — 2026-11-14
 
-**Latest verified source commit:** `20676552cbfbb3276a6d7a7bc5f2541c13245c48` (formatter-only; parent test-fix commit `ce86848cee9dafe703db3b4b3a5ebdad1be70bc1`). Subsequent commits `30a9f86b7eca00d7e617c0c9902eb1fc9516623d` and `5e8b0efa3fea2ac3d72c5e53c85ae2ea85d985a7` are documentation/status-only. Recursive tree remains 137 entries, not truncated.
+- Source UI/test commit: `b4b57e83261c0b1fcb7873efa8544c3410ad0208`; format-only follow-up: `873a825020659dadcac2e5c7242e759209776414`.
+- Validation Only [run 43552255469](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/43552255469), job `132317129708`, exact source `873a825020659dadcac2e5c7242e759209776414`, terminal SUCCESS: locked dependencies PASS; Dart formatter 17 files / 0 changed; analyzer 119 infos / 0 warnings/errors; Flutter 188/188 PASS.
+- UI work: center AppBar and Min/Avg/Max; align Activity time axis with plot gutters/cursor; center Selected time heading and six values; slim discrete state bars while preserving the 34-dp hit lane. Data/persistence/telemetry/session behavior unchanged.
+- Only `lib/usage_statistics.dart` and `test/usage_statistics_test.dart` changed; tree remains 137 entries, no added/removed files.
+- Build #162 remains latest packaged APK. This refinement is NOT RELEASED; Android screenshot/OEM acceptance remains VISUAL NOT VERIFIED.
+- **Next:** owner may separately authorize `Eksekusi Build App!` to package this exact main source, then install and inspect actual 350/420-dp, EN/ID, Light/Dark screenshots. No Build App is authorized or started by this checkpoint.
 
-**Test-only fix:** commit `ce86848cee9dafe703db3b4b3a5ebdad1be70bc1` made the Connection 42x42 and 40x40 touch-target matchers tolerant of Dart formatting whitespace and trailing commas without changing exact dimensions.
-
-**Validation:** run #14 / `43545258942` on source `ce86848...`, job `132294979691`, completed success. Locked pub resolution PASS; Dart format applied to 14 changed files and final check clean; analyzer PASS (119 infos, 0 warnings/errors); Flutter tests 188/188 PASS; formatter preview, formatter-only commit and final summary PASS.
-
-**Formatter commit:** `20676552cbfbb3276a6d7a7bc5f2541c13245c48`, parent `ce86848...`. The workflow guarded path scope to `lib/` and `test/`, and verified remote HEAD against the tested SHA before committing. Test/analyzer ran on the formatted runner workspace.
-
-**No follow-up required for this validation task.** No Build App, APK/AAB, Release, Firmware/BIN, Firebase, OTA, flash or device operation occurred. Build #162 remains latest packaged App. A future product build or physical acceptance requires a separate owner command.
 
 ---
 
