@@ -35,11 +35,14 @@ Last reconciled: 2026-11-14 (Asia/Jakarta), after Usage Statistics alignment / V
 
 ## Localization review — pending owner-approved wording
 
-- English is currently the default App locale; `JexText` contains 354 bilingual dictionary keys, and Flutter also contains 167 inline English/Indonesian phrase pairs. Native foreground-service/Floating Monitor notification copy is separately bilingual.
-- A Diskusi source audit identified terminology/grammar review candidates, including language-name display, Safety vs Keamanan/Keselamatan, the Fan prerequisite title, safety-check wording, OTA byte-count composition, sleep-state wording and About credits. This is a review, not an approved source change.
+- English is currently the default App locale; JexText contains 354 bilingual dictionary keys, and Flutter contains 166 actual inline JexText.phrase() call sites (116 main, 10 Floating Monitor, 40 Usage Statistics). The prior 167 count included one source comment. Native foreground-service/Floating Monitor notification copy is separately bilingual.
+- A source-driven Diskusi audit on 2026-11-14 confirmed translation issues for thermal Safety (Keamanan), the Fan-before-cooling title, and Safety checks passed.; it also identified cross-surface Adaptive/Peltier state-word inconsistencies and unclear received/expected OTA byte labels. All 354 dictionary pairs are structurally complete and the static placeholder check found no dictionary-pair mismatches. Full semantic review of every string remains incomplete; no source/test changes were made.
 - Existing tests check translation-field presence and selected key examples, not semantic equivalence of every string. The Gemini handoff prompt is prepared in the 2026-11-14 conversation; Gemini has not been contacted.
 
 ## Current App architecture and contracts
+
+- Current About credit contract remains App Developer & Builder / Pengembang Aplikasi & Perakit as recorded in APP_NOTES.md. Earlier discussion/checkpoint text proposing App Development & Build is stale and is not the approved current wording.
+
 
 - Inventory: seven Dart App source files, nine Dart test files / 188 test declarations, four Kotlin source files, one active Firmware sketch. Largest Dart files: `main.dart` 10,564 lines, `usage_statistics.dart` 3,409, `floating_monitor.dart` 1,766 and `app_settings.dart` 1,678.
 - Usage Statistics uses local SQLite schema v2 with a v1→v2 `onUpgrade`, 30-day retention, raw 1-Hz Battery/Hotside samples, explicit gaps, HOT-only P1 freshness, session continuity and a bounded FIFO writer queue (64 normal + 8 reserved + 1 critical endSession slot). A full selected-session summary/decimation pass still runs each second; long-duration CPU/memory and storage-pressure soak remain unverified.
