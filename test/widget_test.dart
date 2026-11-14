@@ -317,7 +317,7 @@ void main() {
     expect(dialog, contains("fontFamily: fontFamily"));
     expect(dialog, isNot(contains('SingleChildScrollView(')));
     expect(dialog, isNot(contains('SlideTransition(')));
-    expect(containsDartFragment(dialog, 'Color(0xFFD69A38)'), isTrue);
+    expect(dialog, contains('0xFFD69A38'));
     expect(dialog, contains('peltierFanRequiredTitle'));
     expect(dialog, contains('peltierCoolingPrerequisite'));
     expect(dialog, contains('turnOnFanAndPeltier'));
@@ -374,7 +374,12 @@ void main() {
     expect(routeEnd, greaterThan(routeStart));
     final route = source.substring(routeStart, routeEnd);
     expect(route, contains('maxWidth: 312'));
-    expect(containsDartFragment(route, 'jexLedColorPickerMaxHeight(constraints.maxHeight)'), isTrue);
+    expect(
+      RegExp(
+        r'jexLedColorPickerMaxHeight\s*\(\s*constraints\.maxHeight\s*\)',
+      ).hasMatch(route),
+      isTrue,
+    );
     expect(route, contains('EdgeInsets.fromLTRB(24, 4, 24, 4)'));
 
     final cardStart = source.indexOf('class _JexColorPickerCardState');
@@ -460,16 +465,18 @@ void main() {
     expect(painterStart, isNonNegative);
     expect(painterEnd, greaterThan(painterStart));
     final painter = source.substring(painterStart, painterEnd);
-    final normalizedPainter = painter.replaceAll(RegExp(r'\s+'), ' ');
+    final normalizedPainter = painter
+        .replaceAll(RegExp(r'\(\s+'), '(')
+        .replaceAll(RegExp(r'\s+'), ' ');
 
     for (final feature in [
       'shell.shift(Offset(s * .014, s * .018))',
-      '_cavityPaintColor( const Color(0xFF09121A), darkAlpha: .92,',
+      '_cavityPaintColor(const Color(0xFF09121A), darkAlpha: .92,',
       'lightTheme ? lightSurfaceColor : darkColor.withValues(alpha: darkAlpha)',
       'if (!valueKnown)',
       'if (valueKnown && fluidHeight > 0)',
       'Path _boltInnerCore(double s)',
-      '_depthPaintColor( const Color(0xFF070B12), darkAlpha: .74, lightAlpha: .46,',
+      '_depthPaintColor(const Color(0xFF070B12), darkAlpha: .74, lightAlpha: .46,',
       's * (.135 + .010 * wave)',
       'if (!moving || strength <= .005) return;',
       'final crystalWidth = s * (.058 + .006 * frostPower)',
@@ -477,7 +484,11 @@ void main() {
       'const tickCount = 11',
       'if (valueKnown)',
     ]) {
-      expect(containsDartFragment(normalizedPainter, feature), isTrue, reason: 'Missing static icon finish: $feature');
+      expect(
+        normalizedPainter,
+        contains(feature),
+        reason: 'Missing static icon finish: $feature',
+      );
     }
 
     final speedStart = painter.indexOf('case JexAnimatedIconKind.speed:');
@@ -771,7 +782,12 @@ void main() {
     final screenContract = screenSource.substring(screenStart, screenEnd).toLowerCase();
     expect(appContract, contains('themedata.dark(usematerial3: true)'));
     expect(appContract, contains("texttheme.apply(fontfamily: 'roboto')"));
-    expect(containsDartFragment(appContract, "primarytexttheme.apply(fontfamily: 'roboto')"), isTrue);
+    expect(
+      RegExp(
+        r'primarytexttheme\s*:\s*darktheme\.primarytexttheme\.apply\s*\(\s*fontfamily:\s*\x27roboto\x27\s*\)',
+      ).hasMatch(appContract),
+      isTrue,
+    );
     expect(screenContract, contains('official build verification failed'));
     expect(screenContract, contains('verifikasi build resmi gagal'));
     expect(screenContract, contains('opendevelopercontact'));
@@ -1375,7 +1391,10 @@ void main() {
 
     expect(metric, contains('height: 45,'));
     expect(containsDartFragment(metric, 'width: 41,\n                height: 41,'), isTrue);
-    expect(metric, contains('width: 38,\n                    height: 38,'));
+    expect(
+      RegExp(r'width:\s*38,\s*height:\s*38,').hasMatch(metric),
+      isTrue,
+    );
   });
 
   test('Live cooling telemetry clears stale command errors only in a healthy state', () {
@@ -1833,7 +1852,10 @@ void main() {
     expect(colorDialog, isNot(contains('SingleChildScrollView')));
     expect(colorDialog, contains('onCancel:'));
     expect(colorDialog, contains('barrierDismissible: false'));
-    expect(colorDialog, contains('PopScope<void>(\n          canPop: false'));
+    expect(
+      RegExp(r'PopScope<void>\s*\(\s*canPop:\s*false').hasMatch(colorDialog),
+      isTrue,
+    );
     expect(colorDialog, contains('onSelect: _setRgbColor'));
     final colorCardStart = source.indexOf('class _JexColorPickerCard');
     final colorCardEnd = source.indexOf('enum JexAnimatedIconKind', colorCardStart);
@@ -2520,7 +2542,12 @@ void main() {
     expect(start, isNonNegative);
     expect(end, greaterThan(start));
     final accepted = source.substring(start, end);
-    expect(containsDartFragment(accepted, 'homeFanSpeedChangedNotice(previousFanSpeed, requested, language: lang)'), isTrue);
+    expect(
+      RegExp(
+        r'homeFanSpeedChangedNotice\s*\(\s*previousFanSpeed\s*,\s*requested\s*,\s*language:\s*lang\s*\)',
+      ).hasMatch(accepted),
+      isTrue,
+    );
     expect(accepted, contains("JexText.phrase('Hotside temperature limit set to ', 'Batas suhu Hotside diatur ke ', lang)"));
     expect(accepted, contains("JexText.phrase('5V battery limit updated.', 'Batas baterai 5V diperbarui.', lang)"));
     expect(accepted, contains("JexText.phrase('12V battery limit updated.', 'Batas baterai 12V diperbarui.', lang)"));
@@ -2679,7 +2706,12 @@ void main() {
     expect(headerStart, isNonNegative);
     expect(headerEnd, greaterThan(headerStart));
     final header = home.substring(headerStart, headerEnd);
-    expect(countDartFragments(header, 'tightFor(width: 48, height: 48)'), 2);
+    expect(
+      RegExp(
+        r'BoxConstraints\.tightFor\s*\(\s*width:\s*48,\s*height:\s*48\s*\)',
+      ).allMatches(header).length,
+      2,
+    );
     expect(header, contains('size: 25'));
 
     final tabStart = source.indexOf('Widget _tab(String title, int index) {');

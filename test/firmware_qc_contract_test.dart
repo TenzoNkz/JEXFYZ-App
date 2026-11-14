@@ -464,7 +464,12 @@ void main() {
       isTrue,
     );
     expect(source, contains('final displayedValue = stateKnown && value;'));
-    expect(source, contains('alignment: displayedValue ? Alignment.centerRight : Alignment.centerLeft'));
+    expect(
+      RegExp(
+        r'alignment:\s*displayedValue\s*\?\s*Alignment\.centerRight\s*:\s*Alignment\.centerLeft',
+      ).hasMatch(source),
+      isTrue,
+    );
   });
 
   test('manual Peltier lock cannot be bypassed by one threshold sample', () {

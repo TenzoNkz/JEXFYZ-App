@@ -104,11 +104,36 @@ void main() {
       isTrue,
     );
     expect(floating, contains('TextScaler.noScaling'));
-    expect(floating, contains('JexFixedScalePage(compactUi: true, child: LanguageSettingsPage())'));
-    expect(floating, contains('JexFixedScalePage(compactUi: true, child: AppearanceSettingsPage())'));
-    expect(floating, contains('JexFixedScalePage(compactUi: true, child: NotificationsSettingsPage())'));
-    expect(floating, contains('JexFixedScalePage(compactUi: true, child: BluetoothSettingsPage())'));
-    expect(floating, contains('JexFixedScalePage(compactUi: true, child: FloatingSettingsPage())'));
+    expect(
+      RegExp(
+        r'JexFixedScalePage\(\s*compactUi:\s*true,\s*child:\s*LanguageSettingsPage\(\)\s*\)',
+      ).hasMatch(floating),
+      isTrue,
+    );
+    expect(
+      RegExp(
+        r'JexFixedScalePage\(\s*compactUi:\s*true,\s*child:\s*AppearanceSettingsPage\(\)\s*\)',
+      ).hasMatch(floating),
+      isTrue,
+    );
+    expect(
+      RegExp(
+        r'JexFixedScalePage\(\s*compactUi:\s*true,\s*child:\s*NotificationsSettingsPage\(\)\s*\)',
+      ).hasMatch(floating),
+      isTrue,
+    );
+    expect(
+      RegExp(
+        r'JexFixedScalePage\(\s*compactUi:\s*true,\s*child:\s*BluetoothSettingsPage\(\)\s*\)',
+      ).hasMatch(floating),
+      isTrue,
+    );
+    expect(
+      RegExp(
+        r'JexFixedScalePage\(\s*compactUi:\s*true,\s*child:\s*FloatingSettingsPage\(\)\s*\)',
+      ).hasMatch(floating),
+      isTrue,
+    );
     expect(
       RegExp(
         r"JexText\.phrase\s*\(\s*'Usage Statistics'\s*,\s*'Statistik Penggunaan'\s*,\s*language\s*,\s*\)",
@@ -175,7 +200,11 @@ void main() {
       ),
       isTrue,
     );
-    expect(floatingSettings, contains('fontSize: 10, fontWeight: FontWeight.w800'));
+    expect(
+      RegExp(r'fontSize:\s*10,\s*fontWeight:\s*FontWeight\.w800')
+          .hasMatch(floatingSettings),
+      isTrue,
+    );
     expect(floatingSettings, contains('valueLabel'));
     expect(floatingSettings, contains('fontSize: 10, fontWeight: FontWeight.w900'));
 
