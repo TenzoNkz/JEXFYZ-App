@@ -1,4 +1,41 @@
-## CURRENT CHECKPOINT — GEMINI SECOND OPINION CROSS-CHECK — 2026-11-14
+## CURRENT CHECKPOINT — EKSEKUSI FULL / BUILD #162 DOCUMENTATION GOVERNANCE — 2026-11-14
+
+**Mode:** `Eksekusi Full!` — this interaction executed the concrete documentation reconciliation scope. It did not modify App/Firmware source, tests, configuration or workflow, and did not run Build App or device operations.
+
+### Live repository and Build #162 baseline
+
+- **Repository/branch:** `TenzoNkz/JEXFYZ-App` / `main`.
+- **Main at start of this execution:** `5314b99d237d783542709e8a07687e8116c528f3` (opening status commit).
+- **Current recursive tree at start:** 133 entries, 52 Markdown files, `truncated=false`; one guarded App release workflow, one active Firmware sketch `firmware/JEXFYZ-V7.2.ino`; root `analysis_options.yaml` absent.
+- **Latest verified App package:** Build #162 / Actions run `43430275967` / job `131901744336`, terminal success on immutable source `6854d8eb58a5f077cbc99749a35d37a4f55b8efa`.
+- **Build #162 QC:** analyzer 23 info-level findings / zero warnings/errors; Flutter **188/188 passed**; Android Gradle `BUILD SUCCESSFUL in 3m56s`. Native Android JUnit test tasks were `NO-SOURCE`.
+- **Release:** Release ID `403010611`, tag `jexfyz-latest`; APK SHA-256 `56c08bd490e52a8616627613675141a91c14ab6893cca0e1e54d5e5ac1a053f2`; source ZIP SHA-256 `86bd61edfe59acd6063367f7b8704356d2bf192d8c55c150f0f0e6b6285db42e`. V1/V2/V3 signing, pinned certificate and source ZIP integrity checks passed.
+- **Source parity:** compare from #162 source to main at start of this execution was 35 commits ahead / 0 behind; every changed path was Markdown. This documentation pass continues to make Markdown-only updates. Build #162 installation by the owner and actual visual/device acceptance remain unverified.
+
+### Documentation reconciliation completed
+
+- `BUILD_NOTES.md` — Build #162 is now the current verified release at the top; Build #159 is explicitly previous release history. Commit: `a6b3f3791168119906cf5ebe217d85007d79bee0`.
+- `APP_NOTES.md` — current App behavior/data contracts and evidence boundary now point to Build #162; older Build #157 snapshot marked historical. Commit: `ced3222cea7c727a7cd9147680e771d0cab615d6`.
+- `DESIGN_NOTES.md` — current Usage Statistics presentation contract now reflects Build #162 and its 188/188 hosted validation; visual acceptance remains pending. Commit: `345144e6cc5a1391575c445ceb896e7f2fe3802c`.
+- `APP_PREBUILD_AUDIT.md` — About, Statistics and Floating Monitor pre-build snapshots superseded by Build #162 are marked historical; exact success remains in the current gate at the top. Commit: `f1e98b2cd17d1375f9141066b372f82bbac1a052`.
+- `PROJECT_STATE.md` — condensed from 397 lines to a current-only snapshot under 100 lines; old build chronology was not copied or rewritten. Commit: `58f9d59ed4c219646f7b481a137df0e316fa702b`.
+- `HANDOVER.md` — next action now requires explicit workflow/config scope. Commit: `c057afa13f00c536cffb2ad6bdebdc46947ad00e`.
+- `MEMORY_INDEX.md` — role/date map reconciled for Build #162 and the current doc structure. Commit: `d4b9df0e4062b4fe92d06ea20d8334eb0a5cad16`.
+
+### Work intentionally not executed
+
+- **P1:** workflow still has workflow-level `jexfyz-cooler-build` concurrency and `cancel-in-progress: true` ahead of the job guard. This remains the top technical repair. Move it to guarded `jobs.build`; use `cancel-in-progress: false`; choose pending-run semantics deliberately (`queue: max` if every valid trigger must queue FIFO).
+- **P2:** `flutter_lints` remains declared without root `analysis_options.yaml`; formatter gate and validation-only workflow are still absent; third-party Actions remain tag-pinned.
+- This turn selected `Eksekusi Full!` but did not explicitly name workflow/config files as authorized edit targets. Per MASTER_PROMPT's concrete-scope rule, those files were left unchanged. No code/test changes, build/test/formatter commands, APK release, Firmware/BIN/Firebase/OTA/flash or device operations were performed.
+- `APP_BUILD_REPORT.md`, `CHANGELOG.md` and immutable archive files were not edited, truncated or deleted.
+
+### Exact next action
+
+Owner must explicitly authorize the workflow concurrency file and root analyzer configuration (and state whether to include a new non-publishing validation workflow). Keep Build App separately gated by `Eksekusi Build App!`; no release trigger is inferred from this Full session.
+
+---
+
+## Previous checkpoint — GEMINI SECOND OPINION CROSS-CHECK — 2026-11-14
 
 **Mode:** `Diskusi!` — read-only review. No App/Firmware source, tests, configuration, workflow, release, Firebase/OTA, BIN, flash or device changes were made.
 
