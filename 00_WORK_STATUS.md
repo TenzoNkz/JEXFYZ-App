@@ -1,4 +1,4 @@
-| Last updated | 2026-11-14 08:48 (Asia/Jakarta) |
+| Last updated | 2026-11-14 08:49 (Asia/Jakarta) |
 
 > Single current snapshot for JE X FYZ project interactions. This file records the latest persisted observation, not a continuously running heartbeat or overall product completion.
 
@@ -13,14 +13,14 @@
 | Request / work item | Resume authorized non-publishing validation repair; inspect seven remaining Flutter test failures on run #7 and fix only test-side source-contract matching; no App Build/Release or Firmware/device operation |
 | Started | 2026-11-14 08:44 (Asia/Jakarta) |
 | Last updated | 2026-11-14 08:30 (Asia/Jakarta) |
-| Current phase | Run #7 completed; formatter final clean, analyzer success and test count improved to 181/188; 7 source-contract failures remain from formatter trailing commas and one outdated style token. No formatter commit. Applying narrowly scoped test-only corrections. |
-| Last completed milestone | Run #7 / 43542261220 / job 132285271473 on SHA `305a34be525ebf2b0e244d909e1e7fb404d2c6fb`: Pub PASS; formatter auto-apply + final check PASS (17 files formatted, 14 changed); analyzer PASS (119 infos / 0 warnings / 0 errors); Flutter tests 181 passed / 7 failed. Failures: floating page wrapper matcher trailing comma, fontSize 10/w900 still exact string, LED picker matcher trailing comma, cavity painter expected comma not present, Tamper theme regex too strict, Home Fan notice matcher trailing comma, Home tab 48-dp regex trailing comma. Formatter commit skipped by guard; source remains unchanged. |
-| Last verified main checkpoint | `305a34be525ebf2b0e244d909e1e7fb404d2c6fb` — test-only regex correction commit triggering run #7; formatter source commit still not made |
+| Current phase | Run #7 terminal failure reconciled. Applying precise test-only matcher fixes for Dart formatter's trailing commas and multiline call layout; no App source/business logic changes. |
+| Last completed milestone | Run #7 / 43542261220 / SHA `305a34be525ebf2b0e244d909e1e7fb404d2c6fb`: locked Pub PASS; formatter final PASS; analyzer PASS (119 infos, 0 warnings/errors); tests 181/188 PASS. Failure logs identify seven test-only assertions; no formatter-only commit. Current main has only status commits after tested SHA. |
+| Last verified main checkpoint | `0b9621ffc3581e666070abbf9c302f5adf0da58d` — live main read before the next test-only patch |
 | EXTERNAL OPERATION | Validation Only run #7 / 43542261220 completed; no active run; Build #162 remains latest App package |
-| EXTERNAL OPERATION STATUS | **COMPLETED / FAILURE — Validation Only run #7; Pub, formatter and analyzer passed; 181 tests passed / 7 failed; formatter commit skipped** |
-| Result / evidence | GitHub Actions live run metadata confirms event `push`, branch `main`, terminal `completed/failure`, attempt 1, exact SHA above. Job logs confirm `flutter pub get --enforce-lockfile` PASS; formatter final check PASS; `flutter analyze --no-fatal-infos` PASS (119 infos, 0 warnings, 0 errors); `flutter test` FAILED (181 passed / 7 failed). A 134,755-byte formatter preview artifact was uploaded; no formatter-only commit was made. |
-| Blocker | 7 test assertions still need exact whitespace/trailing-comma handling; formatter commit remains gated until all 188 tests pass. `actionlint` unavailable locally. |
-| Next action | Allow optional trailing commas in formatter-aware regexes, replace residual fontSize exact-line matcher, simplify Tamper theme assertion to stable tokens, update painter call to actual no-trailing-comma syntax, and rerun automatic validation. No business logic or Build App. |
+| EXTERNAL OPERATION STATUS | **COMPLETED / FAILURE — run #7, 181 passed / 7 failed; Pub, formatter final and analyzer passed; formatter commit skipped** |
+| Result / evidence | Seven remaining failures are caused by format-sensitive source-contract expectations: trailing commas in formatted wrapper/LED/notify calls, multiline W900/Tamper theme tokens, an expected comma on a painter call that has no trailing comma, and a fragile Home header slice. The semantic constants, routes, typography roles and 48-dp touch target remain present in source. |
+| Blocker | Full Flutter test suite still fails 7 source-contract assertions; only test files are authorized for repair. `actionlint` not installed. |
+| Next action | Patch only `test/floating_monitor_layout_contract_test.dart` and `test/widget_test.dart` to tolerate Dart formatter layout while preserving exact contract tokens/copy/counts; push on main triggers Validation Only run #8. Formatter commit remains gated on all 188 tests passing. |
 
 ## Status model
 
