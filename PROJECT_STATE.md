@@ -26,6 +26,13 @@ Last reconciled: 2026-11-14 (Asia/Jakarta), after Usage Statistics alignment / V
 - Main includes the alignment refinement at `b4b57e83261c0b1fcb7873efa8544c3410ad0208` plus formatter-only commit `873a825020659dadcac2e5c7242e759209776414`; run #16 / `43552255469` verified this exact source. AppBar, summary strips, Activity plot time labels, Selected time dock and state-bar proportions are aligned; data and interaction contracts remain unchanged.
 - This is not in Build #162. Actual Android/OEM screenshot acceptance is still **VISUAL NOT VERIFIED** and requires a separately authorized new App package plus owner-side installation/screenshots.
 
+## Gemini localization review — partial report reconciled
+
+- Gemini's uploaded report did not receive source attachments and is not an exhaustive audit; its Part C contains only prompt examples. Live-source cross-check confirms recommendations on language labels, Safety/Keselamatan, Fan prerequisite title, successful safety-check wording, full sync, Deep Sleep and About credit.
+- Reject its proposal to keep Floating Monitor untranslated in Indonesian; owner-approved source contract is Floating Monitor / Monitor Melayang. Reject its one-count OTA suggestion: the event contains received and expected byte counts and both must be preserved.
+- State terminology needs per-metric mapping: physical outputs vs logical modes/locks vs user preferences. Current Usage Statistics generic mapper treats Peltier and Adaptive identically; current native HUD also shares A/P state text.
+- The next authorized implementation should finish a complete catalog + inline + dynamic + Kotlin review, then add semantic, placeholder, state-mapping and viewport regression tests. No source edits made in this review.
+
 ## Localization review — pending owner-approved wording
 
 - English is currently the default App locale; `JexText` contains 354 bilingual dictionary keys, and Flutter also contains 167 inline English/Indonesian phrase pairs. Native foreground-service/Floating Monitor notification copy is separately bilingual.

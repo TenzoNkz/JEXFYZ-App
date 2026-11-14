@@ -1,4 +1,38 @@
-## CURRENT CHECKPOINT — DISKUSI / ENGLISH–INDONESIAN LANGUAGE AUDIT COMPLETE — 2026-11-14
+## CURRENT CHECKPOINT — JAWABAN GEMINI REVIEWED / SOURCE CROSS-CHECK COMPLETE — 2026-11-14
+
+**Work status: REVIEW COMPLETE; no source implementation.** The owner supplied Gemini's language-audit report. It is a partial second opinion: Gemini explicitly says no source files were attached, so the exhaustive 354-key / 167-inline-phrase table was not performed. Its architecture/glossary ideas have been reconciled against live App and Firmware source here.
+
+### Current evidence
+
+- Executable-source baseline cross-checked: `873a825020659dadcac2e5c7242e759209776414`; current main advanced only with documentation/status commits during this review.
+- Inventory remains 354 JexText dictionary keys, 167 inline JexText.phrase() call sites, 260 JexText.of() call sites, plus bilingual native foreground-service/HUD copy.
+- The uploaded Gemini report is not an exhaustive language audit; Part C records only supplied examples and marks remaining rows pending source attachments.
+- No executable source, test, native code, Firmware, workflow, APK or Release was changed/run.
+
+### Cross-checked recommendations
+
+1. Display language label: EN `Indonesian`; ID `Bahasa Inggris / Bahasa Indonesia`; preserve enum/storage IDs.
+2. Use `Keselamatan` for physical/thermal Safety and reserve `Keamanan` for Security/access/crypto.
+3. Improve the short Fan prerequisite title to explicitly state the fan must be on before cooling starts. The adjacent body and current FAN-ACK-before-PELTIER command sequence already preserve the prerequisite; this is a copy correction, not a proven safety-interlock defect.
+4. Change `Safety checks passed.` translation from `Pemeriksaan keselamatan normal.` to an equivalent of `Pemeriksaan keselamatan berhasil.`.
+5. Improve `fullSyncFailed` and preserve `sleep` in `resetDeepSleep`.
+6. Restore owner-approved About credits `App Development & Build / Pengembangan Aplikasi & Build`.
+7. Define physical ON/OFF, logical Active/Inactive, and preference Enabled/Disabled by control/metric context. The current generic Usage Statistics helper maps Adaptive and Peltier identically to AKTIF/NONAKTIF; native HUD also maps both A/P to HIDUP/MATI, so a precise per-metric mapping is needed.
+8. Improve OTA stage terminology such as Range retry, image verification and Flash readback after confirming stage semantics.
+
+### Important Gemini corrections
+
+- Reject Gemini's proposal to keep Floating Monitor untranslated in Indonesian. The current owner-approved APP_NOTES contract requires `Floating Monitor / Monitor Melayang`, including native notification/channel strings.
+- Reject the proposed single-count OTA copy. Firmware emits `UPLOAD_SIZE_MISMATCH_<received>_<expected>`; both numeric values and order are required. A whole-sentence candidate is EN `OTA failed: {receivedBytes} bytes received; {expectedBytes} bytes expected.` / ID `OTA gagal: {receivedBytes} byte diterima, sedangkan {expectedBytes} byte diharapkan.`. Check display length.
+- Gemini's P0 label for the Fan prerequisite overstates a wording defect as a hardware safety failure. Existing detail copy and command flow already preserve Fan confirmation before Peltier start.
+
+### Next step
+
+Use this adjudicated issue list as the scope for a dedicated `Eksekusi Full!` only after owner authorization. The full correction matrix still needs every catalog entry, inline pair, dynamic branch and native string reviewed, followed by regression tests. No source changes are authorized by this completed `Jawaban Gemini!` review.
+
+---
+
+## HISTORICAL CHECKPOINT — DISKUSI / ENGLISH–INDONESIAN LANGUAGE AUDIT — 2026-11-14
 
 **Work status: DISCUSSION AUDIT COMPLETE; implementation not started.** The owner requested English as the master language and Indonesian translations that preserve exact meaning while remaining natural. This checkpoint records source-derived findings and the Gemini handoff boundary only.
 
