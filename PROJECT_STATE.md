@@ -64,7 +64,7 @@ Last reconciled: 2026-11-15 (Asia/Jakarta). Current truth only. Build history re
 
 - Owner decision: remove the Adaptive page's visible information card labelled “Adaptive Limit” / “Batas Adaptif” and its displayed ceiling voltage. Remove the whole card, not just its label.
 - Safety boundary: presentation-only. Retain internal `adaptiveCeiling`, `ADAPTIVE_CEILING` telemetry/state synchronization, Firmware voltage clamp, and all safety/transition behavior.
-- New profile labels: EN “Hot-Side Temperature Protection” / ID “Perlindungan Suhu Panas”; EN “Hot-Side Temperature & Battery Protection” / ID “Perlindungan Suhu Panas & Baterai”. These supersede old display titles in this profile selector only; do not rename internal profile values or protocol/storage keys.
+- New profile labels: EN “Hotside Protection” / ID “Perlindungan Suhu Panas”; EN “Hotside & Battery Protection” / ID “Perlindungan Suhu Panas & Baterai”. These exact English strings are authoritative; do not insert `Temperature`, hyphenate `Hotside`, or replace `&` with `+`. They apply only to this profile selector; do not rename internal profile values or protocol/storage keys.
 - RGB decision: keep the LED section heading “LED” and toggle label “RGB Power” / “Daya RGB”. The RGB switch controls the user RGB lighting effect only; separate voltage/system/safety LED indicators remain independent.
 - No App/Firmware source or tests changed in Diskusi. See APP_NOTES.md and CHAT_TRANSFER.md for exact scope and regression requirements.
 
