@@ -1,4 +1,4 @@
-| Last updated | 2026-11-15 12:06:01 |
+| Last updated | 2026-11-15 12:08:24 |
 
 > Single current snapshot for JE X FYZ project interactions. This file records the latest persisted observation, not a continuously running heartbeat or overall product completion.
 
@@ -12,11 +12,11 @@
 | Mode | Eksekusi Build App! — guarded App Build / QC only |
 | Request / work item | Resume the guarded App Build/QC/release workflow for TenzoNkz/JEXFYZ-App on main. Verify current main, active checkpoint, workflow, Actions runs/jobs/logs, releases/tags/artifacts; continue the existing attempt or repair only justified App-scope build defects. No duplicate trigger. |
 | Started | 2026-11-15 11:51:00 |
-| Last updated | 2026-11-15 12:06:01 |
-| Current phase | IN_PROGRESS — Android Gradle gate step 14 SUCCESS; obfuscated release APK build step 15 IN_PROGRESS. Signing/certificate, source ZIP, Release/tag and downloaded-asset gates 16–21 pending. Continue only run 43679305537. |
-| Last completed milestone | Build #163 / run 43679305537 / job 132706236782: steps 1–14 SUCCESS, including Android Gradle unit-test gate; step 15 obfuscated release APK build active; steps 16–21 pending. |
+| Last updated | 2026-11-15 12:08:24 |
+| Current phase | IN_PROGRESS — steps 15–19 SUCCESS: obfuscated APK built, V1/V2/V3 signing enforced, certificate verified, release filename prepared, source ZIP packaged. Step 20 GitHub Release publication IN_PROGRESS; step 21 downloaded asset verification pending. |
+| Last completed milestone | Build #163 / run 43679305537 / job 132706236782: steps 1–19 SUCCESS, including APK build, signature enforcement/verification, and source ZIP packaging; step 20 Release/tag/asset publication IN_PROGRESS; step 21 download verification pending. |
 | Last verified main checkpoint | Exact immutable Build #163 checkout `9466e8eeb269da5bc8806f0df1d4212cf24e1746`; branch main; tree `dddb77c3999f438f11742ed57bb399c237df495a`, 139 entries, `truncated=false`. |
-| EXTERNAL OPERATION | Build #163 / Actions run 43679305537 / workflow 374946166 / Issue #40 / attempt 1; job build 132706236782, ubuntu-24.04 runner 1000002728. Steps 1–14 SUCCESS; step 15 Build latest release APK IN_PROGRESS; steps 16–21 pending. |
+| EXTERNAL OPERATION | Build #163 / Actions run 43679305537 / workflow 374946166 / Issue #40 / attempt 1; job build 132706236782, ubuntu-24.04 runner 1000002728. Steps 1–19 SUCCESS; step 20 Publish APK and corresponding source to GitHub Release IN_PROGRESS; step 21 pending. |
 | EXTERNAL OPERATION STATUS | **IN_PROGRESS — run 43679305537 / job 132706236782 / Java 17 setup active** |
 | Result / evidence | Issue #40 exact title/token, created by owner TenzoNkz; one `issues`-event run #163 checks out exact main SHA. No retry/duplicate issue. Existing Release #162 remains unchanged pending full QC and step 21. |
 | Blocker | None established yet. |
