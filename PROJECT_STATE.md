@@ -7,7 +7,7 @@ Last reconciled: 2026-11-15 (Asia/Jakarta). Current truth only. Build history re
 - Canonical repository/branch: TenzoNkz/JEXFYZ-App / main.
 - Latest App code validation is Validation Only #19: run 43677560315 / job 132700920324, tested source 8fca2ecebf8b2ffb83fc9475a817c832f8269dc5, terminal SUCCESS.
 - Current code after formatter follow-up fc39de16a5480347ce13083760424a309957c311 differs from #19 tested workspace only by a formatter-only line wrap in test/localization_contract_test.dart; remaining intervening changes are documentation/checkpoint/skill-mirror records.
-- Guarded App Build #163 is active on immutable source 9466e8eeb269da5bc8806f0df1d4212cf24e1746 (run 43679305537 / job 132706236782, Issue #40). Steps 1–14 are SUCCESS including Android Gradle gate; obfuscated APK build step 15 is IN_PROGRESS; steps 16–21 pending. See APP_BUILD_REPORT.md for live gate chronology.
+- Guarded App Build #163 is active on immutable source 9466e8eeb269da5bc8806f0df1d4212cf24e1746 (run 43679305537 / job 132706236782, Issue #40). Steps 1–19 are SUCCESS, including obfuscated APK, signing/certificate gates and source ZIP packaging. Step 20 Release publication is IN_PROGRESS; step 21 downloaded-asset verification pending. See APP_BUILD_REPORT.md for live gate chronology.
 
 ## Latest hosted source validation — Validation Only #19 SUCCESS
 
