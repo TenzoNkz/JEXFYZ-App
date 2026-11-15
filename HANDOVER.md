@@ -1,7 +1,9 @@
-## Current handover — guarded App Build #163 publishing Release — 2026-11-15
+## Current handover — Build #163 released and verified — 2026-11-15
 
-- Issue #40 triggered exactly one run: [Build #163 / 43679305537](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/43679305537), job `132706236782`, source SHA `9466e8eeb269da5bc8806f0df1d4212cf24e1746`.
-- Steps 1–19 SUCCESS, including Android Gradle, obfuscated APK build, V1/V2/V3 signing, certificate verification and matching source ZIP creation. Step 20 Release publication IN_PROGRESS; step 21 downloaded-asset verification pending.
-- Do not claim release success until the tag/asset identities and step 21 downloaded hashes/signature pass. The prior Build #162 baseline remains the known published state until re-verified.
-- Exact numerical analyzer/test/Gradle log counts and output hashes await complete job logs after terminal state. Continue only this run.
-- Preserve Android Gradle `versionName "Telegram @horizontalzzz"`; no Firmware/BIN/Firebase/OTA/flash/device operation is authorized or evidenced.
+- **Completed:** Build #163 / [run 43679305537](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/43679305537), job `132706236782`, owner trigger Issue #40, immutable source SHA `9466e8eeb269da5bc8806f0df1d4212cf24e1746`. All required gates 1–21 and cleanup 39–43 SUCCESS.
+- **Release:** [GitHub Release — jexfyz-latest](https://github.com/TenzoNkz/JEXFYZ-App/releases/tag/jexfyz-latest), Release ID 403010611. Exactly one APK and one matching source ZIP; tag and Release target match the build SHA; fresh downloads passed checksum, ZIP integrity, signature and pinned-certificate checks.
+- **APK:** `JEXFYZ-release.apk`, 55,881,819 bytes, SHA-256 `97c7cf99bef5d89f82b13d8f1c4b3c02dede541c2642a751ba61c8f9290a245c`.
+- **Source ZIP:** 2,943,100 bytes, SHA-256 `866117d208d38d2c04a2f7f097b5dc8941850a16bd52172a35d761af71334c00`.
+- Analyzer 118 infos / zero warnings/errors; Flutter tests 197/197; Gradle BUILD SUCCESSFUL in 2m43s (native Android App test tasks NO-SOURCE). V1/V2/V3 signing and pinned fingerprint passed; self-signed PKIX chain and Kotlin/Gradle/DWARF warnings are documented in APP_BUILD_REPORT.md.
+- **Next:** owner installation and Android/OEM visual/BLE/device verification. These are not evidenced by CI. Preserve Android `versionName "Telegram @horizontalzzz"`.
+- No Firmware compile/BIN, Firebase mutation, OTA, flash or device operation was performed.
