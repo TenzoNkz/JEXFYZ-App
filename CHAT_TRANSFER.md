@@ -1,39 +1,33 @@
 <!-- ACTIVE_CHECKPOINT_START -->
-# ACTIVE CHECKPOINT — LOCALIZATION VALIDATED / CHAT-LOAD CLEANUP — 2026-11-15
+# ACTIVE CHECKPOINT — GUARDED APP BUILD #163 — PRE-TRIGGER PREFLIGHT — 2026-11-15
 
 **Project:** JE X FYZ / JE Cooler  
 **Repository:** TenzoNkz/JEXFYZ-App — branch main  
-**Mode:** Chat Stuck! recovering the previously authorized Eksekusi Full! source/docs/tests scope.  
-**Scope boundary:** App source, tests and canonical documentation only. No App Build/Release, Firmware compile/BIN, Firebase, OTA, flash or device work.
+**Mode:** Eksekusi Build App! — guarded App Build / QC / release only.  
+**Authorized scope:** one guarded App package/QC/release of current main, plus justified App-scope repairs only. No Firmware compilation, BIN generation/publication/replacement, Firebase changes, OTA, flashing or device operation.
 
-## Verified code and validation
+## Current source and validation
 
-- Latest validated main source: fc39de16a5480347ce13083760424a309957c311. Validation Only #19 tested source 8fca2ecebf8b2ffb83fc9475a817c832f8269dc5; formatter-only follow-up is fc39de16a5480347ce13083760424a309957c311.
-- Run #19: 43677560315, job 132700920324, terminal SUCCESS. Flutter 3.47.2 / Dart 3.13.2; locked dependencies PASS; formatter final check clean (18 files checked, one correction applied); analyzer 118 infos, zero warnings/errors; Flutter tests 197/197 PASS.
-- Run #18: 43677411117 remains a failed intermediate, 196/197. The only failure was a stale Widget test expecting LED aktif. after approved output copy changed to LED menyala. The assertion was corrected in 8fca2ece and #19 passed. Preserve #18 as a historical failure.
-- Latest published package remains Build #162 SUCCESS, source 6854d8eb58a5f077cbc99749a35d37a4f55b8efa, Release ID 403010611, tag jexfyz-latest. Current localization changes are NOT RELEASED and not in Build #162.
+- Live main at initial preflight: `89efe4a5211f8bff1035feed9efc686a65ba864a`; recursive tree 139 entries, `truncated=false`.
+- Latest app code validation: Validation Only #19, run `43677560315`, job `132700920324`, tested SHA `8fca2ecebf8b2ffb83fc9475a817c832f8269dc5`, terminal SUCCESS. Flutter 3.47.2 / Dart 3.13.2; locked dependencies PASS; formatter checked 18 files, applied one formatting correction and final check reported zero changes; analyzer 118 info / 0 warning / 0 error; Flutter tests 197/197 PASS.
+- Follow-up commit `fc39de16a5480347ce13083760424a309957c311` was inspected: the only patch is formatting of one multi-line `expect(JexText.of('peltierOn', ...), 'Peltier menyala.')` assertion. It changes line wrapping only, not test semantics.
+- Comparing #19 tested source `8fca2ece...` to main shows the same formatter-only test file edit plus documentation/checkpoint changes. No other App production/test source changes since #19.
+- #18 run `43677411117` remains a failed historical intermediate (196/197); the stale LED output text assertion was corrected before #19. Preserve its failure.
 
-## Implemented source contracts
+## Live pre-trigger Actions and release evidence
 
-- Thermal Safety uses Keselamatan; Safety checks passed is Pemeriksaan keselamatan berhasil.
-- Peltier prerequisite copy states that the fan must be on before cooling starts. The actual sequence remains FAN:ON → successful ACK → PELTIER:ON; Cancel remains command-free.
-- Adaptive is a logical mode: EN ACTIVE/INACTIVE, ID AKTIF/NONAKTIF.
-- Peltier, Fan and LED are physical outputs: compact EN ON/OFF, ID HIDUP/MATI; natural Indonesian prose uses menyala/mati.
-- Fan Speed remains numeric while running and OFF/MATI when stopped. Unknown/disconnected states remain --.
-- Usage Statistics maps values through UsageStateDomain so logical modes and physical outputs are not translated as the same category. Voltage and unknown values are preserved.
-- OTA mismatch copy labels received bytes first, expected bytes second, in Firmware event order. Named bilingual placeholders are handled by JexText.format; JexText.of and phrase remain non-interpolating.
-- Regression tests cover dictionary locale/placeholder parity, inline phrase placeholder parity, OTA ordering, Safety NOTIFY, physical vs logical state, native Floating Monitor contracts and natural output copy.
-- Preserve language-picker labels English / Indonesia and enum/storage IDs english / indonesia. Preserve Floating Monitor / Monitor Melayang, Bluetooth notification identity, and About credit App Developer & Builder / Pengembang Aplikasi & Perakit.
+- No App Build workflow run is active, queued, waiting, requested or pending. Latest guarded Build is #162 / run `43430275967`, job `131901744336`, terminal SUCCESS.
+- Open PR count is zero. Existing trigger issues #33, #35, #36, #37, #38 and #39 are OPEN with the expected title/token and were not reopened or modified.
+- Guarded workflow `.github/workflows/jexfyz-app-build-trigger.yml` blob: `41c0b7c1f18c0e2d0aa30028c7fc0e8f0554e4ba`. It remains issues opened/reopened only, owner login + exact title + token guarded, job-level serialized concurrency with `cancel-in-progress: false` / `queue: max`, and no push/PR release trigger.
+- Authenticated GitHub identity `TenzoNkz` matches repository owner. Repository write permission is available.
+- Protected Android Gradle `versionName "Telegram @horizontalzzz"` is unchanged; Flutter version `1.0.0+3`.
+- Existing Release ID `403010611` / tag `jexfyz-latest` target Build #162 source `6854d8eb58a5f077cbc99749a35d37a4f55b8efa`. Exactly one APK (`55,881,819` bytes; SHA-256 `56c08bd490e52a8616627613675141a91c14ab6893cca0e1e54d5e5ac1a053f2`) plus one corresponding source ZIP (`2,933,316` bytes; SHA-256 `86bd61edfe59acd6063367f7b8704356d2bf192d8c55c150f0f0e6b6285db42e`).
+- Build #162 log confirms all workflow gates 1–21 and cleanup 39–43 succeeded, analyzer 23 info-level findings, Flutter 188/188, Android Gradle gate BUILD SUCCESSFUL (native Android JUnit test tasks were NO-SOURCE), generated/downloaded APK V1/JAR, V2 and V3 signatures plus pinned certificate matched, Release/tag/source SHA parity, exactly one APK + one ZIP, downloaded checksum/source marker/ZIP integrity passed. Self-signed certificate / PKIX chain warning and non-writable cache warnings remain non-blocking and recorded in the ledger.
 
-## Chat transfer and repository hygiene
+## Pre-trigger disposition
 
-- Routine continuation reads only this bounded checkpoint between ACTIVE_CHECKPOINT_START and ACTIVE_CHECKPOINT_END.
-- The exact former CHAT_TRANSFER file (723 lines / 90,388 characters) is preserved unchanged at archive/CHAT_TRANSFER_PRE_COMPACTION_2026-11-15.md.
-- CHAT_TRANSFER_PROMPTS.md keeps exactly two templates: General Engineering (first line selects Diskusi / Eksekusi Full / Chat Stuck) and guarded App Build/QC.
-- README, MASTER_PROMPT, MEMORY_INDEX and the repository-forensics/documentation-governance skills specify the bounded load path. Full build/history ledgers and archives are opened only for targeted research.
-
-## Next action and boundaries
-
-- Source work and Validation Only #19 are complete. A separate explicit owner command Eksekusi Build App! is required for guarded packaging/QC; this checkpoint does not authorize it.
-- Actual Android/OEM screenshots and device behavior remain unverified. No App package build, Firmware compile/BIN, Firebase, OTA, flash or device operation was performed here.
+- **PRE-TRIGGER CLEAR.** No new trigger issue or Build #163 run has been created yet.
+- Current command explicitly authorizes one guarded trigger. Next action: create exactly one new owner-authored issue with title `JE X FYZ — EKSEKUSI BUILD APP TRIGGER` and body token `JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1`; then inspect the single resulting run, exact checkout SHA, jobs, steps and logs. Do not create a second issue/run while the attempt is queued or active.
+- Build #162 remains the latest published package until a new Build #163 passes every required gate and downloaded-asset verification.
+- CI does not prove Android/OEM visual acceptance, owner installation, physical BLE/device behavior, Firmware compilation/BIN, Firebase, OTA, flash or thermal/electrical behavior. These remain outside scope or unverified.
 <!-- ACTIVE_CHECKPOINT_END -->
