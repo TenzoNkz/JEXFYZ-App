@@ -3064,3 +3064,12 @@
 - Step 14 `Run Android unit-test gate` is IN_PROGRESS. Steps 15–21 (obfuscated release APK, V1/V2/V3 enforcement and pinned certificate, filename, corresponding source ZIP, Release/tag publication and downloaded-asset identity verification) remain pending. Cleanup steps 39–42 pending.
 - The live step API is the observed evidence. Complete job logs were not yet available while the job remained active (logs endpoint returned BlobNotFound); exact #163 analyzer count and Flutter test total are therefore pending terminal log retrieval. No counts or gate outputs are inferred from Validation Only #19 or Build #162.
 - Continue only run `43679305537` / job `132706236782`; no duplicate issue/rerun. Build #162 Release/tag and both existing assets remain the published baseline until step 21 is verified.
+
+
+### BUILD #163 progress — Android Gradle gate passed / obfuscated APK build active — 2026-11-15
+
+- Run `43679305537` / job `132706236782`, immutable checkout `9466e8eeb269da5bc8806f0df1d4212cf24e1746`, attempt 1.
+- Steps 1–14 are now observed SUCCESS. Step 14 `./gradlew --no-daemon :app:testDebugUnitTest` has completed SUCCESS; step 15 `flutter build apk --release --obfuscate --split-debug-info=build/symbols` is IN_PROGRESS. Steps 16–21 and cleanup remain pending.
+- Active log download still unavailable, so exact Gradle duration/task counts, analyzer-info count and Flutter test total will be reported only after the complete job log is retrieved. Do not infer.
+- Release ID 403010611 / tag `jexfyz-latest` remains on Build #162 source while #163 is still packaging. No release publication or asset replacement is claimed yet.
+- Continue only this run; no duplicate issue/retry.
