@@ -3055,3 +3055,12 @@
 - **Run state:** IN_PROGRESS. Continue only run `43679305537` / job `132706236782`; do not create another issue or rerun while active.
 - **Current published package:** Build #162 / Release ID `403010611` / tag `jexfyz-latest` remains unchanged until #163 passes all mandatory gates. Preserve prior #162 hashes and historical results. Android Gradle `versionName "Telegram @horizontalzzz"` remains protected.
 - **Scope:** App Build/QC/release only. No Firmware compilation, BIN, Firebase mutation, OTA, flash or device operation.
+
+
+### BUILD #163 progress — setup/audit/analyzer/Flutter tests passed; Android Gradle active — 2026-11-15
+
+- Run `43679305537` / job `132706236782`, immutable checkout source `9466e8eeb269da5bc8806f0df1d4212cf24e1746`, Issue #40, attempt 1.
+- Confirmed steps 1–13 SUCCESS: runner/job setup, repository checkout, Java 17, Flutter 3.47.2, Gradle 9.3.1, toolchain check, local.properties, production signing preparation, wrapper restore, App security/architecture audit, dependency resolution, Dart analyzer and Flutter tests.
+- Step 14 `Run Android unit-test gate` is IN_PROGRESS. Steps 15–21 (obfuscated release APK, V1/V2/V3 enforcement and pinned certificate, filename, corresponding source ZIP, Release/tag publication and downloaded-asset identity verification) remain pending. Cleanup steps 39–42 pending.
+- The live step API is the observed evidence. Complete job logs were not yet available while the job remained active (logs endpoint returned BlobNotFound); exact #163 analyzer count and Flutter test total are therefore pending terminal log retrieval. No counts or gate outputs are inferred from Validation Only #19 or Build #162.
+- Continue only run `43679305537` / job `132706236782`; no duplicate issue/rerun. Build #162 Release/tag and both existing assets remain the published baseline until step 21 is verified.
