@@ -1,4 +1,4 @@
-| Last updated | 2026-11-16 00:23:00 (Asia/Jakarta) |
+| Last updated | 2026-11-16 00:25:00 (Asia/Jakarta) |
 
 > Single current snapshot for JE X FYZ project interactions. This file records the latest persisted observation, not a continuously running heartbeat or overall product completion.
 
@@ -6,21 +6,21 @@
 
 | Field | Value |
 |---|---|
-| **STATUS** | **COMPLETED** |
-| SESSION STATUS | COMPLETED |
-| WORK STATUS | WAITING_OWNER — Exact English/Indonesian Adaptive profile labels are corrected and verified in canonical documentation; executable source/tests await explicit Eksekusi Full! authorization. |
-| Mode | Diskusi! — owner correction to Adaptive profile English terminology; documentation-only. |
-| Request / work item | Correct the English master labels from the assistant’s inaccurate expanded wording to the owner’s exact labels: `Hotside Protection` and `Hotside & Battery Protection`. Keep the already owner-specified Indonesian labels. Preserve source/test/Firmware/build read-only boundary. |
-| Started | 2026-11-16 00:20:00 (Asia/Jakarta) |
-| Last updated | 2026-11-16 00:20:00 |
-| Current phase | COMPLETED — corrected the English master labels to the owner's exact wording, retained the previously specified Indonesian translations, and verified all four active canonical documents plus bounded checkpoint markers. Documentation-only; no source/test/Firmware/build operation. |
+| **STATUS** | **IN_PROGRESS** |
+| SESSION STATUS | IN_PROGRESS |
+| WORK STATUS | IN_PROGRESS — Perform a full bilingual user-facing copy audit and document every verified correction; executable source/tests remain read-only in Diskusi. |
+| Mode | Diskusi! — comprehensive English/Indonesian copy, terminology and formatting audit; source/tests/config/build read-only. |
+| Request / work item | Analyze all user-facing App copy and resolve/document meaning mismatches, translation defects, terminology, grammar, capitalization, punctuation, numbers, dates, units and native Android notification wording. In Diskusi, do not modify executable source/tests/config/Firmware/workflows or run tests/builds. |
+| Started | 2026-11-16 00:25:00 (Asia/Jakarta) |
+| Last updated | 2026-11-16 00:25:00 |
+| Current phase | IN_PROGRESS — open comprehensive copy audit; load canonical style/locale requirements and inspect every user-visible Flutter dictionary, inline phrase, native Android notification and formatting helper. |
 | Last completed milestone | Owner correction recorded and read back in APP_NOTES.md (9a6d3088), CHAT_TRANSFER.md (da963fe7), PROJECT_STATE.md (d5d195f4) and HANDOVER.md (179494f9). Exact labels verified; no expanded `Hot-Side Temperature ...` wording remains in these active docs; CHAT_TRANSFER bounded markers each occur once. Latest main HEAD before close: 179494f9cc137b89a25e502e075ed163f6f68f08. |
 | Last verified main checkpoint | Immutable Build #163 package source `9466e8eeb269da5bc8806f0df1d4212cf24e1746`; post-build current main changes are documentation-only (7 Markdown files); recursive tree 139 entries, `truncated=false`. |
 | EXTERNAL OPERATION | Build #163 / Actions run 43679305537 / workflow 374946166 / Issue #40 / attempt 1; job build 132706236782, runner ubuntu-24.04. Run and job terminal SUCCESS. Release ID 403010611 / tag jexfyz-latest / exactly one APK plus one source ZIP verified. |
 | EXTERNAL OPERATION STATUS | **COMPLETED / SUCCESS — run 43679305537 / job 132706236782; Release 403010611/tag jexfyz-latest assets verified** |
 | Result / evidence | Live re-check confirms source SHA 9466e8eeb269da5bc8806f0df1d4212cf24e1746; APK SHA-256 97c7cf99bef5d89f82b13d8f1c4b3c02dede541c2642a751ba61c8f9290a245c (55,881,819 bytes); source ZIP SHA-256 866117d208d38d2c04a2f7f097b5dc8941850a16bd52172a35d761af71334c00 (2,943,100 bytes); Release/tag parity and fresh-download identity verified. |
 | Blocker | None. Non-blocking warnings retained: self-signed signing certificate has no CA-trusted PKIX chain; Android Gradle/Kotlin deprecations; Kotlin 2.2.20 future Flutter compatibility warning; generated native ELF DWARF debug-info warning; JAR META-INF unsigned-entry warnings. |
-| Next action | Wait for explicit `Eksekusi Full!` authorization before changing App source/tests for the Adaptive card/profile display. `Eksekusi Build App!` remains separately required for any package build/release. |
+| Next action | Audit the live source against the owner-approved exact bilingual terms and semantic equivalence rules; record verified findings and staged corrections in canonical notes/checkpoint, then close Diskusi. |
 
 ## Status model
 
