@@ -5,45 +5,55 @@ Last reconciled: 2026-11-15 (Asia/Jakarta). Current truth only. Build history re
 ## Repository baseline
 
 - Canonical repository/branch: TenzoNkz/JEXFYZ-App / main.
-- Latest App code validation is Validation Only #19: run 43677560315 / job 132700920324, tested source 8fca2ecebf8b2ffb83fc9475a817c832f8269dc5, terminal SUCCESS.
-- Current code after formatter follow-up fc39de16a5480347ce13083760424a309957c311 differs from #19 tested workspace only by a formatter-only line wrap in test/localization_contract_test.dart; remaining intervening changes are documentation/checkpoint/skill-mirror records.
-- Guarded App Build #163 is active on immutable source 9466e8eeb269da5bc8806f0df1d4212cf24e1746 (run 43679305537 / job 132706236782, Issue #40). Steps 1–19 are SUCCESS, including obfuscated APK, signing/certificate gates and source ZIP packaging. Step 20 Release publication is IN_PROGRESS; step 21 downloaded-asset verification pending. See APP_BUILD_REPORT.md for live gate chronology.
+- Build #163 is the latest verified App package and Release: Actions run 43679305537 / job 132706236782 / Issue #40; immutable package source 9466e8eeb269da5bc8806f0df1d4212cf24e1746; terminal SUCCESS.
+- Later main commits through checkpoint close modify only the six state/ledger documents; no App source, tests, workflow or release inputs changed after the immutable Build #163 checkout.
+- Twelve canonical .agents/skills and twelve .github/skills are mirrored byte-for-byte. Guarded App release and non-publishing Validation Only workflows remain separate.
 
 ## Latest hosted source validation — Validation Only #19 SUCCESS
 
 - Run/job: 43677560315 / 132700920324; tested source 8fca2ecebf8b2ffb83fc9475a817c832f8269dc5; terminal SUCCESS.
 - Flutter 3.47.2 / Dart 3.13.2; locked dependency resolution PASS.
-- Formatter checked 18 files, applied one correction, then final check passed with zero remaining changes. Formatter-only follow-up: fc39de16a5480347ce13083760424a309957c311.
-- Analyzer: 118 info-level findings, zero warnings/errors.
-- Flutter tests: 197/197 passed.
-- Run #18 (43677411117) remains a failed historical intermediate (196/197); the stale LED-copy assertion was corrected before #19.
+- Formatter checked 18 files, applied one correction, then final check passed with zero remaining changes. Formatter-only follow-up fc39de16a5480347ce13083760424a309957c311 changes one test assertion's line wrapping only.
+- Analyzer: 118 info-level findings, zero warnings/errors. Flutter tests: 197/197 passed.
+- Validation Only #18 (43677411117) remains a failed historical intermediate (196/197); the stale LED-copy expectation was corrected before #19.
 
-## Localization and state semantics now implemented
+## Latest verified App package — Build #163 SUCCESS
 
-- English remains the master and default language. JexText contains 354 bilingual keys with dictionary locale/placeholder and inline placeholder-parity regression checks.
+- Trigger Issue #40; Actions run 43679305537 / job 132706236782; attempt 1; source SHA 9466e8eeb269da5bc8806f0df1d4212cf24e1746.
+- All workflow steps 1–21 and cleanup 39–43 SUCCESS. Analyzer 118 infos / 0 warnings / 0 errors; Flutter 197/197.
+- Android Gradle `:app:testDebugUnitTest`: BUILD SUCCESSFUL in 2m43s; 162 actionable tasks (161 executed, 1 up-to-date). Native App Kotlin/Java unit-test tasks were NO-SOURCE; no native JUnit case ran.
+- Release ID 403010611 / tag jexfyz-latest. Tag and Release target match exact source SHA.
+- APK: JEXFYZ-release.apk, 55,881,819 bytes, SHA-256 97c7cf99bef5d89f82b13d8f1c4b3c02dede541c2642a751ba61c8f9290a245c.
+- Corresponding source ZIP: 2,943,100 bytes, SHA-256 866117d208d38d2c04a2f7f097b5dc8941850a16bd52172a35d761af71334c00; embedded source marker matches exact SHA. Release has exactly these two assets; downloaded hashes/signature/ZIP integrity passed.
+- APK V1/V2/V3 signatures and one-signer pinned certificate passed. Fingerprint dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0; certificate is self-signed and has no publicly trusted PKIX chain.
+- Android Gradle versionName "Telegram @horizontalzzz" preserved exactly; Flutter version 1.0.0+3.
+
+## Retained warnings and limitations
+
+- Flutter reports Kotlin Gradle Plugin 2.2.20 will soon need upgrading to at least 2.3.20; Android Gradle properties android.builtInKotlin=false, android.newDsl=false and android.enableJetifier=true are deprecated.
+- Generated native ELF libraries report unobfuscated DWARF debug information. This is a non-blocking hardening warning, not a claim that it was removed.
+- JAR signature tooling warns about self-signed PKIX chain and META-INF entries not protected by the signature. V1/V2/V3 and the pinned certificate fingerprint still passed the guarded checks.
+- Android native test tasks were NO-SOURCE. Owner installation, Android/OEM screenshots, BLE/device behavior, Firmware compile/BIN provenance, Firebase, OTA/flash, thermal/electrical safety remain unverified.
+- The Actions run has no workflow artifacts; the required APK and source ZIP are delivered and verified as GitHub Release assets.
+
+## Localization and state semantics now released
+
+- English remains the master/default language. JexText contains 354 bilingual keys; dictionary locale/placeholder and inline phrase placeholder parity are covered by tests.
 - Thermal Safety uses Keselamatan; successful safety status is Pemeriksaan keselamatan berhasil. Fan-before-cooling copy states its prerequisite; protected sequence remains FAN:ON → successful ACK → PELTIER:ON.
 - Adaptive is a logical mode: EN ACTIVE/INACTIVE, ID AKTIF/NONAKTIF. Peltier/Fan/LED are physical outputs: compact EN ON/OFF, ID HIDUP/MATI; natural Indonesian prose uses menyala/mati.
-- Fan Speed remains numeric while running and OFF/MATI when stopped. Disconnected/unknown values remain --.
-- Usage Statistics distinguishes logical mode from hardware output while preserving voltage/unknown states. OTA mismatch copy labels received bytes first and expected bytes second in event order.
-
-## Latest verified App package — Build #162 SUCCESS / CURRENT RELEASE BASELINE
-
-- Run/job 43430275967 / 131901744336; package source 6854d8eb58a5f077cbc99749a35d37a4f55b8efa.
-- Release ID 403010611 and tag jexfyz-latest. APK SHA-256 56c08bd490e52a8616627613675141a91c14ab6893cca0e1e54d5e5ac1a053f2. Source ZIP SHA-256 86bd61edfe59acd6063367f7b8704356d2bf192d8c55c150f0f0e6b6285db42e.
-- Build #163 is currently at the Android Gradle gate; Build #162 remains published until full #163 success and downloaded-asset verification are independently confirmed. Owner installation and Android/OEM screenshot acceptance remain VISUAL NOT VERIFIED.
+- Fan Speed remains numeric when running and OFF/MATI when stopped; disconnected/unknown values remain --. Usage Statistics distinguishes logical mode from hardware output while preserving voltage/unknown states. OTA mismatch copy labels received bytes first and expected bytes second.
 
 ## App architecture and protected contracts
 
-- Usage Statistics uses SQLite schema v2 with v1→v2 migration, 30-day retention, raw 1-Hz Battery/Hotside samples, explicit data gaps, HOT-only P1 freshness, and bounded writer admission. Long-duration CPU/memory and storage-pressure soak remain unverified.
+- Usage Statistics uses SQLite schema v2 with v1→v2 migration, 30-day retention, raw 1-Hz Battery/Hotside samples, explicit data gaps, HOT-only P1 freshness and bounded writer admission. Long-duration CPU/memory and storage-pressure soak remain unverified.
 - BLE scan ownership is serialized with attempt-generation invalidation and subscription/timer cleanup. CI/widget tests do not establish OEM/device behavior.
-- Preserve Android Gradle versionName "Telegram @horizontalzzz" and Flutter version 1.0.0+3.
 - Root analysis_options.yaml activates locked flutter_lints 6.0.0; Validation Only is non-publishing.
 
 ## Firmware and security boundary
 
-- Current sketch: firmware/JEXFYZ-V7.2.ino, FW_VERSION="V7.2". App CI does not establish Arduino compile, BIN provenance, Firebase identity, OTA, flash, BLE security or thermal/electrical safety.
+- Current sketch: firmware/JEXFYZ-V7.2.ino, FW_VERSION="V7.2". App Build #163 does not establish Arduino compile, BIN provenance, Firebase identity, OTA, flash, BLE security or thermal/electrical safety.
 - BLE App-only identity authentication remains BLOCKED / NOT IMPLEMENTED. Online OTA uses cloudClient.setInsecure(): transport is encrypted but server certificate identity is not authenticated.
-- No Firmware/BIN/Firebase/OTA/flash/device operation was performed for Build #163.
+- No Firmware/BIN/Firebase/OTA/flash/device operation was performed in Build #163.
 
 ## Chat-load/repository hygiene
 
@@ -52,5 +62,5 @@ Last reconciled: 2026-11-15 (Asia/Jakarta). Current truth only. Build history re
 
 ## Immediate next action
 
-- Continue only Build #163 run 43679305537 / job 132706236782. Inspect actual steps/logs, append transitions and preserve every gate. No duplicate trigger.
-- Firmware compile/BIN/Firebase/OTA/flash/device operations remain separately gated.
+- Build #163 is complete. Owner may install the verified APK and conduct physical-device/OEM visual/BLE checks; those are separate from CI and require owner/device evidence.
+- No new App Build trigger or Firmware/BIN/Firebase/OTA/flash/device action is pending or authorized by this completed interaction.
