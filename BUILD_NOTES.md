@@ -1,3 +1,14 @@
+## Latest guarded App Build #163 — terminal SUCCESS / Release verified — 2026-11-15
+
+- Owner trigger Issue #40; Actions run `43679305537`, workflow 374946166, attempt 1; job `132706236782`; immutable source `9466e8eeb269da5bc8806f0df1d4212cf24e1746`.
+- All required steps 1–21 and post-job cleanup 39–43 SUCCESS. Analyzer 118 info / 0 warning / 0 error; Flutter tests 197/197.
+- Android Gradle gate BUILD SUCCESSFUL in 2m43s (162 actionable tasks: 161 executed, 1 up-to-date); native App Kotlin/Java test tasks NO-SOURCE.
+- Release ID `403010611`, tag `jexfyz-latest`, target exact build SHA. APK 55,881,819 bytes / SHA-256 `97c7cf99bef5d89f82b13d8f1c4b3c02dede541c2642a751ba61c8f9290a245c`; matching source ZIP 2,943,100 bytes / SHA-256 `866117d208d38d2c04a2f7f097b5dc8941850a16bd52172a35d761af71334c00`. Exactly two assets, freshly downloaded and checksum/ZIP/signature verified.
+- V1/V2/V3 signature validation and one-signer pinned fingerprint `dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0) passed. Certificate remains self-signed / PKIX chain untrusted. Kotlin 2.2.20 upcoming support drop, deprecated Android Gradle properties and unobfuscated native ELF DWARF warnings remain documented.
+- Android `versionName "Telegram @horizontalzzz"` preserved. No Firmware/BIN/Firebase/OTA/flash/device operations performed.
+
+---
+
 ## Active guarded App Build #163 — Release publication — 2026-11-15
 
 - Run `43679305537`, job `132706236782`, Issue #40, immutable source `9466e8eeb269da5bc8806f0df1d4212cf24e1746`, attempt 1.
