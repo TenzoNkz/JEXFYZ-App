@@ -1,3 +1,14 @@
+## CURRENT MAIN — LOCALIZATION/STATE REMEDIATION VALIDATED — 2026-11-15 (NOT PACKAGED)
+
+- Latest validated code after formatter-only follow-up: fc39de16a5480347ce13083760424a309957c311.
+- Implementation commits: da210579a2a26de518a2df18c6638502e00af2bd; follow-up correction 16d9acb5b88ca51f411ddf4ffc38c5757f57f87c; stale Widget expectation repair 8fca2ecebf8b2ffb83fc9475a817c832f8269dc5.
+- Validation Only #19 / run 43677560315, job 132700920324, tested source 8fca2ecebf8b2ffb83fc9475a817c832f8269dc5, terminal SUCCESS: dependencies PASS; Dart formatter checked 18 files, applied one change, final check 0 changed; analyzer 118 info / 0 warnings / 0 errors; Flutter 197/197 PASS.
+- Implemented: thermal Safety terminology, Fan prerequisite wording, Safety success translation, full-sync/deep-sleep copy, logical Adaptive vs physical output state domains, Usage Statistics mapping, native Floating Monitor A/P/F mapping, OTA received/expected interpolation, and localization placeholder/state regression tests.
+- Validation Only #18 is preserved as a failed intermediate (196/197) due only to a stale LED copy expectation. The expected text was updated before #19; do not rewrite #18 as success.
+- Build #162 remains latest packaged App and predates current source. NOT RELEASED. Guarded Eksekusi Build App! still needs a separate explicit owner command. Android/OEM visual acceptance is not established by widget tests.
+
+---
+
 ## CURRENT APP SOURCE — USAGE STATISTICS ALIGNMENT / VALIDATION ONLY #16 SUCCESS — 2026-11-14
 
 **Status: SOURCE + REGRESSION TESTS IMPLEMENTED / HOSTED VALIDATION GREEN / NOT RELEASED / VISUAL NOT VERIFIED.**

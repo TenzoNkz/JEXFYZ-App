@@ -1,80 +1,60 @@
 # JE X FYZ / JE Cooler — Current Project State
 
-Last reconciled: 2026-11-15 (Asia/Jakarta), after the Gemini localization response was cross-checked against current-main source. This file is current truth only. Build-by-build history belongs in APP_BUILD_REPORT.md and CHANGELOG.md; detailed execution evidence belongs in CHAT_TRANSFER.md and APP_PREBUILD_AUDIT.md.
+Last reconciled: 2026-11-15 (Asia/Jakarta). Current truth only. Build history remains in APP_BUILD_REPORT.md and CHANGELOG.md; rolling chat continuation remains in CHAT_TRANSFER.md.
 
 ## Repository baseline
 
-- Canonical repository/branch: `TenzoNkz/JEXFYZ-App` / `main`.
-- Current recursive tree: 137 entries, `truncated=false`; two workflows under `.github/workflows/` (guarded App release and push-triggered non-publishing Validation Only); one active sketch at `firmware/JEXFYZ-V7.2.ino`.
-- Twelve canonical `.agents/skills` definitions and twelve `.github/skills` mirrors remain byte-identical.
-- Root `analysis_options.yaml` is now present and includes `package:flutter_lints/flutter.yaml`. `flutter_lints 6.0.0` was already a direct dev dependency and is locked in `pubspec.lock`.
-- The guarded App release workflow keeps issue-only opened/reopened triggers and its owner/title/body-token guard; relevant pushes start Validation Only, not App Build/Release. Release concurrency is job-level under the guarded build job.
-- Flutter/Dart and actionlint are unavailable in this ChatGPT runtime. Hosted Validation Only run #16 completed on Flutter 3.47.2 against `${formatSha}`: clean formatter (17 files / 0 changed), analyzer 119 infos / 0 warnings/errors, and 188/188 Flutter tests passed. No local Flutter test/build or actionlint check ran.
+- Canonical repository/branch: TenzoNkz/JEXFYZ-App / main.
+- Latest validated App source: fc39de16a5480347ce13083760424a309957c311. Recursive tree is not truncated.
+- Twelve canonical .agents/skills and twelve .github/skills are mirrored byte-for-byte. Guarded App release and non-publishing Validation Only workflows remain separate.
+- Root analysis_options.yaml enables locked flutter_lints 6.0.0.
+
+## Latest hosted source validation — Validation Only #19 SUCCESS
+
+- Run/job: 43677560315 / 132700920324; tested source 8fca2ecebf8b2ffb83fc9475a817c832f8269dc5; terminal SUCCESS.
+- Flutter 3.47.2 / Dart 3.13.2; locked dependency resolution PASS.
+- Formatter checked 18 files, applied one correction, then final check passed with zero remaining changes. Formatter-only follow-up: fc39de16a5480347ce13083760424a309957c311.
+- Analyzer: 118 info-level findings, zero warnings/errors.
+- Flutter tests: 197/197 passed.
+- Run #18 (43677411117) is preserved as a failed historical attempt (196/197) caused by one stale LED-copy expectation. The assertion was corrected before #19; do not rewrite #18 as success.
+
+## Localization and state semantics now implemented
+
+- English remains the master and default language. The JexText table has 354 bilingual keys. Tests check both locale entries and matching placeholder sets; literal inline bilingual phrases have placeholder-parity coverage.
+- Thermal Safety is Keselamatan. Successful safety status is Pemeriksaan keselamatan berhasil. Fan-before-cooling title/body now state the prerequisite explicitly. The protected sequence remains FAN:ON → successful ACK → PELTIER:ON.
+- Adaptive is a logical mode: EN ACTIVE/INACTIVE, ID AKTIF/NONAKTIF.
+- Peltier/Fan/LED are physical outputs: compact EN ON/OFF, ID HIDUP/MATI; natural Indonesian prose uses menyala/mati.
+- Fan Speed remains numeric while running and OFF/MATI when stopped. Disconnected/unknown values remain --.
+- Usage Statistics distinguishes UsageStateDomain.logicalMode from hardwareOutput while preserving voltage and unknown states.
+- OTA mismatch copy labels received bytes first and expected bytes second, matching Firmware event order. JexText.format resolves named bilingual placeholders.
+- Preserve language labels English / Indonesia and enum/storage identifiers english / indonesia. Preserve Floating Monitor / Monitor Melayang, Bluetooth notification copy, and About credit App Developer & Builder / Pengembang Aplikasi & Perakit.
 
 ## Latest verified App package — Build #162 SUCCESS
 
-- **Run/job:** [Actions run 43430275967](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/43430275967), job `131901744336`, completed SUCCESS.
-- **Exact packaged source:** `6854d8eb58a5f077cbc99749a35d37a4f55b8efa`. Release ID `403010611` and tag `jexfyz-latest` point to this SHA.
-- **Hosted QC:** analyzer 23 info-level findings / zero warnings/errors; Flutter **188/188 passed**; Android Gradle gate `BUILD SUCCESSFUL in 3m56s`. Native Android App JUnit tasks were `NO-SOURCE`; no native Android JUnit case executed.
-- **APK:** SHA-256 `56c08bd490e52a8616627613675141a91c14ab6893cca0e1e54d5e5ac1a053f2`.
-- **Corresponding source ZIP:** SHA-256 `86bd61edfe59acd6063367f7b8704356d2bf192d8c55c150f0f0e6b6285db42e`; downloaded ZIP integrity/source marker passed.
-- Build #160 and #161 remain failed historical attempts. Never rewrite them as success. See APP_BUILD_REPORT.md.
-- Build #162 owner installation is not independently confirmed. Visual acceptance at 350-dp/420-dp, portrait/constrained height, English/Indonesian and Light/Dark remains **VISUAL NOT VERIFIED**.
+- Run/job 43430275967 / 131901744336; package source 6854d8eb58a5f077cbc99749a35d37a4f55b8efa.
+- Release ID 403010611 and tag jexfyz-latest. APK SHA-256 56c08bd490e52a8616627613675141a91c14ab6893cca0e1e54d5e5ac1a053f2. Source ZIP SHA-256 86bd61edfe59acd6063367f7b8704356d2bf192d8c55c150f0f0e6b6285db42e.
+- New localization/state changes are NOT RELEASED in Build #162. Owner installation is not independently confirmed. Android/OEM screenshot acceptance remains VISUAL NOT VERIFIED.
 
-## Latest non-packaged Usage Statistics refinement
+## App architecture and protected contracts
 
-- Main includes the alignment refinement at `b4b57e83261c0b1fcb7873efa8544c3410ad0208` plus formatter-only commit `873a825020659dadcac2e5c7242e759209776414`; run #16 / `43552255469` verified this exact source. AppBar, summary strips, Activity plot time labels, Selected time dock and state-bar proportions are aligned; data and interaction contracts remain unchanged.
-- This is not in Build #162. Actual Android/OEM screenshot acceptance is still **VISUAL NOT VERIFIED** and requires a separately authorized new App package plus owner-side installation/screenshots.
+- Usage Statistics uses SQLite schema v2 with v1→v2 migration, 30-day retention, raw 1-Hz Battery/Hotside samples, explicit data gaps, HOT-only P1 freshness, and bounded writer admission (64 normal + 8 reserved + 1 critical endSession slot). Long-duration CPU/memory and storage-pressure soak remain unverified.
+- BLE scan ownership is serialized with attempt-generation invalidation and subscription/timer cleanup. CI/widget tests do not establish OEM/device behavior.
+- Preserve Android Gradle versionName "Telegram @horizontalzzz" and Flutter version 1.0.0+3.
+- Root analysis_options.yaml activates flutter_lints 6.0.0; Validation Only is non-publishing.
 
-## Gemini localization review — partial report reconciled
+## Firmware and security boundary
 
-- Gemini's uploaded report did not receive source attachments and is not an exhaustive audit; its Part C contains only prompt examples. Live-source cross-check confirms recommendations on language labels, Safety/Keselamatan, Fan prerequisite title, successful safety-check wording, full sync, Deep Sleep and About credit.
-- Reject its proposal to keep Floating Monitor untranslated in Indonesian; owner-approved source contract is Floating Monitor / Monitor Melayang. Reject its one-count OTA suggestion: the event contains received and expected byte counts and both must be preserved.
-- State terminology needs per-metric mapping: physical outputs vs logical modes/locks vs user preferences. Current Usage Statistics generic mapper treats Peltier and Adaptive identically; current native HUD also shares A/P state text.
-- The next implementation step requires a separate explicit Eksekusi Full! command: finish the complete catalog + inline + dynamic + Kotlin semantic review, then add semantic, placeholder, state-mapping and viewport regression tests. The current Diskusi session did not authorize source edits.
+- Current sketch: firmware/JEXFYZ-V7.2.ino, FW_VERSION="V7.2". App CI does not establish Arduino compile, BIN provenance, Firebase identity, OTA, flash, BLE security or thermal/electrical safety.
+- BLE App-only identity authentication remains BLOCKED / NOT IMPLEMENTED. Online OTA uses cloudClient.setInsecure(): transport is encrypted but server certificate identity is not authenticated. Preserve protected OTA allow-list/recovery contracts.
+- No Firmware/BIN/Firebase/OTA/flash/device operation was performed for the localization or repository-cleanup work.
 
-## Localization review — pending owner-approved wording
+## Chat-load/repository hygiene
 
-- English is currently the default App locale; JexText contains 354 bilingual dictionary keys, and Flutter contains 166 actual inline JexText.phrase() call sites (116 main, 10 Floating Monitor, 40 Usage Statistics). The prior 167 count included one source comment. Native foreground-service/Floating Monitor notification copy is separately bilingual.
-- A source-driven Diskusi audit on 2026-11-14 confirmed translation issues for thermal Safety (Keamanan), the Fan-before-cooling title, and the Indonesian rendering of “Safety checks passed.”; it also identified cross-surface Adaptive/Peltier state-word inconsistencies and unclear received/expected OTA byte labels. All 354 dictionary pairs are structurally complete and the static placeholder check found no dictionary-pair mismatches. Full semantic review of every string remains incomplete; no source/test changes were made.
-- Existing tests check translation-field presence and selected key examples, not semantic equivalence of every string. The Gemini handoff prompt is prepared in the 2026-11-14 conversation; Gemini has not been contacted.
-
-## Current App architecture and contracts
-
-- Current About credit contract remains App Developer & Builder / Pengembang Aplikasi & Perakit as recorded in APP_NOTES.md. Earlier discussion/checkpoint text proposing App Development & Build is stale and is not the approved current wording.
-
-- Inventory: seven Dart App source files, nine Dart test files / 188 test declarations, four Kotlin source files, one active Firmware sketch. Largest Dart files: `main.dart` 10,564 lines, `usage_statistics.dart` 3,409, `floating_monitor.dart` 1,766 and `app_settings.dart` 1,678.
-- Usage Statistics uses local SQLite schema v2 with a v1→v2 `onUpgrade`, 30-day retention, raw 1-Hz Battery/Hotside samples, explicit gaps, HOT-only P1 freshness, session continuity and a bounded FIFO writer queue (64 normal + 8 reserved + 1 critical endSession slot). A full selected-session summary/decimation pass still runs each second; long-duration CPU/memory and storage-pressure soak remain unverified.
-- BLE coordinator code has serialized scan ownership, attempt-generation invalidation and subscription/timer cleanup. Static source checks are not OEM/device validation.
-- Preserve Android Gradle `versionName "Telegram @horizontalzzz"` and Flutter version `1.0.0+3`.
-
-## Confirmed repository hardening state
-
-1. **P1 workflow concurrency — FIXED in current main:** workflow-level concurrency was removed. `jexfyz-cooler-build` now exists only under `jobs.build`, after the unchanged owner-login, exact-title and body-token guard. It sets `cancel-in-progress: false` and `queue: max`, allowing one active plus up to 100 pending guarded release jobs. All original event triggers and release gates remain. The workflow was not run by this session.
-2. **P2 lint policy — ENABLED; hosted baseline measured:** root `analysis_options.yaml` includes locked `flutter_lints 6.0.0`. Validation Only run #14 reports 119 info-level findings and zero warnings/errors. Build #162's 23 infos predate this rule set.
-3. **P2 formatter baseline — ESTABLISHED/CLEAN:** hosted Validation Only run #14 formatted 17 checked files (14 changed), then final formatter check passed with zero remaining changes. After all 188 tests passed, workflow committed the formatter-only diff as `20676552cbfbb3276a6d7a7bc5f2541c13245c48`, guarded to `lib/` and `test/` with exact remote-HEAD verification.
-4. **CI/governance:** separate push-triggered non-publishing Flutter Validation Only workflow exists on configured `main` paths with pinned action SHAs. Coverage retention and branch protection remain open; it never builds/releases the App.
-5. **P2 tests:** retain the 188-test suite and add real FlutterBluePlus/plugin-channel lifecycle tests, native MethodChannel/service tests where meaningful, and a real SQLite v1→v2 fixture migration test. Do not add empty native JUnit tests solely to avoid `NO-SOURCE`.
-6. **P2 maintainability:** extract lower-coupling data/UI seams incrementally only after regression tests exist. BLE coordinator extraction is high-risk and should be late, not a mechanical rewrite.
-
-## Firmware and security boundaries
-
-- Current App repository sketch: `firmware/JEXFYZ-V7.2.ino`, `FW_VERSION="V7.2"`. No Arduino compile, BIN provenance, physical NVS/rail/Touch/LED, thermal/electrical, OTA, flash or device validation is established by App CI.
-- BLE App-only identity authentication remains **BLOCKED / NOT IMPLEMENTED**; Just Works bonding plus `SYNC_READY` is not proof of official App identity.
-- Online OTA still calls `cloudClient.setInsecure()`: transport is encrypted but server certificate identity is not authenticated. Preserve the protected OTA allow-list/recovery contract; do not redesign without specific authorization.
-- The owner previously reported Firmware V7.2 and Build #159 installed and safe in use; this is USER-REPORTED, not independent device validation.
+- CHAT_TRANSFER.md contains one bounded active checkpoint between explicit markers. Its former 723-line snapshot is preserved in archive/CHAT_TRANSFER_PRE_COMPACTION_2026-11-15.md.
+- CHAT_TRANSFER_PROMPTS.md contains exactly two copy-ready prompts. README, MASTER_PROMPT, MEMORY_INDEX and relevant skills direct routine continuation to the bounded checkpoint only.
+- APP_BUILD_REPORT.md, CHANGELOG.md and archive/*.md remain retained history; they are not loaded wholesale during normal chat transfer.
 
 ## Immediate next action
 
-- Usage Statistics source refinement and hosted Validation Only #16 are complete; all 188 tests passed. Build #162 remains the latest packaged App and predates this source change. The next package step, if desired, is a separate owner-authorized `Eksekusi Build App!`; visual acceptance then requires real Android screenshots.
-- Firmware compile/BIN/Firebase/OTA/flash and device operations remain separately gated.
-
-
-## Gemini localization response cross-check — 2026-11-15
-
-- Gemini's copy/state recommendations are mostly supported, but its P0 classifications are rejected: no functional safety/interlock defect is shown. Thermal terminology and success-message accuracy are P2 copy findings; Fan title polish is P3; domain-state and OTA clarity are P2.
-- Adaptive is a logical mode; Peltier is a physical output. Native HUD now has source-based content measurement, `WRAP_CONTENT` and `requestLayout()` on data/language updates, so fixed-pill clipping is not proven. A horizontal six-metric overlay may still grow beyond a comfortable viewport and needs actual screenshot review.
-- Fan metric F stays numeric while running and shows OFF/MATI when off. BLE session lifecycle and OS permission state must not be folded into generic mode/preference categories.
-- OTA mismatch received/expected order is verified; `otaUploaded` and `otaBytes` have only one call site each in current main. Any placeholder template needs explicit interpolation.
-- Language-picker display change remains WAITING_OWNER because current source/test contract is English / Indonesia. Preserve enum/storage IDs. Preserve Floating Monitor / Monitor Melayang and App Developer & Builder / Pengembang Aplikasi & Perakit.
-- Test gaps are recorded in APP_NOTES.md and the active CHAT_TRANSFER checkpoint. This was source/documentation review only; no source/tests were changed or run.
+- Source/test work and Validation Only #19 are complete. A separate explicit owner command Eksekusi Build App! is required for guarded App packaging/QC; it has not been authorized.
+- Firmware compile/BIN/Firebase/OTA/flash/device operations remain separately gated.

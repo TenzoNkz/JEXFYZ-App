@@ -431,3 +431,18 @@ Purpose: canonical current App/UI/BLE/telemetry contract. Current source defines
 - Test HUD text measurement/layout contract for longer translated values, but retain actual Android screenshot verification as a separate gate. A Dart source-contract/widget test is not a native Android runtime or OEM visual test.
 
 **Outcome:** Gemini's main wording/state direction is useful and mostly accepted, with the above qualifications. The source/test changes remain unimplemented. No formatter, Flutter tests, analyzer, Android Gradle, Build App, Kotlin native test, Firmware compile, BIN, Firebase, OTA, flash or device check was run in this Diskusi review.
+
+
+## Localization/state semantics and regression coverage — 2026-11-15
+
+- English remains the master/default language. The JexText dictionary has 354 entries with English and Indonesian copy; tests verify locale presence and matching placeholder sets. Literal inline bilingual phrase calls also receive placeholder-parity coverage. Dynamic branches and native Kotlin copy retain their own source/test contracts.
+- Thermal Safety terminology is Keselamatan. The sensor-error cooling lock says demi keselamatan; successful SAFETY telemetry renders Pemeriksaan keselamatan berhasil.
+- Fan prerequisite title and body explicitly state that the fan must be on before cooling starts. This is copy clarification only: preserve FAN:ON → successful ACK → PELTIER:ON and command-free Cancel behavior.
+- State taxonomy: Adaptive is a logical mode (EN ACTIVE/INACTIVE, ID AKTIF/NONAKTIF); Peltier/Fan/LED are physical outputs (compact EN ON/OFF, ID HIDUP/MATI; natural Indonesian prose menyala/mati). Fan Speed stays numeric while running and OFF/MATI when stopped; disconnected values stay --.
+- BLE device session and Android OS permission states remain separate lifecycle/permission concepts, not generic mode/preference states.
+- Usage Statistics uses UsageStateDomain to distinguish logical mode from hardware output while preserving voltage and unknown values.
+- Native Floating Monitor A uses Active/Inactive while P remains physical ON/OFF; F stays numeric while running and OFF/MATI when stopped. Native width is computed from localized text; long-label viewport acceptance still requires actual Android screenshots.
+- OTA mismatch strings identify received bytes first and expected bytes second, matching Firmware event UPLOAD_SIZE_MISMATCH_<received>_<expected>. JexText.format performs named bilingual interpolation after locale selection; JexText.of and phrase remain non-interpolating lookups.
+- Validation Only #19 / run 43677560315, job 132700920324, tested source 8fca2ecebf8b2ffb83fc9475a817c832f8269dc5 and passed: formatter clean after one auto-format correction; analyzer 118 infos / zero warnings/errors; Flutter 197/197. Formatter follow-up is fc39de16a5480347ce13083760424a309957c311.
+- Validation Only #18 / run 43677411117 is preserved as an intermediate failure (196/197) caused by one stale LED output-copy expectation. The assertion was corrected and #19 passed.
+- Build #162 remains latest packaged App and does not include these changes. NOT RELEASED. No App Build, APK/Release, Firmware, BIN, Firebase, OTA, flash or device operation was performed. Actual Android/OEM visual acceptance remains unverified.

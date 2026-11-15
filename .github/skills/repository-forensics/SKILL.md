@@ -10,7 +10,7 @@ Establish an evidence-backed understanding of the live repository before proposi
 
 ## Procedure
 1. Confirm repository, branch and requested scope. Fetch live branch HEAD, commit metadata and a complete recursive tree; record whether the tree is truncated.
-2. Load the rolling checkpoint and Master Prompt first, then the relevant subject references. Check live files rather than trusting hashes or copied snippets in notes.
+2. Load MASTER_PROMPT.md, then read only the bounded active checkpoint between ACTIVE_CHECKPOINT_START and ACTIVE_CHECKPOINT_END in CHAT_TRANSFER.md. Do not load the archived tail during routine boot. Check live files rather than trusting hashes or copied snippets in notes.
 3. Map the smallest relevant dependency surface: callers, state owners, protocol parsers, configuration, tests, workflow consumers and documentation links. Search for every use of changed identifiers and paths.
 4. Compare the current file with its parent commit or a known baseline when regression history matters. Distinguish ancestor history from current source and current release.
 5. Build a claim/evidence table: claim, source path/line or commit, evidence class, confidence, unresolved assumptions.

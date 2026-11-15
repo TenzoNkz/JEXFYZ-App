@@ -1,3 +1,13 @@
+## 2026-11-15 — Localization/state corrections and chat-load compaction (source validated; not released)
+
+- Corrected thermal Safety terminology, Fan-before-cooling wording, successful Safety NOTIFY copy, full-sync/deep-sleep translation, and natural physical-output prose. Adaptive uses logical Active/Inactive terminology; Peltier/Fan/LED retain physical ON/OFF semantics.
+- Added UsageStateDomain-aware rendering, synchronized Flutter/native Floating Monitor A/P/F terminology, and a named-placeholder OTA size-mismatch formatter preserving received-then-expected order.
+- Added regression coverage for locale/placeholder completeness, literal inline phrase placeholder parity, OTA ordering, bilingual Safety copy, Usage Statistics state domains and native/UI output contracts.
+- Source/test implementation: da210579a2a26de518a2df18c6638502e00af2bd; follow-up physical-output/interpolation correction: 16d9acb5b88ca51f411ddf4ffc38c5757f57f87c; stale widget expectation repair: 8fca2ecebf8b2ffb83fc9475a817c832f8269dc5; formatter-only follow-ups: 2c3bd13ad7045a9161800060332949cf5c330bd4 and fc39de16a5480347ce13083760424a309957c311.
+- Validation Only #17 / 43637313434 succeeded with 197/197 tests. #18 / 43677411117 is retained as a failed intermediate (196/197) due to one stale LED-copy assertion. Validation Only #19 / 43677560315 passed on 8fca2ece: 197/197 tests, analyzer 118 infos / zero warnings/errors, formatter final check clean.
+- Build #162 remains the latest packaged App. This source work is NOT RELEASED. No App Build/Release, Android package Gradle, Firmware, BIN, Firebase, OTA, flash or device operation was run.
+- The former CHAT_TRANSFER.md (723 lines / 90,388 characters) was copied byte-for-byte to archive/CHAT_TRANSFER_PRE_COMPACTION_2026-11-15.md. Routine transfer now reads only the bounded active checkpoint; README, Master Prompt, Memory Index, prompts and relevant skills use this rule. No history ledger or archive was deleted or edited.
+
 ## 2026-11-14 — Align Usage Statistics layout and readouts (source implemented; hosted validation passed; not released)
 
 - Centered the Usage Statistics AppBar title and the Min/Avg/Max label/value strip. Activity elapsed-time labels now use the same 34-dp left / 8-dp right plot gutters as temperature charts, Activity timelines and shared cursor mapping.
