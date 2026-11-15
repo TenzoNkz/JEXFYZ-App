@@ -20,6 +20,14 @@ Flutter Android companion App and ESP32-C3 Firmware source for the JE X FYZ ther
 12. [APP_PREBUILD_AUDIT.md](APP_PREBUILD_AUDIT.md) — current full App pre-build findings, prioritized remediation and definition of build-ready.
 13. [CHANGELOG.md](CHANGELOG.md) is dated history. [archive/](archive/) contains immutable forensic snapshots.
 
+## Fast chat-load path
+
+1. Open 00_WORK_STATUS.md and immediately mark the incoming project message IN_PROGRESS.
+2. Read MASTER_PROMPT.md for mode permissions and protected contracts.
+3. Read only the bounded active checkpoint in CHAT_TRANSFER.md between ACTIVE_CHECKPOINT_START and ACTIVE_CHECKPOINT_END.
+4. Read PROJECT_STATE.md and HANDOVER.md for current truth and the next action. Use MEMORY_INDEX.md to find only relevant subject references and skills.
+5. Open archive/, APP_BUILD_REPORT.md or CHANGELOG.md only for targeted historical investigation; never load those full ledgers during routine continuation.
+
 ## Operating modes
 
 - Diskusi! — analysis and planning, read-only for executable source/config/tests/workflow/build/device operations. Documentation-only memory updates may follow a substantive conclusion.
