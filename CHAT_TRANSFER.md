@@ -126,9 +126,9 @@ English is the default master/source and must be complete, grammatical, concise 
 - Remove the entire Adaptive-page information card that displays `Adaptive Limit / Batas Adaptif` and the current ceiling voltage. Do not replace it with another visible ceiling row/table/text in that profile area.
 - This removes only the presentation card. Keep internal `adaptiveCeiling`, `ADAPTIVE_CEILING` telemetry, Firmware clamp/ceiling behavior, and safety/voltage-transition logic intact. Do not remove or weaken the actual maximum-voltage ceiling.
 - Replace the two visible Adaptive profile titles with these bilingual pairs:
-  - EN `Hot-Side Temperature Protection` / ID `Perlindungan Suhu Panas`
-  - EN `Hot-Side Temperature & Battery Protection` / ID `Perlindungan Suhu Panas & Baterai`
-- The new labels supersede old visible labels “Hotside Protection” / “Perlindungan Hotside” and “Hotside + Battery” / “Hotside + Baterai” in this selector only. Preserve internal values `HOTSIDE`, `HOTSIDE_BATTERY`, `HOTSIDE_PROTECTION` and all storage/protocol identifiers.
+  - EN `Hotside Protection` / ID `Perlindungan Suhu Panas`
+  - EN `Hotside & Battery Protection` / ID `Perlindungan Suhu Panas & Baterai`
+- These are the exact owner-approved English master labels; do not insert `Temperature`, hyphenate `Hotside`, or replace `&` with `+`. They apply only to this selector. Keep internal values `HOTSIDE`, `HOTSIDE_BATTERY`, `HOTSIDE_PROTECTION` and all storage/protocol identifiers unchanged. 
 - RGB recommendation: **keep `RGB Power` / `Daya RGB`** as the toggle label. Keep `LED` as the enclosing section title. The switch controls the user RGB effect only, not all physical/system/safety LED indicators; “LED” or “LED Power” on the toggle would overstate its function.
 - Regression plan: verify the Adaptive ceiling card is absent; both profile labels switch correctly EN/ID; internal ADAPTIVE_CEILING clamp/telemetry and Lock Voltage remain unchanged; LED heading and RGB Power/Daya RGB control remain; independent system/voltage/safety LEDs are not gated by RGB state.
 - Full decision and exact source location/rationale are in APP_NOTES.md under “Owner decision — Adaptive profile labels, Adaptive ceiling display and RGB toggle”.
