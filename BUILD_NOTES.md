@@ -1,3 +1,12 @@
+## Active guarded App Build #163 — obfuscated APK build — 2026-11-15
+
+- Run `43679305537`, job `132706236782`, Issue #40, immutable source `9466e8eeb269da5bc8806f0df1d4212cf24e1746`, attempt 1.
+- Steps 1–14 SUCCESS, including Android Gradle gate. Step 15 `flutter build apk --release --obfuscate --split-debug-info=build/symbols` IN_PROGRESS; steps 16–21 pending.
+- Exact analyzer/test/Gradle totals await full job log retrieval after completion. Continue only this run.
+- Build #162 remains the latest published package until all #163 release and downloaded-asset checks pass.
+
+---
+
 ## Active guarded App Build #163 — Android Gradle gate — 2026-11-15
 
 - Run `43679305537`, job `132706236782`, Issue #40, immutable source `9466e8eeb269da5bc8806f0df1d4212cf24e1746`, attempt 1.
