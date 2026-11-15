@@ -80,9 +80,48 @@
 - Next authorized implementation scope should update every visible Flutter/native/notification phrase and corresponding regression expectations, maintain legacy notice parsing, and add a terminology/content-quality contract. Then run appropriate source validation. A new APK still requires a separate explicit `Eksekusi Build App!` command.
 - Build #163 remains the latest verified package; it does not contain the pending glossary/copy corrections.
 
+## Comprehensive language / writing / format audit — 2026-11-15
+
+**Owner request:** “Perbaiki semuanya bahasa, ejaan, penulisan, format, serta capitalnya!”  
+**Current mode:** Diskusi — full audit and documentation only; no source/test/native/config/workflow/build change.
+
+### Full-surface inventory
+
+- lib/app_settings.dart: 353 bilingual dictionary entries; each currently contains EN and ID values. Structural placeholder checks do not prove linguistic quality.
+- Direct bilingual phrases: lib/main.dart 117, lib/floating_monitor.dart 11, lib/usage_statistics.dart 39; **167 total**.
+- JexText.of() lookup call sites across those three UI files: **258 total**.
+- Native notification/localized content is maintained separately in JeForegroundService.kt, FloatingMonitorService.kt and MainActivity.kt.
+- Existing checks include test/localization_contract_test.dart, test/device_copy_notification_contract_test.dart, test/widget_test.dart and test/usage_statistics_test.dart. Current tests do not comprehensively verify grammar, meaning, word choice, typography, date/number/unit formats or all native strings.
+
+### Confirmed source corrections to implement
+
+- Dictionary: translate all visible Hotside occurrences into Sisi Panas in Indonesian (component, temperature, limit, protection, profile, notification and error copy); never rename internal code/protocol identifiers.
+- Usage Statistics: correct “Suhu Baterai HP” → “Suhu Baterai”; “Suhu Hotside” → “Suhu Sisi Panas”; “Baterai HP” → “Baterai”; translate generic “cooler” as “pendingin”; rewrite the Info sentence as natural full Indonesian; replace raw FAN / PELTIER tokens in the empty state with readable user-facing names.
+- Home/NOTIFY: use Sisi Panas in re-arm, threshold, profile and limit messages; preserve old stored notice variants in the parser, but ensure every newly generated Indonesian message uses the approved vocabulary.
+- Settings/Floating Monitor: review every dynamic dictionary lookup and inline phrase, including “Firmware V7.2+ required”, while preserving the actual technical meaning.
+- Native notifications: audit the channel name, description, foreground notification title/body and alerts in all three Kotlin source files as complete bilingual pairs; preserve stable channel identifiers and the owner's approved Bluetooth notification copy.
+- Color Picker: review all named color/shade translations for precise hue meaning, accepted Indonesian terms, duplicate display names and consistent capitalization; do not change HEX values or persisted IDs.
+- Tests: update old expected labels in test/usage_statistics_test.dart and test/widget_test.dart; add a semantic glossary/content-quality contract and more complete native/locale/date/number coverage.
+
+### Formatting and capitalization findings
+
+- usageStateLabel() emits voltage with a space (“12 V”) while other visible strings still use “5V/9V/12V”.
+- Usage Statistics _formatTemperature() already localizes decimal separators and includes a space before °C; Home NOTIFY and chart reference labels often append °C without a space.
+- formatUsageAxisTick() has no locale input and always uses a decimal point; Indonesian fractional ticks require a comma. Floating Monitor scale text also uses a fixed decimal point (“0.60×”) in both locales.
+- Session date labels use fixed dd/MM HH:mm for both languages and omit the year; review for locale-appropriate, unambiguous display while preserving local-time conversion and compact layout.
+- Capitalization varies by context (for example “Coba Lagi” vs “Coba lagi”, “Firmware” vs “firmware”). Apply title capitalization to headings/short named labels, sentence case to full prose, and preserve proper names/acronyms. Keep ALL CAPS only for deliberate status chips and state abbreviations.
+- Keep physical output wording separate from logical mode and preference wording; do not globally replace ON/OFF, ACTIVE/INACTIVE, ENABLED/DISABLED. Continue using “Keselamatan” for thermal safety, not “Keamanan”.
+- Owner-approved exceptions remain: English / Indonesia picker labels; Floating Monitor / Monitor Melayang; Notification / Notifikasi heading; Bluetooth connected notification; App Developer & Builder / Pengembang Aplikasi & Perakit credit. Do not revise these as incidental copy cleanup.
+
+### Agreed content standard
+
+English is the default master/source and must be complete, grammatical, concise and semantically precise. Indonesian must be a complete, natural, standard translation—no mixed generic English, dropped conditions, changed severity or rewritten meaning. Preserve technical terms/acronyms only where justified. Use consistent title capitalization for headings/short labels, sentence case for sentences, proper-name/acronym casing, one punctuation policy, locale-aware decimal/grouping/date presentation and consistent units (12 V, 45 °C, 50%). Keep raw protocol/internal identifiers out of user-visible prose. Full details and the approved glossary are in APP_NOTES.md under “Global language, writing and formatting standard”.
+
+**Evidence boundary:** source inspection only. No formatter, analyzer, Flutter tests, Android rendering, screenshot review or App Build was run. No source/test/native file was changed. Build #163 remains the latest verified package and still contains the pre-correction text.
+
 ## Next action
 
-- Recommended next mode: `Eksekusi Full!` to implement the approved EN-master/ID-standard localization corrections and regression coverage. This recommendation is not authorization; wait for the owner's explicit mode command.
+- Recommended next mode: `Eksekusi Full!` to implement the complete language/copy/format/capitalization corrections across Flutter, native Android notification surfaces and regression tests, using APP_NOTES.md as the canonical style/glossary. This recommendation is not authorization; wait for the owner's explicit mode command.
 - Owner installation and physical-device/OEM visual/BLE verification of Build #163 remain separate and are not inferred from CI.
 - For routine chat transfer, load only this bounded checkpoint; full build history remains in append-only `APP_BUILD_REPORT.md`, and older transfer history remains archived without being loaded during routine boot.
 <!-- ACTIVE_CHECKPOINT_END -->
