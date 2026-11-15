@@ -88,7 +88,7 @@ void main() {
       );
     });
 
-    test('approved safety and prerequisite copy remains equivalent', () {
+    test('approved safety and physical-output copy remains equivalent', () {
       expect(
         JexText.of('peltierSafety', AppLanguage.english),
         'Peltier Safety',
@@ -113,6 +113,12 @@ void main() {
         JexText.of('resetDeepSleep', AppLanguage.indonesia),
         'Perangkat kembali aktif dari mode tidur hemat daya.',
       );
+      expect(JexText.of('fanOn', AppLanguage.indonesia), 'Kipas menyala.');
+      expect(JexText.of('fanOff', AppLanguage.indonesia), 'Kipas mati.');
+      expect(JexText.of('peltierOn', AppLanguage.indonesia), 'Peltier menyala.');
+      expect(JexText.of('peltierOff', AppLanguage.indonesia), 'Peltier mati.');
+      expect(JexText.of('ledOn', AppLanguage.indonesia), 'LED menyala.');
+      expect(JexText.of('ledOff', AppLanguage.indonesia), 'LED mati.');
     });
 
     test('JexText.format interpolates named values in both locales', () {

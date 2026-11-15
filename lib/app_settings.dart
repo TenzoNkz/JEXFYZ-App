@@ -1510,19 +1510,19 @@ class JexText {
     },
     'fanOn': {
       AppLanguage.english: 'Fan ON.',
-      AppLanguage.indonesia: 'Kipas aktif.',
+      AppLanguage.indonesia: 'Kipas menyala.',
     },
     'fanOff': {
       AppLanguage.english: 'Fan OFF.',
-      AppLanguage.indonesia: 'Kipas nonaktif.',
+      AppLanguage.indonesia: 'Kipas mati.',
     },
     'peltierOn': {
       AppLanguage.english: 'Peltier ON.',
-      AppLanguage.indonesia: 'Peltier aktif.',
+      AppLanguage.indonesia: 'Peltier menyala.',
     },
     'peltierOff': {
       AppLanguage.english: 'Peltier OFF.',
-      AppLanguage.indonesia: 'Peltier nonaktif.',
+      AppLanguage.indonesia: 'Peltier mati.',
     },
     'adaptiveOn': {
       AppLanguage.english: 'Adaptive Mode active.',
@@ -1534,11 +1534,11 @@ class JexText {
     },
     'ledOn': {
       AppLanguage.english: 'LED ON.',
-      AppLanguage.indonesia: 'LED aktif.',
+      AppLanguage.indonesia: 'LED menyala.',
     },
     'ledOff': {
       AppLanguage.english: 'LED OFF.',
-      AppLanguage.indonesia: 'LED nonaktif.',
+      AppLanguage.indonesia: 'LED mati.',
     },
     'modeUpdated': {
       AppLanguage.english: 'LED mode updated.',
@@ -1651,7 +1651,7 @@ class JexText {
   ]) {
     var result = of(key, language);
     for (final entry in values.entries) {
-      result = result.replaceAll('{' + '${entry.key}' + '}', entry.value);
+      result = result.replaceAll('{${entry.key}}', entry.value);
     }
     assert(
       !RegExp(r'\{[A-Za-z][A-Za-z0-9_]*\}').hasMatch(result),
