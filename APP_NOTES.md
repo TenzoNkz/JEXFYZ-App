@@ -271,6 +271,38 @@ Apply this standard to **all user-visible copy**, not only the thermal labels. I
 10. **Safety and diagnostic copy:** use “Keselamatan” for thermal safety, not “Keamanan”. State the prerequisite and order explicitly in prose. Never expose raw internal tokens such as FAN, PELTIER, HOT, NTC_ERROR, underscore-formatted reason codes or raw OTA diagnostics to ordinary users. Preserve legacy input parsing only to re-localize stored notices; newly generated text must follow the new glossary.
 11. **UI length and accessibility:** keep labels concise without deleting essential meaning. Review the longest translated values at supported widths, text scales, Light/Dark themes, dialogs, notifications and the compact Floating Monitor. Accessibility labels/tooltips must express the same action/state as visible text.
 
+### Owner decision — Adaptive profile labels, Adaptive ceiling display and RGB toggle — 2026-11-15
+
+**Adaptive ceiling display removal**
+- Remove the entire user-facing Adaptive ceiling information card from the Adaptive control page. This is the row/card currently showing the localization key `adaptiveCeiling` (English “Adaptive Limit” / Indonesian “Batas Adaptif”) beside the current `adaptiveCeiling` voltage value.
+- Do not replace the card with another ceiling label, table, badge or text elsewhere in that same Adaptive profile area.
+- This is a **presentation-only removal**. Preserve the actual Adaptive voltage ceiling behavior, Firmware-side `adaptiveCeiling` state, `ADAPTIVE_CEILING` BLE telemetry/state synchronization, clamp logic, and all safety/voltage-transition rules. The visible card is not the safety mechanism; the internal maximum-voltage ceiling remains essential.
+- Keep the Adaptive profile selector and its two options. Removing the readout must not change Adaptive ON/OFF, profile selection or Lock Voltage gating.
+
+**New bilingual Adaptive profile names**
+Use these exact owner-requested Indonesian names and the following complete English master labels:
+- English: **Hot-Side Temperature Protection**  
+  Indonesian: **Perlindungan Suhu Panas**
+- English: **Hot-Side Temperature & Battery Protection**  
+  Indonesian: **Perlindungan Suhu Panas & Baterai**
+
+These are contextual Adaptive profile labels. They supersede the older visible profile titles “Hotside Protection” / “Perlindungan Hotside” and “Hotside + Battery” / “Hotside + Baterai” in that selector only. Keep internal/persisted/protocol profile values `HOTSIDE`, `HOTSIDE_BATTERY`, `HOTSIDE_PROTECTION` and related identifiers unchanged. The generic glossary mapping for other thermal component references remains context-sensitive; chart titles and explanatory copy continue to use the approved Sisi Panas terminology.
+
+**RGB toggle naming**
+- Keep the LED section heading as **LED**.
+- Keep the master toggle label **RGB Power** in English and **Daya RGB** in Indonesian. Do not rename this switch to “LED” or “LED Power”.
+- Reason: the switch sends the RGB ON/OFF command and controls the user-selectable RGB lighting effect only. It does not switch off all LED indicators; voltage/system/safety indicators have independent behavior and priority. Calling the toggle “LED” would imply a broader function than it actually controls. “RGB Power” is therefore the accurate control name, while “LED” remains the broader section name.
+- Preserve RGB command strings, mode IDs, color values, brightness behavior and Firmware indication priority.
+
+**Required regression coverage for a later authorized implementation**
+- Assert that the Adaptive page no longer renders “Adaptive Limit” / “Batas Adaptif” or the ceiling-value card.
+- Assert that the new two Adaptive profile labels render correctly in English and Indonesian.
+- Retain source/protocol/state-contract checks for `ADAPTIVE_CEILING`, actual ceiling clamp behavior and Lock Voltage safety gating.
+- Assert that the LED section remains “LED” and its master toggle remains “RGB Power” / “Daya RGB”; include a regression check that independent voltage/system/safety LED indicators are not treated as controlled by the RGB user-effect switch.
+- Update any source-contract tests and existing wording expectations together. Do not weaken Firmware or safety tests to satisfy the visual copy change.
+
+**Evidence boundary:** this is a Diskusi decision and documentation update. No App/Firmware source, tests, configuration, build or device operation is changed or run here.
+
 ### Comprehensive language/copy audit — 2026-11-15 (read-only findings)
 
 **Inventory at current main:** `lib/app_settings.dart` has 353 English/Indonesian dictionary entries (all entries contain both locales); `main.dart`, `floating_monitor.dart` and `usage_statistics.dart` contain 167 direct `JexText.phrase()` call sites and 258 `JexText.of()` lookup call sites. Native user-facing notification text is separately implemented in `JeForegroundService.kt`, `FloatingMonitorService.kt` and `MainActivity.kt`. The 353-entry structural/placeholder checks do not prove grammar, meaning, casing or full translation. Some repeated key/value pairs are contextual aliases and must be checked before consolidation.
