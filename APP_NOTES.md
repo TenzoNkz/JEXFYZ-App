@@ -281,12 +281,12 @@ Apply this standard to **all user-visible copy**, not only the thermal labels. I
 
 **New bilingual Adaptive profile names**
 Use these exact owner-requested Indonesian names and the following complete English master labels:
-- English: **Hot-Side Temperature Protection**  
+- English: **Hotside Protection**  
   Indonesian: **Perlindungan Suhu Panas**
-- English: **Hot-Side Temperature & Battery Protection**  
+- English: **Hotside & Battery Protection**  
   Indonesian: **Perlindungan Suhu Panas & Baterai**
 
-These are contextual Adaptive profile labels. They supersede the older visible profile titles “Hotside Protection” / “Perlindungan Hotside” and “Hotside + Battery” / “Hotside + Baterai” in that selector only. Keep internal/persisted/protocol profile values `HOTSIDE`, `HOTSIDE_BATTERY`, `HOTSIDE_PROTECTION` and related identifiers unchanged. The generic glossary mapping for other thermal component references remains context-sensitive; chart titles and explanatory copy continue to use the approved Sisi Panas terminology.
+These are the exact owner-approved contextual Adaptive profile labels. Keep the English master strings exactly as `Hotside Protection` and `Hotside & Battery Protection`: do not insert `Temperature`, hyphenate `Hotside`, or replace `&` with `+`. The Indonesian strings remain exactly as shown above. These labels apply only to this Adaptive profile selector; keep internal/persisted/protocol profile values `HOTSIDE`, `HOTSIDE_BATTERY`, `HOTSIDE_PROTECTION` and related identifiers unchanged. The generic glossary mapping for other thermal component references remains context-sensitive; chart titles and explanatory copy continue to use the approved Sisi Panas terminology.
 
 **RGB toggle naming**
 - Keep the LED section heading as **LED**.
