@@ -1,4 +1,4 @@
-| Last updated | 2026-11-15 12:48:00 (Asia/Jakarta) |
+| Last updated | 2026-11-15 13:01:37 (Asia/Jakarta) |
 
 > Single current snapshot for JE X FYZ project interactions. This file records the latest persisted observation, not a continuously running heartbeat or overall product completion.
 
@@ -6,21 +6,21 @@
 
 | Field | Value |
 |---|---|
-| **STATUS** | **IN_PROGRESS** |
-| SESSION STATUS | IN_PROGRESS |
-| WORK STATUS | IN_PROGRESS — review removal of Adaptive limit/table copy and bilingual renaming of thermal protection profile options; assess RGB versus LED switch naming; executable source/tests remain read-only in Diskusi. |
+| **STATUS** | **COMPLETED** |
+| SESSION STATUS | COMPLETED |
+| WORK STATUS | WAITING_OWNER — Adaptive ceiling card removal and bilingual profile naming are documented; RGB Power / Daya RGB is retained by recommendation. Executable source/tests await explicit Eksekusi Full! authorization. |
 | Mode | Diskusi! — targeted terminology/UI naming review (read-only). |
-| Request / work item | Remove Adaptive limit/table wording from visible App UI; rename thermal protection/profile labels to “Hot Temperature Protection” and “Hot Temperature & Battery Protection” with standard Indonesian equivalents; determine whether RGB switch should be “LED” or “RGB” based on its actual behavior and existing product contracts. No source/test/config/workflow/build changes. |
-| Started | 2026-11-15 12:36:21 (Asia/Jakarta) |
+| Request / work item | Review removal of the visible Adaptive Limit card, rename the two Adaptive profile labels in English and Indonesian, and recommend accurate RGB switch naming. Preserve internal safety/telemetry and source/test/build read-only boundary. |
+| Started | 2026-11-15 12:48:00 (Asia/Jakarta) |
 | Last updated | 2026-11-15 12:19:30 |
-| Current phase | IN_PROGRESS — opening current mode checkpoint and locating Adaptive threshold table/settings plus RGB/LED switch labels and related tests. |
-| Last completed milestone | Audited 353 dictionary pairs, 167 direct phrase sites, 258 lookup sites and three Kotlin native-notification sources; documented glossary, capitalization, punctuation, unit/number/date rules and test gaps. Documentation HEAD verified: a61b4c4b34c3271f2576d6db7dc953cc18195ad1. |
+| Current phase | COMPLETED — confirmed Adaptive Limit is a presentation card backed by internal ADAPTIVE_CEILING state; established bilingual profile labels and retained RGB Power/Daya RGB; saved and read back canonical documentation. No executable source/test or Firmware changes. |
+| Last completed milestone | Source inspection: visible Adaptive ceiling row at lib/main.dart around line 9390; RGB Power toggle at _buildLedTab around line 9580; source/test contract confirmed via live read-back. Documentation commits: e4ea0293, 1aa760c7, 370e9e3c, 892ba852. Latest verified main HEAD: 892ba85246add57a97ae90a454d417553a88d9d3. |
 | Last verified main checkpoint | Immutable Build #163 package source `9466e8eeb269da5bc8806f0df1d4212cf24e1746`; post-build current main changes are documentation-only (7 Markdown files); recursive tree 139 entries, `truncated=false`. |
 | EXTERNAL OPERATION | Build #163 / Actions run 43679305537 / workflow 374946166 / Issue #40 / attempt 1; job build 132706236782, runner ubuntu-24.04. Run and job terminal SUCCESS. Release ID 403010611 / tag jexfyz-latest / exactly one APK plus one source ZIP verified. |
 | EXTERNAL OPERATION STATUS | **COMPLETED / SUCCESS — run 43679305537 / job 132706236782; Release 403010611/tag jexfyz-latest assets verified** |
 | Result / evidence | Live re-check confirms source SHA 9466e8eeb269da5bc8806f0df1d4212cf24e1746; APK SHA-256 97c7cf99bef5d89f82b13d8f1c4b3c02dede541c2642a751ba61c8f9290a245c (55,881,819 bytes); source ZIP SHA-256 866117d208d38d2c04a2f7f097b5dc8941850a16bd52172a35d761af71334c00 (2,943,100 bytes); Release/tag parity and fresh-download identity verified. |
 | Blocker | None. Non-blocking warnings retained: self-signed signing certificate has no CA-trusted PKIX chain; Android Gradle/Kotlin deprecations; Kotlin 2.2.20 future Flutter compatibility warning; generated native ELF DWARF debug-info warning; JAR META-INF unsigned-entry warnings. |
-| Next action | Audit exact source call sites and protected contracts, save decision and implementation scope to canonical documentation, then close Diskusi without executable changes. |
+| Next action | Owner may explicitly issue Eksekusi Full! to remove only the Adaptive ceiling information card, rename profile display strings in both locales, and add the regression coverage documented in APP_NOTES.md. Preserve internal Adaptive ceiling telemetry/clamp and RGB Power/Daya RGB. App Build requires separate Eksekusi Build App! authorization. |
 
 ## Status model
 
