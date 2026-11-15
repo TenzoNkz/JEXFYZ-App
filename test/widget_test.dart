@@ -3167,7 +3167,7 @@ void main() {
           currentValue: 'ON',
           language: AppLanguage.indonesia,
         ),
-        'LED aktif.',
+        'LED menyala.',
       );
       expect(
         homeNotifyForTelemetryChange(
