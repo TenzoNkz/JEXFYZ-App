@@ -1,3 +1,13 @@
+## Active guarded App Build #163 — Java setup — 2026-11-15
+
+- Trigger Issue #40, exact owner/title/token guard, opened once by TenzoNkz. Exactly one Actions run exists: #163 / run `43679305537`, job `132706236782`, attempt 1; immutable source SHA `9466e8eeb269da5bc8806f0df1d4212cf24e1746`.
+- Runner ubuntu-24.04 allocated. Steps 1–2 SUCCESS; step 3 Set up Java 17 IN_PROGRESS; steps 4–21 pending. No downstream results or release mutation claimed yet. Continue only this run.
+- Latest App code Validation Only #19 / run `43677560315` tested `8fca2ecebf8b2ffb83fc9475a817c832f8269dc5`: formatter clean, analyzer 118 infos / 0 warnings / 0 errors, Flutter 197/197. Commit `fc39de16a5480347ce13083760424a309957c311` is a formatter-only line-wrap adjustment in a test assertion.
+- Build #162 / run `43430275967` remains latest published baseline / Release ID `403010611` / tag `jexfyz-latest`, target source `6854d8eb58a5f077cbc99749a35d37a4f55b8efa`. Do not call #163 successful/released before every step 1–21, cleanup and downloaded-asset checks pass.
+- Preserve Android `versionName "Telegram @horizontalzzz"`. No Firmware/BIN/Firebase/OTA/flash/device work.
+
+---
+
 ## Current verified App release — Build #162 SUCCESS (2026-11-13)
 
 - **Run / job:** [Build #162 / Actions run 43430275967](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/43430275967), job `131901744336`, attempt 1; terminal SUCCESS. Required workflow steps 1–21 and post-job cleanup 39–43 succeeded.
