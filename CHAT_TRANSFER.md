@@ -119,9 +119,24 @@ English is the default master/source and must be complete, grammatical, concise 
 
 **Evidence boundary:** source inspection only. No formatter, analyzer, Flutter tests, Android rendering, screenshot review or App Build was run. No source/test/native file was changed. Build #163 remains the latest verified package and still contains the pre-correction text.
 
+## Owner decision — Adaptive profile names / ceiling card / RGB switch — 2026-11-15
+
+**Mode:** Diskusi; source, tests, Firmware, protocol, config and build remain read-only.
+
+- Remove the entire Adaptive-page information card that displays `Adaptive Limit / Batas Adaptif` and the current ceiling voltage. Do not replace it with another visible ceiling row/table/text in that profile area.
+- This removes only the presentation card. Keep internal `adaptiveCeiling`, `ADAPTIVE_CEILING` telemetry, Firmware clamp/ceiling behavior, and safety/voltage-transition logic intact. Do not remove or weaken the actual maximum-voltage ceiling.
+- Replace the two visible Adaptive profile titles with these bilingual pairs:
+  - EN `Hot-Side Temperature Protection` / ID `Perlindungan Suhu Panas`
+  - EN `Hot-Side Temperature & Battery Protection` / ID `Perlindungan Suhu Panas & Baterai`
+- The new labels supersede old visible labels “Hotside Protection” / “Perlindungan Hotside” and “Hotside + Battery” / “Hotside + Baterai” in this selector only. Preserve internal values `HOTSIDE`, `HOTSIDE_BATTERY`, `HOTSIDE_PROTECTION` and all storage/protocol identifiers.
+- RGB recommendation: **keep `RGB Power` / `Daya RGB`** as the toggle label. Keep `LED` as the enclosing section title. The switch controls the user RGB effect only, not all physical/system/safety LED indicators; “LED” or “LED Power” on the toggle would overstate its function.
+- Regression plan: verify the Adaptive ceiling card is absent; both profile labels switch correctly EN/ID; internal ADAPTIVE_CEILING clamp/telemetry and Lock Voltage remain unchanged; LED heading and RGB Power/Daya RGB control remain; independent system/voltage/safety LEDs are not gated by RGB state.
+- Full decision and exact source location/rationale are in APP_NOTES.md under “Owner decision — Adaptive profile labels, Adaptive ceiling display and RGB toggle”.
+- No source/test/Firmware/config change, formatter/analyzer/test, App Build, Firmware compile or device operation was performed in this Diskusi.
+
 ## Next action
 
-- Recommended next mode: `Eksekusi Full!` to implement the complete language/copy/format/capitalization corrections across Flutter, native Android notification surfaces and regression tests, using APP_NOTES.md as the canonical style/glossary. This recommendation is not authorization; wait for the owner's explicit mode command.
+- Recommended next mode: `Eksekusi Full!` to implement the comprehensive EN/ID copy corrections plus the Adaptive ceiling-card removal and renamed profile labels; preserve internal ceiling/telemetry safety behavior and retain RGB Power/Daya RGB. Add the listed regression coverage. This recommendation is not authorization; wait for the owner's explicit mode command.
 - Owner installation and physical-device/OEM visual/BLE verification of Build #163 remain separate and are not inferred from CI.
 - For routine chat transfer, load only this bounded checkpoint; full build history remains in append-only `APP_BUILD_REPORT.md`, and older transfer history remains archived without being loaded during routine boot.
 <!-- ACTIVE_CHECKPOINT_END -->
