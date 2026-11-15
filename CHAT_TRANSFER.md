@@ -41,8 +41,48 @@
 - Post-build compare to current main shows only seven Markdown status/ledger/checkpoint files changed; no App source/test/workflow/release-input changes after the packaged SHA. Build filters show zero active/queued/waiting/requested/pending Build runs.
 - No new trigger/rerun was created. Recovery interaction closed COMPLETED; WORK STATUS and EXTERNAL OPERATION STATUS remain COMPLETED / SUCCESS. Remaining owner task is physical installation/OEM visual/BLE/device verification only.
 
+## Latest owner decision — complete EN→ID localization — 2026-11-15 (Asia/Jakarta)
+
+**Mode:** Diskusi (read-only for executable source/tests/config/workflow/build).  
+**Disposition:** terminology and copy audit completed at discussion/documentation level. No App source or test was changed, no validation/test/build was run.
+
+### Required localization standard
+
+- English is the master/source language and default App language. Every user-visible English string must be grammatical and complete; its Indonesian counterpart must be a complete, natural, standard Indonesian translation. Never leave generic English words embedded in Indonesian prose.
+- Approved glossary:
+  - `Battery` → `Baterai`
+  - `Battery Temperature` → `Suhu Baterai` (do not add `HP` to this concise chart/metric label)
+  - `Hotside` → `Sisi Panas`
+  - `Hotside Temperature` → `Suhu Sisi Panas`
+  - `Hotside Limit` → `Batas Suhu Sisi Panas`
+  - `Hotside Protection` → `Perlindungan Sisi Panas`
+  - `Hotside + Battery` → `Sisi Panas + Baterai`
+  - generic `cooler` → `pendingin`
+  - `Adaptive Mode` → `Mode Adaptif`; `Fan` → `Kipas`; `Fan Speed` → `Kecepatan Kipas`; `Voltage` → `Tegangan`
+  - preserve approved `Floating Monitor / Monitor Melayang`; established technical names/acronyms (Bluetooth, Firmware, Peltier, LED, OTA, SSID) may remain where technically appropriate.
+- This owner decision supersedes the previous APP_NOTES rule that required `Hotside` to remain unchanged in Indonesian. Translate only user-facing wording; do not rename internal keys, persisted values, enum IDs, BLE command strings or Firmware protocol identifiers. Raw tokens such as `FAN` / `PELTIER` must not be exposed in ordinary UI prose.
+
+### Verified localization findings
+
+- Current localization dictionary scan found 353 paired entries with both English and Indonesian fields; no missing locale field was detected in that scan. Existing contract tests check locale/placeholder presence, not whether every sentence is idiomatic, fully translated or terminologically consistent.
+- Concrete visible-copy defects:
+  - `lib/usage_statistics.dart`: `Battery Temperature / Suhu Baterai HP`, `Hotside Temperature / Suhu Hotside`, and the selected-time labels `Battery / Baterai HP`.
+  - Usage Statistics information sentence mixes `Battery`, `Hotside`, and `cooler` into Indonesian prose (`Battery dan Hotside ... operasi cooler ...`).
+  - Usage Statistics empty-state copy exposes internal tokens `FAN` and `PELTIER`; rewrite as normal user-facing names.
+  - `lib/app_settings.dart`: multiple Indonesian Hotside dictionary values remain untranslated, including the component label, limit, protection, profile and notification/error copy.
+  - `lib/main.dart`: Hotside remains embedded in several Indonesian safety, limit and NOTIFY messages; relocalization logic must continue recognizing old stored-message variants while generating the new `Sisi Panas` translation.
+- `test/usage_statistics_test.dart` currently asserts the old `Suhu Baterai HP` and `Suhu Hotside` text. It must be updated alongside source changes. Current localization contract tests do not enforce the approved glossary or detect these mixed-language sentences.
+- APP_NOTES.md now records the new glossary and authority rule. This is a documentation decision only; the live App source and Build #163 package still contain the old wording.
+
+### Scope boundary and next action
+
+- No source/test/config/workflow edits, Flutter formatter/analyzer/tests, Android package, Release, Firmware or device operation occurred during this Diskusi.
+- Next authorized implementation scope should update every visible Flutter/native/notification phrase and corresponding regression expectations, maintain legacy notice parsing, and add a terminology/content-quality contract. Then run appropriate source validation. A new APK still requires a separate explicit `Eksekusi Build App!` command.
+- Build #163 remains the latest verified package; it does not contain the pending glossary/copy corrections.
+
 ## Next action
 
-- No new trigger or retry is required. Build #163 is the latest verified package. Owner installation and physical-device/OEM visual/BLE verification remain separate and are not inferred from CI.
+- Recommended next mode: `Eksekusi Full!` to implement the approved EN-master/ID-standard localization corrections and regression coverage. This recommendation is not authorization; wait for the owner's explicit mode command.
+- Owner installation and physical-device/OEM visual/BLE verification of Build #163 remain separate and are not inferred from CI.
 - For routine chat transfer, load only this bounded checkpoint; full build history remains in append-only `APP_BUILD_REPORT.md`, and older transfer history remains archived without being loaded during routine boot.
 <!-- ACTIVE_CHECKPOINT_END -->
