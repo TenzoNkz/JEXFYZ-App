@@ -1,11 +1,21 @@
-## 2026-11-15 — Localization/state corrections and chat-load compaction (source validated; not released)
+## 2026-11-15 — Guarded App Build #163 released and verified (SUCCESS)
+
+- Published the validated localization/state App source through the guarded issue-only workflow. Owner trigger Issue #40 produced exactly one Build #163 run: 43679305537 / job 132706236782, attempt 1, source SHA `9466e8eeb269da5bc8806f0df1d4212cf24e1746`.
+- All required workflow gates 1–21 and post-job cleanup 39–43 passed. Analyzer 118 info-level findings / zero warnings/errors; Flutter 197/197; Android Gradle gate BUILD SUCCESSFUL in 2m43s. Native Android unit-test tasks were NO-SOURCE.
+- Release ID 403010611 / tag `jexfyz-latest` now target the exact build source SHA. Exactly one APK plus one matching source ZIP; freshly downloaded asset hashes, APK V1/V2/V3 signature, pinned cert fingerprint and source marker/ZIP integrity all passed.
+- APK: 55,881,819 bytes / SHA-256 `97c7cf99bef5d89f82b13d8f1c4b3c02dede541c2642a751ba61c8f9290a245c`. Corresponding source ZIP: 2,943,100 bytes / SHA-256 `866117d208d38d2c04a2f7f097b5dc8941850a16bd52172a35d761af71334c00`.
+- Android Gradle `versionName "Telegram @horizontalzzz"` preserved. Follow-up warnings remain: certificate is self-signed / PKIX chain not publicly trusted; Android Gradle DSL properties deprecated; Kotlin Gradle Plugin 2.2.20 nearing Flutter support floor; native ELF contains unobfuscated DWARF debug info. These were non-blocking; details are in APP_BUILD_REPORT.md.
+- Build #163 confirms CI/QC/package/release only. Owner installation, OEM screenshots, physical BLE/device, Firmware/BIN, Firebase, OTA/flash and thermal/electrical acceptance remain separate/unverified.
+
+
+## 2026-11-15 — Localization/state corrections and chat-load compaction (later packaged in Build #163)
 
 - Corrected thermal Safety terminology, Fan-before-cooling wording, successful Safety NOTIFY copy, full-sync/deep-sleep translation, and natural physical-output prose. Adaptive uses logical Active/Inactive terminology; Peltier/Fan/LED retain physical ON/OFF semantics.
 - Added UsageStateDomain-aware rendering, synchronized Flutter/native Floating Monitor A/P/F terminology, and a named-placeholder OTA size-mismatch formatter preserving received-then-expected order.
 - Added regression coverage for locale/placeholder completeness, literal inline phrase placeholder parity, OTA ordering, bilingual Safety copy, Usage Statistics state domains and native/UI output contracts.
 - Source/test implementation: da210579a2a26de518a2df18c6638502e00af2bd; follow-up physical-output/interpolation correction: 16d9acb5b88ca51f411ddf4ffc38c5757f57f87c; stale widget expectation repair: 8fca2ecebf8b2ffb83fc9475a817c832f8269dc5; formatter-only follow-ups: 2c3bd13ad7045a9161800060332949cf5c330bd4 and fc39de16a5480347ce13083760424a309957c311.
 - Validation Only #17 / 43637313434 succeeded with 197/197 tests. #18 / 43677411117 is retained as a failed intermediate (196/197) due to one stale LED-copy assertion. Validation Only #19 / 43677560315 passed on 8fca2ece: 197/197 tests, analyzer 118 infos / zero warnings/errors, formatter final check clean.
-- Build #162 remains the latest packaged App. This source work is NOT RELEASED. No App Build/Release, Android package Gradle, Firmware, BIN, Firebase, OTA, flash or device operation was run.
+- At this source-validation checkpoint, Build #162 was the latest package and the localization/state source was not yet released. It was subsequently packaged and released successfully in Build #163 above. No Firmware, BIN, Firebase, OTA, flash or device operation was run.
 - The former CHAT_TRANSFER.md (723 lines / 90,388 characters) was copied byte-for-byte to archive/CHAT_TRANSFER_PRE_COMPACTION_2026-11-15.md. Routine transfer now reads only the bounded active checkpoint; README, Master Prompt, Memory Index, prompts and relevant skills use this rule. No history ledger or archive was deleted or edited.
 
 ## 2026-11-14 — Align Usage Statistics layout and readouts (source implemented; hosted validation passed; not released)
