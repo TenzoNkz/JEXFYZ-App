@@ -115,7 +115,10 @@ void main() {
       );
       expect(JexText.of('fanOn', AppLanguage.indonesia), 'Kipas menyala.');
       expect(JexText.of('fanOff', AppLanguage.indonesia), 'Kipas mati.');
-      expect(JexText.of('peltierOn', AppLanguage.indonesia), 'Peltier menyala.');
+      expect(
+        JexText.of('peltierOn', AppLanguage.indonesia),
+        'Peltier menyala.',
+      );
       expect(JexText.of('peltierOff', AppLanguage.indonesia), 'Peltier mati.');
       expect(JexText.of('ledOn', AppLanguage.indonesia), 'LED menyala.');
       expect(JexText.of('ledOff', AppLanguage.indonesia), 'LED mati.');
