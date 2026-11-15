@@ -1,4 +1,4 @@
-| Last updated | 2026-11-15 12:08:24 |
+| Last updated | 2026-11-15 12:11:42 |
 
 > Single current snapshot for JE X FYZ project interactions. This file records the latest persisted observation, not a continuously running heartbeat or overall product completion.
 
@@ -6,21 +6,21 @@
 
 | Field | Value |
 |---|---|
-| **STATUS** | **IN_PROGRESS** |
-| SESSION STATUS | IN_PROGRESS |
-| WORK STATUS | IN_PROGRESS — guarded App Build/QC/release for canonical main source |
+| **STATUS** | **COMPLETED** |
+| SESSION STATUS | COMPLETED |
+| WORK STATUS | COMPLETED — guarded App Build/QC/release #163 SUCCESS |
 | Mode | Eksekusi Build App! — guarded App Build / QC only |
 | Request / work item | Resume the guarded App Build/QC/release workflow for TenzoNkz/JEXFYZ-App on main. Verify current main, active checkpoint, workflow, Actions runs/jobs/logs, releases/tags/artifacts; continue the existing attempt or repair only justified App-scope build defects. No duplicate trigger. |
 | Started | 2026-11-15 11:51:00 |
-| Last updated | 2026-11-15 12:08:24 |
-| Current phase | IN_PROGRESS — steps 15–19 SUCCESS: obfuscated APK built, V1/V2/V3 signing enforced, certificate verified, release filename prepared, source ZIP packaged. Step 20 GitHub Release publication IN_PROGRESS; step 21 downloaded asset verification pending. |
-| Last completed milestone | Build #163 / run 43679305537 / job 132706236782: steps 1–19 SUCCESS, including APK build, signature enforcement/verification, and source ZIP packaging; step 20 Release/tag/asset publication IN_PROGRESS; step 21 download verification pending. |
+| Last updated | 2026-11-15 12:11:42 |
+| Current phase | COMPLETED — Build #163 terminal SUCCESS; all required steps 1–21 and cleanup 39–43 passed; Release/tag/source SHA parity and freshly downloaded APK/source ZIP identity/checksums/signature/ZIP integrity verified. |
+| Last completed milestone | Build #163 / run 43679305537 / job 132706236782 terminal SUCCESS at 2026-11-15T05:08:29Z (12:08:29 Asia/Jakarta). Steps 1–21 and cleanup 39–43 all SUCCESS; Release 403010611 and tag jexfyz-latest point to exact source 9466e8eeb269da5bc8806f0df1d4212cf24e1746; downloaded assets verified. |
 | Last verified main checkpoint | Exact immutable Build #163 checkout `9466e8eeb269da5bc8806f0df1d4212cf24e1746`; branch main; tree `dddb77c3999f438f11742ed57bb399c237df495a`, 139 entries, `truncated=false`. |
-| EXTERNAL OPERATION | Build #163 / Actions run 43679305537 / workflow 374946166 / Issue #40 / attempt 1; job build 132706236782, ubuntu-24.04 runner 1000002728. Steps 1–19 SUCCESS; step 20 Publish APK and corresponding source to GitHub Release IN_PROGRESS; step 21 pending. |
-| EXTERNAL OPERATION STATUS | **IN_PROGRESS — run 43679305537 / job 132706236782 / Java 17 setup active** |
-| Result / evidence | Issue #40 exact title/token, created by owner TenzoNkz; one `issues`-event run #163 checks out exact main SHA. No retry/duplicate issue. Existing Release #162 remains unchanged pending full QC and step 21. |
-| Blocker | None established yet. |
-| Next action | Inspect run 43679305537 / job 132706236782 and current logs/steps at each gate; make only evidence-backed App repairs if a gate fails. Do not start another run. |
+| EXTERNAL OPERATION | Build #163 / Actions run 43679305537 / workflow 374946166 / Issue #40 / attempt 1; job build 132706236782, runner ubuntu-24.04. Run and job terminal SUCCESS. Release ID 403010611 / tag jexfyz-latest / exactly one APK plus one source ZIP verified. |
+| EXTERNAL OPERATION STATUS | **COMPLETED / SUCCESS — run 43679305537 / job 132706236782** |
+| Result / evidence | Issue #40 triggered exactly one run. Analyzer 118 info / 0 warning / 0 error; Flutter 197/197; Gradle BUILD SUCCESSFUL in 2m43s (162 tasks; native App unit-test tasks NO-SOURCE); obfuscated APK build; V1/V2/V3 and pinned certificate passed; source marker and ZIP integrity passed; tag/release source parity and downloaded checksums/signature passed. APK SHA-256 97c7cf99bef5d89f82b13d8f1c4b3c02dede541c2642a751ba61c8f9290a245c; source ZIP SHA-256 866117d208d38d2c04a2f7f097b5dc8941850a16bd52172a35d761af71334c00. |
+| Blocker | None. Non-blocking warnings retained: self-signed signing certificate has no CA-trusted PKIX chain; Android Gradle/Kotlin deprecations; Kotlin 2.2.20 future Flutter compatibility warning; generated native ELF DWARF debug-info warning; JAR META-INF unsigned-entry warnings. |
+| Next action | Owner may download/install the Build #163 APK and perform physical-device/OEM visual and BLE verification. CI alone does not establish installation, screenshots, BLE/device, Firmware/BIN, Firebase, OTA, flash or thermal/electrical acceptance. No further build run is pending. |
 
 ## Status model
 
