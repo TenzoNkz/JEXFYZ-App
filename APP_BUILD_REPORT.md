@@ -3073,3 +3073,12 @@
 - Active log download still unavailable, so exact Gradle duration/task counts, analyzer-info count and Flutter test total will be reported only after the complete job log is retrieved. Do not infer.
 - Release ID 403010611 / tag `jexfyz-latest` remains on Build #162 source while #163 is still packaging. No release publication or asset replacement is claimed yet.
 - Continue only this run; no duplicate issue/retry.
+
+
+### BUILD #163 progress — APK/signing/source packaging passed / Release publication active — 2026-11-15
+
+- Run `43679305537` / job `132706236782`, immutable checkout `9466e8eeb269da5bc8806f0df1d4212cf24e1746`, attempt 1.
+- Steps 1–19 are now observed SUCCESS. Newly completed gates: step 15 obfuscated release APK build; step 16 V1/V2/V3 signing enforcement; step 17 pinned-certificate signature verification; step 18 stable APK filename; step 19 corresponding source archive packaging/integrity checks.
+- Step 20 `Publish APK and corresponding source to GitHub Release` is IN_PROGRESS. Step 21 fresh downloaded-asset identity/checksum/signature verification has not started. No final release or asset success is claimed at this transition.
+- Exact APK/source ZIP sizes, SHA-256, certificate fingerprint and log-level analyzer/test/Gradle totals await completed-job logs and live Release/API verification. Keep the existing Build #162 baseline until step 21 is successful.
+- Continue only run `43679305537` / job `132706236782`.
