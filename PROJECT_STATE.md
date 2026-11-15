@@ -60,6 +60,14 @@ Last reconciled: 2026-11-15 (Asia/Jakarta). Current truth only. Build history re
 - APP_NOTES.md now contains the owner-approved global language, writing and formatting standard plus the full read-only audit. CHAT_TRANSFER.md carries the full implementation handoff.
 - No source/test/native changes or formatter/analyzer/test/render/build operation occurred in Diskusi. Build #163 remains the latest package and contains the pre-correction copy.
 
+## Adaptive profile / ceiling presentation / RGB naming — implementation pending — 2026-11-15
+
+- Owner decision: remove the Adaptive page's visible information card labelled “Adaptive Limit” / “Batas Adaptif” and its displayed ceiling voltage. Remove the whole card, not just its label.
+- Safety boundary: presentation-only. Retain internal `adaptiveCeiling`, `ADAPTIVE_CEILING` telemetry/state synchronization, Firmware voltage clamp, and all safety/transition behavior.
+- New profile labels: EN “Hot-Side Temperature Protection” / ID “Perlindungan Suhu Panas”; EN “Hot-Side Temperature & Battery Protection” / ID “Perlindungan Suhu Panas & Baterai”. These supersede old display titles in this profile selector only; do not rename internal profile values or protocol/storage keys.
+- RGB decision: keep the LED section heading “LED” and toggle label “RGB Power” / “Daya RGB”. The RGB switch controls the user RGB lighting effect only; separate voltage/system/safety LED indicators remain independent.
+- No App/Firmware source or tests changed in Diskusi. See APP_NOTES.md and CHAT_TRANSFER.md for exact scope and regression requirements.
+
 ## App architecture and protected contracts
 
 - Usage Statistics uses SQLite schema v2 with v1→v2 migration, 30-day retention, raw 1-Hz Battery/Hotside samples, explicit data gaps, HOT-only P1 freshness and bounded writer admission. Long-duration CPU/memory and storage-pressure soak remain unverified.
