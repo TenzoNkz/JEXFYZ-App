@@ -9,7 +9,7 @@ Flutter Android companion App and ESP32-C3 Firmware source for the JE X FYZ ther
 1. [MASTER_PROMPT.md](MASTER_PROMPT.md) — single authoritative operating policy: modes, authorization, skills, tools, Gemini, memory cadence, evidence and protected contracts.
 2. [AGENTS.md](AGENTS.md) — lightweight entrypoint for Codex/Copilot/repository-aware agents.
 3. [SKILLS_INDEX.md](SKILLS_INDEX.md) — twelve reusable engineering skills, platform locations and capability boundaries.
-4. [CHAT_TRANSFER.md](CHAT_TRANSFER.md) — latest durable checkpoint. Read fully, then verify live main.
+4. [CHAT_TRANSFER.md](CHAT_TRANSFER.md) — compact active checkpoint. Read only between `ACTIVE_CHECKPOINT_START/END`; historical details are preserved in `archive/` and are not loaded on every chat.
 5. [PROJECT_STATE.md](PROJECT_STATE.md) — concise current product/source/release/validation truth.
 6. [MEMORY_INDEX.md](MEMORY_INDEX.md) — canonical document map and Markdown retention policy.
 7. [HANDOVER.md](HANDOVER.md) — immediate next action.

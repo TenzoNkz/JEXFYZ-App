@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — Documentation Map & Retention Policy
 
-Last reconciled: 2026-11-14 (Asia/Jakarta). This file is the navigation and retention index, not an alternate operating ruleset or current-state ledger. Read MASTER_PROMPT.md for all operating instructions. Verify current implementation against live main/source/tests and current Actions/Release evidence.
+Last reconciled: 2026-11-15 (Asia/Jakarta). This file is the navigation and retention index, not an alternate operating ruleset or current-state ledger. Read MASTER_PROMPT.md for all operating instructions. Verify current implementation against live main/source/tests and current Actions/Release evidence.
 
 ## Authority order
 
@@ -40,6 +40,7 @@ Last reconciled: 2026-11-14 (Asia/Jakarta). This file is the navigation and rete
 | archive/ARTIFACT_REPO_NOTES_PRE_BIN_ONLY_2026-10-14.md | Pre-cleanup artifact-repository forensic snapshot | Immutable archive | KEEP IMMUTABLE |
 | archive/LEGACY_NOTES_SNAPSHOT_2026-10-14.md | Verbatim pre-reorganization current-state/reference snapshot | Immutable archive | KEEP IMMUTABLE; contains stale historic claims |
 | archive/LEGACY_TRANSFER_HISTORY_2026-10-14.md | Verbatim legacy prompt/rules/handover/changelog snapshot | Immutable archive | KEEP IMMUTABLE; never reuse its old prompts as current |
+| archive/CHAT_TRANSFER_PRE_COMPACTION_2026-11-15.md | Verbatim snapshot of the 2026-11-15 rolling checkpoint before compaction | Immutable archive | KEEP IMMUTABLE; open only for historical forensic lookup, not routine chat loading |
 | AGENTS.md | Cross-agent entrypoint that points to the Master Prompt and skill index | Active agent entry | KEEP short; do not duplicate policy |
 | SKILLS_INDEX.md | Catalogue of portable project skills and capability boundaries | Active capability index | KEEP; update with skill additions/removals |
 | .agents/skills/*/SKILL.md | Canonical repository skills for OpenAI Codex-compatible discovery | Active skill library | KEEP one focused workflow per skill; load progressively |
@@ -73,6 +74,17 @@ Last reconciled: 2026-11-14 (Asia/Jakarta). This file is the navigation and rete
 
 
 - Codex repository skills are under `.agents/skills/`; GitHub Copilot repository skills are mirrored under `.github/skills/`. `AGENTS.md` is the cross-agent entrypoint. Current ChatGPT mobile/web must fetch the relevant private `SKILL.md` through GitHub tools rather than assume the repo files are auto-installed as ChatGPT skills.
+
+## Fast chat-load path
+
+1. Read `00_WORK_STATUS.md` and persist the incoming message as `IN_PROGRESS`.
+2. Read `MASTER_PROMPT.md` for the command mode and authorization boundary.
+3. Read only the bounded active checkpoint in `CHAT_TRANSFER.md` between its two HTML markers.
+4. Read `PROJECT_STATE.md` and `HANDOVER.md` for concise current truth and the next action.
+5. Use this index to fetch only the subject note, skill, source and test files relevant to the task.
+6. Open `archive/`, `APP_BUILD_REPORT.md` or `CHANGELOG.md` only for a specific historical investigation; never load them wholesale during routine continuation.
+
+`archive/CHAT_TRANSFER_PRE_COMPACTION_2026-11-15.md` retains the exact pre-compaction 723-line checkpoint so history is not lost while routine chat boot stays small.
 
 ## Evidence labels
 

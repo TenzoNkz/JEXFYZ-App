@@ -34,9 +34,9 @@ MANDATORY LOAD
 1. Read `00_WORK_STATUS.md` first and inspect its latest interaction, work item and external-operation states.
 2. **Immediately persist `SESSION STATUS = IN_PROGRESS` for this incoming JE X FYZ message**, with mode, request, Asia/Jakarta start/update timestamps, current phase, last verified checkpoint and next action. Do this before any extended loading, research or execution.
 3. Read MASTER_PROMPT.md fully. It is the single authority for modes, authorization, evidence, status lifecycle, memory cadence and protected contracts.
-4. Read the active top checkpoint in CHAT_TRANSFER.md. If the prior session was unfinished, verify external operations and preserve it as RECOVERY_REQUIRED without repeating side effects. Load older history only when needed.
+4. Read only the text between `<!-- ACTIVE_CHECKPOINT_START -->` and `<!-- ACTIVE_CHECKPOINT_END -->` in CHAT_TRANSFER.md. Do not load archived history. If the prior session was unfinished, verify external operations and preserve it as RECOVERY_REQUIRED without repeating side effects.
 5. Fetch live repository metadata, main HEAD/commit metadata and the recursive tree; confirm whether the tree is truncated.
-6. Read CHAT_RULES.md, MEMORY_INDEX.md, PROJECT_STATE.md, HANDOVER.md and only the canonical subject references relevant to this task.
+6. Read CHAT_RULES.md as a pointer and MEMORY_INDEX.md for the canonical file map. Read PROJECT_STATE.md and HANDOVER.md for their concise current summaries; load only subject references relevant to this task.
 7. Check Actions, Releases, tags, PRs, jobs and logs when relevant.
 
 CONTINUE — NO RECAP STAGE
@@ -82,9 +82,9 @@ MANDATORY LOAD
 1. Read `00_WORK_STATUS.md` first and inspect the latest session, work-item and external-operation statuses.
 2. **Immediately persist `SESSION STATUS = IN_PROGRESS` for this incoming Build App message**, including mode, exact build work item, Asia/Jakarta timestamps, current phase and next action.
 3. Read MASTER_PROMPT.md fully and follow its status lifecycle and Build-only authorization boundary.
-4. Read the active top checkpoint in CHAT_TRANSFER.md. Verify previous unfinished sessions and actual Actions state; never assume a run is alive from a stale `IN_PROGRESS` marker.
+4. Read only the active checkpoint inside the `ACTIVE_CHECKPOINT_START/END` markers in CHAT_TRANSFER.md; never load the archived transfer history during routine boot. Verify unfinished sessions and actual Actions state; never assume a run is alive from a stale `IN_PROGRESS` marker.
 5. Fetch live main HEAD, commit metadata and the recursive tree.
-6. Read CHAT_RULES.md, MEMORY_INDEX.md, PROJECT_STATE.md, HANDOVER.md and BUILD_NOTES.md.
+6. Read CHAT_RULES.md as a pointer, MEMORY_INDEX.md for canonical paths, PROJECT_STATE.md, HANDOVER.md and BUILD_NOTES.md.
 7. Read the entire live .github/workflows/jexfyz-app-build-trigger.yml and the latest APP_BUILD_REPORT.md attempt plus relevant preceding failure/repair only.
 8. Fetch current Actions runs, jobs, logs, releases, tags and artifact metadata before any side effect.
 
