@@ -1,3 +1,12 @@
+## Active guarded App Build #163 — Release publication — 2026-11-15
+
+- Run `43679305537`, job `132706236782`, Issue #40, immutable source `9466e8eeb269da5bc8806f0df1d4212cf24e1746`, attempt 1.
+- Steps 1–19 SUCCESS, including Android Gradle, obfuscated release APK build, V1/V2/V3 signing enforcement, certificate verification, and corresponding source ZIP packaging.
+- Step 20 GitHub Release publish IN_PROGRESS; step 21 downloaded-asset identity/checksum/signature verification pending. Do not call the package released until step 21 passes and live tag/assets match.
+- Exact analyzer/test/Gradle log counts, asset hashes and sizes await terminal job logs/API verification.
+
+---
+
 ## Active guarded App Build #163 — obfuscated APK build — 2026-11-15
 
 - Run `43679305537`, job `132706236782`, Issue #40, immutable source `9466e8eeb269da5bc8806f0df1d4212cf24e1746`, attempt 1.
