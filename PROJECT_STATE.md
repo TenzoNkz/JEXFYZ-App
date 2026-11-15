@@ -7,7 +7,7 @@ Last reconciled: 2026-11-15 (Asia/Jakarta). Current truth only. Build history re
 - Canonical repository/branch: TenzoNkz/JEXFYZ-App / main.
 - Latest App code validation is Validation Only #19: run 43677560315 / job 132700920324, tested source 8fca2ecebf8b2ffb83fc9475a817c832f8269dc5, terminal SUCCESS.
 - Current code after formatter follow-up fc39de16a5480347ce13083760424a309957c311 differs from #19 tested workspace only by a formatter-only line wrap in test/localization_contract_test.dart; remaining intervening changes are documentation/checkpoint/skill-mirror records.
-- Guarded App Build #163 is active on immutable source 9466e8eeb269da5bc8806f0df1d4212cf24e1746 (run 43679305537 / job 132706236782, Issue #40). Job step 3 Java 17 setup is IN_PROGRESS; steps 1–2 passed. See APP_BUILD_REPORT.md for live gate chronology.
+- Guarded App Build #163 is active on immutable source 9466e8eeb269da5bc8806f0df1d4212cf24e1746 (run 43679305537 / job 132706236782, Issue #40). Steps 1–13 are SUCCESS; Android Gradle gate step 14 is IN_PROGRESS; gates 15–21 pending. See APP_BUILD_REPORT.md for live gate chronology.
 
 ## Latest hosted source validation — Validation Only #19 SUCCESS
 
@@ -30,7 +30,7 @@ Last reconciled: 2026-11-15 (Asia/Jakarta). Current truth only. Build history re
 
 - Run/job 43430275967 / 131901744336; package source 6854d8eb58a5f077cbc99749a35d37a4f55b8efa.
 - Release ID 403010611 and tag jexfyz-latest. APK SHA-256 56c08bd490e52a8616627613675141a91c14ab6893cca0e1e54d5e5ac1a053f2. Source ZIP SHA-256 86bd61edfe59acd6063367f7b8704356d2bf192d8c55c150f0f0e6b6285db42e.
-- Build #163 has not reached package/release gates yet; Build #162 remains published until a full #163 success is independently verified. Owner installation and Android/OEM screenshot acceptance remain VISUAL NOT VERIFIED.
+- Build #163 is currently at the Android Gradle gate; Build #162 remains published until full #163 success and downloaded-asset verification are independently confirmed. Owner installation and Android/OEM screenshot acceptance remain VISUAL NOT VERIFIED.
 
 ## App architecture and protected contracts
 
