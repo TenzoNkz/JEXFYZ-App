@@ -32,6 +32,15 @@
 - Android native unit-test tasks were `NO-SOURCE`. CI does not establish owner installation, device/OEM screenshots, BLE/device behavior, Firmware compile/BIN provenance, Firebase, OTA/flash, thermal or electrical acceptance.
 - The Actions run has no workflow artifacts; the two required deliverables are in the verified GitHub Release assets.
 
+
+
+## Recovery verification — Chat Stuck! — 2026-11-15 12:17–12:19 Asia/Jakarta
+
+- Re-fetched Build #163 run `43679305537` / job `132706236782`: terminal SUCCESS; all required steps 1–21 and cleanup 39–43 succeeded. The full 3,548-line job log was retrieved and reviewed.
+- Release 403010611 / tag `jexfyz-latest` still target exact build SHA `9466e8eeb269da5bc8806f0df1d4212cf24e1746`; exactly one APK plus one source ZIP remain, with the recorded hashes and sizes above.
+- Post-build compare to current main shows only seven Markdown status/ledger/checkpoint files changed; no App source/test/workflow/release-input changes after the packaged SHA. Build filters show zero active/queued/waiting/requested/pending Build runs.
+- No new trigger/rerun was created. Recovery interaction closed COMPLETED; WORK STATUS and EXTERNAL OPERATION STATUS remain COMPLETED / SUCCESS. Remaining owner task is physical installation/OEM visual/BLE/device verification only.
+
 ## Next action
 
 - No new trigger or retry is required. Build #163 is the latest verified package. Owner installation and physical-device/OEM visual/BLE verification remain separate and are not inferred from CI.
