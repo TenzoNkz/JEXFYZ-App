@@ -1,9 +1,8 @@
-## Current handover — localization validated; awaiting owner Build App authorization — 2026-11-15
+## Current handover — Build #163 guarded pre-trigger ready — 2026-11-15
 
-- Latest validated code source: fc39de16a5480347ce13083760424a309957c311. Validation Only #19 / run 43677560315, job 132700920324, terminal SUCCESS: formatter clean, analyzer 118 infos / zero warnings/errors, Flutter 197/197 passed.
-- Localization/state changes are implemented in main but NOT RELEASED. Build #162 remains the latest published package and predates this source.
-- Chat-load cleanup: CHAT_TRANSFER.md is now bounded by active markers; exact former 723-line snapshot is preserved in archive/CHAT_TRANSFER_PRE_COMPACTION_2026-11-15.md. README, MASTER_PROMPT, MEMORY_INDEX, prompts and repository skills use the bounded loading path.
-- Preserve owner contracts: English / Indonesia picker labels and enum/storage IDs; Floating Monitor / Monitor Melayang; Bluetooth notification identity; About credit App Developer & Builder / Pengembang Aplikasi & Perakit; Fan-before-Peltier command sequence.
-- Run #18 remains a historical failed intermediate (196/197) caused by one stale LED prose expectation; corrected before run #19.
-- **Next:** owner may explicitly issue Eksekusi Build App! for guarded App packaging/QC of current main. This handover does not authorize it.
-- Firmware/BIN/Firebase/OTA/flash/device actions remain separately gated.
+- Owner explicitly selected `Eksekusi Build App!`; this authorizes one guarded App Build/QC/release attempt only.
+- Latest code validation: Validation Only #19 / run 43677560315 / job 132700920324 / source 8fca2ecebf8b2ffb83fc9475a817c832f8269dc5, terminal SUCCESS: formatter clean, analyzer 118 infos / zero warnings/errors, Flutter 197/197 passed. Commit fc39de16a5480347ce13083760424a309957c311 was inspected and contains only a test-file formatter line wrap; remaining changes through the pre-trigger head are documentation.
+- Pre-trigger live audit: no active/queued/waiting/requested/pending Build runs, zero open PRs, all previous trigger issues #33/#35/#36/#37/#38/#39 left OPEN, exact owner/title/token guard preserved, no push/PR trigger. Protected Android versionName `Telegram @horizontalzzz` verified.
+- Build #162 remains the current published package and release baseline: Release 403010611 / tag `jexfyz-latest` source 6854d8eb58a5f077cbc99749a35d37a4f55b8efa, one APK plus one matching source ZIP with recorded checksums.
+- **Next:** create exactly one new owner-authored guarded issue for Build #163, capture its Actions run/job/immutable source SHA, and inspect all required gates and full terminal logs. Do not create a duplicate.
+- Firmware/BIN/Firebase/OTA/flash/device actions remain outside this authorization. Physical installation, OEM screenshots and BLE/device behavior are not established by CI.
