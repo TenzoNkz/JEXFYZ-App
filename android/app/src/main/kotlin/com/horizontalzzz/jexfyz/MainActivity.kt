@@ -365,13 +365,13 @@ class MainActivity : FlutterActivity() {
         val indonesia = language.equals("indonesia", ignoreCase = true)
         val channel = NotificationChannel(
             NOTIFICATION_CHANNEL,
-            if (indonesia) "Notifikasi perangkat" else "Device alerts",
+            if (indonesia) "Peringatan perangkat" else "Device alerts",
             NotificationManager.IMPORTANCE_DEFAULT
         ).apply {
             description = if (indonesia)
-                "Peringatan keselamatan, firmware, dan Bluetooth dari perangkat."
+                "Peringatan keselamatan, Firmware, dan Bluetooth dari perangkat."
             else
-                "Safety, firmware, and Bluetooth alerts from your device."
+                "Safety, Firmware, and Bluetooth alerts from your device."
             setShowBadge(true)
         }
         manager.createNotificationChannel(channel)
