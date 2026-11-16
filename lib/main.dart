@@ -11031,9 +11031,11 @@ class _ConnectionSheetContentState extends State<_ConnectionSheetContent>
                       ),
                       itemBuilder: (_, index) {
                         final result = filtered[index];
-                        final name = result.device.platformName.isNotEmpty
-                            ? result.device.platformName
-                            : result.advertisementData.advName;
+                        final displayName = connectionDeviceDisplayName(
+                          advertisedName: result.advertisementData.advName,
+                          platformName: result.device.platformName,
+                          fallback: JexText.of('device', lang),
+                        );
                         return ListTile(
                           dense: true,
                           leading: JexAnimatedIcon.glyph(
@@ -11043,10 +11045,7 @@ class _ConnectionSheetContentState extends State<_ConnectionSheetContent>
                             active: true,
                           ),
                           title: Text(
-                            name.trim().isEmpty ||
-                                    name.trim().toLowerCase() == 'je x fyz'
-                                ? JexText.of('device', lang)
-                                : name,
+                            displayName,
                             style: TextStyle(
                               color: scheme.onSurface,
                               fontWeight: FontWeight.w800,
