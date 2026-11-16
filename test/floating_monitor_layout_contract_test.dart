@@ -92,7 +92,10 @@ void main() {
     final floating = File('lib/floating_monitor.dart').readAsStringSync();
     final settings = File('lib/app_settings.dart').readAsStringSync();
 
-    expect(floating, contains('config.size.toStringAsFixed(2)'));
+    expect(
+      floating,
+      contains('JexText.formatNumber(config.size, lang, decimalDigits: 2, groupThousands: false)'),
+    );
     expect(floating, contains('max: 1.00'));
     expect(floating, contains('divisions: 14'));
     expect(floating, isNot(contains('size.toDouble().clamp(0.3, 0.8)')));

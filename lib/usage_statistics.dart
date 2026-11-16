@@ -3623,10 +3623,6 @@ class _UsageTimelinePainter extends CustomPainter {
 
 String _formatTemperature(double? value, AppLanguage language) {
   if (value == null) return '--';
-  final fixed = value.toStringAsFixed(1);
-  final localized = language == AppLanguage.indonesia
-      ? fixed.replaceFirst('.', ',')
-      : fixed;
   return '${JexText.formatNumber(value, language, decimalDigits: 1, groupThousands: false)} °C';
 }
 

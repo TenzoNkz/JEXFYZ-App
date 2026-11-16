@@ -1693,7 +1693,7 @@ void main() {
       expect(
         native,
         contains(
-          '"F" -> "F:" + if (!data.connected) "--" else if (data.fanOn) data.speed.toString() else offText',
+          r'"F" -> "F:" + if (!data.connected) "--" else if (data.fanOn) "${data.speed}%" else offText',
         ),
       );
       expect(native, isNot(contains('SurfaceFlinger')));
