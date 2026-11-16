@@ -11,15 +11,17 @@ Last reconciled: 2026-11-16 (Asia/Jakarta). Current truth only. Build history re
 
 ## Live source recovery status — 2026-11-16
 
-**Current main is NOT buildable and NOT READY FOR APP BUILD.** Latest live main HEAD checked in the current Diskusi session: `5007a9b1eab972ea89d2dfc2939db7adf69e6799` before the documentation-only reconciliation commits; recursive tree complete, 139 entries. Latest source-updated revision remains `05ab2bcf9a619b497d1a9f6f2abc974093808f37`.
+**Source recovery: COMPLETE. Hosted Flutter validation: UNKNOWN / NOT VERIFIED. App Build: NOT AUTHORIZED.**
 
-- `lib/main.dart` blob `c28b1bcdb26673c3f317bf2448839b9ab7cd66ae` remains 1,582,015 bytes / 45,030 lines, compared with clean baseline `48dd0c943075db076769c3d9dc53b8b71a28a5c3` (403,036 bytes). Direct inspection reconfirmed four active top-level copies of `LedColorPreset`, `TamperApp` and `DashboardScreen`, plus malformed syntax fragments.
-- Validation Only #27 / run `43808741923` / job `133105410519` is terminal CANCELLED. Full log recheck: dependencies SUCCESS; formatter precheck FAILED on parser errors (lines 174, 448, 11,447); formatter apply FAILED (exit 65); final formatter FAILED (exit 65); analyzer FAILED with syntax/duplicate-definition errors; Flutter tests CANCELLED. No successful validation covers current source.
-- The visible Adaptive ceiling card remains in `lib/main.dart` around lines 9,367–9,398. Remove the visible card only; retain `adaptiveCeiling`, `ADAPTIVE_CEILING`, Firmware clamp, Lock Voltage and all safety/transition behavior.
-- Partial improvements remain in dictionary, Usage Statistics, Floating Monitor and native HUD/channel copy. Stale OTA byte-grouping and Device-copy test expectations remain; add semantic tests for profile labels, Adaptive-card absence, HEX-aware color names, native HUD units, Device alerts title and protected contracts.
-- Build #163 / run `43679305537` / Release `403010611` / tag `jexfyz-latest` remains the latest successful package at source `9466e8eeb269da5bc8806f0df1d4212cf24e1746`. It predates current localization changes and does not validate current main.
-- Prior `Eksekusi Full!` work item remains **RECOVERY_REQUIRED**. The next safe command is explicit `Eksekusi Full!` for source reconstruction and non-publishing validation. Only after green validation should a separate `Eksekusi Build App!` be considered.
-
+- Restored `lib/main.dart` from verified clean baseline blob `48dd0c943075db076769c3d9dc53b8b71a28a5c3`; source commit `b4558cee8b5a4455603473d31e46b3b108f20576`; final blob `b12ea764b674b79f8a19bd70191fcf25ea3046a5` (401,983 characters / 11,427 lines).
+- Live readback shows one active `LedColorPreset`, `TamperApp`, and `DashboardScreen`; malformed fragments and duplicate declarations from the damaged 1.58 MB source are gone.
+- Reapplied Home/NOTIFY decimal parsing and legacy normalization, localized Hotside threshold/re-arm copy, OTA byte grouping and Adaptive profile notice translation. Removed only the visible Adaptive ceiling card; retained `adaptiveCeiling` state and `ADAPTIVE_CEILING` telemetry. No Firmware/BLE protocol changes.
+- Regression tests updated: `test/localization_contract_test.dart` (blob `aa22fcfd0d493b86bc6697eebb7456446d1f7868`), `test/widget_test.dart` (blob `3d4595759900483195d8f498322d82d59a6f40fe`), `test/usage_statistics_test.dart` (blob `e366371350c9267bb23362ed744bb39ec653b464`). Added tests for decimal comma/dot parsing, legacy notices, locale-grouped OTA bytes, exact active/legacy Adaptive labels and Adaptive-card absence with telemetry preservation.
+- Static checks passed: delimiter/comment/string scan for six Dart files; one copy of each previously duplicated class; no visible Adaptive ceiling card; retained internal ceiling state/telemetry; localized parser/grouping and current regression expectations present.
+- Local Dart/Flutter SDK is unavailable. Formatter, analyzer and Flutter tests are **NOT VERIFIED**. The non-publishing validation workflow is push-triggered; the available GitHub workflow lookup only returns PR-triggered runs, so the latest push-run status cannot be read here. Treat external validation status as UNKNOWN, not success.
+- Latest verified package remains Build #163 / run `43679305537` / Release `403010611` / tag `jexfyz-latest`, immutable source `9466e8eeb269da5bc8806f0df1d4212cf24e1746`. It predates current restored source. No App Build, Release, Firmware, BIN, Firebase, OTA, flash or device operation was performed.
+- **Next gate:** obtain the latest `JE X FYZ — Validation Only` GitHub Actions run ID/result. Do not start Build App until formatter, analyzer and Flutter tests are green. A separate `Eksekusi Build App!` remains mandatory.
+- **Visual status:** NOT VERIFIED. No new APK/screenshots or owner-side device evidence exists for the restored source.
 
 ## Historical hosted validation baseline — Validation Only #19 SUCCESS (pre-localization correction set)
 
