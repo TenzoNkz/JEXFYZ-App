@@ -1,4 +1,18 @@
-## CURRENT MAIN — BUILD #163 PACKAGE VERIFIED / NEXT COPY & ADAPTIVE REMEDIATION PENDING — 2026-11-16
+# LIVE MAIN OVERRIDE — RECOVERY BLOCKED — 2026-11-16
+
+This reconciliation supersedes any older “current main”, “next copy pending”, or “prebuild ready” status labels in the historical audit below.
+
+- Current source is **NOT READY FOR APP BUILD**. The latest source-updated revision inspected was `05ab2bcf9a619b497d1a9f6f2abc974093808f37`; the current recovery documentation/status commit is newer and source-neutral.
+- `lib/main.dart` is corrupted: blob `c28b1bcdb26673c3f317bf2448839b9ab7cd66ae`, 1,582,015 bytes / 45,030 lines, compared with clean 403,036-byte blob `48dd0c943075db076769c3d9dc53b8b71a28a5c3`. It contains repeated active top-level declarations and a malformed fragment near line 11,447.
+- Validation Only #27 / run `43808741923` / job `133105410519` ended CANCELLED; its logs show Dart formatter exit 65 and Flutter analyzer parser/duplicate-definition errors. The current source has no successful validation result.
+- The visible Adaptive ceiling card is still in the surviving code. It must be removed presentation-only while preserving `adaptiveCeiling`, `ADAPTIVE_CEILING`, the Firmware clamp and Lock Voltage.
+- Partial changes in dictionary, Usage Statistics, Floating Monitor and native HUD/channel copy are recorded in APP_NOTES.md and CHAT_TRANSFER.md; stale test expectations remain in `test/localization_contract_test.dart` and `test/device_copy_notification_contract_test.dart`.
+- Build #163 / run `43679305537` / Release `403010611` / tag `jexfyz-latest` remains the latest successful package at source `9466e8eeb269da5bc8806f0df1d4212cf24e1746`. That older artifact remains verified; it does not validate or contain current main changes.
+- Next gate: explicit `Eksekusi Full!` to reconstruct source and tests, then complete allowed non-publishing quality checks. Only after that, a separate `Eksekusi Build App!` may be considered. No Build App, Firmware, BIN, Firebase, OTA, flash or device action is authorized here.
+
+---
+
+## HISTORICAL PREBUILD SNAPSHOT — BUILD #163 PACKAGE VERIFIED — 2026-11-16
 
 - **Latest verified package:** Build #163 / Actions run `43679305537` / job `132706236782`, terminal SUCCESS, immutable package source `9466e8eeb269da5bc8806f0df1d4212cf24e1746`.
 - **Validation source:** Validation Only #19 / run `43677560315` / job `132700920324` passed on `8fca2ecebf8b2ffb83fc9475a817c832f8269dc5`; formatted follow-up `fc39de16a5480347ce13083760424a309957c311`. The verified compare from the formatted source to Build #163's package SHA contains only documentation/skill/status/checkpoint paths; no App source, tests, Android config, dependencies or workflow paths changed. The package therefore contains the tested executable/test state.

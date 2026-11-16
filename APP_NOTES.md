@@ -571,3 +571,34 @@ This continuation refines the 2026-11-15 findings. Live source still has **353**
 - Validation Only #19 / run 43677560315, job 132700920324, tested source 8fca2ecebf8b2ffb83fc9475a817c832f8269dc5 and passed: formatter clean after one auto-format correction; analyzer 118 infos / zero warnings/errors; Flutter 197/197. Formatter follow-up is fc39de16a5480347ce13083760424a309957c311.
 - Validation Only #18 / run 43677411117 is preserved as an intermediate failure (196/197) caused by one stale LED output-copy expectation. The assertion was corrected and #19 passed.
 - Build #163 / run `43679305537` is the latest verified package and includes this localization/state remediation on source `9466e8eeb269da5bc8806f0df1d4212cf24e1746`; Validation Only #19 passed 197/197 on the same executable/test lineage. The additional 2026-11-16 full copy/format audit and Adaptive profile-card changes remain separate, NOT IMPLEMENTED / NOT RELEASED work. Actual Android/OEM visual acceptance remains unverified.
+
+
+## Live recovery audit — 2026-11-16 (supersedes earlier pending/implemented labels)
+
+### Critical P1 — main.dart is corrupted
+
+- Clean baseline blob: `48dd0c943075db076769c3d9dc53b8b71a28a5c3`, 403,036 bytes, matching Build #163 package source `9466e8eeb269da5bc8806f0df1d4212cf24e1746` and commit `39e70cb0bac4271785905f9b56fdaca5337dbb30`.
+- Current source blob at the last source-updated main revision: `c28b1bcdb26673c3f317bf2448839b9ab7cd66ae`, 1,582,015 bytes / 45,030 lines. Compare from Build #163 source shows `lib/main.dart` +33,581 / −11.
+- Repeated active top-level declarations include `LedColorPreset` at lines 1,034 / 12,320 / 23,331 / 34,617; `TamperApp` at 4,434 / 15,720 / 26,731 / 38,017; and `DashboardScreen` at 4,567 / 15,853 / 26,864 / 38,150. Around line 11,447 a dangling `, caseSensitive: false), '')` fragment follows a closed class. The declarations were checked as active Dart tokens, not comment/string contents.
+- Hosted Validation Only #27 logs confirm the defect: `dart format` exits 65 and `flutter analyze` reports parser and duplicate-definition errors for repeated declarations in `lib/main.dart`. Run `43808741923` / job `133105410519` ended CANCELLED; no passing test result was produced.
+- Main growth first appears in commit `268de5e41837bea14a1ff5fce511654bc9b833a6` (from 403,036 to 798,992 bytes) and expands again in `cf4342b67719cbed97760ed35a319eb12822eaec` (to 1,582,015 bytes). Do not patch by blind truncation or append another whole-file snapshot. Restore the clean base and reapply the intended Home/NOTIFY and notice-parser changes exactly once.
+
+### Partial corrections confirmed in live source (not yet validated or released)
+
+- `lib/app_settings.dart` active profile keys now match the exact approved labels; legacy aliases remain aligned. Generic Hotside is Sisi Panas; `volt` is Voltage/Tegangan; OTA Online is Daring; Adaptive logical mode uses inactive/nonaktif. The temperature settings labels now explain the 5 V upper-temperature ceiling and 12 V lower-temperature floor.
+- `lib/usage_statistics.dart` includes locale-aware fractional axes, localized month names/year and 24-hour session dates, local decimal display and revised Battery/Sisi Panas copy. `test/usage_statistics_test.dart` now expects the three-argument formatter and new date/label outputs.
+- `lib/floating_monitor.dart` formats scale values via the locale helper. `FloatingMonitorService.kt` renders temperatures with °C and Indonesian decimal commas, voltage with a separating space, and Fan Speed as a percentage while preserving compact metric IDs. `MainActivity.kt` now uses Device alerts / Peringatan perangkat for the channel title.
+- Home notice/legacy parsing and OTA byte-group formatting changes are present only inside the corrupted main.dart; their acceptance is deferred until reconstruction and validation.
+- The Adaptive selector still contains the visible `adaptiveCeiling` card/readout (first copy around line 9,376, repeated later). Remove the complete visual card, not the telemetry/state/clamp.
+- `test/localization_contract_test.dart` remains stale: it expects ungrouped `120400` / `131072` bytes, while `formatOtaUploadSizeMismatch` now passes locale-grouped `JexText.formatNumber` results. Expected EN display becomes `120,400` / `131,072`; ID display becomes `120.400` / `131.072`.
+- `test/device_copy_notification_contract_test.dart` still asserts the obsolete `Suhu Hotside` copy; Validation Only #20 recorded actual `Suhu Sisi Panas`. Add missing tests for exact Adaptive profile labels, absence of the ceiling card, native HUD units, Device alerts title and protected telemetry/state contracts.
+- Color shade names still require HEX-aware verification. EN/ID fit and accessibility at 350-dp/360-dp remain unverified without valid rendered screenshots.
+
+### Validation and release boundary
+
+- Validation Only #20 / run `43806817665` failed 1 of 197 tests: expected `Suhu Hotside`, actual `Suhu Sisi Panas`.
+- Validation Only #22 / run `43807291287` failed compilation of `test/usage_statistics_test.dart` because two calls supplied only two arguments after `formatUsageAxisTick` became a three-argument function.
+- Validation Only #23–#27 were cancelled; #27 logs also show the current main.dart parser/analyzer failure. No successful Validation Only run covers the current correction set.
+- Build #163 / run `43679305537` / Release `403010611` / tag `jexfyz-latest` succeeded for older source `9466e8eeb269da5bc8806f0df1d4212cf24e1746`; it is not validation of the newer main-branch changes.
+- Status of the prior Eksekusi Full objective is **RECOVERY_REQUIRED**. This Diskusi review changed documentation only. Next safe action is a fresh explicit `Eksekusi Full!`; App Build/release still needs separate `Eksekusi Build App!`.
+

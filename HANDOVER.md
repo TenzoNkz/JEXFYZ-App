@@ -1,11 +1,36 @@
-## Current handover — Build #163 released and verified — 2026-11-15
+# JE X FYZ / JE Cooler — Current Handover
 
-- **Completed:** Build #163 / [run 43679305537](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/43679305537), job `132706236782`, owner trigger Issue #40, immutable source SHA `9466e8eeb269da5bc8806f0df1d4212cf24e1746`. All required gates 1–21 and cleanup 39–43 SUCCESS.
-- **Release:** [GitHub Release — jexfyz-latest](https://github.com/TenzoNkz/JEXFYZ-App/releases/tag/jexfyz-latest), Release ID 403010611. Exactly one APK and one matching source ZIP; tag and Release target match the build SHA; fresh downloads passed checksum, ZIP integrity, signature and pinned-certificate checks.
-- **APK:** `JEXFYZ-release.apk`, 55,881,819 bytes, SHA-256 `97c7cf99bef5d89f82b13d8f1c4b3c02dede541c2642a751ba61c8f9290a245c`.
-- **Source ZIP:** 2,943,100 bytes, SHA-256 `866117d208d38d2c04a2f7f097b5dc8941850a16bd52172a35d761af71334c00`.
-- Analyzer 118 infos / zero warnings/errors; Flutter tests 197/197; Gradle BUILD SUCCESSFUL in 2m43s (native Android App test tasks NO-SOURCE). V1/V2/V3 signing and pinned fingerprint passed; self-signed PKIX chain and Kotlin/Gradle/DWARF warnings are documented in APP_BUILD_REPORT.md.
-- **Immediate next project action:** `Eksekusi Full!` is recommended for the complete bilingual copy correction and Adaptive presentation scope, but this recommendation is not authorization. Implement the full source matrix recorded in `APP_NOTES.md`: all 353 dictionary entries/167 inline phrases, Usage Statistics and Home/NOTIFY wording, legacy-notice parsing, exact Adaptive labels and removal of only the visible Adaptive Limit card, locale-aware decimal/group/date/unit formatting, Floating HUD units/values, native notification channel copy and HEX-aware color-name review. Add the semantic, legacy, locale-format, native-copy and protected-state regressions. Preserve the internal Adaptive ceiling/telemetry/clamp, BLE/protocol/storage identifiers, Firmware safety, independent system LEDs, RGB commands/priority, persisted color IDs and HEX values. The exact profile pairs are `Hotside Protection` / `Perlindungan Suhu Panas` and `Hotside & Battery Protection` / `Perlindungan Suhu Panas & Baterai`; do not insert `Temperature`, hyphenate `Hotside`, or replace `&` with `+`. Any new APK still requires a separate `Eksekusi Build App!` command.
-- **Pre-execution review — 2026-11-16:** found a key-binding gap between the recorded Adaptive profile decision and live source. `main.dart` reads `hotsideProtection` and `hotsideBattery`, while their current dictionary values do not match the exact owner-approved profile pairs. `APP_NOTES.md` now maps each active key explicitly and records preservation of legacy aliases `hSideProtection` / `hSideBattery` with their displayed values aligned to the active profile pairs; keep generic `hotsideProtectionActive` copy translated as `Sisi Panas`. The stale Build #162 package claims in APP_NOTES, APP_PREBUILD_AUDIT and DESIGN_NOTES were reconciled to Build #163. Firmware V7.2 source also confirms that the 5 V battery threshold is the upper-temperature ceiling and the 12 V threshold is the lower-temperature floor (25 °C / 35 °C defaults, 0.5 °C hysteresis); only final short-label fit remains open. No App source, tests, native code, config, workflow or Firmware file was changed; no formatter/analyzer/test/build was run in this Diskusi.
-- **Build boundary:** Build #163 remains the latest verified package and predates the new wording decision. A new package requires a separate explicit `Eksekusi Build App!` command. Owner installation and Android/OEM visual/BLE verification remain separate and are not evidenced by CI. Preserve Android `versionName "Telegram @horizontalzzz"`.
-- No Firmware compile/BIN, Firebase mutation, OTA, flash or device operation was performed.
+Last reconciled: 2026-11-16 (Asia/Jakarta). This is the immediate operating handover; detailed decisions and evidence remain in CHAT_TRANSFER.md and APP_NOTES.md.
+
+## Current state — RECOVERY_REQUIRED
+
+- Prior `Eksekusi Full!` localization/formatting work was interrupted before closure. The source changes are partially committed, but the current main branch is **not buildable**.
+- At recovery review, source revision was `05ab2bcf9a619b497d1a9f6f2abc974093808f37`; the incoming Diskusi status write was `b047f209ce958faa97a5b5d06155871d341ea395`. The documentation checkpoint is being reconciled without source edits.
+- `lib/main.dart` is corrupted: 1,582,015 bytes / 45,030 lines versus the clean 403,036-byte baseline blob `48dd0c943075db076769c3d9dc53b8b71a28a5c3`. It contains repeated top-level classes/functions and an orphaned fragment near line 11,447. Hosted Validation Only #27 logs show Dart formatter failure (exit 65) and duplicate-definition analyzer errors. Do not build this source.
+- **Latest delivered package remains Build #163**, run `43679305537` / job `132706236782`, Release `403010611`, tag `jexfyz-latest`, package SHA `9466e8eeb269da5bc8806f0df1d4212cf24e1746`. It remains valid as the previous package but does not contain the recent localization changes.
+
+## Partial progress already present on main
+
+- Exact Adaptive profile labels and legacy aliases are aligned in `lib/app_settings.dart`; generic Hotside, Voltage, OTA Online/Daring, Adaptive inactive/nonaktif and 5 V ceiling / 12 V floor labels have been corrected.
+- Usage Statistics dates, decimal axes, temperature labels/units and copy were partly localized; its focused test was updated.
+- Floating Monitor scale numbers and native HUD metric units were localized; MainActivity Device alerts title was corrected.
+- Home notice and OTA byte grouping changes are present in the damaged main.dart and require reconstruction before acceptance.
+
+## Remaining blockers and QC gaps
+
+1. Rebuild `lib/main.dart` from clean blob `48dd0c943075db076769c3d9dc53b8b71a28a5c3`; reapply only intended Home/NOTIFY, locale parser, OTA byte-grouping and legacy-notice changes once. Never append full-file content or salvage by arbitrary truncation.
+2. Remove the visible Adaptive ceiling card/readout while preserving `adaptiveCeiling`, `ADAPTIVE_CEILING`, Firmware clamp and Lock Voltage behavior.
+3. Update stale regression expectations: `test/localization_contract_test.dart` expects ungrouped OTA bytes; `test/device_copy_notification_contract_test.dart` still expects `Suhu Hotside`. Add the missing semantic, native-HUD, Device alerts, Adaptive-card absence and protected-contract tests.
+4. Re-review HEX-aware color names; verify EN/ID labels at 350-dp/360-dp only after an authorized build/render or actual screenshots are available.
+
+## Next authorization
+
+- The next safe command is `Eksekusi Full!` to repair the App source/tests/docs scope and run the allowed non-publishing quality checks once the source is syntactically complete.
+- `Eksekusi Full!` does **not** authorize App Build/release. A new APK requires a separate `Eksekusi Build App!` command.
+- No Firmware compilation, BIN publication, Firebase mutation, OTA, flashing or physical-device operation is authorized or implied.
+
+## External evidence
+
+- Validation Only #27 / run `43808741923` / job `133105410519` / source `05ab2bcf9a619b497d1a9f6f2abc974093808f37`: terminal CANCELLED; job logs show formatter/parser and duplicate-definition analyzer errors.
+- Earlier Validation Only #20 failed one stale copy assertion; #22 failed stale formatter-signature calls. Runs #23–#27 were cancelled; no successful validation covers the current correction set.
+- Build #163 / run `43679305537` / Release `403010611`: COMPLETED / SUCCESS for the older package source only.

@@ -6,10 +6,23 @@ Last reconciled: 2026-11-16 (Asia/Jakarta). Current truth only. Build history re
 
 - Canonical repository/branch: TenzoNkz/JEXFYZ-App / main.
 - Build #163 is the latest verified App package and Release: Actions run 43679305537 / job 132706236782 / Issue #40; immutable package source 9466e8eeb269da5bc8806f0df1d4212cf24e1746; terminal SUCCESS.
-- Current compare from the immutable Build #163 package source to main shows only 10 Markdown status/subject/audit/checkpoint/ledger documents changed; no App source, tests, Android config, dependencies, workflows or release inputs changed after the package.
+- At recovery-review entry, the compare from Build #163 source to main covered 17 changed paths, including App source/tests, Android presentation code and documentation. `lib/main.dart` alone showed +33,581 / −11 lines; current main is not equivalent to the released package.
 - Twelve canonical .agents/skills and twelve .github/skills are mirrored byte-for-byte. Guarded App release and non-publishing Validation Only workflows remain separate.
 
-## Latest hosted source validation — Validation Only #19 SUCCESS
+## Live source recovery status — 2026-11-16
+
+**Current main is not buildable and must not be submitted to App Build.** At recovery-review entry the source commit was `05ab2bcf9a619b497d1a9f6f2abc974093808f37`; the incoming Diskusi status commit was `b047f209ce958faa97a5b5d06155871d341ea395`.
+
+- `lib/main.dart` expanded from the clean 403,036-byte blob `48dd0c943075db076769c3d9dc53b8b71a28a5c3` to 1,582,015 bytes / 45,030 lines, with +33,581 / −11 lines versus Build #163 package source. Four active top-level copies of core declarations are present, along with a malformed orphan fragment near line 11,447.
+- Validation Only #27 / run `43808741923` / job `133105410519` ended CANCELLED. Its job log records `dart format` exit code 65 and Flutter analyzer duplicate-definition/parser errors in `lib/main.dart`; its Flutter test step has no successful terminal result. Earlier #20 failed a stale `Suhu Hotside` expectation; #22 failed old two-argument calls to the updated three-argument axis formatter; #23–#27 were cancelled. No green validation covers the present source.
+- Build #163 / run `43679305537` / Release `403010611` / tag `jexfyz-latest` remains the latest successful delivered package at source `9466e8eeb269da5bc8806f0df1d4212cf24e1746`. That package predates the latest localization changes and is not evidence for current main.
+- Partial improvements visible in non-corrupted source files: exact Adaptive profile dictionary labels and aliases; generic Hotside/Voltage/OTA wording; explicit 5 V ceiling / 12 V floor labels; Usage Statistics locale numbers/dates/copy; Floating Monitor scale values; native Floating HUD units; and Device alerts channel title.
+- Remaining source/test gaps: main.dart reconstruction; remove only the visible Adaptive ceiling card while preserving its telemetry/clamp; update stale grouped-byte and Device-copy test expectations; add semantic and native-HUD/channel assertions; verify HEX-aware shade terms and narrow-width layout after code is buildable.
+- Recommended repair base: clean main.dart blob `48dd0c943075db076769c3d9dc53b8b71a28a5c3` from Build #163 source / commit `39e70cb0bac4271785905f9b56fdaca5337dbb30`. Reapply the intended Home/NOTIFY and legacy-notice changes once, rather than truncating/concatenating the damaged file.
+- Status: prior `Eksekusi Full!` item = **RECOVERY_REQUIRED**. This Diskusi review made documentation-only updates. Next safe command is explicit `Eksekusi Full!`; App Build requires separate `Eksekusi Build App!`.
+
+
+## Historical hosted validation baseline — Validation Only #19 SUCCESS (pre-localization correction set)
 
 - Run/job: 43677560315 / 132700920324; tested source 8fca2ecebf8b2ffb83fc9475a817c832f8269dc5; terminal SUCCESS.
 - Flutter 3.47.2 / Dart 3.13.2; locked dependency resolution PASS.
@@ -36,14 +49,14 @@ Last reconciled: 2026-11-16 (Asia/Jakarta). Current truth only. Build history re
 - Android native test tasks were NO-SOURCE. Owner installation, Android/OEM screenshots, BLE/device behavior, Firmware compile/BIN provenance, Firebase, OTA/flash, thermal/electrical safety remain unverified.
 - The Actions run has no workflow artifacts; the required APK and source ZIP are delivered and verified as GitHub Release assets.
 
-## Localization and state semantics now released
+## Localization and state semantics in the Build #163 package baseline (historical)
 
 - English remains the master/default language. JexText contains 353 bilingual keys on the live source; dictionary locale/placeholder and inline phrase placeholder parity are covered by tests.
 - Thermal Safety uses Keselamatan; successful safety status is Pemeriksaan keselamatan berhasil. Fan-before-cooling copy states its prerequisite; protected sequence remains FAN:ON → successful ACK → PELTIER:ON.
 - Adaptive is a logical mode: EN ACTIVE/INACTIVE, ID AKTIF/NONAKTIF. Peltier/Fan/LED are physical outputs: compact EN ON/OFF, ID HIDUP/MATI; natural Indonesian prose uses menyala/mati.
 - Fan Speed remains numeric when running and OFF/MATI when stopped; disconnected/unknown values remain --. Usage Statistics distinguishes logical mode from hardware output while preserving voltage/unknown states. OTA mismatch copy labels received bytes first and expected bytes second.
 
-## Owner-approved localization correction — implementation pending — 2026-11-15
+## Owner-approved localization correction — partial main-branch implementation; recovery required — 2026-11-15
 
 - English is the master/source language and default App language. All user-visible English copy must be complete and grammatical; Indonesian copy must be fully translated, natural and standard rather than mixed-language.
 - Approved general UI glossary: Battery → Baterai; Battery Temperature → Suhu Baterai; generic Hotside component references → Sisi Panas; Hotside Temperature → Suhu Sisi Panas; Hotside Limit → Batas Suhu Sisi Panas; generic cooler → pendingin; Adaptive Mode → Mode Adaptif; Fan → Kipas; Fan Speed → Kecepatan Kipas; Voltage → Tegangan. General thermal-protection prose uses Perlindungan Sisi Panas. The Adaptive profile selector is a key-specific exception: active key `hotsideProtection` must render `Hotside Protection / Perlindungan Suhu Panas`, and `hotsideBattery` must render `Hotside & Battery Protection / Perlindungan Suhu Panas & Baterai`. Preserve legacy dictionary aliases `hSideProtection` and `hSideBattery`; do not rename or delete keys, and align their display values to the same exact profile pairs as the active keys.
@@ -51,7 +64,7 @@ Last reconciled: 2026-11-16 (Asia/Jakarta). Current truth only. Build history re
 - The previous source rule retaining Hotside in both locales is superseded by this explicit owner decision. Current source still contains old copy in Usage Statistics, App Settings and Home/NOTIFY. Existing usage-statistics widget tests assert the old wording; update source and regression tests together in a separately authorized Eksekusi Full task.
 - This is a localization decision/checkpoint only. No App source/tests were changed and no new App package was created in this Diskusi. Build #163 remains the latest verified package and predates these corrections.
 
-## Comprehensive copy quality audit — implementation pending — 2026-11-15
+## Comprehensive copy quality audit — partial main-branch implementation; current source blocked — 2026-11-15
 
 - Inventory: 353 bilingual dictionary entries; 167 inline bilingual phrase call sites; 258 lookup call sites; native copy is also present in JeForegroundService.kt, FloatingMonitorService.kt and MainActivity.kt. Locale-presence and placeholder tests do not prove language quality.
 - Source defects include untranslated Hotside labels/copy, Usage Statistics “Suhu Baterai HP” / “Suhu Hotside” / “Baterai HP”, generic “cooler” left in Indonesian sentences, internal FAN/PELTIER tokens in user-facing copy, and dynamically constructed Home/NOTIFY messages that still emit Hotside.
@@ -64,7 +77,7 @@ Last reconciled: 2026-11-16 (Asia/Jakarta). Current truth only. Build history re
 - APP_NOTES.md now contains the owner-approved global language, writing and formatting standard plus the full read-only audit. CHAT_TRANSFER.md carries the full implementation handoff.
 - No source/test/native changes or formatter/analyzer/test/render/build operation occurred in Diskusi. Build #163 remains the latest package and contains the pre-correction copy.
 
-## Adaptive profile / ceiling presentation / RGB naming — implementation pending — 2026-11-15
+## Adaptive profile / ceiling presentation / RGB naming — partial implementation; recovery required — 2026-11-16
 
 - Owner decision: remove the Adaptive page's visible information card labelled “Adaptive Limit” / “Batas Adaptif” and its displayed ceiling voltage. Remove the whole card, not just its label.
 - Safety boundary: presentation-only. Retain internal `adaptiveCeiling`, `ADAPTIVE_CEILING` telemetry/state synchronization, Firmware voltage clamp, and all safety/transition behavior.
@@ -91,5 +104,6 @@ Last reconciled: 2026-11-16 (Asia/Jakarta). Current truth only. Build history re
 
 ## Immediate next action
 
-- Build #163 is complete. Owner may install the verified APK and conduct physical-device/OEM visual/BLE checks; those are separate from CI and require owner/device evidence.
-- No new App Build trigger or Firmware/BIN/Firebase/OTA/flash/device action is pending or authorized by this completed interaction.
+- Current main is **not an App Build candidate**. First use an explicit `Eksekusi Full!` to reconstruct `lib/main.dart` from clean blob `48dd0c943075db076769c3d9dc53b8b71a28a5c3`, reapply intended Home/NOTIFY and legacy-notice behavior once, remove the visible Adaptive ceiling card only, align tests and run the allowed non-publishing validation.
+- Do not start `Eksekusi Build App!` until source formatting, analyzer and all required tests pass on the same main revision. Any new APK/Release requires that separate explicit command.
+- Physical-device/OEM visual/BLE checks remain owner/device tasks and are not inferred from CI. No Firmware/BIN/Firebase/OTA/flash/device work is authorized by this checkpoint.
