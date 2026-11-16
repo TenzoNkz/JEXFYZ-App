@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — Current Project State
 
-Last reconciled: 2026-11-16 (Asia/Jakarta). Current truth only. Build history remains in APP_BUILD_REPORT.md and CHANGELOG.md; rolling chat continuation remains in CHAT_TRANSFER.md.
+Last reconciled: 2026-11-16 16:52 (Asia/Jakarta). Current truth only. Build history remains in APP_BUILD_REPORT.md and CHANGELOG.md; rolling chat continuation remains in CHAT_TRANSFER.md.
 
 ## Repository baseline
 
@@ -11,16 +11,16 @@ Last reconciled: 2026-11-16 (Asia/Jakarta). Current truth only. Build history re
 
 ## Live source recovery status — 2026-11-16
 
-**Source recovery: COMPLETE. Hosted Flutter validation: UNKNOWN / NOT VERIFIED. App Build: NOT AUTHORIZED.**
+**Source recovery: COMPLETE. Hosted Flutter validation: SUCCESS — Validation Only #38 passed all required gates and committed its formatter-only result to current main. App Build: NOT AUTHORIZED.**
 
 - Restored `lib/main.dart` from verified clean baseline blob `48dd0c943075db076769c3d9dc53b8b71a28a5c3`; source commit `b4558cee8b5a4455603473d31e46b3b108f20576`; final blob `b12ea764b674b79f8a19bd70191fcf25ea3046a5` (401,983 characters / 11,427 lines).
 - Live readback shows one active `LedColorPreset`, `TamperApp`, and `DashboardScreen`; malformed fragments and duplicate declarations from the damaged 1.58 MB source are gone.
 - Reapplied Home/NOTIFY decimal parsing and legacy normalization, localized Hotside threshold/re-arm copy, OTA byte grouping and Adaptive profile notice translation. Removed only the visible Adaptive ceiling card; retained `adaptiveCeiling` state and `ADAPTIVE_CEILING` telemetry. No Firmware/BLE protocol changes.
 - Regression tests updated: `test/localization_contract_test.dart` (blob `aa22fcfd0d493b86bc6697eebb7456446d1f7868`), `test/widget_test.dart` (blob `3d4595759900483195d8f498322d82d59a6f40fe`), `test/usage_statistics_test.dart` (blob `e366371350c9267bb23362ed744bb39ec653b464`). Added tests for decimal comma/dot parsing, legacy notices, locale-grouped OTA bytes, exact active/legacy Adaptive labels and Adaptive-card absence with telemetry preservation.
 - Static checks passed: delimiter/comment/string scan for six Dart files; one copy of each previously duplicated class; no visible Adaptive ceiling card; retained internal ceiling state/telemetry; localized parser/grouping and current regression expectations present.
-- Local Dart/Flutter SDK is unavailable. Formatter, analyzer and Flutter tests are **NOT VERIFIED**. The non-publishing validation workflow is push-triggered; the available GitHub workflow lookup only returns PR-triggered runs, so the latest push-run status cannot be read here. Treat external validation status as UNKNOWN, not success.
+- Hosted Validation Only #38 (run `43843348889`, job `133217253810`) tested source SHA `01cf1295458564820b52afc6ca33037583a430c6` and completed SUCCESS. Locked dependencies passed; formatter applied five Dart-file formatting changes and the final check passed; analyzer passed; Flutter tests passed 200/200. The workflow then committed its formatter-only patch as `b8fcdaf191c5e8bb5df5fa44c50c80a12dfd03da`, now current `main` HEAD. No separate subsequent Validation Only run is listed for this auto-format commit; it represents the exact formatted workspace tested in run #38. Local Flutter/Dart SDK is unavailable, so verification is hosted only.
 - Latest verified package remains Build #163 / run `43679305537` / Release `403010611` / tag `jexfyz-latest`, immutable source `9466e8eeb269da5bc8806f0df1d4212cf24e1746`. It predates current restored source. No App Build, Release, Firmware, BIN, Firebase, OTA, flash or device operation was performed.
-- **Next gate:** obtain the latest `JE X FYZ — Validation Only` GitHub Actions run ID/result. Do not start Build App until formatter, analyzer and Flutter tests are green. A separate `Eksekusi Build App!` remains mandatory.
+- **Source validation gate:** COMPLETE for the current formatted source. Build App remains a separate operation and is not authorized by the current Eksekusi Full command; require explicit `Eksekusi Build App!` before package/release work.
 - **Visual status:** NOT VERIFIED. No new APK/screenshots or owner-side device evidence exists for the restored source.
 
 ## Historical hosted validation baseline — Validation Only #19 SUCCESS (pre-localization correction set)
@@ -105,6 +105,6 @@ Last reconciled: 2026-11-16 (Asia/Jakarta). Current truth only. Build history re
 
 ## Immediate next action
 
-- Current main is **not an App Build candidate**. First use an explicit `Eksekusi Full!` to reconstruct `lib/main.dart` from clean blob `48dd0c943075db076769c3d9dc53b8b71a28a5c3`, reapply intended Home/NOTIFY and legacy-notice behavior once, remove the visible Adaptive ceiling card only, align tests and run the allowed non-publishing validation.
-- Do not start `Eksekusi Build App!` until source formatting, analyzer and all required tests pass on the same main revision. Any new APK/Release requires that separate explicit command.
+- The authorized source recovery, analyzer cleanup, regression alignment and hosted Validation Only checks are complete. Current main HEAD is `b8fcdaf191c5e8bb5df5fa44c50c80a12dfd03da`; run #38 passed dependency resolution, formatter, analyzer and 200/200 Flutter tests before committing the formatter-only changes.
+- Do not start package/release operations under this mode. A separate explicit `Eksekusi Build App!` is required for guarded App Build/QC.
 - Physical-device/OEM visual/BLE checks remain owner/device tasks and are not inferred from CI. No Firmware/BIN/Firebase/OTA/flash/device work is authorized by this checkpoint.
