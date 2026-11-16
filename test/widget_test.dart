@@ -3818,10 +3818,7 @@ void main() {
         connection,
         contains('advertisedName: result.advertisementData.advName'),
       );
-      expect(
-        connection,
-        contains("fallback: JexText.of('device', lang)"),
-      );
+      expect(connection, contains("fallback: JexText.of('device', lang)"));
       expect(
         connection,
         isNot(contains("name.trim().toLowerCase() == 'je x fyz'")),

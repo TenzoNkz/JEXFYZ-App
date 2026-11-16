@@ -98,14 +98,15 @@ void main() {
     test(
       'uses the localized fallback only when both Bluetooth names are empty',
       () {
-      expect(
-        connectionDeviceDisplayName(
-          advertisedName: '  ',
-          platformName: '',
-          fallback: 'Perangkat',
-        ),
-        'Perangkat',
-      );
-    });
+        expect(
+          connectionDeviceDisplayName(
+            advertisedName: '  ',
+            platformName: '',
+            fallback: 'Perangkat',
+          ),
+          'Perangkat',
+        );
+      },
+    );
   });
 }
