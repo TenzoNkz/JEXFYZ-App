@@ -1,19 +1,19 @@
 # JE X FYZ / JE Cooler — Current Handover
 
-Last reconciled: 2026-11-16 23:23:33 (Asia/Jakarta).
+Last reconciled: 2026-11-16 23:33:56 (Asia/Jakarta).
 
-## Current state — BUILD #165 ACTIVE / BLUETOOTH FIX BEING PACKAGED
+## Current state — BUILD #165 RELEASED SUCCESS
 
-- Root cause: the Connection sheet deliberately replaced the real BLE local name `JE X FYZ` with localized generic `Perangkat`. Firmware V7.2 source already contains `BLE_NAME = "JE X FYZ"` and `BLEDevice::init(BLE_NAME)`.
-- App fix: Connection row now prefers current advertisement name, falls back to platform name, and uses `Device` / `Perangkat` only when both are empty. No Firmware, BLE UUID, P1 framing, scanner ownership or connection logic changed.
-- Regression coverage: four pure name-mapping cases plus Connection/Firmware source-contract test.
-- Validation Only #44 / run `43899329198` / job `133411358928` — **SUCCESS** on input `4a875b3d63beea6e7d469c27f0c8930ab9b7cd09`: formatter final PASS, analyzer 107 infos / 0 warnings/errors, Flutter **205/205 PASS**; format-only commit `0a2b3c03af433a17d82afa1d4db60beb7b1bd023`.
-- Latest published APK remains Build #164 / run `43863417641` / Release `403010611` / tag `jexfyz-latest`, source `a41baaf3bc53a02d72e12a4f3840f0c84c493497`. It predates the Bluetooth fix, so the fix is not yet in the published APK.
+- **Latest package:** Build #165 / Actions run 43905426531 / job 133432846684 / Issue #42 / source cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d. All workflow steps 1–21 and cleanup 39–43 SUCCESS.
+- **Validation:** analyzer 107 infos / 0 warnings/errors; Flutter tests 205/205; Android Gradle BUILD SUCCESSFUL in 3m20s. Native App JUnit tasks were NO-SOURCE.
+- **APK:** [Download JEXFYZ-release.apk](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-release.apk) — 55,881,819 bytes, SHA-256 1934f9223ea4d5ffbd540601c69157d13923b996c41cf0694128e19372809687. V1/V2/V3 signatures verified; one signer; pinned certificate dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0.
+- **Matching source:** [Download JEXFYZ-corresponding-source.zip](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-corresponding-source.zip) — 2,945,408 bytes, SHA-256 6f98df3633c00d74a7687697a3332a16606d7edea76f82d1a00d8d201e82bd29; embedded source marker exact cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d; ZIP integrity and downloaded checksum passed.
+- **Release:** ID 403010611 / tag jexfyz-latest; tag, Release target and source marker match the exact Build #165 source. Exactly two Release assets; Step 21 re-downloaded and verified both.
+- **Protected versions:** Flutter 1.0.0+3; Android Gradle versionName Telegram @horizontalzzz.
+- **Bluetooth correction included:** Connection row prioritizes advertised local name JE X FYZ, falls back to platform name, and uses localized generic fallback only if both are empty. No Firmware/BLE protocol change was made.
 
-## Current Build #165 progress
+## Next action and boundaries
 
-- One fresh Issue #42 produced exactly one run `43905426531` / job `133432846684`, attempt 1, immutable source `cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d`.
-- Steps 1–15 SUCCESS; Step 14 Android Gradle completed at 16:19:46Z after 3m21s, and Step 15 obfuscated release APK build completed SUCCESS at 16:22:55Z. Step 16 V1/V2/V3 signing enforcement IN_PROGRESS; steps 17–21 pending. Full logs are unavailable while active, so detailed counts/hashes/certificate data are not yet claimed.
-- Continue only this run/job. At terminal, verify APK obfuscation, V1/V2/V3 pinned cert, source ZIP, Release/tag/source parity, exactly two assets and downloaded asset identity. Stop on any failed required gate.
-- Bluetooth fix still needs owner installation/physical BLE verification after package delivery. No Firmware/BIN/Firebase/OTA/flash/device operation.
-- After owner installation, verify the real cooler Bluetooth advertisement and App scan row show `JE X FYZ`. Physical BLE/OEM visual, Firmware/BIN, Firebase, OTA/flash, thermal/electrical and long-session evidence remain separate and unverified. No such operation is authorized here.
+- Owner-side next step: install Build #165 APK and verify the real cooler's Bluetooth advertisement and App Connection row display JE X FYZ. CI does not prove physical radio behavior or OEM visuals.
+- Retain warnings: self-signed PKIX trust chain, META-INF signature coverage, Kotlin 2.2.20 / Firebase KGP compatibility, Android Gradle/Gradle 10 deprecations, Notification priority deprecations, native ELF DWARF, and native Android JUnit NO-SOURCE.
+- Firmware compile/BIN provenance, Firebase, OTA/flash, thermal/electrical, long-session soak and OEM visual acceptance remain separate and unverified. No such operation was performed or authorized.
