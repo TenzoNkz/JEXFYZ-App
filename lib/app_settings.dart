@@ -1660,6 +1660,36 @@ class JexText {
     return result;
   }
 
+  /// Format a numeric display value using the App language without altering source data.
+  /// English uses comma grouping and a decimal point; Indonesian uses period grouping
+  /// and a decimal comma. Protocol/storage serialization must never use this helper.
+  static String formatNumber(
+    num value,
+    AppLanguage language, {
+    int decimalDigits = 0,
+    bool groupThousands = true,
+  }) {
+    assert(value.isFinite, 'Only finite numeric display values can be formatted.');
+    assert(decimalDigits >= 0 && decimalDigits <= 20);
+    final fixed = value.abs().toStringAsFixed(decimalDigits);
+    final parts = fixed.split('.');
+    final digits = parts.first;
+    final groupingSeparator = language == AppLanguage.indonesia ? '.' : ',';
+    final decimalSeparator = language == AppLanguage.indonesia ? ',' : '.';
+    final grouped = StringBuffer();
+    for (var index = 0; index < digits.length; index++) {
+      if (groupThousands &&
+          index > 0 &&
+          (digits.length - index) % 3 == 0) {
+        grouped.write(groupingSeparator);
+      }
+      grouped.write(digits[index]);
+    }
+    final sign = value < 0 ? '-' : '';
+    if (decimalDigits == 0) return '$sign$grouped';
+    return '$sign$grouped$decimalSeparator${parts[1]}';
+  }
+
   // AI-METHOD / RELOCALIZATION CONTRACT
   // Re-resolve a previously stored table string in the current language without changing
   // stable bilingual labels or technical protocol identifiers.
