@@ -1,4 +1,4 @@
-| Last updated | 2026-11-16 22:41:11 (Asia/Jakarta) |
+| Last updated | 2026-11-16 22:46:30 (Asia/Jakarta) |
 
 > Single current snapshot for JE X FYZ project interactions. Event-driven marker; not a background heartbeat.
 
@@ -12,17 +12,17 @@
 | Mode | Eksekusi Full! — App-scope Bluetooth device-name correction plus targeted regression/docs. No Firmware/BIN/Firebase/OTA/flashing/device operations. |
 | Request / work item | From owner screenshot: Bluetooth list row displays 'Perangkat'; restore/set the Bluetooth device name to 'JE X FYZ'. Determine whether this is App-side scan-name selection/fallback or actual peripheral advertisement; change the correct App-owned display/name contract. |
 | Started | 2026-11-16 22:31:00 (Asia/Jakarta) |
-| Last updated | 2026-11-16 22:41:11 (Asia/Jakarta) |
-| Current phase | Source/test implemented; hosted validation found one test-only source-boundary mistake. Fixing the Connection-sheet source-contract test boundary and formatter style before a clean final validation. |
-| Last completed milestone | Traced screenshot label to main.dart's deliberate JE X FYZ-to-generic-Perangkat substitution. Firmware source still sets BLE_NAME to JE X FYZ. Added advName-first display helper and pure/widget regressions. Validation Only #39 passed 200/200; #40/#41 passed 204/204 but the formatter-only commit guard refused to overwrite newer main; #42 had formatter/analyzer pass and 204 tests pass with one source-contract test boundary mistake. |
-| Last verified source checkpoint | Packaged App source SHA a41baaf3bc53a02d72e12a4f3840f0c84c493497; validated Dart/test baseline b8fcdaf191c5e8bb5df5fa44c50c80a12dfd03da; no production source/test path changed between validation and Build #164 checkout. |
-| Current main HEAD | The packaged App source SHA is a41baaf3bc53a02d72e12a4f3840f0c84c493497; subsequent main commits in this close sequence affect only canonical documentation/checkpoints, not App source, tests or Gradle configuration. |
-| EXTERNAL OPERATION | Build #164 / run 43863417641 / job 133285765871 / issue #41 / packaged source a41baaf3bc53a02d72e12a4f3840f0c84c493497; Release 403010611 / tag jexfyz-latest. |
-| EXTERNAL OPERATION STATUS | COMPLETED / SUCCESS — run and job terminal success; release tag parity, exactly two assets, signatures and fresh downloaded checksums verified. |
+| Last updated | 2026-11-16 22:46:30 (Asia/Jakarta) |
+| Current phase | Hosted Validation Only #44 succeeded: formatter final PASS, analyzer PASS (107 info; 0 warning/error), and 205/205 tests PASS. Synchronizing the BLE name contract and current project checkpoint. |
+| Last completed milestone | Confirmed Firmware V7.2 sets `BLE_NAME` to `JE X FYZ`; fixed Connection sheet to prefer current `advName`, then `platformName`, without masking `JE X FYZ` as generic `Perangkat`. Added pure name-mapping tests and a widget source-contract check including Firmware BLE_NAME/init. Validation Only #44 / run `43899329198` / job `133411358928` succeeded on input SHA `4a875b3d63beea6e7d469c27f0c8930ab9b7cd09`: formatter final PASS, analyzer 107 info / 0 warnings / 0 errors, Flutter 205/205 PASS; format-only commit `0a2b3c03af433a17d82afa1d4db60beb7b1bd023`. |
+| Last verified source checkpoint | App Bluetooth name fix + regression source/test validated in Validation Only #44; tested input SHA `4a875b3d63beea6e7d469c27f0c8930ab9b7cd09`; formatter result `0a2b3c03af433a17d82afa1d4db60beb7b1bd023`. |
+| Current main HEAD | `0a2b3c03af433a17d82afa1d4db60beb7b1bd023` — Validation Only #44 formatter-only commit; App Bluetooth display fix and tests included. |
+| EXTERNAL OPERATION | Validation Only #44 / run `43899329198` / job `133411358928` / tested source `4a875b3d63beea6e7d469c27f0c8930ab9b7cd09`; formatter-only result `0a2b3c03af433a17d82afa1d4db60beb7b1bd023`. |
+| EXTERNAL OPERATION STATUS | COMPLETED / SUCCESS — Validation Only #44 formatter/analyzer/test gates passed (205/205); formatter-only commit succeeded. No App Build/Release triggered. Latest published package remains Build #164. |
 | Previous successful package | Build #163 / run 43679305537 / source 9466e8eeb269da5bc8806f0df1d4212cf24e1746 — retained as historical; superseded as latest release by Build #164. |
-| Result / evidence | Flutter 200/200; analyzer 107 info / 0 warning / 0 error; Android Gradle BUILD SUCCESSFUL in 2m35s (app:testDebugUnitTest NO-SOURCE); obfuscated APK 55,881,819 bytes SHA256 6553af0d07162e804bea838cbd1c391432471630db0de6d56bdd303c713eaa8c; source ZIP 2,944,808 bytes SHA256 1c15f4bc5bfe112594212f42eea925514a7ab138071915c9fe486f6c909bb576; V1/V2/V3 + pinned RSA4096 cert SHA256 dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0; exact source/tag/Release SHA parity; downloaded asset identity PASS. |
-| Blocker | New widget source-contract test ended its `_ConnectionSheetContentState` slice at the earlier `_getAndroidSdkInt` helper, before the Bluetooth ListView builder. The fix is to bound at `class StaticSwitcher`. Other two run failures were intentional safety stops from the formatter commit guard because main advanced concurrently. |
-| Next action | Correct the widget source-contract boundary, ensure Dart formatter is clean, update APP_NOTES/checkpoint/state/handover/changelog, then verify one clean hosted Validation Only run on the final source SHA. Do not trigger Build App or touch Firmware/device. |
+| Result / evidence | Bluetooth name correction: Validation Only #44 run 43899329198 / job 133411358928 — formatter final PASS; analyzer 107 infos / 0 warnings / 0 errors; Flutter tests 205/205 PASS; format-only commit 0a2b3c03af433a17d82afa1d4db60beb7b1bd023. Latest App package is Build #164 / run 43863417641 / source a41baaf3bc53a02d72e12a4f3840f0c84c493497; previous Build164 result: Android Gradle BUILD SUCCESSFUL in 2m35s, APK SHA256 6553af0d07162e804bea838cbd1c391432471630db0de6d56bdd303c713eaa8c; source ZIP SHA256 1c15f4bc5bfe112594212f42eea925514a7ab138071915c9fe486f6c909bb576; V1/V2/V3 and pinned certificate + downloaded asset verification PASS. |
+| Blocker | None for the scoped App source/test correction; hosted Flutter validation is green. Real phone/cooler advertisement and display still need physical confirmation after separately authorized installation/build. No Firmware/BIN/device operation authorized. |
+| Next action | Update APP_NOTES, CHAT_TRANSFER, PROJECT_STATE, HANDOVER and CHANGELOG with the Bluetooth name result; verify final main/tree/readback and close. A new APK requires separate `Eksekusi Build App!`; do not trigger here. |
 
 ## Status model
 
