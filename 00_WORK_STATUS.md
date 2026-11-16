@@ -1,4 +1,4 @@
-| Last updated | 2026-11-16 16:02:00 (Asia/Jakarta) |
+| Last updated | 2026-11-16 16:10:22 (Asia/Jakarta) |
 
 > Single current snapshot for JE X FYZ project interactions. Event-driven marker; not a background heartbeat.
 
@@ -6,23 +6,23 @@
 
 | Field | Value |
 |---|---|
-| **STATUS** | **IN_PROGRESS** |
-| SESSION STATUS | IN_PROGRESS — owner authorized Eksekusi Full!; source recovery and validation are now underway. |
-| WORK STATUS | RECOVERY_REQUIRED — prior Eksekusi Full localization/formatting work remains unfinished and current main lib/main.dart is corrupted/unvalidated. |
+| **STATUS** | **WAITING_OWNER** |
+| SESSION STATUS | WAITING_OWNER — source recovery and regression repairs are committed; waiting for the latest hosted Validation Only run ID/result. |
+| WORK STATUS | BLOCKED — source recovery is complete, but hosted Dart formatter/analyzer/Flutter test results are not verified. |
 | Mode | Eksekusi Full! — scoped source recovery, regression repair, validation and canonical checkpoint updates. No App Build/Release or Firmware/device work. |
-| Request / work item | Recover corrupted lib/main.dart from verified clean baseline, reapply intended App changes once, remove only visible Adaptive ceiling card, align tests and validate. |
+| Request / work item | Recover main.dart, reapply Home/NOTIFY localization, remove only visible Adaptive ceiling card, align tests, and complete non-publishing validation. |
 | Started | 2026-11-16 15:54:49 (Asia/Jakarta) |
-| Last updated | 2026-11-16 15:56:27 |
-| Current phase | IN_PROGRESS — verify clean baseline provenance and establish safe source restoration path. |
-| Last completed milestone | Re-read full Validation Only #27 job logs and steps; verified formatter precheck/apply/final failures, analyzer syntax/duplicate-definition failures, and cancelled Flutter tests; reconfirmed corrupted source and still-visible Adaptive ceiling card; refreshed CHAT_TRANSFER.md, APP_PREBUILD_AUDIT.md, PROJECT_STATE.md and HANDOVER.md. |
-| Last verified source checkpoint | `05ab2bcf9a619b497d1a9f6f2abc974093808f37` (latest source-updated revision); `lib/main.dart` blob `c28b1bcdb26673c3f317bf2448839b9ab7cd66ae`. |
-| Current main HEAD | This terminal status-update commit; live branch HEAD was read back after the write. Changes in this session are documentation-only; executable source is unchanged. |
-| EXTERNAL OPERATION | Validation Only #27 / run `43808741923` / job `133105410519`, source `05ab2bcf9a619b497d1a9f6f2abc974093808f37`. |
-| EXTERNAL OPERATION STATUS | CANCELLED — run is terminal; prior job logs record Dart formatter/parser failure and duplicate-definition analyzer errors. |
+| Last updated | 2026-11-16 16:10:22 |
+| Current phase | WAITING_OWNER — source and tests are restored; awaiting the latest push-triggered Validation Only result. |
+| Last completed milestone | Restored main.dart from verified clean baseline; re-applied Home/NOTIFY localization, locale parsing, OTA grouping and legacy notice normalization; removed only visible Adaptive ceiling card; updated regression tests; static lexical/source-contract checks passed; refreshed canonical checkpoints. |
+| Last verified source checkpoint | Source commit `b4558cee8b5a4455603473d31e46b3b108f20576`; `lib/main.dart` blob `b12ea764b674b79f8a19bd70191fcf25ea3046a5` (401,983 characters / 11,427 lines); latest regression checkpoint `f24a612c39138bbe41832adda1cec85091e0b6af`. |
+| Current main HEAD | Source/test commits above plus the final documentation/status commit from this recovery interaction; verify final HEAD after status write. |
+| EXTERNAL OPERATION | Push-triggered JE X FYZ — Validation Only for the restored source/test changes, latest test commit `f24a612c39138bbe41832adda1cec85091e0b6af`. |
+| EXTERNAL OPERATION STATUS | UNKNOWN — available GitHub workflow-run lookup returns PR-triggered runs only; latest push-run state cannot be verified here. |
 | Historical successful package | Build #163 / run `43679305537` / job `132706236782` / Release `403010611` / tag `jexfyz-latest` / source `9466e8eeb269da5bc8806f0df1d4212cf24e1746` — SUCCESS, but predates current source changes. |
-| Result / evidence | Live repo/tree (139 entries, not truncated), source blob, active checkpoint, current Actions run/job/complete log, Releases and tags checked. No executable source/tests/config/workflow/build/release/Firmware/device operation performed. Documentation-only recovery/readiness notes refreshed. |
-| Blocker | P1 — live lib/main.dart is 1,581,263 characters / 45,030 lines and contains four active copies of LedColorPreset, TamperApp and DashboardScreen plus malformed fragments. Adaptive ceiling card remains visible. Validation Only #27 formatter/analyzer failed and tests were cancelled; no successful validation covers current source. |
-| Next action | Resolve baseline blob to its containing commit/tree entry, verify exact file provenance and current main HEAD, then restore source without rewriting history. Run only non-publishing App validation; no Build App. |
+| Result / evidence | Source restored to clean structure; six Dart files passed lexical delimiter/string/comment scan; source contract checks passed for unique declarations, Adaptive card removal/state retention, locale parsing, OTA grouping and test alignment. Flutter formatter/analyzer/tests not verified. No Build App, Release, Firmware, BIN, Firebase, OTA, flash or device operation. |
+| Blocker | P1 — no verified hosted formatter/analyzer/Flutter-test result for restored source. Build App remains blocked until all gates are green. Visual/OEM acceptance also remains unverified. |
+| Next action | Owner provides latest JE X FYZ — Validation Only run ID/outcome from GitHub Actions. If green, request separate Eksekusi Build App! authorization; if failed, continue scoped repairs under current Eksekusi Full authorization. |
 
 ## Status model
 
