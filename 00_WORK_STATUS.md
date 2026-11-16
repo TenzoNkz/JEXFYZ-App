@@ -1,4 +1,4 @@
-| Last updated | 2026-11-16 22:46:30 (Asia/Jakarta) |
+| Last updated | 2026-11-16 22:52:42 (Asia/Jakarta) |
 
 > Single current snapshot for JE X FYZ project interactions. Event-driven marker; not a background heartbeat.
 
@@ -6,23 +6,23 @@
 
 | Field | Value |
 |---|---|
-| **STATUS** | **IN_PROGRESS** |
-| SESSION STATUS | IN_PROGRESS — Eksekusi Full! owner request to restore/rename the Bluetooth-advertised device name to JE X FYZ; trace BLE scan display, advertisement source/contract, regression tests and canonical notes. |
-| WORK STATUS | IN_PROGRESS — identify and correct the Bluetooth name shown/advertised as generic 'Perangkat' in the connection menu, preserving BLE UUID/protocol and connection behavior. |
+| **STATUS** | **COMPLETED** |
+| SESSION STATUS | COMPLETED — Bluetooth Connection device row now preserves the JE X FYZ advertisement name; regression tests and Validation Only #44 passed; canonical notes/checkpoint synchronized and read back. |
+| WORK STATUS | COMPLETED — App-side Bluetooth name display fix, pure/widget regressions, hosted Flutter validation (205/205) and durable documentation are complete. The fix is not yet packaged in a new APK. |
 | Mode | Eksekusi Full! — App-scope Bluetooth device-name correction plus targeted regression/docs. No Firmware/BIN/Firebase/OTA/flashing/device operations. |
 | Request / work item | From owner screenshot: Bluetooth list row displays 'Perangkat'; restore/set the Bluetooth device name to 'JE X FYZ'. Determine whether this is App-side scan-name selection/fallback or actual peripheral advertisement; change the correct App-owned display/name contract. |
 | Started | 2026-11-16 22:31:00 (Asia/Jakarta) |
-| Last updated | 2026-11-16 22:46:30 (Asia/Jakarta) |
-| Current phase | Hosted Validation Only #44 succeeded: formatter final PASS, analyzer PASS (107 info; 0 warning/error), and 205/205 tests PASS. Synchronizing the BLE name contract and current project checkpoint. |
-| Last completed milestone | Confirmed Firmware V7.2 sets `BLE_NAME` to `JE X FYZ`; fixed Connection sheet to prefer current `advName`, then `platformName`, without masking `JE X FYZ` as generic `Perangkat`. Added pure name-mapping tests and a widget source-contract check including Firmware BLE_NAME/init. Validation Only #44 / run `43899329198` / job `133411358928` succeeded on input SHA `4a875b3d63beea6e7d469c27f0c8930ab9b7cd09`: formatter final PASS, analyzer 107 info / 0 warnings / 0 errors, Flutter 205/205 PASS; format-only commit `0a2b3c03af433a17d82afa1d4db60beb7b1bd023`. |
+| Last updated | 2026-11-16 22:52:42 (Asia/Jakarta) |
+| Current phase | Closed — source/test readback, hosted #44 evidence, current release boundary, six documentation readbacks and untruncated recursive tree verified. |
+| Last completed milestone | Firmware V7.2 name source confirmed `BLE_NAME = "JE X FYZ"`; App Connection row now prefers advertisement name then platform name with localized generic fallback only for both-empty values. Added pure name selection and Connection/Firmware source-contract tests. Validation Only #44 / run `43899329198` / job `133411358928` SUCCESS: formatter final PASS, analyzer 107 infos / zero warnings/errors, Flutter **205/205 PASS**; formatter result `0a2b3c03af433a17d82afa1d4db60beb7b1bd023`. Updated `APP_NOTES.md`, `CHAT_TRANSFER.md`, `PROJECT_STATE.md`, `HANDOVER.md`, `CHANGELOG.md`; final source-to-main compare shows only these six documentation paths changed after the validated source/test tree. |
 | Last verified source checkpoint | App Bluetooth name fix + regression source/test validated in Validation Only #44; tested input SHA `4a875b3d63beea6e7d469c27f0c8930ab9b7cd09`; formatter result `0a2b3c03af433a17d82afa1d4db60beb7b1bd023`. |
-| Current main HEAD | `0a2b3c03af433a17d82afa1d4db60beb7b1bd023` — Validation Only #44 formatter-only commit; App Bluetooth display fix and tests included. |
+| Current main HEAD | Last verified docs-inclusive HEAD before this terminal status write: `f5ca55a9d2a5f6668e86a714a182c2c434981d85`; validated source/test tree `0a2b3c03af433a17d82afa1d4db60beb7b1bd023`. This final status write is documentation-only. |
 | EXTERNAL OPERATION | Validation Only #44 / run `43899329198` / job `133411358928` / tested source `4a875b3d63beea6e7d469c27f0c8930ab9b7cd09`; formatter-only result `0a2b3c03af433a17d82afa1d4db60beb7b1bd023`. |
 | EXTERNAL OPERATION STATUS | COMPLETED / SUCCESS — Validation Only #44 formatter/analyzer/test gates passed (205/205); formatter-only commit succeeded. No App Build/Release triggered. Latest published package remains Build #164. |
 | Previous successful package | Build #163 / run 43679305537 / source 9466e8eeb269da5bc8806f0df1d4212cf24e1746 — retained as historical; superseded as latest release by Build #164. |
 | Result / evidence | Bluetooth name correction: Validation Only #44 run 43899329198 / job 133411358928 — formatter final PASS; analyzer 107 infos / 0 warnings / 0 errors; Flutter tests 205/205 PASS; format-only commit 0a2b3c03af433a17d82afa1d4db60beb7b1bd023. Latest App package is Build #164 / run 43863417641 / source a41baaf3bc53a02d72e12a4f3840f0c84c493497; previous Build164 result: Android Gradle BUILD SUCCESSFUL in 2m35s, APK SHA256 6553af0d07162e804bea838cbd1c391432471630db0de6d56bdd303c713eaa8c; source ZIP SHA256 1c15f4bc5bfe112594212f42eea925514a7ab138071915c9fe486f6c909bb576; V1/V2/V3 and pinned certificate + downloaded asset verification PASS. |
 | Blocker | None for the scoped App source/test correction; hosted Flutter validation is green. Real phone/cooler advertisement and display still need physical confirmation after separately authorized installation/build. No Firmware/BIN/device operation authorized. |
-| Next action | Update APP_NOTES, CHAT_TRANSFER, PROJECT_STATE, HANDOVER and CHANGELOG with the Bluetooth name result; verify final main/tree/readback and close. A new APK requires separate `Eksekusi Build App!`; do not trigger here. |
+| Next action | For a distributable APK, wait for a separate explicit `Eksekusi Build App!`, then create one fresh guarded trigger issue. Issue #41 already triggered Build #164 and must not be reused. After installation, verify the real phone/cooler BLE scan row. |
 
 ## Status model
 
