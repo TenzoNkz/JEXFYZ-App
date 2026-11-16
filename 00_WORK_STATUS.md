@@ -1,4 +1,4 @@
-| Last updated | 2026-11-16 19:18:42 (Asia/Jakarta) |
+| Last updated | 2026-11-16 22:31:00 (Asia/Jakarta) |
 
 > Single current snapshot for JE X FYZ project interactions. Event-driven marker; not a background heartbeat.
 
@@ -6,14 +6,14 @@
 
 | Field | Value |
 |---|---|
-| **STATUS** | **COMPLETED** |
-| SESSION STATUS | COMPLETED — Build #164 terminal SUCCESS; final report, active checkpoint, project state, handover and build notes verified on main. |
-| WORK STATUS | COMPLETED — guarded App Build/QC/release acceptance passed, including APK signing, exact Release/tag/source parity and re-downloaded asset identity/checksum verification. |
-| Mode | Eksekusi Build App! — guarded App Build/QC and justified App-scope repairs only. No Firmware/BIN/Firebase/OTA/flashing/device operations or unrelated release work. |
-| Request / work item | Build #164 / Issue #41 / run 43863417641 / job 133285765871 — terminal SUCCESS for source SHA a41baaf3bc53a02d72e12a4f3840f0c84c493497. Protected Android versionName remains Telegram @horizontalzzz. |
-| Started | 2026-11-16 18:54:00 (Asia/Jakarta) |
-| Last updated | 2026-11-16 19:18:42 (Asia/Jakarta) |
-| Current phase | Closure — all Build #164 workflow steps 1–21 and cleanup 39–43 SUCCESS; Release/tag/assets and downloaded checksums verified; documentation checkpoint is closed. |
+| **STATUS** | **IN_PROGRESS** |
+| SESSION STATUS | IN_PROGRESS — Eksekusi Full! owner request to restore/rename the Bluetooth-advertised device name to JE X FYZ; trace BLE scan display, advertisement source/contract, regression tests and canonical notes. |
+| WORK STATUS | IN_PROGRESS — identify and correct the Bluetooth name shown/advertised as generic 'Perangkat' in the connection menu, preserving BLE UUID/protocol and connection behavior. |
+| Mode | Eksekusi Full! — App-scope Bluetooth device-name correction plus targeted regression/docs. No Firmware/BIN/Firebase/OTA/flashing/device operations. |
+| Request / work item | From owner screenshot: Bluetooth list row displays 'Perangkat'; restore/set the Bluetooth device name to 'JE X FYZ'. Determine whether this is App-side scan-name selection/fallback or actual peripheral advertisement; change the correct App-owned display/name contract. |
+| Started | 2026-11-16 22:31:00 (Asia/Jakarta) |
+| Last updated | 2026-11-16 22:31:00 (Asia/Jakarta) |
+| Current phase | Load — read current BLE naming contract, source scan/render flow and exact regression surface before a narrowly scoped App change. |
 | Last completed milestone | Build #164 SUCCESS; 200 Flutter tests; analyzer 107 infos / 0 warnings / 0 errors; V1/V2/V3 signature/pinned cert passed; exactly two matching Release assets verified. |
 | Last verified source checkpoint | Packaged App source SHA a41baaf3bc53a02d72e12a4f3840f0c84c493497; validated Dart/test baseline b8fcdaf191c5e8bb5df5fa44c50c80a12dfd03da; no production source/test path changed between validation and Build #164 checkout. |
 | Current main HEAD | The packaged App source SHA is a41baaf3bc53a02d72e12a4f3840f0c84c493497; subsequent main commits in this close sequence affect only canonical documentation/checkpoints, not App source, tests or Gradle configuration. |
@@ -22,7 +22,7 @@
 | Previous successful package | Build #163 / run 43679305537 / source 9466e8eeb269da5bc8806f0df1d4212cf24e1746 — retained as historical; superseded as latest release by Build #164. |
 | Result / evidence | Flutter 200/200; analyzer 107 info / 0 warning / 0 error; Android Gradle BUILD SUCCESSFUL in 2m35s (app:testDebugUnitTest NO-SOURCE); obfuscated APK 55,881,819 bytes SHA256 6553af0d07162e804bea838cbd1c391432471630db0de6d56bdd303c713eaa8c; source ZIP 2,944,808 bytes SHA256 1c15f4bc5bfe112594212f42eea925514a7ab138071915c9fe486f6c909bb576; V1/V2/V3 + pinned RSA4096 cert SHA256 dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0; exact source/tag/Release SHA parity; downloaded asset identity PASS. |
 | Blocker | None for the authorized Build App/QC/release objective. Physical installation/OEM, BLE, Firmware/BIN, Firebase, OTA/flash, thermal/electrical verification remain outside this CI result. |
-| Next action | No further Build App action pending. Preserve Release jexfyz-latest. Any new source change/build requires a fresh owner-selected scope and new guarded issue; do not reuse Issue #41. |
+| Next action | Read full active checkpoint, relevant BLE/App skills and canonical BLE notes; trace scan result name from native platform/advertisement to Connection UI, implement a safe JE X FYZ label contract, add/update tests and verify source readback. |
 
 ## Status model
 
