@@ -1103,8 +1103,8 @@ void main() {
         expect(tester.takeException(), isNull);
 
         await pumpAtWidth(420, ThemeData.dark(useMaterial3: true));
-        expect(find.text('Suhu Baterai HP'), findsOneWidget);
-        expect(find.text('Suhu Hotside'), findsOneWidget);
+        expect(find.text('Suhu Baterai'), findsOneWidget);
+        expect(find.text('Suhu Sisi Panas'), findsOneWidget);
         expect(find.text('30D'), findsNothing);
         expect(find.text('1H'), findsNothing);
         expect(find.text('24H'), findsNothing);
