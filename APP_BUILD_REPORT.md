@@ -3208,3 +3208,12 @@
 - No APK/signature/source ZIP/Release result is claimed yet. Build #164 remains the published baseline until all #165 required gates and Step 21 pass.
 - Continue only `43905426531` / `133432846684` / `cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d`; no duplicate issue, trigger or rerun.
 
+### BUILD #165 progress — obfuscated APK build passed / V1-V2-V3 signing enforcement active — 2026-11-16 23:23:33 (Asia/Jakarta)
+
+- Run `43905426531` / job `133432846684`, attempt 1, Issue #42, source `cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d`.
+- **Steps 1–15 observed SUCCESS.** Step 15 `flutter build apk --release --obfuscate --split-debug-info=build/symbols` completed successfully at `2026-11-16T16:22:55Z`. This confirms the obfuscated APK build command succeeded, but does not yet claim final signed/published APK integrity.
+- **Step 16 `Enforce V1/V2/V3 APK signing` is IN_PROGRESS.** Step 17 pinned-certificate signature verification, Step 18 stable APK filename, Step 19 corresponding source ZIP, Step 20 Release/tag publication and Step 21 downloaded-asset identity/signature verification remain pending; cleanup remains pending.
+- Full job logs are still unavailable while job active; no APK hash/size/certificate fingerprint or test counts are inferred here. Those require terminal logs/API asset metadata.
+- No Release/tag mutation or final APK/source ZIP delivery is claimed yet. Build #164 remains published baseline until Step 21 and live Release/tag/asset parity are verified.
+- Continue only `43905426531` / `133432846684` / `cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d`; no second issue/run or blind retry.
+
