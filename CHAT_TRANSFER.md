@@ -37,15 +37,14 @@
 - APK SHA-256 `6553af0d07162e804bea838cbd1c391432471630db0de6d56bdd303c713eaa8c`; source ZIP SHA-256 `1c15f4bc5bfe112594212f42eea925514a7ab138071915c9fe486f6c909bb576`. This package predates the Bluetooth name correction and remains the published baseline until the next run passes every gate.
 - Retain Build #164 warnings: self-signed/PKIX and META-INF signing coverage, no signing timestamp, Kotlin/Firebase KGP compatibility, Gradle deprecations and native ELF DWARF; native Android JUnit tasks NO-SOURCE. Do not rewrite these as resolved.
 
-## Build #165 — trigger created / current run active
+## Build #165 — current run active; Android Gradle gate running
 
-- Exactly one fresh owner-authored Issue #42 was created with the exact guarded title/token. Issue #41 and all older trigger issues were not reused or reopened.
-- **Run #165:** `43905426531`, workflow ID `374946166`, event `issues`, attempt 1, actor `TenzoNkz`, current state `in_progress`; immutable checkout/source SHA `cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d`.
-- **Job:** `build` / `133432846684`, runner allocated, state `in_progress`.
-- **Observed steps:** 1 Set up job SUCCESS; 2 Checkout repository SUCCESS; 3 Set up Java 17 SUCCESS; 4 Set up Flutter IN_PROGRESS; 5–21 pending. No build/package/release outputs yet.
-- Continue only this run/job/source; no duplicate trigger or blind retry. Build #164 remains the published baseline until all #165 gates and downloaded-asset verification pass.
-- Current interaction remains IN_PROGRESS. App-only scope; no Firmware/BIN/Firebase/OTA/flash/device operations.
-- Exact trigger, first gate transition and source identity have been appended to `APP_BUILD_REPORT.md`.
+- Exactly one owner-authored Issue #42 triggered Build #165 / run `43905426531` / job `133432846684`, attempt 1, source `cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d`. No duplicate issue/run.
+- **Steps 1–13 SUCCESS:** runner setup, checkout, Java, Flutter, Gradle, toolchain, local properties, production signing preparation, wrapper recovery, App-only security/architecture audit, dependency installation, Dart analyzer and Flutter tests.
+- **Step 14 `Run Android unit-test gate` IN_PROGRESS.** Steps 15–21 and cleanup remain pending.
+- Full logs download returned BlobNotFound while active; exact analyzer/test counts and Gradle duration/output remain unverified pending terminal log availability.
+- Continue only this run/job/source. No APK/ZIP/Release update is claimed; Build #164 remains the published baseline until every required gate and Step 21 downloaded asset verification succeed.
+- External operation remains IN_PROGRESS. No Firmware/BIN/Firebase/OTA/flash/device operation.
 
 ## Owner-approved contracts — still authoritative
 - English is the master/default language; Indonesian must be complete, natural and semantically equivalent.
