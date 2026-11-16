@@ -1,15 +1,17 @@
-## BUILD #164 — PRE-TRIGGER READINESS REVIEW — HOLD — 2026-11-16
+## NEXT GUARDED APP BUILD — PRE-TRIGGER PREFLIGHT CLEAR — 2026-11-16
 
-- **Disposition:** Flutter/source validation is green, but do not trigger the guarded Build App workflow yet. Its Step 10 architecture/security audit has a deterministic stale Fan Speed source-string assertion.
-- **Validation Only #38:** run 43843348889 / job 133217253810, tested SHA 01cf1295458564820b52afc6ca33037583a430c6, terminal SUCCESS. Locked dependencies PASS; formatter applied five Dart files and final check PASS; analyzer PASS (107 infos, no warning/error failure); Flutter tests 200/200 PASS; formatter preview/upload PASS; formatter-only commit PASS, b8fcdaf191c5e8bb5df5fa44c50c80a12dfd03da.
-- **Confirmed blocker:** `.github/workflows/jexfyz-app-build-trigger.yml`, blob 41c0b7c1f18c0e2d0aa30028c7fc0e8f0554e4ba, line 222 checks for the old native Fan Speed expression with data.speed.toString(); live `FloatingMonitorService.kt:609` contains the speed with %. Step 10 will terminate before Flutter/Gradle/APK. Correct the workflow matcher to the live contract under a separately authorized `Eksekusi Full!`; do not alter production behavior or weaken the audit.
-- **Current release baseline:** Build #163 / run 43679305537 / job 132706236782, source 9466e8eeb269da5bc8806f0df1d4212cf24e1746, terminal SUCCESS; Release ID 403010611, tag jexfyz-latest. It predates the restored source and remains the current published package until a new build passes all gates.
-- Compare from Build #163 source to current main shows 20 changed paths: 10 documentation files, 2 Android Kotlin files, 4 Flutter files and 4 tests. Build workflow/config, pubspec/lock and Android Gradle config are unchanged.
-- Build workflow guard remains issue-only, owner/title/body-token guarded, serialized, and has no push/PR route. Issue #40 is still OPEN and already triggered Build #163; a new owner-authored issue is required for the next run. No Build #164 run exists and no issue was created in Diskusi.
-- The build workflow checks the four production signing secrets for non-empty values at runtime. They are not inspected here; Build #163 passed signing preparation on 2026-11-15. Android versionName `Telegram @horizontalzzz` and Flutter version `1.0.0+3` remain protected.
-- **Next action:** use a separate `Eksekusi Full!` for the single audit-matcher correction and static verification; after the workflow is consistent, require a separate explicit `Eksekusi Build App!` before creating one fresh guarded trigger issue. No Firmware/BIN/Firebase/OTA/flash/device operation is authorized.
+- **Disposition: READY for a separately authorized `Eksekusi Build App!` run.** No new Build workflow run, APK, Release or trigger issue has been created in the current `Eksekusi Full!` interaction.
+- **Source/test evidence:** Validation Only #38 / run `43843348889` / job `133217253810`, tested SHA `01cf1295458564820b52afc6ca33037583a430c6`, terminal SUCCESS. Locked dependencies PASS; formatter applied five Dart files and final check PASS; analyzer PASS (107 infos, no warning/error failure); Flutter tests **200/200 PASS**; formatter preview/upload and format-only commit PASS, source/test tree `b8fcdaf191c5e8bb5df5fa44c50c80a12dfd03da`.
+- **Workflow repair:** commit `4ea1f6ff465d4514325778454e59fbd4644c4bfc`, workflow blob `af342fc21e5c0ff0815628dfacec65ae519f69ae`, corrects the Step 10 Fan Speed audit literal from obsolete `data.speed.toString()` to the live native `"${data.speed}%"` output. No production source behavior changed.
+- **Preflight static verification:** all required source-audit tokens, security and bridge invariants, asset paths, migration guards and retired-integration absence checks pass; issue owner/title/body-token guard, issue-only trigger, serialized non-cancelling job queue and all 20 explicit build gates (steps 2–21) remain. Analyzer/tests/Gradle, obfuscated APK, V1/V2/V3 signing, pinned certificate, source archive, Release/tag parity, exactly two assets and downloaded artifact integrity gates were not removed or bypassed.
+- **Current release baseline:** Build #163 / run `43679305537` / job `132706236782`, source `9466e8eeb269da5bc8806f0df1d4212cf24e1746`, terminal SUCCESS; Release ID `403010611`, tag `jexfyz-latest`. Its APK/source assets remain published until a new successful guarded build updates them.
+- Issue #40 remains OPEN and already triggered Build #163; do not reuse/reopen. A fresh owner-authored issue is required only after the separate Build App mode is selected. No new issue/run was created here.
+- Flutter toolchain `3.47.2`, Gradle `9.3.1`, Flutter version `1.0.0+3`, Android `versionName "Telegram @horizontalzzz"` and production certificate fingerprint remain unchanged. Four signing secrets are runtime-checked; current values cannot be inspected here.
+- **Unverified after build:** no Build App CI has exercised the corrected Step 10 yet; local `actionlint`, Flutter and Dart executables are unavailable. Visual/OEM review, owner installation, BLE field behavior, long-session soak, Firmware/BIN, Firebase, OTA/flash and thermal/electrical acceptance remain separate. Existing self-signed PKIX, Kotlin/Gradle deprecations and DWARF warnings remain documented. Actions are referenced by major-version tags rather than immutable SHA pins; hardening follow-up not changed here.
+- **Next action:** use a separate explicit `Eksekusi Build App!`; only then create one new owner-authored issue with the exact guarded title/body token and verify one resulting run end-to-end. No Firmware/BIN/Firebase/OTA/flash/device operation is authorized.
 
 ---
+
 ## Latest guarded App Build #163 — terminal SUCCESS / Release verified — 2026-11-15
 
 - Owner trigger Issue #40; Actions run `43679305537`, workflow 374946166, attempt 1; job `132706236782`; immutable source `9466e8eeb269da5bc8806f0df1d4212cf24e1746`.
@@ -19,9 +21,12 @@
 - V1/V2/V3 signature validation and one-signer pinned fingerprint `dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0) passed. Certificate remains self-signed / PKIX chain untrusted. Kotlin 2.2.20 upcoming support drop, deprecated Android Gradle properties and unobfuscated native ELF DWARF warnings remain documented.
 - Android `versionName "Telegram @horizontalzzz"` preserved. No Firmware/BIN/Firebase/OTA/flash/device operations performed.
 
+
+> The following Build #163 step-by-step entries are historical in-progress snapshots captured before the run closed. The terminal SUCCESS evidence above supersedes their pending/active wording.
+
 ---
 
-## Active guarded App Build #163 — Release publication — 2026-11-15
+## Historical progress snapshot — Build #163 — Release publication — 2026-11-15
 
 - Run `43679305537`, job `132706236782`, Issue #40, immutable source `9466e8eeb269da5bc8806f0df1d4212cf24e1746`, attempt 1.
 - Steps 1–19 SUCCESS, including Android Gradle, obfuscated release APK build, V1/V2/V3 signing enforcement, certificate verification, and corresponding source ZIP packaging.
@@ -30,7 +35,7 @@
 
 ---
 
-## Active guarded App Build #163 — obfuscated APK build — 2026-11-15
+## Historical progress snapshot — Build #163 — obfuscated APK build — 2026-11-15
 
 - Run `43679305537`, job `132706236782`, Issue #40, immutable source `9466e8eeb269da5bc8806f0df1d4212cf24e1746`, attempt 1.
 - Steps 1–14 SUCCESS, including Android Gradle gate. Step 15 `flutter build apk --release --obfuscate --split-debug-info=build/symbols` IN_PROGRESS; steps 16–21 pending.
@@ -39,7 +44,7 @@
 
 ---
 
-## Active guarded App Build #163 — Android Gradle gate — 2026-11-15
+## Historical progress snapshot — Build #163 — Android Gradle gate — 2026-11-15
 
 - Run `43679305537`, job `132706236782`, Issue #40, immutable source `9466e8eeb269da5bc8806f0df1d4212cf24e1746`, attempt 1.
 - Steps 1–13 SUCCESS (including security/architecture audit, dependencies, analyzer and Flutter tests). Step 14 Android Gradle gate IN_PROGRESS; steps 15–21 pending.
@@ -48,7 +53,7 @@
 
 ---
 
-## Active guarded App Build #163 — Java setup — 2026-11-15
+## Historical progress snapshot — Build #163 — Java setup — 2026-11-15
 
 - Trigger Issue #40, exact owner/title/token guard, opened once by TenzoNkz. Exactly one Actions run exists: #163 / run `43679305537`, job `132706236782`, attempt 1; immutable source SHA `9466e8eeb269da5bc8806f0df1d4212cf24e1746`.
 - Runner ubuntu-24.04 allocated. Steps 1–2 SUCCESS; step 3 Set up Java 17 IN_PROGRESS; steps 4–21 pending. No downstream results or release mutation claimed yet. Continue only this run.
