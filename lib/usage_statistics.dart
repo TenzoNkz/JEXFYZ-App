@@ -60,7 +60,11 @@ double usageInterpolate(double? from, double? to, double progress) {
   return from + (to - from) * fraction;
 }
 
-String formatUsageAxisTick(double value, double tickStep) {
+String formatUsageAxisTick(
+  double value,
+  double tickStep,
+  AppLanguage language,
+) {
   final step = tickStep.abs();
   final decimals = step >= 1
       ? 0
@@ -71,7 +75,7 @@ String formatUsageAxisTick(double value, double tickStep) {
       : step >= 0.001
       ? 3
       : 4;
-  return value.toStringAsFixed(decimals);
+  return JexText.formatNumber(value, language, decimalDigits: decimals);
 }
 
 /// Whole-degree ticks, padded one degree beyond the observed temperature range.
@@ -108,6 +112,23 @@ double usageTemperatureChartHeight({
 }) {
   final ticks = usageTemperatureAxisTicks(minimum: minimum, maximum: maximum);
   return math.max(160.0, (ticks.length - 1) * 18.0 + 30.0).toDouble();
+}
+
+String formatUsageSessionDate(DateTime localDate, AppLanguage language) {
+  const englishMonths = <String>[
+    'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+  ];
+  const indonesianMonths = <String>[
+    'Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun',
+    'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des',
+  ];
+  final months = language == AppLanguage.indonesia
+      ? indonesianMonths
+      : englishMonths;
+  String twoDigits(int value) => value.toString().padLeft(2, '0');
+  return '${localDate.day} ${months[localDate.month - 1]} ${localDate.year}, '
+      '${twoDigits(localDate.hour)}:${twoDigits(localDate.minute)}';
 }
 
 String formatUsageElapsed(int milliseconds) {
@@ -2248,12 +2269,12 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
               _messageState(
                 JexText.phrase(
                   'No cooler selected.',
-                  'Belum ada cooler yang dipilih.',
+                  'Belum ada pendingin yang dipilih.',
                   language,
                 ),
                 JexText.phrase(
                   'Connect your cooler once to start collecting its local history.',
-                  'Hubungkan cooler setidaknya sekali untuk mulai merekam riwayat lokalnya.',
+                  'Hubungkan pendingin setidaknya sekali untuk mulai merekam riwayatnya secara lokal.',
                   language,
                 ),
                 scheme,
@@ -2266,8 +2287,8 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
                   language,
                 ),
                 JexText.phrase(
-                  'A run is recorded only while the Firmware confirms FAN or PELTIER is ON.',
-                  'Sesi direkam hanya saat Firmware mengonfirmasi FAN atau PELTIER AKTIF.',
+                  'A cooling session is recorded only while the Firmware confirms that the Fan or Peltier is ON.',
+                  'Sesi pendinginan hanya direkam saat Firmware mengonfirmasi bahwa kipas atau Peltier menyala.',
                   language,
                 ),
                 scheme,
@@ -2276,7 +2297,7 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
               _temperatureSection(
                 title: JexText.phrase(
                   'Battery Temperature',
-                  'Suhu Baterai HP',
+                  'Suhu Baterai',
                   language,
                 ),
                 summary: summary.battery,
@@ -2288,7 +2309,7 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
               _temperatureSection(
                 title: JexText.phrase(
                   'Hotside Temperature',
-                  'Suhu Hotside',
+                  'Suhu Sisi Panas',
                   language,
                 ),
                 summary: summary.hotside,
@@ -2327,7 +2348,7 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
           content: Text(
             JexText.phrase(
               'Battery and Hotside are sampled once per second during confirmed cooler operation. Missing or invalid readings remain visible gaps. History is stored locally on this phone.',
-              'Battery dan Hotside direkam setiap detik saat operasi cooler terkonfirmasi. Pembacaan yang hilang atau tidak valid tetap ditampilkan sebagai celah. Riwayat disimpan secara lokal di ponsel ini.',
+              'Suhu baterai dan sisi panas direkam setiap detik selama pendingin dipastikan beroperasi. Pembacaan yang hilang atau tidak valid tetap ditampilkan sebagai celah. Riwayat disimpan secara lokal di ponsel ini.',
               language,
             ),
             style: Theme.of(dialogContext).textTheme.bodyMedium?.copyWith(
@@ -2378,7 +2399,7 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
             style: Theme.of(context).textTheme.labelMedium,
           ),
           Text(
-            _sessionStartLabel(session),
+            _sessionStartLabel(session, language),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: Theme.of(
@@ -2456,29 +2477,15 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
         ? JexText.phrase('Active · ', 'Aktif · ', language)
         : '';
     return prefix +
-        _twoDigits(start.day) +
-        '/' +
-        _twoDigits(start.month) +
-        ' ' +
-        _twoDigits(start.hour) +
-        ':' +
-        _twoDigits(start.minute);
+        formatUsageSessionDate(start, language);
   }
 
-  String _sessionStartLabel(UsageStatsSession session) {
+  String _sessionStartLabel(UsageStatsSession session, AppLanguage language) {
     final start = DateTime.fromMillisecondsSinceEpoch(
       session.startedAtMs,
     ).toLocal();
-    return _twoDigits(start.day) +
-        '/' +
-        _twoDigits(start.month) +
-        ' ' +
-        _twoDigits(start.hour) +
-        ':' +
-        _twoDigits(start.minute);
+    return formatUsageSessionDate(start, language);
   }
-
-  String _twoDigits(int value) => value.toString().padLeft(2, '0');
 
   Widget _messageState(
     String title,
@@ -2668,10 +2675,13 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
         Row(
           children: [
             metric(
-              JexText.phrase('Battery', 'Baterai HP', language),
+              JexText.phrase('Battery', 'Baterai', language),
               _formatTemperature(battery, language),
             ),
-            metric('Hotside', _formatTemperature(hotside, language)),
+            metric(
+              JexText.phrase('Hotside', 'Sisi Panas', language),
+              _formatTemperature(hotside, language),
+            ),
             metric(
               JexText.phrase('Voltage', 'Tegangan', language),
               usageStateLabel(voltage?.textValue, language),
@@ -2694,7 +2704,7 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
               JexText.phrase('Fan Speed', 'Kecepatan Kipas', language),
               fan?.numberValue == null
                   ? '--'
-                  : fan!.numberValue!.toStringAsFixed(0) + '%',
+                  : JexText.formatNumber(fan!.numberValue!, language) + '%',
             ),
           ],
         ),
@@ -2751,8 +2761,8 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
           const SizedBox(height: 2),
           Text(
             JexText.phrase('Limit · ', 'Batas · ', language) +
-                referenceValue.toStringAsFixed(0) +
-                '°C',
+                JexText.formatNumber(referenceValue, language) +
+                ' °C',
             style: Theme.of(
               context,
             ).textTheme.labelSmall?.copyWith(color: scheme.onSurfaceVariant),
@@ -2785,6 +2795,7 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
                         key: ValueKey<String>(
                           'usage-temperature-chart-$metricKey',
                         ),
+                        language: language,
                         points: summary.chartPoints,
                         fromMs: _snapshot!.fromMs,
                         toMs: _snapshot!.toMs,
@@ -2853,7 +2864,8 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
         return usageStateLabel(latest.textValue, language, domain: domain);
       }
       if (latest.numberValue != null) {
-        return latest.numberValue!.toStringAsFixed(0) + (percentage ? '%' : '');
+        return JexText.formatNumber(latest.numberValue!, language) +
+            (percentage ? '%' : '');
       }
       return '--';
     }
@@ -3026,6 +3038,7 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
 }
 
 class _AnimatedUsageLineChart extends StatefulWidget {
+  final AppLanguage language;
   final List<UsageChartPoint> points;
   final int fromMs;
   final int toMs;
@@ -3037,6 +3050,7 @@ class _AnimatedUsageLineChart extends StatefulWidget {
 
   const _AnimatedUsageLineChart({
     super.key,
+    required this.language,
     required this.points,
     required this.fromMs,
     required this.toMs,
@@ -3117,6 +3131,7 @@ class _AnimatedUsageLineChartState extends State<_AnimatedUsageLineChart>
       animation: _controller,
       builder: (context, _) => CustomPaint(
         painter: _UsageLinePainter(
+          language: widget.language,
           points: widget.points,
           fromMs: widget.fromMs,
           toMs: widget.toMs,
@@ -3133,6 +3148,7 @@ class _AnimatedUsageLineChartState extends State<_AnimatedUsageLineChart>
 }
 
 class _UsageLinePainter extends CustomPainter {
+  final AppLanguage language;
   final List<UsageChartPoint> points;
   final int fromMs;
   final int toMs;
@@ -3144,6 +3160,7 @@ class _UsageLinePainter extends CustomPainter {
   final int? cursorTimestampMs;
 
   const _UsageLinePainter({
+    required this.language,
     required this.points,
     required this.fromMs,
     required this.toMs,
@@ -3196,7 +3213,7 @@ class _UsageLinePainter extends CustomPainter {
       canvas.drawLine(Offset(plot.left, y), Offset(plot.right, y), gridPaint);
       final text = TextPainter(
         text: TextSpan(
-          text: formatUsageAxisTick(axisTicks[index], tickStep),
+          text: formatUsageAxisTick(axisTicks[index], tickStep, language),
           style: textStyle,
         ),
         textDirection: TextDirection.ltr,
@@ -3610,7 +3627,7 @@ String _formatTemperature(double? value, AppLanguage language) {
   final localized = language == AppLanguage.indonesia
       ? fixed.replaceFirst('.', ',')
       : fixed;
-  return '$localized °C';
+  return '${JexText.formatNumber(value, language, decimalDigits: 1, groupThousands: false)} °C';
 }
 
 String _axisTime(int timestampMs, int sessionStartMs) =>
