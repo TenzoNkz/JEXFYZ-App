@@ -1669,7 +1669,10 @@ class JexText {
     int decimalDigits = 0,
     bool groupThousands = true,
   }) {
-    assert(value.isFinite, 'Only finite numeric display values can be formatted.');
+    assert(
+      value.isFinite,
+      'Only finite numeric display values can be formatted.',
+    );
     assert(decimalDigits >= 0 && decimalDigits <= 20);
     final fixed = value.abs().toStringAsFixed(decimalDigits);
     final parts = fixed.split('.');
@@ -1678,9 +1681,7 @@ class JexText {
     final decimalSeparator = language == AppLanguage.indonesia ? ',' : '.';
     final grouped = StringBuffer();
     for (var index = 0; index < digits.length; index++) {
-      if (groupThousands &&
-          index > 0 &&
-          (digits.length - index) % 3 == 0) {
+      if (groupThousands && index > 0 && (digits.length - index) % 3 == 0) {
         grouped.write(groupingSeparator);
       }
       grouped.write(digits[index]);

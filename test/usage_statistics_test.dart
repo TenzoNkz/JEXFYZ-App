@@ -240,7 +240,9 @@ void main() {
 
       expect(ticks, <double>[33, 32, 31, 30]);
       expect(
-        ticks.map((value) => formatUsageAxisTick(value, 1, AppLanguage.english)).toList(),
+        ticks
+            .map((value) => formatUsageAxisTick(value, 1, AppLanguage.english))
+            .toList(),
         <String>['33', '32', '31', '30'],
       );
       expect(usageTemperatureChartHeight(minimum: 31.5, maximum: 31.6), 160);

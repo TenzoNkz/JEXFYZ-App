@@ -94,7 +94,9 @@ void main() {
 
     expect(
       floating,
-      contains('JexText.formatNumber(config.size, lang, decimalDigits: 2, groupThousands: false)'),
+      contains(
+        'JexText.formatNumber(config.size, lang, decimalDigits: 2, groupThousands: false)',
+      ),
     );
     expect(floating, contains('max: 1.00'));
     expect(floating, contains('divisions: 14'));

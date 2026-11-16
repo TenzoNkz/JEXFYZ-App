@@ -116,12 +116,32 @@ double usageTemperatureChartHeight({
 
 String formatUsageSessionDate(DateTime localDate, AppLanguage language) {
   const englishMonths = <String>[
-    'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec',
   ];
   const indonesianMonths = <String>[
-    'Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun',
-    'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des',
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'Mei',
+    'Jun',
+    'Jul',
+    'Agu',
+    'Sep',
+    'Okt',
+    'Nov',
+    'Des',
   ];
   final months = language == AppLanguage.indonesia
       ? indonesianMonths
@@ -2476,8 +2496,7 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
     final prefix = session.isActive
         ? JexText.phrase('Active · ', 'Aktif · ', language)
         : '';
-    return prefix +
-        formatUsageSessionDate(start, language);
+    return prefix + formatUsageSessionDate(start, language);
   }
 
   String _sessionStartLabel(UsageStatsSession session, AppLanguage language) {
