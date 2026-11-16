@@ -1,4 +1,4 @@
-| Last updated | 2026-11-16 15:56:27 (Asia/Jakarta) |
+| Last updated | 2026-11-16 16:02:00 (Asia/Jakarta) |
 
 > Single current snapshot for JE X FYZ project interactions. Event-driven marker; not a background heartbeat.
 
@@ -6,14 +6,14 @@
 
 | Field | Value |
 |---|---|
-| **STATUS** | **WAITING_OWNER** |
-| SESSION STATUS | WAITING_OWNER — live source and CI evidence confirm recovery is still required; next source changes require explicit Eksekusi Full! authorization. |
+| **STATUS** | **IN_PROGRESS** |
+| SESSION STATUS | IN_PROGRESS — owner authorized Eksekusi Full!; source recovery and validation are now underway. |
 | WORK STATUS | RECOVERY_REQUIRED — prior Eksekusi Full localization/formatting work remains unfinished and current main lib/main.dart is corrupted/unvalidated. |
-| Mode | Diskusi! — read-only readiness audit; documentation/status writes only. |
-| Request / work item | Determine whether to continue Eksekusi Full source recovery or whether the current App is ready for guarded Build App. |
+| Mode | Eksekusi Full! — scoped source recovery, regression repair, validation and canonical checkpoint updates. No App Build/Release or Firmware/device work. |
+| Request / work item | Recover corrupted lib/main.dart from verified clean baseline, reapply intended App changes once, remove only visible Adaptive ceiling card, align tests and validate. |
 | Started | 2026-11-16 15:54:49 (Asia/Jakarta) |
 | Last updated | 2026-11-16 15:56:27 |
-| Current phase | WAITING_OWNER — readiness decision saved; awaiting explicit Eksekusi Full! command. |
+| Current phase | IN_PROGRESS — verify clean baseline provenance and establish safe source restoration path. |
 | Last completed milestone | Re-read full Validation Only #27 job logs and steps; verified formatter precheck/apply/final failures, analyzer syntax/duplicate-definition failures, and cancelled Flutter tests; reconfirmed corrupted source and still-visible Adaptive ceiling card; refreshed CHAT_TRANSFER.md, APP_PREBUILD_AUDIT.md, PROJECT_STATE.md and HANDOVER.md. |
 | Last verified source checkpoint | `05ab2bcf9a619b497d1a9f6f2abc974093808f37` (latest source-updated revision); `lib/main.dart` blob `c28b1bcdb26673c3f317bf2448839b9ab7cd66ae`. |
 | Current main HEAD | This terminal status-update commit; live branch HEAD was read back after the write. Changes in this session are documentation-only; executable source is unchanged. |
@@ -22,7 +22,7 @@
 | Historical successful package | Build #163 / run `43679305537` / job `132706236782` / Release `403010611` / tag `jexfyz-latest` / source `9466e8eeb269da5bc8806f0df1d4212cf24e1746` — SUCCESS, but predates current source changes. |
 | Result / evidence | Live repo/tree (139 entries, not truncated), source blob, active checkpoint, current Actions run/job/complete log, Releases and tags checked. No executable source/tests/config/workflow/build/release/Firmware/device operation performed. Documentation-only recovery/readiness notes refreshed. |
 | Blocker | P1 — live lib/main.dart is 1,581,263 characters / 45,030 lines and contains four active copies of LedColorPreset, TamperApp and DashboardScreen plus malformed fragments. Adaptive ceiling card remains visible. Validation Only #27 formatter/analyzer failed and tests were cancelled; no successful validation covers current source. |
-| Next action | Owner sends explicit `Eksekusi Full!`; restore lib/main.dart from clean baseline blob `48dd0c943075db076769c3d9dc53b8b71a28a5c3`, reapply intended changes once, remove only the visible Adaptive ceiling card, align tests, then run allowed non-publishing validation. Do not start App Build without separate `Eksekusi Build App!`. |
+| Next action | Resolve baseline blob to its containing commit/tree entry, verify exact file provenance and current main HEAD, then restore source without rewriting history. Run only non-publishing App validation; no Build App. |
 
 ## Status model
 
