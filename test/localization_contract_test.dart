@@ -3,7 +3,12 @@ import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:jexfyz_cooler/app_settings.dart';
 import 'package:jexfyz_cooler/main.dart'
-    show formatOtaUploadSizeMismatch, homeNotifyForTelemetryChange, parseHomeTemperatureCelsius, homeHotsideLimitNotice, relocalizeHomeNotifyMessage;
+    show
+        formatOtaUploadSizeMismatch,
+        homeNotifyForTelemetryChange,
+        parseHomeTemperatureCelsius,
+        homeHotsideLimitNotice,
+        relocalizeHomeNotifyMessage;
 import 'package:jexfyz_cooler/usage_statistics.dart'
     show UsageStateDomain, usageStateLabel;
 
@@ -143,44 +148,94 @@ void main() {
       );
     });
 
-    test('Home temperature parsing and Hotside notices honor locale decimals and legacy forms', () {
-      expect(parseHomeTemperatureCelsius('42,5 °C'), 42.5);
-      expect(parseHomeTemperatureCelsius('42.5°C'), 42.5);
-      expect(parseHomeTemperatureCelsius('--'), isNull);
-      expect(
-        homeHotsideLimitNotice('46,5 °C', hotLimit: 45, language: AppLanguage.english),
-        'Hotside limit reached: 46.5 °C (limit 45 °C).',
-      );
-      expect(
-        homeHotsideLimitNotice('46.5°C', hotLimit: 45, language: AppLanguage.indonesia),
-        'Batas suhu sisi panas tercapai: 46,5 °C (batas 45 °C).',
-      );
-      expect(
-        relocalizeHomeNotifyMessage('Hotside limit reached: 46.5°C (limit 45°C).', AppLanguage.indonesia),
-        'Batas suhu sisi panas tercapai: 46,5 °C (batas 45 °C).',
-      );
-      expect(
-        relocalizeHomeNotifyMessage('Batas suhu Hotside tercapai: 46,5 °C (batas 45 °C).', AppLanguage.english),
-        'Hotside limit reached: 46.5 °C (limit 45 °C).',
-      );
-    });
+    test(
+      'Home temperature parsing and Hotside notices honor locale decimals and legacy forms',
+      () {
+        expect(parseHomeTemperatureCelsius('42,5 °C'), 42.5);
+        expect(parseHomeTemperatureCelsius('42.5°C'), 42.5);
+        expect(parseHomeTemperatureCelsius('--'), isNull);
 
-    test('Adaptive profile labels are exact and the ceiling card is presentation-only removed', () {
-      expect(JexText.of('hotsideProtection', AppLanguage.english), 'Hotside Protection');
-      expect(JexText.of('hotsideProtection', AppLanguage.indonesia), 'Perlindungan Suhu Panas');
-      expect(JexText.of('hotsideBattery', AppLanguage.english), 'Hotside & Battery Protection');
-      expect(JexText.of('hotsideBattery', AppLanguage.indonesia), 'Perlindungan Suhu Panas & Baterai');
-      final source = File('lib/main.dart').readAsStringSync();
-      final start = source.indexOf('Widget _buildAdaptiveTab({Key? key})');
-      final end = source.indexOf('Widget _adaptiveProfileRow(', start);
-      expect(start, isNonNegative);
-      expect(end, greaterThan(start));
-      final adaptiveUi = source.substring(start, end);
-      expect(adaptiveUi, isNot(contains("JexText.of('adaptiveCeiling'")));
-      expect(adaptiveUi, isNot(contains('adaptiveCeiling')));
-      expect(source, contains("case 'ADAPTIVE_CEILING':"));
-      expect(source, contains("adaptiveCeiling = value;"));
-    });
+        expect(
+          homeHotsideLimitNotice(
+            '46,5 °C',
+            hotLimit: 45,
+            language: AppLanguage.english,
+          ),
+          'Hotside limit reached: 46.5 °C (limit 45 °C).',
+        );
+        expect(
+          homeHotsideLimitNotice(
+            '46.5°C',
+            hotLimit: 45,
+            language: AppLanguage.indonesia,
+          ),
+          'Batas suhu sisi panas tercapai: 46,5 °C (batas 45 °C).',
+        );
+        expect(
+          relocalizeHomeNotifyMessage(
+            'Hotside limit reached: 46.5°C (limit 45°C).',
+            AppLanguage.indonesia,
+          ),
+          'Batas suhu sisi panas tercapai: 46,5 °C (batas 45 °C).',
+        );
+        expect(
+          relocalizeHomeNotifyMessage(
+            'Batas suhu Hotside tercapai: 46,5 °C (batas 45 °C).',
+            AppLanguage.english,
+          ),
+          'Hotside limit reached: 46.5 °C (limit 45 °C).',
+        );
+      },
+    );
+
+    test(
+      'Adaptive profile labels are exact and ceiling display removal preserves telemetry',
+      () {
+        expect(
+          JexText.of('hotsideProtection', AppLanguage.english),
+          'Hotside Protection',
+        );
+        expect(
+          JexText.of('hotsideProtection', AppLanguage.indonesia),
+          'Perlindungan Suhu Panas',
+        );
+        expect(
+          JexText.of('hotsideBattery', AppLanguage.english),
+          'Hotside & Battery Protection',
+        );
+        expect(
+          JexText.of('hotsideBattery', AppLanguage.indonesia),
+          'Perlindungan Suhu Panas & Baterai',
+        );
+        expect(
+          JexText.of('hSideProtection', AppLanguage.english),
+          'Hotside Protection',
+        );
+        expect(
+          JexText.of('hSideProtection', AppLanguage.indonesia),
+          'Perlindungan Suhu Panas',
+        );
+        expect(
+          JexText.of('hSideBattery', AppLanguage.english),
+          'Hotside & Battery Protection',
+        );
+        expect(
+          JexText.of('hSideBattery', AppLanguage.indonesia),
+          'Perlindungan Suhu Panas & Baterai',
+        );
+
+        final source = File('lib/main.dart').readAsStringSync();
+        final start = source.indexOf('Widget _buildAdaptiveTab({Key? key})');
+        final end = source.indexOf('Widget _adaptiveProfileRow(', start);
+        expect(start, isNonNegative);
+        expect(end, greaterThan(start));
+        final adaptiveUi = source.substring(start, end);
+        expect(adaptiveUi, isNot(contains("JexText.of('adaptiveCeiling'")));
+        expect(adaptiveUi, isNot(contains('adaptiveCeiling')));
+        expect(source, contains("case 'ADAPTIVE_CEILING':"));
+        expect(source, contains("adaptiveCeiling = value;"));
+      },
+    );
 
     test('Safety NOTIFY success preserves passed/succeeded meaning', () {
       expect(
