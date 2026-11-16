@@ -1,4 +1,4 @@
-| Last updated | 2026-11-16 23:23:33 (Asia/Jakarta) |
+| Last updated | 2026-11-16 23:34:16 (Asia/Jakarta) |
 
 > Single current snapshot for JE X FYZ project interactions. Event-driven marker; not a background heartbeat.
 
@@ -6,23 +6,23 @@
 
 | Field | Value |
 |---|---|
-| **STATUS** | **IN_PROGRESS** |
-| SESSION STATUS | IN_PROGRESS — incoming owner message opened in Eksekusi Build App!; continuing guarded App package workflow after the latest Bluetooth name source/test correction. |
-| WORK STATUS | IN_PROGRESS — guarded App Build/QC/release for the validated Bluetooth name correction; reconcile live main, prior Build #164 and all current Actions state, then trigger exactly one fresh guarded run if none exists. |
+| **STATUS** | **COMPLETED** |
+| SESSION STATUS | COMPLETED — Build #165 terminal success, Release/tag/assets verified, canonical ledger/checkpoint/state/handover updated and read-back pending final verification. |
+| WORK STATUS | COMPLETED — Bluetooth Connection display-name correction packaged in Build #165; all App Build/QC/release acceptance gates and downloaded asset verification succeeded. Owner-side physical BLE acceptance remains a separate unverified follow-up. |
 | Mode | Eksekusi Build App! — guarded App Build/QC/release and justified App-scope repairs only. No Firmware/BIN/Firebase/OTA/flashing/device operations or unrelated release work. |
 | Request / work item | Package and QC the latest App source/test correction that restores the Bluetooth device row name to JE X FYZ. Preserve Android Gradle versionName exactly: Telegram @horizontalzzz. |
 | Started | 2026-11-16 23:03:30 (Asia/Jakarta) |
 | Last updated | 2026-11-16 23:23:33 (Asia/Jakarta) |
-| Current phase | Phase 6 — Build #165 steps 1–15 SUCCESS, including obfuscated APK generation; Step 16 V1/V2/V3 signing enforcement IN_PROGRESS. |
-| Last completed milestone | Build #165 Android Gradle Step 14 SUCCESS and obfuscated APK Step 15 SUCCESS at 16:22:55Z. Step 16 signing enforcement active; no published Release/artifact result yet. |
+| Current phase | Closed — Build #165 completed successfully; all steps 1–21 and cleanup 39–43 passed; Release/tag/source SHA parity and both downloaded assets verified; documentation updated. |
+| Last completed milestone | Build #165 / run 43905426531 / job 133432846684 / source cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d terminal SUCCESS. Analyzer 107 infos; Flutter 205/205; Gradle BUILD SUCCESSFUL; APK V1/V2/V3 pinned signer; source ZIP integrity/marker; Release/tag parity; exactly two assets; Step 21 downloaded checksum/signature verification all PASS. |
 | Last verified source checkpoint | Validation Only #44 formatted App source/test SHA 0a2b3c03af433a17d82afa1d4db60beb7b1bd023. Pre-doc-sync main snapshot b46e29c1769dadb25a992ec02a1c000331e95978; compare 12 ahead / 0 behind, documentation-only paths; tree 139 entries, truncated=false. |
-| Current main HEAD | Immutable Build #165 issue-event checkout SHA cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d; later evidence/status writes are documentation-only. |
-| EXTERNAL OPERATION | Build #165 / run 43905426531 / job 133432846684 / attempt 1 / source cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d. Issue #42. Current step 4 Set up Flutter IN_PROGRESS. |
-| EXTERNAL OPERATION STATUS | IN_PROGRESS — run 43905426531 / job 133432846684; steps 1–15 SUCCESS; step 16 signing enforcement IN_PROGRESS. |
-| Previous successful package | Build #164 / run 43863417641 / source a41baaf3bc53a02d72e12a4f3840f0c84c493497 — success, but predates Bluetooth name correction; retain as current published baseline until new run passes all gates. |
-| Result / evidence | Validation Only #44: 205/205 PASS, analyzer 107 infos / 0 warnings/errors, formatter final PASS; validated source/test tree 0a2b3c03af433a17d82afa1d4db60beb7b1bd023. Build #164 steps 1–21 and cleanup 39–43 SUCCESS; Release assets, tag/source SHA and downloaded checksums/signatures verified. |
-| Blocker | None. Build #164 is terminal and no active run. GitHub identity TenzoNkz matches repository owner; only one fresh trigger issue is required. |
-| Next action | Poll only run 43905426531 / job 133432846684 for signing/certificate, source ZIP, Release/tag and downloaded-asset gates. Retrieve full logs after terminal. |
+| Current main HEAD | Final documentation-close commit created by this status write; final main ref/tree read-back verifies it. Packaged App source remains cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d; subsequent commits are documentation-only. |
+| EXTERNAL OPERATION | Build #165 / run 43905426531 / job 133432846684 / attempt 1 / source cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d; Issue #42; terminal completed / success at 2026-11-16T16:23:29Z. |
+| EXTERNAL OPERATION STATUS | COMPLETED / SUCCESS — all workflow steps 1–21 and cleanup 39–43 succeeded; APK and source ZIP Release assets and fresh downloaded identities verified. |
+| Previous successful package | Build #164 / run 43863417641 / source a41baaf3bc53a02d72e12a4f3840f0c84c493497 — historical/superseded by Build #165. |
+| Result / evidence | Build #165: analyzer 107 infos / 0 warnings/errors; Flutter 205/205; Gradle BUILD SUCCESSFUL in 3m20s (162 actionable; native App JUnit NO-SOURCE); obfuscated APK signed V1/V2/V3 with pinned cert; matching source ZIP marker/integrity; Release/tag/source SHA parity; exactly two assets; Step 21 downloaded checksum/signature verification PASS. |
+| Blocker | None for App Build/QC/release. Physical installation, real BLE advertisement/display, OEM visuals, Firmware/BIN, Firebase, OTA/flash, thermal/electrical and long-session evidence remain separate and unverified. |
+| Next action | Owner installs Build #165 APK and confirms the actual cooler Bluetooth Connection row shows JE X FYZ; record physical BLE/OEM evidence separately. No further Build App trigger is needed for this source. |
 
 ## Status model
 
