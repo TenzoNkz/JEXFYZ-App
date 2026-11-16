@@ -1,4 +1,4 @@
-| Last updated | 2026-11-16 19:09:29 (Asia/Jakarta) |
+| Last updated | 2026-11-16 19:16:40 (Asia/Jakarta) |
 
 > Single current snapshot for JE X FYZ project interactions. Event-driven marker; not a background heartbeat.
 
@@ -6,23 +6,23 @@
 
 | Field | Value |
 |---|---|
-| **STATUS** | **IN_PROGRESS** |
-| SESSION STATUS | IN_PROGRESS — Build #164 triggered and the active run/job is being monitored. |
-| WORK STATUS | IN_PROGRESS — guarded App Build/QC/release; continue only Build #164 and verify all gates plus Release/download integrity. |
+| **STATUS** | **COMPLETED** |
+| SESSION STATUS | COMPLETED — Build #164 has terminal SUCCESS; final report, checkpoint, project state, handover and build notes have been synchronized and are being read-back verified. |
+| WORK STATUS | COMPLETED — guarded App Build/QC/release acceptance passed, including APK signing, exact Release/tag/source parity and re-downloaded asset identity/checksum verification. |
 | Mode | Eksekusi Build App! — guarded App Build/QC and justified App-scope repairs only. No Firmware/BIN/Firebase/OTA/flashing/device operations or unrelated release work. |
-| Request / work item | Build #164 / issue #41 — guarded App Build/QC/release from source SHA a41baaf3bc53a02d72e12a4f3840f0c84c493497. Preserve Android Gradle versionName exactly: Telegram @horizontalzzz. |
+| Request / work item | Build #164 / Issue #41 / run 43863417641 / job 133285765871 — terminal SUCCESS for source SHA a41baaf3bc53a02d72e12a4f3840f0c84c493497. Protected Android versionName remains Telegram @horizontalzzz. |
 | Started | 2026-11-16 18:54:00 (Asia/Jakarta) |
 | Last updated | 2026-11-16 19:09:29 (Asia/Jakarta) |
-| Current phase | Phase 5 — Build #164 steps 1–14 SUCCESS; step 15 obfuscated APK build IN_PROGRESS; steps 16–21 pending. |
-| Last completed milestone | Android Gradle gate step 14 SUCCESS; job 133285765871 continues into APK build. Exact log totals remain pending. |
-| Last verified source checkpoint | Pre-trigger main snapshot a6dc71b65beec95b24ecef457798d1196cf3ba77; recursive tree 139 entries, truncated=false. Validated App source/test tree b8fcdaf191c5e8bb5df5fa44c50c80a12dfd03da; compare 17 ahead / 0 behind, with only workflow/docs changed. |
-| Current main HEAD | Build #164 immutable checkout SHA a41baaf3bc53a02d72e12a4f3840f0c84c493497; later checkpoint/report writes are documentation-only and do not change the active run SHA. |
-| EXTERNAL OPERATION | Build #164 / run 43863417641 / job 133285765871 / issue #41 / source a41baaf3bc53a02d72e12a4f3840f0c84c493497. |
-| EXTERNAL OPERATION STATUS | IN_PROGRESS — Actions run and build job confirmed active; step 4 Flutter setup currently running. |
-| Historical successful package | Build #163 / run 43679305537 / job 132706236782 / Release 403010611 / tag jexfyz-latest / source 9466e8eeb269da5bc8806f0df1d4212cf24e1746 — SUCCESS, predates current source changes; historical only. |
-| Result / evidence | Steps 1–14 SUCCESS; step 15 IN_PROGRESS; steps 16–21 pending. Active logs endpoint still BlobNotFound, so no exact analyzer/test/Gradle totals reported. |
-| Blocker | None currently observed; runner/job allocated and moving. Continue observing actual steps. |
-| Next action | Continue only run 43863417641 / job 133285765871; inspect APK build step 15 and subsequent signing/package transitions; retrieve full job logs at terminal state. |
+| Current phase | Closure — all Build #164 workflow steps 1–21 and cleanup 39–43 SUCCESS; Release/tag/assets and downloaded checksums verified; documentation checkpoint is closed. |
+| Last completed milestone | Build #164 SUCCESS; 200 Flutter tests; analyzer 107 infos / 0 warnings / 0 errors; V1/V2/V3 signature/pinned cert passed; exactly two matching Release assets verified. |
+| Last verified source checkpoint | Packaged App source SHA a41baaf3bc53a02d72e12a4f3840f0c84c493497; validated Dart/test baseline b8fcdaf191c5e8bb5df5fa44c50c80a12dfd03da; no production source/test path changed between validation and Build #164 checkout. |
+| Current main HEAD | Current package source SHA a41baaf3bc53a02d72e12a4f3840f0c84c493497; later commits in this close sequence update canonical docs only. |
+| EXTERNAL OPERATION | Build #164 / run 43863417641 / job 133285765871 / issue #41 / packaged source a41baaf3bc53a02d72e12a4f3840f0c84c493497; Release 403010611 / tag jexfyz-latest. |
+| EXTERNAL OPERATION STATUS | COMPLETED / SUCCESS — run and job terminal success; release tag parity, exactly two assets, signatures and fresh downloaded checksums verified. |
+| Previous successful package | Build #163 / run 43679305537 / source 9466e8eeb269da5bc8806f0df1d4212cf24e1746 — retained as historical; superseded as latest release by Build #164. |
+| Result / evidence | Flutter 200/200; analyzer 107 info / 0 warning / 0 error; Android Gradle BUILD SUCCESSFUL in 2m35s (app:testDebugUnitTest NO-SOURCE); obfuscated APK 55,881,819 bytes SHA256 6553af0d07162e804bea838cbd1c391432471630db0de6d56bdd303c713eaa8c; source ZIP 2,944,808 bytes SHA256 1c15f4bc5bfe112594212f42eea925514a7ab138071915c9fe486f6c909bb576; V1/V2/V3 + pinned RSA4096 cert SHA256 dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0; exact source/tag/Release SHA parity; downloaded asset identity PASS. |
+| Blocker | None for the authorized Build App/QC/release objective. Physical installation/OEM, BLE, Firmware/BIN, Firebase, OTA/flash, thermal/electrical verification remain outside this CI result. |
+| Next action | No further Build App action pending. Preserve Release jexfyz-latest. Any new source change/build requires a fresh owner-selected scope and new guarded issue; do not reuse Issue #41. |
 
 ## Status model
 
