@@ -6,44 +6,36 @@
 ## Current session and authorization
 
 - Project: JE X FYZ / JE Cooler.
-- Canonical repository/branch: `TenzoNkz/JEXFYZ-App` / `main`.
-- Current owner mode: `Eksekusi Build App!` — guarded App Build/QC/release and justified App-scope repairs only.
-- Current SESSION STATUS is IN_PROGRESS. Current WORK ITEM: package the latest App Bluetooth device-name correction, which has hosted formatter/analyzer/test validation but is not yet included in the published APK.
-- No Firmware compilation, BIN generation/publication/replacement, Firebase mutation, OTA, flashing, device operation or unrelated release work is authorized.
+- Canonical repository/branch: TenzoNkz/JEXFYZ-App / main.
+- Mode: Eksekusi Build App! — guarded App Build/QC/release only; no Firmware/BIN/Firebase/OTA/flash/device operations.
+- **Current interaction/work item: COMPLETED.** Build #165 completed every required App Build/QC/release gate, published the APK and matching source ZIP, and passed fresh downloaded-asset verification. External operation status is COMPLETED / SUCCESS.
+- Latest release: Build #165 / run 43905426531 / job 133432846684 / Issue #42 / source cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d; Release ID 403010611 / tag jexfyz-latest. Build #164 is superseded as latest package, but its history remains intact.
 
-## Bluetooth display-name correction — source/test validated
+## Bluetooth device-name correction — included in Build #165
 
-**Expected App behavior:** the Bluetooth Connection row displays `JE X FYZ`, not the localized generic fallback `Perangkat`.
+- The Connection row displays the current advertisement local name first, platform device name second, and localized generic Device / Perangkat only if both are empty. The previous UI mapping no longer hides JE X FYZ.
+- Firmware V7.2 source already declares BLE_NAME = JE X FYZ and initializes the BLE stack with it. No Firmware source/BIN or BLE protocol change was made.
+- Validation Only #44 / run 43899329198 / job 133411358928: formatter final PASS; analyzer 107 infos / zero warnings/errors; Flutter tests 205/205 PASS; formatted source/test tree 0a2b3c03af433a17d82afa1d4db60beb7b1bd023.
+- Build #165 source cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d compares 17 commits ahead / 0 behind that validated source/test tree; changes are documentation-only. No App source/test change occurred after Validation Only #44.
+- **Physical verification remains NOT DONE:** owner must install the Build #165 APK and confirm the actual cooler advertisement and App Connection row display JE X FYZ. CI/source tests do not prove phone/cooler radio behavior.
 
-- Firmware V7.2 tracked source already defines `BLE_NAME = "JE X FYZ"` and initializes the BLE peripheral with `BLEDevice::init(BLE_NAME)`; no Firmware edit was needed or made.
-- App root cause: the Connection row selected `platformName` before `advName`, then hid even the true `JE X FYZ` name behind `JexText.of('device', lang)`.
-- `lib/connection_scan_state.dart` adds `connectionDeviceDisplayName(...)`: trimmed current advertisement name first, platform name second, localized generic fallback only when both are empty. `lib/main.dart` uses that helper.
-- Tests cover advertisement precedence, stale platform name, platform fallback, localized empty fallback, and Connection sheet contract. BLE UUIDs/service filter, scanner ownership/generation, connection handoff, P1 framing/session rules and Firmware source remain unchanged.
-- Real phone/cooler BLE advertisement and display remain NOT VERIFIED pending owner installation and device check.
+## Build #165 — terminal SUCCESS / verified release
 
-## Latest source/test validation — Validation Only #44
+- Exactly one owner-authored Issue #42 with exact guarded title/token; no older issue reused/reopened. Run 43905426531, workflow 374946166, attempt 1; job 133432846684; terminal SUCCESS at 2026-11-16T16:23:29Z; source cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d.
+- Workflow: all steps 1–21 and cleanup 39–43 SUCCESS. Full terminal log: 374,121 characters / 3,552 lines.
+- Analyzer: flutter analyze --no-fatal-infos PASS, 107 info-level findings, zero warnings/errors. Flutter tests: 205/205 PASS.
+- Android Gradle: BUILD SUCCESSFUL in 3m20s; 162 actionable tasks (161 executed, 1 up-to-date); native App JUnit tasks NO-SOURCE.
+- Obfuscated APK: JEXFYZ-release.apk, 55,881,819 bytes, SHA-256 1934f9223ea4d5ffbd540601c69157d13923b996c41cf0694128e19372809687, asset ID 755548795. V1/V2/V3 true, one signer, pinned certificate fingerprint dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0, expected JE X FYZ DN. Certificate is self-signed; PKIX trust-chain and META-INF signature-coverage warnings remain.
+- Matching source ZIP: JEXFYZ-corresponding-source.zip, 2,945,408 bytes, SHA-256 6f98df3633c00d74a7687697a3332a16606d7edea76f82d1a00d8d201e82bd29, asset ID 755548797. Internal source marker exactly matches cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d; ZIP integrity passed.
+- Release ID 403010611 / tag jexfyz-latest; Release target, Git tag ref and source marker exactly equal cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d. Exactly one APK + one source ZIP. Step 21 freshly downloaded both; checksums matched Release API digests, ZIP integrity passed, and downloaded APK V1/V2/V3 plus pinned certificate passed.
+- Flutter version 1.0.0+3; Android Gradle versionName Telegram @horizontalzzz. No GitHub Actions artifacts; both deliverables are Release assets.
+- Warnings retained: Kotlin 2.2.20/Firebase KGP compatibility, Android Gradle property and Gradle 10 deprecations, deprecated Notification priority, native ELF DWARF visibility, self-signed PKIX/META-INF coverage and native Android test NO-SOURCE. These did not fail gates and are not marked fixed.
+- No Firmware compilation, BIN, Firebase, OTA, flashing or device operation was performed.
 
-- Run `43899329198` / job `133411358928`, tested input SHA `4a875b3d63beea6e7d469c27f0c8930ab9b7cd09`, terminal SUCCESS.
-- Locked dependencies PASS; Dart formatter final PASS (18 files checked, two test files formatted in runner workspace); analyzer PASS (107 info-level findings, zero warnings/errors); Flutter tests **205/205 PASS**.
-- Formatter-only output/source-test tree: `0a2b3c03af433a17d82afa1d4db60beb7b1bd023`.
-- Comparing that source/test tree to pre-trigger main found 12 documentation-only commits; no App source/test, Android Gradle, dependency, asset or workflow input changed after validation. Local Flutter/Dart are unavailable; hosted CI is the validation evidence.
-- Validation Only #40–#43 were earlier attempts with documented formatter guard/test-boundary failures; #44 is the successful result. Do not repeat #44.
+## Exact next action
 
-## Current published baseline — Build #164
-
-- Build #164 / run `43863417641` / job `133285765871` / Issue #41 / source `a41baaf3bc53a02d72e12a4f3840f0c84c493497`, terminal SUCCESS. Steps 1–21 and cleanup 39–43 all SUCCESS.
-- Analyzer 107 infos; Flutter tests 200/200; Android Gradle BUILD SUCCESSFUL in 2m35s. Native Android JUnit tasks were NO-SOURCE.
-- Release ID `403010611`, tag `jexfyz-latest`, target source `a41baaf3bc53a02d72e12a4f3840f0c84c493497`. Exactly one APK and one matching source ZIP; both re-downloaded hashes, source marker and APK V1/V2/V3 + pinned certificate verification passed.
-- APK SHA-256 `6553af0d07162e804bea838cbd1c391432471630db0de6d56bdd303c713eaa8c`; source ZIP SHA-256 `1c15f4bc5bfe112594212f42eea925514a7ab138071915c9fe486f6c909bb576`. This package predates the Bluetooth name correction and remains the published baseline until the next run passes every gate.
-- Retain Build #164 warnings: self-signed/PKIX and META-INF signing coverage, no signing timestamp, Kotlin/Firebase KGP compatibility, Gradle deprecations and native ELF DWARF; native Android JUnit tasks NO-SOURCE. Do not rewrite these as resolved.
-
-## Build #165 — APK build passed; signing enforcement active
-
-- Exactly one Issue #42 triggered Build #165 `43905426531` / job `133432846684`, attempt 1, source `cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d`.
-- **Steps 1–15 SUCCESS**, including Android Gradle Step 14 and obfuscated release APK build Step 15 (`flutter build apk --release --obfuscate --split-debug-info=build/symbols`) completed `16:22:55Z`.
-- **Step 16 V1/V2/V3 signing enforcement IN_PROGRESS.** Step 17 pinned-certificate verification, Step 18 filename, Step 19 matching source ZIP, Step 20 Release/tag publication and Step 21 fresh downloaded-asset verification remain pending.
-- No final APK signature, certificate, ZIP, Release or asset hash result is claimed until the corresponding step/API evidence passes. Full logs unavailable while active.
-- Continue only this run/job/source; no duplicate trigger/rerun. Build #164 remains published baseline until Step 21 success.
+- Owner-side next step: install the Build #165 APK from the Release and confirm the Bluetooth Connection row displays JE X FYZ from the real cooler. Record device/OEM/real-radio evidence separately from hosted CI.
+- No new Build App trigger is needed unless future App source changes are explicitly requested and validated. Firmware/BIN/Firebase/OTA/flash/device operations require separate authorization.
 
 ## Owner-approved contracts — still authoritative
 - English is the master/default language; Indonesian must be complete, natural and semantically equivalent.
