@@ -37,21 +37,15 @@
 - APK SHA-256 `6553af0d07162e804bea838cbd1c391432471630db0de6d56bdd303c713eaa8c`; source ZIP SHA-256 `1c15f4bc5bfe112594212f42eea925514a7ab138071915c9fe486f6c909bb576`. This package predates the Bluetooth name correction and remains the published baseline until the next run passes every gate.
 - Retain Build #164 warnings: self-signed/PKIX and META-INF signing coverage, no signing timestamp, Kotlin/Firebase KGP compatibility, Gradle deprecations and native ELF DWARF; native Android JUnit tasks NO-SOURCE. Do not rewrite these as resolved.
 
-## Build #165 — live pre-trigger clearance
+## Build #165 — trigger created / current run active
 
-- Current live guarded workflow blob `af342fc21e5c0ff0815628dfacec65ae519f69ae`, 546 lines. Only issue opened/reopened events; repository-owner author, exact title `JE X FYZ — EKSEKUSI BUILD APP TRIGGER`, exact body token `JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1`; queue group `jexfyz-cooler-build`, `cancel-in-progress: false`, `queue: max`. No push/PR/workflow_dispatch bypass. All 20 explicit gates (steps 2–21) remain.
-- Build #164 is terminal SUCCESS. Live Build workflow queries have zero queued, in-progress, waiting or requested runs. No #165 trigger/run exists yet.
-- Issue #41 was already consumed for Build #164 and remains open; existing prior trigger issues #40, #39, #38, #37, #36, #35 and #33 must not be reused/reopened. Authenticated GitHub user `TenzoNkz` matches the repository owner.
-- At pre-trigger main `b46e29c1769dadb25a992ec02a1c000331e95978`, tree was 139 entries and not truncated. App source/test remained identical to Validation #44 baseline; final trigger SHA is to be captured after this documentation sync and from the actual Actions event.
-- Live protected versions: Flutter `1.0.0+3`; Android Gradle exact `versionName "Telegram @horizontalzzz"`.
-- **Pre-trigger disposition: CLEAR.** The current owner message explicitly authorizes one fresh owner-authored issue. Create exactly one new issue; capture issue/run/job/source SHA and continue only that run. Stop at the first failed required gate; repair only a proven App-scope cause, never weaken gates or retry blindly.
-
-## Exact next action
-
-1. Re-fetch final main HEAD/tree and confirm there is still no active/queued Build App run.
-2. Create one fresh owner-authored issue with exact guarded title and token. Do not reuse Issue #41 or any older trigger issue.
-3. Verify exactly one issue-event Build run and record its real run/job/source SHA, status and steps. Continue that operation through every gate and downloaded Release asset verification.
-4. Keep Firmware/BIN/Firebase/OTA/flash/device operations outside scope. Owner installation/OEM visual and BLE radio behavior remain separate unverified acceptance.
+- Exactly one fresh owner-authored Issue #42 was created with the exact guarded title/token. Issue #41 and all older trigger issues were not reused or reopened.
+- **Run #165:** `43905426531`, workflow ID `374946166`, event `issues`, attempt 1, actor `TenzoNkz`, current state `in_progress`; immutable checkout/source SHA `cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d`.
+- **Job:** `build` / `133432846684`, runner allocated, state `in_progress`.
+- **Observed steps:** 1 Set up job SUCCESS; 2 Checkout repository SUCCESS; 3 Set up Java 17 SUCCESS; 4 Set up Flutter IN_PROGRESS; 5–21 pending. No build/package/release outputs yet.
+- Continue only this run/job/source; no duplicate trigger or blind retry. Build #164 remains the published baseline until all #165 gates and downloaded-asset verification pass.
+- Current interaction remains IN_PROGRESS. App-only scope; no Firmware/BIN/Firebase/OTA/flash/device operations.
+- Exact trigger, first gate transition and source identity have been appended to `APP_BUILD_REPORT.md`.
 
 ## Owner-approved contracts — still authoritative
 - English is the master/default language; Indonesian must be complete, natural and semantically equivalent.
