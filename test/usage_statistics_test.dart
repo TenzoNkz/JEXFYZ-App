@@ -223,12 +223,24 @@ void main() {
       expect(usageStateLabel(null, AppLanguage.indonesia), '--');
       expect(usageStateLabel('  ', AppLanguage.english), '--');
     });
+    test('session dates use localized month names and a 24-hour clock', () {
+      final localDate = DateTime(2026, 5, 16, 9, 5);
+      expect(
+        formatUsageSessionDate(localDate, AppLanguage.english),
+        '16 May 2026, 09:05',
+      );
+      expect(
+        formatUsageSessionDate(localDate, AppLanguage.indonesia),
+        '16 Mei 2026, 09:05',
+      );
+    });
+
     test('temperature axes label every degree and scale to observed data', () {
       final ticks = usageTemperatureAxisTicks(minimum: 31.5, maximum: 31.6);
 
       expect(ticks, <double>[33, 32, 31, 30]);
       expect(
-        ticks.map((value) => formatUsageAxisTick(value, 1)).toList(),
+        ticks.map((value) => formatUsageAxisTick(value, 1, AppLanguage.english)).toList(),
         <String>['33', '32', '31', '30'],
       );
       expect(usageTemperatureChartHeight(minimum: 31.5, maximum: 31.6), 160);
@@ -239,7 +251,8 @@ void main() {
         usageTemperatureChartHeight(minimum: 20, maximum: 40),
         greaterThan(160),
       );
-      expect(formatUsageAxisTick(0.234, 0.01), '0.23');
+      expect(formatUsageAxisTick(0.234, 0.01, AppLanguage.english), '0.23');
+      expect(formatUsageAxisTick(0.234, 0.01, AppLanguage.indonesia), '0,23');
     });
 
     test(
@@ -951,8 +964,8 @@ void main() {
         }
 
         await pumpAtWidth(350, ThemeData.light(useMaterial3: true));
-        expect(find.text('Suhu Baterai HP'), findsOneWidget);
-        expect(find.text('Suhu Hotside'), findsOneWidget);
+        expect(find.text('Suhu Baterai'), findsOneWidget);
+        expect(find.text('Suhu Sisi Panas'), findsOneWidget);
         expect(find.text('30D'), findsNothing);
         expect(find.text('1H'), findsNothing);
         expect(find.text('24H'), findsNothing);
@@ -1061,8 +1074,8 @@ void main() {
           closeTo(tester.getCenter(selectedDock).dx, 1),
         );
         for (final label in [
-          'Baterai HP',
-          'Hotside',
+          'Baterai',
+          'Sisi Panas',
           'Tegangan',
           'Adaptif',
           'Peltier',
