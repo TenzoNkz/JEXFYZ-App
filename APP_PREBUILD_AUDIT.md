@@ -1,16 +1,16 @@
-# LIVE MAIN OVERRIDE — RECOVERY BLOCKED / NOT BUILD-READY — 2026-11-16
+# LIVE MAIN OVERRIDE — SOURCE RESTORED / VALIDATION UNKNOWN / NOT BUILD-READY — 2026-11-16
 
-This live reconciliation supersedes any older “current main”, “next copy pending”, or “prebuild ready” status labels in the historical audit below.
+This live reconciliation supersedes older recovery-blocked statements below. Historical Validation Only #27 failure and Build #163 evidence remain preserved as history.
 
-- Latest main HEAD checked in this Diskusi session: `5007a9b1eab972ea89d2dfc2939db7adf69e6799`; recursive tree is complete (139 entries, not truncated). Session changes so far are documentation/status-only.
-- Current source is **NOT READY FOR APP BUILD**. Latest source-updated revision remains `05ab2bcf9a619b497d1a9f6f2abc974093808f37`; `lib/main.dart` blob remains `c28b1bcdb26673c3f317bf2448839b9ab7cd66ae`, 1,582,015 bytes / 45,030 lines versus clean 403,036-byte baseline `48dd0c943075db076769c3d9dc53b8b71a28a5c3`.
-- Direct source inspection reconfirmed four active top-level copies of `LedColorPreset`, `TamperApp` and `DashboardScreen`, plus malformed syntax fragments. The visible Adaptive ceiling card remains at approximately lines 9,367–9,398, reading `adaptiveCeiling` and displaying its value. Remove this card only after source restoration; retain telemetry/state/clamp and Lock Voltage.
-- Validation Only #27 / run `43808741923` / job `133105410519` / source `05ab2bcf9a619b497d1a9f6f2abc974093808f37` is terminal CANCELLED. Full job-log recheck: dependency resolution SUCCESS; formatter precheck FAILED on parser errors at lines 174, 448 and 11,447; formatter apply FAILED (exit 65); final formatter FAILED (exit 65); analyzer FAILED with syntax/duplicate-definition errors; Flutter tests CANCELLED. No successful validation covers current main.
-- Stale regression gaps remain: `test/localization_contract_test.dart` expects ungrouped OTA bytes; `test/device_copy_notification_contract_test.dart` still expects `Suhu Hotside`. Add/align semantic tests for exact profile labels, Adaptive-card absence, HEX-aware color names, native HUD units, Device alerts title and protected telemetry/state contracts.
-- Build #163 / run `43679305537` / Release `403010611` / tag `jexfyz-latest` remains the latest successful package at source `9466e8eeb269da5bc8806f0df1d4212cf24e1746`. Release currently still points to that older source and contains the previously verified APK and source ZIP; it does not contain current main changes.
-- Next gate: explicit `Eksekusi Full!` to restore `lib/main.dart` from clean baseline blob `48dd0c943075db076769c3d9dc53b8b71a28a5c3`, reapply intended Home/NOTIFY/locale/OTA/legacy-notice changes once, remove only the visible ceiling card, align tests, then obtain green non-publishing validation. Only then can a separate explicit `Eksekusi Build App!` be considered.
-- No App Build, Firmware, BIN, Firebase, OTA, flash or device action is authorized or performed in this Diskusi session.
-
+- Current source repair is committed. `lib/main.dart` was reconstructed from clean blob `48dd0c943075db076769c3d9dc53b8b71a28a5c3`; source commit `b4558cee8b5a4455603473d31e46b3b108f20576`; final blob `b12ea764b674b79f8a19bd70191fcf25ea3046a5` (401,983 characters / 11,427 lines).
+- Readback confirms one active copy each of `LedColorPreset`, `TamperApp`, and `DashboardScreen`; the previous duplicate declarations and malformed fragments are absent.
+- Home thermal parsing now accepts comma/dot decimals and spaced/unspaced °C; Home Hotside notices and Peltier re-arm copy are localized; legacy notices normalize to current copy; OTA received/expected byte counts use locale grouping; Adaptive profile notification uses Hotside/Sisi Panas.
+- The visible Adaptive ceiling card/readout was removed from `_buildAdaptiveTab`. Internal `adaptiveCeiling` state and `ADAPTIVE_CEILING` telemetry mapping remain. Firmware clamp, Lock Voltage and BLE protocol code were not changed.
+- Regression updates cover grouped OTA bytes, locale decimal/legacy Home notices, exact active and legacy Adaptive profile labels, Adaptive-card absence with state/telemetry retention, Usage Statistics terminology and current Hotside copy expectations.
+- Static source checks passed: six Dart files passed lexical delimiter/comment/string scan; duplicate class count is one each; card absence and state/telemetry retention confirmed. These checks do **not** replace Dart formatter, analyzer or Flutter tests.
+- **Hosted validation is UNKNOWN / NOT VERIFIED.** The repository validation workflow is push-triggered on `main`; the available workflow-run lookup returns PR-triggered runs only and did not expose the latest push run. Local runtime has no Dart/Flutter SDK. Obtain the latest `JE X FYZ — Validation Only` run and verify formatter, analyzer and Flutter test gates before treating source as build-ready.
+- **NOT READY FOR APP BUILD until hosted validation is green.** Build #163 / run `43679305537` / Release `403010611` / tag `jexfyz-latest` remains the latest successful package at source `9466e8eeb269da5bc8806f0df1d4212cf24e1746`; it does not contain the restored changes.
+- No App Build, Release, Firmware, BIN, Firebase, OTA, flash or device operation was performed. Visual/OEM acceptance remains NOT VERIFIED.
 
 ---
 
