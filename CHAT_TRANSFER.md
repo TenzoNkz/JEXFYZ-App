@@ -4,30 +4,21 @@
 ## Session and authorization
 - Project: JE X FYZ / JE Cooler.
 - Canonical repository/branch: `TenzoNkz/JEXFYZ-App` / `main`.
-- Current mode: `Eksekusi Build App!` — the current owner message explicitly authorizes the guarded App Build/QC/release workflow and justified App-scope repairs only.
-- Session is IN_PROGRESS. The active work item is one guarded App Build/QC/release attempt from current validated App source/test baseline. No #164 trigger issue/run has been created yet.
-- No Firmware compilation, BIN generation/publication/replacement, Firebase mutation, OTA, flashing, device operation or unrelated release work is authorized.
+- Current mode: `Eksekusi Build App!`; the current owner message explicitly authorizes only the guarded App Build/QC/release workflow and justified App-scope repairs.
+- Session status: IN_PROGRESS. Work item: Build #164 guarded App Build/QC/release; external operation is IN_PROGRESS on run `43863417641`.
+- Firmware compilation, BIN generation/publication/replacement, Firebase mutation, OTA, flashing, device operation and unrelated release work remain outside scope.
 
-## Build #164 live pre-trigger status
+## BUILD #164 — ACTIVE RUN
 
-**PRE-TRIGGER CLEAR — one fresh guarded owner-authored issue is authorized; do not reuse any existing trigger issue.**
+<badge color="success">Trigger created</badge> **Issue #41** [owner-authored by TenzoNkz](https://github.com/TenzoNkz/JEXFYZ-App/issues/41), exact required title and token. It produced exactly one issue-event Build run so far.
 
-- Latest Validation Only #38 / run `43843348889` / job `133217253810`, source input SHA `01cf1295458564820b52afc6ca33037583a430c6`: dependency resolution PASS; formatter applied five Dart-file changes and final check PASS; analyzer PASS (107 info-level); Flutter tests 200/200 PASS; formatter-only commit `b8fcdaf191c5e8bb5df5fa44c50c80a12dfd03da`.
-- Pre-trigger source comparison from that validated source/test tree to current main showed only guarded workflow and canonical documentation/checkpoint paths changed; no App source/test/Android Gradle/dependency path changed.
-- Current guarded workflow blob `af342fc21e5c0ff0815628dfacec65ae519f69ae`, full 546 lines read. Only issue opened/reopened event; repository-owner author + exact title + body-token guard; serialized queue with `cancel-in-progress: false` and `queue: max`; no push/PR/workflow-dispatch release path. Corrected Step 10 Fan Speed percent assertion is present. All 20 explicit release gates (steps 2–21) remain.
-- Live Build App history: latest Build #163 / run `43679305537` / job `132706236782`, attempt 1, terminal SUCCESS; steps 1–21 and cleanup 39–43 all SUCCESS. Current status queries: zero queued, in-progress, waiting or requested Build runs.
-- Issue #40 is still OPEN and already used for Build #163. Existing trigger issues #39, #38, #37, #36, #35 and #33 must not be reused/reopened. Authenticated GitHub identity `TenzoNkz` matches repository owner.
-- Published baseline before the next run: Release ID `403010611`, tag `jexfyz-latest`, tag target/source `9466e8eeb269da5bc8806f0df1d4212cf24e1746`; exactly one APK and one source ZIP. Detailed sizes/digests are recorded in the latest Build #163 report and the Build #164 pre-trigger entry in `APP_BUILD_REPORT.md`.
-- Flutter app version remains `1.0.0+3`; Android Gradle `versionName "Telegram @horizontalzzz"` verified unchanged.
-- The Build #163 self-signed certificate/PKIX and META-INF warnings, Kotlin/Gradle deprecations, native ELF DWARF warning and NO-SOURCE native Android JUnit tasks remain disclosed. Local Flutter/Dart/actionlint are unavailable. Physical install/OEM visuals, BLE/device, Firmware/BIN, Firebase, OTA/flash, thermal/electrical acceptance remain unverified.
-
-## Exact next action
-
-- Fetch the final current main HEAD immediately before trigger; then create exactly one new owner-authored issue with title `JE X FYZ — EKSEKUSI BUILD APP TRIGGER` and body token `JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1`.
-- Do not reuse/reopen Issue #40 or other old trigger issues. Verify exactly one resulting Build run and record the actual issue ID, run ID, job ID, source SHA and status from live Actions.
-- Continue only that run. Record meaningful gate transitions, inspect full logs at any failure, repair only demonstrated App-scope causes without weakening checks, and retry only after a concrete repair or evidence-backed infrastructure transient.
-- Success requires every current workflow gate, analyzer/tests, exactly one obfuscated APK and matching source ZIP, signature/certificate verification, Release/tag/source SHA parity, and downloaded asset identity/checksum verification.
-- Keep Firmware, BIN, Firebase, OTA, flashing and device operations outside scope.
+- Run: [43863417641](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/43863417641), workflow `374946166`, attempt 1, event `issues`, state `in_progress`.
+- Job: `133285765871` (`build`), state `in_progress`.
+- Immutable checkout/source SHA: `a41baaf3bc53a02d72e12a4f3840f0c84c493497` (matches main at trigger time).
+- Observed gates: 1 Set up job SUCCESS; 2 Checkout repository SUCCESS; 3 Set up Java 17 SUCCESS; 4 Set up Flutter IN_PROGRESS; steps 5–21 PENDING. No analyzer/test/Gradle/APK/signing/release result is claimed yet.
+- Exactly one trigger issue and one Build #164 run are present; do not reuse #40 or create another issue/rerun. Continue only this run/job.
+- Build #163 remains published until #164 passes all required gates and live asset verification. Existing certificate, PKIX/META-INF, Gradle/Kotlin, native ELF DWARF and NO-SOURCE native JUnit warnings remain disclosed.
+- Immediate next action: inspect run/job state and available logs; update this checkpoint and APP_BUILD_REPORT.md at each meaningful gate transition. Preserve every failed intermediate result.
 
 ## Owner-approved contracts — still authoritative
 - English is the master/default language; Indonesian must be complete, natural and semantically equivalent.
