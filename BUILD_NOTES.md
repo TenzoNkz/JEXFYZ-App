@@ -1,3 +1,15 @@
+## BUILD #164 — PRE-TRIGGER READINESS REVIEW — HOLD — 2026-11-16
+
+- **Disposition:** Flutter/source validation is green, but do not trigger the guarded Build App workflow yet. Its Step 10 architecture/security audit has a deterministic stale Fan Speed source-string assertion.
+- **Validation Only #38:** run 43843348889 / job 133217253810, tested SHA 01cf1295458564820b52afc6ca33037583a430c6, terminal SUCCESS. Locked dependencies PASS; formatter applied five Dart files and final check PASS; analyzer PASS (107 infos, no warning/error failure); Flutter tests 200/200 PASS; formatter preview/upload PASS; formatter-only commit PASS, b8fcdaf191c5e8bb5df5fa44c50c80a12dfd03da.
+- **Confirmed blocker:** `.github/workflows/jexfyz-app-build-trigger.yml`, blob 41c0b7c1f18c0e2d0aa30028c7fc0e8f0554e4ba, line 222 checks for the old native Fan Speed expression with data.speed.toString(); live `FloatingMonitorService.kt:609` contains the speed with %. Step 10 will terminate before Flutter/Gradle/APK. Correct the workflow matcher to the live contract under a separately authorized `Eksekusi Full!`; do not alter production behavior or weaken the audit.
+- **Current release baseline:** Build #163 / run 43679305537 / job 132706236782, source 9466e8eeb269da5bc8806f0df1d4212cf24e1746, terminal SUCCESS; Release ID 403010611, tag jexfyz-latest. It predates the restored source and remains the current published package until a new build passes all gates.
+- Compare from Build #163 source to current main shows 20 changed paths: 10 documentation files, 2 Android Kotlin files, 4 Flutter files and 4 tests. Build workflow/config, pubspec/lock and Android Gradle config are unchanged.
+- Build workflow guard remains issue-only, owner/title/body-token guarded, serialized, and has no push/PR route. Issue #40 is still OPEN and already triggered Build #163; a new owner-authored issue is required for the next run. No Build #164 run exists and no issue was created in Diskusi.
+- The build workflow checks the four production signing secrets for non-empty values at runtime. They are not inspected here; Build #163 passed signing preparation on 2026-11-15. Android versionName `Telegram @horizontalzzz` and Flutter version `1.0.0+3` remain protected.
+- **Next action:** use a separate `Eksekusi Full!` for the single audit-matcher correction and static verification; after the workflow is consistent, require a separate explicit `Eksekusi Build App!` before creating one fresh guarded trigger issue. No Firmware/BIN/Firebase/OTA/flash/device operation is authorized.
+
+---
 ## Latest guarded App Build #163 — terminal SUCCESS / Release verified — 2026-11-15
 
 - Owner trigger Issue #40; Actions run `43679305537`, workflow 374946166, attempt 1; job `132706236782`; immutable source `9466e8eeb269da5bc8806f0df1d4212cf24e1746`.

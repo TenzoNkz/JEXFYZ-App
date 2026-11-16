@@ -1,25 +1,17 @@
 # JE X FYZ / JE Cooler — Current Handover
 
-Last reconciled: 2026-11-16 16:52 (Asia/Jakarta). Detailed owner decisions and the rolling continuation record remain in CHAT_TRANSFER.md and APP_NOTES.md.
+Last reconciled: 2026-11-16 18:23:56 (Asia/Jakarta).
 
-## Current state — SOURCE RESTORED / VALIDATION ONLY SUCCESS
+## Current state — FLUTTER VALIDATED / GUARDED APP BUILD PREFLIGHT BLOCKED
 
-- Owner authorized `Eksekusi Full!`. Source recovery, scoped analyzer/test repairs and non-publishing hosted validation are complete on canonical `main`.
-- Validated source/test tree commit: `b8fcdaf191c5e8bb5df5fa44c50c80a12dfd03da` — workflow-generated commit `style: format Dart sources and tests`. Later main commits only synchronize project documentation/status.
-- Restored `lib/main.dart` from clean baseline blob `48dd0c943075db076769c3d9dc53b8b71a28a5c3`; recovery commit `b4558cee8b5a4455603473d31e46b3b108f20576`; final blob `b12ea764b674b79f8a19bd70191fcf25ea3046a5`, 401,983 characters / 11,427 lines.
-- Preserved Home/NOTIFY localization, locale parsing, legacy notice normalization, Peltier re-arm copy, OTA byte grouping and Adaptive profile notification; removed only the visible Adaptive ceiling card while retaining internal ceiling state/telemetry.
-- Validation fixes removed the unused _formatTemperature local and aligned the regression assertions with the actual Fan Speed percent suffix and locale-aware Floating Monitor size/max-label formatter. The final regex assertion tolerates formatter line wrapping without weakening the contract.
+- Validation Only #38 / run 43843348889 / job 133217253810 completed SUCCESS, tested SHA 01cf1295458564820b52afc6ca33037583a430c6. Formatter applied five Dart-file changes; final formatter PASS; analyzer PASS (107 infos); Flutter tests 200/200 PASS; formatter-only result committed as b8fcdaf191c5e8bb5df5fa44c50c80a12dfd03da.
+- The latest verified App package remains Build #163 / run 43679305537 / Release 403010611 / tag jexfyz-latest, exact source 9466e8eeb269da5bc8806f0df1d4212cf24e1746. It predates the restored/validated source.
+- **Build App blocker:** .github/workflows/jexfyz-app-build-trigger.yml:222 expects the old native Fan Speed text using data.speed.toString(); current FloatingMonitorService.kt:609 outputs the speed with %. The guarded workflow's Step 10 security/architecture audit will fail before Gradle/APK. No workflow change or Build trigger was made in Diskusi.
+- Read-only reconstruction of the remaining explicit static audit checks found no other mismatch. The local runtime has no Dart/Flutter SDK; positive formatter/analyzer/test evidence is hosted-only.
 
-## Hosted Validation Only evidence
+## Next action and authorization
 
-- Validation Only #38 / run `43843348889` / job `133217253810` — **SUCCESS**, tested source `01cf1295458564820b52afc6ca33037583a430c6`.
-- Locked dependencies PASS; final formatter PASS (five Dart files formatted in the CI workspace); analyzer PASS; Flutter tests **200/200 PASS**; formatter-preview upload PASS; formatter-only commit PASS.
-- The workflow committed the same formatted workspace as `b8fcdaf191c5e8bb5df5fa44c50c80a12dfd03da`. No separate follow-up Validation Only run is listed for this auto-format commit SHA.
-- Earlier #34/#35 failed on the unused local and stale source-contract assertions; #36/#37 failed only on the remaining one-line max-label assertion before the whitespace-tolerant regex correction.
-- The local runtime has no Dart/Flutter SDK; validation evidence is hosted GitHub Actions only.
-
-## Package and safety boundary
-
-- Latest verified package remains Build #163 / run `43679305537` / job `132706236782` / Release `403010611` / tag `jexfyz-latest` / source `9466e8eeb269da5bc8806f0df1d4212cf24e1746`. It predates the restored source. No new APK/App Build or Release was created in this work.
-- Visual/OEM screenshots, owner installation, BLE field behavior, Firmware compile/BIN provenance, thermal/electrical tests, Firebase and OTA/flash remain unverified.
-- Any new App Build/package/release requires a separate explicit `Eksekusi Build App!`; no Firmware/device operation is authorized by the current checkpoint.
+- A separate `Eksekusi Full!` is needed to reconcile only the stale workflow assertion and verify the static contract. It does not authorize an App build.
+- Once corrected, a separate explicit `Eksekusi Build App!` is required. The workflow triggers only on a new/reopened owner-authored issue with its exact title/token; Issue #40 remains open and already triggered Build #163, so do not reuse/reopen it.
+- Build #163 release assets remain the published baseline until a new guarded build completes every gate and downloaded-asset verification.
+- Visual/OEM screenshots, owner installation, BLE field behavior, long-session soak, Firmware compile/BIN provenance, thermal/electrical tests, Firebase and OTA/flash remain unverified. No Firmware/device operation is authorized.
