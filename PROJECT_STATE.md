@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — Current Project State
 
-Last reconciled: 2026-11-16 22:48:56 (Asia/Jakarta). Current truth only. Build history remains in APP_BUILD_REPORT.md and CHANGELOG.md; rolling chat continuation remains in CHAT_TRANSFER.md.
+Last reconciled: 2026-11-16 23:13:02 (Asia/Jakarta).
 
 ## Repository baseline
 
@@ -11,7 +11,7 @@ Last reconciled: 2026-11-16 22:48:56 (Asia/Jakarta). Current truth only. Build h
 
 ## Bluetooth device-name display correction — source/test validated
 
-**Status: SOURCE + REGRESSION IMPLEMENTED / HOSTED VALIDATION GREEN / NOT YET RELEASED OR DEVICE VERIFIED.**
+**Status: SOURCE + REGRESSION IMPLEMENTED / HOSTED VALIDATION GREEN / BUILD #165 AUTHORIZED AND PRE-TRIGGER CLEAR. Latest published package remains #164; Bluetooth fix not yet released or device-verified.**
 
 - Owner screenshot showed the Bluetooth Connection list row as generic `Perangkat`. The App source had deliberately mapped the real `JE X FYZ` local name to `JexText.of('device', lang)`.
 - Firmware V7.2 tracked source already declares `static constexpr char BLE_NAME[] = "JE X FYZ";` and initializes it through `BLEDevice::init(BLE_NAME)`. No Firmware/BIN change was needed or made.
@@ -28,14 +28,14 @@ Last reconciled: 2026-11-16 22:48:56 (Asia/Jakarta). Current truth only. Build h
 - APK SHA-256 `6553af0d07162e804bea838cbd1c391432471630db0de6d56bdd303c713eaa8c`; matching source ZIP SHA-256 `1c15f4bc5bfe112594212f42eea925514a7ab138071915c9fe486f6c909bb576`.
 - Release `403010611` and tag `jexfyz-latest` target exact Build #164 source. V1/V2/V3 signatures, pinned certificate, exactly two assets and re-downloaded checksum/source identity passed.
 - Protected Flutter version `1.0.0+3` and Android `versionName "Telegram @horizontalzzz"` remain unchanged.
-- Build #164 predates the Bluetooth name fix. No APK/Release was produced in the current `Eksekusi Full!` task.
+- Build #164 predates the Bluetooth name fix. This fix is not included in Build #164 and needs the currently authorized guarded Build #165 package run.
 
 ## Remaining evidence boundaries and next action
 
 - Visual/OEM screenshot review, owner APK installation, actual BLE advertising/display, long-session performance/storage soak, Firmware compile/BIN provenance, BLE App authentication, Firebase, OTA/flash, thermal and electrical acceptance remain separate and unverified.
 - Existing release warnings remain documented: self-signed certificate/PKIX, no signature timestamp, META-INF signing coverage caveat, Kotlin/Firebase KGP compatibility warning, Gradle deprecations and native ELF DWARF. External Actions still use major-version tags rather than immutable full commit SHAs.
-- To include the Bluetooth fix in a package, require a separate explicit `Eksekusi Build App!` command, then one fresh guarded owner-authored trigger issue. Issue #41 already triggered Build #164; do not reuse/reopen it.
-- No Firmware/BIN/Firebase/OTA/flash/device operation was performed or authorized.
+- The current owner message explicitly authorizes `Eksekusi Build App!`. Live pre-trigger checks found Build #164 terminal SUCCESS and zero queued/in-progress/waiting/requested Build App runs. Create exactly one fresh owner-authored issue with the exact guarded title/token; Issue #41 already triggered Build #164 and must not be reused/reopened.
+- Monitor exactly the single resulting Build #165 run through source SHA, analyzer/tests, Android Gradle, obfuscated APK, V1/V2/V3 certificate verification, matching source ZIP, Release/tag parity and downloaded asset digests. No Firmware/BIN/Firebase/OTA/flash/device operation is authorized.
 
 ## Historical hosted validation baseline — Validation Only #19 SUCCESS (pre-localization correction set)
 
