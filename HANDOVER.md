@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — Current Handover
 
-Last reconciled: 2026-11-16 22:48:56 (Asia/Jakarta).
+Last reconciled: 2026-11-16 23:13:02 (Asia/Jakarta).
 
 ## Current state — BLUETOOTH NAME FIX VALIDATED / NOT RELEASED
 
@@ -12,6 +12,7 @@ Last reconciled: 2026-11-16 22:48:56 (Asia/Jakarta).
 
 ## Next action and boundaries
 
-- To package the fix, send a separate `Eksekusi Build App!` command. Then create one fresh owner-authored guarded issue using the exact title/token. Issue #41 has already triggered Build #164; do not reuse/reopen it.
-- After installing the new APK, verify the Bluetooth scan row shows `JE X FYZ` on the real phone/cooler. Physical advertisement/display remains NOT VERIFIED until then.
-- No Firmware/BIN/Firebase/OTA/flash/device or App Build/Release operation was performed in this Eksekusi Full interaction. Visual/OEM, BLE field, thermal/electrical and long-session evidence remain separate.
+- The current owner message explicitly authorizes `Eksekusi Build App!`. Pre-trigger live checks confirm Build #164 terminal SUCCESS and no queued/in-progress/waiting/requested Build App run.
+- Create exactly one fresh owner-authored issue with exact title `JE X FYZ — EKSEKUSI BUILD APP TRIGGER` and body token `JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1`. Issue #41 already triggered Build #164; do not reuse/reopen it or any older trigger issue.
+- Verify exactly one resulting run; record its actual source SHA/run/job and monitor all required workflow gates, Release/tag parity and re-downloaded asset digests. Stop on any failed required gate; do not retry blindly.
+- After owner installation, verify the real cooler Bluetooth advertisement and App scan row show `JE X FYZ`. Physical BLE/OEM visual, Firmware/BIN, Firebase, OTA/flash, thermal/electrical and long-session evidence remain separate and unverified. No such operation is authorized here.
