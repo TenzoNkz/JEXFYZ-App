@@ -1,4 +1,4 @@
-| Last updated | 2026-11-16 11:53:59 (Asia/Jakarta) |
+| Last updated | 2026-11-16 13:16:00 (Asia/Jakarta) |
 
 > Single current snapshot for JE X FYZ project interactions. This file records the latest persisted observation, not a continuously running heartbeat or overall product completion.
 
@@ -8,19 +8,19 @@
 |---|---|
 | **STATUS** | **IN_PROGRESS** |
 | SESSION STATUS | IN_PROGRESS |
-| WORK STATUS | IN_PROGRESS — Authorized Eksekusi Full implementation of the reviewed bilingual copy/localization/formatting, Adaptive presentation, Floating HUD/native notification fixes and regression coverage. |
-| Mode | Eksekusi Full! — App source, tests, native Android copy, documentation and non-publishing validation scope authorized. Guarded App Build/Release remains separately prohibited without Eksekusi Build App!; Firmware/BIN/Firebase/OTA/flash/device operations are excluded. |
-| Request / work item | Implement the approved full copy and Adaptive UI correction set against current main, preserve protected BLE/Firmware/SQLite/storage behavior, add semantic and platform-specific regressions, run authorized non-publishing validation, update project records. |
-| Started | 2026-11-16 11:43:00 (Asia/Jakarta) |
-| Last updated | 2026-11-16 11:53:59 |
-| Current phase | IN_PROGRESS — authority/skill/workflow review complete. Live source and tests mapped. Completed first source milestone: dictionary glossary fixes, exact Adaptive profile copy on active and legacy keys, precise battery threshold labels, OTA Daring, Voltage label, and generic Sisi Panas copy. Continue main Home/Usage formatting, native HUD/notification and regressions. |
-| Last completed milestone | Dictionary source commit `39e70cb0bac4271785905f9b56fdaca5337dbb30`; 353 entries retained; both active Adaptive keys and legacy aliases have owner-approved values. |
-| Last verified main checkpoint | `39e70cb0bac4271785905f9b56fdaca5337dbb30`; source tree pending refreshed read-back. |
+| WORK STATUS | IN_PROGRESS — Prior Eksekusi Full implementation remains open pending recovery verification; this Diskusi interaction does not inherit source-edit or build authorization. |
+| Mode | Diskusi! — Read-only engineering review and checkpoint recovery. Executable source, tests, config, workflows, builds/releases, Firmware and device operations are not authorized. |
+| Request / work item | Load current durable checkpoint and live repository evidence; verify prior unfinished work and external operation state; identify the next safe engineering action without source or build changes. |
+| Started | 2026-11-16 13:16:00 (Asia/Jakarta) |
+| Last updated | 2026-11-16 13:16:00 |
+| Current phase | IN_PROGRESS — Incoming Diskusi session opened and persisted. Prior Eksekusi Full work and Build #163 evidence are pending live recovery verification before continuation. |
+| Last completed milestone | Prior source milestone recorded at dictionary commit `39e70cb0bac4271785905f9b56fdaca5337dbb30`; its relationship to current main HEAD and subsequent changes is not yet reverified in this interaction. |
+| Last verified main checkpoint | `39e70cb0bac4271785905f9b56fdaca5337dbb30` (checkpoint inherited from prior status; current main HEAD not yet re-read). |
 | EXTERNAL OPERATION | Build #163 / Actions run 43679305537 / job 132706236782 / Release ID 403010611 / tag jexfyz-latest. |
-| EXTERNAL OPERATION STATUS | COMPLETED / SUCCESS — Build #163 verified. No new validation run has been started in this interaction. |
-| Result / evidence | `lib/app_settings.dart` updated and committed. No executable test/native code changed yet. No APK/Release, Firmware, BIN, Firebase, OTA or device operation authorized. |
-| Blocker | No blocker established. |
-| Next action | Implement locale-aware Home/Usage/Floating display formatting; repair Home legacy notice parser; fix native HUD units and Device alerts copy; add targeted regression contracts. |
+| EXTERNAL OPERATION STATUS | COMPLETED / SUCCESS — inherited evidence from prior status; live state/read-back pending in this interaction. |
+| Result / evidence | Incoming session marker persisted before extended loading. No source/test/native code change or build started by this Diskusi interaction. |
+| Blocker | None established; recovery state and current main must be verified. |
+| Next action | Read MASTER_PROMPT.md and active CHAT_TRANSFER checkpoint, then verify prior work and live GitHub/Actions/release state before updating recovery records. |
 
 ## Status model
 
