@@ -6,7 +6,7 @@ Last reconciled: 2026-11-16 (Asia/Jakarta). Current truth only. Build history re
 
 - Canonical repository/branch: TenzoNkz/JEXFYZ-App / main.
 - Build #163 is the latest verified App package and Release: Actions run 43679305537 / job 132706236782 / Issue #40; immutable package source 9466e8eeb269da5bc8806f0df1d4212cf24e1746; terminal SUCCESS.
-- Later main commits through checkpoint close modify only the six state/ledger documents; no App source, tests, workflow or release inputs changed after the immutable Build #163 checkout.
+- Current compare from the immutable Build #163 package source to main shows only 10 Markdown status/subject/audit/checkpoint/ledger documents changed; no App source, tests, Android config, dependencies, workflows or release inputs changed after the package.
 - Twelve canonical .agents/skills and twelve .github/skills are mirrored byte-for-byte. Guarded App release and non-publishing Validation Only workflows remain separate.
 
 ## Latest hosted source validation — Validation Only #19 SUCCESS
