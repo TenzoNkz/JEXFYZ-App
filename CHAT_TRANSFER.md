@@ -1,29 +1,12 @@
 <!-- ACTIVE_CHECKPOINT_START -->
 # ACTIVE CHECKPOINT — BUILD #164 LIVE PREFLIGHT CLEAR / FRESH TRIGGER NEXT — 2026-11-16
 
-## Session and authorization
-- Project: JE X FYZ / JE Cooler.
-- Canonical repository/branch: `TenzoNkz/JEXFYZ-App` / `main`.
-- Current mode: `Eksekusi Build App!`; the current owner message explicitly authorizes only the guarded App Build/QC/release workflow and justified App-scope repairs.
-- Session status: IN_PROGRESS. Work item: Build #164 guarded App Build/QC/release; external operation is IN_PROGRESS on run `43863417641`.
-- Firmware compilation, BIN generation/publication/replacement, Firebase mutation, OTA, flashing, device operation and unrelated release work remain outside scope.
-
-## BUILD #164 — ACTIVE RUN
-
-<badge color="success">Trigger created</badge> **Issue #41** [owner-authored by TenzoNkz](https://github.com/TenzoNkz/JEXFYZ-App/issues/41), exact required title and token. It produced exactly one issue-event Build run so far.
-
-- Run: [43863417641](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/43863417641), workflow `374946166`, attempt 1, event `issues`, state `in_progress`.
-- Job: `133285765871` (`build`), state `in_progress`.
-- Immutable checkout/source SHA: `a41baaf3bc53a02d72e12a4f3840f0c84c493497` (matches main at trigger time).
-- Observed gates: 1 Set up job SUCCESS; 2 Checkout repository SUCCESS; 3 Set up Java 17 SUCCESS; 4 Set up Flutter IN_PROGRESS; steps 5–21 PENDING. No analyzer/test/Gradle/APK/signing/release result is claimed yet.
-- Exactly one trigger issue and one Build #164 run are present; do not reuse #40 or create another issue/rerun. Continue only this run/job.
-- Build #163 remains published until #164 passes all required gates and live asset verification. Existing certificate, PKIX/META-INF, Gradle/Kotlin, native ELF DWARF and NO-SOURCE native JUnit warnings remain disclosed.
-- Immediate next action: continue polling only run/job #164, inspect step 15 and the complete job log when available; update this checkpoint and APP_BUILD_REPORT.md at each meaningful gate transition. Preserve every failed intermediate result.
+# ACTIVE CHECKPOINT — BUILD #164 COMPLETED / RELEASE VERIFIED — 2026-11-16
 
 ## Session and authorization
 - Project: JE X FYZ / JE Cooler.
 - Canonical repository/branch: TenzoNkz/JEXFYZ-App / main.
-- Mode: Eksekusi Build App! — guarded App Build/QC and release only; no Firmware/BIN/Firebase/OTA/flashing/device operations were performed.
+- Mode: Eksekusi Build App! — guarded App Build/QC and release only. No Firmware/BIN/Firebase/OTA/flashing/device operations were performed.
 - SESSION STATUS: COMPLETED. WORK STATUS: COMPLETED. EXTERNAL OPERATION STATUS: COMPLETED / SUCCESS.
 
 ## BUILD #164 — TERMINAL SUCCESS / RELEASE VERIFIED
