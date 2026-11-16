@@ -1,11 +1,16 @@
-## CURRENT MAIN — LOCALIZATION/STATE REMEDIATION VALIDATED — 2026-11-15 (NOT PACKAGED)
+## CURRENT MAIN — BUILD #163 PACKAGE VERIFIED / NEXT COPY & ADAPTIVE REMEDIATION PENDING — 2026-11-16
 
-- Latest validated code after formatter-only follow-up: fc39de16a5480347ce13083760424a309957c311.
-- Implementation commits: da210579a2a26de518a2df18c6638502e00af2bd; follow-up correction 16d9acb5b88ca51f411ddf4ffc38c5757f57f87c; stale Widget expectation repair 8fca2ecebf8b2ffb83fc9475a817c832f8269dc5.
-- Validation Only #19 / run 43677560315, job 132700920324, tested source 8fca2ecebf8b2ffb83fc9475a817c832f8269dc5, terminal SUCCESS: dependencies PASS; Dart formatter checked 18 files, applied one change, final check 0 changed; analyzer 118 info / 0 warnings / 0 errors; Flutter 197/197 PASS.
-- Implemented: thermal Safety terminology, Fan prerequisite wording, Safety success translation, full-sync/deep-sleep copy, logical Adaptive vs physical output state domains, Usage Statistics mapping, native Floating Monitor A/P/F mapping, OTA received/expected interpolation, and localization placeholder/state regression tests.
-- Validation Only #18 is preserved as a failed intermediate (196/197) due only to a stale LED copy expectation. The expected text was updated before #19; do not rewrite #18 as success.
-- Build #162 remains latest packaged App and predates current source. NOT RELEASED. Guarded Eksekusi Build App! still needs a separate explicit owner command. Android/OEM visual acceptance is not established by widget tests.
+- **Latest verified package:** Build #163 / Actions run `43679305537` / job `132706236782`, terminal SUCCESS, immutable package source `9466e8eeb269da5bc8806f0df1d4212cf24e1746`.
+- **Validation source:** Validation Only #19 / run `43677560315` / job `132700920324` passed on `8fca2ecebf8b2ffb83fc9475a817c832f8269dc5`; formatted follow-up `fc39de16a5480347ce13083760424a309957c311`. The verified compare from the formatted source to Build #163's package SHA contains only documentation/skill/status/checkpoint paths; no App source, tests, Android config, dependencies or workflow paths changed. The package therefore contains the tested executable/test state.
+- **Validation #19:** locked dependencies PASS; Dart formatter checked 18 files and ended clean after one correction; analyzer 118 info / 0 warnings / 0 errors; Flutter tests 197/197 PASS.
+- **Build #163 Gradle:** `:app:testDebugUnitTest` gate SUCCESS in 2m43s; native Android App unit-test tasks were `NO-SOURCE`, so no Kotlin/Java JUnit test case executed.
+- **Release:** ID `403010611` / tag `jexfyz-latest`, target equals package source SHA; exactly one APK and one corresponding source ZIP. Asset digests and sizes are documented in `PROJECT_STATE.md` and `APP_NOTES.md`.
+- **Current pending scope:** the complete English/Indonesian copy and formatting remediation, active Adaptive selector key correction, removal of only the visible Adaptive Limit row, locale-aware display formatting, native device-alert copy and matching regressions are NOT IMPLEMENTED / NOT RELEASED. Build #163 predates these newly documented changes.
+- **Preflight correction:** the owner-approved Adaptive profile strings were recorded, but the implementation handoff did not bind them to the active keys. Live `main.dart` uses `hotsideProtection` and `hotsideBattery`; their current `app_settings.dart` values still do not match the exact approved labels. APP_NOTES.md now records the exact key-to-label mapping and the legacy aliases to preserve.
+- **Next gate:** implement only with explicit `Eksekusi Full!`; run appropriate formatter/analyzer/test validation. Build App/APK/Release requires separate explicit `Eksekusi Build App!`.
+- **Visual status:** VISUAL NOT VERIFIED until actual Build #163 screenshots are reviewed at 350-dp/420-dp, EN/ID, Light/Dark and constrained viewport states. CI does not establish OEM rendering, installation, BLE field behavior or physical thermal/electrical acceptance.
+- Validation Only #18 remains a failed historical intermediate (196/197) caused by a stale LED copy expectation; preserve that failure record.
+
 
 ---
 
