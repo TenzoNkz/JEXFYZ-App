@@ -1,5 +1,15 @@
 ## Current App source and verified package — Build #163 SUCCESS — 2026-11-16
 
+### Main branch recovery checkpoint — 2026-11-16
+
+- `lib/main.dart` has been restored from clean baseline blob `48dd0c943075db076769c3d9dc53b8b71a28a5c3`; source commit `b4558cee8b5a4455603473d31e46b3b108f20576`; current blob `b12ea764b674b79f8a19bd70191fcf25ea3046a5` (401,983 characters / 11,427 lines).
+- Removed the four-copy corruption and malformed fragments; static readback confirms one declaration each of `LedColorPreset`, `TamperApp`, and `DashboardScreen`.
+- Reapplied locale-aware Home temperature parsing, Hotside threshold/re-arm copy, legacy notice normalization, OTA byte grouping and Adaptive profile notice translation. Removed only the visible Adaptive ceiling card; internal state/telemetry remain.
+- Updated regression tests for locale decimals, old/new Home notices, grouped OTA bytes, exact Adaptive labels and aliases, ceiling-card absence/state retention, Usage Statistics terminology and Hotside copy.
+- Static lexical/source-contract checks passed. Flutter formatter, analyzer and tests are **NOT VERIFIED** because local Dart/Flutter SDK is unavailable and the push-triggered Actions run cannot be queried through the available PR-only workflow-run lookup. Do not treat static checks as hosted QC.
+
+
+
 - **Latest verified package:** Build #163 / [Actions run 43679305537](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/43679305537) / job `132706236782`, attempt 1, terminal SUCCESS on immutable package source `9466e8eeb269da5bc8806f0df1d4212cf24e1746`.
 - **Validation lineage:** Validation Only #19 / run `43677560315`, job `132700920324`, passed on source `8fca2ecebf8b2ffb83fc9475a817c832f8269dc5`. The formatted source follow-up is `fc39de16a5480347ce13083760424a309957c311`. A verified compare from that source to Build #163's package source shows only documentation/skill/status/checkpoint paths changed; no App source, tests, Android config, dependencies or workflows changed in between. Build #163 therefore packages the same validated executable/test state.
 - **Hosted QC:** Flutter 3.47.2 / Dart 3.13.2; locked dependencies PASS; formatter checked 18 files, applied one correction, and final formatter check had zero changes; analyzer **118 info-level findings / 0 warnings / 0 errors**; Flutter tests **197/197 passed**.
@@ -11,7 +21,7 @@
 - **Protected Android version:** Gradle `versionName "Telegram @horizontalzzz"` remains unchanged; Flutter version is `1.0.0+3`.
 - **Retained warnings:** Kotlin Gradle Plugin 2.2.20 future Flutter compatibility warning; deprecated Android Gradle properties; generated native ELF DWARF debug-info warning; JAR META-INF unsigned-entry warnings. These are non-blocking but not represented as fixed.
 - **Evidence boundary:** Build #163 is VERIFIED CI / RELEASE SUCCESS, not owner installation, Android/OEM screenshot, BLE field behavior, Firmware compilation/BIN provenance, Firebase/OTA/flash, thermal or electrical acceptance. Native Android JUnit tasks were NO-SOURCE.
-- **Pending owner-directed work:** the 2026-11-15/16 bilingual copy corrections and Adaptive selector/card presentation decisions are **not included** in Build #163. They remain source/test implementation work for a separately authorized `Eksekusi Full!`; another APK requires a separate `Eksekusi Build App!`.
+- **Package boundary:** Build #163 remains the latest verified APK and does not include the restored main-branch source/test changes above. The current main source is not build-ready until the push-triggered Validation Only formatter/analyzer/test gates are confirmed green. A new APK still requires a separate `Eksekusi Build App!`.
 
 ## Current approved UI and data contracts — included in Build #163
 
