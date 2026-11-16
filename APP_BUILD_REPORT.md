@@ -3140,4 +3140,11 @@
 - Exact analyzer information count, Flutter test total and Gradle output are not yet claimed: live job-log retrieval returned BlobNotFound while the run remains active. Step/job API is the current authoritative state; this log limitation is not treated as a build failure.
 - No APK, certificate, source ZIP or Release mutation has been claimed. Release #163 remains published until #164 passes all mandatory gates and final live asset re-verification.
 - Continue only run 43863417641 / job 133285765871; no duplicate issue or rerun. Preserve Build #163 historical results and all earlier failures unchanged.
+### BUILD #164 progress — Android Gradle gate passed / obfuscated APK build active — 2026-11-16
+
+- Run 43863417641 / job 133285765871, immutable checkout a41baaf3bc53a02d72e12a4f3840f0c84c493497, attempt 1, Issue #41.
+- **Steps 1–14 are observed SUCCESS.** Step 14 Android Gradle unit-test gate has completed successfully; step 15 obfuscated release APK build is IN_PROGRESS. Steps 16–21 (V1/V2/V3 signing, pinned certificate, filename, source ZIP, Release/tag and downloaded asset verification) remain PENDING; cleanup remains pending.
+- The live log-download endpoint still returns BlobNotFound while this job is active. Exact analyzer count, Flutter test total, Gradle duration/task count and Gradle log output remain unverified and will be recorded only from the completed job log.
+- No APK or Release asset has been claimed as built/published. Build #163 remains the current published package until #164 finishes all required steps and the final external Release/tag/assets are independently verified.
+- Continue only this run/job/source; no duplicate trigger or retry.
 
