@@ -1,8 +1,8 @@
 # JE X FYZ / JE Cooler — Current Handover
 
-Last reconciled: 2026-11-16 23:13:02 (Asia/Jakarta).
+Last reconciled: 2026-11-16 23:16:44 (Asia/Jakarta).
 
-## Current state — BLUETOOTH NAME FIX VALIDATED / NOT RELEASED
+## Current state — BUILD #165 ACTIVE / BLUETOOTH FIX BEING PACKAGED
 
 - Root cause: the Connection sheet deliberately replaced the real BLE local name `JE X FYZ` with localized generic `Perangkat`. Firmware V7.2 source already contains `BLE_NAME = "JE X FYZ"` and `BLEDevice::init(BLE_NAME)`.
 - App fix: Connection row now prefers current advertisement name, falls back to platform name, and uses `Device` / `Perangkat` only when both are empty. No Firmware, BLE UUID, P1 framing, scanner ownership or connection logic changed.
@@ -12,7 +12,7 @@ Last reconciled: 2026-11-16 23:13:02 (Asia/Jakarta).
 
 ## Next action and boundaries
 
-- The current owner message explicitly authorizes `Eksekusi Build App!`. Pre-trigger live checks confirm Build #164 terminal SUCCESS and no queued/in-progress/waiting/requested Build App run.
-- Create exactly one fresh owner-authored issue with exact title `JE X FYZ — EKSEKUSI BUILD APP TRIGGER` and body token `JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1`. Issue #41 already triggered Build #164; do not reuse/reopen it or any older trigger issue.
-- Verify exactly one resulting run; record its actual source SHA/run/job and monitor all required workflow gates, Release/tag parity and re-downloaded asset digests. Stop on any failed required gate; do not retry blindly.
+- Exactly one new owner-authored Issue #42 created the guarded Build #165 run `43905426531` / job `133432846684`, attempt 1, immutable source `cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d`.
+- Current state: runner allocated; steps 1–3 SUCCESS; step 4 Set up Flutter IN_PROGRESS; steps 5–21 pending. Continue only this run/job; no duplicate trigger or rerun.
+- Verify analyzer/tests, Android Gradle, obfuscated APK, V1/V2/V3 pinned cert, source ZIP, Release/tag/source parity and downloaded APK/source ZIP identity. Stop at the first failed gate; no blind retry.
 - After owner installation, verify the real cooler Bluetooth advertisement and App scan row show `JE X FYZ`. Physical BLE/OEM visual, Firmware/BIN, Firebase, OTA/flash, thermal/electrical and long-session evidence remain separate and unverified. No such operation is authorized here.
