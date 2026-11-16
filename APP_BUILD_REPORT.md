@@ -3198,3 +3198,13 @@
 - Full job-log endpoint returned BlobNotFound while the run is active. Exact analyzer info count, Flutter test total and Android Gradle output/duration are not yet claimed; record them only after successful terminal log retrieval. Live run/job/step API currently agrees that the external operation is IN_PROGRESS.
 - No APK, source ZIP, signing result, Release mutation or artifact is claimed yet. Build #164 remains the published package baseline until Step 21 passes and external Release/tag/assets are re-verified.
 - Continue only run `43905426531` / job `133432846684` / source `cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d`; no duplicate issue or rerun. Scope remains App Build/QC/release only.
+
+### BUILD #165 progress — Android Gradle passed / obfuscated APK build active — 2026-11-16 23:20:30 (Asia/Jakarta)
+
+- Run `43905426531` / job `133432846684`, attempt 1, source `cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d`, Issue #42.
+- **Steps 1–14 observed SUCCESS.** Step 14 Android Gradle gate completed SUCCESS at `2026-11-16T16:19:46Z`; it ran from `16:16:25Z` to `16:19:46Z` (3m21s). Do not infer native JUnit case coverage or detailed Gradle task counts until complete job logs are retrieved.
+- **Step 15 `Build latest release APK` is IN_PROGRESS.** Steps 16–21 (V1/V2/V3 enforcement, pinned signing certificate, stable filename, corresponding source ZIP, Release/tag publication, and fresh downloaded-asset identity verification) remain PENDING. Cleanup remains pending.
+- Job/run state agrees: `in_progress`, attempt 1, runner ID `1000002755`. Full job-log download is still unavailable while the run is active; exact analyzer/test totals and Gradle log text remain unreported.
+- No APK/signature/source ZIP/Release result is claimed yet. Build #164 remains the published baseline until all #165 required gates and Step 21 pass.
+- Continue only `43905426531` / `133432846684` / `cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d`; no duplicate issue, trigger or rerun.
+
