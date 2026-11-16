@@ -3,8 +3,8 @@
 ### Current source validation and package baseline
 
 - Latest App source/test validation: Validation Only #44 / run `43899329198` / job `133411358928`, tested input SHA `4a875b3d63beea6e7d469c27f0c8930ab9b7cd09`, terminal SUCCESS. Locked dependencies PASS; Dart formatter final PASS (18 files checked, two reformatted in the runner workspace); analyzer PASS (107 info-level findings, zero warning/error failures); Flutter tests **205/205 PASS**; format-only commit `0a2b3c03af433a17d82afa1d4db60beb7b1bd023`.
-- The latest published App package remains Build #164 / run `43863417641` / job `133285765871`, source SHA `a41baaf3bc53a02d72e12a4f3840f0c84c493497`, Release ID `403010611`, tag `jexfyz-latest`. APK and matching source ZIP passed Release/tag parity, downloaded checksum, ZIP and V1/V2/V3 signing checks. The package predates the Bluetooth display-name correction below.
-- The current main source/test tree contains a later App-only Bluetooth Connection display-name correction and its regression tests. These changes are hosted-validated by Validation Only #44 but are **not yet included in Build #164's APK**.
+- The latest published App package is Build #165 / run `43905426531` / job `133432846684`, source SHA `cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d`, Release ID `403010611`, tag `jexfyz-latest`. APK and matching source ZIP passed Release/tag/source parity, downloaded checksum, ZIP and V1/V2/V3 signing checks. This package includes the Bluetooth display-name correction below.
+- The App-only Bluetooth Connection display-name correction and regression tests passed Validation Only #44 and are **included in Build #165's APK and corresponding source ZIP**.
 - Flutter version remains `1.0.0+3`; protected Android Gradle `versionName "Telegram @horizontalzzz"` remains unchanged.
 - Local Flutter/Dart executables are unavailable in this runtime; the source/test gate above is hosted CI evidence. Visual/OEM rendering, owner installation and actual phone-to-cooler BLE behavior remain separate and **NOT VERIFIED**.
 
@@ -15,7 +15,7 @@
 - The Connection row now displays the current BLE advertisement local name (`advertisementData.advName`) first, falls back to the platform device name (`device.platformName`) when the advertisement omits a name, and uses localized `Device` / `Perangkat` only if both are empty.
 - The change is App presentation only. BLE service UUIDs, device matching/filtering, scan ownership, connection handoff, P1 framing, and Firmware advertisement name are unchanged.
 - Regression coverage includes advertised-name precedence, platform-name fallback, empty-name fallback, and a widget source-contract check that the Connection row calls the App display-name helper and does not mask `JE X FYZ`. Firmware V7.2's `BLE_NAME` / `BLEDevice::init(BLE_NAME)` was separately confirmed by read-only source inspection; the widget test does not read the Firmware file.
-- Physical verification is still required after a separately authorized App build/install: scan the cooler on the owner's phone and confirm the row displays `JE X FYZ`. Do not infer that from source tests alone.
+- Physical verification remains required after owner installation of Build #165: scan the cooler on the owner's phone and confirm the row displays `JE X FYZ`. Do not infer actual radio advertisement/display from source tests or hosted CI alone.
 
 ---
 # JE X FYZ / JE Cooler — App Behavior Reference
