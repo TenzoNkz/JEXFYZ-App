@@ -1,38 +1,21 @@
-## Current App source and verified package — Build #163 SUCCESS — 2026-11-16
+## Current App source and verified package — Build #164 SUCCESS — 2026-11-16
 
-### Main branch recovery checkpoint — 2026-11-16
+### Current source validation and package baseline
 
-- `lib/main.dart` has been restored from clean baseline blob `48dd0c943075db076769c3d9dc53b8b71a28a5c3`; source commit `b4558cee8b5a4455603473d31e46b3b108f20576`; current blob `b12ea764b674b79f8a19bd70191fcf25ea3046a5` (401,983 characters / 11,427 lines).
-- Removed the four-copy corruption and malformed fragments; static readback confirms one declaration each of `LedColorPreset`, `TamperApp`, and `DashboardScreen`.
-- Reapplied locale-aware Home temperature parsing, Hotside threshold/re-arm copy, legacy notice normalization, OTA byte grouping and Adaptive profile notice translation. Removed only the visible Adaptive ceiling card; internal state/telemetry remain.
-- Updated regression tests for locale decimals, old/new Home notices, grouped OTA bytes, exact Adaptive labels and aliases, ceiling-card absence/state retention, Usage Statistics terminology and Hotside copy.
-- Static lexical/source-contract checks passed. Flutter formatter, analyzer and tests are **NOT VERIFIED** because local Dart/Flutter SDK is unavailable and the push-triggered Actions run cannot be queried through the available PR-only workflow-run lookup. Do not treat static checks as hosted QC.
+- Latest App source/test validation: Validation Only #44 / run `43899329198` / job `133411358928`, tested input SHA `4a875b3d63beea6e7d469c27f0c8930ab9b7cd09`, terminal SUCCESS. Locked dependencies PASS; Dart formatter final PASS (18 files checked, two reformatted in the runner workspace); analyzer PASS (107 info-level findings, zero warning/error failures); Flutter tests **205/205 PASS**; format-only commit `0a2b3c03af433a17d82afa1d4db60beb7b1bd023`.
+- The latest published App package remains Build #164 / run `43863417641` / job `133285765871`, source SHA `a41baaf3bc53a02d72e12a4f3840f0c84c493497`, Release ID `403010611`, tag `jexfyz-latest`. APK and matching source ZIP passed Release/tag parity, downloaded checksum, ZIP and V1/V2/V3 signing checks. The package predates the Bluetooth display-name correction below.
+- The current main source/test tree contains a later App-only Bluetooth Connection display-name correction and its regression tests. These changes are hosted-validated by Validation Only #44 but are **not yet included in Build #164's APK**.
+- Flutter version remains `1.0.0+3`; protected Android Gradle `versionName "Telegram @horizontalzzz"` remains unchanged.
+- Local Flutter/Dart executables are unavailable in this runtime; the source/test gate above is hosted CI evidence. Visual/OEM rendering, owner installation and actual phone-to-cooler BLE behavior remain separate and **NOT VERIFIED**.
 
+### Bluetooth peripheral name — current App behavior
 
-
-- **Latest verified package:** Build #163 / [Actions run 43679305537](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/43679305537) / job `132706236782`, attempt 1, terminal SUCCESS on immutable package source `9466e8eeb269da5bc8806f0df1d4212cf24e1746`.
-- **Validation lineage:** Validation Only #19 / run `43677560315`, job `132700920324`, passed on source `8fca2ecebf8b2ffb83fc9475a817c832f8269dc5`. The formatted source follow-up is `fc39de16a5480347ce13083760424a309957c311`. A verified compare from that source to Build #163's package source shows only documentation/skill/status/checkpoint paths changed; no App source, tests, Android config, dependencies or workflows changed in between. Build #163 therefore packages the same validated executable/test state.
-- **Hosted QC:** Flutter 3.47.2 / Dart 3.13.2; locked dependencies PASS; formatter checked 18 files, applied one correction, and final formatter check had zero changes; analyzer **118 info-level findings / 0 warnings / 0 errors**; Flutter tests **197/197 passed**.
-- **Android Gradle:** `:app:testDebugUnitTest` gate **BUILD SUCCESSFUL in 2m43s**; 162 actionable tasks (161 executed, 1 up-to-date). Native Android App Kotlin/Java test tasks were `NO-SOURCE`; no native JUnit case executed.
-- **Release identity:** Release ID `403010611` / tag `jexfyz-latest` target the exact package source SHA. The Release contains exactly one APK and one corresponding source ZIP.
-- **APK:** `JEXFYZ-release.apk`, **55,881,819 bytes**, SHA-256 `97c7cf99bef5d89f82b13d8f1c4b3c02dede541c2642a751ba61c8f9290a245c`.
-- **Source ZIP:** `JEXFYZ-corresponding-source.zip`, **2,943,100 bytes**, SHA-256 `866117d208d38d2c04a2f7f097b5dc8941850a16bd52172a35d761af71334c00`. The embedded source marker, ZIP integrity and downloaded identity were verified.
-- **Signing:** APK V1/V2/V3 signatures and the single-signer pinned certificate fingerprint `dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0` passed. The certificate is self-signed and has no publicly trusted PKIX chain.
-- **Protected Android version:** Gradle `versionName "Telegram @horizontalzzz"` remains unchanged; Flutter version is `1.0.0+3`.
-- **Retained warnings:** Kotlin Gradle Plugin 2.2.20 future Flutter compatibility warning; deprecated Android Gradle properties; generated native ELF DWARF debug-info warning; JAR META-INF unsigned-entry warnings. These are non-blocking but not represented as fixed.
-- **Evidence boundary:** Build #163 is VERIFIED CI / RELEASE SUCCESS, not owner installation, Android/OEM screenshot, BLE field behavior, Firmware compilation/BIN provenance, Firebase/OTA/flash, thermal or electrical acceptance. Native Android JUnit tasks were NO-SOURCE.
-- **Package boundary:** Build #163 remains the latest verified APK and does not include the restored main-branch source/test changes above. The current main source is not build-ready until the push-triggered Validation Only formatter/analyzer/test gates are confirmed green. A new APK still requires a separate `Eksekusi Build App!`.
-
-## Current approved UI and data contracts — included in Build #163
-
-- **Peltier prerequisite:** preserve the ordered operation `FAN:ON → successful ACK → PELTIER:ON`. Cancel/barrier dismissal sends no command.
-- **Lock Voltage:** Firmware P1 state is authoritative. Keep the one-line Settings card, static neutral lock tile and visible Switch; never infer OFF while state is unknown/disconnected. Preserve NVS save-failure/retry and actual-voltage telemetry semantics.
-- **About and Home tabs:** About title is Special Thanks / Ucapan Terima Kasih; Horizon role is App Developer & Builder / Pengembang Aplikasi & Perakit and handle exactly `@horizontalzzz`. Five Home tabs retain equal width and 38-dp visible pills within the existing 48-dp row/hit target.
-- **Usage Statistics:** one session header/elapsed timer and selector; integer 1°C Battery/Hotside axis labels based on observed data; Min/Avg/Max; four operating lanes; shared six-metric cursor; compact two-row/three-column selected-time dock. The later alignment refinement is included in Build #163.
-- **Usage Statistics invariants:** SQLite schema v2 and v1→v2 migration; 30-day retention; raw 1-Hz observations; explicit null gaps; session continuity; HOT-only P1 freshness; bounded writer queue (64 normal + 8 reserved + 1 critical endSession slot); FIFO accepted writes and explicit overload warning. One full selected-session summary/decimation pass still runs per one-second batch; long-duration CPU/memory and sustained storage-pressure soak remain unverified.
-- **Bluetooth lifecycle:** Dashboard disposal cancels connection/notification/rediscovery subscriptions and timers; scanner attempts use serialized ownership/generation invalidation. Android permission and reconnect behavior still need physical/OEM validation.
-- **Visual acceptance:** **VISUAL NOT VERIFIED.** Review actual Build #163 screenshots at 350-dp/420-dp, portrait/constrained height, English/Indonesian, Light/Dark, Home, Settings, Bluetooth, Floating Monitor and Usage Statistics states before marking visual acceptance.
-
+- Firmware V7.2 source already defines `static constexpr char BLE_NAME[] = "JE X FYZ";` and initializes the BLE stack with `BLEDevice::init(BLE_NAME)`. No Firmware source/BIN change was required or made.
+- The screenshot's generic `Perangkat` label came from the App Connection sheet: it deliberately replaced an empty or `JE X FYZ` local name with the localized generic device label.
+- The Connection row now displays the current BLE advertisement local name (`advertisementData.advName`) first, falls back to the platform device name (`device.platformName`) when the advertisement omits a name, and uses localized `Device` / `Perangkat` only if both are empty.
+- The change is App presentation only. BLE service UUIDs, device matching/filtering, scan ownership, connection handoff, P1 framing, and Firmware advertisement name are unchanged.
+- Regression coverage includes advertised-name precedence, platform-name fallback, empty-name fallback, and a widget source-contract check tying the Connection row to the Firmware `BLE_NAME`/initialization contract.
+- Physical verification is still required after a separately authorized App build/install: scan the cooler on the owner's phone and confirm the row displays `JE X FYZ`. Do not infer that from source tests alone.
 
 ---
 # JE X FYZ / JE Cooler — App Behavior Reference
@@ -88,6 +71,7 @@ Purpose: canonical current App/UI/BLE/telemetry contract. Current source defines
 
 ## Bluetooth Connection sheet — scan presentation contract
 
+- **Peripheral identity display:** show the current advertisement local name first, then the Android platform name if the advertisement omits it. Do not replace the real `JE X FYZ` name with a generic `Perangkat` label. Use localized `Device` / `Perangkat` only if both platform and advertisement names are empty. Firmware V7.2's source-defined BLE name remains `JE X FYZ`; no BLE UUID/protocol contract is changed.
 - The sheet starts its initial scan after its first frame and observes `FlutterBluePlus.isScanning` separately from fresh `onScanResults`. A completed scan with no matching JE Cooler displays the localized not-found message rather than remaining on Scanning or showing cached results from an earlier scan.
 - Permission denial, Bluetooth/legacy-location unavailability, scan startup/stream errors and active scanning have distinct localized message keys. A guarded retry handler is shared by the scan button and permission retry. Dismissing the sheet still stops scanning.
 - Manual-sheet ownership, asynchronous generation invalidation, serialized scanner operations and a connection-handoff fence until `_bleConnecting` is assigned are coordinated by `ConnectionScanCoordinator`. Passive reconnect uses fresh `onScanResults`; neutral dismissal resumes only after cleanup and existing Auto Connect gates are rechecked.
