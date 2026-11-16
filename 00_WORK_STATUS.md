@@ -1,4 +1,4 @@
-| Last updated | 2026-11-16 10:25:00 (Asia/Jakarta) |
+| Last updated | 2026-11-16 10:31:04 (Asia/Jakarta) |
 
 > Single current snapshot for JE X FYZ project interactions. This file records the latest persisted observation, not a continuously running heartbeat or overall product completion.
 
@@ -6,21 +6,21 @@
 
 | Field | Value |
 |---|---|
-| **STATUS** | **IN_PROGRESS** |
-| SESSION STATUS | IN_PROGRESS |
-| WORK STATUS | WAITING_OWNER — Full static copy audit and implementation matrix are documented and verified. App source/tests/native copy changes require explicit `Eksekusi Full!` authorization. |
-| Mode | Diskusi! — incoming general engineering continuation; read-only boundary for executable source/tests/config/workflows/builds/releases/Firmware/device operations. |
-| Request / work item | Load and reconcile the canonical JE X FYZ checkpoint, current main repository evidence and the latest completed copy/localization audit; determine the next discussion-safe action without inferring implementation authorization. |
+| **STATUS** | **WAITING_OWNER** |
+| SESSION STATUS | WAITING_OWNER |
+| WORK STATUS | WAITING_OWNER — The full static copy/localization/format and Adaptive presentation scope is documented; implementation requires the owner's explicit `Eksekusi Full!` authorization. |
+| Mode | Diskusi! — checkpoint restored and live evidence reconciled; no source/test/config/workflow/build/release/Firmware/device operation authorized. |
+| Request / work item | Complete the general engineering load-and-continue checkpoint recovery, reconcile current main and external-operation evidence, and identify the next safe action. No new specific implementation request was supplied. |
 | Started | 2026-11-16 10:25:00 (Asia/Jakarta) |
-| Last updated | 2026-11-16 10:25:00 |
-| Current phase | IN_PROGRESS — opening marker persisted; next load MASTER_PROMPT.md, active CHAT_TRANSFER checkpoint, repository metadata/tree and concise state notes. |
-| Last completed milestone | Previous completed audit record: APP_NOTES.md `6d3cda01`; CHAT_TRANSFER.md `9c1099d5`; PROJECT_STATE.md `81d76214`; HANDOVER.md `94010e1d`. |
-| Last verified main checkpoint | From prior snapshot: immutable Build #163 package source `9466e8eeb269da5bc8806f0df1d4212cf24e1746`; prior main tree 139 entries, `truncated=false`. Must be re-verified against live main for this interaction. |
-| EXTERNAL OPERATION | Build #163 / Actions run 43679305537 / workflow 374946166 / Issue #40 / attempt 1; job build 132706236782; Release ID 403010611 / tag jexfyz-latest. Prior snapshot reported terminal success; external state is independent of this new session. |
-| EXTERNAL OPERATION STATUS | COMPLETED / SUCCESS (last recorded; live re-check only if needed by current evidence/recovery policy). |
-| Result / evidence | Opening marker persisted by commit created from current 00_WORK_STATUS blob SHA `13891ca408f8b08a7ace2fad6255ab548ee69378`; new commit SHA to be verified during close. |
-| Blocker | No blocker currently established. No implementation scope or new engineering decision was specified in this incoming message. |
-| Next action | Read MASTER_PROMPT.md fully and only the ACTIVE_CHECKPOINT region in CHAT_TRANSFER.md; inspect live main metadata/tree and concise canonical notes, then close as COMPLETED or WAITING_OWNER based on the verified checkpoint. |
+| Last updated | 2026-11-16 10:31:04 |
+| Current phase | WAITING_OWNER — fully loaded MASTER_PROMPT.md and bounded active checkpoint; reconciled repository metadata/tree, current Actions, Release, tags and PR state. Next action requires explicit `Eksekusi Full!` for implementation. |
+| Last completed milestone | Restored the 2026-11-16 copy audit checkpoint: 353 dictionary entries, 167 bilingual inline phrase pairs, 258 lookup call sites, native copy/format findings and a complete correction/regression matrix are documented in APP_NOTES.md/CHAT_TRANSFER.md. Adaptive card/profile-label/RGB presentation decisions are also recorded. |
+| Last verified main checkpoint | Live main HEAD `e20b1ab8a1a83c8c8f096008a890cf0a0b0668c6`; recursive tree `32af81c1bef8d7398ff702f9ff48aad259975fe2`, 139 entries / 53 Markdown, `truncated=false`. Compare from Build #163 source `9466e8eeb269da5bc8806f0df1d4212cf24e1746` shows only eight Markdown status/subject/ledger/checkpoint files changed; no App source, test, config or workflow change. |
+| EXTERNAL OPERATION | Build #163 / Actions run 43679305537 / workflow 374946166 / Issue #40 / attempt 1; job build 132706236782; Release ID 403010611 / tag jexfyz-latest. Latest live Actions query confirms this remains the newest App Build run and terminal success; latest run list contains no active or queued operation. |
+| EXTERNAL OPERATION STATUS | COMPLETED / SUCCESS — run 43679305537 / job 132706236782; Release 403010611 has exactly two assets and the jexfyz-latest tag points to the immutable package source SHA. |
+| Result / evidence | Opening marker commit `e20b1ab8a1a83c8c8f096008a890cf0a0b0668c6` verified as current main. Latest App run Build #163 and job terminal SUCCESS; tag and Release target `9466e8eeb269da5bc8806f0df1d4212cf24e1746`; APK SHA-256 `97c7cf99bef5d89f82b13d8f1c4b3c02dede541c2642a751ba61c8f9290a245c`; source ZIP SHA-256 `866117d208d38d2c04a2f7f097b5dc8941850a16bd52172a35d761af71334c00`. No tests or builds were run in this Diskusi interaction. |
+| Blocker | Implementation is waiting for explicit owner `Eksekusi Full!` authorization. No technical/tool blocker is established. |
+| Next action | Owner to issue `Eksekusi Full!` to implement the documented EN/ID copy, number/date/unit/native notification and Adaptive presentation changes with matching regressions. A new APK still requires a separate `Eksekusi Build App!`. |
 
 ## Status model
 
