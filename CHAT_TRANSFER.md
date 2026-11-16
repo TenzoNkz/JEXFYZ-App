@@ -35,7 +35,7 @@
 
 - `lib/main.dart` now uses that helper for the Connection device row. BLE UUIDs, service filter, fresh `onScanResults`, scanner ownership/generation, connection handoff, P1 framing/session rules and Firmware source are unchanged.
 
-- Regression tests in `test/connection_scan_state_test.dart` cover advertisement precedence, stale platform name, platform fallback and localized empty-name fallback. `test/widget_test.dart` verifies the Connection sheet calls the helper, does not mask `JE X FYZ`, and source-checks Firmware V7.2's `BLE_NAME` / `BLEDevice::init(BLE_NAME)` contract.
+- Regression tests in `test/connection_scan_state_test.dart` cover advertisement precedence, stale platform name, platform fallback and localized empty-name fallback. `test/widget_test.dart` verifies the Connection sheet calls the helper and does not mask `JE X FYZ`. Separately, read-only inspection of tracked Firmware V7.2 source confirmed its `BLE_NAME` / `BLEDevice::init(BLE_NAME)` contract; the widget test does not read the Firmware file.
 
 
 
