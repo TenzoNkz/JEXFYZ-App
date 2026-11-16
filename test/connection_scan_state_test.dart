@@ -61,7 +61,6 @@ void main() {
     });
   });
 
-
   group('Bluetooth connection device name', () {
     test('shows the JE X FYZ name from the current BLE advertisement', () {
       expect(
@@ -96,7 +95,9 @@ void main() {
       );
     });
 
-    test('uses the localized fallback only when both Bluetooth names are empty', () {
+    test(
+      'uses the localized fallback only when both Bluetooth names are empty',
+      () {
       expect(
         connectionDeviceDisplayName(
           advertisedName: '  ',
