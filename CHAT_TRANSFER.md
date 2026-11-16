@@ -6,80 +6,52 @@
 ## Current session and authorization
 
 - Project: JE X FYZ / JE Cooler.
-
 - Canonical repository/branch: `TenzoNkz/JEXFYZ-App` / `main`.
+- Current owner mode: `Eksekusi Build App!` — guarded App Build/QC/release and justified App-scope repairs only.
+- Current SESSION STATUS is IN_PROGRESS. Current WORK ITEM: package the latest App Bluetooth device-name correction, which has hosted formatter/analyzer/test validation but is not yet included in the published APK.
+- No Firmware compilation, BIN generation/publication/replacement, Firebase mutation, OTA, flashing, device operation or unrelated release work is authorized.
 
-- Mode: `Eksekusi Full!` — App-only Bluetooth device-name display correction, targeted regression coverage and canonical documentation.
+## Bluetooth display-name correction — source/test validated
 
-- **SESSION STATUS: COMPLETED. WORK STATUS: COMPLETED for this App source/test correction.**
+**Expected App behavior:** the Bluetooth Connection row displays `JE X FYZ`, not the localized generic fallback `Perangkat`.
 
-- **EXTERNAL OPERATION: Validation Only #44 / run `43899329198` / job `133411358928` — COMPLETED / SUCCESS.** No Build App, APK/Release, Firmware/BIN, Firebase, OTA, flashing or device operation was performed.
+- Firmware V7.2 tracked source already defines `BLE_NAME = "JE X FYZ"` and initializes the BLE peripheral with `BLEDevice::init(BLE_NAME)`; no Firmware edit was needed or made.
+- App root cause: the Connection row selected `platformName` before `advName`, then hid even the true `JE X FYZ` name behind `JexText.of('device', lang)`.
+- `lib/connection_scan_state.dart` adds `connectionDeviceDisplayName(...)`: trimmed current advertisement name first, platform name second, localized generic fallback only when both are empty. `lib/main.dart` uses that helper.
+- Tests cover advertisement precedence, stale platform name, platform fallback, localized empty fallback, and Connection sheet contract. BLE UUIDs/service filter, scanner ownership/generation, connection handoff, P1 framing/session rules and Firmware source remain unchanged.
+- Real phone/cooler BLE advertisement and display remain NOT VERIFIED pending owner installation and device check.
 
+## Latest source/test validation — Validation Only #44
 
+- Run `43899329198` / job `133411358928`, tested input SHA `4a875b3d63beea6e7d469c27f0c8930ab9b7cd09`, terminal SUCCESS.
+- Locked dependencies PASS; Dart formatter final PASS (18 files checked, two test files formatted in runner workspace); analyzer PASS (107 info-level findings, zero warnings/errors); Flutter tests **205/205 PASS**.
+- Formatter-only output/source-test tree: `0a2b3c03af433a17d82afa1d4db60beb7b1bd023`.
+- Comparing that source/test tree to pre-trigger main found 12 documentation-only commits; no App source/test, Android Gradle, dependency, asset or workflow input changed after validation. Local Flutter/Dart are unavailable; hosted CI is the validation evidence.
+- Validation Only #40–#43 were earlier attempts with documented formatter guard/test-boundary failures; #44 is the successful result. Do not repeat #44.
 
-## Bluetooth device-name correction
+## Current published baseline — Build #164
 
+- Build #164 / run `43863417641` / job `133285765871` / Issue #41 / source `a41baaf3bc53a02d72e12a4f3840f0c84c493497`, terminal SUCCESS. Steps 1–21 and cleanup 39–43 all SUCCESS.
+- Analyzer 107 infos; Flutter tests 200/200; Android Gradle BUILD SUCCESSFUL in 2m35s. Native Android JUnit tasks were NO-SOURCE.
+- Release ID `403010611`, tag `jexfyz-latest`, target source `a41baaf3bc53a02d72e12a4f3840f0c84c493497`. Exactly one APK and one matching source ZIP; both re-downloaded hashes, source marker and APK V1/V2/V3 + pinned certificate verification passed.
+- APK SHA-256 `6553af0d07162e804bea838cbd1c391432471630db0de6d56bdd303c713eaa8c`; source ZIP SHA-256 `1c15f4bc5bfe112594212f42eea925514a7ab138071915c9fe486f6c909bb576`. This package predates the Bluetooth name correction and remains the published baseline until the next run passes every gate.
+- Retain Build #164 warnings: self-signed/PKIX and META-INF signing coverage, no signing timestamp, Kotlin/Firebase KGP compatibility, Gradle deprecations and native ELF DWARF; native Android JUnit tasks NO-SOURCE. Do not rewrite these as resolved.
 
+## Build #165 — live pre-trigger clearance
 
-**Result:** the Connection menu now displays the real advertised Bluetooth name `JE X FYZ` instead of hiding it behind the generic localized label `Perangkat`.
+- Current live guarded workflow blob `af342fc21e5c0ff0815628dfacec65ae519f69ae`, 546 lines. Only issue opened/reopened events; repository-owner author, exact title `JE X FYZ — EKSEKUSI BUILD APP TRIGGER`, exact body token `JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1`; queue group `jexfyz-cooler-build`, `cancel-in-progress: false`, `queue: max`. No push/PR/workflow_dispatch bypass. All 20 explicit gates (steps 2–21) remain.
+- Build #164 is terminal SUCCESS. Live Build workflow queries have zero queued, in-progress, waiting or requested runs. No #165 trigger/run exists yet.
+- Issue #41 was already consumed for Build #164 and remains open; existing prior trigger issues #40, #39, #38, #37, #36, #35 and #33 must not be reused/reopened. Authenticated GitHub user `TenzoNkz` matches the repository owner.
+- At pre-trigger main `b46e29c1769dadb25a992ec02a1c000331e95978`, tree was 139 entries and not truncated. App source/test remained identical to Validation #44 baseline; final trigger SHA is to be captured after this documentation sync and from the actual Actions event.
+- Live protected versions: Flutter `1.0.0+3`; Android Gradle exact `versionName "Telegram @horizontalzzz"`.
+- **Pre-trigger disposition: CLEAR.** The current owner message explicitly authorizes one fresh owner-authored issue. Create exactly one new issue; capture issue/run/job/source SHA and continue only that run. Stop at the first failed required gate; repair only a proven App-scope cause, never weaken gates or retry blindly.
 
+## Exact next action
 
-
-- Owner screenshot showed the Bluetooth list row as `Perangkat`, while the Home/app product identity remained `JE X FYZ`.
-
-- Investigation confirmed Firmware V7.2's tracked source already defines `static constexpr char BLE_NAME[] = "JE X FYZ";` and calls `BLEDevice::init(BLE_NAME)`. Therefore the BLE peripheral's source-defined name was already correct; no Firmware edit was necessary or made.
-
-- Root cause was App presentation in the Connection `ListTile`: it chose `platformName` before `advName`, then deliberately replaced an empty name **or the real name `JE X FYZ`** with `JexText.of('device', lang)`, which renders `Perangkat` in Indonesian.
-
-- New helper in `lib/connection_scan_state.dart`, `connectionDeviceDisplayName(...)`, selects the trimmed current BLE advertisement name first, then the platform name, then localized generic fallback only if both names are empty.
-
-- `lib/main.dart` now uses that helper for the Connection device row. BLE UUIDs, service filter, fresh `onScanResults`, scanner ownership/generation, connection handoff, P1 framing/session rules and Firmware source are unchanged.
-
-- Regression tests in `test/connection_scan_state_test.dart` cover advertisement precedence, stale platform name, platform fallback and localized empty-name fallback. `test/widget_test.dart` verifies the Connection sheet calls the helper and does not mask `JE X FYZ`. Separately, read-only inspection of tracked Firmware V7.2 source confirmed its `BLE_NAME` / `BLEDevice::init(BLE_NAME)` contract; the widget test does not read the Firmware file.
-
-
-
-## Hosted validation evidence
-
-- Validation Only #44 / run `43899329198` / job `133411358928`, tested input SHA `4a875b3d63beea6e7d469c27f0c8930ab9b7cd09`, terminal SUCCESS.
-
-- Locked dependencies: PASS.
-
-- Dart formatter: final PASS. It checked 18 Dart files and formatted two test files in the runner workspace; formatter verification after apply was clean.
-
-- Flutter analyzer: PASS, 107 info-level findings, zero warnings/errors.
-
-- Flutter tests: **205/205 PASS**.
-
-- Formatter-only commit: `0a2b3c03af433a17d82afa1d4db60beb7b1bd023`, message `style: format Dart sources and tests`. This is the validated source/test tree.
-
-- Earlier Validation Only #40/#41/#43 attempts encountered the workflow's exact-HEAD formatter commit safety guard while concurrent commits advanced `main`; #42 exposed a test-only source-slice boundary error. Those were diagnosed and corrected. Run #44 is the successful terminal validation; do not retry it.
-
-- Local Flutter/Dart executables remain unavailable; positive formatter/analyzer/test evidence is hosted CI. No native Android Build or real BLE radio test was run for this correction.
-
-
-
-## Package and physical verification boundary
-
-- Latest published App remains **Build #164** / run `43863417641` / job `133285765871`, source `a41baaf3bc53a02d72e12a4f3840f0c84c493497`, Release ID `403010611`, tag `jexfyz-latest`.
-
-- Build #164 predates this Bluetooth display-name fix. Its existing APK does not contain the correction. A new APK requires a separate explicit `Eksekusi Build App!`; this interaction did not create a new trigger, Build run or Release.
-
-- Actual phone scan/display and owner installation remain **NOT VERIFIED** until the corrected App is built and installed. Firmware advertisement source is confirmed in tracked code, but not independently measured on hardware.
-
-- No Firmware/BIN, Firebase, OTA, flash, thermal/electrical or device operation occurred or is authorized by this checkpoint.
-
-
-
-## Next action
-
-- The source/test correction is complete. Keep the validated change on `main`.
-
-- To package this correction, use a separate explicit `Eksekusi Build App!` command and a fresh owner-authored issue with the exact guarded title/token. Issue #41 already triggered Build #164; do not reuse/reopen it.
-
-- After install, verify the Bluetooth scan row shows `JE X FYZ` on the real phone. Do not mark physical verification complete from CI alone.
-
-
+1. Re-fetch final main HEAD/tree and confirm there is still no active/queued Build App run.
+2. Create one fresh owner-authored issue with exact guarded title and token. Do not reuse Issue #41 or any older trigger issue.
+3. Verify exactly one issue-event Build run and record its real run/job/source SHA, status and steps. Continue that operation through every gate and downloaded Release asset verification.
+4. Keep Firmware/BIN/Firebase/OTA/flash/device operations outside scope. Owner installation/OEM visual and BLE radio behavior remain separate unverified acceptance.
 
 ## Owner-approved contracts — still authoritative
 - English is the master/default language; Indonesian must be complete, natural and semantically equivalent.
