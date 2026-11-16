@@ -3804,6 +3804,31 @@ void main() {
     },
   );
   test(
+    'Connection device row preserves the advertised JE X FYZ Bluetooth name',
+    () {
+      final source = File('lib/main.dart').readAsStringSync();
+      final start = source.indexOf('class _ConnectionSheetContentState');
+      final end = source.indexOf('Future<int> _getAndroidSdkInt', start);
+      expect(start, isNonNegative);
+      expect(end, greaterThan(start));
+      final connection = source.substring(start, end);
+
+      expect(connection, contains('connectionDeviceDisplayName('));
+      expect(
+        connection,
+        contains('advertisedName: result.advertisementData.advName'),
+      );
+      expect(
+        connection,
+        contains("fallback: JexText.of('device', lang)"),
+      );
+      expect(
+        connection,
+        isNot(contains("name.trim().toLowerCase() == 'je x fyz'")),
+      );
+    },
+  );
+  test(
     'Connection status polling is lifecycle-aware and prevents overlapping native reads',
     () {
       final source = File('lib/main.dart').readAsStringSync();
