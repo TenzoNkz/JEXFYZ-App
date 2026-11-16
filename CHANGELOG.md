@@ -2,7 +2,7 @@
 
 - Root cause was App presentation: the Connection `ListTile` mapped an actual `JE X FYZ` BLE local name to the generic localized `Perangkat` label. Firmware V7.2 already declares `BLE_NAME = "JE X FYZ"` and uses `BLEDevice::init(BLE_NAME)`; Firmware source/BIN was not changed.
 - Added `connectionDeviceDisplayName(...)` in `lib/connection_scan_state.dart`, preferring the current advertisement local name, then Android platform name, then localized generic fallback only when both are empty. `lib/main.dart` Connection row uses it; UUID/filter/scan/connection/P1 contracts remain unchanged.
-- Added four pure mapping regressions in `test/connection_scan_state_test.dart` and a widget/source contract in `test/widget_test.dart` that includes the Connection sheet and the Firmware name source check.
+- Added four pure mapping regressions in `test/connection_scan_state_test.dart` and a widget/source contract in `test/widget_test.dart` for the Connection row's helper use and preservation of `JE X FYZ`. Firmware `BLE_NAME` / initialization was separately confirmed by read-only source inspection; it is not asserted by that widget test.
 - Validation Only #44 / run `43899329198` / job `133411358928` — SUCCESS, tested input SHA `4a875b3d63beea6e7d469c27f0c8930ab9b7cd09`; formatter final PASS; analyzer 107 infos / zero warnings/errors; Flutter tests **205/205 PASS**; formatter-only commit `0a2b3c03af433a17d82afa1d4db60beb7b1bd023`.
 - **Not yet released:** Build #164 remains the latest published package and predates this change. A separate `Eksekusi Build App!` is required to package it. Owner physical BLE scan/display, APK installation, OEM visual and hardware validation remain unverified.
 - No Firmware/BIN/Firebase/OTA/flash/device operation was performed.
