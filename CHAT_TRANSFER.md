@@ -66,5 +66,5 @@
 - The local runtime has no Dart/Flutter SDK; validation evidence is from hosted GitHub Actions only.
 - Latest verified package remains Build #163 / run `43679305537` / Release `403010611` / tag `jexfyz-latest`, source `9466e8eeb269da5bc8806f0df1d4212cf24e1746`; it predates restored changes. No new APK, App Build or Release was created.
 - Visual/OEM acceptance at 350-dp/360-dp, actual owner installation, BLE field behavior, Firmware compile/BIN provenance, thermal/electrical tests, Firebase, OTA/flash remain unverified.
-- Any App Build/package/release requires a separate explicit `Eksekusi Build App!` command; Firmware/device work remains outside scope.
+- The current `Eksekusi Build App!` command is the active authorization for this single guarded App Build/QC attempt; Firmware/device work remains outside scope.
 <!-- ACTIVE_CHECKPOINT_END -->
