@@ -1,12 +1,12 @@
 <!-- ACTIVE_CHECKPOINT_START -->
-# ACTIVE CHECKPOINT — SOURCE/TEST VALIDATED / BUILD APP PREFLIGHT READY — 2026-11-16
+# ACTIVE CHECKPOINT — BUILD #164 LIVE PREFLIGHT CLEAR / FRESH TRIGGER NEXT — 2026-11-16
 
 ## Session and authorization
 - Project: JE X FYZ / JE Cooler.
 - Canonical repository/branch: `TenzoNkz/JEXFYZ-App` / `main`.
-- Current mode: `Eksekusi Full!` — owner authorized the narrow Build App preflight workflow assertion repair and canonical readiness synchronization.
-- **Authorized work: COMPLETED.** The stale Step 10 Fan Speed assertion now matches live native output; the full static contract review found no remaining deterministic preflight blocker.
-- No App Build/APK/Release was triggered or published in this mode. Firmware, BIN, Firebase, OTA, flashing and device operations remain outside scope.
+- Current mode: `Eksekusi Build App!` — the owner has now explicitly authorized the guarded App Build/QC/release workflow and justified App-scope repairs only.
+- **Pre-trigger validation: CLEAR.** Previous Full-mode repair is complete; the current Build App command authorizes one fresh owner-authored issue and exactly one guarded Actions run after durable pre-trigger evidence is saved.
+- The previous `Eksekusi Full!` session created no App Build/APK/Release. This Build App session is now authorized to trigger the guarded App pipeline. Firmware, BIN, Firebase, OTA, flashing and device operations remain outside scope.
 
 ## Build App readiness decision
 
