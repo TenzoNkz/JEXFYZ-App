@@ -1,32 +1,33 @@
 <!-- ACTIVE_CHECKPOINT_START -->
-# ACTIVE CHECKPOINT — SOURCE VALIDATED / BUILD APP PREFLIGHT BLOCKED — 2026-11-16
+# ACTIVE CHECKPOINT — SOURCE/TEST VALIDATED / BUILD APP PREFLIGHT READY — 2026-11-16
 
 ## Session and authorization
 - Project: JE X FYZ / JE Cooler.
 - Canonical repository/branch: `TenzoNkz/JEXFYZ-App` / `main`.
-- Current mode: `Eksekusi Full!` — owner explicitly authorized source recovery, regression repair, and non-publishing validation.
-- **Source/test validation: COMPLETED; Build App readiness: BLOCKED.** Validation Only #38 passed all Flutter/source gates, but a stale exact-string assertion in the guarded Build App workflow will fail its pre-build architecture audit. Do not trigger Build App until the workflow check is reconciled.
-- This Diskusi did not modify executable source, tests, configuration or workflows, and did not trigger Build App. App Build/release requires a separate explicit Eksekusi Build App!; Firmware, BIN, Firebase, OTA, flashing and physical-device operations remain outside this scope.
+- Current mode: `Eksekusi Full!` — owner authorized the narrow Build App preflight workflow assertion repair and canonical readiness synchronization.
+- **Authorized work: COMPLETED.** The stale Step 10 Fan Speed assertion now matches live native output; the full static contract review found no remaining deterministic preflight blocker.
+- No App Build/APK/Release was triggered or published in this mode. Firmware, BIN, Firebase, OTA, flashing and device operations remain outside scope.
 
-## Build App readiness assessment (Diskusi, 2026-11-16)
+## Build App readiness decision
 
-**Decision: NOT READY TO TRIGGER BUILD APP YET.** Flutter/source validation is green, but the guarded Build App workflow contains one deterministic stale static-audit assertion that will fail before APK build.
+**READY FOR A SEPARATELY AUTHORIZED GUARDED APP BUILD/QC RUN — NOT YET BUILT OR RELEASED.**
 
-- Validation Only #38 / run 43843348889 / job 133217253810 passed on tested source SHA 01cf1295458564820b52afc6ca33037583a430c6: locked dependencies PASS; formatter applied five Dart-file formatting changes and final formatter check PASS; analyzer PASS (107 info-level findings; no warning/error gate failure); Flutter tests 200/200 PASS; formatter-preview upload and formatter-only commit PASS.
-- The exact formatted source/test tree was committed by the workflow as b8fcdaf191c5e8bb5df5fa44c50c80a12dfd03da. Later main commits in this discussion are documentation/status only and do not change those source/test blobs.
-- Compared with Build #163 package source 9466e8eeb269da5bc8806f0df1d4212cf24e1746, current main is 147 commits ahead / 0 behind and changes 20 paths: 10 project-memory documents, 2 Android Kotlin files, 4 Flutter source files and 4 test files. Build workflow, Pub dependencies/lockfile, Android Gradle configuration and manifest are unchanged.
-- **Blocking mismatch:** .github/workflows/jexfyz-app-build-trigger.yml blob 41c0b7c1f18c0e2d0aa30028c7fc0e8f0554e4ba, line 222, expects the old Fan Speed native text using data.speed.toString() without a percent suffix. Live FloatingMonitorService.kt:609 emits the speed with %. The matching Dart regression test already expects the percent suffix. The Python audit raises 'JE X FYZ audit failed; Floating metric F must display Fan Speed' and exits at workflow step 10, before analyzer, Flutter tests, Gradle and APK steps. This is deterministic, not speculative.
-- Read-only reconstruction of the other explicit static audit checks found required tokens present, no legacy command/asset/Firebase/Shizuku/weak-password-storage patterns, dedicated Flutter/native MethodChannel contracts present exactly once, metric migration contract present, R8/resource shrinking and embedded signing-certificate marker present, all required assets present, and no executable Dart Firmware import. The Fan Speed exact-string assertion is the one confirmed mismatch.
-- Build App workflow guard remains issue-only: issues.opened / issues.reopened; job requires issue author = repository owner, exact title 'JE X FYZ — EKSEKUSI BUILD APP TRIGGER', exact body token 'JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1'. The release job is serialized with cancel-in-progress false / queue max; there is no push/PR shortcut.
-- Existing Build #163 / run 43679305537 is terminal SUCCESS but packaged older source 9466e8eeb269da5bc8806f0df1d4212cf24e1746. Release ID 403010611, tag jexfyz-latest and its APK/source ZIP assets currently point to that older package. A future successful guarded build will update the existing Release/tag/assets.
-- Issue #40 remains OPEN and was already consumed to trigger Build #163. Do not reuse or reopen it. No new Build run is active; no Build App trigger was created in this Diskusi.
-- Android Gradle versionName 'Telegram @horizontalzzz' and Flutter version 1.0.0+3 remain unchanged. Signing-secret values are not inspectable in this review; the workflow checks the four required values at runtime. Build #163 passed that check on 2026-11-15, but current secret presence is not independently re-proven here.
-- Remaining non-CI evidence: visual/OEM acceptance, owner installation, BLE field behavior, long-session CPU/memory/storage soak, Firmware/BIN provenance, Firebase, OTA/flash, thermal and electrical acceptance. Validation Only #38 does not establish these.
+- Validation Only #38 / run `43843348889` / job `133217253810` — SUCCESS, tested input SHA `01cf1295458564820b52afc6ca33037583a430c6`. Locked dependencies PASS; formatter applied five Dart-file changes and final formatter check PASS; analyzer PASS (107 info-level findings; `--no-fatal-infos` exited successfully); Flutter tests **200/200 PASS**; formatter preview/upload and formatter-only commit PASS.
+- The workflow committed its formatted working tree as source/test baseline `b8fcdaf191c5e8bb5df5fa44c50c80a12dfd03da`. The App source/test blobs remain unchanged after that commit; this repair changes only the guarded Build workflow.
+- Build workflow correction: commit `4ea1f6ff465d4514325778454e59fbd4644c4bfc`, workflow blob `af342fc21e5c0ff0815628dfacec65ae519f69ae`. The Step 10 audit now checks the exact live native Fan Speed output with `%` in `FloatingMonitorService.kt:609`, consistent with the regression expectation. This fixes an obsolete source assertion only; production behavior was not changed.
+- Static reconstruction of the full pre-build Python audit passed: required protocol/security tokens present; legacy commands/assets/Firebase references absent; Flutter/native Floating Monitor MethodChannel contracts and method uniqueness intact; obsolete FPS/Shizuku paths and bridges absent; migration markers present; R8/resource shrinking and signing-certificate marker present; required App assets present; no Firmware source imports or unused `shared_preferences` declaration.
+- Full guarded-workflow structure passed static assertions: only `issues.opened` / `issues.reopened` trigger; repository-owner author, exact issue title and body token remain mandatory; job-level queue uses `cancel-in-progress: false` and `queue: max`; no push/PR/workflow-dispatch bypass; all 20 explicit workflow gate steps (steps 2–21) remain present, including dependency, analyzer, Flutter tests, Android Gradle, obfuscated APK, V1/V2/V3 signing, certificate pin, source ZIP, Release/tag parity, exactly two assets and fresh downloaded-byte verification.
+- Toolchain labels remain Flutter `3.47.2` and Gradle `9.3.1`. Flutter package version remains `1.0.0+3`; Android Gradle `versionName "Telegram @horizontalzzz"` is unchanged. Four production signing secrets are checked for non-empty values by the workflow; their present-day values cannot be inspected here.
+- Latest published package remains Build #163 / run `43679305537` / job `132706236782`, Release ID `403010611`, tag `jexfyz-latest`, source `9466e8eeb269da5bc8806f0df1d4212cf24e1746`. It predates the restored/validated source; its APK and source ZIP remain the current published baseline until a new guarded run passes every release gate.
+- Trigger Issue #40 remains OPEN and was already consumed for Build #163. Do not reuse or reopen it. No new Build run/trigger/issue was created in this `Eksekusi Full!` interaction.
+- Environment caveat: local `flutter`, `dart` and `actionlint` are unavailable. Flutter/source evidence is hosted Validation Only #38; the changed workflow line was statically inspected and checked against the native source. No guarded Build workflow run has yet exercised the updated Step 10.
+- Residual non-CI acceptance: owner installation and screenshots/OEM visual review, BLE field behavior, long-session device CPU/memory/storage soak, Firmware/BIN provenance, Firebase, OTA/flash, and thermal/electrical acceptance are NOT VERIFIED. Prior Build #163 self-signed certificate/PKIX, Gradle/Kotlin deprecation and native ELF DWARF warnings remain documented. External Actions use major-version tags rather than immutable commit SHAs; no pinning change was made in this narrow repair.
 
-### Next safe sequence
-1. A new explicit Eksekusi Full! may authorize the one-line workflow static-audit correction plus narrow static verification; do not trigger Build App in that mode.
-2. Once the stale audit matcher is reconciled and read back, use a separate explicit Eksekusi Build App! command. Only then create one new owner-authored issue with the guarded title/token and monitor exactly one resulting Build run.
-3. Do not modify protected app version values, weaken other workflow gates, or touch Firmware/BIN/Firebase/OTA/device operations.
+## Next action and authorization
+- The repository is ready for a separate explicit `Eksekusi Build App!` command.
+- Only in that mode should one fresh owner-authored issue be created with exact title `JE X FYZ — EKSEKUSI BUILD APP TRIGGER` and body token `JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1`; do not reuse Issue #40.
+- Monitor exactly one resulting Build run; stop on the first failed required gate and never weaken checks or retry blindly.
+- No Firmware/BIN/Firebase/OTA/flash/device operation is authorized by this checkpoint.
 
 ## Owner-approved contracts — still authoritative
 - English is the master/default language; Indonesian must be complete, natural and semantically equivalent.
