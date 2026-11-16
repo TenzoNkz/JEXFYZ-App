@@ -3808,7 +3808,7 @@ void main() {
     () {
       final source = File('lib/main.dart').readAsStringSync();
       final start = source.indexOf('class _ConnectionSheetContentState');
-      final end = source.indexOf('Future<int> _getAndroidSdkInt', start);
+      final end = source.indexOf('class StaticSwitcher', start);
       expect(start, isNonNegative);
       expect(end, greaterThan(start));
       final connection = source.substring(start, end);
