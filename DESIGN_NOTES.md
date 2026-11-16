@@ -91,11 +91,11 @@ The current App source package is Build #163 on immutable source `9466e8eeb269da
 
 ### Selected-time detail dock — owner screenshot defect (fixed in current main source)
 
-**Status: IMPLEMENTED AND INCLUDED IN BUILD #162 / HOSTED TEST GATES PASSED / VISUAL NOT VERIFIED.** The owner screenshot showed the selected-time surface expanding to nearly the entire viewport after chart interaction.
+**Status: IMPLEMENTED AND INCLUDED IN BUILD #163 / HOSTED TEST GATES PASSED / VISUAL NOT VERIFIED.** The owner screenshot showed the selected-time surface expanding to nearly the entire viewport after chart interaction.
 
 - **Correction:** outer readout Column now uses `mainAxisSize: MainAxisSize.min`; the dock remains in `Scaffold.bottomNavigationBar` and retains SafeArea, six metrics, selected elapsed time and 48×48 dp Clear action.
 - **Regression:** current widget test asserts that the selected dock measures no more than 200 dp at normal text scale and disappears after Clear.
-- **Evidence:** Build #162 packages this fix and its Flutter regression. Actual Android visual acceptance remains **VISUAL NOT VERIFIED** pending owner screenshots.
+- **Evidence:** Build #163 packages this fix and its Flutter regression; the hosted suite passed 197/197. Actual Android visual acceptance remains **VISUAL NOT VERIFIED** pending owner screenshots.
 
 
 
@@ -169,7 +169,7 @@ The current App source package is Build #163 on immutable source `9466e8eeb269da
 
 
 
-### Peltier safety dialog — fixed compact follow-up (included in Build #162)
+### Peltier safety dialog — fixed compact follow-up (included in Build #163)
 
 - **Owner placement correction (2026-11-13):** the panel must sit at the bottom rather than the center of the screen. Apply bottom-center alignment within `SafeArea`; preserve the current card geometry and the safe-area inset so it remains above Android's gesture/navigation area. This is a position-only update, not a redesign.
 
