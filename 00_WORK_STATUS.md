@@ -16,7 +16,7 @@
 | Current phase | WAITING_OWNER — recovery findings saved; awaiting explicit source-repair authorization. |
 | Last completed milestone | Verified main HEAD/tree and repository permissions; read governing policy and active checkpoint; independently confirmed duplicate top-level declarations/orphaned Dart fragment in live lib/main.dart; confirmed Validation Only #27 is terminal CANCELLED and Build #163 remains the last successful package. |
 | Last verified source checkpoint | `05ab2bcf9a619b497d1a9f6f2abc974093808f37` (latest source-updated revision); source blob `c28b1bcdb26673c3f317bf2448839b9ab7cd66ae`. |
-| Current main HEAD | `effc887bdc5028b784310df03e6b945380e24590` (documentation-only checkpoint/status updates; executable source unchanged). |
+| Current main HEAD | This terminal status-update commit; live branch HEAD was read back after the write. Changes in this session are documentation-only; executable source is unchanged. |
 | EXTERNAL OPERATION | Validation Only #27 / run `43808741923` / job `133105410519`, source `05ab2bcf9a619b497d1a9f6f2abc974093808f37`. |
 | EXTERNAL OPERATION STATUS | CANCELLED — run is terminal; prior job logs record Dart formatter/parser failure and duplicate-definition analyzer errors. |
 | Historical successful package | Build #163 / run `43679305537` / job `132706236782` / Release `403010611` / tag `jexfyz-latest` / source `9466e8eeb269da5bc8806f0df1d4212cf24e1746` — SUCCESS, but predates current source changes. |
