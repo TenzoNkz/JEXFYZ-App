@@ -1,4 +1,4 @@
-| Last updated | 2026-11-16 16:10:22 (Asia/Jakarta) |
+| Last updated | 2026-11-16 16:28:00 (Asia/Jakarta) |
 
 > Single current snapshot for JE X FYZ project interactions. Event-driven marker; not a background heartbeat.
 
@@ -6,23 +6,23 @@
 
 | Field | Value |
 |---|---|
-| **STATUS** | **WAITING_OWNER** |
-| SESSION STATUS | WAITING_OWNER — source recovery and regression repairs are committed; waiting for the latest hosted Validation Only run ID/result. |
-| WORK STATUS | BLOCKED — source recovery is complete, but hosted Dart formatter/analyzer/Flutter test results are not verified. |
-| Mode | Eksekusi Full! — scoped source recovery, regression repair, validation and canonical checkpoint updates. No App Build/Release or Firmware/device work. |
-| Request / work item | Recover main.dart, reapply Home/NOTIFY localization, remove only visible Adaptive ceiling card, align tests, and complete non-publishing validation. |
-| Started | 2026-11-16 15:54:49 (Asia/Jakarta) |
-| Last updated | 2026-11-16 16:10:22 |
-| Current phase | WAITING_OWNER — source and tests are restored; awaiting the latest push-triggered Validation Only result. |
-| Last completed milestone | Restored main.dart from verified clean baseline; re-applied Home/NOTIFY localization, locale parsing, OTA grouping and legacy notice normalization; removed only visible Adaptive ceiling card; updated regression tests; static lexical/source-contract checks passed; refreshed canonical checkpoints. |
+| **STATUS** | **IN_PROGRESS** |
+| SESSION STATUS | IN_PROGRESS — incoming Eksekusi Full! continuation; repository recovery, authority/checkpoint loading and live validation-state inspection. |
+| WORK STATUS | BLOCKED — prior source recovery is complete, but hosted Dart formatter/analyzer/Flutter-test results remain unverified. |
+| Mode | Eksekusi Full! — continue only the specifically authorized source/docs/tests/static-audit scope. No App Build/Release or Firmware/device work. |
+| Request / work item | Load the latest durable checkpoint and live main evidence, preserve/reconcile the prior Validation Only external operation, then continue the authorized workstream without repeating side effects. |
+| Started | 2026-11-16 16:28:00 (Asia/Jakarta) |
+| Last updated | 2026-11-16 16:28:00 |
+| Current phase | Mandatory load — status marker opened; reading authoritative mode contract and active checkpoint. |
+| Last completed milestone | Prior verified source recovery and regression checkpoint recorded below; no new work is claimed complete in this incoming session. |
 | Last verified source checkpoint | Source commit `b4558cee8b5a4455603473d31e46b3b108f20576`; `lib/main.dart` blob `b12ea764b674b79f8a19bd70191fcf25ea3046a5` (401,983 characters / 11,427 lines); latest regression checkpoint `f24a612c39138bbe41832adda1cec85091e0b6af`. |
-| Current main HEAD | Source/test commits above plus the final documentation/status commit from this recovery interaction; verify final HEAD after status write. |
-| EXTERNAL OPERATION | Push-triggered JE X FYZ — Validation Only for the restored source/test changes, latest test commit `f24a612c39138bbe41832adda1cec85091e0b6af`. |
-| EXTERNAL OPERATION STATUS | UNKNOWN — available GitHub workflow-run lookup returns PR-triggered runs only; latest push-run state cannot be verified here. |
+| Current main HEAD | Must be fetched and verified during this session. |
+| EXTERNAL OPERATION | Push-triggered JE X FYZ — Validation Only for restored source/test changes, latest test commit `f24a612c39138bbe41832adda1cec85091e0b6af`. |
+| EXTERNAL OPERATION STATUS | UNKNOWN — prior session could not verify push-run state; inspect current Actions evidence without rerunning or duplicating the operation. |
 | Historical successful package | Build #163 / run `43679305537` / job `132706236782` / Release `403010611` / tag `jexfyz-latest` / source `9466e8eeb269da5bc8806f0df1d4212cf24e1746` — SUCCESS, but predates current source changes. |
-| Result / evidence | Source restored to clean structure; six Dart files passed lexical delimiter/string/comment scan; source contract checks passed for unique declarations, Adaptive card removal/state retention, locale parsing, OTA grouping and test alignment. Flutter formatter/analyzer/tests not verified. No Build App, Release, Firmware, BIN, Firebase, OTA, flash or device operation. |
-| Blocker | P1 — no verified hosted formatter/analyzer/Flutter-test result for restored source. Build App remains blocked until all gates are green. Visual/OEM acceptance also remains unverified. |
-| Next action | Owner provides latest JE X FYZ — Validation Only run ID/outcome from GitHub Actions. If green, request separate Eksekusi Build App! authorization; if failed, continue scoped repairs under current Eksekusi Full authorization. |
+| Result / evidence | Prior source recovery, regression alignment and static checks were reported complete; Flutter formatter/analyzer/tests were not verified. No Build App, Release, Firmware, BIN, Firebase, OTA, flash or device operation. |
+| Blocker | Hosted Validation Only result for the restored source/test commit is unverified; no new run is authorized merely to discover its result. |
+| Next action | Read MASTER_PROMPT.md fully, inspect the active CHAT_TRANSFER checkpoint and canonical summaries, then query live repository/Actions evidence. |
 
 ## Status model
 
