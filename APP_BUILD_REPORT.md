@@ -3132,4 +3132,12 @@
 - **First observed gates:** step 1 Set up job SUCCESS; step 2 Checkout repository SUCCESS; step 3 Set up Java 17 SUCCESS; step 4 Set up Flutter IN_PROGRESS; steps 5–21 pending. No downstream result is claimed yet. Workflow run metadata and job/step API agree on the active operation.
 - **Current disposition:** IN_PROGRESS. Continue only run `43863417641` / job `133285765871` / source `a41baaf3bc53a02d72e12a4f3840f0c84c493497`. Do not create another issue or rerun while this operation is active. Build #163 remains the published Release baseline until #164 passes every required gate and downloaded-asset verification.
 - **Boundaries:** App Build/QC/release only. No Firmware compilation/BIN, Firebase mutation, OTA, flashing, or device operation.
+### BUILD #164 progress — setup, static audit, analyzer and Flutter tests passed; Android Gradle gate active — 2026-11-16
+
+- Run 43863417641 / job 133285765871, attempt 1, immutable source a41baaf3bc53a02d72e12a4f3840f0c84c493497, Issue #41.
+- **Steps 1–13 observed SUCCESS:** job setup, checkout, Java 17, Flutter setup, Gradle setup, toolchain verification, Flutter local.properties, production signing-secret preparation, Gradle wrapper recovery, App security/architecture audit, locked dependency installation, Dart analyzer, and Flutter tests.
+- **Step 14 Run Android unit-test gate is IN_PROGRESS.** Steps 15–21 (obfuscated APK build, V1/V2/V3 signing, pinned-certificate verification, stable APK filename, source ZIP, Release/tag publication and downloaded asset identity verification) remain PENDING. Post-job cleanup steps 39–42 remain PENDING.
+- Exact analyzer information count, Flutter test total and Gradle output are not yet claimed: live job-log retrieval returned BlobNotFound while the run remains active. Step/job API is the current authoritative state; this log limitation is not treated as a build failure.
+- No APK, certificate, source ZIP or Release mutation has been claimed. Release #163 remains published until #164 passes all mandatory gates and final live asset re-verification.
+- Continue only run 43863417641 / job 133285765871; no duplicate issue or rerun. Preserve Build #163 historical results and all earlier failures unchanged.
 
