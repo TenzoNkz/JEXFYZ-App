@@ -127,6 +127,17 @@ English is the default master/source and must be complete, grammatical, concise 
 
 **Evidence boundary:** source inspection only. No formatter, analyzer, Flutter tests, Android rendering, screenshot review or App Build was run. No source/test/native file was changed. Build #163 remains the latest verified package and still contains the pre-correction text.
 
+
+### Recovered audit additions — 2026-11-16
+
+- Revalidated live source counts: 353 bilingual dictionary entries (the current source is not 354), 167 inline phrase pairs and 258 lookup calls. All entries have both locale values, but that is structural evidence only.
+- Additional verified defects: `volt` is EN `Volt` / ID `Tegangan` (English should be `Voltage`); OTA mode label `Online` is unchanged in Indonesian (use `Daring` in localized OTA copy); `Adaptive Mode is forced OFF` is translated with physical-output term `MATI` even though Adaptive is a logical mode (use `inactive/nonaktif`); Temperature screen `5V Limit/12V Limit` labels obscure the battery-temperature ceiling/floor roles.
+- Native Floating HUD emits a bare `°`, does not space the voltage value, and omits `%` from the Fan Speed number. Keep compact metric IDs `B/H/V/A/P/F`, but localize/complete display units only.
+- Phone battery temperature display, Home threshold notices, Usage axis ticks and Floating Monitor scale labels do not all apply Indonesian decimal commas. The BLE `PHONE:BT=` payload must retain its existing dot decimal. Home notice parsers must continue to accept old stored `Hotside` and unspaced `°C` forms as well as the new translated/locale forms.
+- Session timestamps use fixed `dd/MM HH:mm` and omit the year; OTA byte counts are not locale-grouped. MainActivity's `Device alerts` / `Notifikasi perangkat` channel title pair is not equivalent; use `Peringatan perangkat` for Indonesian. The owner-approved Bluetooth notification and Floating Monitor notification pairs remain unchanged.
+- Color shade labels need hue/HEX-aware terminology review; proper named colors must not be replaced with approximate hue guesses. Do not change HEX values or stored color IDs.
+- Full source locations, proposed copy, protected invariants and regression matrix are recorded in APP_NOTES.md under `Resumed full-surface copy audit — 2026-11-16`. No executable source/test/native file or config was modified; no formatter/analyzer/test/build/device operation was run.
+
 ## Owner decision — Adaptive profile names / ceiling card / RGB switch — 2026-11-15
 
 **Mode:** Diskusi; source, tests, Firmware, protocol, config and build remain read-only.
@@ -144,7 +155,7 @@ English is the default master/source and must be complete, grammatical, concise 
 
 ## Next action
 
-- Recommended next mode: `Eksekusi Full!` to implement the comprehensive EN/ID copy corrections plus the Adaptive ceiling-card removal and renamed profile labels; preserve internal ceiling/telemetry safety behavior and retain RGB Power/Daya RGB. Add the listed regression coverage. This recommendation is not authorization; wait for the owner's explicit mode command.
+- Recommended next mode: `Eksekusi Full!` to implement the complete EN/ID copy corrections recorded in APP_NOTES.md: dictionary/inline phrases, Usage Statistics, Home/NOTIFY and legacy-message parsing, Adaptive UI labels/ceiling-card removal, locale-aware numbers/dates/units, native HUD/notification wording, color-name review, and semantic/native regression coverage. Preserve internal telemetry, BLE/protocol/state identifiers, NVS/SQLite compatibility, Firmware safety/clamps, RGB indicator priority, HEX values and notification channel/IDs. This recommendation is not authorization; wait for the owner's explicit mode command. A new APK still separately requires `Eksekusi Build App!`.
 - Owner installation and physical-device/OEM visual/BLE verification of Build #163 remain separate and are not inferred from CI.
 - For routine chat transfer, load only this bounded checkpoint; full build history remains in append-only `APP_BUILD_REPORT.md`, and older transfer history remains archived without being loaded during routine boot.
 <!-- ACTIVE_CHECKPOINT_END -->
