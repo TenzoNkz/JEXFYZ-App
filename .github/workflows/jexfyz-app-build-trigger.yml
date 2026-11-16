@@ -219,7 +219,7 @@ jobs:
               raise SystemExit("JE X FYZ audit failed; retired FPS/Shizuku files remain: " + ", ".join(leftovers))
           if "FloatingBridge.fpsAccessStatus" in floating or "requestShizukuFpsPermission" in activity:
               raise SystemExit("JE X FYZ audit failed; retired FPS permission bridge remains")
-          if '"F" -> "F:" + if (!data.connected) "--" else if (data.fanOn) data.speed.toString() else offText' not in Path("android/app/src/main/kotlin/com/horizontalzzz/jexfyz/FloatingMonitorService.kt").read_text(encoding="utf-8"):
+          if '"F" -> "F:" + if (!data.connected) "--" else if (data.fanOn) "${data.speed}%" else offText' not in Path("android/app/src/main/kotlin/com/horizontalzzz/jexfyz/FloatingMonitorService.kt").read_text(encoding="utf-8"):
               raise SystemExit("JE X FYZ audit failed; Floating metric F must display Fan Speed")
           if "metricSchemaVersion" not in floating or "fromStored" not in floating:
               raise SystemExit("JE X FYZ audit failed; legacy Floating Monitor metric migration is missing")
