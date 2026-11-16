@@ -1,3 +1,11 @@
+## 2026-11-16 — Clear guarded App Build preflight after workflow audit repair
+
+- Validation Only #38 / run `43843348889` / job `133217253810` passed on tested input `01cf1295458564820b52afc6ca33037583a430c6`; formatter final PASS, analyzer PASS (107 infos), Flutter tests 200/200 PASS. The workflow committed the exact formatted working tree as `b8fcdaf191c5e8bb5df5fa44c50c80a12dfd03da`.
+- Corrected one stale Step 10 static-audit matcher in `.github/workflows/jexfyz-app-build-trigger.yml` so it validates the current native Fan Speed percent suffix; workflow commit `4ea1f6ff465d4514325778454e59fbd4644c4bfc`. No App/Firmware behavior changed.
+- Static reconstruction confirms remaining pre-build audit predicates, owner/title/body-token trigger, issue-only guard, serialized queue and all 20 explicit QC/package/release gates remain intact.
+- **Preflight READY only:** no App Build run, APK or Release was triggered by Eksekusi Full. Build #163 remains the latest published package until a separately authorized Eksekusi Build App run completes every gate.
+- Residual visual/OEM/device, long-session soak, BLE field, Firmware/BIN, Firebase, OTA/flash and thermal/electrical acceptance remain unverified; action references remain major-version tags rather than immutable SHA pins. No Firmware/device operation performed.
+
 ## 2026-11-15 — Guarded App Build #163 released and verified (SUCCESS)
 
 - Published the validated localization/state App source through the guarded issue-only workflow. Owner trigger Issue #40 produced exactly one Build #163 run: 43679305537 / job 132706236782, attempt 1, source SHA `9466e8eeb269da5bc8806f0df1d4212cf24e1746`.
