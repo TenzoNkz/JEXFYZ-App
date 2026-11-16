@@ -19,8 +19,8 @@
 - Locale display formatting must not alter protocol/storage serialization or timestamps. Preserve one-second telemetry, local history semantics, metric identifiers B/H/V/A/P/F, notification IDs/channel IDs, and stable BLE contracts.
 
 ## Restored checkpoint and live repository evidence
-- The prior status snapshot named `39e70cb0bac4271785905f9b56fdaca5337dbb30` as its last source milestone. Live main had advanced through source commits to `05ab2bcf9a619b497d1a9f6f2abc974093808f37`; the incoming status marker then created documentation-only commit `b047f209ce958faa97a5b5d06155871d341ea395`.
-- At the time of recovery review, main tree SHA was `fe0c09a9a033515ccc9448bd0c5ffee9523ab6f2`: recursive tree not truncated, 139 entries, 53 Markdown files. No open PR was found.
+- The prior status snapshot named `39e70cb0bac4271785905f9b56fdaca5337dbb30` as its last source milestone. Live main had advanced through source commits to `05ab2bcf9a619b497d1a9f6f2abc974093808f37`; the incoming status marker for this recovery session created documentation-only commit `6ddd15c154f5ff7dfd9e48d936afe4c9fe2b74e7`.
+- At the time of this recovery session, main tree SHA is `eb7568122a6d2a655b6fd9a204f8019355d3008c`: recursive tree not truncated, 139 entries. The incoming status-only commit leaves executable source unchanged. No open PR was found.
 - Compare from immutable Build #163 package source `9466e8eeb269da5bc8806f0df1d4212cf24e1746` to the source-updated main revision showed 17 changed paths, including Dart source, Kotlin presentation files and tests. `lib/main.dart` alone had +33,581 / −11 lines.
 - The good `lib/main.dart` baseline blob is `48dd0c943075db076769c3d9dc53b8b71a28a5c3` (403,036 bytes), present at Build #163 source and commit `39e70cb0...`. Current damaged main blob is `c28b1bcdb26673c3f317bf2448839b9ab7cd66ae` (1,582,015 bytes; 45,030 lines).
 - Main currently contains top-level declarations repeatedly in active Dart code, not inside comments/strings: for example `LedColorPreset` at lines 1,034 / 12,320 / 23,331 / 34,617; `TamperApp` at 4,434 / 15,720 / 26,731 / 38,017; and `DashboardScreen` at 4,567 / 15,853 / 26,864 / 38,150. Around line 11,447 there is an orphaned fragment beginning `, caseSensitive: false), '')` immediately after a closed class. This breaks parsing in addition to duplicate definitions.
@@ -47,6 +47,6 @@
 
 ## Verification boundary
 - This checkpoint is based on live GitHub metadata, full recursive-tree metadata, source/blob inspection and Actions/job logs. No source/test/config/workflow/Build/Firmware/device operation occurred in Diskusi.
-- Last source-updated revision inspected: `05ab2bcf9a619b497d1a9f6f2abc974093808f37`; opening status commit: `b047f209ce958faa97a5b5d06155871d341ea395`.
+- Last source-updated revision inspected: `05ab2bcf9a619b497d1a9f6f2abc974093808f37`; current recovery-session status-only commit: `6ddd15c154f5ff7dfd9e48d936afe4c9fe2b74e7`.
 - Next safe owner command: `Eksekusi Full!` for the source recovery scope above.
 <!-- ACTIVE_CHECKPOINT_END -->
