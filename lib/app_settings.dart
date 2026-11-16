@@ -700,9 +700,9 @@ class JexText {
     },
     'hotside': {
       AppLanguage.english: 'Hotside',
-      AppLanguage.indonesia: 'Hotside',
+      AppLanguage.indonesia: 'Sisi Panas',
     },
-    'volt': {AppLanguage.english: 'Volt', AppLanguage.indonesia: 'Tegangan'},
+    'volt': {AppLanguage.english: 'Voltage', AppLanguage.indonesia: 'Tegangan'},
     'adaptive': {
       AppLanguage.english: 'Adaptive',
       AppLanguage.indonesia: 'Adaptif',
@@ -777,19 +777,19 @@ class JexText {
     },
     'hotsideLimit': {
       AppLanguage.english: 'Hotside Limit',
-      AppLanguage.indonesia: 'Batas Suhu Hotside',
+      AppLanguage.indonesia: 'Batas Suhu Sisi Panas',
     },
     'batteryZones': {
       AppLanguage.english: 'Battery Temperature Zones',
       AppLanguage.indonesia: 'Zona Suhu Baterai',
     },
     'fiveVCeiling': {
-      AppLanguage.english: '5V Limit',
-      AppLanguage.indonesia: 'Batas 5V',
+      AppLanguage.english: '5 V Battery Temperature Ceiling',
+      AppLanguage.indonesia: 'Batas atas suhu baterai pada 5 V',
     },
     'twelveVFloor': {
-      AppLanguage.english: '12V Limit',
-      AppLanguage.indonesia: 'Batas 12V',
+      AppLanguage.english: '12 V Battery Temperature Floor',
+      AppLanguage.indonesia: 'Batas bawah suhu baterai pada 12 V',
     },
     'range': {AppLanguage.english: 'Range', AppLanguage.indonesia: 'Rentang'},
     'zone9v': {
@@ -815,11 +815,11 @@ class JexText {
     },
     'hotsideProtection': {
       AppLanguage.english: 'Hotside Protection',
-      AppLanguage.indonesia: 'Perlindungan Hotside',
+      AppLanguage.indonesia: 'Perlindungan Suhu Panas',
     },
     'hotsideBattery': {
-      AppLanguage.english: 'Hotside + Battery',
-      AppLanguage.indonesia: 'Hotside + Baterai',
+      AppLanguage.english: 'Hotside & Battery Protection',
+      AppLanguage.indonesia: 'Perlindungan Suhu Panas & Baterai',
     },
     'peltierSafety': {
       AppLanguage.english: 'Peltier Safety',
@@ -936,11 +936,11 @@ class JexText {
     'off': {AppLanguage.english: 'OFF', AppLanguage.indonesia: 'MATI'},
     'hSideProtection': {
       AppLanguage.english: 'Hotside Protection',
-      AppLanguage.indonesia: 'Perlindungan Hotside',
+      AppLanguage.indonesia: 'Perlindungan Suhu Panas',
     },
     'hSideBattery': {
-      AppLanguage.english: 'Hotside + Battery',
-      AppLanguage.indonesia: 'Hotside + Baterai',
+      AppLanguage.english: 'Hotside & Battery Protection',
+      AppLanguage.indonesia: 'Perlindungan Suhu Panas & Baterai',
     },
     'batteryTemperature': {
       AppLanguage.english: 'Battery Temperature',
@@ -948,7 +948,7 @@ class JexText {
     },
     'hotsideTemperature': {
       AppLanguage.english: 'Hotside Temperature',
-      AppLanguage.indonesia: 'Suhu Hotside',
+      AppLanguage.indonesia: 'Suhu Sisi Panas',
     },
     'fanSpeed': {
       AppLanguage.english: 'Fan Speed',
@@ -958,11 +958,11 @@ class JexText {
       AppLanguage.english:
           'The device did not confirm the Hotside limit change.',
       AppLanguage.indonesia:
-          'Perangkat belum mengonfirmasi perubahan batas suhu Hotside.',
+          'Perangkat belum mengonfirmasi perubahan batas suhu sisi panas.',
     },
     'hotsideLimitFailed': {
       AppLanguage.english: 'Hotside limit update failed.',
-      AppLanguage.indonesia: 'Gagal memperbarui batas Hotside.',
+      AppLanguage.indonesia: 'Gagal memperbarui batas suhu sisi panas.',
     },
     'battery5LimitNotConfirmed': {
       AppLanguage.english:
@@ -1014,7 +1014,7 @@ class JexText {
       AppLanguage.english:
           'Send a notification when Hotside reaches the set limit.',
       AppLanguage.indonesia:
-          'Kirim notifikasi saat suhu Hotside mencapai batas yang ditetapkan.',
+          'Kirim notifikasi saat suhu sisi panas mencapai batas yang ditetapkan.',
     },
     'otaFailed': {
       AppLanguage.english: 'Firmware update failed.',
@@ -1182,7 +1182,7 @@ class JexText {
     },
     'otaModeOnline': {
       AppLanguage.english: 'Online',
-      AppLanguage.indonesia: 'Online',
+      AppLanguage.indonesia: 'Daring',
     },
     'otaStageLocalFileCheck': {
       AppLanguage.english: 'File check',
@@ -1502,7 +1502,7 @@ class JexText {
     },
     'hotsideProtectionActive': {
       AppLanguage.english: 'Hotside protection is active. Peltier is paused.',
-      AppLanguage.indonesia: 'Perlindungan Hotside aktif. Peltier dijeda.',
+      AppLanguage.indonesia: 'Perlindungan sisi panas aktif. Peltier dijeda.',
     },
     'voltageSetTo': {
       AppLanguage.english: 'Voltage set to ',
