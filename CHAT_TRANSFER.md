@@ -1,10 +1,12 @@
 <!-- ACTIVE_CHECKPOINT_START -->
-# ACTIVE CHECKPOINT — BUILD #163 COMPLETE — RELEASE VERIFIED — 2026-11-15
+# ACTIVE CHECKPOINT — BUILD #163 RELEASE VERIFIED — PRE-EXECUTION REVIEW COMPLETE — 2026-11-16
 
 **Project:** JE X FYZ / JE Cooler  
 **Repository:** TenzoNkz/JEXFYZ-App — branch main  
-**Last mode:** Eksekusi Build App! — guarded App Build / QC / release only.  
-**Disposition:** **COMPLETED / SUCCESS.** No active Build run remains. No Firmware compile/BIN, Firebase mutation, OTA, flashing or device operation was performed or authorized.
+**Last completed release mode:** Eksekusi Build App! — guarded App Build / QC / release only.  
+**Current mode:** Diskusi! — read-only pre-implementation consistency review.  
+**Build #163 disposition:** **COMPLETED / SUCCESS.** No active Build run remains. No Firmware compile/BIN, Firebase mutation, OTA, flashing or device operation was performed or authorized.  
+**Current Diskusi disposition:** **WAITING_OWNER** for explicit `Eksekusi Full!`; source/test/native/config/workflow/build/release/Firmware/device changes remain unauthorized in this mode.
 
 ## Completed guarded attempt
 
@@ -153,9 +155,17 @@ English is the default master/source and must be complete, grammatical, concise 
 - Full decision and exact source location/rationale are in APP_NOTES.md under “Owner decision — Adaptive profile labels, Adaptive ceiling display and RGB toggle”.
 - No source/test/Firmware/config change, formatter/analyzer/test, App Build, Firmware compile or device operation was performed in this Diskusi.
 
+## Pre-execution consistency review — 2026-11-16
+
+- Live source mapping: the Adaptive selector in `lib/main.dart` reads `hotsideProtection` and `hotsideBattery`; their current `lib/app_settings.dart` display values do not match the exact owner-approved bilingual labels. Update those active keys to `Hotside Protection / Perlindungan Suhu Panas` and `Hotside & Battery Protection / Perlindungan Suhu Panas & Baterai`. Preserve legacy aliases `hSideProtection` / `hSideBattery`; never globally replace generic `hotsideProtectionActive` copy.
+- Preserve the presentation-only Adaptive card removal: remove only the visible card/readout built from `adaptiveCeiling`, but retain state, `ADAPTIVE_CEILING` telemetry, Firmware clamp, profile logic and Lock Voltage behavior.
+- Current package documentation is reconciled to Build #163 across APP_NOTES.md, APP_PREBUILD_AUDIT.md and DESIGN_NOTES.md. Build #163 remains run `43679305537` / job `132706236782`, source `9466e8eeb269da5bc8806f0df1d4212cf24e1746`; Release/tag and two artifact digests are verified in the subject notes.
+- Additional existing audit items remain: generic Hotside translation, Usage Statistics text and raw-token cleanup, Home notice legacy parsing, decimal/date/unit/byte formatting, native HUD units, Device alerts channel copy, semantic regressions and HEX-aware color naming. Temperature-zone ceiling/floor labels remain candidates until the actual Firmware comparison semantics and UI fit are checked; do not change thresholds or control behavior.
+- This preflight updated documentation only. No App source/tests/Kotlin/native/config/workflow/Firmware changes and no formatter/analyzer/Flutter test/Gradle/render/build were run.
+
 ## Next action
 
-- Recommended next mode: `Eksekusi Full!` to implement the complete EN/ID copy corrections recorded in APP_NOTES.md: dictionary/inline phrases, Usage Statistics, Home/NOTIFY and legacy-message parsing, Adaptive UI labels/ceiling-card removal, locale-aware numbers/dates/units, native HUD/notification wording, color-name review, and semantic/native regression coverage. Preserve internal telemetry, BLE/protocol/state identifiers, NVS/SQLite compatibility, Firmware safety/clamps, RGB indicator priority, HEX values and notification channel/IDs. This recommendation is not authorization; wait for the owner's explicit mode command. A new APK still separately requires `Eksekusi Build App!`.
+- Recommended next mode: `Eksekusi Full!` to implement the reviewed EN/ID copy and formatting scope from APP_NOTES.md, including the corrected active Adaptive key mappings, generic Hotside prose, Usage Statistics, Home/NOTIFY legacy parsing, native HUD and device-alert copy, locale-aware numbers/dates/units/byte grouping, HEX-aware color review, and semantic/native regression tests. Preserve internal telemetry, BLE/protocol/state identifiers, NVS/SQLite compatibility, Firmware safety/clamps, RGB indicator priority, HEX values and notification channel/IDs. This recommendation is not authorization; wait for the owner's explicit mode command. A new APK still separately requires `Eksekusi Build App!`.
 - Owner installation and physical-device/OEM visual/BLE verification of Build #163 remain separate and are not inferred from CI.
 - For routine chat transfer, load only this bounded checkpoint; full build history remains in append-only `APP_BUILD_REPORT.md`, and older transfer history remains archived without being loaded during routine boot.
 <!-- ACTIVE_CHECKPOINT_END -->
