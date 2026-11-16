@@ -5,7 +5,7 @@ Last reconciled: 2026-11-16 (Asia/Jakarta). This is the immediate operating hand
 ## Current state — RECOVERY_REQUIRED
 
 - Prior `Eksekusi Full!` localization/formatting work was interrupted before closure. The source changes are partially committed, but the current main branch is **not buildable**.
-- At recovery review, source revision was `05ab2bcf9a619b497d1a9f6f2abc974093808f37`; the incoming Diskusi status write was `b047f209ce958faa97a5b5d06155871d341ea395`. The documentation checkpoint is being reconciled without source edits.
+- Latest live main HEAD at the current Diskusi review entry was `5007a9b1eab972ea89d2dfc2939db7adf69e6799`; the source-updated revision remains `05ab2bcf9a619b497d1a9f6f2abc974093808f37`. Subsequent commits in this review are documentation/status-only; no source repair has occurred.
 - `lib/main.dart` is corrupted: 1,582,015 bytes / 45,030 lines versus the clean 403,036-byte baseline blob `48dd0c943075db076769c3d9dc53b8b71a28a5c3`. It contains repeated top-level classes/functions and an orphaned fragment near line 11,447. Hosted Validation Only #27 logs show Dart formatter failure (exit 65) and duplicate-definition analyzer errors. Do not build this source.
 - **Latest delivered package remains Build #163**, run `43679305537` / job `132706236782`, Release `403010611`, tag `jexfyz-latest`, package SHA `9466e8eeb269da5bc8806f0df1d4212cf24e1746`. It remains valid as the previous package but does not contain the recent localization changes.
 
