@@ -29,7 +29,7 @@
 
 Purpose: canonical current App/UI/BLE/telemetry contract. Current source defines implementation; DESIGN_NOTES.md holds owner-approved screen-specific visual constraints; PRODUCT_DESIGN_CONSTITUTION.md defines cross-screen design principles; VISUAL_QUALITY_GATE.md defines evidence-based visual acceptance; CHANGELOG.md and APP_BUILD_REPORT.md hold history/evidence.
 
-## Historical source and release snapshot — Build #157 (superseded by Build #162)
+## Historical source and release snapshot — Build #157 (superseded by Build #163)
 
 - Latest verified App package: **Build #157**, Actions run [43247876115](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/43247876115), immutable package source SHA `10d106537e92060e0aac3fc17fd37f56e746bcd5`. Release ID `403010611` / tag `jexfyz-latest` still target this exact source. Release hashes and full QC evidence are detailed in PROJECT_STATE.md and APP_BUILD_REPORT.md.
 - Build #157 passed the security/architecture audit, analyzer (**23 info-level findings, zero warnings/errors**), and **187/187 Flutter tests**. Android Gradle gate passed (`BUILD SUCCESSFUL in 3m19s`); app native JUnit compile/process/test prerequisites were `NO-SOURCE`, so no native Android JUnit case ran. Hosted CI does not establish screenshot/OEM or physical-device acceptance.
@@ -85,8 +85,8 @@ Purpose: canonical current App/UI/BLE/telemetry contract. Current source defines
 - One-shot Auto Connect/OTA reserves a coordinator token synchronously before permission/adapter awaits, excludes overlapping passive/one-shot scans, and invalidates a pending attempt when manual-sheet ownership or connection handoff begins. All one-shot scanner start/stop commands pass through the shared FIFO queue with an in-queue token check; the lease spans primary and fallback discovery without holding the queue through the entire radio scan.
 - Primary and fallback discovery use fresh `onScanResults`. The known-remote-ID fallback remains available for ESP32-C3 advertisements that omit the 128-bit service UUID, but only current-scan results can initiate the fallback connection. The pinned `flutter_blue_plus 2.3.14` plugin may retain previous values in `scanResults`; `onScanResults` is the fresh per-scan stream.
 - The manual Connection UI has distinct scanning, completed-no-result, permission-required, adapter/location unavailable and scan-failed presentations. A stopped scan updates the plugin lifecycle stream; the UI does not rely on a fixed 10-second spinner.
-- Regression assertions for layout source shape, Fan Speed callsite structure and await-safe BLE cancellation are included in the Build #162 package. Build #162's full hosted Flutter suite passed 188/188; this validates automated App behavior/contracts, not real radio timing or OEM behavior.
-- **Physical validation remains pending:** Build #162 owner installation has not been independently confirmed. After installation, test passive rediscovery, prerequisite cancellation, manual-sheet open/neutral dismissal, selected-device handoff, fresh primary/fallback advertisements, adapter loss and reconnect on the real phone/cooler. BLE P1 UUIDs, framing, GATT connection/session synchronization and authoritative telemetry semantics remain unchanged.
+- Regression assertions for layout source shape, Fan Speed callsite structure and await-safe BLE cancellation are included in the Build #163 package. Build #163's hosted Flutter suite passed 197/197; this validates automated App behavior/contracts, not real radio timing or OEM behavior.
+- **Physical validation remains pending:** Build #163 owner installation has not been independently confirmed. After installation, test passive rediscovery, prerequisite cancellation, manual-sheet open/neutral dismissal, selected-device handoff, fresh primary/fallback advertisements, adapter loss and reconnect on the real phone/cooler. BLE P1 UUIDs, framing, GATT connection/session synchronization and authoritative telemetry semantics remain unchanged.
 
 
 
@@ -448,7 +448,7 @@ This continuation refines the 2026-11-15 findings. Live source still has **353**
 - Voltage/Adaptive/Peltier timeline state segments are thinner and vertically centered within the existing 34-dp interaction lane. Fan Speed plot semantics and height are unchanged.
 - No capture, BLE/P1, telemetry, session, SQL schema, retention, queue, aggregate, temperature range, Hotside limit, null-gap, cursor selection or sensor-truth logic was intentionally changed.
 - Implementation commit `b4b57e83261c0b1fcb7873efa8544c3410ad0208`; formatter-only follow-up `873a825020659dadcac2e5c7242e759209776414`. Validation Only run #16 / job `132317129708` passed on exact formatted source `873a825020659dadcac2e5c7242e759209776414`: locked dependencies, clean formatter, analyzer (119 infos, zero warnings/errors), and 188/188 Flutter tests.
-- This source is not included in Build #162. Android screenshot/OEM acceptance remains VISUAL NOT VERIFIED until a new separately authorized App package is installed and inspected.
+- At the 2026-11-14 checkpoint this source was not included in Build #162. **Subsequent resolution:** Build #163 / run `43679305537`, immutable source `9466e8eeb269da5bc8806f0df1d4212cf24e1746`, packages this Usage Statistics alignment refinement and its regression source. Android screenshot/OEM acceptance remains VISUAL NOT VERIFIED until Build #163 is installed and inspected.
 
 
 ### Owner request — English-master language quality audit (Diskusi only) — 2026-11-14
