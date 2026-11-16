@@ -1,14 +1,16 @@
-# LIVE MAIN OVERRIDE — RECOVERY BLOCKED — 2026-11-16
+# LIVE MAIN OVERRIDE — RECOVERY BLOCKED / NOT BUILD-READY — 2026-11-16
 
-This reconciliation supersedes any older “current main”, “next copy pending”, or “prebuild ready” status labels in the historical audit below.
+This live reconciliation supersedes any older “current main”, “next copy pending”, or “prebuild ready” status labels in the historical audit below.
 
-- Current source is **NOT READY FOR APP BUILD**. The latest source-updated revision inspected was `05ab2bcf9a619b497d1a9f6f2abc974093808f37`; the current recovery documentation/status commit is newer and source-neutral.
-- `lib/main.dart` is corrupted: blob `c28b1bcdb26673c3f317bf2448839b9ab7cd66ae`, 1,582,015 bytes / 45,030 lines, compared with clean 403,036-byte blob `48dd0c943075db076769c3d9dc53b8b71a28a5c3`. It contains repeated active top-level declarations and a malformed fragment near line 11,447.
-- Validation Only #27 / run `43808741923` / job `133105410519` ended CANCELLED; its logs show Dart formatter exit 65 and Flutter analyzer parser/duplicate-definition errors. The current source has no successful validation result.
-- The visible Adaptive ceiling card is still in the surviving code. It must be removed presentation-only while preserving `adaptiveCeiling`, `ADAPTIVE_CEILING`, the Firmware clamp and Lock Voltage.
-- Partial changes in dictionary, Usage Statistics, Floating Monitor and native HUD/channel copy are recorded in APP_NOTES.md and CHAT_TRANSFER.md; stale test expectations remain in `test/localization_contract_test.dart` and `test/device_copy_notification_contract_test.dart`.
-- Build #163 / run `43679305537` / Release `403010611` / tag `jexfyz-latest` remains the latest successful package at source `9466e8eeb269da5bc8806f0df1d4212cf24e1746`. That older artifact remains verified; it does not validate or contain current main changes.
-- Next gate: explicit `Eksekusi Full!` to reconstruct source and tests, then complete allowed non-publishing quality checks. Only after that, a separate `Eksekusi Build App!` may be considered. No Build App, Firmware, BIN, Firebase, OTA, flash or device action is authorized here.
+- Latest main HEAD checked in this Diskusi session: `5007a9b1eab972ea89d2dfc2939db7adf69e6799`; recursive tree is complete (139 entries, not truncated). Session changes so far are documentation/status-only.
+- Current source is **NOT READY FOR APP BUILD**. Latest source-updated revision remains `05ab2bcf9a619b497d1a9f6f2abc974093808f37`; `lib/main.dart` blob remains `c28b1bcdb26673c3f317bf2448839b9ab7cd66ae`, 1,582,015 bytes / 45,030 lines versus clean 403,036-byte baseline `48dd0c943075db076769c3d9dc53b8b71a28a5c3`.
+- Direct source inspection reconfirmed four active top-level copies of `LedColorPreset`, `TamperApp` and `DashboardScreen`, plus malformed syntax fragments. The visible Adaptive ceiling card remains at approximately lines 9,367–9,398, reading `adaptiveCeiling` and displaying its value. Remove this card only after source restoration; retain telemetry/state/clamp and Lock Voltage.
+- Validation Only #27 / run `43808741923` / job `133105410519` / source `05ab2bcf9a619b497d1a9f6f2abc974093808f37` is terminal CANCELLED. Full job-log recheck: dependency resolution SUCCESS; formatter precheck FAILED on parser errors at lines 174, 448 and 11,447; formatter apply FAILED (exit 65); final formatter FAILED (exit 65); analyzer FAILED with syntax/duplicate-definition errors; Flutter tests CANCELLED. No successful validation covers current main.
+- Stale regression gaps remain: `test/localization_contract_test.dart` expects ungrouped OTA bytes; `test/device_copy_notification_contract_test.dart` still expects `Suhu Hotside`. Add/align semantic tests for exact profile labels, Adaptive-card absence, HEX-aware color names, native HUD units, Device alerts title and protected telemetry/state contracts.
+- Build #163 / run `43679305537` / Release `403010611` / tag `jexfyz-latest` remains the latest successful package at source `9466e8eeb269da5bc8806f0df1d4212cf24e1746`. Release currently still points to that older source and contains the previously verified APK and source ZIP; it does not contain current main changes.
+- Next gate: explicit `Eksekusi Full!` to restore `lib/main.dart` from clean baseline blob `48dd0c943075db076769c3d9dc53b8b71a28a5c3`, reapply intended Home/NOTIFY/locale/OTA/legacy-notice changes once, remove only the visible ceiling card, align tests, then obtain green non-publishing validation. Only then can a separate explicit `Eksekusi Build App!` be considered.
+- No App Build, Firmware, BIN, Firebase, OTA, flash or device action is authorized or performed in this Diskusi session.
+
 
 ---
 
