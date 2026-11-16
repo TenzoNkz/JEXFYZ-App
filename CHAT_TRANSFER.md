@@ -18,7 +18,7 @@
 - Observed gates: 1 Set up job SUCCESS; 2 Checkout repository SUCCESS; 3 Set up Java 17 SUCCESS; 4 Set up Flutter IN_PROGRESS; steps 5–21 PENDING. No analyzer/test/Gradle/APK/signing/release result is claimed yet.
 - Exactly one trigger issue and one Build #164 run are present; do not reuse #40 or create another issue/rerun. Continue only this run/job.
 - Build #163 remains published until #164 passes all required gates and live asset verification. Existing certificate, PKIX/META-INF, Gradle/Kotlin, native ELF DWARF and NO-SOURCE native JUnit warnings remain disclosed.
-- Immediate next action: continue polling only run/job #164, inspect step 14 and the complete job log when available; update this checkpoint and APP_BUILD_REPORT.md at each meaningful gate transition. Preserve every failed intermediate result.
+- Immediate next action: continue polling only run/job #164, inspect step 15 and the complete job log when available; update this checkpoint and APP_BUILD_REPORT.md at each meaningful gate transition. Preserve every failed intermediate result.
 
 ## Owner-approved contracts — still authoritative
 - English is the master/default language; Indonesian must be complete, natural and semantically equivalent.
