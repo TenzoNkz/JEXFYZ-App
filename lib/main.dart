@@ -260,8 +260,8 @@ String? formatOtaUploadSizeMismatch(String event, AppLanguage language) {
   ).firstMatch(event.trim());
   if (match == null) return null;
   return JexText.format('otaSizeMismatchDetailed', {
-    'receivedBytes': match.group(1)!,
-    'expectedBytes': match.group(2)!,
+    'receivedBytes': JexText.formatNumber(int.parse(match.group(1)!), language),
+    'expectedBytes': JexText.formatNumber(int.parse(match.group(2)!), language),
   }, language);
 }
 
@@ -330,7 +330,7 @@ String? homeNotifyForTelemetryChange({
     case 'ADAPTIVE_PROFILE':
       final profile = currentValue.trim().toUpperCase() == 'BATTERY'
           ? JexText.phrase('Battery', 'Baterai', language)
-          : 'Hotside';
+          : JexText.phrase('Hotside', 'Sisi Panas', language);
       return JexText.phrase(
             'Adaptive profile set to ',
             'Profil Adaptif diatur ke ',
