@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — Current Handover
 
-Last reconciled: 2026-11-16 23:16:44 (Asia/Jakarta).
+Last reconciled: 2026-11-16 23:18:07 (Asia/Jakarta).
 
 ## Current state — BUILD #165 ACTIVE / BLUETOOTH FIX BEING PACKAGED
 
@@ -10,9 +10,10 @@ Last reconciled: 2026-11-16 23:16:44 (Asia/Jakarta).
 - Validation Only #44 / run `43899329198` / job `133411358928` — **SUCCESS** on input `4a875b3d63beea6e7d469c27f0c8930ab9b7cd09`: formatter final PASS, analyzer 107 infos / 0 warnings/errors, Flutter **205/205 PASS**; format-only commit `0a2b3c03af433a17d82afa1d4db60beb7b1bd023`.
 - Latest published APK remains Build #164 / run `43863417641` / Release `403010611` / tag `jexfyz-latest`, source `a41baaf3bc53a02d72e12a4f3840f0c84c493497`. It predates the Bluetooth fix, so the fix is not yet in the published APK.
 
-## Next action and boundaries
+## Current Build #165 progress
 
-- Exactly one new owner-authored Issue #42 created the guarded Build #165 run `43905426531` / job `133432846684`, attempt 1, immutable source `cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d`.
-- Current state: runner allocated; steps 1–3 SUCCESS; step 4 Set up Flutter IN_PROGRESS; steps 5–21 pending. Continue only this run/job; no duplicate trigger or rerun.
-- Verify analyzer/tests, Android Gradle, obfuscated APK, V1/V2/V3 pinned cert, source ZIP, Release/tag/source parity and downloaded APK/source ZIP identity. Stop at the first failed gate; no blind retry.
+- One fresh Issue #42 produced exactly one run `43905426531` / job `133432846684`, attempt 1, immutable source `cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d`.
+- Steps 1–13 SUCCESS. Step 14 Android Gradle gate IN_PROGRESS; steps 15–21 pending. Full logs are unavailable while active, so do not invent analyzer/test counts or Gradle timings.
+- Continue only this run/job. At terminal, verify APK obfuscation, V1/V2/V3 pinned cert, source ZIP, Release/tag/source parity, exactly two assets and downloaded asset identity. Stop on any failed required gate.
+- Bluetooth fix still needs owner installation/physical BLE verification after package delivery. No Firmware/BIN/Firebase/OTA/flash/device operation.
 - After owner installation, verify the real cooler Bluetooth advertisement and App scan row show `JE X FYZ`. Physical BLE/OEM visual, Firmware/BIN, Firebase, OTA/flash, thermal/electrical and long-session evidence remain separate and unverified. No such operation is authorized here.
