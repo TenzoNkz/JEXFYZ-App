@@ -20,6 +20,30 @@
 - Build #163 remains published until #164 passes all required gates and live asset verification. Existing certificate, PKIX/META-INF, Gradle/Kotlin, native ELF DWARF and NO-SOURCE native JUnit warnings remain disclosed.
 - Immediate next action: continue polling only run/job #164, inspect step 15 and the complete job log when available; update this checkpoint and APP_BUILD_REPORT.md at each meaningful gate transition. Preserve every failed intermediate result.
 
+## Session and authorization
+- Project: JE X FYZ / JE Cooler.
+- Canonical repository/branch: TenzoNkz/JEXFYZ-App / main.
+- Mode: Eksekusi Build App! — guarded App Build/QC and release only; no Firmware/BIN/Firebase/OTA/flashing/device operations were performed.
+- SESSION STATUS: COMPLETED. WORK STATUS: COMPLETED. EXTERNAL OPERATION STATUS: COMPLETED / SUCCESS.
+
+## BUILD #164 — TERMINAL SUCCESS / RELEASE VERIFIED
+
+- Owner trigger: Issue #41, created by TenzoNkz with the exact required title and body token. Exactly one issue-event Build run was produced.
+- Run: 43863417641; workflow 374946166; attempt 1; source/checkout SHA a41baaf3bc53a02d72e12a4f3840f0c84c493497. Run completed SUCCESS at 2026-11-16T12:11:32Z. Job build / 133285765871 completed SUCCESS at 12:11:31Z.
+- All explicit gates 1–21 and cleanup steps 39–43 are SUCCESS. Analyzer: 107 infos, zero analyzer warnings/errors. Flutter tests: 200/200 passed. Android Gradle unit-test gate: BUILD SUCCESSFUL in 2m35s, with app:testDebugUnitTest marked NO-SOURCE (no native Android JUnit tests were present).
+- APK: JEXFYZ-release.apk, 55,881,819 bytes, SHA-256 6553af0d07162e804bea838cbd1c391432471630db0de6d56bdd303c713eaa8c. Obfuscated release build used --obfuscate and split debug symbols.
+- Signing: V1/V2/V3 all true; one RSA-4096 signer; exact pinned certificate DN CN=JE X FYZ, OU=JE X FYZ, O=JE X FYZ, L=Indonesia, ST=Central Java, C=ID; certificate SHA-256 dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0.
+- Matching source ZIP: JEXFYZ-corresponding-source.zip, 2,944,808 bytes, SHA-256 1c15f4bc5bfe112594212f42eea925514a7ab138071915c9fe486f6c909bb576; archive integrity passed and embedded source SHA matches the APK.
+- Release ID 403010611; release page https://github.com/TenzoNkz/JEXFYZ-App/releases/tag/jexfyz-latest; tag jexfyz-latest, tag target and Release target all match package source SHA a41baaf3bc53a02d72e12a4f3840f0c84c493497. Exactly two assets exist, one APK and one source ZIP; step 21 re-downloaded both and passed byte-identity SHA-256 checks and APK signing verification.
+- Android Gradle versionName Telegram @horizontalzzz unchanged; Flutter version 1.0.0+3.
+- Residual warnings: self-signed signing certificate causes PKIX trust warnings; no signature timestamp (certificate expires 2054-02-05); upstream META-INF entries are not covered by the APK signer; Kotlin 2.2.20 / Firebase KGP future Flutter compatibility warning; Gradle 10 deprecation warning; native ELF DWARF visibility warning. All required current signing checks passed; none of these follow-up warnings were altered or represented as fixed.
+- Hosted CI does not prove physical installation, OEM visual acceptance, BLE field behavior, Firmware/BIN, Firebase, OTA, flashing, thermal or electrical acceptance. Those remain separate and unverified.
+
+## Next action and authorization
+- No further Build App action is pending. The current work item and its external Actions operation are COMPLETED / SUCCESS.
+- Retain Release jexfyz-latest as the current package. Any future source change or new build requires the appropriate owner-selected mode and a new guarded trigger; never reuse Issue #41 or older trigger issues.
+- Firmware compilation/BIN generation/publication/replacement, Firebase mutation, OTA, flashing and device operations remain outside this Build App authorization.
+
 ## Owner-approved contracts — still authoritative
 - English is the master/default language; Indonesian must be complete, natural and semantically equivalent.
 - General glossary includes Battery → Baterai; Battery Temperature → Suhu Baterai; generic Hotside component references → Sisi Panas; Hotside Temperature → Suhu Sisi Panas; Hotside Limit → Batas Suhu Sisi Panas; generic cooler → pendingin; Adaptive Mode → Mode Adaptif; Fan → Kipas; Fan Speed → Kecepatan Kipas; Voltage → Tegangan.
@@ -55,7 +79,7 @@
 - Verified source/test tree commit: `b8fcdaf191c5e8bb5df5fa44c50c80a12dfd03da`; subsequent main commits only synchronize canonical documentation/status and preserve the source/test blobs validated in #38.
 - Verified recursive tree: 139 entries, `truncated=false`. Relevant source/test read-backs confirm the unused local is gone, Fan Speed assertion includes the live percent suffix, and the size/max-label assertions verify locale-aware formatting.
 - The local runtime has no Dart/Flutter SDK; validation evidence is from hosted GitHub Actions only.
-- Latest verified package remains Build #163 / run `43679305537` / Release `403010611` / tag `jexfyz-latest`, source `9466e8eeb269da5bc8806f0df1d4212cf24e1746`; it predates restored changes. No new APK, App Build or Release was created.
+- Latest verified package is Build #164 / run `43863417641` / Release `403010611` / tag `jexfyz-latest`, source `a41baaf3bc53a02d72e12a4f3840f0c84c493497`; both Release assets passed downloaded identity, checksum and signing verification.
 - Visual/OEM acceptance at 350-dp/360-dp, actual owner installation, BLE field behavior, Firmware compile/BIN provenance, thermal/electrical tests, Firebase, OTA/flash remain unverified.
-- The current `Eksekusi Build App!` command is the active authorization for this single guarded App Build/QC attempt; Firmware/device work remains outside scope.
+- Build #164 CI/release closure is complete. Physical install/OEM visual, BLE/field behavior, Firmware/BIN, Firebase, OTA/flash, thermal and electrical acceptance remain unverified and outside this mode.
 <!-- ACTIVE_CHECKPOINT_END -->
