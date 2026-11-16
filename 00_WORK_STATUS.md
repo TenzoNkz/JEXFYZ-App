@@ -1,4 +1,4 @@
-| Last updated | 2026-11-16 23:20:30 (Asia/Jakarta) |
+| Last updated | 2026-11-16 23:23:33 (Asia/Jakarta) |
 
 > Single current snapshot for JE X FYZ project interactions. Event-driven marker; not a background heartbeat.
 
@@ -12,17 +12,17 @@
 | Mode | Eksekusi Build App! — guarded App Build/QC/release and justified App-scope repairs only. No Firmware/BIN/Firebase/OTA/flashing/device operations or unrelated release work. |
 | Request / work item | Package and QC the latest App source/test correction that restores the Bluetooth device row name to JE X FYZ. Preserve Android Gradle versionName exactly: Telegram @horizontalzzz. |
 | Started | 2026-11-16 23:03:30 (Asia/Jakarta) |
-| Last updated | 2026-11-16 23:20:30 (Asia/Jakarta) |
-| Current phase | Phase 5 — Build #165 steps 1–14 SUCCESS; Android Gradle gate completed at 16:19:46Z (3m21s); Step 15 obfuscated release APK build IN_PROGRESS. |
-| Last completed milestone | Build #165 App audit, dependency install, analyzer, Flutter tests and Android Gradle gates SUCCESS (steps 1–14). Step 15 now active. |
+| Last updated | 2026-11-16 23:23:33 (Asia/Jakarta) |
+| Current phase | Phase 6 — Build #165 steps 1–15 SUCCESS, including obfuscated APK generation; Step 16 V1/V2/V3 signing enforcement IN_PROGRESS. |
+| Last completed milestone | Build #165 Android Gradle Step 14 SUCCESS and obfuscated APK Step 15 SUCCESS at 16:22:55Z. Step 16 signing enforcement active; no published Release/artifact result yet. |
 | Last verified source checkpoint | Validation Only #44 formatted App source/test SHA 0a2b3c03af433a17d82afa1d4db60beb7b1bd023. Pre-doc-sync main snapshot b46e29c1769dadb25a992ec02a1c000331e95978; compare 12 ahead / 0 behind, documentation-only paths; tree 139 entries, truncated=false. |
 | Current main HEAD | Immutable Build #165 issue-event checkout SHA cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d; later evidence/status writes are documentation-only. |
 | EXTERNAL OPERATION | Build #165 / run 43905426531 / job 133432846684 / attempt 1 / source cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d. Issue #42. Current step 4 Set up Flutter IN_PROGRESS. |
-| EXTERNAL OPERATION STATUS | IN_PROGRESS — run 43905426531 / job 133432846684; steps 1–14 SUCCESS; step 15 obfuscated APK build IN_PROGRESS. |
+| EXTERNAL OPERATION STATUS | IN_PROGRESS — run 43905426531 / job 133432846684; steps 1–15 SUCCESS; step 16 signing enforcement IN_PROGRESS. |
 | Previous successful package | Build #164 / run 43863417641 / source a41baaf3bc53a02d72e12a4f3840f0c84c493497 — success, but predates Bluetooth name correction; retain as current published baseline until new run passes all gates. |
 | Result / evidence | Validation Only #44: 205/205 PASS, analyzer 107 infos / 0 warnings/errors, formatter final PASS; validated source/test tree 0a2b3c03af433a17d82afa1d4db60beb7b1bd023. Build #164 steps 1–21 and cleanup 39–43 SUCCESS; Release assets, tag/source SHA and downloaded checksums/signatures verified. |
 | Blocker | None. Build #164 is terminal and no active run. GitHub identity TenzoNkz matches repository owner; only one fresh trigger issue is required. |
-| Next action | Poll only run 43905426531 / job 133432846684 for APK build, signing, source ZIP, Release and downloaded-asset gates. Retrieve full job log after terminal; no duplicate trigger/retry. |
+| Next action | Poll only run 43905426531 / job 133432846684 for signing/certificate, source ZIP, Release/tag and downloaded-asset gates. Retrieve full logs after terminal. |
 
 ## Status model
 
