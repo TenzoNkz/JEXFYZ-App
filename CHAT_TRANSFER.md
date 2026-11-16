@@ -4,30 +4,30 @@
 ## Session and authorization
 - Project: JE X FYZ / JE Cooler.
 - Canonical repository/branch: `TenzoNkz/JEXFYZ-App` / `main`.
-- Current mode: `Eksekusi Build App!` — the owner has now explicitly authorized the guarded App Build/QC/release workflow and justified App-scope repairs only.
-- **Pre-trigger validation: CLEAR.** Previous Full-mode repair is complete; the current Build App command authorizes one fresh owner-authored issue and exactly one guarded Actions run after durable pre-trigger evidence is saved.
-- The previous `Eksekusi Full!` session created no App Build/APK/Release. This Build App session is now authorized to trigger the guarded App pipeline. Firmware, BIN, Firebase, OTA, flashing and device operations remain outside scope.
+- Current mode: `Eksekusi Build App!` — the current owner message explicitly authorizes the guarded App Build/QC/release workflow and justified App-scope repairs only.
+- Session is IN_PROGRESS. The active work item is one guarded App Build/QC/release attempt from current validated App source/test baseline. No #164 trigger issue/run has been created yet.
+- No Firmware compilation, BIN generation/publication/replacement, Firebase mutation, OTA, flashing, device operation or unrelated release work is authorized.
 
-## Build App readiness decision
+## Build #164 live pre-trigger status
 
-**READY FOR A SEPARATELY AUTHORIZED GUARDED APP BUILD/QC RUN — NOT YET BUILT OR RELEASED.**
+**PRE-TRIGGER CLEAR — one fresh guarded owner-authored issue is authorized; do not reuse any existing trigger issue.**
 
-- Validation Only #38 / run `43843348889` / job `133217253810` — SUCCESS, tested input SHA `01cf1295458564820b52afc6ca33037583a430c6`. Locked dependencies PASS; formatter applied five Dart-file changes and final formatter check PASS; analyzer PASS (107 info-level findings; `--no-fatal-infos` exited successfully); Flutter tests **200/200 PASS**; formatter preview/upload and formatter-only commit PASS.
-- The workflow committed its formatted working tree as source/test baseline `b8fcdaf191c5e8bb5df5fa44c50c80a12dfd03da`. The App source/test blobs remain unchanged after that commit; this repair changes only the guarded Build workflow.
-- Build workflow correction: commit `4ea1f6ff465d4514325778454e59fbd4644c4bfc`, workflow blob `af342fc21e5c0ff0815628dfacec65ae519f69ae`. The Step 10 audit now checks the exact live native Fan Speed output with `%` in `FloatingMonitorService.kt:609`, consistent with the regression expectation. This fixes an obsolete source assertion only; production behavior was not changed.
-- Static reconstruction of the full pre-build Python audit passed: required protocol/security tokens present; legacy commands/assets/Firebase references absent; Flutter/native Floating Monitor MethodChannel contracts and method uniqueness intact; obsolete FPS/Shizuku paths and bridges absent; migration markers present; R8/resource shrinking and signing-certificate marker present; required App assets present; no Firmware source imports or unused `shared_preferences` declaration.
-- Full guarded-workflow structure passed static assertions: only `issues.opened` / `issues.reopened` trigger; repository-owner author, exact issue title and body token remain mandatory; job-level queue uses `cancel-in-progress: false` and `queue: max`; no push/PR/workflow-dispatch bypass; all 20 explicit workflow gate steps (steps 2–21) remain present, including dependency, analyzer, Flutter tests, Android Gradle, obfuscated APK, V1/V2/V3 signing, certificate pin, source ZIP, Release/tag parity, exactly two assets and fresh downloaded-byte verification.
-- Toolchain labels remain Flutter `3.47.2` and Gradle `9.3.1`. Flutter package version remains `1.0.0+3`; Android Gradle `versionName "Telegram @horizontalzzz"` is unchanged. Four production signing secrets are checked for non-empty values by the workflow; their present-day values cannot be inspected here.
-- Latest published package remains Build #163 / run `43679305537` / job `132706236782`, Release ID `403010611`, tag `jexfyz-latest`, source `9466e8eeb269da5bc8806f0df1d4212cf24e1746`. It predates the restored/validated source; its APK and source ZIP remain the current published baseline until a new guarded run passes every release gate.
-- Trigger Issue #40 remains OPEN and was already consumed for Build #163. Do not reuse or reopen it. No new Build run/trigger/issue was created in this `Eksekusi Full!` interaction.
-- Environment caveat: local `flutter`, `dart` and `actionlint` are unavailable. Flutter/source evidence is hosted Validation Only #38; the changed workflow line was statically inspected and checked against the native source. No guarded Build workflow run has yet exercised the updated Step 10.
-- Residual non-CI acceptance: owner installation and screenshots/OEM visual review, BLE field behavior, long-session device CPU/memory/storage soak, Firmware/BIN provenance, Firebase, OTA/flash, and thermal/electrical acceptance are NOT VERIFIED. Prior Build #163 self-signed certificate/PKIX, Gradle/Kotlin deprecation and native ELF DWARF warnings remain documented. External Actions use major-version tags rather than immutable commit SHAs; no pinning change was made in this narrow repair.
+- Latest Validation Only #38 / run `43843348889` / job `133217253810`, source input SHA `01cf1295458564820b52afc6ca33037583a430c6`: dependency resolution PASS; formatter applied five Dart-file changes and final check PASS; analyzer PASS (107 info-level); Flutter tests 200/200 PASS; formatter-only commit `b8fcdaf191c5e8bb5df5fa44c50c80a12dfd03da`.
+- Pre-trigger source comparison from that validated source/test tree to current main showed only guarded workflow and canonical documentation/checkpoint paths changed; no App source/test/Android Gradle/dependency path changed.
+- Current guarded workflow blob `af342fc21e5c0ff0815628dfacec65ae519f69ae`, full 546 lines read. Only issue opened/reopened event; repository-owner author + exact title + body-token guard; serialized queue with `cancel-in-progress: false` and `queue: max`; no push/PR/workflow-dispatch release path. Corrected Step 10 Fan Speed percent assertion is present. All 20 explicit release gates (steps 2–21) remain.
+- Live Build App history: latest Build #163 / run `43679305537` / job `132706236782`, attempt 1, terminal SUCCESS; steps 1–21 and cleanup 39–43 all SUCCESS. Current status queries: zero queued, in-progress, waiting or requested Build runs.
+- Issue #40 is still OPEN and already used for Build #163. Existing trigger issues #39, #38, #37, #36, #35 and #33 must not be reused/reopened. Authenticated GitHub identity `TenzoNkz` matches repository owner.
+- Published baseline before the next run: Release ID `403010611`, tag `jexfyz-latest`, tag target/source `9466e8eeb269da5bc8806f0df1d4212cf24e1746`; exactly one APK and one source ZIP. Detailed sizes/digests are recorded in the latest Build #163 report and the Build #164 pre-trigger entry in `APP_BUILD_REPORT.md`.
+- Flutter app version remains `1.0.0+3`; Android Gradle `versionName "Telegram @horizontalzzz"` verified unchanged.
+- The Build #163 self-signed certificate/PKIX and META-INF warnings, Kotlin/Gradle deprecations, native ELF DWARF warning and NO-SOURCE native Android JUnit tasks remain disclosed. Local Flutter/Dart/actionlint are unavailable. Physical install/OEM visuals, BLE/device, Firmware/BIN, Firebase, OTA/flash, thermal/electrical acceptance remain unverified.
 
-## Next action and authorization
-- The repository is ready for a separate explicit `Eksekusi Build App!` command.
-- Only in that mode should one fresh owner-authored issue be created with exact title `JE X FYZ — EKSEKUSI BUILD APP TRIGGER` and body token `JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1`; do not reuse Issue #40.
-- Monitor exactly one resulting Build run; stop on the first failed required gate and never weaken checks or retry blindly.
-- No Firmware/BIN/Firebase/OTA/flash/device operation is authorized by this checkpoint.
+## Exact next action
+
+- Fetch the final current main HEAD immediately before trigger; then create exactly one new owner-authored issue with title `JE X FYZ — EKSEKUSI BUILD APP TRIGGER` and body token `JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1`.
+- Do not reuse/reopen Issue #40 or other old trigger issues. Verify exactly one resulting Build run and record the actual issue ID, run ID, job ID, source SHA and status from live Actions.
+- Continue only that run. Record meaningful gate transitions, inspect full logs at any failure, repair only demonstrated App-scope causes without weakening checks, and retry only after a concrete repair or evidence-backed infrastructure transient.
+- Success requires every current workflow gate, analyzer/tests, exactly one obfuscated APK and matching source ZIP, signature/certificate verification, Release/tag/source SHA parity, and downloaded asset identity/checksum verification.
+- Keep Firmware, BIN, Firebase, OTA, flashing and device operations outside scope.
 
 ## Owner-approved contracts — still authoritative
 - English is the master/default language; Indonesian must be complete, natural and semantically equivalent.
