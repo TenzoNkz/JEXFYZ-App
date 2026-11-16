@@ -1,4 +1,4 @@
-| Last updated | 2026-11-16 16:28:00 (Asia/Jakarta) |
+| Last updated | 2026-11-16 16:36:22 (Asia/Jakarta) |
 
 > Single current snapshot for JE X FYZ project interactions. Event-driven marker; not a background heartbeat.
 
@@ -7,22 +7,22 @@
 | Field | Value |
 |---|---|
 | **STATUS** | **IN_PROGRESS** |
-| SESSION STATUS | IN_PROGRESS — incoming Eksekusi Full! continuation; repository recovery, authority/checkpoint loading and live validation-state inspection. |
-| WORK STATUS | BLOCKED — prior source recovery is complete, but hosted Dart formatter/analyzer/Flutter-test results remain unverified. |
-| Mode | Eksekusi Full! — continue only the specifically authorized source/docs/tests/static-audit scope. No App Build/Release or Firmware/device work. |
-| Request / work item | Load the latest durable checkpoint and live main evidence, preserve/reconcile the prior Validation Only external operation, then continue the authorized workstream without repeating side effects. |
+| SESSION STATUS | IN_PROGRESS — incoming Eksekusi Full! continuation; run/job/log triage identified the actual validation failures; now reconciling stale regression contracts and one analyzer warning. |
+| WORK STATUS | IN_PROGRESS — authorized source/test repair remains available; formatter/analyzer/test gates must pass on the repaired main revision. |
+| Mode | Eksekusi Full! — scoped source/docs/tests/static-audit repair and non-publishing Validation Only. No App Build/Release or Firmware/device work. |
+| Request / work item | Continue the restored-source validation workstream: diagnose failed #34/#35, repair the underlying analyzer/test causes, update canonical checkpoints, and verify the next push-triggered validation without duplicate triggers. |
 | Started | 2026-11-16 16:28:00 (Asia/Jakarta) |
-| Last updated | 2026-11-16 16:28:00 |
-| Current phase | Mandatory load — status marker opened; reading authoritative mode contract and active checkpoint. |
-| Last completed milestone | Prior verified source recovery and regression checkpoint recorded below; no new work is claimed complete in this incoming session. |
-| Last verified source checkpoint | Source commit `b4558cee8b5a4455603473d31e46b3b108f20576`; `lib/main.dart` blob `b12ea764b674b79f8a19bd70191fcf25ea3046a5` (401,983 characters / 11,427 lines); latest regression checkpoint `f24a612c39138bbe41832adda1cec85091e0b6af`. |
-| Current main HEAD | Must be fetched and verified during this session. |
-| EXTERNAL OPERATION | Push-triggered JE X FYZ — Validation Only for restored source/test changes, latest test commit `f24a612c39138bbe41832adda1cec85091e0b6af`. |
-| EXTERNAL OPERATION STATUS | UNKNOWN — prior session could not verify push-run state; inspect current Actions evidence without rerunning or duplicating the operation. |
-| Historical successful package | Build #163 / run `43679305537` / job `132706236782` / Release `403010611` / tag `jexfyz-latest` / source `9466e8eeb269da5bc8806f0df1d4212cf24e1746` — SUCCESS, but predates current source changes. |
-| Result / evidence | Prior source recovery, regression alignment and static checks were reported complete; Flutter formatter/analyzer/tests were not verified. No Build App, Release, Firmware, BIN, Firebase, OTA, flash or device operation. |
-| Blocker | Hosted Validation Only result for the restored source/test commit is unverified; no new run is authorized merely to discover its result. |
-| Next action | Read MASTER_PROMPT.md fully, inspect the active CHAT_TRANSFER checkpoint and canonical summaries, then query live repository/Actions evidence. |
+| Last updated | 2026-11-16 16:36:22 |
+| Current phase | Root-cause triage — actual jobs and logs read; repair scope isolated to one unused local and two stale exact-source regression assertions, pending source/document verification before edits. |
+| Last completed milestone | Verified the recursive main tree at 139 entries, truncated=false; confirmed main HEAD 6f91b6e1db8c121d6b5b9537a7ed5bf8b235a572; read Master Prompt, active transfer checkpoint, entrypoint/index and task skills; verified Validation Only #35 and #34 job logs. |
+| Last verified source checkpoint | Restored source commit b4558cee8b5a4455603473d31e46b3b108f20576; latest regression test commit f24a612c39138bbe41832adda1cec85091e0b6af; current main HEAD includes session marker commit 6f91b6e1db8c121d6b5b9537a7ed5bf8b235a572. |
+| Current main HEAD | 6f91b6e1db8c121d6b5b9537a7ed5bf8b235a572 (verified via main branch and commit API). |
+| EXTERNAL OPERATION | JE X FYZ — Validation Only run #35 / 43837240360 on f24a612c39138bbe41832adda1cec85091e0b6af; earlier run #34 / 43837117020 on b4558cee8b5a4455603473d31e46b3b108f20576. |
+| EXTERNAL OPERATION STATUS | FAILED — both runs completed with conclusion failure; latest #35 failed at final validation summary after analyzer warning and two Flutter test failures. |
+| Historical successful package | Build #163 / run 43679305537 / job 132706236782 / Release 403010611 / tag jexfyz-latest / source 9466e8eeb269da5bc8806f0df1d4212cf24e1746 — SUCCESS, but predates current source changes. |
+| Result / evidence | Run #35: locked dependencies success; formatter apply/final verification success; flutter analyze --no-fatal-infos exit 1 due one unused_local_variable warning in lib/usage_statistics.dart:3627; flutter test reported 198 passed / 2 failed. Failures: stale expected Fan Speed Kotlin source text in test/widget_test.dart:1693 (live code appends %), and stale config.size.toStringAsFixed(2) expectation in test/floating_monitor_layout_contract_test.dart:95 (live code uses locale-aware JexText.formatNumber). No Build App/Release/Firmware/device operation. |
+| Blocker | Current acceptance is still blocked by the one analyzer warning and two stale source-contract tests; no retry/re-run is appropriate until a concrete repair is committed. |
+| Next action | Verify canonical UI contract/source and current file SHAs, remove the unused local, align the two regression assertions with current intended behavior, update checkpoint/state/handover, commit once to main and inspect the resulting Validation Only run. |
 
 ## Status model
 
