@@ -1,17 +1,17 @@
 # JE X FYZ / JE Cooler — Current Project State
 
-Last reconciled: 2026-11-16 19:09:29 (Asia/Jakarta).
+Last reconciled: 2026-11-16 19:16:40 (Asia/Jakarta).
 
 ## Repository baseline
 
 - Canonical repository/branch: `TenzoNkz/JEXFYZ-App` / `main`.
-- Latest published App package remains Build #163 / run `43679305537` / job `132706236782` / Release `403010611` / tag `jexfyz-latest`; immutable source `9466e8eeb269da5bc8806f0df1d4212cf24e1746`; terminal SUCCESS.
+- Latest published App package is Build #164 / run `43863417641` / job `133285765871` / Release `403010611` / tag `jexfyz-latest`; immutable source `a41baaf3bc53a02d72e12a4f3840f0c84c493497`; terminal SUCCESS. Exactly one APK and one matching source ZIP are published and re-download verified.
 - Validated current App source/test tree is `b8fcdaf191c5e8bb5df5fa44c50c80a12dfd03da`, representing the formatted working tree tested by Validation Only #38. The Build workflow correction after it changes only `.github/workflows/jexfyz-app-build-trigger.yml`; no Dart/Kotlin/test/dependency/Android Gradle files changed in that repair.
 - The guarded App release workflow and non-publishing Validation Only workflow remain separate. Twelve canonical `.agents/skills` and twelve `.github/skills` remain mirrored.
 
 ## Live source and guarded Build App readiness — 2026-11-16
 
-**Source recovery and hosted Flutter validation: COMPLETE. Guarded Build App preflight: CLEAR. The owner explicitly authorized the guarded run. Issue #41 created exactly one Build #164 run `43863417641` / job `133285765871`, source `a41baaf3bc53a02d72e12a4f3840f0c84c493497`; run/job are IN_PROGRESS: steps 1–14 SUCCESS; obfuscated APK step 15 IN_PROGRESS; signing/Release pending.**
+**Build #164: COMPLETED / SUCCESS.** Issue #41 created exactly one guarded run `43863417641` / job `133285765871` from immutable source `a41baaf3bc53a02d72e12a4f3840f0c84c493497`. All workflow steps 1–21 and cleanup 39–43 passed; Flutter analyzer 107 info-level findings, 0 warnings/errors; Flutter 200/200 tests; Android Gradle gate succeeded (native app:testDebugUnitTest is NO-SOURCE). APK signing V1/V2/V3, pinned certificate, Release/tag/source SHA parity, exactly two Release assets and fresh downloaded-byte/checksum verification all passed.
 
 - Restored `lib/main.dart` from verified clean baseline blob `48dd0c943075db076769c3d9dc53b8b71a28a5c3`; recovery commit `b4558cee8b5a4455603473d31e46b3b108f20576`; final blob `b12ea764b674b79f8a19bd70191fcf25ea3046a5` (401,983 characters / 11,427 lines).
 - Home/NOTIFY locale parsing and copy, legacy notice normalization, OTA byte grouping and Adaptive notification localization were reapplied; only the visible Adaptive ceiling card/readout was removed. Internal `adaptiveCeiling` state and `ADAPTIVE_CEILING` telemetry remain; no Firmware/BLE protocol changes.
@@ -27,11 +27,11 @@ Last reconciled: 2026-11-16 19:09:29 (Asia/Jakarta).
 
 ## Next action
 
-- Continue only Build #164 / Actions run `43863417641` / job `133285765871` / immutable source `a41baaf3bc53a02d72e12a4f3840f0c84c493497`. Steps 1–14 are SUCCESS; obfuscated APK step 15 is IN_PROGRESS; steps 16–21 are pending.
-- Monitor the actual step API and retrieve complete job logs when they become available. Active log endpoint currently returns BlobNotFound; do not infer exact analyzer/test counts. Update APP_BUILD_REPORT.md, 00_WORK_STATUS.md and CHAT_TRANSFER.md at meaningful gate/state transitions; do not start another trigger or rerun.
-- Stop on the first failed required gate, identify the exact failing step and repair only an evidenced App-scope root cause without weakening checks. Do not retry blindly.
-- Success requires all workflow gates, exactly one obfuscated APK and corresponding source ZIP, signature/certificate checks, Release/tag/source SHA parity and re-downloaded artifact identity/checksum verification.
-- Physical installation/OEM visual, BLE/device, Firmware/BIN, Firebase, OTA/flash and thermal/electrical acceptance remain separate and unverified.
+- Build #164 / run `43863417641` / job `133285765871` is terminal SUCCESS. No Build App action is pending in this work item.
+- Current release: [jexfyz-latest](https://github.com/TenzoNkz/JEXFYZ-App/releases/tag/jexfyz-latest), source SHA `a41baaf3bc53a02d72e12a4f3840f0c84c493497`; APK SHA-256 `6553af0d07162e804bea838cbd1c391432471630db0de6d56bdd303c713eaa8c`; source ZIP SHA-256 `1c15f4bc5bfe112594212f42eea925514a7ab138071915c9fe486f6c909bb576`.
+- Retain the warning register: self-signed certificate/PKIX, no signature timestamp, META-INF signature coverage, Kotlin/Firebase KGP future compatibility, Gradle 10 deprecations and native ELF DWARF. Do not imply these are fixed.
+- Physical install/OEM visual, BLE/device, Firmware/BIN, Firebase, OTA/flash, thermal/electrical acceptance remain separate and unverified. No such operation was authorized.
+- Future App changes/builds need a new owner-selected scope and a fresh guarded issue; do not reuse Issue #41.
 
 
 ## Historical hosted validation baseline — Validation Only #19 SUCCESS (pre-localization correction set)
