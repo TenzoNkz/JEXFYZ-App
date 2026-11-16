@@ -14,16 +14,16 @@
 
 ---
 
-## CURRENT APP SOURCE — USAGE STATISTICS ALIGNMENT / VALIDATION ONLY #16 SUCCESS — 2026-11-14
+## HISTORICAL SOURCE MILESTONE — USAGE STATISTICS ALIGNMENT / VALIDATION ONLY #16 — NOW INCLUDED IN BUILD #163
 
-**Status: SOURCE + REGRESSION TESTS IMPLEMENTED / HOSTED VALIDATION GREEN / NOT RELEASED / VISUAL NOT VERIFIED.**
+**Status at the 2026-11-14 checkpoint: SOURCE + REGRESSION TESTS IMPLEMENTED / HOSTED VALIDATION GREEN / NOT YET PACKAGED. Subsequent status: INCLUDED IN BUILD #163 / VISUAL NOT VERIFIED.**
 
 - Source implementation commit: `b4b57e83261c0b1fcb7873efa8544c3410ad0208`; format-only follow-up: `873a825020659dadcac2e5c7242e759209776414`. Only `lib/usage_statistics.dart` and `test/usage_statistics_test.dart` changed.
 - [Validation Only run #16](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/43552255469), job `132317129708`, exact source SHA `873a825020659dadcac2e5c7242e759209776414`, terminal SUCCESS. Locked dependency resolution PASS; Dart formatter checked 17 files with 0 changes; Flutter analyzer PASS (119 info-level findings, zero warnings/errors); Flutter tests **188/188 PASS**.
 - Changes center the Usage Statistics AppBar, Min/Avg/Max strip and Selected time labels/values; align the Activity time axis with the chart/timeline/cursor plot gutters; and reduce Voltage/Adaptive/Peltier state-bar thickness while keeping the 34-dp interaction lane.
 - No collection, SQLite, aggregation, session, BLE/P1, telemetry, safety, gap, Hotside limit or cursor behavior was changed.
 - Run #15 had a workflow-only failure at the exact-HEAD formatter commit guard after a checkpoint write advanced main; its test suite had passed 188/188 and its artifact was inspected/reviewed. The exact formatter-only diff was applied and run #16 passed cleanly.
-- **Still required for a package:** separately authorized guarded `Eksekusi Build App!`. Build #162 remains the latest package and predates this UI refinement. No APK/Gradle package build, Release/tag publication or signing operation occurred in this task.
+- **At the time of Validation Only #16:** a separately authorized guarded `Eksekusi Build App!` was still required; no APK/Gradle package build, Release/tag publication or signing operation occurred in that 2026-11-14 task. **Subsequent packaging:** Build #163 / run `43679305537` includes this Usage Statistics alignment refinement; see the current verified-package section at the top of this audit.
 - **Visual evidence gap:** CI/widget tests do not establish real Android rendering. Capture and review screenshots after a new package is installed at 350-dp/420-dp, EN/ID, Light/Dark, normal scrolling and Selected time cursor states. Current outcome: **VISUAL NOT VERIFIED**.
 - No Firmware compile/BIN, Firebase, OTA, flash, physical device or thermal/electrical validation occurred.
 
@@ -40,7 +40,7 @@
 - Formatter patch preview upload: PASS. Formatter-only commit: PASS, `20676552cbfbb3276a6d7a7bc5f2541c13245c48`, parent `ce86848...`; workflow commit guard verified remote `main` still equaled the tested source SHA and rejected paths outside `lib/`/`test/`.
 - The tested working tree had formatter applied before analyzer and tests; the exact format-only result was then committed. No separate follow-up run was created by the bot's formatter commit; run #14 itself validates the formatted workspace.
 - Final `main` HEAD after formatter commit: `20676552cbfbb3276a6d7a7bc5f2541c13245c48`; recursive tree 137 entries, `truncated=false`.
-- No APK/AAB/Gradle package build, Release/tag publication, Firebase, Firmware/BIN, OTA, flashing or device operation was performed. Build #162 remains latest packaged App.
+- No APK/AAB/Gradle package build, Release/tag publication, Firebase, Firmware/BIN, OTA, flashing or device operation was performed in Validation Only #16. This was a historical statement as of 2026-11-14; Build #163 was published later.
 
 ### Remaining non-blocking items
 
