@@ -1,38 +1,41 @@
 # JE X FYZ / JE Cooler — Current Project State
 
-Last reconciled: 2026-11-16 19:16:40 (Asia/Jakarta).
+Last reconciled: 2026-11-16 22:48:56 (Asia/Jakarta). Current truth only. Build history remains in APP_BUILD_REPORT.md and CHANGELOG.md; rolling chat continuation remains in CHAT_TRANSFER.md.
 
 ## Repository baseline
 
 - Canonical repository/branch: `TenzoNkz/JEXFYZ-App` / `main`.
-- Latest published App package is Build #164 / run `43863417641` / job `133285765871` / Release `403010611` / tag `jexfyz-latest`; immutable source `a41baaf3bc53a02d72e12a4f3840f0c84c493497`; terminal SUCCESS. Exactly one APK and one matching source ZIP are published and re-download verified.
-- Validated current App source/test tree is `b8fcdaf191c5e8bb5df5fa44c50c80a12dfd03da`, representing the formatted working tree tested by Validation Only #38. The Build workflow correction after it changes only `.github/workflows/jexfyz-app-build-trigger.yml`; no Dart/Kotlin/test/dependency/Android Gradle files changed in that repair.
-- The guarded App release workflow and non-publishing Validation Only workflow remain separate. Twelve canonical `.agents/skills` and twelve `.github/skills` remain mirrored.
+- Latest published App package: Build #164 / run `43863417641` / job `133285765871` / Issue #41 / Release `403010611` / tag `jexfyz-latest`; immutable package source `a41baaf3bc53a02d72e12a4f3840f0c84c493497`; terminal SUCCESS.
+- Latest validated App source/test tree: `0a2b3c03af433a17d82afa1d4db60beb7b1bd023`, formatter-only commit from Validation Only #44. The Bluetooth display correction and its tests are included in this tree but not in the Build #164 APK.
+- App source/test validation and guarded App Build remain separate. Twelve canonical `.agents/skills` and twelve `.github/skills` remain mirrored.
 
-## Live source and guarded Build App readiness — 2026-11-16
+## Bluetooth device-name display correction — source/test validated
 
-**Build #164: COMPLETED / SUCCESS.** Issue #41 created exactly one guarded run `43863417641` / job `133285765871` from immutable source `a41baaf3bc53a02d72e12a4f3840f0c84c493497`. All workflow steps 1–21 and cleanup 39–43 passed; Flutter analyzer 107 info-level findings, 0 warnings/errors; Flutter 200/200 tests; Android Gradle gate succeeded (native app:testDebugUnitTest is NO-SOURCE). APK signing V1/V2/V3, pinned certificate, Release/tag/source SHA parity, exactly two Release assets and fresh downloaded-byte/checksum verification all passed.
+**Status: SOURCE + REGRESSION IMPLEMENTED / HOSTED VALIDATION GREEN / NOT YET RELEASED OR DEVICE VERIFIED.**
 
-- Restored `lib/main.dart` from verified clean baseline blob `48dd0c943075db076769c3d9dc53b8b71a28a5c3`; recovery commit `b4558cee8b5a4455603473d31e46b3b108f20576`; final blob `b12ea764b674b79f8a19bd70191fcf25ea3046a5` (401,983 characters / 11,427 lines).
-- Home/NOTIFY locale parsing and copy, legacy notice normalization, OTA byte grouping and Adaptive notification localization were reapplied; only the visible Adaptive ceiling card/readout was removed. Internal `adaptiveCeiling` state and `ADAPTIVE_CEILING` telemetry remain; no Firmware/BLE protocol changes.
-- Regression coverage includes decimal comma/dot parsing, legacy notices, grouped OTA bytes, exact Active Adaptive profile labels and preservation of internal ceiling telemetry while hiding the visible ceiling card.
-- Hosted Validation Only #38 / run `43843348889` / job `133217253810` passed on tested input `01cf1295458564820b52afc6ca33037583a430c6`: locked dependencies PASS; formatter applied five Dart-file formatting changes and final verification PASS; analyzer PASS (107 info-level findings, no warning/error gate failure); Flutter tests **200/200 PASS**; formatter preview/upload and formatter-only commit PASS. The workflow-generated formatted source/test tree is `b8fcdaf191c5e8bb5df5fa44c50c80a12dfd03da`. There is no separate second run for the formatter commit; #38 tested the same formatted workspace before committing it.
-- Fixed the only identified guarded App Build static-preflight mismatch in `.github/workflows/jexfyz-app-build-trigger.yml`: commit `4ea1f6ff465d4514325778454e59fbd4644c4bfc`, resulting blob `af342fc21e5c0ff0815628dfacec65ae519f69ae`. Step 10 now asserts the exact native Fan Speed percent output from `FloatingMonitorService.kt:609`; no application behavior changed.
-- Static audit reconstruction and workflow-contract checks pass: owner/title/token issue guard; issue-only trigger; serialized non-cancelling queue; all 20 explicit gates (workflow steps 2–21); dependency/analyzer/test/Gradle/APK/signing/source ZIP/Release/tag/download checks; Floating Monitor bridge and migration contract; assets/security markers; retired integration and forbidden pattern checks.
-- Local Flutter/Dart/actionlint executables are unavailable. Positive source-test evidence is hosted CI #38; the one-line workflow correction has static verification only and has not yet been exercised by a Build App run.
-- Current package remains Build #163 at source `9466e8eeb269da5bc8806f0df1d4212cf24e1746`; it predates the restored/validated source. No new APK or Release was created in this `Eksekusi Full!` task.
+- Owner screenshot showed the Bluetooth Connection list row as generic `Perangkat`. The App source had deliberately mapped the real `JE X FYZ` local name to `JexText.of('device', lang)`.
+- Firmware V7.2 tracked source already declares `static constexpr char BLE_NAME[] = "JE X FYZ";` and initializes it through `BLEDevice::init(BLE_NAME)`. No Firmware/BIN change was needed or made.
+- `lib/connection_scan_state.dart` adds `connectionDeviceDisplayName(...)`: current advertisement `advName` first, Android `platformName` second, localized `Device` / `Perangkat` only when both are empty.
+- `lib/main.dart` Connection row now uses this helper and no longer hides `JE X FYZ`. BLE UUIDs, service filtering, scan lifecycle/ownership, connection handoff, P1 protocol and Firmware source are unchanged.
+- Regression tests: four pure name-selection cases in `test/connection_scan_state_test.dart`; widget source-contract in `test/widget_test.dart` verifies the Connection sheet uses the helper and the Firmware source retains `BLE_NAME = "JE X FYZ"` / `BLEDevice::init(BLE_NAME)`.
+- Hosted Validation Only #44 / run `43899329198` / job `133411358928`, tested input `4a875b3d63beea6e7d469c27f0c8930ab9b7cd09`: locked dependencies PASS; formatter final PASS (two test files formatted in runner workspace, all 18 Dart files clean); analyzer PASS (107 info-level findings, zero warnings/errors); Flutter tests **205/205 PASS**; formatter-only commit `0a2b3c03af433a17d82afa1d4db60beb7b1bd023`.
+- Validation is hosted CI. Local Flutter/Dart are unavailable. The formatter commit is the exact formatted workspace tested within run #44; no separate run was created for the bot commit.
+- **Physical BLE state remains NOT VERIFIED:** the real cooler advertisement and Android display row must be checked after a separately authorized APK build/install. Do not infer real radio behavior from source/CI.
+
+## Latest verified App package — Build #164
+
+- Build #164 / run `43863417641` / job `133285765871`, source `a41baaf3bc53a02d72e12a4f3840f0c84c493497`, all guarded gates and cleanup SUCCESS.
+- APK SHA-256 `6553af0d07162e804bea838cbd1c391432471630db0de6d56bdd303c713eaa8c`; matching source ZIP SHA-256 `1c15f4bc5bfe112594212f42eea925514a7ab138071915c9fe486f6c909bb576`.
+- Release `403010611` and tag `jexfyz-latest` target exact Build #164 source. V1/V2/V3 signatures, pinned certificate, exactly two assets and re-downloaded checksum/source identity passed.
 - Protected Flutter version `1.0.0+3` and Android `versionName "Telegram @horizontalzzz"` remain unchanged.
-- **Visual/device status:** NOT VERIFIED. Owner installation/OEM screenshots, BLE field behavior, long-session performance/storage soak, Firmware/BIN provenance, Firebase, OTA/flash, thermal/electrical checks remain separate acceptance evidence.
-- Existing release warnings remain visible: self-signed certificate / PKIX trust chain, Android Gradle/Kotlin deprecations, and native ELF DWARF. External Actions remain referenced by major-version tags rather than immutable SHA references; no pinning change was made in this narrow repair.
+- Build #164 predates the Bluetooth name fix. No APK/Release was produced in the current `Eksekusi Full!` task.
 
-## Next action
+## Remaining evidence boundaries and next action
 
-- Build #164 / run `43863417641` / job `133285765871` is terminal SUCCESS. No Build App action is pending in this work item.
-- Current release: [jexfyz-latest](https://github.com/TenzoNkz/JEXFYZ-App/releases/tag/jexfyz-latest), source SHA `a41baaf3bc53a02d72e12a4f3840f0c84c493497`; APK SHA-256 `6553af0d07162e804bea838cbd1c391432471630db0de6d56bdd303c713eaa8c`; source ZIP SHA-256 `1c15f4bc5bfe112594212f42eea925514a7ab138071915c9fe486f6c909bb576`.
-- Retain the warning register: self-signed certificate/PKIX, no signature timestamp, META-INF signature coverage, Kotlin/Firebase KGP future compatibility, Gradle 10 deprecations and native ELF DWARF. Do not imply these are fixed.
-- Physical install/OEM visual, BLE/device, Firmware/BIN, Firebase, OTA/flash, thermal/electrical acceptance remain separate and unverified. No such operation was authorized.
-- Future App changes/builds need a new owner-selected scope and a fresh guarded issue; do not reuse Issue #41.
-
+- Visual/OEM screenshot review, owner APK installation, actual BLE advertising/display, long-session performance/storage soak, Firmware compile/BIN provenance, BLE App authentication, Firebase, OTA/flash, thermal and electrical acceptance remain separate and unverified.
+- Existing release warnings remain documented: self-signed certificate/PKIX, no signature timestamp, META-INF signing coverage caveat, Kotlin/Firebase KGP compatibility warning, Gradle deprecations and native ELF DWARF. External Actions still use major-version tags rather than immutable full commit SHAs.
+- To include the Bluetooth fix in a package, require a separate explicit `Eksekusi Build App!` command, then one fresh guarded owner-authored trigger issue. Issue #41 already triggered Build #164; do not reuse/reopen it.
+- No Firmware/BIN/Firebase/OTA/flash/device operation was performed or authorized.
 
 ## Historical hosted validation baseline — Validation Only #19 SUCCESS (pre-localization correction set)
 
