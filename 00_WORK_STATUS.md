@@ -1,4 +1,4 @@
-| Last updated | 2026-11-16 22:31:00 (Asia/Jakarta) |
+| Last updated | 2026-11-16 22:41:11 (Asia/Jakarta) |
 
 > Single current snapshot for JE X FYZ project interactions. Event-driven marker; not a background heartbeat.
 
@@ -12,17 +12,17 @@
 | Mode | Eksekusi Full! — App-scope Bluetooth device-name correction plus targeted regression/docs. No Firmware/BIN/Firebase/OTA/flashing/device operations. |
 | Request / work item | From owner screenshot: Bluetooth list row displays 'Perangkat'; restore/set the Bluetooth device name to 'JE X FYZ'. Determine whether this is App-side scan-name selection/fallback or actual peripheral advertisement; change the correct App-owned display/name contract. |
 | Started | 2026-11-16 22:31:00 (Asia/Jakarta) |
-| Last updated | 2026-11-16 22:31:00 (Asia/Jakarta) |
-| Current phase | Load — read current BLE naming contract, source scan/render flow and exact regression surface before a narrowly scoped App change. |
-| Last completed milestone | Build #164 SUCCESS; 200 Flutter tests; analyzer 107 infos / 0 warnings / 0 errors; V1/V2/V3 signature/pinned cert passed; exactly two matching Release assets verified. |
+| Last updated | 2026-11-16 22:41:11 (Asia/Jakarta) |
+| Current phase | Source/test implemented; hosted validation found one test-only source-boundary mistake. Fixing the Connection-sheet source-contract test boundary and formatter style before a clean final validation. |
+| Last completed milestone | Traced screenshot label to main.dart's deliberate JE X FYZ-to-generic-Perangkat substitution. Firmware source still sets BLE_NAME to JE X FYZ. Added advName-first display helper and pure/widget regressions. Validation Only #39 passed 200/200; #40/#41 passed 204/204 but the formatter-only commit guard refused to overwrite newer main; #42 had formatter/analyzer pass and 204 tests pass with one source-contract test boundary mistake. |
 | Last verified source checkpoint | Packaged App source SHA a41baaf3bc53a02d72e12a4f3840f0c84c493497; validated Dart/test baseline b8fcdaf191c5e8bb5df5fa44c50c80a12dfd03da; no production source/test path changed between validation and Build #164 checkout. |
 | Current main HEAD | The packaged App source SHA is a41baaf3bc53a02d72e12a4f3840f0c84c493497; subsequent main commits in this close sequence affect only canonical documentation/checkpoints, not App source, tests or Gradle configuration. |
 | EXTERNAL OPERATION | Build #164 / run 43863417641 / job 133285765871 / issue #41 / packaged source a41baaf3bc53a02d72e12a4f3840f0c84c493497; Release 403010611 / tag jexfyz-latest. |
 | EXTERNAL OPERATION STATUS | COMPLETED / SUCCESS — run and job terminal success; release tag parity, exactly two assets, signatures and fresh downloaded checksums verified. |
 | Previous successful package | Build #163 / run 43679305537 / source 9466e8eeb269da5bc8806f0df1d4212cf24e1746 — retained as historical; superseded as latest release by Build #164. |
 | Result / evidence | Flutter 200/200; analyzer 107 info / 0 warning / 0 error; Android Gradle BUILD SUCCESSFUL in 2m35s (app:testDebugUnitTest NO-SOURCE); obfuscated APK 55,881,819 bytes SHA256 6553af0d07162e804bea838cbd1c391432471630db0de6d56bdd303c713eaa8c; source ZIP 2,944,808 bytes SHA256 1c15f4bc5bfe112594212f42eea925514a7ab138071915c9fe486f6c909bb576; V1/V2/V3 + pinned RSA4096 cert SHA256 dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0; exact source/tag/Release SHA parity; downloaded asset identity PASS. |
-| Blocker | None for the authorized Build App/QC/release objective. Physical installation/OEM, BLE, Firmware/BIN, Firebase, OTA/flash, thermal/electrical verification remain outside this CI result. |
-| Next action | Read full active checkpoint, relevant BLE/App skills and canonical BLE notes; trace scan result name from native platform/advertisement to Connection UI, implement a safe JE X FYZ label contract, add/update tests and verify source readback. |
+| Blocker | New widget source-contract test ended its `_ConnectionSheetContentState` slice at the earlier `_getAndroidSdkInt` helper, before the Bluetooth ListView builder. The fix is to bound at `class StaticSwitcher`. Other two run failures were intentional safety stops from the formatter commit guard because main advanced concurrently. |
+| Next action | Correct the widget source-contract boundary, ensure Dart formatter is clean, update APP_NOTES/checkpoint/state/handover/changelog, then verify one clean hosted Validation Only run on the final source SHA. Do not trigger Build App or touch Firmware/device. |
 
 ## Status model
 
