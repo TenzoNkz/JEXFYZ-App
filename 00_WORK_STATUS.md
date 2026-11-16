@@ -1,4 +1,4 @@
-| Last updated | 2026-11-16 11:43:00 (Asia/Jakarta) |
+| Last updated | 2026-11-16 11:53:59 (Asia/Jakarta) |
 
 > Single current snapshot for JE X FYZ project interactions. This file records the latest persisted observation, not a continuously running heartbeat or overall product completion.
 
@@ -12,15 +12,15 @@
 | Mode | Eksekusi Full! — App source, tests, native Android copy, documentation and non-publishing validation scope authorized. Guarded App Build/Release remains separately prohibited without Eksekusi Build App!; Firmware/BIN/Firebase/OTA/flash/device operations are excluded. |
 | Request / work item | Implement the approved full copy and Adaptive UI correction set against current main, preserve protected BLE/Firmware/SQLite/storage behavior, add semantic and platform-specific regressions, run authorized non-publishing validation, update project records. |
 | Started | 2026-11-16 11:43:00 (Asia/Jakarta) |
-| Last updated | 2026-11-16 11:43:00 |
-| Current phase | IN_PROGRESS — opening marker persisted; load project authority, engineering/quality skills and current repository/tooling state; inspect exact affected source/tests before editing. |
-| Last completed milestone | Pre-execution review commit fb02633b811504d27c2e21f93dee906b44011f30; Build #163 remains latest verified App package. |
-| Last verified main checkpoint | fb02633b811504d27c2e21f93dee906b44011f30; tree 4e213dfe21ec2079008ecc4665fcde569e818c1a (139 entries / 53 Markdown, truncated=false). |
+| Last updated | 2026-11-16 11:53:59 |
+| Current phase | IN_PROGRESS — authority/skill/workflow review complete. Live source and tests mapped. Completed first source milestone: dictionary glossary fixes, exact Adaptive profile copy on active and legacy keys, precise battery threshold labels, OTA Daring, Voltage label, and generic Sisi Panas copy. Continue main Home/Usage formatting, native HUD/notification and regressions. |
+| Last completed milestone | Dictionary source commit `39e70cb0bac4271785905f9b56fdaca5337dbb30`; 353 entries retained; both active Adaptive keys and legacy aliases have owner-approved values. |
+| Last verified main checkpoint | `39e70cb0bac4271785905f9b56fdaca5337dbb30`; source tree pending refreshed read-back. |
 | EXTERNAL OPERATION | Build #163 / Actions run 43679305537 / job 132706236782 / Release ID 403010611 / tag jexfyz-latest. |
 | EXTERNAL OPERATION STATUS | COMPLETED / SUCCESS — Build #163 verified. No new validation run has been started in this interaction. |
-| Result / evidence | No source/test/native implementation changed yet. This interaction does not authorize APK/Release, Firmware, BIN, Firebase, OTA or device operations. |
+| Result / evidence | `lib/app_settings.dart` updated and committed. No executable test/native code changed yet. No APK/Release, Firmware, BIN, Firebase, OTA or device operation authorized. |
 | Blocker | No blocker established. |
-| Next action | Read MASTER_PROMPT and relevant repo skills; inspect current diff/branch/workflow and exact source/test contracts; begin implementation after source mapping and scope safeguards are verified. |
+| Next action | Implement locale-aware Home/Usage/Floating display formatting; repair Home legacy notice parser; fix native HUD units and Device alerts copy; add targeted regression contracts. |
 
 ## Status model
 
