@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — Current Project State
 
-Last reconciled: 2026-11-16 19:00:10 (Asia/Jakarta). Current truth only. Build history remains in APP_BUILD_REPORT.md and CHANGELOG.md; rolling chat continuation remains in CHAT_TRANSFER.md.
+Last reconciled: 2026-11-16 19:03:54 (Asia/Jakarta).
 
 ## Repository baseline
 
@@ -27,9 +27,11 @@ Last reconciled: 2026-11-16 19:00:10 (Asia/Jakarta). Current truth only. Build h
 
 ## Next action
 
-- The repository is preflight-ready for a separate explicit `Eksekusi Build App!` command. In that mode create one fresh owner-authored issue with exact guarded title/body token; Issue #40 remains open and already triggered Build #163, so do not reuse it.
-- Monitor exactly one run and verify every gate plus Release/tag/download parity before calling the new package successful.
-- Do not infer visual/device/firmware/OTA acceptance from CI.
+- The current owner message explicitly authorizes `Eksekusi Build App!`. Pre-trigger live checks confirmed zero queued/in-progress/waiting/requested Build runs and Build #163 terminal SUCCESS.
+- After checkpoint synchronization, fetch the exact latest main HEAD and create exactly one fresh owner-authored issue with exact title `JE X FYZ — EKSEKUSI BUILD APP TRIGGER` and body token `JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1`. Issue #40 remains open and already triggered Build #163; do not reuse/reopen it or any other existing trigger issue.
+- Identify exactly one issue-event run and monitor its actual job, source SHA, logs and all required gates through Release/tag and downloaded asset verification. Stop on a failed gate; no duplicate trigger or blind retry.
+- Visual/device/firmware/BIN/Firebase/OTA/flash acceptance remains separate from App CI and is not authorized here.
+
 
 ## Historical hosted validation baseline — Validation Only #19 SUCCESS (pre-localization correction set)
 
