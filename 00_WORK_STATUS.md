@@ -1,4 +1,4 @@
-| Last updated | 2026-11-16 22:52:42 (Asia/Jakarta) |
+| Last updated | 2026-11-16 23:03:30 (Asia/Jakarta) |
 
 > Single current snapshot for JE X FYZ project interactions. Event-driven marker; not a background heartbeat.
 
@@ -6,23 +6,23 @@
 
 | Field | Value |
 |---|---|
-| **STATUS** | **COMPLETED** |
-| SESSION STATUS | COMPLETED — Bluetooth Connection device row now preserves the JE X FYZ advertisement name; regression tests and Validation Only #44 passed; canonical notes/checkpoint synchronized and read back. |
-| WORK STATUS | COMPLETED — App-side Bluetooth name display fix, pure/widget regressions, hosted Flutter validation (205/205) and durable documentation are complete. The fix is not yet packaged in a new APK. |
-| Mode | Eksekusi Full! — App-scope Bluetooth device-name correction plus targeted regression/docs. No Firmware/BIN/Firebase/OTA/flashing/device operations. |
-| Request / work item | From owner screenshot: Bluetooth list row displays 'Perangkat'; restore/set the Bluetooth device name to 'JE X FYZ'. Determine whether this is App-side scan-name selection/fallback or actual peripheral advertisement; change the correct App-owned display/name contract. |
-| Started | 2026-11-16 22:31:00 (Asia/Jakarta) |
-| Last updated | 2026-11-16 22:52:42 (Asia/Jakarta) |
-| Current phase | Closed — source/test readback, hosted #44 evidence, current release boundary, six documentation readbacks and untruncated recursive tree verified. |
-| Last completed milestone | Firmware V7.2 name source confirmed `BLE_NAME = "JE X FYZ"`; App Connection row now prefers advertisement name then platform name with localized generic fallback only for both-empty values. Added pure name selection and Connection/Firmware source-contract tests. Validation Only #44 / run `43899329198` / job `133411358928` SUCCESS: formatter final PASS, analyzer 107 infos / zero warnings/errors, Flutter **205/205 PASS**; formatter result `0a2b3c03af433a17d82afa1d4db60beb7b1bd023`. Updated `APP_NOTES.md`, `CHAT_TRANSFER.md`, `PROJECT_STATE.md`, `HANDOVER.md`, `CHANGELOG.md`; final source-to-main compare shows only these six documentation paths changed after the validated source/test tree. |
-| Last verified source checkpoint | App Bluetooth name fix + regression source/test validated in Validation Only #44; tested input SHA `4a875b3d63beea6e7d469c27f0c8930ab9b7cd09`; formatter result `0a2b3c03af433a17d82afa1d4db60beb7b1bd023`. |
-| Current main HEAD | Last verified docs-inclusive HEAD before this terminal status write: `f5ca55a9d2a5f6668e86a714a182c2c434981d85`; validated source/test tree `0a2b3c03af433a17d82afa1d4db60beb7b1bd023`. This final status write is documentation-only. |
-| EXTERNAL OPERATION | Validation Only #44 / run `43899329198` / job `133411358928` / tested source `4a875b3d63beea6e7d469c27f0c8930ab9b7cd09`; formatter-only result `0a2b3c03af433a17d82afa1d4db60beb7b1bd023`. |
-| EXTERNAL OPERATION STATUS | COMPLETED / SUCCESS — Validation Only #44 formatter/analyzer/test gates passed (205/205); formatter-only commit succeeded. No App Build/Release triggered. Latest published package remains Build #164. |
-| Previous successful package | Build #163 / run 43679305537 / source 9466e8eeb269da5bc8806f0df1d4212cf24e1746 — retained as historical; superseded as latest release by Build #164. |
-| Result / evidence | Bluetooth name correction: Validation Only #44 run 43899329198 / job 133411358928 — formatter final PASS; analyzer 107 infos / 0 warnings / 0 errors; Flutter tests 205/205 PASS; format-only commit 0a2b3c03af433a17d82afa1d4db60beb7b1bd023. Latest App package is Build #164 / run 43863417641 / source a41baaf3bc53a02d72e12a4f3840f0c84c493497; previous Build164 result: Android Gradle BUILD SUCCESSFUL in 2m35s, APK SHA256 6553af0d07162e804bea838cbd1c391432471630db0de6d56bdd303c713eaa8c; source ZIP SHA256 1c15f4bc5bfe112594212f42eea925514a7ab138071915c9fe486f6c909bb576; V1/V2/V3 and pinned certificate + downloaded asset verification PASS. |
-| Blocker | None for the scoped App source/test correction; hosted Flutter validation is green. Real phone/cooler advertisement and display still need physical confirmation after separately authorized installation/build. No Firmware/BIN/device operation authorized. |
-| Next action | For a distributable APK, wait for a separate explicit `Eksekusi Build App!`, then create one fresh guarded trigger issue. Issue #41 already triggered Build #164 and must not be reused. After installation, verify the real phone/cooler BLE scan row. |
+| **STATUS** | **IN_PROGRESS** |
+| SESSION STATUS | IN_PROGRESS — incoming owner message opened in Eksekusi Build App!; continuing guarded App package workflow after the latest Bluetooth name source/test correction. |
+| WORK STATUS | IN_PROGRESS — guarded App Build/QC/release for the validated Bluetooth name correction; reconcile live main, prior Build #164 and all current Actions state, then trigger exactly one fresh guarded run if none exists. |
+| Mode | Eksekusi Build App! — guarded App Build/QC/release and justified App-scope repairs only. No Firmware/BIN/Firebase/OTA/flashing/device operations or unrelated release work. |
+| Request / work item | Package and QC the latest App source/test correction that restores the Bluetooth device row name to JE X FYZ. Preserve Android Gradle versionName exactly: Telegram @horizontalzzz. |
+| Started | 2026-11-16 23:03:30 (Asia/Jakarta) |
+| Last updated | 2026-11-16 23:03:30 (Asia/Jakarta) |
+| Current phase | Phase 1 — opening marker persisted; next action: read MASTER_PROMPT and bounded active checkpoint, fetch live main HEAD/tree/workflow/latest report and reconcile Build #164, Validation Only #44, existing issues and Actions state before triggering anything. |
+| Last completed milestone | Previous interaction completed Validation Only #44 for Bluetooth name correction: formatter final PASS, analyzer 107 infos / zero warnings/errors, Flutter tests 205/205 PASS, formatter result 0a2b3c03af433a17d82afa1d4db60beb7b1bd023. No new package yet for that source. |
+| Last verified source checkpoint | Validation Only #44 tested input SHA 4a875b3d63beea6e7d469c27f0c8930ab9b7cd09; formatted source/test tree 0a2b3c03af433a17d82afa1d4db60beb7b1bd023. Docs-inclusive pre-close main was f5ca55a9d2a5f6668e86a714a182c2c434981d85; verify live. |
+| Current main HEAD | PENDING LIVE FETCH — retrieve exact live main SHA and recursive tree. |
+| EXTERNAL OPERATION | Guarded JE X FYZ App Build/QC workflow for the Bluetooth-name-corrected source; no new run state verified yet. |
+| EXTERNAL OPERATION STATUS | UNKNOWN — fetch current Build workflow runs/jobs before deciding whether an operation is active or a new trigger is safe. |
+| Previous successful package | Build #164 / run 43863417641 / source a41baaf3bc53a02d72e12a4f3840f0c84c493497 — success, but predates Bluetooth name correction; retain as current published baseline until new run passes all gates. |
+| Result / evidence | Validation Only #44: run 43899329198 / job 133411358928; formatter final PASS, analyzer 107 infos / 0 warnings / 0 errors, Flutter tests 205/205 PASS; formatter result 0a2b3c03af433a17d82afa1d4db60beb7b1bd023. Build #164 Release hashes and gate evidence remain historical/current published baseline until superseded. |
+| Blocker | None established. Confirm current owner/repo permissions, exact guarded workflow state, and no active duplicate run. |
+| Next action | Complete mandatory load, fetch live main/recursive tree, workflow and latest ledger entries; query all current workflow runs/jobs/logs/releases/tags/assets and issues; create one new owner-authored issue only after live checks confirm no Build run already exists. |
 
 ## Status model
 
@@ -54,7 +54,7 @@ STATUS is a compatibility alias for SESSION STATUS. Keep SESSION STATUS, WORK ST
 - **QUEUED** — an external operation is confirmed queued.
 - **IN_PROGRESS** — an actual run/job/process is confirmed active.
 - **COMPLETED / SUCCESS** — an external operation reached successful terminal state.
-- **FAILED** or **CANCELLED** — an external operation reached that terminal state.
+- **FAILED** or **CANCELLED** — an external operation reached terminal state.
 - **UNKNOWN** — current live state could not be verified.
 
 ## Update protocol
@@ -66,7 +66,7 @@ STATUS is a compatibility alias for SESSION STATUS. Keep SESSION STATUS, WORK ST
 
 ## Automation boundary
 
-This marker is event-driven during active ChatGPT interactions, not a GitHub webhook or background heartbeat.
+This marker is event-driven during active ChatGPT interactions, not a background heartbeat.
 
 ## Canonical references
 
