@@ -1,4 +1,4 @@
-| Last updated | 2026-11-16 11:11:09 (Asia/Jakarta) |
+| Last updated | 2026-11-16 11:43:00 (Asia/Jakarta) |
 
 > Single current snapshot for JE X FYZ project interactions. This file records the latest persisted observation, not a continuously running heartbeat or overall product completion.
 
@@ -6,25 +6,25 @@
 
 | Field | Value |
 |---|---|
-| **STATUS** | **COMPLETED** |
-| SESSION STATUS | COMPLETED |
-| WORK STATUS | WAITING_OWNER — Pre-execution audit and documentation reconciliation are complete. Source/test/native implementation requires the owner's explicit `Eksekusi Full!` authorization. |
-| Mode | Diskusi! — critical pre-execution review completed; documentation-only corrections persisted. Executable source, tests, config, workflows, builds/releases, Firmware and device operations were not changed or run. |
-| Request / work item | Critically review the planned EN/ID copy, localization, format, native-notification and Adaptive UI remediation before Eksekusi Full; fix documented inconsistencies and incomplete handoff details within Diskusi authority. |
-| Started | 2026-11-16 10:32:00 (Asia/Jakarta) |
-| Last updated | 2026-11-16 11:11:09 |
-| Current phase | COMPLETED — reconciled Build #162 dated/current-status drift to Build #163 across App/Prebuild/Design notes; updated BLE and Usage Statistics/Peltier package-evidence references; marked Validation Only #14 historical; corrected general Hotside glossary vs Adaptive selector exception; bound exact labels to active localization keys and preserved aliases; verified Firmware V7.2 5 V upper-threshold / 12 V lower-threshold semantics; updated CHAT_TRANSFER, PROJECT_STATE and HANDOVER. |
-| Last completed milestone | Final docs read-back confirms active selector keys `hotsideProtection` / `hotsideBattery` still contain the old visible strings and need source correction; exact desired values and legacy alias handling are now mapped. Confirmed 353 dictionary entries, 167 inline bilingual calls and 258 lookup calls. Firmware V7.2 source confirms battery-zone semantics (25 °C / 35 °C defaults, 0.5 °C hysteresis). |
-| Last verified main checkpoint | Live main HEAD `f34cdcf02759fcba6de58936a56f777083b89609`; recursive tree `ce086c7f7be24a0aea621f4fa4195288c18b4fa2`, 139 entries / 53 Markdown, `truncated=false`. |
-| EXTERNAL OPERATION | Build #163 / Actions run 43679305537 / workflow 374946166 / Issue #40 / attempt 1; job build 132706236782; Release ID 403010611 / tag jexfyz-latest. |
-| EXTERNAL OPERATION STATUS | COMPLETED / SUCCESS — run 43679305537 / job 132706236782; Release 403010611 contains the APK and source ZIP. |
-| Result / evidence | Documentation-only changes persisted and read back. Compare from immutable Build #163 source `9466e8eeb269da5bc8806f0df1d4212cf24e1746` to pre-close main lists only Markdown documentation/status/ledger/checkpoint files; no executable App/test/config/workflow path changed. No formatter/analyzer/Flutter test/Gradle/render/build/device check was run in this Diskusi. |
-| Blocker | No technical blocker. Implementation is waiting for explicit owner `Eksekusi Full!` authorization. Candidate long battery-threshold labels still need a 360-dp EN/ID fit and accessibility check during implementation. |
-| Next action | Owner may issue `Eksekusi Full!` to implement the documented EN/ID copy/localization/format/native-notification and Adaptive UI changes with mapped regression tests. A new APK remains separately gated by `Eksekusi Build App!`. |
+| **STATUS** | **IN_PROGRESS** |
+| SESSION STATUS | IN_PROGRESS |
+| WORK STATUS | IN_PROGRESS — Authorized Eksekusi Full implementation of the reviewed bilingual copy/localization/formatting, Adaptive presentation, Floating HUD/native notification fixes and regression coverage. |
+| Mode | Eksekusi Full! — App source, tests, native Android copy, documentation and non-publishing validation scope authorized. Guarded App Build/Release remains separately prohibited without Eksekusi Build App!; Firmware/BIN/Firebase/OTA/flash/device operations are excluded. |
+| Request / work item | Implement the approved full copy and Adaptive UI correction set against current main, preserve protected BLE/Firmware/SQLite/storage behavior, add semantic and platform-specific regressions, run authorized non-publishing validation, update project records. |
+| Started | 2026-11-16 11:43:00 (Asia/Jakarta) |
+| Last updated | 2026-11-16 11:43:00 |
+| Current phase | IN_PROGRESS — opening marker persisted; load project authority, engineering/quality skills and current repository/tooling state; inspect exact affected source/tests before editing. |
+| Last completed milestone | Pre-execution review commit fb02633b811504d27c2e21f93dee906b44011f30; Build #163 remains latest verified App package. |
+| Last verified main checkpoint | fb02633b811504d27c2e21f93dee906b44011f30; tree 4e213dfe21ec2079008ecc4665fcde569e818c1a (139 entries / 53 Markdown, truncated=false). |
+| EXTERNAL OPERATION | Build #163 / Actions run 43679305537 / job 132706236782 / Release ID 403010611 / tag jexfyz-latest. |
+| EXTERNAL OPERATION STATUS | COMPLETED / SUCCESS — Build #163 verified. No new validation run has been started in this interaction. |
+| Result / evidence | No source/test/native implementation changed yet. This interaction does not authorize APK/Release, Firmware, BIN, Firebase, OTA or device operations. |
+| Blocker | No blocker established. |
+| Next action | Read MASTER_PROMPT and relevant repo skills; inspect current diff/branch/workflow and exact source/test contracts; begin implementation after source mapping and scope safeguards are verified. |
 
 ## Status model
 
-`STATUS` is a compatibility alias for `SESSION STATUS`, so every new project interaction visibly starts at `IN_PROGRESS`. Keep SESSION STATUS, WORK STATUS and EXTERNAL OPERATION STATUS separately populated.
+STATUS is a compatibility alias for SESSION STATUS, so every new project interaction visibly starts at IN_PROGRESS. Keep SESSION STATUS, WORK STATUS and EXTERNAL OPERATION STATUS separately populated.
 
 ### Session status — the current owner message/interaction
 
@@ -57,16 +57,16 @@
 
 ## Update protocol
 
-1. **Every JE X FYZ project-related owner message** opens with SESSION STATUS = IN_PROGRESS. This includes explicit mode commands, ordinary project questions, corrections, follow-ups and stop/cancel instructions, whether in a new or existing chat. Unrelated non-project conversation does not update this file.
+1. Every JE X FYZ project-related owner message opens with SESSION STATUS = IN_PROGRESS. This includes explicit mode commands, ordinary project questions, corrections, follow-ups and stop/cancel instructions, whether in a new or existing chat. Unrelated non-project conversation does not update this file.
 2. First read this file; immediately persist the new interaction, work item, mode, Asia/Jakarta timestamp, current phase, last verified checkpoint and next action as IN_PROGRESS before extended loading or execution. Preserve an existing independent external operation in its own fields.
-3. Update this snapshot after every meaningful milestone, actual tool/test result, commit, blocker, permission/authorization change or external-operation state transition. Update `Last updated` using the current Asia/Jakarta time and report the actual last verified evidence.
-4. At closure, set SESSION STATUS and WORK STATUS independently. A short answer still gets a start and terminal close. If a real external process remains active after the current assistant interaction ends, close the interaction separately but leave the work item and EXTERNAL OPERATION STATUS IN_PROGRESS.
-5. If the previous session/work status was IN_PROGRESS when a new chat starts, verify live Actions/process state first. Record the unfinished prior task as RECOVERY_REQUIRED in CHAT_TRANSFER when appropriate, then begin the new interaction as IN_PROGRESS without erasing external-operation state.
-6. If the opening or closing status write fails, report that persistence failure explicitly. Do not claim GitHub is synchronized; avoid irreversible operations until the marker can be persisted.
+3. Update this snapshot after every meaningful milestone, actual tool/test result, commit, failure, blocker, authorization change or external-operation state transition. Update Last updated using the current Asia/Jakarta time and report the actual last verified evidence.
+4. At closure, set SESSION STATUS and WORK STATUS independently. If a real external process remains active, keep WORK STATUS and EXTERNAL OPERATION STATUS IN_PROGRESS; do not claim completion while it runs.
+5. If the previous session/work status was IN_PROGRESS when a new chat starts, verify live Actions/process state first. Record unfinished prior work as RECOVERY_REQUIRED in CHAT_TRANSFER when appropriate. Never repeat an irreversible side effect based only on a checkpoint.
+6. If opening/closing status persistence fails, report that failure explicitly. Do not claim GitHub is synchronized.
 
 ## Automation boundary
 
-This process is automatic in the assistant's handling of project messages, but **not** a GitHub webhook or background monitor. GitHub cannot receive ordinary ChatGPT messages directly, and no status write occurs while ChatGPT is disconnected, frozen or not executing a tool call. Updates are event-driven at interaction start, real milestones/state transitions and closure—not per-second.
+This process is event-driven during active ChatGPT interactions, not a GitHub webhook or background heartbeat. No status write occurs while ChatGPT is disconnected or frozen.
 
 ## Canonical references
 
