@@ -1,4 +1,4 @@
-| Last updated | 2026-11-16 23:13:02 (Asia/Jakarta) |
+| Last updated | 2026-11-16 23:16:44 (Asia/Jakarta) |
 
 > Single current snapshot for JE X FYZ project interactions. Event-driven marker; not a background heartbeat.
 
@@ -12,17 +12,17 @@
 | Mode | Eksekusi Build App! — guarded App Build/QC/release and justified App-scope repairs only. No Firmware/BIN/Firebase/OTA/flashing/device operations or unrelated release work. |
 | Request / work item | Package and QC the latest App source/test correction that restores the Bluetooth device row name to JE X FYZ. Preserve Android Gradle versionName exactly: Telegram @horizontalzzz. |
 | Started | 2026-11-16 23:03:30 (Asia/Jakarta) |
-| Last updated | 2026-11-16 23:13:02 (Asia/Jakarta) |
-| Current phase | Phase 2 — mandatory load complete; Validation Only #44 and Build #164 live state verified; full 546-line workflow and Build Notes read; ledger/checkpoint/project state/handover synchronized. Final main SHA and no-active-run check precede one fresh trigger issue. |
-| Last completed milestone | Build #165 pre-trigger audit CLEAR: Validation #44 tested Bluetooth fix at 205/205 with analyzer 107 infos; Build #164 terminal SUCCESS; zero queued/in-progress/waiting/requested Build App runs; all 20 guarded workflow gates and exact owner/title/token check preserved; old trigger issues not reusable. |
+| Last updated | 2026-11-16 23:16:44 (Asia/Jakarta) |
+| Current phase | Phase 3 — Issue #42 created exactly once; Build #165 run 43905426531 / job 133432846684 / source cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d verified active. Steps 1–3 SUCCESS; step 4 Flutter setup IN_PROGRESS; continue only this run. |
+| Last completed milestone | Trigger Issue #42 opened by TenzoNkz with exact title/token. One resulting run #165 is verified; runner allocated, steps 1–3 SUCCESS, step 4 IN_PROGRESS. Trigger/source/job evidence appended to APP_BUILD_REPORT and checkpoint. |
 | Last verified source checkpoint | Validation Only #44 formatted App source/test SHA 0a2b3c03af433a17d82afa1d4db60beb7b1bd023. Pre-doc-sync main snapshot b46e29c1769dadb25a992ec02a1c000331e95978; compare 12 ahead / 0 behind, documentation-only paths; tree 139 entries, truncated=false. |
-| Current main HEAD | Fetch final live SHA after this checkpoint sync, immediately before trigger. Actual Build #165 issue-event checkout SHA must be recorded from Actions metadata. |
-| EXTERNAL OPERATION | Guarded JE X FYZ App Build/QC workflow for the Bluetooth-name-corrected source; no new run state verified yet. |
-| EXTERNAL OPERATION STATUS | NOT_APPLICABLE — no #165 issue/run created yet; #164 is separate terminal SUCCESS. |
+| Current main HEAD | Immutable Build #165 issue-event checkout SHA cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d; later evidence/status writes are documentation-only. |
+| EXTERNAL OPERATION | Build #165 / run 43905426531 / job 133432846684 / attempt 1 / source cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d. Issue #42. Current step 4 Set up Flutter IN_PROGRESS. |
+| EXTERNAL OPERATION STATUS | IN_PROGRESS — GitHub Actions confirms run and job active, runner allocated. Steps 1–3 SUCCESS; step 4 IN_PROGRESS. |
 | Previous successful package | Build #164 / run 43863417641 / source a41baaf3bc53a02d72e12a4f3840f0c84c493497 — success, but predates Bluetooth name correction; retain as current published baseline until new run passes all gates. |
 | Result / evidence | Validation Only #44: 205/205 PASS, analyzer 107 infos / 0 warnings/errors, formatter final PASS; validated source/test tree 0a2b3c03af433a17d82afa1d4db60beb7b1bd023. Build #164 steps 1–21 and cleanup 39–43 SUCCESS; Release assets, tag/source SHA and downloaded checksums/signatures verified. |
 | Blocker | None. Build #164 is terminal and no active run. GitHub identity TenzoNkz matches repository owner; only one fresh trigger issue is required. |
-| Next action | Fetch exact final main HEAD/tree; reconfirm no active Build App run; create exactly one fresh owner-authored issue with exact title `JE X FYZ — EKSEKUSI BUILD APP TRIGGER` and token `JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1`; identify and monitor exactly one run. |
+| Next action | Poll only run 43905426531 / job 133432846684; capture actual step transitions/log evidence. Do not create another issue/run or rerun. At terminal verify all 21 gates, cleanup, Release/tag/source parity and both downloaded asset identities. |
 
 ## Status model
 
