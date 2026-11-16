@@ -1,4 +1,18 @@
-## Latest guarded App Build #164 — TERMINAL SUCCESS / RELEASE VERIFIED — 2026-11-16
+## Latest guarded App Build #165 — TERMINAL SUCCESS / RELEASE VERIFIED — 2026-11-16
+
+- **Disposition: COMPLETED / SUCCESS.** Owner-authorized Issue #42 created exactly one guarded Build #165 run 43905426531 / job 133432846684, source SHA cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d; all steps 1–21 and cleanup 39–43 completed successfully.
+- **CI evidence:** Flutter 3.47.2 / Dart 3.13.2; Java 17; Gradle 9.3.1. App security/architecture audit and dependencies PASS; analyzer 107 info-level findings / 0 warnings / 0 errors; Flutter tests 205/205 PASS. Android Gradle BUILD SUCCESSFUL in 3m20s; 162 actionable tasks (161 executed, 1 up-to-date); native app JUnit tasks NO-SOURCE.
+- **APK:** obfuscated release APK built with --obfuscate --split-debug-info=build/symbols; V1/V2/V3 signatures true, one signer, pinned certificate SHA-256 dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0. APK asset JEXFYZ-release.apk, ID 755548795, 55,881,819 bytes, SHA-256 1934f9223ea4d5ffbd540601c69157d13923b996c41cf0694128e19372809687. [Download APK](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-release.apk).
+- **Matching source archive:** JEXFYZ-corresponding-source.zip, asset ID 755548797, 2,945,408 bytes, exact source cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d, SHA-256 6f98df3633c00d74a7687697a3332a16606d7edea76f82d1a00d8d201e82bd29; embedded source marker and original/downloaded ZIP integrity passed. [Download source ZIP](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-corresponding-source.zip).
+- **Release:** ID 403010611, tag jexfyz-latest, Release target/tag/source marker all match cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d. Exactly two assets. Step 21 freshly downloaded both assets; hashes matched Release API digests, ZIP integrity passed, and downloaded APK V1/V2/V3 plus pinned certificate verification passed. Delivery is via GitHub Release assets; no Actions artifacts were created.
+- **Bluetooth correction included:** Connection row prioritizes advertised name, falls back to platform name, and uses generic localized placeholder only when both are empty; the validated 205-test source is in this package. Firmware and BLE protocol were not changed.
+- **Protected versions:** Flutter 1.0.0+3; Android Gradle versionName "Telegram @horizontalzzz" unchanged.
+- **Warnings retained:** self-signed PKIX chain / META-INF signature coverage; Kotlin 2.2.20 and Firebase KGP future compatibility, Android Gradle properties and Gradle 10 deprecations, Notification priority deprecations, native ELF DWARF remains visible. Native App JUnit tasks were NO-SOURCE. These did not fail current gates.
+- **Boundary:** hosted CI/release integrity only. Physical installation/OEM visual, actual BLE advertising/display, Firmware/BIN, Firebase, OTA/flash, long-session, thermal/electrical acceptance remain unverified. No Firmware/device operation was performed.
+- Build #164, Build #163 and earlier failures/repairs remain below as history; do not rewrite prior results.
+
+---
+## Previous guarded App Build #164 — TERMINAL SUCCESS / RELEASE VERIFIED — 2026-11-16
 
 - **Disposition: COMPLETED / SUCCESS.** Owner-authored Issue #41 created exactly one guarded Build #164 run `43863417641` / job `133285765871`, source SHA `a41baaf3bc53a02d72e12a4f3840f0c84c493497`; all steps 1–21 and cleanup 39–43 completed successfully.
 - **CI evidence:** Flutter 3.47.2 / Dart 3.13.2; Java 17; Gradle 9.3.1. App security/architecture audit and dependencies PASS; analyzer PASS with 107 infos and zero warning/error diagnostics; Flutter tests 200/200 PASS. Android Gradle gate BUILD SUCCESSFUL in 2m35s; native app:testDebugUnitTest task was NO-SOURCE.
