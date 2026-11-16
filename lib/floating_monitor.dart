@@ -875,12 +875,12 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage>
                       _sliderRow(
                         label: JexText.of('size', lang),
                         value: config.size,
-                        valueLabel: '${config.size.toStringAsFixed(2)}×',
+                        valueLabel: '${JexText.formatNumber(config.size, lang, decimalDigits: 2, groupThousands: false)}×',
                         min: 0.30,
                         max: 1.00,
                         divisions: 14,
-                        minLabel: '0.30×',
-                        maxLabel: '1.00×',
+                        minLabel: '${JexText.formatNumber(0.30, lang, decimalDigits: 2, groupThousands: false)}×',
+                        maxLabel: '${JexText.formatNumber(1.00, lang, decimalDigits: 2, groupThousands: false)}×',
                         onChanged: (value) =>
                             _apply(config.copyWith(size: value)),
                       ),
