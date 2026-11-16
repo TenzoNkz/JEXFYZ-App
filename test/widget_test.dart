@@ -1377,11 +1377,11 @@ void main() {
   test('Peltier re-arm notify uses the 1C safety hysteresis threshold', () {
     expect(
       peltierRearmNotice(45, AppLanguage.english),
-      'Peltier is locked for safety. Cool Hotside to ≤ 44°C, then try again.',
+      'Peltier is locked for safety. Cool Hotside to ≤ 44 °C, then try again.',
     );
     expect(
       peltierRearmNotice(45, AppLanguage.indonesia),
-      'Peltier dikunci demi keselamatan. Turunkan suhu Hotside hingga ≤ 44°C, lalu coba lagi.',
+      'Peltier dikunci demi keselamatan. Turunkan suhu sisi panas hingga ≤ 44 °C, lalu coba lagi.',
     );
   });
 
@@ -3222,7 +3222,7 @@ void main() {
           hotLimit: 45,
           language: AppLanguage.english,
         ),
-        'Hotside limit reached: 45.8°C (limit 45°C).',
+        'Hotside limit reached: 45.8 °C (limit 45 °C).',
       );
       expect(
         homeHotsideLimitNotice(
@@ -3259,24 +3259,24 @@ void main() {
     );
     expect(
       relocalizeHomeNotifyMessage(
-        'Peltier dikunci demi keselamatan. Turunkan suhu sisi panas hingga ≤ 44°C, lalu coba lagi.',
+        'Peltier dikunci demi keselamatan. Turunkan suhu sisi panas hingga ≤ 44 °C, lalu coba lagi.',
         AppLanguage.english,
       ),
-      'Peltier is locked for safety. Cool Hotside to ≤ 44°C, then try again.',
+      'Peltier is locked for safety. Cool Hotside to ≤ 44 °C, then try again.',
     );
     expect(
       relocalizeHomeNotifyMessage(
-        'Peltier is locked for safety. Cool Hotside to ≤ 44°C, then try again.',
+        'Peltier is locked for safety. Cool Hotside to ≤ 44 °C, then try again.',
         AppLanguage.indonesia,
       ),
-      'Peltier dikunci demi keselamatan. Turunkan suhu Hotside hingga ≤ 44°C, lalu coba lagi.',
+      'Peltier dikunci demi keselamatan. Turunkan suhu sisi panas hingga ≤ 44 °C, lalu coba lagi.',
     );
     expect(
       relocalizeHomeNotifyMessage(
-        'Peltier dikunci demi keselamatan. Turunkan suhu Hotside hingga ≤ 44°C, lalu coba lagi.',
+        'Peltier dikunci demi keselamatan. Turunkan suhu sisi panas hingga ≤ 44 °C, lalu coba lagi.',
         AppLanguage.english,
       ),
-      'Peltier is locked for safety. Cool Hotside to ≤ 44°C, then try again.',
+      'Peltier is locked for safety. Cool Hotside to ≤ 44 °C, then try again.',
     );
     expect(
       relocalizeHomeNotifyMessage(
@@ -3292,14 +3292,14 @@ void main() {
         currentValue: 'HOTSIDE',
         language: AppLanguage.indonesia,
       ),
-      'Profil Adaptif diatur ke Hotside.',
+      'Profil Adaptif diatur ke Sisi Panas.',
     );
     expect(
       relocalizeHomeNotifyMessage(
-        'Batas suhu Hotside diatur ke 45°C.',
+        'Batas suhu sisi panas diatur ke 45 °C.',
         AppLanguage.english,
       ),
-      'Hotside temperature limit set to 45°C.',
+      'Hotside temperature limit set to 45 °C.',
     );
     expect(
       relocalizeHomeNotifyMessage(
@@ -3317,10 +3317,10 @@ void main() {
     );
     expect(
       relocalizeHomeNotifyMessage(
-        'Batas suhu Hotside tercapai: 45.8°C (batas 45°C).',
+        'Batas suhu sisi panas tercapai: 45,8 °C (batas 45 °C).',
         AppLanguage.english,
       ),
-      'Hotside limit reached: 45.8°C (limit 45°C).',
+      'Hotside limit reached: 45.8 °C (limit 45 °C).',
     );
     expect(
       relocalizeHomeNotifyMessage(
@@ -3402,11 +3402,11 @@ void main() {
       );
       expect(
         englishSafety,
-        'Peltier is locked for safety. Cool Hotside to ≤ 44°C, then try again.',
+        'Peltier is locked for safety. Cool Hotside to ≤ 44 °C, then try again.',
       );
       expect(
         indonesiaSafety,
-        'Peltier dikunci demi keselamatan. Turunkan suhu Hotside hingga ≤ 44°C, lalu coba lagi.',
+        'Peltier dikunci demi keselamatan. Turunkan suhu sisi panas hingga ≤ 44 °C, lalu coba lagi.',
       );
       expect(englishSafety, isNot(contains('PELTIER_SAFETY_LATCH')));
       expect(indonesiaSafety, isNot(contains('PELTIER_SAFETY_LATCH')));
@@ -3536,7 +3536,7 @@ void main() {
     );
     expect(
       RegExp(
-        r"JexText\.phrase\s*\(\s*'Hotside temperature limit set to '\s*,\s*'Batas suhu Hotside diatur ke '\s*,\s*lang\s*,?\s*\)",
+        r"JexText\.phrase\s*\(\s*'Hotside temperature limit set to '\s*,\s*'Batas suhu sisi panas diatur ke '\s*,\s*lang\s*,?\s*\)",
       ).hasMatch(accepted),
       isTrue,
     );
