@@ -60,4 +60,51 @@ void main() {
       );
     });
   });
+
+
+  group('Bluetooth connection device name', () {
+    test('shows the JE X FYZ name from the current BLE advertisement', () {
+      expect(
+        connectionDeviceDisplayName(
+          advertisedName: 'JE X FYZ',
+          platformName: '',
+          fallback: 'Perangkat',
+        ),
+        'JE X FYZ',
+      );
+    });
+
+    test('prefers the current advertised name over a stale platform name', () {
+      expect(
+        connectionDeviceDisplayName(
+          advertisedName: 'JE X FYZ',
+          platformName: 'Perangkat',
+          fallback: 'Device',
+        ),
+        'JE X FYZ',
+      );
+    });
+
+    test('uses the platform name when the advertisement has no local name', () {
+      expect(
+        connectionDeviceDisplayName(
+          advertisedName: '  ',
+          platformName: 'JE X FYZ',
+          fallback: 'Perangkat',
+        ),
+        'JE X FYZ',
+      );
+    });
+
+    test('uses the localized fallback only when both Bluetooth names are empty', () {
+      expect(
+        connectionDeviceDisplayName(
+          advertisedName: '  ',
+          platformName: '',
+          fallback: 'Perangkat',
+        ),
+        'Perangkat',
+      );
+    });
+  });
 }
