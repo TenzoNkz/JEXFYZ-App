@@ -180,8 +180,10 @@ void main() {
     expect(floating, contains('telemetry: floatingTelemetryNotifier.value'));
     expect(floating, contains('size.toDouble().clamp(0.3, 1.0)'));
     expect(
-      floating,
-      contains(r"maxLabel: '${JexText.formatNumber(1.00, lang, decimalDigits: 2, groupThousands: false)}×'"),
+      RegExp(
+        r"maxLabel:\s*'\$\{JexText\.formatNumber\(1\.00, lang, decimalDigits: 2, groupThousands: false\)\}×'",
+      ).hasMatch(floating),
+      isTrue,
     );
     expect(floating, contains('(config.opacity * 100).round()'));
     expect(floating, contains("minLabel: '0%'"));
