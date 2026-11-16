@@ -37,14 +37,13 @@
 - APK SHA-256 `6553af0d07162e804bea838cbd1c391432471630db0de6d56bdd303c713eaa8c`; source ZIP SHA-256 `1c15f4bc5bfe112594212f42eea925514a7ab138071915c9fe486f6c909bb576`. This package predates the Bluetooth name correction and remains the published baseline until the next run passes every gate.
 - Retain Build #164 warnings: self-signed/PKIX and META-INF signing coverage, no signing timestamp, Kotlin/Firebase KGP compatibility, Gradle deprecations and native ELF DWARF; native Android JUnit tasks NO-SOURCE. Do not rewrite these as resolved.
 
-## Build #165 — current run active; Android Gradle gate running
+## Build #165 — Android Gradle passed; APK build active
 
-- Exactly one owner-authored Issue #42 triggered Build #165 / run `43905426531` / job `133432846684`, attempt 1, source `cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d`. No duplicate issue/run.
-- **Steps 1–13 SUCCESS:** runner setup, checkout, Java, Flutter, Gradle, toolchain, local properties, production signing preparation, wrapper recovery, App-only security/architecture audit, dependency installation, Dart analyzer and Flutter tests.
-- **Step 14 `Run Android unit-test gate` IN_PROGRESS.** Steps 15–21 and cleanup remain pending.
-- Full logs download returned BlobNotFound while active; exact analyzer/test counts and Gradle duration/output remain unverified pending terminal log availability.
-- Continue only this run/job/source. No APK/ZIP/Release update is claimed; Build #164 remains the published baseline until every required gate and Step 21 downloaded asset verification succeed.
-- External operation remains IN_PROGRESS. No Firmware/BIN/Firebase/OTA/flash/device operation.
+- Exactly one fresh Issue #42 triggered run `43905426531` / job `133432846684`, attempt 1, source `cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d`.
+- **Steps 1–14 SUCCESS.** Android Gradle Step 14 completed SUCCESS at `2026-11-16T16:19:46Z` (3m21s elapsed).
+- **Step 15 `Build latest release APK` IN_PROGRESS.** Steps 16–21 (V1/V2/V3/certificate, filename, source ZIP, Release/tag and downloaded asset verification) are pending, as is cleanup.
+- Full logs remain unavailable during the active job; detailed Gradle output, exact analyzer count, test total and native-test NO-SOURCE status await the terminal job log.
+- Continue only run/job/source above; no duplicate trigger/retry. Build #164 remains the published baseline until all #165 gates pass.
 
 ## Owner-approved contracts — still authoritative
 - English is the master/default language; Indonesian must be complete, natural and semantically equivalent.
