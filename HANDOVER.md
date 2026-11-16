@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — Current Handover
 
-Last reconciled: 2026-11-16 23:20:30 (Asia/Jakarta).
+Last reconciled: 2026-11-16 23:23:33 (Asia/Jakarta).
 
 ## Current state — BUILD #165 ACTIVE / BLUETOOTH FIX BEING PACKAGED
 
@@ -13,7 +13,7 @@ Last reconciled: 2026-11-16 23:20:30 (Asia/Jakarta).
 ## Current Build #165 progress
 
 - One fresh Issue #42 produced exactly one run `43905426531` / job `133432846684`, attempt 1, immutable source `cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d`.
-- Steps 1–14 SUCCESS; Step 14 Android Gradle completed at 16:19:46Z after 3m21s. Step 15 obfuscated release APK build IN_PROGRESS; steps 16–21 pending. Full logs are unavailable while active, so detailed counts/output are not yet claimed.
+- Steps 1–15 SUCCESS; Step 14 Android Gradle completed at 16:19:46Z after 3m21s, and Step 15 obfuscated release APK build completed SUCCESS at 16:22:55Z. Step 16 V1/V2/V3 signing enforcement IN_PROGRESS; steps 17–21 pending. Full logs are unavailable while active, so detailed counts/hashes/certificate data are not yet claimed.
 - Continue only this run/job. At terminal, verify APK obfuscation, V1/V2/V3 pinned cert, source ZIP, Release/tag/source parity, exactly two assets and downloaded asset identity. Stop on any failed required gate.
 - Bluetooth fix still needs owner installation/physical BLE verification after package delivery. No Firmware/BIN/Firebase/OTA/flash/device operation.
 - After owner installation, verify the real cooler Bluetooth advertisement and App scan row show `JE X FYZ`. Physical BLE/OEM visual, Firmware/BIN, Firebase, OTA/flash, thermal/electrical and long-session evidence remain separate and unverified. No such operation is authorized here.
