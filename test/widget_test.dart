@@ -1250,7 +1250,7 @@ void main() {
       );
       expect(
         JexText.of('hotsideTemperature', AppLanguage.indonesia),
-        'Suhu Hotside',
+        'Suhu Sisi Panas',
       );
       expect(
         JexText.of('hotsideTemperature', AppLanguage.english),
@@ -3230,7 +3230,7 @@ void main() {
           hotLimit: 45,
           language: AppLanguage.indonesia,
         ),
-        'Batas suhu Hotside tercapai: 45.8°C (batas 45°C).',
+        'Batas suhu sisi panas tercapai: 45,8 °C (batas 45 °C).',
       );
       expect(isActiveHomeSafetyReason('HOTSIDE_PROTECTION'), isTrue);
       expect(isActiveHomeSafetyReason('PELTIER_SAFETY_LATCH'), isTrue);
