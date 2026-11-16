@@ -37,13 +37,13 @@
 - APK SHA-256 `6553af0d07162e804bea838cbd1c391432471630db0de6d56bdd303c713eaa8c`; source ZIP SHA-256 `1c15f4bc5bfe112594212f42eea925514a7ab138071915c9fe486f6c909bb576`. This package predates the Bluetooth name correction and remains the published baseline until the next run passes every gate.
 - Retain Build #164 warnings: self-signed/PKIX and META-INF signing coverage, no signing timestamp, Kotlin/Firebase KGP compatibility, Gradle deprecations and native ELF DWARF; native Android JUnit tasks NO-SOURCE. Do not rewrite these as resolved.
 
-## Build #165 — Android Gradle passed; APK build active
+## Build #165 — APK build passed; signing enforcement active
 
-- Exactly one fresh Issue #42 triggered run `43905426531` / job `133432846684`, attempt 1, source `cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d`.
-- **Steps 1–14 SUCCESS.** Android Gradle Step 14 completed SUCCESS at `2026-11-16T16:19:46Z` (3m21s elapsed).
-- **Step 15 `Build latest release APK` IN_PROGRESS.** Steps 16–21 (V1/V2/V3/certificate, filename, source ZIP, Release/tag and downloaded asset verification) are pending, as is cleanup.
-- Full logs remain unavailable during the active job; detailed Gradle output, exact analyzer count, test total and native-test NO-SOURCE status await the terminal job log.
-- Continue only run/job/source above; no duplicate trigger/retry. Build #164 remains the published baseline until all #165 gates pass.
+- Exactly one Issue #42 triggered Build #165 `43905426531` / job `133432846684`, attempt 1, source `cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d`.
+- **Steps 1–15 SUCCESS**, including Android Gradle Step 14 and obfuscated release APK build Step 15 (`flutter build apk --release --obfuscate --split-debug-info=build/symbols`) completed `16:22:55Z`.
+- **Step 16 V1/V2/V3 signing enforcement IN_PROGRESS.** Step 17 pinned-certificate verification, Step 18 filename, Step 19 matching source ZIP, Step 20 Release/tag publication and Step 21 fresh downloaded-asset verification remain pending.
+- No final APK signature, certificate, ZIP, Release or asset hash result is claimed until the corresponding step/API evidence passes. Full logs unavailable while active.
+- Continue only this run/job/source; no duplicate trigger/rerun. Build #164 remains published baseline until Step 21 success.
 
 ## Owner-approved contracts — still authoritative
 - English is the master/default language; Indonesian must be complete, natural and semantically equivalent.
