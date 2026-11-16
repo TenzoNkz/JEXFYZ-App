@@ -583,17 +583,30 @@ class FloatingMonitorService : Service() {
         // AI-METHOD / METRIC-TEXT-CONTRACT
         // Convert stable metric identifiers to presentation text using the Flutter-selected language.
         private fun itemText(metric: String): String {
-            val onText = if (data.language == "indonesia") "HIDUP" else "ON"
-            val offText = if (data.language == "indonesia") "MATI" else "OFF"
-            val activeModeText = if (data.language == "indonesia") "AKTIF" else "ACTIVE"
-            val inactiveModeText = if (data.language == "indonesia") "NONAKTIF" else "INACTIVE"
+            val indonesia = data.language == "indonesia"
+            val onText = if (indonesia) "HIDUP" else "ON"
+            val offText = if (indonesia) "MATI" else "OFF"
+            val activeModeText = if (indonesia) "AKTIF" else "ACTIVE"
+            val inactiveModeText = if (indonesia) "NONAKTIF" else "INACTIVE"
+
+            fun temperature(value: String): String {
+                if (value == "--") return "--"
+                val localized = if (indonesia) value.replace('.', ',') else value
+                return "$localized °C"
+            }
+
+            fun voltage(value: String): String {
+                if (value == "--") return "--"
+                return value.replace(Regex("(\\d+)\\s*V"), "$1 V")
+            }
+
             return when (metric) {
-                "B" -> "B:" + if (!data.connected || data.battery == "--") "--" else data.battery + "°"
-                "H" -> "H:" + if (!data.connected || data.hotside == "--") "--" else data.hotside + "°"
-                "V" -> "V:" + if (data.connected) data.voltage else "--"
+                "B" -> "B:" + if (!data.connected) "--" else temperature(data.battery)
+                "H" -> "H:" + if (!data.connected) "--" else temperature(data.hotside)
+                "V" -> "V:" + if (data.connected) voltage(data.voltage) else "--"
                 "A" -> "A:" + if (!data.connected) "--" else if (data.adaptiveOn) activeModeText else inactiveModeText
                 "P" -> "P:" + if (!data.connected) "--" else if (data.peltierOn) onText else offText
-                "F" -> "F:" + if (!data.connected) "--" else if (data.fanOn) data.speed.toString() else offText
+                "F" -> "F:" + if (!data.connected) "--" else if (data.fanOn) "${data.speed}%" else offText
                 else -> ""
             }
         }
