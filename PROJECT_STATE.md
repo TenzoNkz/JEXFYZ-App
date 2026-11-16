@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — Current Project State
 
-Last reconciled: 2026-11-16 18:47:41 (Asia/Jakarta). Current truth only. Build history remains in APP_BUILD_REPORT.md and CHANGELOG.md; rolling chat continuation remains in CHAT_TRANSFER.md.
+Last reconciled: 2026-11-16 19:00:10 (Asia/Jakarta). Current truth only. Build history remains in APP_BUILD_REPORT.md and CHANGELOG.md; rolling chat continuation remains in CHAT_TRANSFER.md.
 
 ## Repository baseline
 
@@ -11,7 +11,7 @@ Last reconciled: 2026-11-16 18:47:41 (Asia/Jakarta). Current truth only. Build h
 
 ## Live source and guarded Build App readiness — 2026-11-16
 
-**Source recovery and hosted Flutter validation: COMPLETE. Guarded Build App preflight: READY. App Build/Release: NOT YET RUN; requires a separate explicit `Eksekusi Build App!`.**
+**Source recovery and hosted Flutter validation: COMPLETE. Guarded Build App preflight: CLEAR. The owner has explicitly authorized a fresh guarded App Build/QC run in the current `Eksekusi Build App!` message; its trigger/run is not yet created at this checkpoint.**
 
 - Restored `lib/main.dart` from verified clean baseline blob `48dd0c943075db076769c3d9dc53b8b71a28a5c3`; recovery commit `b4558cee8b5a4455603473d31e46b3b108f20576`; final blob `b12ea764b674b79f8a19bd70191fcf25ea3046a5` (401,983 characters / 11,427 lines).
 - Home/NOTIFY locale parsing and copy, legacy notice normalization, OTA byte grouping and Adaptive notification localization were reapplied; only the visible Adaptive ceiling card/readout was removed. Internal `adaptiveCeiling` state and `ADAPTIVE_CEILING` telemetry remain; no Firmware/BLE protocol changes.
