@@ -6,6 +6,16 @@
 - Validation Only #44 / run `43899329198` / job `133411358928` — SUCCESS, tested input SHA `4a875b3d63beea6e7d469c27f0c8930ab9b7cd09`; formatter final PASS; analyzer 107 infos / zero warnings/errors; Flutter tests **205/205 PASS**; formatter-only commit `0a2b3c03af433a17d82afa1d4db60beb7b1bd023`.
 - **Not yet released:** Build #164 remains the latest published package and predates this change. A separate `Eksekusi Build App!` is required to package it. Owner physical BLE scan/display, APK installation, OEM visual and hardware validation remain unverified.
 - No Firmware/BIN/Firebase/OTA/flash/device operation was performed.
+## 2026-11-16 — Build #165 published / Bluetooth Connection name correction included
+
+- Guarded Build #165 / Issue #42 / Actions run 43905426531 / job 133432846684, exact source cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d, completed SUCCESS. All 21 required gates and cleanup 39–43 passed.
+- Hosted CI: analyzer 107 infos / 0 warnings/errors; Flutter tests 205/205; Android Gradle BUILD SUCCESSFUL in 3m20s (162 actionable tasks; native App JUnit tasks NO-SOURCE); obfuscated APK; V1/V2/V3 and pinned certificate; matching source ZIP; Release/tag parity and downloaded-asset verification.
+- Release jexfyz-latest / ID 403010611 now targets cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d. APK SHA-256 1934f9223ea4d5ffbd540601c69157d13923b996c41cf0694128e19372809687; source ZIP SHA-256 6f98df3633c00d74a7687697a3332a16606d7edea76f82d1a00d8d201e82bd29. Exactly two Release assets.
+- App Connection display prefers the real BLE advertisement local name JE X FYZ, falls back to platform name, and only uses generic localized fallback when both are empty. No Firmware or BLE protocol changes.
+- Retain warnings: self-signed PKIX/META-INF signature coverage, Kotlin 2.2.20/Firebase KGP compatibility and Gradle deprecations, deprecated Notification priority, native ELF DWARF, and native Android unit-test NO-SOURCE.
+- CI/release does not prove owner installation, OEM visuals or actual BLE radio behavior; those remain separate owner-side checks. No Firmware/BIN/Firebase/OTA/flash/device operation was performed.
+
+
 ## 2026-11-16 — Clear guarded App Build preflight after workflow audit repair
 
 - Validation Only #38 / run `43843348889` / job `133217253810` passed on tested input `01cf1295458564820b52afc6ca33037583a430c6`; formatter final PASS, analyzer PASS (107 infos), Flutter tests 200/200 PASS. The workflow committed the exact formatted working tree as `b8fcdaf191c5e8bb5df5fa44c50c80a12dfd03da`.
