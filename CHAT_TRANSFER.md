@@ -40,7 +40,7 @@
 - Direct Actions runs lookup exposes push runs; prior notes claiming the available lookup was limited to PR runs are superseded.
 
 ## Final repository state and remaining boundaries
-- Verified current `main` HEAD: `b8fcdaf191c5e8bb5df5fa44c50c80a12dfd03da`.
+- Verified source/test tree commit: `b8fcdaf191c5e8bb5df5fa44c50c80a12dfd03da`; subsequent main commits only synchronize canonical documentation/status and preserve the source/test blobs validated in #38.
 - Verified recursive tree: 139 entries, `truncated=false`. Relevant source/test read-backs confirm the unused local is gone, Fan Speed assertion includes the live percent suffix, and the size/max-label assertions verify locale-aware formatting.
 - The local runtime has no Dart/Flutter SDK; validation evidence is from hosted GitHub Actions only.
 - Latest verified package remains Build #163 / run `43679305537` / Release `403010611` / tag `jexfyz-latest`, source `9466e8eeb269da5bc8806f0df1d4212cf24e1746`; it predates restored changes. No new APK, App Build or Release was created.
