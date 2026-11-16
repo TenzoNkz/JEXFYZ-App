@@ -14,7 +14,7 @@
 - The screenshot's generic `Perangkat` label came from the App Connection sheet: it deliberately replaced an empty or `JE X FYZ` local name with the localized generic device label.
 - The Connection row now displays the current BLE advertisement local name (`advertisementData.advName`) first, falls back to the platform device name (`device.platformName`) when the advertisement omits a name, and uses localized `Device` / `Perangkat` only if both are empty.
 - The change is App presentation only. BLE service UUIDs, device matching/filtering, scan ownership, connection handoff, P1 framing, and Firmware advertisement name are unchanged.
-- Regression coverage includes advertised-name precedence, platform-name fallback, empty-name fallback, and a widget source-contract check tying the Connection row to the Firmware `BLE_NAME`/initialization contract.
+- Regression coverage includes advertised-name precedence, platform-name fallback, empty-name fallback, and a widget source-contract check that the Connection row calls the App display-name helper and does not mask `JE X FYZ`. Firmware V7.2's `BLE_NAME` / `BLEDevice::init(BLE_NAME)` was separately confirmed by read-only source inspection; the widget test does not read the Firmware file.
 - Physical verification is still required after a separately authorized App build/install: scan the cooler on the owner's phone and confirm the row displays `JE X FYZ`. Do not infer that from source tests alone.
 
 ---
