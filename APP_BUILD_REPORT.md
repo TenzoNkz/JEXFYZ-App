@@ -3190,3 +3190,11 @@
 - **Protected versions:** Android Gradle `versionName "Telegram @horizontalzzz"`; Flutter package `1.0.0+3` are unchanged in intended source and preserved by the build contract.
 - **Scope:** App Build/QC/release only. No Firmware compilation/BIN, Firebase mutation, OTA, flashing, or device operation.
 
+### BUILD #165 progress — setup, App audit, analyzer and Flutter tests passed; Android Gradle active — 2026-11-16 23:18:07 (Asia/Jakarta)
+
+- Run `43905426531` / job `133432846684`, attempt 1, Issue #42, immutable checkout source `cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d`.
+- **Steps 1–13 observed SUCCESS:** job setup, repository checkout, Java 17, Flutter, Gradle, toolchain verification, local.properties, production signing-secrets preparation, Gradle wrapper recovery, App security/architecture audit, dependency installation, Dart analyzer and all Flutter tests.
+- **Step 14 `Run Android unit-test gate` is IN_PROGRESS.** Steps 15–21 (obfuscated release APK, V1/V2/V3 signing, pinned certificate, stable filename, corresponding source ZIP, Release/tag publication and downloaded-asset identity verification) remain PENDING. Post-job cleanup remains pending.
+- Full job-log endpoint returned BlobNotFound while the run is active. Exact analyzer info count, Flutter test total and Android Gradle output/duration are not yet claimed; record them only after successful terminal log retrieval. Live run/job/step API currently agrees that the external operation is IN_PROGRESS.
+- No APK, source ZIP, signing result, Release mutation or artifact is claimed yet. Build #164 remains the published package baseline until Step 21 passes and external Release/tag/assets are re-verified.
+- Continue only run `43905426531` / job `133432846684` / source `cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d`; no duplicate issue or rerun. Scope remains App Build/QC/release only.
