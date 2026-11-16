@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — Current Project State
 
-Last reconciled: 2026-11-16 19:03:54 (Asia/Jakarta).
+Last reconciled: 2026-11-16 19:06:40 (Asia/Jakarta).
 
 ## Repository baseline
 
@@ -11,7 +11,7 @@ Last reconciled: 2026-11-16 19:03:54 (Asia/Jakarta).
 
 ## Live source and guarded Build App readiness — 2026-11-16
 
-**Source recovery and hosted Flutter validation: COMPLETE. Guarded Build App preflight: CLEAR. The owner has explicitly authorized a fresh guarded App Build/QC run in the current `Eksekusi Build App!` message; its trigger/run is not yet created at this checkpoint.**
+**Source recovery and hosted Flutter validation: COMPLETE. Guarded Build App preflight: CLEAR. The owner explicitly authorized the guarded run. Issue #41 created exactly one Build #164 run `43863417641` / job `133285765871`, source `a41baaf3bc53a02d72e12a4f3840f0c84c493497`; run/job are IN_PROGRESS at Flutter setup.**
 
 - Restored `lib/main.dart` from verified clean baseline blob `48dd0c943075db076769c3d9dc53b8b71a28a5c3`; recovery commit `b4558cee8b5a4455603473d31e46b3b108f20576`; final blob `b12ea764b674b79f8a19bd70191fcf25ea3046a5` (401,983 characters / 11,427 lines).
 - Home/NOTIFY locale parsing and copy, legacy notice normalization, OTA byte grouping and Adaptive notification localization were reapplied; only the visible Adaptive ceiling card/readout was removed. Internal `adaptiveCeiling` state and `ADAPTIVE_CEILING` telemetry remain; no Firmware/BLE protocol changes.
@@ -27,10 +27,11 @@ Last reconciled: 2026-11-16 19:03:54 (Asia/Jakarta).
 
 ## Next action
 
-- The current owner message explicitly authorizes `Eksekusi Build App!`. Pre-trigger live checks confirmed zero queued/in-progress/waiting/requested Build runs and Build #163 terminal SUCCESS.
-- After checkpoint synchronization, fetch the exact latest main HEAD and create exactly one fresh owner-authored issue with exact title `JE X FYZ — EKSEKUSI BUILD APP TRIGGER` and body token `JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1`. Issue #40 remains open and already triggered Build #163; do not reuse/reopen it or any other existing trigger issue.
-- Identify exactly one issue-event run and monitor its actual job, source SHA, logs and all required gates through Release/tag and downloaded asset verification. Stop on a failed gate; no duplicate trigger or blind retry.
-- Visual/device/firmware/BIN/Firebase/OTA/flash acceptance remains separate from App CI and is not authorized here.
+- Continue only Build #164 / Actions run `43863417641` / job `133285765871` / immutable source `a41baaf3bc53a02d72e12a4f3840f0c84c493497`. Run and job were observed IN_PROGRESS; first three steps passed and Set up Flutter is active.
+- Monitor the actual step API and job logs. Update APP_BUILD_REPORT.md, 00_WORK_STATUS.md and CHAT_TRANSFER.md at meaningful gate/state transitions; do not start another trigger or rerun.
+- Stop on the first failed required gate, identify the exact failing step and repair only an evidenced App-scope root cause without weakening checks. Do not retry blindly.
+- Success requires all workflow gates, exactly one obfuscated APK and corresponding source ZIP, signature/certificate checks, Release/tag/source SHA parity and re-downloaded artifact identity/checksum verification.
+- Physical installation/OEM visual, BLE/device, Firmware/BIN, Firebase, OTA/flash and thermal/electrical acceptance remain separate and unverified.
 
 
 ## Historical hosted validation baseline — Validation Only #19 SUCCESS (pre-localization correction set)
