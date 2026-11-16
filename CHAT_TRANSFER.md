@@ -1,52 +1,41 @@
 <!-- ACTIVE_CHECKPOINT_START -->
-# ACTIVE CHECKPOINT — RECOVERY REQUIRED / NOT BUILD-READY — 2026-11-16
+# ACTIVE CHECKPOINT — SOURCE RESTORED / HOSTED VALIDATION PENDING — 2026-11-16
 
 ## Session and authorization
 - Project: JE X FYZ / JE Cooler.
 - Canonical repository/branch: `TenzoNkz/JEXFYZ-App` / `main`.
-- Prior work item: the interrupted `Eksekusi Full!` bilingual-copy, locale-formatting, Home notice and Adaptive-presentation implementation.
-- **WORK STATUS: RECOVERY_REQUIRED.** It has durable source commits but is not complete or validated. The incoming `Diskusi!` interaction performed read-only recovery review and documentation only; it does not inherit source-edit, test-write, workflow, Build App, Firmware or device authorization.
-- Preserve the exact next authorization boundary: only a new explicit `Eksekusi Full!` may repair the specified App source/tests/docs scope. A separate `Eksekusi Build App!` is required for any App package/release operation.
+- Current mode: `Eksekusi Full!` — owner explicitly authorized source recovery, regression repair, and non-publishing validation.
+- **WORK STATUS: BLOCKED ON VERIFIED HOSTED VALIDATION.** Source recovery and scoped test repairs are committed; Flutter formatter/analyzer/test results are not yet verified. Do not start Build App until the Validation Only result is green. A separate `Eksekusi Build App!` is required for any App package/release.
+- No Firmware, BIN, Firebase, OTA, flashing, or physical-device operation was performed or authorized.
 
 ## Owner-approved contracts — still authoritative
 - English is the master/default language; Indonesian must be complete, natural and semantically equivalent.
-- General glossary includes Battery → Baterai; Battery Temperature → Suhu Baterai; Hotside (generic component) → Sisi Panas; Hotside Temperature → Suhu Sisi Panas; Hotside Limit → Batas Suhu Sisi Panas; generic cooler → pendingin; Adaptive Mode → Mode Adaptif; Fan → Kipas; Fan Speed → Kecepatan Kipas; Voltage → Tegangan.
-- Exact Adaptive profile labels: EN `Hotside Protection` / ID `Perlindungan Suhu Panas`; EN `Hotside & Battery Protection` / ID `Perlindungan Suhu Panas & Baterai`. Keep active keys `hotsideProtection`, `hotsideBattery` and legacy aliases `hSideProtection`, `hSideBattery`; do not rename protocol/storage identifiers. Generic thermal-protection prose remains Sisi Panas.
-- Remove the entire visible Adaptive Limit/ceiling information card and readout. This is presentation-only: preserve `adaptiveCeiling`, `ADAPTIVE_CEILING` telemetry/state, Firmware clamp, Lock Voltage and all safety/transition logic.
+- General glossary includes Battery → Baterai; Battery Temperature → Suhu Baterai; generic Hotside component references → Sisi Panas; Hotside Temperature → Suhu Sisi Panas; Hotside Limit → Batas Suhu Sisi Panas; generic cooler → pendingin; Adaptive Mode → Mode Adaptif; Fan → Kipas; Fan Speed → Kecepatan Kipas; Voltage → Tegangan.
+- Exact Adaptive profile labels: EN `Hotside Protection` / ID `Perlindungan Suhu Panas`; EN `Hotside & Battery Protection` / ID `Perlindungan Suhu Panas & Baterai`. Preserve active keys `hotsideProtection`, `hotsideBattery` and legacy aliases `hSideProtection`, `hSideBattery`.
+- Remove the visible Adaptive ceiling card only; preserve `adaptiveCeiling`, `ADAPTIVE_CEILING` telemetry/state, Firmware clamp, Lock Voltage and safety/transition behavior.
 - Keep LED as the section heading and RGB Power / Daya RGB as the user RGB-effect toggle. Independent voltage/system/safety indicators remain separate.
 - Preserve Bluetooth, Firmware, Peltier, LED, OTA, SSID and BLE protocol tokens where technically appropriate; never translate protocol values or storage keys.
 - Battery threshold roles: 5 V is the upper-temperature ceiling; 12 V is the lower-temperature floor. Existing defaults and hysteresis must not change.
-- Locale display formatting must not alter protocol/storage serialization or timestamps. Preserve one-second telemetry, local history semantics, metric identifiers B/H/V/A/P/F, notification IDs/channel IDs, and stable BLE contracts.
 
-## Restored checkpoint and live repository evidence
-- The prior status snapshot named `39e70cb0bac4271785905f9b56fdaca5337dbb30` as its last source milestone. Live main had advanced through source commits to `05ab2bcf9a619b497d1a9f6f2abc974093808f37`; the incoming status marker for this recovery session created documentation-only commit `6ddd15c154f5ff7dfd9e48d936afe4c9fe2b74e7`.
-- Latest live recheck in the current Diskusi session: main HEAD `5007a9b1eab972ea89d2dfc2939db7adf69e6799`; tree SHA matches HEAD, recursive tree not truncated, 139 entries. This session's only changes are documentation/status commits; `lib/main.dart` remains the same damaged blob `c28b1bcdb26673c3f317bf2448839b9ab7cd66ae`. No open PR was returned by the earlier recovery review.
-- Compare from immutable Build #163 package source `9466e8eeb269da5bc8806f0df1d4212cf24e1746` to the source-updated main revision showed 17 changed paths, including Dart source, Kotlin presentation files and tests. `lib/main.dart` alone had +33,581 / −11 lines.
-- The good `lib/main.dart` baseline blob is `48dd0c943075db076769c3d9dc53b8b71a28a5c3` (403,036 bytes), present at Build #163 source and commit `39e70cb0...`. Current damaged main blob is `c28b1bcdb26673c3f317bf2448839b9ab7cd66ae` (1,582,015 bytes; 45,030 lines).
-- Main currently contains top-level declarations repeatedly in active Dart code, not inside comments/strings: for example `LedColorPreset` at lines 1,034 / 12,320 / 23,331 / 34,617; `TamperApp` at 4,434 / 15,720 / 26,731 / 38,017; and `DashboardScreen` at 4,567 / 15,853 / 26,864 / 38,150. Around line 11,447 there is an orphaned fragment beginning `, caseSensitive: false), '')` immediately after a closed class. This breaks parsing in addition to duplicate definitions.
-- Hosted Validation Only #27 (run `43808741923`, job `133105410519`, source `05ab2bcf...`) is terminal CANCELLED. This session re-fetched the full 1.19 MB job log: dependency resolution SUCCESS; formatter precheck FAILED (parser errors at lines 174, 448 and 11,447); formatter apply FAILED (exit 65); final formatter FAILED (exit 65); analyzer FAILED with syntax/duplicate-definition errors; Flutter tests CANCELLED before successful completion. The final summary step failed. This is direct CI evidence that current main is not a valid build candidate. This is direct CI evidence that current main is not a valid build candidate.
-- Earlier Validation Only #20 (run `43806817665`, source `39e70cb...`) failed 1 test: expected old `Suhu Hotside`, actual `Suhu Sisi Panas`. Validation Only #22 (run `43807291287`, source `694a3219...`) also failed: `test/usage_statistics_test.dart` still called the now-three-argument `formatUsageAxisTick` with two arguments. Runs #23–#27 were cancelled; there is no successful Validation Only result for the current correction set.
-- Build #163 remains the latest successful App package: run `43679305537`, job `132706236782`, Release `403010611`, tag `jexfyz-latest`, package source `9466e8eeb269da5bc8806f0df1d4212cf24e1746`. The tag/Release target match. This package predates the current localization source changes. No App Build, Firmware, BIN, Firebase, OTA, flash or device action was started in this Diskusi interaction.
+## Restored source and regression checkpoint
+- Clean baseline used: `lib/main.dart` blob `48dd0c943075db076769c3d9dc53b8b71a28a5c3`.
+- Restored/repaired source commit: `b4558cee8b5a4455603473d31e46b3b108f20576`; final `lib/main.dart` blob `b12ea764b674b79f8a19bd70191fcf25ea3046a5`, 401,983 characters / 11,427 lines.
+- Verified one active declaration each for `LedColorPreset`, `TamperApp`, and `DashboardScreen`; the previous four-copy duplication and malformed source fragments are gone.
+- Reapplied once: locale-aware comma/dot Home temperature parsing; localized Hotside threshold notices and Peltier re-arm copy; legacy Home notice normalization (including spaced/unspaced °C); locale-grouped OTA received/expected byte values; localized Adaptive profile telemetry notice.
+- Removed only the visible Adaptive ceiling card/readout. `adaptiveCeiling` state and `ADAPTIVE_CEILING` telemetry mapping remain; no Firmware or BLE protocol code was changed.
+- Test commits: widget expectations `22c8b7543d3d509e348d267dfc393aad88ca1f8d`; localization contracts `f24a612c39138bbe41832adda1cec85091e0b6af`; Usage Statistics labels `787f1fff57075ead8f37699e2f9bbc10be3436e1`.
+- Added regression checks for decimal comma/dot inputs, legacy Home notice forms, grouped OTA byte values, exact active/legacy Adaptive labels, and presentation-only Adaptive ceiling removal. Updated Usage Statistics and widget-copy expectations.
 
-## Current implementation inventory — partial, not accepted
-- `lib/app_settings.dart` now has the two exact active Adaptive profile labels and aligned legacy aliases; generic Hotside → Sisi Panas; `volt` → Voltage/Tegangan; OTA Online/Daring; Adaptive inactive/nonaktif wording; and the explicit 5 V ceiling / 12 V floor labels.
-- Usage Statistics source now has locale-aware axis decimal formatting, localized month names/year with 24-hour time, locale temperature values and revised copy. `test/usage_statistics_test.dart` was updated to use the new formatter signature and labels.
-- Floating Monitor slider scale labels use the locale-aware number helper. Native Floating HUD now formats °C, spaced voltage and Fan Speed percent while keeping B/H/V/A/P/F IDs. MainActivity's Device alerts title was aligned to Device alerts / Peringatan perangkat.
-- Main Home/notification localization and legacy notice work exists in the damaged `main.dart`, but cannot be treated as valid/complete until the file is reconstructed and validated.
-- The visible Adaptive ceiling card is still present in the surviving code around lines 9,367–9,398 (`JexText.of('adaptiveCeiling', lang)` plus the displayed value). This owner-requested presentation removal is not complete; preserve underlying `adaptiveCeiling`/`ADAPTIVE_CEILING` safety and telemetry behavior.
-- `formatOtaUploadSizeMismatch` now uses locale-grouped numbers, but `test/localization_contract_test.dart` still expects ungrouped values `120400` / `131072`; update the test expectation to locale grouping after source recovery.
-- `test/device_copy_notification_contract_test.dart` still contains the old `Suhu Hotside` expectation. Semantic tests for exact profile labels, Adaptive-card absence, HEX/color semantics, notification-channel title and native HUD units are still incomplete. Color-name translations need HEX-aware review; 350-dp/360-dp layout and accessibility fit have not been visually verified.
+## Static verification completed
+- Live readback confirms `lib/main.dart` is 401,983 characters / 11,427 lines and contains one copy of each previously duplicated top-level class.
+- A lexical delimiter/string/comment scan passed for `lib/main.dart`, `test/localization_contract_test.dart`, `test/widget_test.dart`, `test/usage_statistics_test.dart`, `lib/app_settings.dart`, and `lib/usage_statistics.dart`: no unmatched delimiters or unterminated strings/comments.
+- Source contract checks passed: Adaptive card absent from `_buildAdaptiveTab`; internal ceiling state/telemetry retained; comma-decimal parsing and OTA grouping present; exact profile labels present; stale Usage Statistics/widget copy expectations removed.
+- These are static checks only. **Dart formatter, Flutter analyzer and Flutter tests have NOT been verified in this session.** The local runtime has no Dart/Flutter SDK.
 
-## Recovery plan for the next authorized Eksekusi Full
-1. Treat current `lib/main.dart` as corrupted; do not append to it, patch its tail blindly, or use the duplicated sections as the source of truth.
-2. Rebuild from the clean baseline blob `48dd0c943075db076769c3d9dc53b8b71a28a5c3` (same file at Build #163 source / commit `39e70cb0...`) and reapply only the intended Home thermal-notice, locale-decimal parser, OTA-size-format and legacy Hotside-notice changes once. Preserve unrelated logic and verify a clean complete source file before any test run.
-3. Remove the visible Adaptive ceiling card only; retain underlying state/telemetry/clamp and Lock Voltage.
-4. Bring tests into alignment and add semantic/negative assertions: exact EN/ID profile labels, no visible ceiling card, localized grouped OTA bytes, old/new Home notice forms including comma/dot decimals and spaced/unspaced °C, native HUD units, Device alerts channel title, and protected telemetry/state contracts.
-5. Run the allowed non-publishing formatter/analyzer/test validation only after source and tests are coherent. Do not start an App Build or release from this mode; that requires separate `Eksekusi Build App!`.
-6. Re-review HEX-aware shade names and narrow-width EN/ID fit after the source is valid; no visual/OEM claim without actual screenshots/device evidence.
-
-## Verification boundary
-- This checkpoint is based on live GitHub metadata, full recursive-tree metadata, source/blob inspection and Actions/job logs. No source/test/config/workflow/Build/Firmware/device operation occurred in Diskusi.
-- Last source-updated revision inspected: `05ab2bcf9a619b497d1a9f6f2abc974093808f37`; current Diskusi session opened with documentation/status-only commit `5007a9b1eab972ea89d2dfc2939db7adf69e6799`. Final status/checkpoint commits for this session are documented in `00_WORK_STATUS.md`.
-- Next safe owner command: `Eksekusi Full!` for the source recovery scope above.
+## Hosted validation and next action
+- `.github/workflows/jexfyz-app-validation.yml` is the non-publishing Flutter validation workflow and currently has a push trigger for `main` changes under `lib/**` and `test/**`. The latest source/test commit should trigger it automatically.
+- The available GitHub workflow-run lookup returned no run for commit `f24a612c39138bbe41832adda1cec85091e0b6af`; that lookup is limited to PR-triggered runs and does not expose push-run status. Therefore the current push-run state is **UNKNOWN**, not PASS.
+- Owner should open GitHub Actions and provide the latest `JE X FYZ — Validation Only` run ID and result. If green, the source can be considered validation-ready for a separate Build App authorization. If it fails, continue repair under the current Eksekusi Full scope.
+- Latest verified package remains Build #163 / run `43679305537` / Release `403010611` / tag `jexfyz-latest`, source `9466e8eeb269da5bc8806f0df1d4212cf24e1746`. It predates these restored changes; no new APK or Release was created.
+- Visual/OEM acceptance at 350-dp/360-dp, actual owner installation, BLE field behavior, Firmware compile/BIN provenance, thermal/electrical tests, Firebase, OTA/flash remain unverified.
 <!-- ACTIVE_CHECKPOINT_END -->
