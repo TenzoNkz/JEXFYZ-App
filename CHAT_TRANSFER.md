@@ -80,6 +80,14 @@
 - Next authorized implementation scope should update every visible Flutter/native/notification phrase and corresponding regression expectations, maintain legacy notice parsing, and add a terminology/content-quality contract. Then run appropriate source validation. A new APK still requires a separate explicit `Eksekusi Build App!` command.
 - Build #163 remains the latest verified package; it does not contain the pending glossary/copy corrections.
 
+## Recovery note — Chat Stuck! — 2026-11-16 09:28 Asia/Jakarta
+
+- The prior audit interaction was interrupted while still marked IN_PROGRESS. Its last durable point is the inventory, source inspection and findings in the section immediately below; no source/test/native/config/workflow write was made.
+- Re-checked live main: `ad75589a2f5e8d326f5194455713e2688c1ccb07`; recursive tree is complete (139 entries, 53 Markdown files, not truncated).
+- Re-checked the only recorded external operation, Build #163 run `43679305537`: terminal `completed / success`, job `132706236782` completed successfully; Release `403010611` / tag `jexfyz-latest` still has exactly one APK and one source ZIP. No active or queued Build operation is associated with this recovery.
+- Resume the same owner request under the inherited `Diskusi!` boundary: audit and document the complete bilingual copy/format correction plan only. Do not edit executable source, tests, Kotlin, configuration, Firmware, workflows; do not run formatter, analyzer, tests, build, OTA or device operations.
+- Verified live-source additions from the interrupted pass: Usage Statistics has mixed-language helper text, raw `FAN` / `PELTIER` tokens in an empty-state explanation, incorrect `Suhu Baterai HP` / `Suhu Hotside` / `Baterai HP` labels; Home notification generation and legacy-message normalization still produce or retain Hotside in Indonesian; the axis/overlay decimal and session-date formats are not fully locale-aware. See APP_NOTES.md for the consolidated audit.
+
 ## Comprehensive language / writing / format audit — 2026-11-15
 
 **Owner request:** “Perbaiki semuanya bahasa, ejaan, penulisan, format, serta capitalnya!”  
