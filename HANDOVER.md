@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — Current Handover
 
-Last reconciled: 2026-11-16 19:00:10 (Asia/Jakarta).
+Last reconciled: 2026-11-16 19:03:54 (Asia/Jakarta).
 
 ## Current state — BUILD #164 PRE-TRIGGER CLEAR
 
@@ -12,7 +12,7 @@ Last reconciled: 2026-11-16 19:00:10 (Asia/Jakarta).
 
 ## Next action and boundaries
 
-- **Ready for a separate explicit `Eksekusi Build App!` command.** Only that mode may create one new owner-authored issue using exact title `JE X FYZ — EKSEKUSI BUILD APP TRIGGER` and token `JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1`.
-- Issue #40 remains open and was already used to trigger Build #163; do not reuse or reopen it.
-- Stop on the first failed gate; no duplicate triggers or blind retries. Verify all gates, downloaded APK/source ZIP signatures and hashes, Release/tag/source SHA parity.
-- Visual/OEM and owner installation, BLE/field behavior, long-session soak, Firmware/BIN, Firebase, OTA/flash, thermal and electrical acceptance remain NOT VERIFIED. No Firmware/device operation is authorized.
+- The current owner message explicitly authorizes `Eksekusi Build App!`; live pre-trigger checks found no active/queued/waiting/requested Build App run and Build #163 is terminal SUCCESS.
+- Create exactly one fresh owner-authored issue with exact title `JE X FYZ — EKSEKUSI BUILD APP TRIGGER` and token `JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1`. Issue #40 remains open and already triggered Build #163; do not reuse/reopen it or any existing trigger issue.
+- Verify the issue produces exactly one Actions run, record its actual source SHA/run/job and monitor every required gate, Release/tag parity and downloaded APK/source ZIP checks. Stop at the first failed required gate; no duplicate trigger or blind retry.
+- Owner install/OEM visual, BLE/field behavior, long-session soak, Firmware/BIN, Firebase, OTA/flash, thermal and electrical acceptance remain NOT VERIFIED. No such operation is authorized here.
