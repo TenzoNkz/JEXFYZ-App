@@ -22,6 +22,6 @@ Last reconciled: 2026-11-17 17:39:26 (Asia/Jakarta).
 
 ## Next action and boundaries
 
-- Owner-side next step: install Build #165 APK and verify the real cooler's Bluetooth advertisement and App Connection row display JE X FYZ. CI does not prove physical radio behavior or OEM visuals.
+- Immediate owner-side next step: continue the approved `main-safety-guard` setup through GitHub UI using the text-only verification path. After repository hardening, the separate physical next step remains installing Build #165 APK and confirming the real cooler's Bluetooth Connection row displays JE X FYZ. CI does not prove physical radio behavior or OEM visuals.
 - Retain warnings: self-signed PKIX trust chain, META-INF signature coverage, Kotlin 2.2.20 / Firebase KGP compatibility, Android Gradle/Gradle 10 deprecations, Notification priority deprecations, native ELF DWARF, and native Android JUnit NO-SOURCE.
 - Firmware compile/BIN provenance, Firebase, OTA/flash, thermal/electrical, long-session soak and OEM visual acceptance remain separate and unverified. No such operation was performed or authorized.
