@@ -1,5 +1,5 @@
 <!-- ACTIVE_CHECKPOINT_START -->
-# ACTIVE CHECKPOINT — BUILD #164 RELEASE VERIFIED / BLUETOOTH NAME DISPLAY FIX VALIDATED — 2026-11-16
+# ACTIVE CHECKPOINT — BUILD #165 RELEASE VERIFIED / BLUETOOTH NAME DISPLAY FIX VALIDATED — 2026-11-17
 
 
 
@@ -69,10 +69,10 @@
 - Direct Actions runs lookup exposes push runs; prior notes claiming the available lookup was limited to PR runs are superseded.
 
 ## Final repository state and remaining boundaries
-- Verified source/test tree commit: `b8fcdaf191c5e8bb5df5fa44c50c80a12dfd03da`; subsequent main commits only synchronize canonical documentation/status and preserve the source/test blobs validated in #38.
+- Verified Build #165 App source/test checkpoint: `0a2b3c03af433a17d82afa1d4db60beb7b1bd023` (Validation Only #44 formatted tree); packaged Build #165 source: `cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d`. Live `main` at the 2026-11-17 reconciliation was `2b0a279e617d20a8e3c96262adf85aee62499f90`; compare from Build #165 source to that main HEAD is 27 ahead / 0 behind, with only eight documentation files changed (`00_WORK_STATUS.md`, `APP_BUILD_REPORT.md`, `APP_NOTES.md`, `BUILD_NOTES.md`, `CHANGELOG.md`, `CHAT_TRANSFER.md`, `HANDOVER.md`, `PROJECT_STATE.md`). App source/tests/config/workflows/Firmware are unchanged since the packaged source.
 - Verified recursive tree: 139 entries, `truncated=false`. Relevant source/test read-backs confirm the unused local is gone, Fan Speed assertion includes the live percent suffix, and the size/max-label assertions verify locale-aware formatting.
 - The local runtime has no Dart/Flutter SDK; validation evidence is from hosted GitHub Actions only.
-- Latest verified package is Build #164 / run `43863417641` / Release `403010611` / tag `jexfyz-latest`, source `a41baaf3bc53a02d72e12a4f3840f0c84c493497`; both Release assets passed downloaded identity, checksum and signing verification.
+- Latest verified package is **Build #165** / run `43905426531` / Release `403010611` / tag `jexfyz-latest`, source `cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d`; live Actions confirms run/job success, the tag ref points to that exact source SHA, and the Release contains exactly the APK plus corresponding source ZIP with the recorded digests.
 - Visual/OEM acceptance at 350-dp/360-dp, actual owner installation, BLE field behavior, Firmware compile/BIN provenance, thermal/electrical tests, Firebase, OTA/flash remain unverified.
-- Build #164 CI/release closure is complete. Physical install/OEM visual, BLE/field behavior, Firmware/BIN, Firebase, OTA/flash, thermal and electrical acceptance remain unverified and outside this mode.
+- Build #165 CI/release closure is complete. Physical install/OEM visual, BLE/field behavior, Firmware/BIN, Firebase, OTA/flash, thermal and electrical acceptance remain unverified and outside this mode.
 <!-- ACTIVE_CHECKPOINT_END -->
