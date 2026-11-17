@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — Current Handover
 
-Last reconciled: 2026-11-17 17:39:26 (Asia/Jakarta).
+Last reconciled: 2026-11-17 22:03:19 (Asia/Jakarta).
 
 ## Current state — BUILD #165 RELEASED SUCCESS
 
@@ -16,6 +16,7 @@ Last reconciled: 2026-11-17 17:39:26 (Asia/Jakarta).
 
 - Rulesets API currently returned empty list; owner screenshots also showed no classic branch protection rule. No repository settings have been changed by the assistant.
 - Owner approved a minimal branch Ruleset: `main-safety-guard`, target default branch `main`, Enforcement `Active`, no bypass entries, only `Restrict deletions` + `Block force pushes`; all other rules OFF. This preserves normal direct pushes and the existing Validation Only formatter commit path.
+- **Latest live read-only recheck:** `main` HEAD before this handover update is `90147a316cb5b21ffd7f4a6aa98f060517a47407`; recursive tree is 139 entries / 93 blobs / 46 trees, `truncated=false`. Rulesets API returns `[]`. Classic `branches/main/protection` API returns 403 Resource not accessible by integration, so classic protection remains API-UNVERIFIED; the prior owner screenshot showed no classic rules listed. Open PR query returns `[]`. Build #165 run `43905426531` / job `133432846684` remains terminal `completed / success`; Release `403010611` has exactly two assets and tag `jexfyz-latest` points to source `cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d`.
 - Owner reports image upload is limited. Continue setup using text-only field verification; no screenshot is required.
 - Before owner clicks Create, verify the form values in text: name, Active enforcement, default-branch target, empty bypass list, and exact two enabled rules. GitHub's form defaults Enforcement to Disabled, so owner must explicitly select Active. After Create, owner should report the resulting ruleset status/target/rules in text; no test force-push or deletion should be performed.
 - Detailed continuation: `CHAT_TRANSFER.md`, Stage 4. Active setup remains a manual owner action; this Diskusi has not created a Ruleset.
