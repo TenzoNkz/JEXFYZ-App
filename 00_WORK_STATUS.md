@@ -1,4 +1,4 @@
-| Last updated | 2026-11-17 10:32:59 (Asia/Jakarta) |
+| Last updated | 2026-11-17 10:36:16 (Asia/Jakarta) |
 
 > Single current snapshot for JE X FYZ project interactions. Event-driven marker; not a background heartbeat.
 
@@ -6,23 +6,23 @@
 
 | Field | Value |
 |---|---|
-| **STATUS** | **IN_PROGRESS** |
-| SESSION STATUS | IN_PROGRESS — owner reports Step 1 (Figma connection) completed; verify the live ChatGPT app connection before advancing. |
-| WORK STATUS | IN_PROGRESS — continue the staged owner setup walkthrough after verifying Figma connection; no repository or account configuration changes authorized. |
-| Mode | Diskusi! — read-only guided setup and live connection verification. No repository source/config/workflow/settings or device operations. |
-| Request / work item | Verify owner-reported Figma connection, then continue step-by-step through Copilot Code Review readiness and GitHub settings audit while preserving direct-to-main and guarded Build App workflows. |
+| **STATUS** | **COMPLETED** |
+| SESSION STATUS | COMPLETED — Figma Stage 1 verified installed and authenticated; owner has been guided through Stage 2 Copilot Code Review settings inspection. |
+| WORK STATUS | WAITING_OWNER — owner must inspect GitHub Profile → Copilot settings → Code review and report what is visible; no feature/configuration change authorized. |
+| Mode | Diskusi! — read-only guided setup, connector verification and owner UI instructions. No repository source/config/workflow/settings or device operations. |
+| Request / work item | Verify owner-reported Figma Stage 1 completion and guide the owner into Stage 2 Copilot Code Review eligibility inspection, preserving direct-to-main and guarded Build App workflows. |
 | Started | 2026-11-17 10:32:59 (Asia/Jakarta) |
-| Last updated | 2026-11-17 10:32:59 (Asia/Jakarta) |
-| Current phase | Open — verify the Figma connector's live installation/connection state; if confirmed, proceed to Copilot Code Review eligibility check. |
+| Last updated | 2026-11-17 10:36:16 (Asia/Jakarta) |
+| Current phase | Closed — Figma connector is installed, ENABLED and authenticated (`whoami` success); Stage 2 instructions delivered. Waiting for owner to inspect GitHub Copilot settings. |
 | Last completed milestone | Build #165 / run 43905426531 / job 133432846684 / source cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d terminal SUCCESS. Analyzer 107 infos; Flutter 205/205; Gradle BUILD SUCCESSFUL; APK V1/V2/V3 pinned signer; source ZIP integrity/marker; Release/tag parity; exactly two assets; Step 21 downloaded checksum/signature verification all PASS. |
 | Last verified source checkpoint | Validation Only #44 formatted App source/test SHA 0a2b3c03af433a17d82afa1d4db60beb7b1bd023. Pre-doc-sync main snapshot b46e29c1769dadb25a992ec02a1c000331e95978; compare 12 ahead / 0 behind, documentation-only paths; tree 139 entries, truncated=false. |
 | Current main HEAD | `b8dee5e65bd3dbea5e5f66c291b111cfa6a6d59d` — verified immediately before final status-close write; tree previously 139 entries, 53 Markdown blobs, `truncated=false`. Close-marker write advances main. |
 | EXTERNAL OPERATION | Build #165 / run 43905426531 / job 133432846684 / attempt 1 / source cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d; Issue #42; terminal completed / success at 2026-11-16T16:23:29Z. |
 | EXTERNAL OPERATION STATUS | COMPLETED / SUCCESS — all workflow steps 1–21 and cleanup 39–43 succeeded; APK and source ZIP Release assets and fresh downloaded identities verified. |
 | Previous successful package | Build #164 / run 43863417641 / source a41baaf3bc53a02d72e12a4f3840f0c84c493497 — historical/superseded by Build #165. |
-| Result / evidence | Figma plugin catalog still reports installed=false; GitHub app installed=true. Official docs confirm ChatGPT–Figma creates FigJam and Figma Slides only; unclaimed files are public by link until claimed into Drafts. Copilot review is a PR comment, not an approval/blocking review; existing `.github/skills/code-review` is ready as contextual skill. Copilot automatic-review settings require eligible paid plans (Pro/Pro+/Max/Business/Enterprise); no plan entitlement verified. Ruleset minimal protection can block force pushes/deletions while allowing standard pushes; classic protection remains unknown until owner UI check. Dependabot supports pub (community-maintained), Gradle and GitHub Actions; no `.github/dependabot.yml` exists. Canonical updates: CHAT_TRANSFER `ba45f2253f68695c68ff58ff936ba2ed0d072221`; SKILLS_INDEX `b8dee5e65bd3dbea5e5f66c291b111cfa6a6d59d`. No source/config/workflow/settings/tests/build/telemetry/device actions occurred. |
-| Blocker | None for this guidance task. Figma connection and GitHub UI inspection require owner action. Copilot subscription/eligibility is unknown. Dependabot/PR workflow must wait for a separate safe PR-validation design and explicit authorization. |
-| Next action | Verify Figma app status and connection via Plugin Management; do not assume user-side connection until status confirms. |
+| Result / evidence | Figma plugin catalog reports installed=true and ENABLED; Figma `whoami` succeeded, confirming authenticated connection. GitHub repository metadata confirms `TenzoNkz/JEXFYZ-App`, default branch `main`, connected GitHub app has admin/push permission; `.github/skills/code-review/SKILL.md` exists/read-back succeeded. Copilot review is a PR comment, not an approval/blocking review; existing `.github/skills/code-review` is ready as contextual skill. Copilot automatic-review settings require eligible paid plans (Pro/Pro+/Max/Business/Enterprise); no plan entitlement verified. Ruleset minimal protection can block force pushes/deletions while allowing standard pushes; classic protection remains unknown until owner UI check. Dependabot supports pub (community-maintained), Gradle and GitHub Actions; no `.github/dependabot.yml` exists. Canonical updates: CHAT_TRANSFER `ba45f2253f68695c68ff58ff936ba2ed0d072221`; SKILLS_INDEX `b8dee5e65bd3dbea5e5f66c291b111cfa6a6d59d`. No source/config/workflow/settings/tests/build/telemetry/device actions occurred. |
+| Blocker | Copilot personal plan/Code review settings cannot be read via repository connector; owner UI inspection required. Dependabot/PR workflow must wait for a separate safe PR-validation design and explicit authorization. |
+| Next action | Owner opens GitHub profile → Copilot settings → Code review and reports whether the page/options appear; do not enable Automatic Copilot code review or Review new pushes yet. |
 
 ## Status model
 
