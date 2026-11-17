@@ -1,4 +1,4 @@
-| Last updated | 2026-11-17 10:08:15 (Asia/Jakarta) |
+| Last updated | 2026-11-17 10:16:11 (Asia/Jakarta) |
 
 > Single current snapshot for JE X FYZ project interactions. Event-driven marker; not a background heartbeat.
 
@@ -6,23 +6,23 @@
 
 | Field | Value |
 |---|---|
-| **STATUS** | **COMPLETED** |
-| SESSION STATUS | COMPLETED — ChatGPT/GitHub capability and plugin assessment completed; Figma connection suggestion surfaced; durable recommendations saved in CHAT_TRANSFER.md and SKILLS_INDEX.md and read-back verified. |
+| **STATUS** | **IN_PROGRESS** |
+| SESSION STATUS | IN_PROGRESS — incoming Diskusi! request for step-by-step implementation guidance for the previously recommended ChatGPT/GitHub integrations and repository safeguards. |
 | WORK STATUS | COMPLETED — recommendation-only assessment delivered. Any Figma connection, Dependabot, PR-flow, repository security-setting or telemetry implementation remains a separate owner-approved action. |
-| Mode | Diskusi! — read-only workflow/capability assessment. No executable source, tests, config, workflow, build/release, Firmware/BIN, Firebase, OTA, flashing or device operations. |
-| Request / work item | Recommend practical ways to improve ChatGPT + GitHub collaboration for JE X FYZ, including whether additional ChatGPT plugins or external integrations are worth adding. Completed as a research and recommendation task. |
-| Started | 2026-11-17 10:00:41 (Asia/Jakarta) |
-| Last updated | 2026-11-17 10:08:15 (Asia/Jakarta) |
-| Current phase | Closed — verified GitHub plugin already installed; surfaced Figma connection suggestion; compared PostHog/Firebase/Linear/Notion options; checked Copilot skills, validation workflow, Dependabot config and repository rulesets; saved and verified canonical recommendations. |
+| Mode | Diskusi! — read-only guided setup and official-documentation verification. No repository source/config/workflow/settings or device operations. |
+| Request / work item | Guide the owner step by step through the recommended Figma connection, Copilot Code Review readiness, main-branch protection audit and Dependabot preparation, while preserving the existing direct-to-main and guarded Build App workflow. |
+| Started | 2026-11-17 10:16:11 (Asia/Jakarta) |
+| Last updated | 2026-11-17 10:16:11 (Asia/Jakarta) |
+| Current phase | Verify current GitHub/ChatGPT integration state and official setup instructions; prepare safe owner-driven steps and stop points. |
 | Last completed milestone | Build #165 / run 43905426531 / job 133432846684 / source cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d terminal SUCCESS. Analyzer 107 infos; Flutter 205/205; Gradle BUILD SUCCESSFUL; APK V1/V2/V3 pinned signer; source ZIP integrity/marker; Release/tag parity; exactly two assets; Step 21 downloaded checksum/signature verification all PASS. |
 | Last verified source checkpoint | Validation Only #44 formatted App source/test SHA 0a2b3c03af433a17d82afa1d4db60beb7b1bd023. Pre-doc-sync main snapshot b46e29c1769dadb25a992ec02a1c000331e95978; compare 12 ahead / 0 behind, documentation-only paths; tree 139 entries, truncated=false. |
-| Current main HEAD | `22f1e9a632212a882b70fbdfd588ceb962160a29` — verified immediately before final status-close write; tree 139 entries, 53 Markdown blobs, truncated=false. Close-marker write advances main. |
+| Current main HEAD | Previous verified HEAD `716e660d2a75420c236c92a5363de75e08db9761`; current HEAD will be read back after status-opening commit. Last recursive tree 139 entries, 53 Markdown blobs, truncated=false. |
 | EXTERNAL OPERATION | Build #165 / run 43905426531 / job 133432846684 / attempt 1 / source cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d; Issue #42; terminal completed / success at 2026-11-16T16:23:29Z. |
 | EXTERNAL OPERATION STATUS | COMPLETED / SUCCESS — all workflow steps 1–21 and cleanup 39–43 succeeded; APK and source ZIP Release assets and fresh downloaded identities verified. |
 | Previous successful package | Build #164 / run 43863417641 / source a41baaf3bc53a02d72e12a4f3840f0c84c493497 — historical/superseded by Build #165. |
 | Result / evidence | Live GitHub plugin search: GitHub already installed/enabled; Figma suggested but not connected; PostHog deferred, Firebase/Linear/Notion not recommended now. Existing `.github/skills` has 12 Copilot mirrors incl. code-review. Copilot Code Review agent skills/MCP GA source dated 2026-07-29 (eligible paid Copilot plans). Validation workflow is push-to-main only and path-filtered; no `.github/dependabot.yml`; Dependabot can support github-actions, gradle and pub (pub community-maintained). Rulesets API returned empty; classic branch protection API returned 403, so classic protection remains unknown. Documentation commits: CHAT_TRANSFER `ddc729688a9fabb2c2904a906c579a4cc1072b0d`; SKILLS_INDEX `22f1e9a632212a882b70fbdfd588ceb962160a29`. Final read-back succeeded. No source/config/workflow/settings/tests were changed; no tests/build were run. |
 | Blocker | None for this recommendation task. Figma connection is awaiting owner action; Copilot plan/activation and classic branch-protection settings are unverified. Any new PR validation, Dependabot configuration or product telemetry instrumentation needs a separate explicit authorization and safe design. |
-| Next action | Owner connects Figma from the surfaced ChatGPT app suggestion when ready for UI/UX design work. For repository safety, separately inspect GitHub Settings → Rules/Branches; do not enable PR-required rules or auto-merge without deciding to change the current direct-main workflow. |
+| Next action | Check Figma suggestion/connection state, GitHub Copilot Code Review plan/prerequisites, Dependabot ecosystem configuration, and current branch protection documentation; then provide ordered owner-facing steps. |
 
 ## Status model
 
