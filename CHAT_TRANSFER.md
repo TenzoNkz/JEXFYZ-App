@@ -98,6 +98,16 @@
 
 
 
+
+
+### Stage 3A — owner visual Rulesets audit and privacy confirmation — 2026-11-17
+
+- Owner explicitly reports that `Allow GitHub to use my data for AI model training` has now been set to `Disabled`. This is owner-reported completion; assistant has not read back the personal GitHub setting independently. This supersedes the earlier screenshot snapshot where it showed `Enabled`.
+- Owner-provided screenshot from `https://github.com/TenzoNkz/JEXFYZ-App/rules` shows the Rulesets page text: **“You haven't created any rulesets.”** Therefore no repository rulesets are visually configured at this point. This does **not** establish the state of classic branch protection rules, which are managed separately under repository Settings → Branches.
+- Official GitHub docs confirm repository Rulesets can be viewed at `/rules`; classic branch protection rules are managed via repository Settings → Branches. References: https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/managing-rulesets-for-a-repository and https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/managing-a-branch-protection-rule.
+- **Next owner action — Stage 3B:** open `https://github.com/TenzoNkz/JEXFYZ-App/settings/branches` or repository Settings → Code, planning, and automation → Branches. Send a screenshot showing the full `Branch protection rules` section and any rules. This is inspection only: do not click Add classic branch protection rule, Edit, Delete or Save.
+- Current conclusion: Rulesets = none visibly created; classic Branch protection = UNKNOWN pending Stage 3B. Retain direct-to-main until both the existing rules and compatibility of the current Validation Only formatter-commit workflow have been checked. No GitHub settings were changed by the assistant.
+
 ### Copilot Free screenshot assessment — 2026-11-17
 
 - Five owner-provided screenshots show the personal GitHub Copilot plan badge `Free`; the page URL shown is `/settings/copilot/features`. No Code review control is visible in those screenshots.
