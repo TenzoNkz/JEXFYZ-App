@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — Current Handover
 
-Last reconciled: 2026-11-16 23:33:56 (Asia/Jakarta).
+Last reconciled: 2026-11-17 17:39:26 (Asia/Jakarta).
 
 ## Current state — BUILD #165 RELEASED SUCCESS
 
@@ -11,6 +11,14 @@ Last reconciled: 2026-11-16 23:33:56 (Asia/Jakarta).
 - **Release:** ID 403010611 / tag jexfyz-latest; tag, Release target and source marker match the exact Build #165 source. Exactly two Release assets; Step 21 re-downloaded and verified both.
 - **Protected versions:** Flutter 1.0.0+3; Android Gradle versionName Telegram @horizontalzzz.
 - **Bluetooth correction included:** Connection row prioritizes advertised local name JE X FYZ, falls back to platform name, and uses localized generic fallback only if both are empty. No Firmware/BLE protocol change was made.
+
+## GitHub repository hardening — owner-approved / pending manual creation
+
+- Rulesets API currently returned empty list; owner screenshots also showed no classic branch protection rule. No repository settings have been changed by the assistant.
+- Owner approved a minimal branch Ruleset: `main-safety-guard`, target default branch `main`, Enforcement `Active`, no bypass entries, only `Restrict deletions` + `Block force pushes`; all other rules OFF. This preserves normal direct pushes and the existing Validation Only formatter commit path.
+- Owner reports image upload is limited. Continue setup using text-only field verification; no screenshot is required.
+- Before owner clicks Create, verify the form values in text: name, Active enforcement, default-branch target, empty bypass list, and exact two enabled rules. GitHub's form defaults Enforcement to Disabled, so owner must explicitly select Active. After Create, owner should report the resulting ruleset status/target/rules in text; no test force-push or deletion should be performed.
+- Detailed continuation: `CHAT_TRANSFER.md`, Stage 4. Active setup remains a manual owner action; this Diskusi has not created a Ruleset.
 
 ## Next action and boundaries
 
