@@ -61,7 +61,7 @@ For non-trivial UI changes, load the product-design skill plus the Flutter engin
 ### Plugin and GitHub workflow snapshot — checked 2026-11-17
 
 - GitHub ChatGPT integration is already installed/enabled; its repository and Actions tools are active in this project workflow. Do not add a duplicate GitHub connector.
-- Figma was available in the ChatGPT plugin catalog and a connection suggestion was surfaced for UI/UX design and design-to-code work. Connection remains unconfirmed until the owner completes the app's connection flow.
+- Figma was available in the ChatGPT app catalog and a connection suggestion was surfaced; connection remains unconfirmed. Figma's official direct ChatGPT integration currently creates FigJam diagrams and Figma Slides, not Figma Design mobile-screen files. Useful for architecture/flow diagrams and presentations; do not promise direct screen-mockup editing. Unclaimed generated Figma files are public by link until claimed into Drafts. See https://help.figma.com/hc/en-us/articles/35326636109975-Use-ChatGPT-with-Figma.
 - PostHog is available but deferred pending an owner-approved remote telemetry/error-tracking plan and privacy/data contract. No SDK or product telemetry integration is approved by this note.
 - Avoid introducing Linear/Notion/Asana/Trello solely for task tracking while GitHub Issues and canonical repo Markdown remain the project source of truth.
 - .github/skills already contains 12 Copilot skill mirrors, including code-review. GitHub Copilot Code Review can use agent skills/MCP on eligible plans; this is an optional second-reviewer path for explicitly opened PRs, not a ChatGPT plugin or replacement for ChatGPT's evidence review. The current default remains direct-to-main.
