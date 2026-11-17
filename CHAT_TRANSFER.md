@@ -1,5 +1,5 @@
 <!-- ACTIVE_CHECKPOINT_START -->
-# ACTIVE CHECKPOINT — BUILD #165 RELEASE VERIFIED / BLUETOOTH NAME DISPLAY FIX VALIDATED — 2026-11-17
+# ACTIVE CHECKPOINT — BUILD #165 RELEASE VERIFIED / MAIN SAFETY RULESET WAITING OWNER — 2026-11-17
 
 
 
@@ -7,8 +7,8 @@
 
 - Project: JE X FYZ / JE Cooler.
 - Canonical repository/branch: TenzoNkz/JEXFYZ-App / main.
-- Mode: Eksekusi Build App! — guarded App Build/QC/release only; no Firmware/BIN/Firebase/OTA/flash/device operations.
-- **Current interaction/work item: COMPLETED.** Build #165 completed every required App Build/QC/release gate, published the APK and matching source ZIP, and passed fresh downloaded-asset verification. External operation status is COMPLETED / SUCCESS.
+- Mode: Diskusi! — read-only repository recovery and owner-guidance; no executable source/test/config/workflow/build/release/settings/Firmware/device changes.
+- **Current session: COMPLETED. WORK STATUS: WAITING_OWNER.** This recovery interaction completed read-only reconciliation and saved the current evidence. The manual `main-safety-guard` work item remains paused until the owner reports the prepared form values. Build #165 is a separate external operation and remains COMPLETED / SUCCESS.
 - Latest release: Build #165 / run 43905426531 / job 133432846684 / Issue #42 / source cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d; Release ID 403010611 / tag jexfyz-latest. Build #164 is superseded as latest package, but its history remains intact.
 
 ## Bluetooth device-name correction — included in Build #165
@@ -34,7 +34,7 @@
 
 ## Exact next action
 
-- Owner-side next step: install the Build #165 APK from the Release and confirm the Bluetooth Connection row displays JE X FYZ from the real cooler. Record device/OEM/real-radio evidence separately from hosted CI.
+- Owner-side next step: report the prepared `main-safety-guard` form values in text — name, Enforcement, target branch, bypass list and exact enabled rule names. Check them against the approved minimal configuration before the owner clicks Create. No screenshot is required.
 - No new Build App trigger is needed unless future App source changes are explicitly requested and validated. Firmware/BIN/Firebase/OTA/flash/device operations require separate authorization.
 
 ## Owner-approved contracts — still authoritative
@@ -69,7 +69,7 @@
 - Direct Actions runs lookup exposes push runs; prior notes claiming the available lookup was limited to PR runs are superseded.
 
 ## Final repository state and remaining boundaries
-- Verified Build #165 App source/test checkpoint: `0a2b3c03af433a17d82afa1d4db60beb7b1bd023` (Validation Only #44 formatted tree); packaged Build #165 source: `cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d`. Live `main` at the 2026-11-17 reconciliation was `2b0a279e617d20a8e3c96262adf85aee62499f90`; compare from Build #165 source to that main HEAD is 27 ahead / 0 behind, with only eight documentation files changed (`00_WORK_STATUS.md`, `APP_BUILD_REPORT.md`, `APP_NOTES.md`, `BUILD_NOTES.md`, `CHANGELOG.md`, `CHAT_TRANSFER.md`, `HANDOVER.md`, `PROJECT_STATE.md`). App source/tests/config/workflows/Firmware are unchanged since the packaged source.
+- Verified Build #165 App source/test checkpoint: `0a2b3c03af433a17d82afa1d4db60beb7b1bd023` (Validation Only #44 formatted tree); packaged Build #165 source: `cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d`. Latest live `main` HEAD before this checkpoint sync was `5d05b775afaf2c46c208fcd476fc40579af10625`; recursive tree has 139 entries / 93 blobs / 46 trees, `truncated=false`. Compare from the prior active-checkpoint HEAD `2b0a279e617d20a8e3c96262adf85aee62499f90` is 40 ahead / 0 behind and reports only four changed documentation paths (`00_WORK_STATUS.md`, `CHAT_TRANSFER.md`, `HANDOVER.md`, `SKILLS_INDEX.md`). No App source/test/config/workflow/Firmware path changed in that comparison. Subsequent recovery updates are also documentation-only.
 - Verified recursive tree: 139 entries, `truncated=false`. Relevant source/test read-backs confirm the unused local is gone, Fan Speed assertion includes the live percent suffix, and the size/max-label assertions verify locale-aware formatting.
 - The local runtime has no Dart/Flutter SDK; validation evidence is from hosted GitHub Actions only.
 - Latest verified package is **Build #165** / run `43905426531` / Release `403010611` / tag `jexfyz-latest`, source `cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d`; live Actions confirms run/job success, the tag ref points to that exact source SHA, and the Release contains exactly the APK plus corresponding source ZIP with the recorded digests.
@@ -109,6 +109,7 @@
 - Owner explicitly agreed to proceed with the proposed `main-safety-guard` Ruleset. Because the active mode remains `Diskusi!`, this approval authorizes the assistant to guide the owner through GitHub's UI; it does not authorize the assistant to mutate repository/account settings through tools.
 - **Load + Continue recovery verification — 2026-11-17 17:33–17:36 Asia/Jakarta:** live `main` ref is `0c0a54c19bac10cf0260419e42e10da5f8ee99fc`; recursive tree is 139 entries / 93 blobs, `truncated=false`; live Rulesets API still returns `[]`. Therefore no Ruleset has been committed/created as of this check. The previous owner-approved task remains at the draft-form stage; no new owner screenshot of the form was present in this recovery message. Build #165 remains the last completed external operation (SUCCESS); no Actions/Build operation was triggered for this ruleset work.
 - **Text-only continuity update — 2026-11-17:** owner reports hitting the image-upload limit and cannot send the draft-form screenshot. Continue without requiring an image: the owner can report the current form values as text. This is an interface constraint, not a reason to abandon the setup. Keep the final pre-Create check (name, Active enforcement, default branch `main`, empty bypass list, only two protection rules) before allowing the owner to click Create. No Ruleset has been confirmed created yet.
+- **Latest live recheck — 2026-11-17 22:03 (Asia/Jakarta):** repository metadata still confirms `main` as the default branch. `GET /repos/TenzoNkz/JEXFYZ-App/rulesets` returned `[]`; `GET /branches/main/protection` returned `403 Resource not accessible by integration`, so classic branch protection remains API-UNVERIFIED (the earlier owner screenshot showed no rules listed). Open PR query returned `[]`. Build #165 run `43905426531` / job `133432846684` / attempt 1 is still `completed / success`, with all workflow steps 1–21 and cleanup 39–43 successful. Release `403010611` contains exactly the APK and corresponding source ZIP, and tag `jexfyz-latest` points to source `cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d`. No operation was retriggered.
 - Current authoritative configuration proposal:
   - Ruleset type: Branch ruleset.
   - Name: `main-safety-guard`.
