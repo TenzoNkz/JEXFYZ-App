@@ -58,6 +58,15 @@ For non-trivial UI changes, load the product-design skill plus the Flutter engin
 - Connected tool families visible in this session include GitHub repository/Actions/PR/issue tools, web research, Python/container utilities, Shopee product search, plugin management and task automations. Each action remains subject to tool availability, account connection, permission and the command-mode authorization in MASTER_PROMPT.md.
 - No direct Gemini connector is available in this workflow. The owner manually pastes the prompt and returns Gemini's response for verification.
 
+### Plugin and GitHub workflow snapshot — checked 2026-11-17
+
+- GitHub ChatGPT integration is already installed/enabled; its repository and Actions tools are active in this project workflow. Do not add a duplicate GitHub connector.
+- Figma was available in the ChatGPT plugin catalog and a connection suggestion was surfaced for UI/UX design and design-to-code work. Connection remains unconfirmed until the owner completes the app's connection flow.
+- PostHog is available but deferred pending an owner-approved remote telemetry/error-tracking plan and privacy/data contract. No SDK or product telemetry integration is approved by this note.
+- Avoid introducing Linear/Notion/Asana/Trello solely for task tracking while GitHub Issues and canonical repo Markdown remain the project source of truth.
+- .github/skills already contains 12 Copilot skill mirrors, including code-review. GitHub Copilot Code Review can use agent skills/MCP on eligible plans; this is an optional second-reviewer path for explicitly opened PRs, not a ChatGPT plugin or replacement for ChatGPT's evidence review. The current default remains direct-to-main.
+- No .github/dependabot.yml was present in the 2026-11-17 tree inspection. GitHub's supported ecosystems include GitHub Actions, Gradle and pub/Dart; pub support is community-maintained. Consider low-noise weekly Dependabot only after a safe read-only PR validation workflow exists. Do not auto-merge dependency updates.
+- Rulesets API returned no rulesets; classic branch protection could not be read via the connected integration (403). The classic protection state is therefore unverified and must be checked in repository Settings by the owner.
 ## Current execution-environment snapshot
 
 - Checked 2026-11-13: Git, Python 3 and Java are available in the current runtime. Dart, Flutter, Gradle, ADB, Arduino CLI and ESP-IDF are absent. GitHub repository read/write is available through the connector; local Flutter/Android/Firmware compilation and physical-device validation cannot be claimed from this runtime.
