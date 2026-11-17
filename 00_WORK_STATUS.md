@@ -1,4 +1,4 @@
-| Last updated | 2026-11-17 17:33:21 (Asia/Jakarta) |
+| Last updated | 2026-11-17 17:36:07 (Asia/Jakarta) |
 
 > Single current snapshot for JE X FYZ project interactions. Event-driven marker; not a background heartbeat.
 
@@ -7,22 +7,22 @@
 | Field | Value |
 |---|---|
 | **STATUS** | **IN_PROGRESS** |
-| SESSION STATUS | IN_PROGRESS — recover current main-safety-guard manual setup checkpoint, reconcile live repo state, then continue without repeating completed owner actions. |
-| WORK STATUS | IN_PROGRESS — manual `main-safety-guard` setup is owner-approved but not confirmed created. Last verified boundary: waiting for draft-form screenshot; do not repeat or assume form progress. |
+| SESSION STATUS | COMPLETED — active checkpoint and live main/tree/rulesets reconciled; official GitHub create guide verified; clarified Enforcement defaults to Disabled and must be explicitly changed to Active. |
+| WORK STATUS | WAITING_OWNER — owner-approved manual setup remains pending the draft-form screenshot. Rulesets API still returns []; no creation confirmed. Wait for owner to enter the ruleset name and send the form screenshot before further guidance. |
 | Mode | Diskusi! — load + continue read-only checkpoint recovery and owner UI guidance. No GitHub setting changes, source/config/workflow/build/device operations. |
-| Request / work item | Recover active `main-safety-guard` guided setup, verify live main/tree and canonical checkpoint, and continue the owner-approved manual UI process without changing repository settings. |
+| Request / work item | Recover and continue the owner-approved `main-safety-guard` manual UI setup; reconcile live state, correct enforcement-default guidance and wait for the draft form screenshot without changing repository settings. |
 | Started | 2026-11-17 17:33:21 (Asia/Jakarta) |
-| Last updated | 2026-11-17 17:33:21 (Asia/Jakarta) |
+| Last updated | 2026-11-17 17:36:07 (Asia/Jakarta) |
 | Current phase | Open — explicit owner agreement received. Guide manual creation through repository Settings → Rules → Rulesets → New branch ruleset; validate exact target/rules/exclusions before owner clicks Create ruleset. |
 | Last completed milestone | Build #165 / run 43905426531 / job 133432846684 / source cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d terminal SUCCESS. Analyzer 107 infos; Flutter 205/205; Gradle BUILD SUCCESSFUL; APK V1/V2/V3 pinned signer; source ZIP integrity/marker; Release/tag parity; exactly two assets; Step 21 downloaded checksum/signature verification all PASS. |
 | Last verified source checkpoint | Validation Only #44 formatted App source/test SHA 0a2b3c03af433a17d82afa1d4db60beb7b1bd023. Pre-doc-sync main snapshot b46e29c1769dadb25a992ec02a1c000331e95978; compare 12 ahead / 0 behind, documentation-only paths; tree 139 entries, truncated=false. |
-| Current main HEAD | `7d8993b10e8dfac38f6c1c9c88ddaaecea1e57e1` — verified before this status-close write; recursive tree has 139 entries / 93 blobs, `truncated=false`. Close-marker write advances main. |
+| Current main HEAD | `5e99311115b5875ea83aa489fe3396bdf662bd4b` — verified immediately before status-close write; recursive tree has 139 entries / 93 blobs, `truncated=false`. Close-marker write advances main. |
 | EXTERNAL OPERATION | Build #165 / run 43905426531 / job 133432846684 / attempt 1 / source cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d; Issue #42; terminal completed / success at 2026-11-16T16:23:29Z. |
 | EXTERNAL OPERATION STATUS | COMPLETED / SUCCESS — all workflow steps 1–21 and cleanup 39–43 succeeded; APK and source ZIP Release assets and fresh downloaded identities verified. |
 | Previous successful package | Build #164 / run 43863417641 / source a41baaf3bc53a02d72e12a4f3840f0c84c493497 — historical/superseded by Build #165. |
 | Result / evidence | Owner reports setting “Allow GitHub to use my data for AI model training” is now Disabled. Owner Rulesets screenshot visibly says “You haven't created any rulesets”; no rulesets are visually configured. Owner's latest Settings → Branches screenshot shows no branch protection rules listed (only Add branch ruleset and Add classic branch protection rule options), so no classic branch protection is visually configured either. GitHub repository metadata confirms `TenzoNkz/JEXFYZ-App`, default branch `main`, connected GitHub app has admin/push permission; `.github/skills/code-review/SKILL.md` exists/read-back succeeded. Copilot Free only includes `Review selection` in VS Code, not GitHub PR Code Review; dedicated personal Code review page exists for all plans but does not grant Free PR entitlement; eligible plans can request PR reviews via Reviewers → Copilot → Request (default Comment; optional configuration may yield Approve); existing `.github/skills/code-review` is ready as contextual skill. Owner screenshots confirm Copilot Free; official plan table shows GitHub PR Code Review not included (only VS Code Review selection); Manual review is requested on a PR via Reviewers → Copilot → Request; Ruleset minimal protection can block force pushes/deletions while allowing standard pushes; classic protection screenshot shows no rule listed. Dependabot supports pub (community-maintained), Gradle and GitHub Actions; no `.github/dependabot.yml` exists. Canonical updates: CHAT_TRANSFER `ba45f2253f68695c68ff58ff936ba2ed0d072221`; SKILLS_INDEX `b8dee5e65bd3dbea5e5f66c291b111cfa6a6d59d`. No source/config/workflow/settings/tests/build/telemetry/device actions occurred. |
 | Blocker | No Rulesets or classic branch protection rules are visibly configured. Any future rule creation/change requires a distinct explicit authorization. Preserve ordinary direct pushes and the GitHub Actions formatter-only commit path. Dependabot/PR workflow must wait for a separate safe PR-validation design and explicit authorization. |
-| Next action | Verify live main HEAD/tree and read the active CHAT_TRANSFER checkpoint; then determine whether owner has already prepared/submitted the Ruleset form. Do not create, update or delete GitHub settings. |
+| Next action | Owner opens `https://github.com/TenzoNkz/JEXFYZ-App/rules` → New ruleset → New branch ruleset, enters `main-safety-guard`, and sends a draft-form screenshot. Do not click Create until reviewed; explicitly select Enforcement `Active` later because GitHub's form defaults to `Disabled`. |
 
 ## Status model
 
