@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — Current Project State
 
-Last reconciled: 2026-11-18 14:19:11 (Asia/Jakarta).
+Last reconciled: 2026-11-18 14:47:14 (Asia/Jakarta).
 
 ## Repository baseline
 
@@ -126,10 +126,12 @@ Last reconciled: 2026-11-18 14:19:11 (Asia/Jakarta).
 - CHAT_TRANSFER.md contains one bounded active checkpoint between explicit markers. Its former 723-line snapshot is preserved in archive/CHAT_TRANSFER_PRE_COMPACTION_2026-11-15.md.
 - CHAT_TRANSFER_PROMPTS.md contains exactly two copy-ready prompts; APP_BUILD_REPORT.md, CHANGELOG.md and archive/*.md preserve history.
 
-## Immediate next action
+## Current Ruleset status and next action
 
-- Latest owner-provided screenshots (phone clock 13:50, 2026-11-18) show the `New branch ruleset` form. The name is blank, Enforcement is `Disabled`, bypass list is empty, and Target branches is not configured. Only `Restrict deletions` and `Block force pushes` are checked among the displayed rules; the other displayed options are unchecked. The Create button is visible, but there is no creation confirmation.
-- CURRENT / VERIFIED Rulesets API recheck at 2026-11-18 13:52 Asia/Jakarta returned `[]`; no Ruleset is confirmed created.
-- Owner should enter `main-safety-guard`, change Enforcement to `Active`, then Add target → include the default branch `main`. Keep bypass empty and retain only the two already checked protections. Do not click Create until the completed values are reported and reviewed.
-- Current package remains Build #165 / run 43905426531 / job 133432846684 / Release 403010611 / tag `jexfyz-latest`, source `cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d`. Physical installation/BLE display, Firmware/BIN, Firebase, OTA/flash, thermal/electrical and OEM visual evidence remain unverified and separate.
-- This Diskusi performed screenshot/API review and canonical documentation updates only. No source, tests, configuration, workflow, GitHub settings, build/release, Firmware or device operation was changed or run.
+- **Historical pre-Create evidence, superseded:** the 13:50 screenshots showed an unconfigured draft and the 13:52 API check returned `[]`. The owner later submitted Create; those earlier observations do not describe the current settings.
+- **Current owner screenshot — 2026-11-18, phone clock 14:13:** the Rulesets list shows `main-safety-guard` as Active, with 2 branch rules and 1 targeted branch. The Export/Delete menu is open; the assistant did not select either option.
+- **Current live API verification — 2026-11-18 14:19:11 Asia/Jakarta, main HEAD `81a17a212dc3cecf1e3aed3d29f7c1edc0e716af`:** repository default branch `main`; recursive tree 139 entries / 93 blobs / 46 trees, `truncated=false`; exactly one Ruleset, ID `27528678`, active. It includes `~DEFAULT_BRANCH`, excludes none, has rules `deletion` + `non_fast_forward`, an empty bypass list, and `current_user_can_bypass=never`. Created at 14:13:18 +07:00. This matches the approved configuration.
+- Ruleset setup is complete. Close the open menu by tapping outside; do not select **Delete ruleset**. No deletion or force-push test is needed.
+- **Next separate project acceptance:** owner installs Build #165 and confirms that the actual cooler advertisement and App Connection row display `JE X FYZ`. Physical BLE/OEM behavior remains unverified.
+- Classic branch protection remains API-UNVERIFIED because the connected integration previously returned 403. Prior owner UI evidence showed no classic rule listed; this is separate from the Rulesets result.
+- Build #165 remains the latest verified package. No Firmware compile/BIN, Firebase, OTA, flashing, thermal/electrical or device operation was performed or authorized in this Diskusi.
