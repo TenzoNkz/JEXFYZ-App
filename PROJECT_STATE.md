@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — Current Project State
 
-Last reconciled: 2026-11-18 13:21:23 (Asia/Jakarta).
+Last reconciled: 2026-11-18 13:53:53 (Asia/Jakarta).
 
 ## Repository baseline
 
@@ -124,8 +124,8 @@ Last reconciled: 2026-11-18 13:21:23 (Asia/Jakarta).
 
 ## Immediate next action
 
-- Current GitHub work item: manual `main-safety-guard` branch ruleset setup is WAITING_OWNER. At the 2026-11-18 13:15 Asia/Jakarta live recheck, repository Rulesets API returned `[]`, open PRs were `[]`, and classic branch-protection API returned 403 (API-UNVERIFIED). A prior owner screenshot showed no classic rules listed; it remains separate USER-REPORTED visual evidence.
-- The owner-approved form values remain: Branch ruleset `main-safety-guard`; Enforcement `Active`; target default branch `main`; empty bypass list; enable only `Restrict deletions` and `Block force pushes`. Keep Restrict updates, PR/status-check requirements, push restrictions, Lock branch and all other rules OFF to preserve the validated direct-to-main formatter-commit path.
-- Exact next owner action: select `New branch ruleset`, then report the name, enforcement, target, bypass list and exact selected rules in text. Review those values before the owner clicks Create; after creation, verify the resulting status/target/rules from the owner's report.
+- Latest owner-provided screenshots (phone clock 13:50, 2026-11-18) show the `New branch ruleset` form. The name is blank, Enforcement is `Disabled`, bypass list is empty, and Target branches is not configured. Only `Restrict deletions` and `Block force pushes` are checked among the displayed rules; the other displayed options are unchecked. The Create button is visible, but there is no creation confirmation.
+- CURRENT / VERIFIED Rulesets API recheck at 2026-11-18 13:52 Asia/Jakarta returned `[]`; no Ruleset is confirmed created.
+- Owner should enter `main-safety-guard`, change Enforcement to `Active`, then Add target → include the default branch `main`. Keep bypass empty and retain only the two already checked protections. Do not click Create until the completed values are reported and reviewed.
 - Current package remains Build #165 / run 43905426531 / job 133432846684 / Release 403010611 / tag `jexfyz-latest`, source `cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d`. Physical installation/BLE display, Firmware/BIN, Firebase, OTA/flash, thermal/electrical and OEM visual evidence remain unverified and separate.
-- This Diskusi performed only repository/API reads and canonical documentation updates. No source, tests, configuration, workflow, GitHub settings, build, release, Firmware or device operation was changed or run.
+- This Diskusi performed screenshot/API review and canonical documentation updates only. No source, tests, configuration, workflow, GitHub settings, build/release, Firmware or device operation was changed or run.
