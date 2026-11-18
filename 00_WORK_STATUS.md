@@ -1,4 +1,4 @@
-| Last updated | 2026-11-18 14:36:06 (Asia/Jakarta) |
+| Last updated | 2026-11-18 15:16:06 (Asia/Jakarta) |
 
 > Single current snapshot for JE X FYZ project interactions. Event-driven marker; not a background heartbeat.
 
@@ -6,22 +6,22 @@
 
 | Field | Value |
 |---|---|
-| **STATUS** | **IN_PROGRESS** |
-| SESSION STATUS | IN_PROGRESS — incoming Diskusi! message verifies the owner’s created branch ruleset. |
-| WORK STATUS | IN_PROGRESS — owner screenshot now shows the Ruleset in the list; verifying its persisted details against the approved configuration. |
-| Mode | Diskusi! — read-only owner guidance; no GitHub settings or executable project files may be mutated. |
-| Request / work item | Verify the newly listed `main-safety-guard` Ruleset details and advise the next safe step. |
+| **STATUS** | **COMPLETED** |
+| SESSION STATUS | COMPLETED — this Diskusi interaction verified the owner-created Ruleset and saved the final checkpoint. |
+| WORK STATUS | COMPLETED — `main-safety-guard` matches the approved active configuration; next project acceptance is a separate owner-side Build #165 device check. |
+| Mode | Diskusi! — read-only verification and owner guidance; no GitHub settings or executable project files were changed. |
+| Request / work item | Verify the created `main-safety-guard` Ruleset and advise the next safe step. |
 | Started | 2026-11-18 14:15:01 (Asia/Jakarta) |
-| Last updated | 2026-11-18 14:15:01 (Asia/Jakarta) |
-| Current phase | Reconcile the stale pre-Create Ruleset note in PROJECT_STATE.md, then re-read all canonical notes and close the status. |
-| Last completed milestone | Live API, screenshot, Build #165 run, Release and tag are verified; final consistency review found an older PROJECT_STATE.md paragraph still describes the pre-Create draft and needs historical labeling. |
+| Last updated | 2026-11-18 15:16:06 (Asia/Jakarta) |
+| Current phase | Closed after read-back of canonical notes and final live repository / Ruleset verification. |
+| Last completed milestone | Screenshot and API agree: Ruleset ID 27528678 is active for `~DEFAULT_BRANCH` (`main`), with `deletion` + `non_fast_forward`, empty bypass actors, and current-user bypass `never`; Build #165 run / Release / tag remain aligned and successful. |
 | Last verified source checkpoint | Validation Only #44 formatted App source/test SHA 0a2b3c03af433a17d82afa1d4db60beb7b1bd023; Build #165 source cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d. |
-| Last verified main HEAD | `81a17a212dc3cecf1e3aed3d29f7c1edc0e716af`; repository default is `main`; recursive tree has 139 entries and `truncated=false`. |
+| Last verified main HEAD | `8d6a9e03c3c727eb8992d063c3e9db9e7523c9a1`; default branch `main`; recursive tree 139 entries, `truncated=false`. The status close commit follows this checkpoint. |
 | EXTERNAL OPERATION | Build #165 / run 43905426531 / job 133432846684 / attempt 1 / source cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d; Issue #42; terminal completed / success at 2026-11-16T16:23:29Z. |
-| EXTERNAL OPERATION STATUS | COMPLETED / SUCCESS — run and job re-read from live API; all 21 workflow steps and cleanup 39–43 succeeded. Release/tag/source SHA and two asset identities remain aligned. No new external operation was started. |
-| Result / evidence | User screenshot at phone clock 14:13 shows `main-safety-guard` Active, 2 branch rules / 1 target; live API detail confirms the approved exact configuration. Export/Delete menu is open; assistant did not select either option. |
-| Blocker | None; correcting one stale historical paragraph before final closure. |
-| Next action | Mark the 13:50 form/API empty-state note as historical, verify all final documentation and live Ruleset state, then close this session. |
+| EXTERNAL OPERATION STATUS | COMPLETED / SUCCESS — Build #165 run and Release/tag/source alignment re-read live; no new Actions operation was started. |
+| Result / evidence | Owner screenshot shows the Active Ruleset card (2 rules / 1 target). Live detail confirms the exact approved configuration. Export/Delete menu remains open; assistant did not choose either option. |
+| Blocker | None for Ruleset verification. Classic branch-protection API remains separately unavailable (prior 403); previous owner UI evidence showed no classic rule listed. |
+| Next action | Owner closes the menu without selecting Delete. If continuing App acceptance, owner installs Build #165 and confirms the actual cooler advertisement and App Connection row show `JE X FYZ`. |
 
 ## Status model
 
