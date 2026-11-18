@@ -1,5 +1,5 @@
 <!-- ACTIVE_CHECKPOINT_START -->
-# ACTIVE CHECKPOINT — BUILD #165 RELEASE VERIFIED / MAIN SAFETY RULESET CREATED AND VERIFIED — 2026-11-18
+# ACTIVE CHECKPOINT — BUILD #165 RELEASED / MAIN SAFETY RULESET VERIFIED / JE X FYZ DISPLAY OWNER-REPORTED — 2026-11-18
 
 
 
@@ -8,7 +8,7 @@
 - Project: JE X FYZ / JE Cooler.
 - Canonical repository/branch: TenzoNkz/JEXFYZ-App / main.
 - Mode: Diskusi! — read-only repository recovery and owner-guidance; no executable source/test/config/workflow/build/release/settings/Firmware/device changes.
-- **SESSION STATUS: COMPLETED; WORK STATUS: COMPLETED.** This 2026-11-18 Diskusi interaction verified the owner-created Ruleset against live API details, reconciled the pre-Create note in PROJECT_STATE.md as historical, and updated the canonical checkpoint. The approved configuration is active and matches; the open Delete menu remains untouched. The next distinct acceptance step is owner installation and physical BLE-name confirmation for Build #165. Build #165 remains a separate external operation: COMPLETED / SUCCESS.
+- **SESSION STATUS: COMPLETED; WORK STATUS: COMPLETED.** This Diskusi interaction verified live main, Build #165 run/job, Release/tag, PRs and Ruleset, then recorded the owner’s report that the App again displays `JE X FYZ`. The report is USER-REPORTED; no screenshot, exact installed APK/build or live advertisement payload was supplied. No Eksekusi Full! or new Eksekusi Build App! is indicated by this report alone. Build #165 remains a separate external operation: COMPLETED / SUCCESS.
 - Latest release: Build #165 / run 43905426531 / job 133432846684 / Issue #42 / source cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d; Release ID 403010611 / tag jexfyz-latest. Build #164 is superseded as latest package, but its history remains intact.
 
 ## Bluetooth device-name correction — included in Build #165
@@ -17,7 +17,7 @@
 - Firmware V7.2 source already declares BLE_NAME = JE X FYZ and initializes the BLE stack with it. No Firmware source/BIN or BLE protocol change was made.
 - Validation Only #44 / run 43899329198 / job 133411358928: formatter final PASS; analyzer 107 infos / zero warnings/errors; Flutter tests 205/205 PASS; formatted source/test tree 0a2b3c03af433a17d82afa1d4db60beb7b1bd023.
 - Build #165 source cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d compares 17 commits ahead / 0 behind that validated source/test tree; changes are documentation-only. No App source/test change occurred after Validation Only #44.
-- **Physical verification remains NOT DONE:** owner must install the Build #165 APK and confirm the actual cooler advertisement and App Connection row display JE X FYZ. CI/source tests do not prove phone/cooler radio behavior.
+- **Owner-reported display result — 2026-11-18:** the owner says the App again safely displays `JE X FYZ`. No screenshot, exact installed APK/build or live advertisement payload was supplied; broader RF/OEM behavior remains independently unverified.
 
 ## Build #165 — terminal SUCCESS / verified release
 
@@ -37,7 +37,7 @@
 - **Owner screenshot — 2026-11-18 (14:13 phone clock):** Rulesets list shows `main-safety-guard` as Active, 2 branch rules / 1 target branch. The Export/Delete menu is open; do not select Delete.
 - **Live API verification — 2026-11-18 14:19:11 Asia/Jakarta:** Ruleset ID `27528678`; branch target; `active`; include `~DEFAULT_BRANCH` (repository default `main`), no excludes; rules `deletion` + `non_fast_forward`; empty bypass actors; `current_user_can_bypass=never`. Created at 14:13:18 +07:00.
 - Ruleset setup is complete. Close the menu by tapping outside without selecting an item; no test push or deletion is needed.
-- Next separate project acceptance step: owner installs Build #165 and confirms the actual cooler advertisement and App Connection row show `JE X FYZ`. Physical BLE/OEM behavior remains unverified.
+- No further App source or package build step is indicated for this reported display result. If independent evidence is needed later, the owner can provide a fresh cooler-scan screenshot and installed build details; no build trigger is needed for that.
 ## Owner-approved contracts — still authoritative
 - English is the master/default language; Indonesian must be complete, natural and semantically equivalent.
 - General glossary includes Battery → Baterai; Battery Temperature → Suhu Baterai; generic Hotside component references → Sisi Panas; Hotside Temperature → Suhu Sisi Panas; Hotside Limit → Batas Suhu Sisi Panas; generic cooler → pendingin; Adaptive Mode → Mode Adaptif; Fan → Kipas; Fan Speed → Kecepatan Kipas; Voltage → Tegangan.
@@ -78,7 +78,7 @@
 - Classic branch-protection API previously returned 403 (API-UNVERIFIED); prior owner UI evidence showed no classic rule listed. This is separate from the verified Ruleset.
 - Documentation commits for this Ruleset verification are documentation-only; no App source/test/config/workflow/Firmware path changed.
 - The current interaction ran no tests. Prior hosted Validation Only #44 and Build #165 evidence remains recorded above.
-- Physical installation, OEM visual acceptance and actual cooler BLE advertisement/display remain unverified. The next independent acceptance step is owner installation of Build #165 and confirmation that the advertisement and App Connection row show `JE X FYZ`.
+- The owner reports that the App again displays `JE X FYZ` (USER-REPORTED); no screenshot, exact installed APK/build or advertisement payload was supplied. Broader OEM/RF behavior remains independently unverified. No tests or device operations were performed in this Diskusi.
 - Firmware compile/BIN provenance, thermal/electrical tests, Firebase, OTA/flash and long-session acceptance remain unverified and outside this Diskusi.
 
 ## ChatGPT + GitHub workflow optimization review — 2026-11-17 (recommendations only; no execution authorization)
@@ -116,7 +116,7 @@
 - **Final read-only verification — 2026-11-18 14:19:11 Asia/Jakarta:** repository default branch `main`; Ruleset ID `27528678`; condition includes `~DEFAULT_BRANCH` and excludes none; rules are `deletion` and `non_fast_forward`; bypass actors are empty; `current_user_can_bypass=never`. The API's create time is 14:13:18 +07:00. This agrees with the approved configuration. No force-push or deletion test was performed or is needed.
 - The current screenshot shows the Export/Delete menu open. Do not select Delete; the owner can close the menu by tapping outside. Assistant made no GitHub settings change.
 - The classic branch-protection endpoint previously returned 403, so its current state remains API-UNVERIFIED. A prior owner screenshot showed no classic rule listed; this is separate from the Rulesets result.
-- The ruleset subtask is complete. The next independent acceptance step is owner installation of Build #165 followed by visual confirmation of actual cooler BLE advertisement and the App Connection row displaying `JE X FYZ`. No device operation is authorized under Diskusi.
+- The Ruleset subtask is complete. The owner now reports that the App again displays `JE X FYZ` (USER-REPORTED); no screenshot, exact installed APK/build or advertisement payload was supplied. No Eksekusi Full! or new App Build is indicated for this report.
 ### Stage 3B — owner visual classic Branch protection audit and compatibility review — 2026-11-17
 
 - Owner-provided screenshot from `https://github.com/TenzoNkz/JEXFYZ-App/settings/branches` shows the `Branch protection rules` heading and GitHub information panel with only `Add branch ruleset` and `Add classic branch protection rule` actions. No classic branch protection rule is listed. Combined with the Rulesets screenshot (“You haven't created any rulesets”) and a successful read-only `GET /repos/TenzoNkz/JEXFYZ-App/rulesets` returning `[]`, no repository-level Rulesets or classic branch protection rules are visually/API-observed at this audit point.
