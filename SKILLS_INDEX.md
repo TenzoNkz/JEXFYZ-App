@@ -64,15 +64,16 @@ For non-trivial UI changes, load the product-design skill plus the Flutter engin
 - Figma is shown installed/enabled in the current plugin catalog; a read-only Figma `whoami` succeeded on 2026-11-17. Its direct ChatGPT integration supports FigJam diagrams and Figma Slides, not editable Figma Design app screens. No Figma file was created or changed in this work.
 - Context7 was surfaced by the current software-documentation plugin search and suggested as an optional tool for version-sensitive Flutter/Dart/Gradle documentation lookup. It remains not installed/connected; it is not needed for routine repository work.
 - Do not add Linear/Notion/Asana/Trello solely for task tracking while GitHub Issues and canonical repository Markdown remain the project source of truth. Defer Firebase or analytics integrations until a specific backend task or privacy/data contract is approved.
-- The current tree has no `.github/dependabot.yml`. The Validation Only workflow exists, but triggers on pushes to `main` and can write a formatter-only commit; it is not safe to expose that workflow directly to `pull_request` events. Keep the guarded Build App workflow separate.
-- If the owner chooses PR-based validation or Dependabot, first add a separate read-only `pull_request` workflow with `contents: read`; only then consider low-noise weekly dependency-update PRs for `pub`, `gradle` and `github-actions`, with owner review and no auto-merge.
+- The tree still has no `.github/dependabot.yml`. A separate `.github/workflows/jexfyz-app-pr-validation.yml` now runs on pull requests with `contents: read`, pinned actions, checkout credentials disabled and caching disabled. It checks locked dependencies, read-only Dart formatting, analysis and Flutter tests; it has no secrets, formatter mutation, build or publish step. The source was statically reviewed at commit `96c5fa395e8a6f96c420a47fa2dd6ad74e569523`; no PR is open, so hosted CI has not exercised it yet.
+- Existing Validation Only remains a push-to-`main` workflow and can write a formatter-only commit to `lib/` and `test/`; do not expose it to PR events. Keep it separate from the guarded Build App release flow.
+- Before requiring PR checks or adding weekly Dependabot updates for `pub`, `gradle` and `github-actions`, first observe a normal PR run of the new workflow. Keep owner review and no auto-merge.
 - The active Ruleset `main-safety-guard` (ID `27528678`) protects the default branch from deletion and non-fast-forward updates, with no bypass actors. The separate classic branch-protection API returned 403, so that state remains unverified.
 - A repository-specific security-scanning plugin was not surfaced in the current plugin searches. No separate security plugin is needed to decide the current App rebuild question; review workflow/dependency automation separately if desired.
 
 ## Current execution-environment snapshot
 
 - Checked 2026-11-13: Git, Python 3 and Java are available in the current runtime. Dart, Flutter, Gradle, ADB, Arduino CLI and ESP-IDF are absent. GitHub repository read/write is available through the connector; local Flutter/Android/Firmware compilation and physical-device validation cannot be claimed from this runtime.
-- The connected GitHub Actions workflow can validate and publish the App, but its only current App workflow is the guarded Build/QC/release pipeline rather than a validation-only job. It must not be triggered from Diskusi or Eksekusi Full.
+- App Actions now include the push-to-main Validation Only workflow (which may commit only formatter changes under `lib/` and `test/`), a separate read-only `pull_request` Flutter validator (source implemented, hosted CI NOT RUN because there is no PR), and the guarded Build/QC/release workflow. The new PR validator does not build or publish an App; only the explicit Build App mode authorizes that release path.
 - No toolchain was installed and no local build/test command was attempted in this audit.
 
 
