@@ -15,7 +15,7 @@
 - The Connection row now displays the current BLE advertisement local name (`advertisementData.advName`) first, falls back to the platform device name (`device.platformName`) when the advertisement omits a name, and uses localized `Device` / `Perangkat` only if both are empty.
 - The change is App presentation only. BLE service UUIDs, device matching/filtering, scan ownership, connection handoff, P1 framing, and Firmware advertisement name are unchanged.
 - Regression coverage includes advertised-name precedence, platform-name fallback, empty-name fallback, and a widget source-contract check that the Connection row calls the App display-name helper and does not mask `JE X FYZ`. Firmware V7.2's `BLE_NAME` / `BLEDevice::init(BLE_NAME)` was separately confirmed by read-only source inspection; the widget test does not read the Firmware file.
-- Physical verification remains required after owner installation of Build #165: scan the cooler on the owner's phone and confirm the row displays `JE X FYZ`. Do not infer actual radio advertisement/display from source tests or hosted CI alone.
+- **Owner report — 2026-11-18 (USER-REPORTED):** the owner says the App again safely displays `JE X FYZ`. No screenshot was attached, and the exact installed APK/build and live advertisement payload were not independently verified. This records the reported App-visible result; it does not independently establish RF/OEM behavior. Build #165 already contains the display-name correction and passed hosted validation, so this report alone does not call for another source fix or App Build.
 
 ---
 # JE X FYZ / JE Cooler — App Behavior Reference
