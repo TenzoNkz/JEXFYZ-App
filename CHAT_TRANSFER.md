@@ -8,7 +8,7 @@
 - Project: JE X FYZ / JE Cooler.
 - Canonical repository/branch: TenzoNkz/JEXFYZ-App / main.
 - Mode: Diskusi! — read-only repository recovery and owner-guidance; no executable source/test/config/workflow/build/release/settings/Firmware/device changes.
-- **SESSION STATUS: COMPLETED; WORK STATUS: WAITING_OWNER.** This 2026-11-18 Diskusi recovery rechecked the live repository, rules, PRs, Build #165 run/job and Release/tag, then saved documentation-only updates. The manual `main-safety-guard` work item remains paused until the owner reports the prepared form values. Build #165 is a separate external operation and remains COMPLETED / SUCCESS.
+- **SESSION STATUS: COMPLETED; WORK STATUS: WAITING_OWNER.** This 2026-11-18 Diskusi interaction reviewed the owner’s 13:50 branch-ruleset screenshots, confirmed the draft still lacks its name, Active enforcement and branch target, rechecked the live Rulesets API (`[]`), and saved documentation-only findings. The `main-safety-guard` work item waits for the owner to enter and report the exact pre-Create values. Build #165 remains a separate external operation: COMPLETED / SUCCESS.
 - Latest release: Build #165 / run 43905426531 / job 133432846684 / Issue #42 / source cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d; Release ID 403010611 / tag jexfyz-latest. Build #164 is superseded as latest package, but its history remains intact.
 
 ## Bluetooth device-name correction — included in Build #165
@@ -34,8 +34,8 @@
 
 ## Exact next action
 
-- **Latest owner screenshot — 2026-11-18 (09:35 phone clock):** on the repository Rulesets page, the owner opened the `New ruleset` dropdown. It visibly offers `New branch ruleset`, `New tag ruleset`, and `Import a ruleset`. This advances the guided setup to the correct creation path but is not yet the form; no form values are visible and no Ruleset was created.
-- Owner-side next step: select `New branch ruleset`, then provide the draft form screenshot or transcribe the fields. Verify name `main-safety-guard`, Enforcement `Active`, target default branch `main`, empty bypass list, and only `Restrict deletions` + `Block force pushes` enabled; all other rules must remain OFF. Do not click Create until this review is complete.
+- **Latest owner screenshots — 2026-11-18 (13:50 phone clock):** the `New branch ruleset` form is open. Ruleset Name is blank; Enforcement is `Disabled`; Bypass list is empty; Target branches are not configured. Among the displayed branch rules, only `Restrict deletions` and `Block force pushes` are checked; the other visible rule controls are unchecked. The `Create` button is visible, but the screenshots show only a draft and no Ruleset creation result.
+- Owner-side next step: enter name `main-safety-guard`; set Enforcement to `Active`; under Target branches choose Add target → Include the default branch (`main`); leave Bypass list empty; keep only `Restrict deletions` and `Block force pushes` enabled and every other rule OFF. Send these values in text or a screenshot for review before clicking `Create`.
 - No new Build App trigger is needed unless future App source changes are explicitly requested and validated. Firmware/BIN/Firebase/OTA/flash/device operations require separate authorization.
 
 ## Owner-approved contracts — still authoritative
@@ -70,7 +70,7 @@
 - Direct Actions runs lookup exposes push runs; prior notes claiming the available lookup was limited to PR runs are superseded.
 
 ## Final repository state and remaining boundaries
-- Verified Build #165 App source/test checkpoint: `0a2b3c03af433a17d82afa1d4db60beb7b1bd023` (Validation Only #44 formatted tree); packaged Build #165 source: `cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d`. Latest live `main` HEAD at the 2026-11-18 read-only recheck was `f2a3f02270bbb24fda8d90cf87938aff9b7ddb62`; recursive tree was 139 entries / 93 blobs / 46 trees, `truncated=false`. Rulesets and open PRs both returned `[]`; classic protection remains API-UNVERIFIED (403). The status and memory commits after that recheck contain documentation only. No App source/test/config/workflow/Firmware path changed in this interaction.
+- Verified Build #165 App source/test checkpoint: `0a2b3c03af433a17d82afa1d4db60beb7b1bd023` (Validation Only #44 formatted tree); packaged Build #165 source: `cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d`. At the 2026-11-18 13:54 screenshot-review recheck, main HEAD was `bb3a45790c7311217b0066917b02073c240cf62b`; the recursive tree had 139 entries / 93 blobs / 46 trees, `truncated=false`. Rulesets API returned `[]`. The 13:15 audit had open PRs `[]` and classic branch protection returned 403 (API-UNVERIFIED); neither endpoint was rechecked in this screenshot pass. All post-audit main commits through this checkpoint are documentation-only. No App source/test/config/workflow/Firmware path changed in this interaction.
 - Verified recursive tree: 139 entries, `truncated=false`. Relevant source/test read-backs confirm the unused local is gone, Fan Speed assertion includes the live percent suffix, and the size/max-label assertions verify locale-aware formatting.
 - The local runtime has no Dart/Flutter SDK; validation evidence is from hosted GitHub Actions only.
 - Latest verified package is **Build #165** / run `43905426531` / Release `403010611` / tag `jexfyz-latest`, source `cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d`; live Actions confirms run/job success, the tag ref points to that exact source SHA, and the Release contains exactly the APK plus corresponding source ZIP with the recorded digests.
@@ -106,6 +106,9 @@
 
 
 ### Stage 4 — owner approval and guided manual Ruleset setup — 2026-11-17
+
+- **Rulesets API follow-up — 2026-11-18 13:52 (Asia/Jakarta):** `GET /repos/TenzoNkz/JEXFYZ-App/rulesets` returned `[]` at main HEAD `bb3a45790c7311217b0066917b02073c240cf62b`. The owner screenshots show an unsubmitted draft only; no Ruleset exists.
+
 
 - Owner explicitly agreed to proceed with the proposed `main-safety-guard` Ruleset. Because the active mode remains `Diskusi!`, this approval authorizes the assistant to guide the owner through GitHub's UI; it does not authorize the assistant to mutate repository/account settings through tools.
 - **Load + Continue recovery verification — 2026-11-17 17:33–17:36 Asia/Jakarta:** live `main` ref is `0c0a54c19bac10cf0260419e42e10da5f8ee99fc`; recursive tree is 139 entries / 93 blobs, `truncated=false`; live Rulesets API still returns `[]`. Therefore no Ruleset has been committed/created as of this check. The previous owner-approved task remains at the draft-form stage; no new owner screenshot of the form was present in this recovery message. Build #165 remains the last completed external operation (SUCCESS); no Actions/Build operation was triggered for this ruleset work.
