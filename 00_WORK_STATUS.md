@@ -1,4 +1,4 @@
-| Last updated | 2026-11-18 14:15:01 (Asia/Jakarta) |
+| Last updated | 2026-11-18 14:19:11 (Asia/Jakarta) |
 
 > Single current snapshot for JE X FYZ project interactions. Event-driven marker; not a background heartbeat.
 
@@ -13,15 +13,15 @@
 | Request / work item | Verify the newly listed `main-safety-guard` Ruleset details and advise the next safe step. |
 | Started | 2026-11-18 14:15:01 (Asia/Jakarta) |
 | Last updated | 2026-11-18 14:15:01 (Asia/Jakarta) |
-| Current phase | Reconcile the owner’s 14:13 Rulesets-list screenshot against current live repository Rulesets API and tree. |
-| Last completed milestone | Prior review confirmed the draft values and owner submitted Create; current screenshot shows an Active list entry with 2 rules / 1 target branch. API detail verification is pending. |
+| Current phase | Persist verified Ruleset result to canonical documentation and close this read-only interaction. |
+| Last completed milestone | Live API confirms ruleset ID 27528678 is active for `~DEFAULT_BRANCH` (`main`), with rules `deletion` and `non_fast_forward`, empty bypass actors, and current user bypass `never`; screenshot and API agree. |
 | Last verified source checkpoint | Validation Only #44 formatted App source/test SHA 0a2b3c03af433a17d82afa1d4db60beb7b1bd023; Build #165 source cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d. |
-| Main HEAD before this verification | `02a2a2e6c214784f7c871b82c32af2377b1a7ebc`; current review will re-fetch live main. |
+| Last verified main HEAD | `81a17a212dc3cecf1e3aed3d29f7c1edc0e716af`; repository default is `main`; recursive tree has 139 entries and `truncated=false`. |
 | EXTERNAL OPERATION | Build #165 / run 43905426531 / job 133432846684 / attempt 1 / source cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d; Issue #42; terminal completed / success at 2026-11-16T16:23:29Z. |
 | EXTERNAL OPERATION STATUS | COMPLETED / SUCCESS — run and job re-read from live API; all 21 workflow steps and cleanup 39–43 succeeded. Release/tag/source SHA and two asset identities remain aligned. No new external operation was started. |
-| Result / evidence | User-provided 14:13 screenshot shows a Rulesets-list entry `main-safety-guard`, green Active icon, 2 branch rules and 1 targeted branch; an Export/Delete menu is open. Live API verification pending. |
-| Blocker | Confirm persisted rule names, target, enforcement and bypass list through live API; assistant remains read-only for settings. |
-| Next action | Read current repository metadata, main HEAD/tree and Rulesets API; verify `main-safety-guard` fields and record the conclusion. |
+| Result / evidence | User screenshot at phone clock 14:13 shows `main-safety-guard` Active, 2 branch rules / 1 target; live API detail confirms the approved exact configuration. Export/Delete menu is open; assistant did not select either option. |
+| Blocker | None for Ruleset verification. Classic branch-protection API remains separately unavailable (prior 403); owner visual evidence is historical. |
+| Next action | Update PROJECT_STATE.md, HANDOVER.md and the active CHAT_TRANSFER checkpoint, then close status and verify final main HEAD / Rulesets API. |
 
 ## Status model
 
