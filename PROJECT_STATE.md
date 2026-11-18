@@ -1,13 +1,13 @@
 # JE X FYZ / JE Cooler — Current Project State
 
-Last reconciled: 2026-11-18 21:05:46 (Asia/Jakarta).
+Last reconciled: 2026-11-18 21:34:32 (Asia/Jakarta).
 
 ## Repository baseline
 
 - Canonical repository/branch: TenzoNkz/JEXFYZ-App / main.
 - Latest published App package: Build #165 / run 43905426531 / job 133432846684 / Issue #42 / Release 403010611 / tag jexfyz-latest; immutable package source cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d; terminal SUCCESS.
 - Latest validated App source/test tree: 0a2b3c03af433a17d82afa1d4db60beb7b1bd023, formatter-only result from Validation Only #44. The same App source/test content was packaged by Build #165; compare from that tree to Build checkout is 17 documentation-only commits ahead / 0 behind.
-- Live repository verification before this note correction: main HEAD `0fda96c644886a909e66a3db727c3fc963835e56`; recursive tree `4ed0092123a508c3127cabdecf2d0a5a7a00480b`, 140 entries, `truncated=false`. Compared with Build #165 package source, main was 149 commits ahead / 0 behind with 11 changed paths: ten Markdown files and the new PR validation workflow. App source, tests, dependencies and Android configuration are unchanged.
+- **Live repository verification — 2026-11-18 21:32 Asia/Jakarta:** main HEAD `5aeae3a211cca3ea28c67f1f312ee8f7f371a9d3`; recursive tree `8857fc94a9658e473d3963fd7e4ec0d116b12243`, 140 entries, `truncated=false`. Compared with Build #165 package source `cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d`, main was 154 commits ahead / 0 behind. The 11 changed paths are the PR-validation workflow and ten Markdown files; App source, tests, dependencies and Android configuration remain unchanged.
 - **Recovery evidence check — 2026-11-18 19:23:05 Asia/Jakarta:** live Actions logs confirm Validation Only #44 (205/205 Flutter tests) and Build #165 (205/205, Gradle BUILD SUCCESSFUL, release asset re-download/signature verification passed) are terminal SUCCESS. The validation-to-package compare is 17 documentation-only commits; the main-to-package compare is also Markdown-only. The open-PR API returned an empty list.
 
 ## Pull request validation workflow — SOURCE IMPLEMENTED / HOSTED CI NOT RUN
@@ -17,7 +17,7 @@ Last reconciled: 2026-11-18 21:05:46 (Asia/Jakarta).
 - Gates: `flutter pub get --enforce-lockfile`; read-only `dart format --output=none --set-exit-if-changed lib test`; `flutter analyze --no-fatal-infos`; and `flutter test`. It does not apply formatting, build Android/APK, upload artifacts, publish a release or touch Firebase/Firmware.
 - Static workflow review passed for trigger, permissions, pinned actions, credential handling, and absence of write/build/publish steps. No PR is open, so this workflow has not run in GitHub Actions yet.
 - The existing Validation Only push-to-main workflow remains separate and retains its formatter-only write behavior. The active `main-safety-guard` still only blocks deletion/non-fast-forward updates; no required PR checks or Dependabot configuration were added.
-- No App source, dependency, Android or release input changed; no new App Build is indicated.
+- **Build recommendation — Diskusi recheck 2026-11-18:** no App source, asset, dependency or Android configuration changed after Build #165, so no new App Build is indicated now. Passing CI/release gates does not establish “perfect”; retain the unverified areas and warnings listed below.
 
 ## Bluetooth device-name display correction — included in Build #165
 
@@ -52,7 +52,7 @@ Last reconciled: 2026-11-18 21:05:46 (Asia/Jakarta).
 - **Last owner screenshot — 2026-11-18, phone clock 14:13:** the Rulesets list showed `main-safety-guard` as Active with 2 branch rules and 1 targeted branch. The Export/Delete menu was open in that screenshot; the current phone screen was not checked and the assistant did not select either option.
 - **Live Rulesets API recheck — 2026-11-18 19:23:05 Asia/Jakarta, with main HEAD `9ffd5f632009504aeb9473e04d3fd06dac1fa632`:** repository default branch `main`; exactly one active branch Ruleset, ID `27528678`; include `~DEFAULT_BRANCH`, exclude none; rules `deletion` and `non_fast_forward`; bypass actors empty; `current_user_can_bypass=never`. Created at 2026-11-18 14:13:18 +07:00. This matches the owner-approved setup.
 - Ruleset setup is complete. Do not select `Delete ruleset`; close the menu without selecting an item. No force-push or deletion test is needed.
-- **Current next step:** no rebuild is indicated for the owner-reported display result. The owner has declined additional field screenshot/package-identity evidence for now; the report remains USER-REPORTED and can be independently checked later without a new build.
+- **Current next step:** keep using Build #165; only consider a new build after an App-impacting source/asset/dependency/Android configuration change or a concrete bug fix. The owner has declined additional field screenshot/package-identity evidence for now; the display result remains USER-REPORTED and can be checked later without rebuilding. No App Build was run in this Diskusi.
 - Classic branch protection remains separately API-UNVERIFIED (the integration previously returned 403); prior owner UI evidence showed no classic rule listed. Recheck the Branches page only if the owner wants current visual confirmation.
 - No Firmware compilation, BIN generation/publication/replacement, Firebase mutation, OTA, flashing or device operation was performed or authorized.
 
