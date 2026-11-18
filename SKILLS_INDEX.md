@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — Skills & Capability Index
 
-Last reconciled: 2026-11-13 (Asia/Jakarta). This is the discovery map for reusable agent skills and the actual tool capabilities available to project chats. The operating authority remains MASTER_PROMPT.md.
+Last reconciled: 2026-11-18 19:43:40 (Asia/Jakarta). This is the discovery map for reusable agent skills and the actual tool capabilities available to project chats. The operating authority remains MASTER_PROMPT.md.
 
 ## Skill locations and loading
 
@@ -58,15 +58,17 @@ For non-trivial UI changes, load the product-design skill plus the Flutter engin
 - Connected tool families visible in this session include GitHub repository/Actions/PR/issue tools, web research, Python/container utilities, Shopee product search, plugin management and task automations. Each action remains subject to tool availability, account connection, permission and the command-mode authorization in MASTER_PROMPT.md.
 - No direct Gemini connector is available in this workflow. The owner manually pastes the prompt and returns Gemini's response for verification.
 
-### Plugin and GitHub workflow snapshot — checked 2026-11-17
+### Plugin and GitHub workflow snapshot — checked 2026-11-18
 
-- GitHub ChatGPT integration is already installed/enabled; its repository and Actions tools are active in this project workflow. Do not add a duplicate GitHub connector.
-- Figma was available in the ChatGPT app catalog and a connection suggestion was surfaced; connection remains unconfirmed. Figma's official direct ChatGPT integration currently creates FigJam diagrams and Figma Slides, not Figma Design mobile-screen files. Useful for architecture/flow diagrams and presentations; do not promise direct screen-mockup editing. Unclaimed generated Figma files are public by link until claimed into Drafts. See https://help.figma.com/hc/en-us/articles/35326636109975-Use-ChatGPT-with-Figma.
-- PostHog is available but deferred pending an owner-approved remote telemetry/error-tracking plan and privacy/data contract. No SDK or product telemetry integration is approved by this note.
-- Avoid introducing Linear/Notion/Asana/Trello solely for task tracking while GitHub Issues and canonical repo Markdown remain the project source of truth.
-- .github/skills already contains 12 Copilot skill mirrors, including code-review. GitHub Copilot Code Review can use agent skills/MCP on eligible plans; this is an optional second-reviewer path for explicitly opened PRs, not a ChatGPT plugin or replacement for ChatGPT's evidence review. The current default remains direct-to-main.
-- No .github/dependabot.yml was present in the 2026-11-17 tree inspection. GitHub's supported ecosystems include GitHub Actions, Gradle and pub/Dart; pub support is community-maintained. Consider low-noise weekly Dependabot only after a safe read-only PR validation workflow exists. Do not auto-merge dependency updates.
-- Rulesets API returned no rulesets; classic branch protection could not be read via the connected integration (403). The classic protection state is therefore unverified and must be checked in repository Settings by the owner.
+- GitHub ChatGPT integration is installed/enabled and already provides repository, issue/PR, Actions run/job/log, Release and tag access. Do not add a duplicate GitHub connector.
+- Figma is shown installed/enabled in the current plugin catalog; a read-only Figma `whoami` succeeded on 2026-11-17. Its direct ChatGPT integration supports FigJam diagrams and Figma Slides, not editable Figma Design app screens. No Figma file was created or changed in this work.
+- Context7 was surfaced by the current software-documentation plugin search and suggested as an optional tool for version-sensitive Flutter/Dart/Gradle documentation lookup. It remains not installed/connected; it is not needed for routine repository work.
+- Do not add Linear/Notion/Asana/Trello solely for task tracking while GitHub Issues and canonical repository Markdown remain the project source of truth. Defer Firebase or analytics integrations until a specific backend task or privacy/data contract is approved.
+- The current tree has no `.github/dependabot.yml`. The Validation Only workflow exists, but triggers on pushes to `main` and can write a formatter-only commit; it is not safe to expose that workflow directly to `pull_request` events. Keep the guarded Build App workflow separate.
+- If the owner chooses PR-based validation or Dependabot, first add a separate read-only `pull_request` workflow with `contents: read`; only then consider low-noise weekly dependency-update PRs for `pub`, `gradle` and `github-actions`, with owner review and no auto-merge.
+- The active Ruleset `main-safety-guard` (ID `27528678`) protects the default branch from deletion and non-fast-forward updates, with no bypass actors. The separate classic branch-protection API returned 403, so that state remains unverified.
+- A repository-specific security-scanning plugin was not surfaced in the current plugin searches. No separate security plugin is needed to decide the current App rebuild question; review workflow/dependency automation separately if desired.
+
 ## Current execution-environment snapshot
 
 - Checked 2026-11-13: Git, Python 3 and Java are available in the current runtime. Dart, Flutter, Gradle, ADB, Arduino CLI and ESP-IDF are absent. GitHub repository read/write is available through the connector; local Flutter/Android/Firmware compilation and physical-device validation cannot be claimed from this runtime.
