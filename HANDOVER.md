@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — Current Handover
 
-Last reconciled: 2026-11-18 19:43:40 (Asia/Jakarta).
+Last reconciled: 2026-11-18 21:06:11 (Asia/Jakarta).
 
 ## Current state — BUILD #165 RELEASED / JE X FYZ DISPLAY OWNER-REPORTED
 
@@ -26,8 +26,10 @@ Last reconciled: 2026-11-18 19:43:40 (Asia/Jakarta).
 
 - The current Diskusi assessment is complete: Build #165 remains the latest validated App package; its tag, Release, APK and corresponding-source ZIP match. No App source/test/config/workflow change exists after that package, so no new App Build is indicated.
 - The owner says no additional field screenshot/package-identity check is needed now. The displayed name remains USER-REPORTED; if independent acceptance is wanted later, Build #165 can be identified and checked without rebuilding.
-- For future repository automation, consider a separate read-only `pull_request` validation workflow (`contents: read`) before introducing required PR checks or Dependabot. The existing Validation Only job can write a formatter commit to `main`, so do not wire it directly to untrusted PR events. This is a recommendation, not authorization.
-- Current live check: Build #165 and Validation Only #44 are terminal-successful, no active Actions run and no open PR. No test, App Build, release, Firmware or device operation was started in this Diskusi.
+- A separate read-only PR workflow is now implemented at `.github/workflows/jexfyz-app-pr-validation.yml`. It checks locked dependencies, read-only formatting, analyzer and Flutter tests with `contents: read`; checkout credentials and cache are disabled. Static review passed. No PR is open, so no GitHub run has exercised this new workflow yet.
+- Existing Validation Only remains a push-to-main workflow that may write a formatter-only commit; it is not connected to PR events. The guarded Build App release workflow is unchanged. The active main ruleset still does not require PRs or status checks; no Dependabot configuration was added.
+- Live state at this handover: Build #165 and Validation Only #44 are terminal-successful; no active Actions run and no open PR. This task ran no tests, App Build, release, Firmware or device operation. The workflow source is implemented; hosted CI remains NOT RUN until a PR arrives.
+- Next safe step: when a normal PR is opened, inspect the new run and logs. Only after observing it should the owner decide whether to separately adopt required checks or Dependabot. Neither is authorized by this workflow change.
 - The last owner screenshot showed Export/Delete open at 14:13; current phone state is unknown. If that menu is still open, close by tapping outside; do not select Delete.
 - Classic branch protection remains API-UNVERIFIED (the connected integration previously returned 403), separate from the active Ruleset.
 - Firmware compile/BIN provenance, Firebase, OTA/flash, thermal/electrical acceptance and long-session soak remain unverified and need separate scope/authorization.
