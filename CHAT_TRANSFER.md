@@ -18,6 +18,7 @@ Latest published App package remains Build #165 / source `cbe8a8df5dfac7427dafca
 - Plugin status remains: GitHub and Figma are installed; Context7 was only an optional docs suggestion. No plugin installation/change was part of this execution.
 - No new App Build is needed because App source and release inputs did not change. Owner-reported display `JE X FYZ` remains USER-REPORTED; no field recheck was requested.
 - **Next action:** when a normal PR is opened, inspect the new workflow run and logs. The owner can then decide separately whether to require that check or configure Dependabot. No PR was created and neither follow-up change is authorized by this task.
+
 ## Bluetooth device-name correction — included in Build #165
 
 - The Connection row displays the current advertisement local name first, platform device name second, and localized generic Device / Perangkat only if both are empty. The previous UI mapping no longer hides JE X FYZ.
@@ -43,6 +44,7 @@ Latest published App package remains Build #165 / source `cbe8a8df5dfac7427dafca
 - Observe the new workflow on a normal PR before deciding whether to require its status check or adopt Dependabot; neither follow-up is authorized here.
 - The new workflow is SOURCE IMPLEMENTED / STATICALLY REVIEWED / HOSTED CI NOT RUN because no PR is open. No tests, App Build, release, Firmware, Firebase, OTA or device operation ran in this interaction.
 - No new App Build is indicated: Build #165 remains the latest package and the App source did not change.
+
 ## Owner-approved contracts — still authoritative
 - English is the master/default language; Indonesian must be complete, natural and semantically equivalent.
 - General glossary includes Battery → Baterai; Battery Temperature → Suhu Baterai; generic Hotside component references → Sisi Panas; Hotside Temperature → Suhu Sisi Panas; Hotside Limit → Batas Suhu Sisi Panas; generic cooler → pendingin; Adaptive Mode → Mode Adaptif; Fan → Kipas; Fan Speed → Kecepatan Kipas; Voltage → Tegangan.
