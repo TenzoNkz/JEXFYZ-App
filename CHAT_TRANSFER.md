@@ -34,7 +34,8 @@
 
 ## Exact next action
 
-- Owner-side next step: report the prepared `main-safety-guard` form values in text — name, Enforcement, target branch, bypass list and exact enabled rule names. Check them against the approved minimal configuration before the owner clicks Create. No screenshot is required.
+- **Latest owner screenshot — 2026-11-18 (09:35 phone clock):** on the repository Rulesets page, the owner opened the `New ruleset` dropdown. It visibly offers `New branch ruleset`, `New tag ruleset`, and `Import a ruleset`. This advances the guided setup to the correct creation path but is not yet the form; no form values are visible and no Ruleset was created.
+- Owner-side next step: select `New branch ruleset`, then provide the draft form screenshot or transcribe the fields. Verify name `main-safety-guard`, Enforcement `Active`, target default branch `main`, empty bypass list, and only `Restrict deletions` + `Block force pushes` enabled; all other rules must remain OFF. Do not click Create until this review is complete.
 - No new Build App trigger is needed unless future App source changes are explicitly requested and validated. Firmware/BIN/Firebase/OTA/flash/device operations require separate authorization.
 
 ## Owner-approved contracts — still authoritative
