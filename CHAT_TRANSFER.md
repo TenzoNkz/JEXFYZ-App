@@ -1,4 +1,13 @@
-<!-- ACTIVE_CHECKPOINT_START --># ACTIVE CHECKPOINT — READ-ONLY PULL REQUEST VALIDATION IMPLEMENTED — 2026-11-18
+<!-- ACTIVE_CHECKPOINT_START -->
+
+## Latest Diskusi — App rebuild need and “perfect” claim — 2026-11-18 21:34 Asia/Jakarta
+
+- **Mode/scope:** Diskusi!; read-only engineering/release review. No App build, tests or source/config/workflow/release/device operations were run in this interaction.
+- **Live evidence:** main was `5aeae3a211cca3ea28c67f1f312ee8f7f371a9d3` with recursive tree `8857fc94a9658e473d3963fd7e4ec0d116b12243` (140 entries, `truncated=false`). Compared against the Build #165 package source `cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d`, main was 154 commits ahead / 0 behind; the 11 changed paths were the new PR-validation workflow and ten Markdown files. App source, tests, dependencies and Android configuration had no changes after the package source.
+- **Package gates:** Build #165 / run 43905426531 / Release 403010611 / tag `jexfyz-latest` remains terminal SUCCESS; analyzer had 107 info-level findings and zero warnings/errors, Flutter tests 205/205 passed, Android Gradle succeeded, and downloaded APK/source ZIP hashes and APK signature were verified. Validation Only #44 also passed 205/205 tests. No active Actions run or open PR was found; the new PR workflow has not run because no PR exists.
+- **Decision:** no new App Build is indicated by changes since Build #165. The evidence does **not** prove the App is “perfect”: known warnings remain (including self-signed certificate trust/coverage, Kotlin/Gradle deprecations, native ELF DWARF, Android native JUnit tasks `NO-SOURCE`); physical install/OEM/RF behavior, longer performance/storage soak, Firebase/OTA, Firmware and thermal/electrical acceptance are outside or not covered by those CI gates.
+- **Next safe action:** keep using Build #165. Consider another build only after an App-impacting code, asset, dependency or Android configuration change, or a concrete bug fix. That is a recommendation, not authorization to build.
+# ACTIVE CHECKPOINT — CURRENT APP REBUILD ASSESSMENT — 2026-11-18
 
 Latest published App package remains Build #165 / source `cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d`.
 
