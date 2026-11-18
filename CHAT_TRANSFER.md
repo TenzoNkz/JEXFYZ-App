@@ -1,20 +1,23 @@
-<!-- ACTIVE_CHECKPOINT_START --># ACTIVE CHECKPOINT — BUILD #165 CURRENT / REPO READINESS & BUILD DISCUSSION COMPLETE — 2026-11-18
-# ACTIVE CHECKPOINT — BUILD #165 RELEASED / MAIN SAFETY RULESET VERIFIED / JE X FYZ DISPLAY OWNER-REPORTED — 2026-11-18
+<!-- ACTIVE_CHECKPOINT_START --># ACTIVE CHECKPOINT — READ-ONLY PULL REQUEST VALIDATION IMPLEMENTED — 2026-11-18
+
+Latest published App package remains Build #165 / source `cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d`.
+
 
 
 
 ## Current session and authorization
 
 - Project: JE X FYZ / JE Cooler. Canonical repository/branch: TenzoNkz/JEXFYZ-App / main.
-- Mode: Diskusi! — repository/source evidence and recommendations are read-only for executable source, tests, config, workflow, build/release, Firmware, Firebase, OTA, flashing and device operations. Only canonical documentation/memory was updated after conclusions.
-- **Current request:** owner says no additional field screenshot/package-identity check is needed now; asks whether the repo is maximized, which plugins are useful, further suggestions and whether another App build is needed.
-- **Last live main before this checkpoint write — 2026-11-18 19:46 Asia/Jakarta:** HEAD `29e991f707f490feb8c25975b0afa03d4abfd0b5`; recursive tree `f1922ff668b05673a78469261284897edcdbe1df`, 139 entries / 93 blobs / 46 trees, `truncated=false`. Compare from Build #165 source `cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d`: 140 commits ahead / 0 behind, 10 changed paths, all Markdown. App source/test/dependency/Android configuration/workflow is unchanged from Build #165.
-- **Live validation/release:** Validation Only #44 run `43899329198` / job `133411358928` terminal SUCCESS (205/205 Flutter tests; analyzer 107 info, zero warnings/errors). Build #165 run `43905426531` / job `133432846684` terminal SUCCESS. Release `403010611`, tag `jexfyz-latest`, APK and corresponding source ZIP still match package source `cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d`. Latest run list has no active run; open PR list is empty.
-- **Repository safety:** Ruleset `main-safety-guard` (ID `27528678`) is Active for `~DEFAULT_BRANCH`, with deletion and non-fast-forward rules, empty bypass list, `current_user_can_bypass=never`. Classic branch-protection API remains unverified because it returns 403.
-- **Workflow opportunity:** current Validation Only workflow runs on pushes to main and can write a formatter-only commit. It is not a safe PR check as-is. If the owner wants PR validation or Dependabot, create a separate read-only `pull_request` workflow first; do not require PRs or auto-merge dependencies before that.
-- **Plugin fit:** GitHub and Figma are installed/enabled (Figma `whoami` was verified 2026-11-17). Context7 was suggested as optional for version-sensitive Flutter/Dart/Gradle documentation and remains not installed/connected. No extra plugin is required for this repo discussion; Firebase/analytics remain task/privacy-contract dependent.
-- Owner-reported display `JE X FYZ` remains USER-REPORTED; no extra field evidence is needed per the owner for now. This Diskusi ran no tests, build, release, Firmware, Firebase, OTA or device operation.
-
+- Mode: Eksekusi Full! — authorized only the separate read-only PR validation workflow previously recommended. No Dependabot, branch-rule change, App build/release, source/test edits, Firebase, Firmware, BIN, OTA, flashing or device work.
+- **Current request:** add a `pull_request` workflow with read-only repository permissions, using existing Flutter quality gates without formatter mutation.
+- **Live main immediately before this checkpoint update — 2026-11-18:** HEAD `ba4863afca97a0205e0a3c414b29746f626569b2`; recursive tree `0014b98436658756dd55ced0558a79f876290853`, 140 entries, `truncated=false`. Compared with Build #165 package source: 150 commits ahead / 0 behind; 11 changed paths (10 Markdown and the new workflow). App source, tests, dependency files and Android configuration remain unchanged.
+- **Workflow source:** `.github/workflows/jexfyz-app-pr-validation.yml`, added in commit `96c5fa395e8a6f96c420a47fa2dd6ad74e569523`. It runs on pull request opened/synchronize/reopened/ready_for_review; `contents: read`; checkout credentials are not persisted; cache is disabled; actions use existing pinned SHAs. Gates are locked `flutter pub get`, read-only format check, `flutter analyze --no-fatal-infos` and `flutter test`.
+- **Security/static review:** exact file readback passed. Trigger is standard `pull_request`; no secrets, write permissions, `pull_request_target`, formatter write, build, artifact upload or publish step.
+- **CI boundary:** no PR is open, so the new workflow has not run in GitHub Actions. This interaction ran no tests/build. Current Actions query shows Build #165 and Validation Only #44 succeeded; no active run. Release #403010611/tag `jexfyz-latest` still match source `cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d`.
+- Existing Validation Only remains push-to-main and can make a verified formatter-only commit under `lib/` and `test/`; it is unchanged and not exposed to PR events. Active ruleset `main-safety-guard` still blocks deletion/non-fast-forward only; no required checks or Dependabot file were added.
+- Plugin status remains: GitHub and Figma are installed; Context7 was only an optional docs suggestion. No plugin installation/change was part of this execution.
+- No new App Build is needed because App source and release inputs did not change. Owner-reported display `JE X FYZ` remains USER-REPORTED; no field recheck was requested.
+- **Next action:** when a normal PR is opened, inspect the new workflow run and logs. The owner can then decide separately whether to require that check or configure Dependabot. No PR was created and neither follow-up change is authorized by this task.
 ## Bluetooth device-name correction — included in Build #165
 
 - The Connection row displays the current advertisement local name first, platform device name second, and localized generic Device / Perangkat only if both are empty. The previous UI mapping no longer hides JE X FYZ.
@@ -35,15 +38,11 @@
 - Flutter version 1.0.0+3; Android Gradle versionName Telegram @horizontalzzz. No GitHub Actions artifacts; both deliverables are Release assets.
 - Warnings retained: Kotlin 2.2.20/Firebase KGP compatibility, Android Gradle property and Gradle 10 deprecations, deprecated Notification priority, native ELF DWARF visibility, self-signed PKIX/META-INF coverage and native Android test NO-SOURCE. These did not fail gates and are not marked fixed.
 - No Firmware compilation, BIN, Firebase, OTA, flashing or device operation was performed.
-
 ## Exact next action
 
-- This readiness question is complete. **No new App Build is needed**: the latest package is Build #165, and main has only Markdown changes beyond its source. A new build should follow an App source change that passed validation, a release defect, or a specific request for a new package; only `Eksekusi Build App!` authorizes that operation.
-- No plugin is required. GitHub and Figma are already installed; Context7 is an optional docs lookup suggestion, not installed. Do not add a Firebase/analytics integration without a specific backend task and privacy/data contract.
-- The most useful future repo improvement is a separate read-only PR validation workflow before adopting PR-required rules or Dependabot. This is a recommendation only; no workflow/config change is authorized or made here.
-- Owner says no extra screenshot or installed-package identity is needed now. The display remains USER-REPORTED and can be checked later against Build #165 without rebuilding. Broader OEM/RF/soak, BLE-auth, Firmware/BIN, Firebase, OTA/flash, thermal/electrical evidence remains separate and unverified.
-- No tests, builds, releases, Firebase/BIN, flashing or device operation ran in this Diskusi. Prior hosted Validation Only #44 / Build #165 evidence remains current and verified.
-
+- Observe the new workflow on a normal PR before deciding whether to require its status check or adopt Dependabot; neither follow-up is authorized here.
+- The new workflow is SOURCE IMPLEMENTED / STATICALLY REVIEWED / HOSTED CI NOT RUN because no PR is open. No tests, App Build, release, Firmware, Firebase, OTA or device operation ran in this interaction.
+- No new App Build is indicated: Build #165 remains the latest package and the App source did not change.
 ## Owner-approved contracts — still authoritative
 - English is the master/default language; Indonesian must be complete, natural and semantically equivalent.
 - General glossary includes Battery → Baterai; Battery Temperature → Suhu Baterai; generic Hotside component references → Sisi Panas; Hotside Temperature → Suhu Sisi Panas; Hotside Limit → Batas Suhu Sisi Panas; generic cooler → pendingin; Adaptive Mode → Mode Adaptif; Fan → Kipas; Fan Speed → Kecepatan Kipas; Voltage → Tegangan.
