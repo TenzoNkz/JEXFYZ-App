@@ -1,14 +1,23 @@
 # JE X FYZ / JE Cooler — Current Project State
 
-Last reconciled: 2026-11-18 19:43:40 (Asia/Jakarta).
+Last reconciled: 2026-11-18 21:05:46 (Asia/Jakarta).
 
 ## Repository baseline
 
 - Canonical repository/branch: TenzoNkz/JEXFYZ-App / main.
 - Latest published App package: Build #165 / run 43905426531 / job 133432846684 / Issue #42 / Release 403010611 / tag jexfyz-latest; immutable package source cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d; terminal SUCCESS.
 - Latest validated App source/test tree: 0a2b3c03af433a17d82afa1d4db60beb7b1bd023, formatter-only result from Validation Only #44. The same App source/test content was packaged by Build #165; compare from that tree to Build checkout is 17 documentation-only commits ahead / 0 behind.
-- Live readiness verification before this note sync: main HEAD `130f1b269f9c96dc65c6c66abb0dd7cfbacaf1b3`; recursive tree `12da255634faf52835b7485c1e3d3d861d712966`, 139 entries / 93 blobs / 46 trees, `truncated=false`. Compared with Build #165 package source, main was 135 commits ahead / 0 behind; all 10 changed paths were Markdown, with no App source/test/config/workflow drift.
+- Live workflow-source verification before this note sync: main HEAD `96c5fa395e8a6f96c420a47fa2dd6ad74e569523`; recursive tree `0f914039968068449422256d8253b0023fb1716f`, 140 entries, `truncated=false`. Compared with Build #165 package source, main was 143 commits ahead / 0 behind; 10 changed paths were Markdown plus the new PR validation workflow. App source, tests, dependencies and Android configuration are unchanged.
 - **Recovery evidence check — 2026-11-18 19:23:05 Asia/Jakarta:** live Actions logs confirm Validation Only #44 (205/205 Flutter tests) and Build #165 (205/205, Gradle BUILD SUCCESSFUL, release asset re-download/signature verification passed) are terminal SUCCESS. The validation-to-package compare is 17 documentation-only commits; the main-to-package compare is also Markdown-only. The open-PR API returned an empty list.
+
+## Pull request validation workflow — SOURCE IMPLEMENTED / HOSTED CI NOT RUN
+
+- Added `.github/workflows/jexfyz-app-pr-validation.yml` in commit `96c5fa395e8a6f96c420a47fa2dd6ad74e569523`.
+- It runs for `pull_request` opened, synchronize, reopened and ready-for-review events. It grants only `contents: read`, pins the same checkout/Flutter actions already used by the repository, disables persisted checkout credentials and cache, and uses no secrets.
+- Gates: `flutter pub get --enforce-lockfile`; read-only `dart format --output=none --set-exit-if-changed lib test`; `flutter analyze --no-fatal-infos`; and `flutter test`. It does not apply formatting, build Android/APK, upload artifacts, publish a release or touch Firebase/Firmware.
+- Static workflow review passed for trigger, permissions, pinned actions, credential handling, and absence of write/build/publish steps. No PR is open, so this workflow has not run in GitHub Actions yet.
+- The existing Validation Only push-to-main workflow remains separate and retains its formatter-only write behavior. The active `main-safety-guard` still only blocks deletion/non-fast-forward updates; no required PR checks or Dependabot configuration were added.
+- No App source, dependency, Android or release input changed; no new App Build is indicated.
 
 ## Bluetooth device-name display correction — included in Build #165
 
