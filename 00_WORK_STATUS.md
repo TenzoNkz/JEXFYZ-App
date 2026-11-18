@@ -1,4 +1,4 @@
-| Last updated | 2026-11-18 13:14:15 (Asia/Jakarta) |
+| Last updated | 2026-11-18 13:14:59 (Asia/Jakarta) |
 
 > Single current snapshot for JE X FYZ project interactions. Event-driven marker; not a background heartbeat.
 
@@ -12,8 +12,8 @@
 | Mode | Diskusi! — continuation of owner-guided GitHub Ruleset verification; read-only for settings and executable project files. |
 | Request / work item | Continue pending `main-safety-guard` Ruleset verification; load canonical checkpoint, then recheck live repository/rules state and identify any precise owner input still needed. |
 | Started | 2026-11-18 13:14:15 (Asia/Jakarta) |
-| Last updated | 2026-11-18 09:41:40 (Asia/Jakarta) |
-| Current phase | Restoring checkpoint — status opened; live repository metadata, main HEAD/tree and Ruleset state are next. |
+| Last updated | 2026-11-18 13:14:59 (Asia/Jakarta) |
+| Current phase | MASTER_PROMPT.md loaded; reading only the bounded active checkpoint next, then live repository state. |
 | Last completed milestone | Prior checkpoint: screenshot confirmed `New branch ruleset` is available; exact next owner action is to select it and provide the resulting form values/screenshot. Last recorded Build #165 remains terminal success. |
 | Last verified source checkpoint | Validation Only #44 formatted App source/test SHA 0a2b3c03af433a17d82afa1d4db60beb7b1bd023; Build #165 source cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d. |
 | Main HEAD before this closure write | Prior recorded HEAD `43306b91b8df84c51c12fe365843749538ffd224`; re-fetch live HEAD before closure. |
@@ -21,7 +21,7 @@
 | EXTERNAL OPERATION STATUS | COMPLETED / SUCCESS — run and job re-read from live API; all 21 workflow steps and cleanup 39–43 succeeded. Release/tag/source SHA and two asset identities remain aligned. No new external operation was started. |
 | Result / evidence | New session opened from prior `COMPLETED` marker. Workspace contains no canonical files, so status was read from the live GitHub `main` file. Live checkpoint and repo evidence are being reloaded. |
 | Blocker | Awaiting live recheck and whether the owner has selected `New branch ruleset` or supplied the form values. No settings mutation is authorized in Diskusi. |
-| Next action | Read MASTER_PROMPT and active checkpoint, inspect repository metadata/tree and current Ruleset state, then continue only within Diskusi authorization. |
+| Next action | Extract only the text between ACTIVE_CHECKPOINT markers, then inspect current main metadata/tree and Ruleset state. |
 
 ## Status model
 
