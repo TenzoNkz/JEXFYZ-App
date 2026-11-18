@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — Current Project State
 
-Last reconciled: 2026-11-16 23:33:40 (Asia/Jakarta).
+Last reconciled: 2026-11-18 13:21:23 (Asia/Jakarta).
 
 ## Repository baseline
 
@@ -39,7 +39,7 @@ Last reconciled: 2026-11-16 23:33:40 (Asia/Jakarta).
 
 - Physical owner installation, OEM screenshots, actual BLE advertisement/display, long-session performance/storage soak, Firmware compile/BIN provenance, BLE App authentication, Firebase, OTA/flash, thermal and electrical acceptance remain separate and unverified.
 - Retained Build #165 warnings: self-signed certificate/PKIX and META-INF signature coverage; Kotlin 2.2.20 / Firebase KGP compatibility warning; Android Gradle property and Gradle 10 deprecations; native Notification priority deprecations; native ELF DWARF; native Android JUnit tasks NO-SOURCE. None are represented as fixed.
-- Owner-side next step: install Build #165 APK and confirm the real cooler's BLE advertisement and App Connection row show JE X FYZ. Hosted CI does not prove this physical behavior.
+- Immediate owner-side sequence: complete the pending `main-safety-guard` form review through the guided steps in HANDOVER.md / CHAT_TRANSFER.md; afterward install Build #165 APK and confirm the actual cooler BLE advertisement and App Connection row display JE X FYZ. Hosted CI does not prove physical behavior.
 - No Firmware compilation, BIN generation/publication/replacement, Firebase mutation, OTA, flashing or device operation was performed or authorized by this App Build task.
 
 ## Historical hosted validation baseline — Validation Only #19 SUCCESS (pre-localization correction set)
@@ -50,7 +50,7 @@ Last reconciled: 2026-11-16 23:33:40 (Asia/Jakarta).
 - Analyzer: 118 info-level findings, zero warnings/errors. Flutter tests: 197/197 passed.
 - Validation Only #18 (43677411117) remains a failed historical intermediate (196/197); the stale LED-copy expectation was corrected before #19.
 
-## Latest verified App package — Build #163 SUCCESS
+## Historical App package — Build #163 SUCCESS (superseded by Build #165)
 
 - Trigger Issue #40; Actions run 43679305537 / job 132706236782; attempt 1; source SHA 9466e8eeb269da5bc8806f0df1d4212cf24e1746.
 - All workflow steps 1–21 and cleanup 39–43 SUCCESS. Analyzer 118 infos / 0 warnings / 0 errors; Flutter 197/197.
@@ -124,7 +124,8 @@ Last reconciled: 2026-11-16 23:33:40 (Asia/Jakarta).
 
 ## Immediate next action
 
-- First reconcile the stale Fan Speed source matcher in `.github/workflows/jexfyz-app-build-trigger.yml:222` with the current native percent output. This is a workflow static-audit defect, not a Flutter source/test failure.
-- The correction needs a separate explicit `Eksekusi Full!` scope; Diskusi remains read-only. Do not start the Build App workflow until the audit expectation is consistent with the live code.
-- After read-back/static verification of that correction, require a fresh explicit `Eksekusi Build App!` command and one new owner-authored trigger issue. Issue #40 remains open and already triggered Build #163; do not reuse/reopen it.
-- Build #163 remains the latest verified package. Visual/OEM/device, long-session soak, Firmware/BIN, Firebase, OTA/flash, thermal/electrical evidence remain separate and unverified.
+- Current GitHub work item: manual `main-safety-guard` branch ruleset setup is WAITING_OWNER. At the 2026-11-18 13:15 Asia/Jakarta live recheck, repository Rulesets API returned `[]`, open PRs were `[]`, and classic branch-protection API returned 403 (API-UNVERIFIED). A prior owner screenshot showed no classic rules listed; it remains separate USER-REPORTED visual evidence.
+- The owner-approved form values remain: Branch ruleset `main-safety-guard`; Enforcement `Active`; target default branch `main`; empty bypass list; enable only `Restrict deletions` and `Block force pushes`. Keep Restrict updates, PR/status-check requirements, push restrictions, Lock branch and all other rules OFF to preserve the validated direct-to-main formatter-commit path.
+- Exact next owner action: select `New branch ruleset`, then report the name, enforcement, target, bypass list and exact selected rules in text. Review those values before the owner clicks Create; after creation, verify the resulting status/target/rules from the owner's report.
+- Current package remains Build #165 / run 43905426531 / job 133432846684 / Release 403010611 / tag `jexfyz-latest`, source `cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d`. Physical installation/BLE display, Firmware/BIN, Firebase, OTA/flash, thermal/electrical and OEM visual evidence remain unverified and separate.
+- This Diskusi performed only repository/API reads and canonical documentation updates. No source, tests, configuration, workflow, GitHub settings, build, release, Firmware or device operation was changed or run.
