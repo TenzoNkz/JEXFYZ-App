@@ -8,7 +8,7 @@
 - Project: JE X FYZ / JE Cooler.
 - Canonical repository/branch: TenzoNkz/JEXFYZ-App / main.
 - Mode: Diskusi! — read-only repository recovery and owner-guidance; no executable source/test/config/workflow/build/release/settings/Firmware/device changes.
-- **SESSION STATUS: COMPLETED; WORK STATUS: COMPLETED.** This 2026-11-18 Diskusi interaction verified the owner-created Ruleset against its live API detail. The approved configuration is active and matches; the open Delete menu remains untouched. The next distinct acceptance step is owner installation and physical BLE-name confirmation for Build #165. Build #165 remains a separate external operation: COMPLETED / SUCCESS.
+- **SESSION STATUS: COMPLETED; WORK STATUS: COMPLETED.** This 2026-11-18 Diskusi interaction verified the owner-created Ruleset against live API details, reconciled the pre-Create note in PROJECT_STATE.md as historical, and updated the canonical checkpoint. The approved configuration is active and matches; the open Delete menu remains untouched. The next distinct acceptance step is owner installation and physical BLE-name confirmation for Build #165. Build #165 remains a separate external operation: COMPLETED / SUCCESS.
 - Latest release: Build #165 / run 43905426531 / job 133432846684 / Issue #42 / source cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d; Release ID 403010611 / tag jexfyz-latest. Build #164 is superseded as latest package, but its history remains intact.
 
 ## Bluetooth device-name correction — included in Build #165
@@ -71,8 +71,9 @@
 
 ## Final repository state and remaining boundaries
 
-- Verified Build #165 App source/test checkpoint: `0a2b3c03af433a17d82afa1d4db60beb7b1bd023`; packaged Build #165 source: `cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d`. In the live repository snapshot read immediately before this CHAT_TRANSFER checkpoint write, main HEAD was `d49cfb2f3abef14daeb96d55227eac90a3f6706c`; default branch `main`; recursive tree 139 entries / 93 blobs / 46 trees, `truncated=false`.
-- Rulesets API at that checkpoint listed exactly one active branch Ruleset: `main-safety-guard`, ID `27528678`. Exact detail: `~DEFAULT_BRANCH` include, no excludes, rules `deletion` + `non_fast_forward`, bypass actors empty, current user bypass `never`; created at 2026-11-18 14:13:18 +07:00. Owner screenshot and API agree. No assistant settings change or destructive test occurred.
+- Verified Build #165 App source/test checkpoint: `0a2b3c03af433a17d82afa1d4db60beb7b1bd023`; packaged Build #165 source: `cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d`. At the 2026-11-18 15:04:37 live check immediately before this checkpoint update, main HEAD was `2bebf679ec117dd537e0fea41b9efbafe4c9da12`; default branch `main`; recursive tree 139 entries / 93 blobs / 46 trees, `truncated=false`.
+- Rulesets API lists exactly one active branch Ruleset: `main-safety-guard`, ID `27528678`. Exact detail: `~DEFAULT_BRANCH` include, no excludes, rules `deletion` + `non_fast_forward`, bypass actors empty, current user bypass `never`; created at 2026-11-18 14:13:18 +07:00. Owner screenshot and API agree. No assistant settings change or destructive test occurred.
+- The final consistency pass labeled the 13:50 form screenshot and 13:52 empty API response in PROJECT_STATE.md as historical, superseded by the 14:13 created Ruleset and current API verification.
 - Build #165 run `43905426531` remains `completed / success` at source `cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d`. Release `403010611`, tag `jexfyz-latest`, and both asset digests remain aligned with that source. No new Actions operation was started.
 - Classic branch-protection API previously returned 403 (API-UNVERIFIED); prior owner UI evidence showed no classic rule listed. This is separate from the verified Ruleset.
 - Documentation commits for this Ruleset verification are documentation-only; no App source/test/config/workflow/Firmware path changed.
