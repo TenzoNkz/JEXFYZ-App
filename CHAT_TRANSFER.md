@@ -8,7 +8,10 @@
 - Project: JE X FYZ / JE Cooler.
 - Canonical repository/branch: TenzoNkz/JEXFYZ-App / main.
 - Mode: Diskusi! — read-only repository recovery and owner-guidance; no executable source/test/config/workflow/build/release/settings/Firmware/device changes.
-- **SESSION STATUS: COMPLETED; WORK STATUS: COMPLETED.** This Diskusi interaction verified live main, Build #165 run/job, Release/tag, PRs and Ruleset, then recorded the owner’s report that the App again displays `JE X FYZ`. The report is USER-REPORTED; no screenshot, exact installed APK/build or live advertisement payload was supplied. No Eksekusi Full! or new Eksekusi Build App! is indicated by this report alone. Build #165 remains a separate external operation: COMPLETED / SUCCESS.
+- **SESSION STATUS: COMPLETED; WORK STATUS: COMPLETED.** This Diskusi recovery completed the saved acceptance/completion-boundary question after checking live main, Actions, Release/tag, PRs, Ruleset and the relevant hosted logs. The Bluetooth display correction, Build #165 package/release and main-safety Ruleset are complete; no source/test/config/workflow/build/device operation was started.
+- **Prior interaction disposition: RECOVERY_REQUIRED.** At opening, `00_WORK_STATUS.md` said the previous session/work item was IN_PROGRESS while this checkpoint said COMPLETED. This recovery preserved that status conflict, verified the external Build #165 operation as COMPLETED / SUCCESS, and reconciled the work item without repeating any side effect.
+- **Live recovery verification — 2026-11-18 19:23:05 Asia/Jakarta:** main HEAD before documentation sync was `9ffd5f632009504aeb9473e04d3fd06dac1fa632`; tree 139 entries / 93 blobs / 46 trees, `truncated=false`. Compare from package source `cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d` to main: 128 ahead / 0 behind, nine changed paths, all Markdown. Compare from Validation Only #44 formatted source `0a2b3c03af433a17d82afa1d4db60beb7b1bd023` to Build #165 source: 17 ahead / 0 behind, seven changed paths, all Markdown.
+- **Current external and repository result:** Build #165 run `43905426531` / job `133432846684` terminal SUCCESS; Release `403010611` / tag `jexfyz-latest` and both asset digests match package source. Validation Only #44 run `43899329198` / job `133411358928` terminal SUCCESS (205/205 Flutter tests, analyzer 107 infos / 0 warnings/errors). Ruleset `27528678` remains Active with only deletion + non-fast-forward; no bypass. Open PR list empty; no active Actions operation. Owner still reports the label visible (USER-REPORTED; no current screenshot or exact installed package identity).
 - Latest release: Build #165 / run 43905426531 / job 133432846684 / Issue #42 / source cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d; Release ID 403010611 / tag jexfyz-latest. Build #164 is superseded as latest package, but its history remains intact.
 
 ## Bluetooth device-name correction — included in Build #165
@@ -34,10 +37,11 @@
 
 ## Exact next action
 
-- **Owner screenshot — 2026-11-18 (14:13 phone clock):** Rulesets list shows `main-safety-guard` as Active, 2 branch rules / 1 target branch. The Export/Delete menu is open; do not select Delete.
-- **Live API verification — 2026-11-18 14:19:11 Asia/Jakarta:** Ruleset ID `27528678`; branch target; `active`; include `~DEFAULT_BRANCH` (repository default `main`), no excludes; rules `deletion` + `non_fast_forward`; empty bypass actors; `current_user_can_bypass=never`. Created at 14:13:18 +07:00.
-- Ruleset setup is complete. Close the menu by tapping outside without selecting an item; no test push or deletion is needed.
-- No further App source or package build step is indicated for this reported display result. If independent evidence is needed later, the owner can provide a fresh cooler-scan screenshot and installed build details; no build trigger is needed for that.
+- This recovery question is complete. The Bluetooth display-correction source/tests, hosted validation, Build #165 release and current main Ruleset are complete. No App source change or new build is indicated by the owner report.
+- The owner says `JE X FYZ` is visible (USER-REPORTED). If independent field acceptance is wanted, provide a fresh cooler-scan/Connection-sheet screenshot, exact installed Build/package identity and the advertisement name if available. This does not require a new build.
+- The last owner screenshot at 14:13 showed the Rulesets Export/Delete menu open. The current phone screen was not checked; if the menu is still open, close by tapping outside. Do not select Delete.
+- Overall product validation is not complete: installed-package/OEM/RF behavior, long-session soak, Firmware compile/BIN provenance, BLE App-only authentication, Firebase, OTA/flash, thermal/electrical acceptance remain unverified. These require a separately scoped request; this Diskusi ran no tests/build/device operations.
+
 ## Owner-approved contracts — still authoritative
 - English is the master/default language; Indonesian must be complete, natural and semantically equivalent.
 - General glossary includes Battery → Baterai; Battery Temperature → Suhu Baterai; generic Hotside component references → Sisi Panas; Hotside Temperature → Suhu Sisi Panas; Hotside Limit → Batas Suhu Sisi Panas; generic cooler → pendingin; Adaptive Mode → Mode Adaptif; Fan → Kipas; Fan Speed → Kecepatan Kipas; Voltage → Tegangan.
@@ -71,8 +75,8 @@
 
 ## Final repository state and remaining boundaries
 
-- Verified Build #165 App source/test checkpoint: `0a2b3c03af433a17d82afa1d4db60beb7b1bd023`; packaged Build #165 source: `cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d`. At the 2026-11-18 15:04:37 live check immediately before this checkpoint update, main HEAD was `2bebf679ec117dd537e0fea41b9efbafe4c9da12`; default branch `main`; recursive tree 139 entries / 93 blobs / 46 trees, `truncated=false`.
-- Rulesets API lists exactly one active branch Ruleset: `main-safety-guard`, ID `27528678`. Exact detail: `~DEFAULT_BRANCH` include, no excludes, rules `deletion` + `non_fast_forward`, bypass actors empty, current user bypass `never`; created at 2026-11-18 14:13:18 +07:00. Owner screenshot and API agree. No assistant settings change or destructive test occurred.
+- Verified Build #165 App source/test checkpoint: `0a2b3c03af433a17d82afa1d4db60beb7b1bd023`; packaged Build #165 source: `cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d`. At the 2026-11-18 19:23:05 recovery check before note sync, main HEAD was `9ffd5f632009504aeb9473e04d3fd06dac1fa632`; default branch `main`; recursive tree 139 entries / 93 blobs / 46 trees, `truncated=false`. The validation-to-package compare is 17 commits ahead / 0 behind and seven Markdown paths only. The package-to-main compare is 128 ahead / 0 behind and nine Markdown paths only.
+- Live Rulesets API recheck at 2026-11-18 19:23:05 Asia/Jakarta: exactly one active branch Ruleset `main-safety-guard`, ID `27528678`; target includes `~DEFAULT_BRANCH`, excludes none; rules `deletion` + `non_fast_forward`; bypass actors empty; `current_user_can_bypass=never`. Current open-PR API is empty.
 - The final consistency pass labeled the 13:50 form screenshot and 13:52 empty API response in PROJECT_STATE.md as historical, superseded by the 14:13 created Ruleset and current API verification.
 - Build #165 run `43905426531` remains `completed / success` at source `cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d`. Release `403010611`, tag `jexfyz-latest`, and both asset digests remain aligned with that source. No new Actions operation was started.
 - Classic branch-protection API previously returned 403 (API-UNVERIFIED); prior owner UI evidence showed no classic rule listed. This is separate from the verified Ruleset.
