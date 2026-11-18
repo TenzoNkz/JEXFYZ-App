@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — Current Handover
 
-Last reconciled: 2026-11-17 22:18:21 (Asia/Jakarta).
+Last reconciled: 2026-11-18 09:33:00 (Asia/Jakarta).
 
 ## Current state — BUILD #165 RELEASED SUCCESS
 
@@ -14,16 +14,16 @@ Last reconciled: 2026-11-17 22:18:21 (Asia/Jakarta).
 
 ## GitHub repository hardening — owner-approved / pending manual creation
 
-- Rulesets API currently returned empty list; owner screenshots also showed no classic branch protection rule. No repository settings have been changed by the assistant.
+- **Rulesets list — confirmed empty:** latest owner screenshot of the repository `/rules` page displays “You haven't created any rulesets”; live Rulesets API also returned `[]`. This screenshot is of the Rulesets list, not the classic Branch protection page. A separate earlier owner screenshot showed no classic branch protection rules listed; the classic protection API still returns 403 and remains API-UNVERIFIED. No repository settings have been changed by the assistant.
 - Owner approved a minimal branch Ruleset: `main-safety-guard`, target default branch `main`, Enforcement `Active`, no bypass entries, only `Restrict deletions` + `Block force pushes`; all other rules OFF. This preserves normal direct pushes and the existing Validation Only formatter commit path.
 - **Current workflow compatibility check:** `.github/workflows/jexfyz-app-validation.yml` blob `b6b35f7ce65e30f69124e3e780e0c9c99518a748` triggers on push to `main`; its job has `contents: write` and includes a verified formatter-only `git push origin HEAD:refs/heads/main`. Therefore keep `Restrict updates`, required PR, required status checks and push restrictions OFF. Only deletion restriction and force-push blocking fit the current direct-to-main workflow. `Active` takes effect immediately on creation; verify exact form settings before clicking Create. Official definitions: https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/available-rules-for-rulesets and https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/creating-rulesets-for-a-repository.
 - **Latest live read-only recheck:** `main` HEAD before the current documentation sync was `0b61fc769033907ad1e8036f049a6dc8281e3103`; recursive tree is 139 entries / 93 blobs / 46 trees, `truncated=false`; open PR query is empty. Rulesets API returns `[]`. Classic `branches/main/protection` API returns 403 Resource not accessible by integration, so classic protection remains API-UNVERIFIED; the previous owner screenshot showed no classic rules listed. Build #165 run `43905426531` / job `133432846684` remains terminal `completed / success`; Release `403010611` has exactly two assets and tag `jexfyz-latest` points to source `cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d`.
-- Owner reports image upload is limited. Continue setup using text-only field verification; no screenshot is required.
+- **Mobile UI navigation from the current screenshot:** the screenshot shows the empty Rulesets list, not the create form; no `New ruleset` control is visible in the capture. In the repository header tap `More` → `Settings`; in Settings open `Code, planning, and automation` → `Rulesets`. On Chrome Android, enable `Desktop site` if the Settings tab/sidebar or `New ruleset` control is hidden by the mobile layout. Then select `New ruleset` → `New branch ruleset`. The live repository metadata confirms admin permission, and GitHub Docs state repository admins can create rulesets.
 - Before owner clicks Create, verify the form values in text: name, Active enforcement, default-branch target, empty bypass list, and exact two enabled rules. GitHub's form defaults Enforcement to Disabled, so owner must explicitly select Active. After Create, owner should report the resulting ruleset status/target/rules in text; no test force-push or deletion should be performed.
 - Detailed continuation: `CHAT_TRANSFER.md`, Stage 4. Active setup remains a manual owner action; this Diskusi has not created a Ruleset.
 
 ## Next action and boundaries
 
-- Immediate owner-side next step: continue the approved `main-safety-guard` setup through GitHub UI using the text-only verification path. After repository hardening, the separate physical next step remains installing Build #165 APK and confirming the real cooler's Bluetooth Connection row displays JE X FYZ. CI does not prove physical radio behavior or OEM visuals.
+- Immediate owner-side next step: open the `New branch ruleset` form via `More` → `Settings` → `Code, planning, and automation` → `Rulesets` (use Chrome `Desktop site` if mobile controls are hidden). Report the form's name, enforcement, target, bypass list and enabled rules for verification before Create. After repository hardening, the separate physical next step remains installing Build #165 APK and confirming the real cooler's Bluetooth Connection row displays JE X FYZ. CI does not prove physical radio behavior or OEM visuals.
 - Retain warnings: self-signed PKIX trust chain, META-INF signature coverage, Kotlin 2.2.20 / Firebase KGP compatibility, Android Gradle/Gradle 10 deprecations, Notification priority deprecations, native ELF DWARF, and native Android JUnit NO-SOURCE.
 - Firmware compile/BIN provenance, Firebase, OTA/flash, thermal/electrical, long-session soak and OEM visual acceptance remain separate and unverified. No such operation was performed or authorized.
