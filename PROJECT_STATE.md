@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — Current Project State
 
-Last reconciled: 2026-11-18 14:47:14 (Asia/Jakarta).
+Last reconciled: 2026-11-18 18:05:22 (Asia/Jakarta).
 
 ## Repository baseline
 
@@ -18,7 +18,7 @@ Last reconciled: 2026-11-18 14:47:14 (Asia/Jakarta).
 - lib/connection_scan_state.dart implements connectionDeviceDisplayName(...): current advertisement name first, Android platform name second, localized generic fallback only if both are empty. lib/main.dart uses the helper.
 - Regression coverage: advertisement-name precedence, platform-name fallback, empty fallback, and Connection sheet source contract. BLE UUID/service filter, scan lifecycle/ownership, connection handoff, P1 protocol and Firmware source were not changed.
 - Validation Only #44 / run 43899329198 / job 133411358928: formatter final PASS, analyzer 107 info-level / zero warnings/errors, Flutter tests 205/205 PASS. Resulting formatted source/test tree 0a2b3c03af433a17d82afa1d4db60beb7b1bd023.
-- Build #165 source includes the validated App code/tests. Physical acceptance still requires owner installation and confirmation that the actual cooler advertises and the App row displays JE X FYZ.
+- Build #165 source includes the validated App code/tests. - Owner reports that the App again safely displays `JE X FYZ` (USER-REPORTED, 2026-11-18). No screenshot, exact installed APK/build or live advertisement payload was supplied, so independent visual/RF/OEM confirmation remains unverified. No additional source repair or App Build is indicated by this report alone.
 
 ## Latest verified App package — Build #165 SUCCESS
 
@@ -37,12 +37,12 @@ Last reconciled: 2026-11-18 14:47:14 (Asia/Jakarta).
 
 ## Remaining evidence boundaries and next action
 
-- Physical owner installation, OEM screenshots, actual BLE advertisement/display, long-session performance/storage soak, Firmware compile/BIN provenance, BLE App authentication, Firebase, OTA/flash, thermal and electrical acceptance remain separate and unverified.
+- Owner reports the App again displays `JE X FYZ` (USER-REPORTED); screenshot, installed package identity and advertisement payload were not independently verified. Broader OEM BLE/RF behavior, long-session performance/storage soak, Firmware compile/BIN provenance, BLE App authentication, Firebase, OTA/flash, thermal and electrical acceptance remain separate and unverified.
 - Retained Build #165 warnings: self-signed certificate/PKIX and META-INF signature coverage; Kotlin 2.2.20 / Firebase KGP compatibility warning; Android Gradle property and Gradle 10 deprecations; native Notification priority deprecations; native ELF DWARF; native Android JUnit tasks NO-SOURCE. None are represented as fixed.
 - **CURRENT / VERIFIED owner screenshot — 2026-11-18, phone clock 14:13:** the Rulesets list shows `main-safety-guard` with Active status, 2 branch rules and 1 targeted branch. The open menu contains Export ruleset and Delete ruleset; no menu action was taken by the assistant.
 - **CURRENT / VERIFIED live Rulesets API — 2026-11-18 14:19:11:** at main HEAD `81a17a212dc3cecf1e3aed3d29f7c1edc0e716af`, repository metadata confirms default branch `main` and the recursive tree has 139 entries with `truncated=false`. The API lists exactly one branch ruleset: ID `27528678`, `main-safety-guard`, enforcement `active`. Details: include `~DEFAULT_BRANCH`, exclude none; rules `deletion` and `non_fast_forward`; bypass actors empty; `current_user_can_bypass=never`. GitHub reports creation at 2026-11-18 14:13:18 +07:00. This matches the owner-approved setup.
 - Ruleset setup is complete. Do not select `Delete ruleset`; close the menu without selecting an item. No force-push or deletion test is needed.
-- **Next project step (separate physical acceptance):** owner installs Build #165 and confirms the actual cooler advertisement and App Connection row display `JE X FYZ`. Hosted CI does not prove physical BLE behavior.
+- **Next step:** no Eksekusi Full! or Eksekusi Build App! is indicated for this reported display result. If independent evidence is later needed, the owner can provide a fresh scan screenshot and installed build details; hosted CI alone does not prove physical BLE behavior.
 - Classic branch protection remains separately API-UNVERIFIED (the integration previously returned 403); prior owner UI evidence showed no classic rule listed. Recheck the Branches page only if the owner wants current visual confirmation.
 - No Firmware compilation, BIN generation/publication/replacement, Firebase mutation, OTA, flashing or device operation was performed or authorized.
 
