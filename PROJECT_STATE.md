@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — Current Project State
 
-Last reconciled: 2026-11-18 13:53:53 (Asia/Jakarta).
+Last reconciled: 2026-11-18 14:08:27 (Asia/Jakarta).
 
 ## Repository baseline
 
@@ -39,7 +39,9 @@ Last reconciled: 2026-11-18 13:53:53 (Asia/Jakarta).
 
 - Physical owner installation, OEM screenshots, actual BLE advertisement/display, long-session performance/storage soak, Firmware compile/BIN provenance, BLE App authentication, Firebase, OTA/flash, thermal and electrical acceptance remain separate and unverified.
 - Retained Build #165 warnings: self-signed certificate/PKIX and META-INF signature coverage; Kotlin 2.2.20 / Firebase KGP compatibility warning; Android Gradle property and Gradle 10 deprecations; native Notification priority deprecations; native ELF DWARF; native Android JUnit tasks NO-SOURCE. None are represented as fixed.
-- Immediate owner-side sequence: complete the pending `main-safety-guard` form review through the guided steps in HANDOVER.md / CHAT_TRANSFER.md; afterward install Build #165 APK and confirm the actual cooler BLE advertisement and App Connection row display JE X FYZ. Hosted CI does not prove physical behavior.
+- **CURRENT / VERIFIED screenshot review (2026-11-18, phone clock 14:04):** the `New branch ruleset` draft shows name `main-safety-guard`, Enforcement `Active`, Target `Default` (repo metadata confirms default branch `main`), empty bypass list, and only `Restrict deletions` + `Block force pushes` selected among displayed rules. This matches the approved proposal. Create is visible, with no creation result shown.
+- **CURRENT / VERIFIED Rulesets API:** returned `[]` at main HEAD `7d27510da8da087a58525645502c047ec45b3f74`; no Ruleset was yet created at review time.
+- Immediate owner-side sequence: the reviewed draft is ready for the owner to click Create. After submission, send the resulting Ruleset details for read-only verification; afterward install Build #165 APK and confirm the actual cooler BLE advertisement and App Connection row display JE X FYZ. Hosted CI does not prove physical behavior.
 - No Firmware compilation, BIN generation/publication/replacement, Firebase mutation, OTA, flashing or device operation was performed or authorized by this App Build task.
 
 ## Historical hosted validation baseline — Validation Only #19 SUCCESS (pre-localization correction set)
