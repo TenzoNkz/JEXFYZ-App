@@ -71,7 +71,7 @@
 
 ## Final repository state and remaining boundaries
 
-- Verified Build #165 App source/test checkpoint: `0a2b3c03af433a17d82afa1d4db60beb7b1bd023`; packaged Build #165 source: `cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d`. At the NaN-NaN-NaN NaN:NaN:NaN read-only close-check, main HEAD was `d49cfb2f3abef14daeb96d55227eac90a3f6706c`; default branch `main`; recursive tree 139 entries / 93 blobs / 46 trees, `truncated=false`.
+- Verified Build #165 App source/test checkpoint: `0a2b3c03af433a17d82afa1d4db60beb7b1bd023`; packaged Build #165 source: `cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d`. At the 2026-11-18 14:23:39 read-only close-check, main HEAD was `d49cfb2f3abef14daeb96d55227eac90a3f6706c`; default branch `main`; recursive tree 139 entries / 93 blobs / 46 trees, `truncated=false`.
 - Rulesets API at that checkpoint listed exactly one active branch Ruleset: `main-safety-guard`, ID `27528678`. Exact detail: `~DEFAULT_BRANCH` include, no excludes, rules `deletion` + `non_fast_forward`, bypass actors empty, current user bypass `never`; created at 2026-11-18 14:13:18 +07:00. Owner screenshot and API agree. No assistant settings change or destructive test occurred.
 - Build #165 run `43905426531` remains `completed / success` at source `cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d`. Release `403010611`, tag `jexfyz-latest`, and both asset digests remain aligned with that source. No new Actions operation was started.
 - Classic branch-protection API previously returned 403 (API-UNVERIFIED); prior owner UI evidence showed no classic rule listed. This is separate from the verified Ruleset.
