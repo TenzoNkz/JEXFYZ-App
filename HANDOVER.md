@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — Current Handover
 
-Last reconciled: 2026-11-18 14:09:02 (Asia/Jakarta).
+Last reconciled: 2026-11-18 14:19:11 (Asia/Jakarta).
 
 ## Current state — BUILD #165 RELEASED SUCCESS
 
@@ -12,20 +12,21 @@ Last reconciled: 2026-11-18 14:09:02 (Asia/Jakarta).
 - **Protected versions:** Flutter 1.0.0+3; Android Gradle versionName Telegram @horizontalzzz.
 - **Bluetooth correction included:** Connection row prioritizes advertised local name JE X FYZ, falls back to platform name, and uses localized generic fallback only if both are empty. No Firmware/BLE protocol change was made.
 
-## GitHub repository hardening — owner-approved / pending manual creation
+## GitHub repository hardening — owner-approved and verified
 
-- **Rulesets list — confirmed empty:** latest owner screenshot of the repository `/rules` page displays “You haven't created any rulesets”; live Rulesets API also returned `[]`. This screenshot is of the Rulesets list, not the classic Branch protection page. A separate earlier owner screenshot showed no classic branch protection rules listed; the classic protection API still returns 403 and remains API-UNVERIFIED. No repository settings have been changed by the assistant.
-- Owner approved a minimal branch Ruleset: `main-safety-guard`, target default branch `main`, Enforcement `Active`, no bypass entries, only `Restrict deletions` + `Block force pushes`; all other rules OFF. This preserves normal direct pushes and the existing Validation Only formatter commit path.
-- **Current workflow compatibility check:** `.github/workflows/jexfyz-app-validation.yml` blob `b6b35f7ce65e30f69124e3e780e0c9c99518a748` triggers on push to `main`; its job has `contents: write` and includes a verified formatter-only `git push origin HEAD:refs/heads/main`. Therefore keep `Restrict updates`, required PR, required status checks and push restrictions OFF. Only deletion restriction and force-push blocking fit the current direct-to-main workflow. `Active` takes effect immediately on creation; verify exact form settings before clicking Create. Official definitions: https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/available-rules-for-rulesets and https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/creating-rulesets-for-a-repository.
-- **Latest live read-only recheck — 2026-11-18 13:15 Asia/Jakarta:** repository default branch is `main`; HEAD at the read-only check was `f2a3f02270bbb24fda8d90cf87938aff9b7ddb62`; recursive tree is 139 entries / 93 blobs / 46 trees, `truncated=false`. Rulesets API returned `[]`; open PRs were `[]`; classic `branches/main/protection` API returned 403 Resource not accessible by integration, so classic protection remains API-UNVERIFIED. Build #165 run `43905426531` / job `133432846684` is still terminal `completed / success`; Release `403010611` contains exactly the APK and corresponding source ZIP, and tag `jexfyz-latest`, Release target and packaged source all match `cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d`. The subsequent repository commits in this interaction update only status/project-memory documentation; the app/workflow tree was not changed.
-- **Navigation note from the earlier Rulesets-list screenshot (09:35):** if the owner needs to return to the form, open repository `More` → `Settings` → `Code, planning, and automation` → `Rulesets`; use Chrome `Desktop site` if mobile layout hides the Settings/sidebar controls, then choose `New ruleset` → `New branch ruleset`.
-- **Pre-Create review completed — 2026-11-18 14:04:** owner screenshots confirm the approved name, Active enforcement, default-branch target, empty bypass list, and only the two intended rules. The draft is ready for the owner to submit. After clicking Create, report the resulting Ruleset status/target/rules for read-only verification; no test force-push or deletion is needed.
-- Detailed continuation: `CHAT_TRANSFER.md`, Stage 4. Active setup remains a manual owner action; this Diskusi has not created a Ruleset.
+- Owner-approved branch Ruleset: `main-safety-guard`, target default branch `main`, Enforcement `Active`, empty bypass list, only `Restrict deletions` and `Block force pushes`.
+- Owner's 2026-11-18 14:13 screenshot shows the Ruleset in the list as Active, with 2 branch rules and 1 target branch. The menu is open and offers Export / Delete; the assistant did not act on either option.
+- Live read-only API verification at main HEAD `81a17a212dc3cecf1e3aed3d29f7c1edc0e716af`: repository default branch `main`; recursive tree 139 entries / 93 blobs / 46 trees, `truncated=false`; Rulesets API lists exactly ID `27528678`, `main-safety-guard`, branch target, repository source, enforcement `active`. Detail response confirms `include=["~DEFAULT_BRANCH"]`, `exclude=[]`, rules `deletion` + `non_fast_forward`, `bypass_actors=[]`, `current_user_can_bypass=never`. GitHub creation time: 2026-11-18 14:13:18 +07:00.
+- This matches the approved minimal protection and preserves ordinary non-force direct updates. The Validation Only workflow still pushes its verified formatter-only commit directly to `main`; keep update restrictions, required PRs and required status checks off.
+- The Ruleset is complete. Close the open menu without selecting **Delete ruleset**. No force-push or deletion test is needed.
+- Classic branch protection is separate and remains API-UNVERIFIED because the integration previously returned 403. A prior owner screenshot showed no classic rule listed; the current Rulesets API does not establish current classic protection state.
+- After repository hardening, the separate owner-side acceptance step is to install Build #165 and verify the actual cooler advertisement and App Connection row display `JE X FYZ`. No physical device action is performed under Diskusi.
 
 ## Next action and boundaries
 
-- **Latest owner screenshots — 2026-11-18 14:04 phone clock:** the `New branch ruleset` draft shows name `main-safety-guard`, Enforcement `Active`, Target `Default` (the repository default branch is `main`), empty bypass list, and only `Restrict deletions` + `Block force pushes` selected among displayed rules. This matches the approved proposal. The `Create` button is visible; there is no creation confirmation.
-- **Live Rulesets API recheck — 2026-11-18 14:05 Asia/Jakarta:** the endpoint returned `[]` at main `7d27510da8da087a58525645502c047ec45b3f74`; this screenshot review is still of an unsubmitted draft.
-- Immediate owner-side next step: click Create for the reviewed draft, then send the resulting Ruleset details or screenshot so its Active state, default-branch target, empty bypass list and exact selected rules can be verified read-only. After repository hardening, installing Build #165 and checking the actual cooler's Bluetooth row remain separate physical acceptance steps.
-- Retain warnings: self-signed PKIX trust chain, META-INF signature coverage, Kotlin 2.2.20 / Firebase KGP compatibility, Android Gradle/Gradle 10 deprecations, Notification priority deprecations, native ELF DWARF, and native Android JUnit NO-SOURCE.
-- Firmware compile/BIN provenance, Firebase, OTA/flash, thermal/electrical, long-session soak and OEM visual acceptance remain separate and unverified. No such operation was performed or authorized.
+- Ruleset verification is complete. Owner may close the open menu by tapping outside it; do not select **Delete ruleset**.
+- No further Ruleset change or test push is needed. The exact live configuration is recorded above and in `PROJECT_STATE.md`.
+- Separate next project step, if continuing acceptance: owner installs Build #165 APK and sends the cooler advertisement / App Connection row evidence showing whether the name is `JE X FYZ`. Physical behavior is still unverified.
+- Classic branch protection remains API-UNVERIFIED (403 from the connected integration); a prior owner screenshot showed no rule listed, but it was not rechecked during this Ruleset verification.
+- Retain package warnings and boundaries: certificate is self-signed / PKIX-untrusted and META-INF coverage warnings remain; Kotlin 2.2.20 / Firebase KGP compatibility, Android Gradle/Gradle 10 deprecations, Notification priority deprecations, native ELF DWARF, and native JUnit NO-SOURCE remain recorded and unfixed.
+- Firmware compile/BIN provenance, Firebase, OTA/flash, thermal/electrical acceptance and long-session soak remain unverified and require separate authorization.
