@@ -1,13 +1,13 @@
 # JE X FYZ / JE Cooler — Current Project State
 
-Last reconciled: 2026-11-18 19:23:05 (Asia/Jakarta).
+Last reconciled: 2026-11-18 19:43:40 (Asia/Jakarta).
 
 ## Repository baseline
 
 - Canonical repository/branch: TenzoNkz/JEXFYZ-App / main.
 - Latest published App package: Build #165 / run 43905426531 / job 133432846684 / Issue #42 / Release 403010611 / tag jexfyz-latest; immutable package source cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d; terminal SUCCESS.
 - Latest validated App source/test tree: 0a2b3c03af433a17d82afa1d4db60beb7b1bd023, formatter-only result from Validation Only #44. The same App source/test content was packaged by Build #165; compare from that tree to Build checkout is 17 documentation-only commits ahead / 0 behind.
-- Live recovery verification before this documentation sync: main HEAD `9ffd5f632009504aeb9473e04d3fd06dac1fa632`; recursive tree 139 entries / 93 blobs / 46 trees, `truncated=false`. Compared with Build #165 package source, main was 128 commits ahead / 0 behind; the nine changed paths were all Markdown.
+- Live readiness verification before this note sync: main HEAD `130f1b269f9c96dc65c6c66abb0dd7cfbacaf1b3`; recursive tree `12da255634faf52835b7485c1e3d3d861d712966`, 139 entries / 93 blobs / 46 trees, `truncated=false`. Compared with Build #165 package source, main was 135 commits ahead / 0 behind; all 10 changed paths were Markdown, with no App source/test/config/workflow drift.
 - **Recovery evidence check — 2026-11-18 19:23:05 Asia/Jakarta:** live Actions logs confirm Validation Only #44 (205/205 Flutter tests) and Build #165 (205/205, Gradle BUILD SUCCESSFUL, release asset re-download/signature verification passed) are terminal SUCCESS. The validation-to-package compare is 17 documentation-only commits; the main-to-package compare is also Markdown-only. The open-PR API returned an empty list.
 
 ## Bluetooth device-name display correction — included in Build #165
@@ -19,7 +19,7 @@ Last reconciled: 2026-11-18 19:23:05 (Asia/Jakarta).
 - lib/connection_scan_state.dart implements connectionDeviceDisplayName(...): current advertisement name first, Android platform name second, localized generic fallback only if both are empty. lib/main.dart uses the helper.
 - Regression coverage: advertisement-name precedence, platform-name fallback, empty fallback, and Connection sheet source contract. BLE UUID/service filter, scan lifecycle/ownership, connection handoff, P1 protocol and Firmware source were not changed.
 - Validation Only #44 / run 43899329198 / job 133411358928: formatter final PASS, analyzer 107 info-level / zero warnings/errors, Flutter tests 205/205 PASS. Resulting formatted source/test tree 0a2b3c03af433a17d82afa1d4db60beb7b1bd023.
-- Build #165 includes the validated App code/tests. The owner reports the App again displays `JE X FYZ` (USER-REPORTED, 2026-11-18); exact installed package/build and advertisement payload remain unverified. No additional source repair or App Build is indicated by this report alone.
+- Build #165 includes the validated App code/tests. The owner reports the App again displays `JE X FYZ` (USER-REPORTED, 2026-11-18); exact installed package/build and advertisement payload remain unverified. The owner says a fresh screenshot/package-identity check is not needed now. No additional source repair or App Build is indicated.
 
 ## Latest verified App package — Build #165 SUCCESS
 
@@ -43,7 +43,7 @@ Last reconciled: 2026-11-18 19:23:05 (Asia/Jakarta).
 - **Last owner screenshot — 2026-11-18, phone clock 14:13:** the Rulesets list showed `main-safety-guard` as Active with 2 branch rules and 1 targeted branch. The Export/Delete menu was open in that screenshot; the current phone screen was not checked and the assistant did not select either option.
 - **Live Rulesets API recheck — 2026-11-18 19:23:05 Asia/Jakarta, with main HEAD `9ffd5f632009504aeb9473e04d3fd06dac1fa632`:** repository default branch `main`; exactly one active branch Ruleset, ID `27528678`; include `~DEFAULT_BRANCH`, exclude none; rules `deletion` and `non_fast_forward`; bypass actors empty; `current_user_can_bypass=never`. Created at 2026-11-18 14:13:18 +07:00. This matches the owner-approved setup.
 - Ruleset setup is complete. Do not select `Delete ruleset`; close the menu without selecting an item. No force-push or deletion test is needed.
-- **Current next step:** no `Eksekusi Full!` or `Eksekusi Build App!` is indicated for the owner-reported display result. If independent field evidence is desired, provide a fresh scan screenshot and exact installed build/package details; hosted CI alone does not prove installed/OEM/RF behavior.
+- **Current next step:** no rebuild is indicated for the owner-reported display result. The owner has declined additional field screenshot/package-identity evidence for now; the report remains USER-REPORTED and can be independently checked later without a new build.
 - Classic branch protection remains separately API-UNVERIFIED (the integration previously returned 403); prior owner UI evidence showed no classic rule listed. Recheck the Branches page only if the owner wants current visual confirmation.
 - No Firmware compilation, BIN generation/publication/replacement, Firebase mutation, OTA, flashing or device operation was performed or authorized.
 
