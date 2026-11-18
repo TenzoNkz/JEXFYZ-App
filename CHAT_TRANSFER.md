@@ -1,18 +1,19 @@
-<!-- ACTIVE_CHECKPOINT_START -->
+<!-- ACTIVE_CHECKPOINT_START --># ACTIVE CHECKPOINT — BUILD #165 CURRENT / REPO READINESS & BUILD DISCUSSION COMPLETE — 2026-11-18
 # ACTIVE CHECKPOINT — BUILD #165 RELEASED / MAIN SAFETY RULESET VERIFIED / JE X FYZ DISPLAY OWNER-REPORTED — 2026-11-18
 
 
 
 ## Current session and authorization
 
-- Project: JE X FYZ / JE Cooler.
-- Canonical repository/branch: TenzoNkz/JEXFYZ-App / main.
-- Mode: Diskusi! — read-only repository recovery and owner-guidance; no executable source/test/config/workflow/build/release/settings/Firmware/device changes.
-- **SESSION STATUS: COMPLETED; WORK STATUS: COMPLETED.** This Diskusi recovery completed the saved acceptance/completion-boundary question after checking live main, Actions, Release/tag, PRs, Ruleset and the relevant hosted logs. The Bluetooth display correction, Build #165 package/release and main-safety Ruleset are complete; no source/test/config/workflow/build/device operation was started.
-- **Prior interaction disposition: RECOVERY_REQUIRED.** At opening, `00_WORK_STATUS.md` said the previous session/work item was IN_PROGRESS while this checkpoint said COMPLETED. This recovery preserved that status conflict, verified the external Build #165 operation as COMPLETED / SUCCESS, and reconciled the work item without repeating any side effect.
-- **Live recovery verification — 2026-11-18 19:23:05 Asia/Jakarta:** main HEAD before documentation sync was `9ffd5f632009504aeb9473e04d3fd06dac1fa632`; tree 139 entries / 93 blobs / 46 trees, `truncated=false`. Compare from package source `cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d` to main: 128 ahead / 0 behind, nine changed paths, all Markdown. Compare from Validation Only #44 formatted source `0a2b3c03af433a17d82afa1d4db60beb7b1bd023` to Build #165 source: 17 ahead / 0 behind, seven changed paths, all Markdown.
-- **Current external and repository result:** Build #165 run `43905426531` / job `133432846684` terminal SUCCESS; Release `403010611` / tag `jexfyz-latest` and both asset digests match package source. Validation Only #44 run `43899329198` / job `133411358928` terminal SUCCESS (205/205 Flutter tests, analyzer 107 infos / 0 warnings/errors). Ruleset `27528678` remains Active with only deletion + non-fast-forward; no bypass. Open PR list empty; no active Actions operation. Owner still reports the label visible (USER-REPORTED; no current screenshot or exact installed package identity).
-- Latest release: Build #165 / run 43905426531 / job 133432846684 / Issue #42 / source cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d; Release ID 403010611 / tag jexfyz-latest. Build #164 is superseded as latest package, but its history remains intact.
+- Project: JE X FYZ / JE Cooler. Canonical repository/branch: TenzoNkz/JEXFYZ-App / main.
+- Mode: Diskusi! — repository/source evidence and recommendations are read-only for executable source, tests, config, workflow, build/release, Firmware, Firebase, OTA, flashing and device operations. Only canonical documentation/memory was updated after conclusions.
+- **Current request:** owner says no additional field screenshot/package-identity check is needed now; asks whether the repo is maximized, which plugins are useful, further suggestions and whether another App build is needed.
+- **Last live main before this checkpoint write — 2026-11-18 19:46 Asia/Jakarta:** HEAD `29e991f707f490feb8c25975b0afa03d4abfd0b5`; recursive tree `f1922ff668b05673a78469261284897edcdbe1df`, 139 entries / 93 blobs / 46 trees, `truncated=false`. Compare from Build #165 source `cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d`: 140 commits ahead / 0 behind, 10 changed paths, all Markdown. App source/test/dependency/Android configuration/workflow is unchanged from Build #165.
+- **Live validation/release:** Validation Only #44 run `43899329198` / job `133411358928` terminal SUCCESS (205/205 Flutter tests; analyzer 107 info, zero warnings/errors). Build #165 run `43905426531` / job `133432846684` terminal SUCCESS. Release `403010611`, tag `jexfyz-latest`, APK and corresponding source ZIP still match package source `cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d`. Latest run list has no active run; open PR list is empty.
+- **Repository safety:** Ruleset `main-safety-guard` (ID `27528678`) is Active for `~DEFAULT_BRANCH`, with deletion and non-fast-forward rules, empty bypass list, `current_user_can_bypass=never`. Classic branch-protection API remains unverified because it returns 403.
+- **Workflow opportunity:** current Validation Only workflow runs on pushes to main and can write a formatter-only commit. It is not a safe PR check as-is. If the owner wants PR validation or Dependabot, create a separate read-only `pull_request` workflow first; do not require PRs or auto-merge dependencies before that.
+- **Plugin fit:** GitHub and Figma are installed/enabled (Figma `whoami` was verified 2026-11-17). Context7 was suggested as optional for version-sensitive Flutter/Dart/Gradle documentation and remains not installed/connected. No extra plugin is required for this repo discussion; Firebase/analytics remain task/privacy-contract dependent.
+- Owner-reported display `JE X FYZ` remains USER-REPORTED; no extra field evidence is needed per the owner for now. This Diskusi ran no tests, build, release, Firmware, Firebase, OTA or device operation.
 
 ## Bluetooth device-name correction — included in Build #165
 
@@ -37,10 +38,11 @@
 
 ## Exact next action
 
-- This recovery question is complete. The Bluetooth display-correction source/tests, hosted validation, Build #165 release and current main Ruleset are complete. No App source change or new build is indicated by the owner report.
-- The owner says `JE X FYZ` is visible (USER-REPORTED). If independent field acceptance is wanted, provide a fresh cooler-scan/Connection-sheet screenshot, exact installed Build/package identity and the advertisement name if available. This does not require a new build.
-- The last owner screenshot at 14:13 showed the Rulesets Export/Delete menu open. The current phone screen was not checked; if the menu is still open, close by tapping outside. Do not select Delete.
-- Overall product validation is not complete: installed-package/OEM/RF behavior, long-session soak, Firmware compile/BIN provenance, BLE App-only authentication, Firebase, OTA/flash, thermal/electrical acceptance remain unverified. These require a separately scoped request; this Diskusi ran no tests/build/device operations.
+- This readiness question is complete. **No new App Build is needed**: the latest package is Build #165, and main has only Markdown changes beyond its source. A new build should follow an App source change that passed validation, a release defect, or a specific request for a new package; only `Eksekusi Build App!` authorizes that operation.
+- No plugin is required. GitHub and Figma are already installed; Context7 is an optional docs lookup suggestion, not installed. Do not add a Firebase/analytics integration without a specific backend task and privacy/data contract.
+- The most useful future repo improvement is a separate read-only PR validation workflow before adopting PR-required rules or Dependabot. This is a recommendation only; no workflow/config change is authorized or made here.
+- Owner says no extra screenshot or installed-package identity is needed now. The display remains USER-REPORTED and can be checked later against Build #165 without rebuilding. Broader OEM/RF/soak, BLE-auth, Firmware/BIN, Firebase, OTA/flash, thermal/electrical evidence remains separate and unverified.
+- No tests, builds, releases, Firebase/BIN, flashing or device operation ran in this Diskusi. Prior hosted Validation Only #44 / Build #165 evidence remains current and verified.
 
 ## Owner-approved contracts — still authoritative
 - English is the master/default language; Indonesian must be complete, natural and semantically equivalent.
@@ -94,7 +96,7 @@
 - GitHub Copilot Code Review is a separate GitHub-native capability, not a ChatGPT plugin. The repository already has 12 .github/skills mirrors, including code-review; GitHub announced agent skills/MCP support for Copilot code review as generally available on 2026-07-29 for Copilot Pro, Pro+, Business and Enterprise. Potentially useful as a second reviewer on intentionally opened PRs. No Copilot entitlement/activation was verified.
 - Current repository default remains direct-to-main under MASTER_PROMPT.md. The Validation Only workflow currently triggers on push to main with path filters; it is not a PR validation pipeline. Do not move to PR-based reviews or make PR validation mandatory without explicit owner decision and a separate safe read-only PR validation path. The current Validation Only job has formatter-commit write capability, so it must not be naively exposed to untrusted PR execution.
 - No .github/dependabot.yml was present in the live tree. GitHub lists support for github-actions, gradle and pub/Dart ecosystems; pub support is community-maintained. Recommend a conservative Dependabot design only after a safe PR validation flow exists: weekly checks, low PR limit, grouped patch/minor updates where appropriate, owner review, no auto-merge.
-- Rulesets API read returned an empty list. Classic main-branch protection could not be read through the connected GitHub integration (403), so current classic protection state is UNKNOWN. Owner should verify repository Settings → Rules/Branches manually. Preserve direct-main push access if keeping the current workflow; at minimum consider preventing force-push and branch deletion. Do not claim those controls are currently enabled.
+- At the 2026-11-17 check the Rulesets API was empty; this is superseded by the 2026-11-18 active Ruleset verification above. Classic main-branch protection remains UNKNOWN because the connected API returns 403. Owner should verify repository Settings → Rules/Branches manually. Preserve direct-main push access if keeping the current workflow; at minimum consider preventing force-push and branch deletion. Do not claim those controls are currently enabled.
 - No source, tests, workflow, configuration or GitHub settings were changed. No build, test, release, Firmware, Firebase, OTA or device operation was run. This interaction is a proposal/evaluation only; installing Figma requires the owner's connection action and any future configuration changes require a separate explicit execution mode.
 
 
