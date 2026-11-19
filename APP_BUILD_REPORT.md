@@ -3246,3 +3246,15 @@
 - **Protected version/scope:** preserve Android Gradle versionName exactly `Telegram @horizontalzzz`. App Build/QC/release only; no Firmware compilation, BIN generation/publication/replacement, Firebase mutation, OTA, flashing or device operation.
 - **Disposition:** QUEUED — continue only run `44505634022`; inspect actual job/runner allocation and step state before recording further progress. Do not create another issue or rerun while this run is queued/active.
 
+
+
+### BUILD #166 progress — runner started / App audit and dependency setup passed / analyzer active — 2026-11-19 17:27 (Asia/Jakarta)
+
+- **Run/job/source:** Build #166 / Actions run `44505634022`, workflow `374946166`, Issue #43, attempt 1; job `build` / `135496368532`; immutable checkout SHA `2ca2235a8e238bb9ca58c11ec878bbfc3f6d25fe`; actor `TenzoNkz`.
+- **Run status:** API reports `in_progress`; runner/job allocated. Initial first snapshot showed steps 1–4 success; subsequent live step readback advanced.
+- **Steps 1–11 observed SUCCESS:** Set up job; checkout; Java 17; Flutter; Gradle; verify toolchain; prepare Flutter local.properties; prepare production release signing; restore Gradle wrapper if missing; JE X FYZ security and architecture audit; install dependencies.
+- **Step 12 `Analyze Dart code` is IN_PROGRESS.** Steps 13–21 remain pending: Flutter tests; Android Gradle gate; obfuscated release APK; V1/V2/V3 signing enforcement; pinned certificate verification; APK naming; corresponding source ZIP; Release/tag publication; fresh downloaded-asset identity verification. Cleanup steps 39–43 remain pending.
+- **Log availability:** `fetch_workflow_job_logs` currently returns GitHub `BlobNotFound` while job `135496368532` is active. Live run/job/step APIs agree on the current status; exact analyzer diagnostics and counts are NOT YET AVAILABLE and must only be recorded from terminal logs.
+- **Artifacts/release:** no Actions artifacts are listed (expected delivery is through GitHub Release assets). No Build #166 APK, signature, source ZIP, Release mutation or downloadable checksum has been observed yet. Build #165 remains the published Release/tag baseline until #166 passes every required gate and external parity checks.
+- **Disposition:** IN_PROGRESS — continue only run `44505634022` / job `135496368532` / source `2ca2235a8e238bb9ca58c11ec878bbfc3f6d25fe`. Do not trigger, rerun or create another issue while this run is active.
+
