@@ -1,3 +1,21 @@
+## BUILD #166 — TERMINAL SUCCESS / RELEASE AND DOWNLOADED ASSETS VERIFIED — 2026-11-19
+
+- **Trigger / authorization:** exactly one fresh owner-authored Issue #43 with exact guarded title `JE X FYZ — EKSEKUSI BUILD APP TRIGGER` and body token `JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1`. No historical trigger issue was reused.
+- **Run / job / source:** Build #166 / Actions run `44505634022` / workflow `374946166` / issue event / attempt 1; job `build` / `135496368532`; actor `TenzoNkz`; immutable checkout/source SHA `2ca2235a8e238bb9ca58c11ec878bbfc3f6d25fe`; terminal SUCCESS. All required workflow steps 1–21 and cleanup 39–43 completed SUCCESS.
+- **Toolchain:** Flutter 3.47.2 / Dart 3.13.2; Java 17; Gradle 9.3.1.
+- **Analyzer:** `flutter analyze --no-fatal-infos` PASS — 107 info-level diagnostics, zero warnings and zero errors.
+- **Flutter tests:** PASS — **205/205 tests passed**.
+- **Android Gradle gate:** `./gradlew --no-daemon :app:testDebugUnitTest` PASS — BUILD SUCCESSFUL in 2m38s; 162 actionable tasks (161 executed / 1 up-to-date). Native App JUnit tasks `:app:compileDebugUnitTestKotlin`, `:app:compileDebugUnitTestJavaWithJavac`, `:app:processDebugUnitTestJavaRes`, and `:app:testDebugUnitTest` were NO-SOURCE.
+- **APK:** `JEXFYZ-release.apk`, Release asset ID `767249969`, size 55,996,507 bytes, SHA-256 `ff924fb130f6198eca33c1c1b541748cc4564dc608b7817198e42ae21b2f8d17`. Obfuscated release build completed.
+- **Signature:** freshly downloaded APK verified V1/JAR, V2 and V3; exactly one signer; pinned certificate fingerprint `dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0`. Self-signed PKIX trust-chain and META-INF signature-coverage warnings remain; they did not fail the explicit signing gates.
+- **Corresponding source ZIP:** `JEXFYZ-corresponding-source.zip`, Release asset ID `767249970`, size 3,012,386 bytes, SHA-256 `851d6e3917e62c450f68874c1031176aeb2ac76a9a891649478cddf8ac9a63b9`. Embedded source marker matches exact `2ca2235a8e238bb9ca58c11ec878bbfc3f6d25fe`; ZIP integrity and fresh downloaded-byte checksum passed.
+- **Release/tag parity:** Release ID `403010611`, tag `jexfyz-latest`; Release target, Git tag ref, and source-archive marker all match `2ca2235a8e238bb9ca58c11ec878bbfc3f6d25fe`. Exactly one APK plus one corresponding source ZIP. Step 21 re-downloaded both assets and verified checksums, ZIP integrity and APK signature/certificate. No GitHub Actions artifacts were used; delivery is via Release assets.
+- **Included App delta:** this immutable source includes the replacement `assets/jexfyzcooler.png` (blob `827289e130eda890d853f347b8c6aef4e90c5fee`). It does **not** include the subsequently requested Home image-size correction; the latter source edit began after the Build #166 checkout and will require a separate future Build App authorization.
+- **Protected version:** Flutter `1.0.0+3`; Android Gradle `versionName "Telegram @horizontalzzz"` preserved exactly.
+- **Evidence boundary:** hosted App CI/release integrity only. No Firmware compilation/BIN, Firebase mutation, OTA, flashing, physical BLE/RF, thermal/electrical or device visual acceptance was performed.
+
+---
+
 ## BUILD #149 ACTIVE — FLUTTER TOOLCHAIN SETUP — 2026-11-11
 
 - **Run/job/source:** Build #149 / Actions run 42967289995, workflow 374946166, issue event, attempt 1; job build / 130347345586; immutable source SHA 0507e3e11b67b8f8d042e49b74cc14a53bfc4f21.
