@@ -1,4 +1,4 @@
-| Last updated | 2026-11-19 17:58 (+07:00, Asia/Jakarta) |
+| Last updated | 2026-11-19 17:59 (+07:00, Asia/Jakarta) |
 
 > Single current snapshot for JE X FYZ project interactions. Event-driven marker; not a background heartbeat.
 
@@ -12,15 +12,15 @@
 | Mode | Eksekusi Build App! — guarded App Build/QC/release only. No Firmware/BIN/Firebase/OTA/flash/device operations. |
 | Request / work item | Build #167 — complete the newly authorized guarded App Build, signing, source-archive, Release/tag and downloaded-asset verification. |
 | Started | 2026-11-19 17:57 (+07:00, Asia/Jakarta) |
-| Last updated | 2026-11-19 17:58 (+07:00, Asia/Jakarta) |
-| Current phase | Runner active — Build #167 run 44510421466 / job 135512909555. Step 1–2 SUCCESS; step 3 Set up Java 17 IN_PROGRESS; steps 4–21 and cleanup pending. |
-| Last completed milestone | Trigger confirmed: Issue #44 opened once by owner; run 44510421466 / job 135512909555 checked out source 0dd96228d33b08c66e736ae91a8a6c3e5c3ddb81. Preceding Validation Only #49 passed 205/205 tests, analyzer 107 infos / zero warnings-errors, read-only formatter 18 files / 0 changes. |
+| Last updated | 2026-11-19 17:59 (+07:00, Asia/Jakarta) |
+| Current phase | Build #167 runner: steps 1–12 SUCCESS including security/architecture audit, dependencies and analyzer; step 13 Flutter tests IN_PROGRESS; steps 14–21/cleanup pending. Log endpoint returns temporary 404 while run remains active. |
+| Last completed milestone | Build #167 run 44510421466 / job 135512909555: steps 1–12 SUCCESS through analyzer. Validation Only #49 already PASS (205/205 tests; 107 analyzer infos; formatter clean). |
 | Last verified source checkpoint | Immutable Build #167 checkout SHA 0dd96228d33b08c66e736ae91a8a6c3e5c3ddb81; pre-trigger tree 140 entries / 94 blobs / 46 trees / truncated=false. Runtime candidate includes Home flex14 + uniform 1.08x right-anchored scale, BoxFit.contain, latest PNG blob bf065985acceab8639d72c670344b805d9e5ba6f. Source validated on parent 35038f4126725f0ac18ccf3add453d92f9ae84fe; intervening main change before trigger was documentation/status only. |
-| EXTERNAL OPERATION | Build #167 / run 44510421466 / job 135512909555 / source 0dd96228d33b08c66e736ae91a8a6c3e5c3ddb81: IN_PROGRESS; step 3 Java 17 setup. Build #166 run 44505634022 and Validation Only #49 run 44510028619: terminal SUCCESS. |
+| EXTERNAL OPERATION | Build #167 / run 44510421466 / job 135512909555 / source 0dd96228d33b08c66e736ae91a8a6c3e5c3ddb81: IN_PROGRESS, step 13 Flutter tests. Build #166 / run 44505634022 and Validation #49 / run 44510028619: terminal SUCCESS. |
 | EXTERNAL OPERATION STATUS | IN_PROGRESS — GitHub Actions run 44510421466 / job 135512909555 is active; continue only this run, no duplicate trigger. |
-| Result / evidence | Issue #44 exact owner/title/token guard opened once. Run source includes Home cooler sizing correction (flex 13→14, Transform.scale 1.08, Alignment.centerRight, BoxFit.contain) and latest PNG asset. Release #403010611/tag jexfyz-latest remains Build #166 until #167 passes every gate and re-download verification. |
+| Result / evidence | Trigger Issue #44 succeeded once. Build #167 has steps 1–12 success including security audit, dependencies and analyzer; Flutter tests are running. No failure recorded. Release still Build #166 pending #167 package/release/download verification. |
 | Blocker / remaining evidence | VISUAL NOT VERIFIED: no post-change actual Android screenshot/device render was available. Review 350-dp/420-dp, EN/ID, Light/Dark, portrait/constrained height, full cooler silhouette/no crop, metric label clearance, NOTIFY spacing and safe margins after future install. Build #166 APK source predates the enlargement, so the currently published package does not contain this adjustment. |
-| Next action | Inspect job 135512909555 live steps/logs; continue through Flutter analyzer/tests, Android Gradle, APK/signing, source ZIP, Release/tag parity and downloaded asset identity verification. |
+| Next action | Re-query run 44510421466 / job 135512909555; capture Flutter test conclusion and terminal logs, then monitor the remaining Gradle/APK/sign/source/release/download gates. |
 
 ## Status model
 
