@@ -1,4 +1,4 @@
-| Last updated | 2026-11-19 17:26 (+07:00, Asia/Jakarta) |
+| Last updated | 2026-11-19 17:27 (+07:00, Asia/Jakarta) |
 
 > Single current snapshot for JE X FYZ project interactions. Event-driven marker; not a background heartbeat.
 
@@ -12,16 +12,16 @@
 | Mode | Eksekusi Build App! — guarded App Build/QC/release only; no Firmware/BIN/Firebase/OTA/flash/device operations. |
 | Request / work item | Build #166 — resume authorized guarded App Build/QC for the replacement cooler photo; reconcile source, latest validation, guarded trigger, Actions jobs/logs, Release and downloaded APK/source ZIP identity. |
 | Started | 2026-11-19 17:17 (+07:00, Asia/Jakarta) |
-| Last updated | 2026-11-19 17:17 (+07:00, Asia/Jakarta) |
-| Current phase | Guarded trigger accepted — owner-authored Issue #43 verified with exact title/token; one Build #166 issue-event run is QUEUED on the final main SHA. Await runner/job allocation; do not create another issue or run. |
-| Last completed milestone | Validation Only #45 / run 44487957151 / job 135436061477 / source ac7348fe754130935d0fb2085b25b9ec03d4fce4: terminal SUCCESS; locked dependencies, read-only formatter, analyzer 107 infos / zero warnings/errors, Flutter tests 205/205. Formatter apply and commit skipped. |
+| Last updated | 2026-11-19 17:27 (+07:00, Asia/Jakarta) |
+| Current phase | Build #166 executing — runner allocated on job `135496368532`; steps 1–11 SUCCESS, step 12 `Analyze Dart code` IN_PROGRESS; later gates pending. Full job log is temporarily unavailable while the job remains active. |
+| Last completed milestone | Build #166 / run `44505634022` / job `135496368532` / source `2ca2235a8e238bb9ca58c11ec878bbfc3f6d25fe`: steps 1–11 completed SUCCESS (checkout, Java, Flutter, Gradle, toolchain, signing preparation, wrapper recovery, security/architecture audit, dependencies); step 12 analyzer is IN_PROGRESS. |
 | Last verified source checkpoint | Main before documentation/status updates: 6e651a55a3c575195cddb4e9cff8f898711eefbd; tree 140 entries / 94 blobs / 46 trees, `truncated=false`. New cooler asset blob: `827289e130eda890d853f347b8c6aef4e90c5fee`, `assets/jexfyzcooler.png`, 1,947,244 bytes. Validation #45 checkout SHA ac7348fe754130935d0fb2085b25b9ec03d4fce4 includes the same asset; subsequent main changes before this session were docs/status only. |
 | Main HEAD before this pre-trigger checkpoint | `354a41e3d484564e979d1f6f18017270b3956ea1` — status-open commit; recursive tree `36e3b1588b2c985106a6d8ee0d1378f16f119b16`, 140 entries / 94 blobs / 46 trees, `truncated=false`. The latest commits since the validated source are documentation/status only. |
-| EXTERNAL OPERATION | Build #166 / Issue #43 / Actions run `44505634022` / workflow `374946166` / attempt 1 / source SHA `2ca2235a8e238bb9ca58c11ec878bbfc3f6d25fe` / event `issues` / actor `TenzoNkz`: QUEUED. Job not yet allocated in the first observed run snapshot. Prior Build #165 run `43905426531` and Validation Only #45 run `44487957151` remain terminal SUCCESS. |
-| EXTERNAL OPERATION STATUS | QUEUED — Build #166 run `44505634022` created from verified Issue #43; run API reports `queued`, attempt 1, source SHA `2ca2235a8e238bb9ca58c11ec878bbfc3f6d25fe`. Await job/runner allocation. |
+| EXTERNAL OPERATION | Build #166 / Issue #43 / run `44505634022` / workflow `374946166` / attempt 1 / job `build` / job ID `135496368532` / source SHA `2ca2235a8e238bb9ca58c11ec878bbfc3f6d25fe`: run and job `in_progress`; steps 1–11 SUCCESS; step 12 analyzer IN_PROGRESS. Prior Build #165 and Validation Only #45 remain terminal SUCCESS. |
+| EXTERNAL OPERATION STATUS | IN_PROGRESS — Build #166 run `44505634022` / job `135496368532` has an allocated runner and is executing analyzer step 12; later build/sign/release gates pending. |
 | Result / evidence | Compare Build #165 package source to pre-session main: 160 ahead / 0 behind; changed paths are new read-only PR validation workflow, ten documentation/status paths and exactly one App runtime input, `assets/jexfyzcooler.png`. No Dart source, tests, dependencies/pubspec, Android configuration, Firmware or guarded build workflow changed. Main registers the asset in pubspec; Home uses Image.asset with BoxFit.contain/right alignment. Current Release 403010611/tag jexfyz-latest still point to Build #165 source cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d. Trigger Issue #42 already launched Build #165 and must not be reused; historical triggers #41/#40/#39/#38/#37/#36/#35/#33 are also retained. No open PR. |
-| Blocker | No current execution blocker; Build #166 is queued awaiting hosted runner/job allocation. The cooler PNG's alpha transparency and 1:1 dimensions remain NOT VERIFIED by the available metadata; CI asset-presence check does not establish visual acceptance. |
-| Next action | Inspect run `44505634022` for actual job/runner allocation and first step state; continue monitoring only this run through all workflow gates, Release/tag publication and downloaded APK/source ZIP checks. |
+| Blocker | No failing gate observed. Full job-log endpoint currently returns BlobNotFound while the job is active; use live step/job status and retrieve complete logs after terminal completion. Cooler PNG alpha/1:1 visual contract remains NOT VERIFIED. |
+| Next action | Continue monitoring only run `44505634022` / job `135496368532`; capture analyzer and Flutter test output after their gates complete, then Android Gradle, APK/signing, source ZIP, Release/tag and downloaded asset verification. Do not duplicate the trigger. |
 
 ## Status model
 
