@@ -1,4 +1,4 @@
-| Last updated | 2026-11-19 17:57 (+07:00, Asia/Jakarta) |
+| Last updated | 2026-11-19 17:58 (+07:00, Asia/Jakarta) |
 
 > Single current snapshot for JE X FYZ project interactions. Event-driven marker; not a background heartbeat.
 
@@ -7,20 +7,20 @@
 | Field | Value |
 |---|---|
 | **STATUS** | **IN_PROGRESS** |
-| SESSION STATUS | IN_PROGRESS — incoming `Eksekusi Build App!` accepted; Build #167 pre-trigger checks are complete and one guarded trigger is next. |
-| WORK STATUS | IN_PROGRESS — Build #167: package the Home cooler image enlargement and latest validated image asset into the next guarded App release; verify every build/sign/release/download gate. |
+| SESSION STATUS | IN_PROGRESS — Build #167 guarded Actions run is confirmed active; current interaction continues monitoring the exact run/job. |
+| WORK STATUS | IN_PROGRESS — Build #167 packages the validated Home cooler enlargement and latest image asset; required App Build/QC/release gates remain underway. |
 | Mode | Eksekusi Build App! — guarded App Build/QC/release only. No Firmware/BIN/Firebase/OTA/flash/device operations. |
-| Request / work item | Build #167 — create one fresh guarded owner-authored trigger against current main after verifying latest Validation Only #49 and no active/queued duplicate. |
+| Request / work item | Build #167 — complete the newly authorized guarded App Build, signing, source-archive, Release/tag and downloaded-asset verification. |
 | Started | 2026-11-19 17:57 (+07:00, Asia/Jakarta) |
-| Last updated | 2026-11-19 17:57 (+07:00, Asia/Jakarta) |
-| Current phase | Pre-trigger checks PASS — latest main d9872d66e75f4e5a7dc98dad4474548763f27833; tree 140 entries / 94 blobs / 46 trees / not truncated; Validation Only #49 passed on parent 35038f4126725f0ac18ccf3add453d92f9ae84fe with only 00_WORK_STATUS.md changed afterward. Ready to create Issue #44 once. |
-| Last completed milestone | Validation Only #49 / run 44510028619 / job 135511540876 / source 35038f4126725f0ac18ccf3add453d92f9ae84fe: terminal SUCCESS; locked dependencies PASS, formatter 18 files / 0 changes, analyzer 107 infos / zero warnings/errors, Flutter tests 205/205 PASS. |
-| Last verified source checkpoint | Current main d9872d66e75f4e5a7dc98dad4474548763f27833; recursive tree 140 entries / 94 blobs / 46 trees / truncated=false. Runtime candidate in Validation Only #49: Home `lib/main.dart` blob 801341d383fd57c68acba1b466da733ea22e335a; test `test/widget_test.dart` blob 12bf6f20356796f158dfab9c72092579bace8f2f; cooler PNG blob bf065985acceab8639d72c670344b805d9e5ba6f, 2,130,606 bytes. Current main differs from validation SHA only in 00_WORK_STATUS.md. Build workflow blob af342fc21e5c0ff0815628dfacec65ae519f69ae. |
-| EXTERNAL OPERATION | Build #166 / run 44505634022 / job 135496368532 / source 2ca2235a8e238bb9ca58c11ec878bbfc3f6d25fe: terminal SUCCESS. Validation Only #49 / run 44510028619 / job 135511540876 / source 35038f4126725f0ac18ccf3add453d92f9ae84fe: terminal SUCCESS. No Build #167 issue/run exists yet. |
-| EXTERNAL OPERATION STATUS | NOT_APPLICABLE — no Build #167 process exists before the guarded trigger. |
-| Result / evidence | Build #166 is already released but predates the Home image-size correction. Current main contains right image column flex 14 (was 13), uniform 1.08× scale anchored right, BoxFit.contain retained; latest PNG blob bf065985acceab8639d72c670344b805d9e5ba6f. Validation #49 passed; no App source/test changes after that tested SHA. Release #403010611/tag jexfyz-latest remain Build #166 until #167 succeeds. |
+| Last updated | 2026-11-19 17:58 (+07:00, Asia/Jakarta) |
+| Current phase | Runner active — Build #167 run 44510421466 / job 135512909555. Step 1–2 SUCCESS; step 3 Set up Java 17 IN_PROGRESS; steps 4–21 and cleanup pending. |
+| Last completed milestone | Trigger confirmed: Issue #44 opened once by owner; run 44510421466 / job 135512909555 checked out source 0dd96228d33b08c66e736ae91a8a6c3e5c3ddb81. Preceding Validation Only #49 passed 205/205 tests, analyzer 107 infos / zero warnings-errors, read-only formatter 18 files / 0 changes. |
+| Last verified source checkpoint | Immutable Build #167 checkout SHA 0dd96228d33b08c66e736ae91a8a6c3e5c3ddb81; pre-trigger tree 140 entries / 94 blobs / 46 trees / truncated=false. Runtime candidate includes Home flex14 + uniform 1.08x right-anchored scale, BoxFit.contain, latest PNG blob bf065985acceab8639d72c670344b805d9e5ba6f. Source validated on parent 35038f4126725f0ac18ccf3add453d92f9ae84fe; intervening main change before trigger was documentation/status only. |
+| EXTERNAL OPERATION | Build #167 / run 44510421466 / job 135512909555 / source 0dd96228d33b08c66e736ae91a8a6c3e5c3ddb81: IN_PROGRESS; step 3 Java 17 setup. Build #166 run 44505634022 and Validation Only #49 run 44510028619: terminal SUCCESS. |
+| EXTERNAL OPERATION STATUS | IN_PROGRESS — GitHub Actions run 44510421466 / job 135512909555 is active; continue only this run, no duplicate trigger. |
+| Result / evidence | Issue #44 exact owner/title/token guard opened once. Run source includes Home cooler sizing correction (flex 13→14, Transform.scale 1.08, Alignment.centerRight, BoxFit.contain) and latest PNG asset. Release #403010611/tag jexfyz-latest remains Build #166 until #167 passes every gate and re-download verification. |
 | Blocker / remaining evidence | VISUAL NOT VERIFIED: no post-change actual Android screenshot/device render was available. Review 350-dp/420-dp, EN/ID, Light/Dark, portrait/constrained height, full cooler silhouette/no crop, metric label clearance, NOTIFY spacing and safe margins after future install. Build #166 APK source predates the enlargement, so the currently published package does not contain this adjustment. |
-| Next action | Create exactly one new owner-authored Issue #44 with exact title `JE X FYZ — EKSEKUSI BUILD APP TRIGGER` and token `JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1`, referencing current main SHA d9872d66e75f4e5a7dc98dad4474548763f27833. Then capture the resulting run/job and monitor it; do not reuse Issue #43. |
+| Next action | Inspect job 135512909555 live steps/logs; continue through Flutter analyzer/tests, Android Gradle, APK/signing, source ZIP, Release/tag parity and downloaded asset identity verification. |
 
 ## Status model
 
