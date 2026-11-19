@@ -1,4 +1,4 @@
-| Last updated | 2026-11-19 17:20 (+07:00, Asia/Jakarta) |
+| Last updated | 2026-11-19 17:57 (+07:00, Asia/Jakarta) |
 
 > Single current snapshot for JE X FYZ project interactions. Event-driven marker; not a background heartbeat.
 
@@ -7,20 +7,20 @@
 | Field | Value |
 |---|---|
 | **STATUS** | **IN_PROGRESS** |
-| SESSION STATUS | IN_PROGRESS — repeated incoming `Eksekusi Build App!` received; same Build #166 work item continues without creating a second trigger. |
-| WORK STATUS | COMPLETED — Home cooler image is enlarged in source: right column flex 14 (was 13), uniform 1.08× scale anchored right, BoxFit.contain retained; regression contract added; 205/205 tests and analyzer passed. Actual Android visual acceptance remains separately VISUAL NOT VERIFIED. |
-| Mode | Eksekusi Full! — scoped App source/test/documentation update. No Build APK/Release, Firmware/BIN/Firebase/OTA/flash/device operation was performed or authorized. |
-| Request / work item | Enlarge Home cooler artwork to use available right-hand space more effectively while keeping a clean balanced layout, undistorted image and all existing Home invariants. |
-| Started | 2026-11-19 17:20 (+07:00, Asia/Jakarta) |
+| SESSION STATUS | IN_PROGRESS — incoming `Eksekusi Build App!` accepted; Build #167 pre-trigger checks are complete and one guarded trigger is next. |
+| WORK STATUS | IN_PROGRESS — Build #167: package the Home cooler image enlargement and latest validated image asset into the next guarded App release; verify every build/sign/release/download gate. |
+| Mode | Eksekusi Build App! — guarded App Build/QC/release only. No Firmware/BIN/Firebase/OTA/flash/device operations. |
+| Request / work item | Build #167 — create one fresh guarded owner-authored trigger against current main after verifying latest Validation Only #49 and no active/queued duplicate. |
+| Started | 2026-11-19 17:57 (+07:00, Asia/Jakarta) |
 | Last updated | 2026-11-19 17:45 (+07:00, Asia/Jakarta) |
-| Current phase | Pre-trigger evidence — revalidate workflow Jobs, logs, run/artifact state and exact main HEAD before one guarded issue trigger. |
-| Last completed milestone | Validation Only #48 / run 44508252306 / job 135505409417 / tested source 53852b57fc6cb542a88f16d8863cc12a93c3ac80: terminal SUCCESS. Flutter 3.47.2 / Dart 3.13.2; locked dependencies PASS; Dart formatter 18 files / 0 changes; analyzer 107 info-level findings / zero warnings-errors; Flutter tests 205/205 PASS. |
-| Last verified source checkpoint | Validation #48 source/test HEAD 53852b57fc6cb542a88f16d8863cc12a93c3ac80; current main HEAD after documentation/checkpoint/handover updates: baec44a687c6a22fa02bcecd6120093c0bf2c609; recursive tree 140 entries / 94 blobs / 46 trees / truncated=false. lib/main.dart blob 801341d383fd57c68acba1b466da733ea22e335a; test/widget_test.dart blob 12bf6f20356796f158dfab9c72092579bace8f2f; DESIGN_NOTES.md blob 89a267cb225cebe897a403afcdce21b87cb9ac64. |
-| EXTERNAL OPERATION | Build #166 / run 44505634022 / job 135496368532 / source 2ca2235a8e238bb9ca58c11ec878bbfc3f6d25fe: terminal SUCCESS, all build/sign/release/download gates passed. Validation Only #48 / run 44508252306 / job 135505409417 / source 53852b57fc6cb542a88f16d8863cc12a93c3ac80: terminal SUCCESS. |
-| EXTERNAL OPERATION STATUS | NOT_APPLICABLE — Build #166 and Validation Only #48 are both terminal. No active build or validation run remains. No new APK build/release was triggered by this Full request. |
-| Result / evidence | lib/main.dart: Home right image column flex 13→14; uniform Transform.scale(scale: 1.08) with Alignment.centerRight; preserve BoxFit.contain, imageHeight, square aspect ratio and right alignment. All seven left metric rows remain 45 dp; Home header, NOTIFY, tabs, 360-dp single transform, theme/localization, BLE/P1 and telemetry unchanged. test/widget_test.dart covers asset path, image height, flex14, scale1.08, right alignment, BoxFit.contain/no BoxFit.cover and seven-row invariant. DESIGN_NOTES.md, APP_PREBUILD_AUDIT.md, PROJECT_STATE.md, HANDOVER.md, APP_BUILD_REPORT.md and active CHAT_TRANSFER.md record the result. |
+| Current phase | Pre-trigger checks PASS — latest main d9872d66e75f4e5a7dc98dad4474548763f27833; tree 140 entries / 94 blobs / 46 trees / not truncated; Validation Only #49 passed on parent 35038f4126725f0ac18ccf3add453d92f9ae84fe with only 00_WORK_STATUS.md changed afterward. Ready to create Issue #44 once. |
+| Last completed milestone | Validation Only #49 / run 44510028619 / job 135511540876 / source 35038f4126725f0ac18ccf3add453d92f9ae84fe: terminal SUCCESS; locked dependencies PASS, formatter 18 files / 0 changes, analyzer 107 infos / zero warnings/errors, Flutter tests 205/205 PASS. |
+| Last verified source checkpoint | Current main d9872d66e75f4e5a7dc98dad4474548763f27833; recursive tree 140 entries / 94 blobs / 46 trees / truncated=false. Runtime candidate in Validation Only #49: Home `lib/main.dart` blob 801341d383fd57c68acba1b466da733ea22e335a; test `test/widget_test.dart` blob 12bf6f20356796f158dfab9c72092579bace8f2f; cooler PNG blob bf065985acceab8639d72c670344b805d9e5ba6f, 2,130,606 bytes. Current main differs from validation SHA only in 00_WORK_STATUS.md. Build workflow blob af342fc21e5c0ff0815628dfacec65ae519f69ae. |
+| EXTERNAL OPERATION | Build #166 / run 44505634022 / job 135496368532 / source 2ca2235a8e238bb9ca58c11ec878bbfc3f6d25fe: terminal SUCCESS. Validation Only #49 / run 44510028619 / job 135511540876 / source 35038f4126725f0ac18ccf3add453d92f9ae84fe: terminal SUCCESS. No Build #167 issue/run exists yet. |
+| EXTERNAL OPERATION STATUS | NOT_APPLICABLE — no Build #167 process exists before the guarded trigger. |
+| Result / evidence | Build #166 is already released but predates the Home image-size correction. Current main contains right image column flex 14 (was 13), uniform 1.08× scale anchored right, BoxFit.contain retained; latest PNG blob bf065985acceab8639d72c670344b805d9e5ba6f. Validation #49 passed; no App source/test changes after that tested SHA. Release #403010611/tag jexfyz-latest remain Build #166 until #167 succeeds. |
 | Blocker / remaining evidence | VISUAL NOT VERIFIED: no post-change actual Android screenshot/device render was available. Review 350-dp/420-dp, EN/ID, Light/Dark, portrait/constrained height, full cooler silhouette/no crop, metric label clearance, NOTIFY spacing and safe margins after future install. Build #166 APK source predates the enlargement, so the currently published package does not contain this adjustment. |
-| Next action | Complete live run/job/log/artifact and trigger-issue preflight; if no Build #166 run exists, create exactly one fresh owner-authored guarded issue for the verified main SHA. |
+| Next action | Create exactly one new owner-authored Issue #44 with exact title `JE X FYZ — EKSEKUSI BUILD APP TRIGGER` and token `JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1`, referencing current main SHA d9872d66e75f4e5a7dc98dad4474548763f27833. Then capture the resulting run/job and monitor it; do not reuse Issue #43. |
 
 ## Status model
 
