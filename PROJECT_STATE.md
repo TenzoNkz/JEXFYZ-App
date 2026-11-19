@@ -1,14 +1,14 @@
 # JE X FYZ / JE Cooler — Current Project State
 
-Last reconciled: 2026-11-18 21:34:32 (Asia/Jakarta).
+Last reconciled: 2026-11-19 17:11:46 (Asia/Jakarta).
 
 ## Repository baseline
 
 - Canonical repository/branch: TenzoNkz/JEXFYZ-App / main.
 - Latest published App package: Build #165 / run 43905426531 / job 133432846684 / Issue #42 / Release 403010611 / tag jexfyz-latest; immutable package source cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d; terminal SUCCESS.
-- Latest validated App source/test tree: 0a2b3c03af433a17d82afa1d4db60beb7b1bd023, formatter-only result from Validation Only #44. The same App source/test content was packaged by Build #165; compare from that tree to Build checkout is 17 documentation-only commits ahead / 0 behind.
-- **Live repository verification — 2026-11-18 21:32 Asia/Jakarta:** main HEAD `5aeae3a211cca3ea28c67f1f312ee8f7f371a9d3`; recursive tree `8857fc94a9658e473d3963fd7e4ec0d116b12243`, 140 entries, `truncated=false`. Compared with Build #165 package source `cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d`, main was 154 commits ahead / 0 behind. The 11 changed paths are the PR-validation workflow and ten Markdown files; App source, tests, dependencies and Android configuration remain unchanged.
-- **Recovery evidence check — 2026-11-18 19:23:05 Asia/Jakarta:** live Actions logs confirm Validation Only #44 (205/205 Flutter tests) and Build #165 (205/205, Gradle BUILD SUCCESSFUL, release asset re-download/signature verification passed) are terminal SUCCESS. The validation-to-package compare is 17 documentation-only commits; the main-to-package compare is also Markdown-only. The open-PR API returned an empty list.
+- Latest validated App source/test tree: Validation Only #45 / run `44487957151` / job `135436061477`, tested source `ac7348fe754130935d0fb2085b25b9ec03d4fce4`; terminal SUCCESS with read-only formatter PASS, analyzer 107 infos / 0 warnings/errors, Flutter tests 205/205. This source contains the replaced cooler image.
+- **Live repository verification — 2026-11-19 17:04 Asia/Jakarta:** main before this session's status/docs writes was `6e651a55a3c575195cddb4e9cff8f898711eefbd`; recursive tree 140 entries / 94 blobs / 46 trees, `truncated=false`. Compared with Build #165 package source `cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d`, main was 160 commits ahead / 0 behind with 12 changed paths: new PR-validation workflow, ten documentation/status paths and `assets/jexfyzcooler.png`. No Dart source, tests, dependencies, pubspec/lockfile, Android/Gradle configuration, Firmware or Build App workflow path changed.
+- **External-operation reconciliation:** Build #165 / run `43905426531` is terminal SUCCESS; Validation Only #45 / run `44487957151` is terminal SUCCESS; no active/queued Build App run and no open PR were found. The previous session marker was left IN_PROGRESS, but no active process exists. Preserve that interrupted session as RECOVERY_REQUIRED; this current Diskusi does not inherit its Build trigger authorization.
 
 ## Pull request validation workflow — SOURCE IMPLEMENTED / HOSTED CI NOT RUN
 
@@ -17,7 +17,15 @@ Last reconciled: 2026-11-18 21:34:32 (Asia/Jakarta).
 - Gates: `flutter pub get --enforce-lockfile`; read-only `dart format --output=none --set-exit-if-changed lib test`; `flutter analyze --no-fatal-infos`; and `flutter test`. It does not apply formatting, build Android/APK, upload artifacts, publish a release or touch Firebase/Firmware.
 - Static workflow review passed for trigger, permissions, pinned actions, credential handling, and absence of write/build/publish steps. No PR is open, so this workflow has not run in GitHub Actions yet.
 - The existing Validation Only push-to-main workflow remains separate and retains its formatter-only write behavior. The active `main-safety-guard` still only blocks deletion/non-fast-forward updates; no required PR checks or Dependabot configuration were added.
-- **Build recommendation — Diskusi recheck 2026-11-18:** no App source, asset, dependency or Android configuration changed after Build #165, so no new App Build is indicated now. Passing CI/release gates does not establish “perfect”; retain the unverified areas and warnings listed below.
+- **Build #166 recommendation — Diskusi recheck 2026-11-19:** the replacement `assets/jexfyzcooler.png` is the only changed App runtime input since Build #165. Validation Only #45 passed on source `ac7348fe754130935d0fb2085b25b9ec03d4fce4` containing that exact asset; compare to pre-session main shows only the status file changed. Technical readiness is READY for one new guarded App Build after a fresh explicit `Eksekusi Build App!` command. No build was triggered in Diskusi. Passing tests/build gates do not prove the app is “perfect” or prove actual Android/OEM visual acceptance.
+
+## Cooler image asset — replaced on main; included in Validation Only #45
+
+- The owner reports replacing the cooler photo. Live main confirms `assets/jexfyzcooler.png` changed after Build #165; current blob `827289e130eda890d853f347b8c6aef4e90c5fee`, size 1,947,244 bytes.
+- `pubspec.yaml` already lists the file; Home loads it through `Image.asset` using `BoxFit.contain` and right alignment. The existing widget source-contract test checks the path.
+- Validation Only #45 / run `44487957151` / job `135436061477` used source `ac7348fe754130935d0fb2085b25b9ec03d4fce4`, which already contained this image; dependencies, read-only formatting, analyzer and 205/205 Flutter tests passed. Changes from that checkout to pre-session main were only `00_WORK_STATUS.md`.
+- **Visual file acceptance remains NOT VERIFIED:** the GitHub connector exposed file identity/size, not readable PNG bytes. The canonical design contract requires a transparent square 1:1 image. Build App's static audit checks only existence/non-empty size, not alpha channel/dimensions. A successful package would include the asset but not prove this visual contract.
+- **Build #166:** current main is technically ready for a new guarded App Build because this is the only changed App runtime input since #165 and hosted validation #45 passed on the same asset. This is a recommendation only; require a fresh explicit `Eksekusi Build App!` command. Issue #42 is already used by Build #165 and must not be reused.
 
 ## Bluetooth device-name display correction — included in Build #165
 
@@ -52,7 +60,7 @@ Last reconciled: 2026-11-18 21:34:32 (Asia/Jakarta).
 - **Last owner screenshot — 2026-11-18, phone clock 14:13:** the Rulesets list showed `main-safety-guard` as Active with 2 branch rules and 1 targeted branch. The Export/Delete menu was open in that screenshot; the current phone screen was not checked and the assistant did not select either option.
 - **Live Rulesets API recheck — 2026-11-18 19:23:05 Asia/Jakarta, with main HEAD `9ffd5f632009504aeb9473e04d3fd06dac1fa632`:** repository default branch `main`; exactly one active branch Ruleset, ID `27528678`; include `~DEFAULT_BRANCH`, exclude none; rules `deletion` and `non_fast_forward`; bypass actors empty; `current_user_can_bypass=never`. Created at 2026-11-18 14:13:18 +07:00. This matches the owner-approved setup.
 - Ruleset setup is complete. Do not select `Delete ruleset`; close the menu without selecting an item. No force-push or deletion test is needed.
-- **Current next step:** keep using Build #165; only consider a new build after an App-impacting source/asset/dependency/Android configuration change or a concrete bug fix. The owner has declined additional field screenshot/package-identity evidence for now; the display result remains USER-REPORTED and can be checked later without rebuilding. No App Build was run in this Diskusi.
+- **Current next step:** owner may send a fresh `Eksekusi Build App!` command to authorize one guarded Build #166 attempt. After authorization, repeat live pre-trigger checks and create one new owner-authored issue with the exact guard title/token; do not reuse Issue #42 or any historical trigger. No App Build was run in this Diskusi. The owner-reported `JE X FYZ` display result remains USER-REPORTED.
 - Classic branch protection remains separately API-UNVERIFIED (the integration previously returned 403); prior owner UI evidence showed no classic rule listed. Recheck the Branches page only if the owner wants current visual confirmation.
 - No Firmware compilation, BIN generation/publication/replacement, Firebase mutation, OTA, flashing or device operation was performed or authorized.
 
