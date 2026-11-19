@@ -42,6 +42,16 @@ The current App source package is Build #163 on immutable source `9466e8eeb269da
 - The cooler image remains on the right within the established compact Horizon Cooler-inspired layout, with a dark header, white rounded content panel and compact mode navigation.
 - Do not casually redesign the approved identity or replace assets with speculative alternatives.
 
+### Home cooler artwork sizing — owner screenshot correction (2026-11-19)
+
+- **Problem evidence:** the owner's Home screenshot shows the cooler product image visually undersized inside the available right-hand portion of the Home telemetry row.
+- **Approved correction:** keep all seven telemetry indicators on the left and the cooler artwork on the right. Increase the image column from flex 13 to flex 14 and apply a **uniform 1.08× scale** anchored to `Alignment.centerRight`. This uses the existing inter-column/inner padding slack to grow the cooler without changing the row's seven 45-dp indicator heights.
+- **Image integrity:** preserve `BoxFit.contain`, the centered-right alignment, the square 1:1 asset, transparency and full device silhouette. Do not use `BoxFit.cover`, non-uniform scaling, clipping or cropping to make it appear larger.
+- **Protected layout:** retain the 360-dp master canvas and single DPI transform; preserve Home header, indicator icon tiles, metric typography semantics, notification slot, tab geometry, white rounded content panel, Light/Dark behavior and localization. Do not alter telemetry or Firmware/BLE state.
+- **Regression contract:** `test/widget_test.dart` checks flex 14, uniform 1.08 scale, right alignment and `BoxFit.contain`; existing seven-row 45-dp invariant remains.
+- **Acceptance:** compare actual App screenshots at 350-dp/420-dp, English/Indonesian, Light/Dark and portrait/constrained-height states. Verify the larger cooler remains fully visible, does not obscure the longest metric labels or NOTIFY, keeps safe margins and looks balanced against the telemetry column. Until actual Android screenshots are reviewed, status remains **VISUAL NOT VERIFIED**.
+
+
 ## Approved grille / manufacturable visual
 
 - White, symmetrical geometric grille; central purple X monogram; four corner mounting holes.
