@@ -1,3 +1,17 @@
+## BUILD #167 — ACTIVE / JAVA 17 SETUP — 2026-11-19
+
+- **Trigger / authorization:** exactly one fresh owner-authored Issue #44, opened by `TenzoNkz` at 2026-11-19 17:57:31 +07:00, exact guarded title `JE X FYZ — EKSEKUSI BUILD APP TRIGGER` and body token `JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1`. No prior issue was reused.
+- **Run / workflow / attempt:** Build #167 / Actions run `44510421466` / workflow `374946166` / issue event / attempt 1; actor `TenzoNkz`; run URL https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/44510421466.
+- **Immutable source:** checkout SHA `0dd96228d33b08c66e736ae91a8a6c3e5c3ddb81`; the trigger issue explicitly records this SHA. Current main at trigger time was the same SHA. App source/test candidate had previously passed Validation Only #49 / run `44510028619` / job `135511540876` on parent `35038f4126725f0ac18ccf3add453d92f9ae84fe`; main after that validation differed only by documentation/status updates.
+- **Candidate delta:** Home cooler image column flex 14 (was 13), uniform `Transform.scale(scale: 1.08)` anchored right, `BoxFit.contain` preserved, all seven 45-dp metric rows and existing layout/BLE/telemetry invariants retained; latest cooler PNG blob `bf065985acceab8639d72c670344b805d9e5ba6f`, 2,130,606 bytes.
+- **Preceding validation:** Validation Only #49 / run `44510028619` / job `135511540876` / source `35038f4126725f0ac18ccf3add453d92f9ae84fe`: terminal SUCCESS; Flutter 3.47.2 / Dart 3.13.2; locked dependencies PASS; read-only formatter 18 files / 0 changes; analyzer 107 info-level / zero warnings-errors; Flutter tests 205/205 PASS. Formatter apply and formatter-only commit skipped.
+- **Observed live run state (2026-11-19 17:57 +07:00):** run `44510421466` status `in_progress`; job `build` / `135512909555` status `in_progress`. Steps 1 Set up job and 2 Checkout repository SUCCESS; step 3 Set up Java 17 IN_PROGRESS; steps 4–21 and post-job cleanup 41–42 pending. No failure observed. Continue only this run; do not create another trigger.
+- **Artifacts / Release:** no run artifact is expected (APK and source ZIP are published as Release assets). Release `403010611` / tag `jexfyz-latest` still reflects Build #166 until #167 passes every gate and downloaded asset checks; do not call the new source released yet.
+- **Scope:** App Build/QC/release only. No Firmware compile/BIN, Firebase, OTA, flashing or physical-device operation.
+- **Next action:** inspect the current job steps/logs and continue monitoring run `44510421466` / job `135512909555` through all build, signing, source archive, Release/tag, re-download and checksum/certificate gates.
+
+---
+
 ## BUILD #166 — TERMINAL SUCCESS / RELEASE AND DOWNLOADED ASSETS VERIFIED — 2026-11-19
 
 - **Trigger / authorization:** exactly one fresh owner-authored Issue #43 with exact guarded title `JE X FYZ — EKSEKUSI BUILD APP TRIGGER` and body token `JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1`. No historical trigger issue was reused.
