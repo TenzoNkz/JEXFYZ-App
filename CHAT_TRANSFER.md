@@ -1,18 +1,18 @@
 <!-- ACTIVE_CHECKPOINT_START -->
 
-## Latest Build App — Build #166 executing — 2026-11-19 17:27 Asia/Jakarta
+## Latest Build App — Build #166 Android gate active — 2026-11-19 17:28 Asia/Jakarta
 
 - **Mode/scope:** `Eksekusi Build App!` — one guarded App Build/QC/release attempt is authorized. No Firmware compilation, BIN generation/publication/replacement, Firebase mutation, OTA, flashing or device operations.
-- **Trigger:** exactly one owner-authored Issue #43 created by `TenzoNkz` at `2026-11-19T10:26:06Z`, exact title `JE X FYZ — EKSEKUSI BUILD APP TRIGGER`, exact body token `JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1`. No old issue reused.
-- **Actions run:** Build #166 / run `44505634022` / workflow `374946166` / issue event / attempt 1 / branch `main` / immutable source SHA `2ca2235a8e238bb9ca58c11ec878bbfc3f6d25fe`; actor `TenzoNkz`. One matching run only.
-- **Live job state:** job `build` / `135496368532`, run `in_progress`. Steps 1–11 SUCCESS (setup, checkout, Java 17, Flutter, Gradle, toolchain, local.properties, production signing prep, Gradle wrapper recovery, security/architecture audit and dependencies). Step 12 `Analyze Dart code` IN_PROGRESS. Steps 13–21 and post-job cleanup pending.
-- **Log retrieval:** full job log endpoint returns `BlobNotFound` while the job is active. Live run/job/step APIs remain authoritative for current state; exact analyzer output/counts are NOT YET VERIFIED. Retrieve terminal logs after the job exits active state.
-- **Pre-trigger validation:** Validation Only #45 / run `44487957151` / job `135436061477` / source `ac7348fe754130935d0fb2085b25b9ec03d4fce4`, terminal SUCCESS; dependencies and read-only formatter passed, analyzer 107 infos / zero warnings/errors, Flutter tests 205/205. This checkout contains the new cooler image.
-- **Published baseline before #166 completes:** Build #165 / run `43905426531` / job `133432846684` / source `cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d`, terminal SUCCESS. Release `403010611` / tag `jexfyz-latest` remain on that SHA with exactly one APK and one source ZIP. Do not consider Release updated until #166's live tag/assets are verified.
-- **App asset target:** `assets/jexfyzcooler.png`, blob `827289e130eda890d853f347b8c6aef4e90c5fee`, 1,947,244 bytes. The file is included in Validation #45 source and in the Build #166 source tree. PNG alpha/pixels and required 1:1 dimensions remain NOT VERIFIED; packaging is not visual acceptance.
-- **Version/invariants:** preserve Android Gradle versionName `Telegram @horizontalzzz` and every current workflow gate. No test/check/signing/release gate has been weakened.
-- **Disposition:** IN_PROGRESS — no Build #166 gate failure observed. Continue only run `44505634022` / job `135496368532`; do not duplicate, re-trigger or rerun.
-- **Next action:** monitor the analyzer step and full live step transitions; after the terminal logs become available, record analyzer/test counts, Android Gradle, APK signature/certificate, ZIP, Release/tag parity and downloaded-asset checks in `APP_BUILD_REPORT.md`.
+- **Trigger:** exactly one owner-authored Issue #43 created by `TenzoNkz` at `2026-11-19T10:26:06Z`, exact title `JE X FYZ — EKSEKUSI BUILD APP TRIGGER`, exact body token `JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1`. No historical issue reused.
+- **Actions run:** Build #166 / run `44505634022` / workflow `374946166` / issue event / attempt 1 / branch `main` / immutable source SHA `2ca2235a8e238bb9ca58c11ec878bbfc3f6d25fe`; actor `TenzoNkz`. Exactly one matching run.
+- **Live job state:** job `build` / `135496368532`; run and job `in_progress`. Steps 1–13 SUCCESS: setup, checkout, Java 17, Flutter, Gradle, toolchain, local.properties, production signing prep, Gradle wrapper recovery, security/architecture audit, dependencies, Dart analyzer and Flutter tests. Step 14 `Run Android unit-test gate` IN_PROGRESS. Steps 15–21 and cleanup pending.
+- **Log retrieval:** full job log endpoint still returns GitHub `BlobNotFound` while job is active. Live run/job/step APIs confirm current state. Exact analyzer diagnostics/counts, Flutter test total and Gradle details remain NOT YET VERIFIED; retrieve full logs after job completion.
+- **Pre-trigger validation:** Validation Only #45 / run `44487957151` / job `135436061477` / source `ac7348fe754130935d0fb2085b25b9ec03d4fce4`, terminal SUCCESS; dependencies and read-only formatter pass, analyzer 107 infos / zero warnings/errors, Flutter tests 205/205. This source includes cooler PNG blob `827289e130eda890d853f347b8c6aef4e90c5fee`.
+- **Published baseline:** Build #165 / run `43905426531` / job `133432846684` / source `cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d`, terminal SUCCESS. Release `403010611` / tag `jexfyz-latest` remain on that SHA with exactly one APK and one corresponding source ZIP. Build #166 Release update is NOT YET VERIFIED.
+- **App asset:** `assets/jexfyzcooler.png`, blob `827289e130eda890d853f347b8c6aef4e90c5fee`, 1,947,244 bytes. PNG alpha/pixels and required 1:1 dimensions remain NOT VERIFIED; asset inclusion is not visual acceptance.
+- **Version/invariants:** preserve Android Gradle versionName exactly `Telegram @horizontalzzz` and every current workflow gate. No gates were weakened.
+- **Disposition:** IN_PROGRESS — no Build #166 gate failure observed. Continue only run `44505634022` / job `135496368532`; no duplicate, trigger or retry.
+- **Next action:** monitor Android Gradle step 14 and subsequent APK/signing/source ZIP/Release steps; retrieve terminal logs and verify live tag/assets/checksums before declaring success.
 
 # ACTIVE CHECKPOINT — CURRENT APP REBUILD ASSESSMENT — 2026-11-18
 
