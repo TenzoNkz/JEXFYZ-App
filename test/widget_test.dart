@@ -1968,9 +1968,16 @@ void main() {
       expect(
         source.substring(homeStart, notifySlot),
         contains(
-          "Image.asset(\n                              'assets/jexfyzcooler.png'",
+          "Image.asset(\n                                'assets/jexfyzcooler.png'",
         ),
       );
+      final homeCooler = source.substring(homeStart, notifySlot);
+      expect(homeCooler, contains('Expanded(\n                    // Give the cooler more horizontal room'));
+      expect(homeCooler, contains('flex: 14,'));
+      expect(homeCooler, contains('scale: 1.08,'));
+      expect(homeCooler, contains('alignment: Alignment.centerRight,'));
+      expect(homeCooler, contains('fit: BoxFit.contain,'));
+      expect(homeCooler, isNot(contains('BoxFit.cover')));
       expect(
         source.substring(homeStart, notifySlot),
         contains('height: imageHeight'),
