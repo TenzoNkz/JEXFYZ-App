@@ -10349,7 +10349,9 @@ class _DashboardScreenState extends State<DashboardScreen>
                   ),
                   const SizedBox(width: 6),
                   Expanded(
-                    flex: 13,
+                    // Give the cooler more horizontal room without compressing
+                    // the telemetry column enough to break its compact labels.
+                    flex: 14,
                     child: Align(
                       alignment: Alignment.centerRight,
                       child: LayoutBuilder(
@@ -10359,12 +10361,18 @@ class _DashboardScreenState extends State<DashboardScreen>
                               .toDouble();
                           return Padding(
                             padding: const EdgeInsets.only(left: 2, right: 0),
-                            child: Image.asset(
-                              'assets/jexfyzcooler.png',
-                              width: double.infinity,
-                              height: imageHeight,
-                              fit: BoxFit.contain,
+                            // Uniform enlargement keeps the square cooler artwork
+                            // undistorted and lets its right edge stay aligned.
+                            child: Transform.scale(
+                              scale: 1.08,
                               alignment: Alignment.centerRight,
+                              child: Image.asset(
+                                'assets/jexfyzcooler.png',
+                                width: double.infinity,
+                                height: imageHeight,
+                                fit: BoxFit.contain,
+                                alignment: Alignment.centerRight,
+                              ),
                             ),
                           );
                         },
