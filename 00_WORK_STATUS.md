@@ -1,4 +1,4 @@
-| Last updated | 2026-11-19 17:36 (+07:00, Asia/Jakarta) |
+| Last updated | 2026-11-19 17:42 (+07:00, Asia/Jakarta) |
 
 > Single current snapshot for JE X FYZ project interactions. Event-driven marker; not a background heartbeat.
 
@@ -14,12 +14,12 @@
 | Started | 2026-11-19 17:36 (+07:00, Asia/Jakarta) |
 | Last updated | 2026-11-19 17:36 (+07:00, Asia/Jakarta) |
 | Current phase | Opening status persisted. Reconcile the already-running Build #166 as a separate external operation; inspect the supplied screenshot, active Home layout source, product-design contracts and relevant tests. |
-| Last completed milestone | Previous App Build state was Build #166 / Issue #43 / run 44505634022 / job 135496368532 / source 2ca2235a8e238bb9ca58c11ec878bbfc3f6d25fe. Previous marker reported steps 1–13 SUCCESS and step 14 Android unit-test gate IN_PROGRESS. This new Full request does not authorize any action on that run. |
+| Last completed milestone | Reconciled Build #166 / run 44505634022 / job 135496368532 / source 2ca2235a8e238bb9ca58c11ec878bbfc3f6d25fe: terminal SUCCESS; analyzer 107 infos / zero warnings-errors, Flutter 205/205, Android Gradle BUILD SUCCESSFUL, APK/source ZIP/signatures/tag/downloaded digests all verified. Current owner request remains an independent Full source/test change. |
 | Last verified source checkpoint | Previous status records main pre-Build #166 pre-trigger HEAD 354a41e3d484564e979d1f6f18017270b3956ea1 and Build #166 immutable source 2ca2235a8e238bb9ca58c11ec878bbfc3f6d25fe. Re-fetch current main before edits. |
 | EXTERNAL OPERATION | Build #166 / Issue #43 / run 44505634022 / workflow 374946166 / attempt 1 / job 135496368532 / source SHA 2ca2235a8e238bb9ca58c11ec878bbfc3f6d25fe. Preserve its actual Actions state; this session will not trigger/cancel/rerun it. |
-| EXTERNAL OPERATION STATUS | IN_PROGRESS — last marker observed Build #166 step 14 active; re-query read-only before continuing and at closure. |
+| EXTERNAL OPERATION STATUS | COMPLETED / SUCCESS — Build #166 run 44505634022 / job 135496368532; all required steps 1–21 and cleanup 39–43 successful; Release/tag/asset verification completed. |
 | Result / evidence | Owner supplied Home screenshot (691×1536) showing seven compact telemetry rows in the left column and cooler image at right. Image object occupies visibly less than the available right-side vertical space; large white/Home panel and tabs begin below. Need trace constraints and responsive geometry before changing. |
-| Blocker | Must preserve Home's approved composition, fixed canvas/DPI behavior, telemetry readability, notification slot, tabs, 350-dp/420-dp behavior and image aspect ratio. Existing Build #166 checkout is immutable and will not include any edits made after its source SHA. |
+| Blocker | Must preserve Home's approved composition, fixed canvas/DPI behavior, telemetry readability, notification slot, tabs, 350-dp/420-dp behavior and image aspect ratio. Build #166 has already published immutable source 2ca2235a8e238bb9ca58c11ec878bbfc3f6d25fe; the current size enhancement will be a later source update and requires its own future App Build authorization. |
 | Next action | Read active checkpoint, main source/asset layout, visual contract and relevant tests; implement the smallest safe adjustment and regression coverage on current main. Keep Build #166 status separate. |
 
 ## Status model
