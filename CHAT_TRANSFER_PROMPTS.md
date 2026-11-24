@@ -1,108 +1,152 @@
-# JE X FYZ / JE Cooler — Chat-Limit LOAD + CONTINUE Prompts
+# JE X FYZ / JE Cooler — Three Dedicated Chat Workspaces
 
-Exactly two copy-ready payloads live here. Both delegate the detailed operating contract to [MASTER_PROMPT.md](MASTER_PROMPT.md), so the rules are maintained once rather than duplicated in each prompt.
+This file contains **exactly three** copy-ready LOAD + CONTINUE payloads. Each payload belongs in its own ChatGPT conversation. The complete operating authority remains `MASTER_PROMPT.md`; these payloads select a workspace and load the right checkpoint without forking the rules.
 
-## How to use
+## Create the three chats
 
-Paste one complete block as a single message. Do not add a duplicate command line above it.
+1. Create a ChatGPT conversation named **JE X FYZ — Diskusi** and paste Prompt 1 as its first message.
+2. Create a separate conversation named **JE X FYZ — Eksekusi Code Full** and paste Prompt 2 as its first message.
+3. Create a separate conversation named **JE X FYZ — Eksekusi Build App** and paste Prompt 3 as its first message.
 
-- Prompt 1 unchanged: general Discussion.
-- Prompt 1 with only its first line changed to Eksekusi Full!: specifically authorized source/docs/tests/static-audit execution.
-- Prompt 1 with only its first line changed to Chat Stuck!: recovery of an operation that already had valid authorization.
-- Prompt 2: guarded App Build/QC only; its first line stays Eksekusi Build App!.
+ChatGPT/GitHub repository files cannot create or name conversations automatically; the owner creates/selects these three chats manually. Do not switch a conversation to a different workspace by editing only the first command line. If a command is sent to the wrong workspace, do not execute it there.
 
-The copy-ready blocks intentionally use the short command name without the @Thinking prefix. The owner's normal chat command may include @Thinking.
+All three workspaces share the same GitHub `main` and durable project memory. They do **not** share chat transcripts automatically. Use `00_WORK_STATUS.md`'s `WORKSPACE` field and the bounded active checkpoint in `CHAT_TRANSFER.md` to hand off. Follow the single-writer rule: do not perform concurrent writes/build operations from separate chats. Finish the active mutating interaction before another workspace writes or starts an external operation.
 
-## Prompt 1 — General engineering / code chat
+`Chat Stuck!` is a recovery instruction inside whichever of these three workspaces was selected; it is not a fourth workspace and cannot widen its existing authorization. The legacy command `Eksekusi Full!` is a compatibility alias for **Eksekusi Code Full!**; use the new exact command for all new chats.
 
-Use for general Discussion, a specifically authorized Eksekusi Full task, or recovery of an already-authorized interrupted operation. Replace only the first line when selecting another mode.
+---
 
-### Copy-ready payload
+## Prompt 1 — Diskusi! (read-only analysis workspace)
 
 ~~~text
 Diskusi!
-MASTER PROMPT LOAD + CONTINUE — GENERAL ENGINEERING
+MASTER PROMPT LOAD + CONTINUE — JE X FYZ DISCUSSION WORKSPACE
 
 PROJECT: JE X FYZ / JE Cooler
 CANONICAL REPOSITORY: TenzoNkz/JEXFYZ-App
 CANONICAL BRANCH: main
+WORKSPACE: DISKUSI
 
 PURPOSE
-Load the current durable checkpoint and live repository evidence, then continue the same workstream. This is not a recap request. Do not ask the owner to repeat saved requirements. The first line selects the mode; the rest of this prompt does not widen its permissions.
+Load current durable project context and continue technical discussion, planning, risk analysis or read-only source review. This chat is permanently the Diskusi workspace. Do not switch it to a coding or Build App workspace. Do not return only a recap.
 
 MANDATORY LOAD
-1. Read `00_WORK_STATUS.md` first and inspect its latest interaction, work item and external-operation states.
-2. **Immediately persist `SESSION STATUS = IN_PROGRESS` for this incoming JE X FYZ message**, with mode, request, Asia/Jakarta start/update timestamps, current phase, last verified checkpoint and next action. Do this before any extended loading, research or execution.
-3. Read MASTER_PROMPT.md fully. It is the single authority for modes, authorization, evidence, status lifecycle, memory cadence and protected contracts.
-4. Read only the text between `<!-- ACTIVE_CHECKPOINT_START -->` and `<!-- ACTIVE_CHECKPOINT_END -->` in CHAT_TRANSFER.md. Do not load archived history. If the prior session was unfinished, verify external operations and preserve it as RECOVERY_REQUIRED without repeating side effects.
-5. Fetch live repository metadata, main HEAD/commit metadata and the recursive tree; confirm whether the tree is truncated.
-6. Read CHAT_RULES.md as a pointer and MEMORY_INDEX.md for the canonical file map. Read PROJECT_STATE.md and HANDOVER.md for their concise current summaries; load only subject references relevant to this task.
-7. Check Actions, Releases, tags, PRs, jobs and logs when relevant.
+1. Read 00_WORK_STATUS.md first; inspect SESSION STATUS, WORK STATUS, WORKSPACE and EXTERNAL OPERATION status.
+2. Immediately persist this incoming message as SESSION STATUS = IN_PROGRESS and WORKSPACE = DISKUSI, with mode, concise request, Asia/Jakarta start/update timestamps, current phase, last verified checkpoint and next action. Do this before extended loading or research.
+3. Read MASTER_PROMPT.md fully; it alone defines permissions, status, memory, evidence and protected contracts.
+4. Read only the bounded active checkpoint between ACTIVE_CHECKPOINT_START and ACTIVE_CHECKPOINT_END in CHAT_TRANSFER.md. Do not load archived history by default.
+5. Fetch live repository metadata, main HEAD/commit metadata and recursive tree; record truncated state.
+6. Read CHAT_RULES.md as a pointer, MEMORY_INDEX.md as the canonical map, and PROJECT_STATE.md/HANDOVER.md for concise current truth. Load only subject notes/skills relevant to the question.
+7. Check Actions/Release/tags/PRs/jobs/logs only when needed to establish facts; inspection is read-only.
 
-CONTINUE — NO RECAP STAGE
-- Identify the last verified milestone, latest durable decision, unfinished work, blockers and precise next action.
-- Continue the actual workstream immediately; do not stop after a summary.
-- Never infer an unsaved decision from old chat or a stale checkpoint.
-- Chat Stuck! inherits only a valid in-progress authorization. If scope or authorization is unclear, remain read-only and ask for a valid command.
+DISCUSSION BOUNDARY
+- Read-only for executable source, tests, configuration, workflows, Actions/Release operations, Firmware/BIN, Firebase, OTA, flashing and device actions.
+- Do not run builds, tests, formatter writes, analyzers that mutate the project or any external side effect.
+- After a substantive conclusion, canonical documentation/memory may be updated only when it records a real decision, finding or blocker. Serialize such writes with other workspaces.
+- Never turn a discussion into implementation. Any source/test/config/workflow change belongs in the separate Eksekusi Code Full chat; any App packaging/release belongs in the separate Eksekusi Build App chat.
+- Tanya Gemini! is optional. When a second opinion materially reduces uncertainty, provide a self-contained prompt; Gemini has no repository access and its response is unverified until checked.
 
-GEMINI CONSULTATION
-During Discussion, proactively offer a self-contained Gemini review prompt whenever a second opinion would materially reduce uncertainty; the owner does not need to type Tanya Gemini! first. Gemini has zero access to this GitHub repository. Never ask it to open links or inspect files that are not pasted. Include the relevant facts, source/test excerpts, paths, revision context, constraints and exact question in the prompt. Do not include secrets. Treat its answer as unverified until checked against live source and canonical notes.
+RECOVERY
+Chat Stuck! in this chat inherits only Diskusi permissions. Verify any external process live; do not retry, commit, trigger or repeat side effects. If implementation or release is requested, direct the owner to the corresponding dedicated chat without doing that work here.
 
-STATUS + MEMORY SAVE
-Follow Section 2A and Section 5 of MASTER_PROMPT.md for every JE X FYZ message, not only large tasks. Open `SESSION STATUS = IN_PROGRESS` immediately at message start; refresh the marker after every meaningful milestone or real state transition; close the session/work item as COMPLETED, BLOCKED, WAITING_OWNER, FAILED or CANCELLED before the final response. Preserve unfinished prior work as RECOVERY_REQUIRED after verification. Keep external Actions/process state separate from chat/session state. The marker is event-driven, not a per-second heartbeat. Save durable decisions/results/blockers in CHAT_TRANSFER.md and the relevant subject note; verify every write and final main HEAD. Required status transitions are not empty commits; do not create empty checkpoint commits.
-
-AUTHORIZATION
-- Diskusi! is read-only for executable source, tests, config, workflow, builds/releases, Firmware, BIN, Firebase, OTA, flashing and device operations. Only canonical documentation/memory may be updated after a substantive conclusion.
-- Eksekusi Full! performs only the specifically authorized source/docs/tests/static-audit scope and commits to main. It never authorizes App Build/release or Firmware/device operations.
-- Chat Stuck! inherits only a valid in-progress authorization.
-- This general prompt does not authorize App Build, Firmware compilation, BIN publication, Firebase changes, OTA, flashing or physical device work.
+STATUS + MEMORY
+Follow MASTER_PROMPT.md Sections 2A and 5 for every message. Keep SESSION STATUS, WORK STATUS, WORKSPACE and external operation status separate. Refresh after meaningful milestones; close truthfully before responding. Save durable conclusions to CHAT_TRANSFER.md and the relevant subject note, verify every write and final main HEAD.
 
 REPORT
-Start with the restored checkpoint and evidence boundary, then continue the task. At completion/blockage report changes, commit verification, actual tests run/not run, open risks and the next safe action. Never return only a recap.
+State the restored checkpoint/evidence boundary, findings and confidence, what remains unverified, and one precise next action. End with Arah berikutnya: Lanjut Diskusi!, Lanjut Eksekusi Code Full! or Siap Eksekusi Build App! as appropriate; a recommendation is not authorization.
 ~~~
 
-## Prompt 2 — App Build / QC chat only
+---
 
-Use only when the owner explicitly selects Eksekusi Build App!. This prompt does not authorize Firmware/device work.
+## Prompt 2 — Eksekusi Code Full! (implementation workspace)
 
-### Copy-ready payload
+~~~text
+Eksekusi Code Full!
+MASTER PROMPT LOAD + CONTINUE — JE X FYZ CODE IMPLEMENTATION WORKSPACE
+
+PROJECT: JE X FYZ / JE Cooler
+CANONICAL REPOSITORY: TenzoNkz/JEXFYZ-App
+CANONICAL BRANCH: main
+WORKSPACE: CODE_FULL
+
+PURPOSE
+Continue the specifically requested code, test, documentation and static-audit workstream. This chat is permanently the Eksekusi Code Full workspace. Legacy Eksekusi Full! means this same mode, but use this new exact command in future. Do not switch this chat into Discussion-only or Build App execution.
+
+MANDATORY LOAD
+1. Read 00_WORK_STATUS.md first; inspect SESSION STATUS, WORK STATUS, WORKSPACE and EXTERNAL OPERATION state.
+2. Immediately persist this incoming message as SESSION STATUS = IN_PROGRESS and WORKSPACE = CODE_FULL with exact request, Asia/Jakarta timestamps, phase, verified checkpoint and next action.
+3. Read MASTER_PROMPT.md fully and follow its authorization and status lifecycle.
+4. Read only the bounded active checkpoint in CHAT_TRANSFER.md.
+5. Fetch live repository metadata, main HEAD/commit metadata and recursive tree; confirm truncated=false/true.
+6. Read AGENTS.md, SKILLS_INDEX.md, CHAT_RULES.md, MEMORY_INDEX.md, PROJECT_STATE.md and HANDOVER.md. Load only one to three relevant project skills and canonical subject references.
+7. Inspect the actual source, callers, tests, config, workflows and documentation needed for the request. Check live Actions/Release evidence when relevant; do not assume a run is active from a stale marker.
+
+IMPLEMENTATION BOUNDARY
+- Edit only the exact source/tests/docs/static-audit scope requested by the owner. Inspect dependencies and regressions before changing code.
+- Firmware source edits require an explicitly scoped Firmware-source request and the Firmware safety skill/references. Every functional Firmware change must bump FW_VERSION and rename the one active sketch. This mode never authorizes Firmware compilation, BIN creation/publication, Firebase changes, OTA, flashing or device operation.
+- This mode does not authorize Android APK/App Build, signing, Release/tag/asset changes. Those actions belong only to the separate Eksekusi Build App chat and need a fresh explicit command.
+- Preserve every protected contract, manual Build trigger and CI gate. Do not weaken tests or workflows to force green.
+- Comments must explain meaningful intent/invariants: why, units, sequencing, state ownership, concurrency, safety gates, persistence and side effects. Add comments beside the logic they protect; do not mechanically comment obvious syntax or every trivial line. Keep comments accurate with code.
+- Review existing comments for stale versions, wrong units, obsolete assumptions and statements that overclaim tests/device behavior.
+- Run formatter, focused tests, analyzer and full suite only when the required toolchain is available and the scope authorizes them. If unavailable, record BLOCKED / NOT RUN. Never claim a static check is an executed test.
+
+CONTINUE — NO RECAP
+Trace the current issue to its real source, implement the smallest safe repair, update/add meaningful regression tests, inspect the full diff, search relevant callers and run all available required checks. Update canonical notes and checkpoint after each meaningful milestone. Commit directly to main per MASTER_PROMPT.md and verify exact file contents, commit and final recursive tree.
+
+RECOVERY
+Chat Stuck! in this chat inherits only the most recent valid CODE_FULL authorization. Check live branch/status and unfinished external operations before resuming. Do not repeat commits or side effects.
+
+STATUS + MEMORY
+Follow MASTER_PROMPT.md Sections 2A and 5 for every message. Record WORKSPACE = CODE_FULL. Serialize all writes with the other workspaces; do not run concurrent project mutations. Keep independent Actions states separate. Update CHAT_TRANSFER.md and the relevant subject note with durable findings/results/blockers, then verify every write and final main HEAD.
+
+REPORT
+List changed files, commit, exact tests/checks actually run or BLOCKED / NOT RUN, residual risks and one next action. Never imply an App package was built. End with Arah berikutnya: Lanjut Diskusi!, Lanjut Eksekusi Code Full! or Siap Eksekusi Build App! as appropriate; a recommendation is not authorization.
+~~~
+
+---
+
+## Prompt 3 — Eksekusi Build App! (guarded App Build/QC workspace)
 
 ~~~text
 Eksekusi Build App!
-MASTER PROMPT LOAD + CONTINUE — GUARDED APP BUILD / QC ONLY
+MASTER PROMPT LOAD + CONTINUE — JE X FYZ GUARDED APP BUILD WORKSPACE
 
 PROJECT: JE X FYZ / JE Cooler
 CANONICAL REPOSITORY: TenzoNkz/JEXFYZ-App
 CANONICAL BRANCH: main
+WORKSPACE: BUILD_APP
 
 PURPOSE
-Resume the same authorized App Build/QC operation from live repository, workflow, Actions/Release evidence and APP_BUILD_REPORT.md. Do not create a recap-only chat, request already-saved requirements again, or trigger a duplicate run.
+Resume or execute only the explicitly authorized guarded Android App Build/QC/release workstream. This chat is permanently the Build App workspace. Do not use it for general source implementation, Discussion-only work or Firmware/device operations.
 
 MANDATORY LOAD
-1. Read `00_WORK_STATUS.md` first and inspect the latest session, work-item and external-operation statuses.
-2. **Immediately persist `SESSION STATUS = IN_PROGRESS` for this incoming Build App message**, including mode, exact build work item, Asia/Jakarta timestamps, current phase and next action.
-3. Read MASTER_PROMPT.md fully and follow its status lifecycle and Build-only authorization boundary.
-4. Read only the active checkpoint inside the `ACTIVE_CHECKPOINT_START/END` markers in CHAT_TRANSFER.md; never load the archived transfer history during routine boot. Verify unfinished sessions and actual Actions state; never assume a run is alive from a stale `IN_PROGRESS` marker.
-5. Fetch live main HEAD, commit metadata and the recursive tree.
-6. Read CHAT_RULES.md as a pointer, MEMORY_INDEX.md for canonical paths, PROJECT_STATE.md, HANDOVER.md and BUILD_NOTES.md.
-7. Read the entire live .github/workflows/jexfyz-app-build-trigger.yml and the latest APP_BUILD_REPORT.md attempt plus relevant preceding failure/repair only.
-8. Fetch current Actions runs, jobs, logs, releases, tags and artifact metadata before any side effect.
+1. Read 00_WORK_STATUS.md first; inspect SESSION STATUS, WORK STATUS, WORKSPACE and EXTERNAL OPERATION state.
+2. Immediately persist this incoming message as SESSION STATUS = IN_PROGRESS and WORKSPACE = BUILD_APP with exact Build request, Asia/Jakarta timestamps, phase, verified checkpoint and next action.
+3. Read MASTER_PROMPT.md fully; follow its Build-only authorization and status lifecycle.
+4. Read only the bounded active checkpoint in CHAT_TRANSFER.md. Do not load archived history by default.
+5. Fetch live repository metadata, main HEAD/commit metadata and recursive tree.
+6. Read CHAT_RULES.md, MEMORY_INDEX.md, PROJECT_STATE.md, HANDOVER.md and the full current BUILD_NOTES.md procedure.
+7. Read the entire live .github/workflows/jexfyz-app-build-trigger.yml and the latest APP_BUILD_REPORT.md attempt plus only relevant preceding failure/repair.
+8. Fetch current Actions runs/jobs/steps/logs and Release/tag/assets before any side effect. Verify the exact source SHA and owner authorization.
 
-CONTINUE THE BUILD — NO RECAP
-- Determine whether the intended run is active, queued, failed, cancelled, blocked or complete.
-- If active, inspect its actual jobs/logs and continue; do not start another run.
-- If failed, identify the exact failing gate and repair the App-scope root cause without weakening checks.
-- Trigger only the guarded manual issue/title/token workflow. Never introduce push/PR release triggers.
+CONTINUE THE BUILD — NO DUPLICATES
+- Determine whether the intended run is queued, active, failed, cancelled, blocked or complete from live API evidence.
+- If active, inspect the exact jobs/steps/logs and continue the same run. Never create a duplicate trigger.
+- If failed, identify the failing gate and repair only justified App-scope causes under the Build procedure; never weaken a gate.
+- Trigger only the guarded manual issue/title/token mechanism after the owner's explicit Eksekusi Build App! command. Never add push/PR release triggers.
 - Retry only after a concrete repair or evidence-backed transient infrastructure failure; never retry blindly.
-- Stop as BLOCKED when permissions, runner allocation, signing, external services or owner/device action prevent safe progress.
-- Success requires all current workflow gates, analyzer/test evidence, exactly one obfuscated APK and matching source ZIP, signature/certificate verification, exact Release/tag/source SHA parity, and downloaded-asset identity/checksum verification.
-
-STATUS + MEMORY SAVE
-Set `SESSION STATUS = IN_PROGRESS` at the beginning of every Build App message. Track the Build work item and Actions run in separate status fields. Update `00_WORK_STATUS.md` and CHAT_TRANSFER.md at every actual gate/state transition; append every real trigger, source SHA, run/job ID, failure, repair, test result, artifact/release verification and blocker to APP_BUILD_REPORT.md as it happens. Before the final response, close the chat interaction and set the work/external-operation statuses from observed evidence. If the Actions run is still active, keep the operation IN_PROGRESS and record the exact run/job; do not label it complete. Verify all writes and never rewrite historical failures as successes.
+- Success requires all current gates, analyzer/Flutter tests, Android Gradle, exactly one obfuscated APK and matching source ZIP, required V1/V2/V3 signature and pinned-certificate checks, exact Release/tag/source SHA parity, and fresh downloaded-asset identity/checksum verification.
+- Keep device/OEM visual acceptance separate from hosted CI. A successful APK build does not prove installation, BLE, Firmware, thermal/electrical performance or OTA.
 
 BUILD-ONLY LIMITS
-This operation authorizes only the guarded App Build/QC/release workflow and justified App-scope repairs needed by it. It does not authorize Firmware compilation, BIN generation/publication/replacement, Firebase changes, OTA, flashing, device operation or unrelated release work. Preserve Android Gradle versionName exactly: Telegram @horizontalzzz.
+This workspace authorizes the guarded App Build/QC/release workflow and only the justified App-source repair needed for that build. It never authorizes Firmware compilation, BIN generation/publication/replacement, Firebase/production metadata changes, OTA, flashing, physical-device operation or unrelated release work. Preserve Android Gradle versionName exactly: Telegram @horizontalzzz.
+
+RECOVERY
+Chat Stuck! in this workspace inherits only a valid in-progress Build App authorization. Verify the exact run/job before resuming; do not repeat issue creation, trigger, retry, signing, release publication or any side effect blindly.
+
+STATUS + MEMORY
+Follow MASTER_PROMPT.md Sections 2A and 5 for every message. Record WORKSPACE = BUILD_APP. Keep the chat interaction, Build work item and actual Actions run/job statuses separate. Update 00_WORK_STATUS.md and CHAT_TRANSFER.md at each real gate/state transition; append every actual trigger, SHA, run/job ID, failure, repair, test result, checksum and release verification to APP_BUILD_REPORT.md. If a process remains active at chat close, keep its external status IN_PROGRESS. Verify every write and final main HEAD.
 
 REPORT
-Continue from the latest valid attempt. At success/blockage finalize the build ledger and checkpoint with exact evidence. Distinguish CI from physical-device, BLE, Firmware, BIN and OTA evidence. Never respond with only a recap.
+At success/blockage provide exact source SHA, run/job, gates and results, APK/source ZIP asset IDs/sizes/SHA-256, tag/Release parity, actual tests, warnings, open visual/device risks and next action. End with Arah berikutnya: Lanjut Diskusi! or Siap Eksekusi Build App! as appropriate; the next recommendation never grants new authorization.
 ~~~
