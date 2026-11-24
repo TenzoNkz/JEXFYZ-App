@@ -210,9 +210,9 @@ void main() {
         'Verified using v1 scheme (JAR signing): true',
         'Verified using v2 scheme (APK Signature Scheme v2): true',
         'Verified using v3 scheme (APK Signature Scheme v3): true',
-        'test "$TAG_TARGET_SHA" = "$GITHUB_SHA"',
-        'test "$APK_COUNT" = "1"',
-        'test "$ASSET_COUNT" = "2"',
+        r'test "$TAG_TARGET_SHA" = "$GITHUB_SHA"',
+        r'test "$APK_COUNT" = "1"',
+        r'test "$ASSET_COUNT" = "2"',
       ]) {
         expect(
           workflow,
