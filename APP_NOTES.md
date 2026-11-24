@@ -1,12 +1,19 @@
-## Current App source and verified package — Build #164 SUCCESS — 2026-11-16
 
-### Current source validation and package baseline
+## Current App source and published package — Build #167 — 2026-11-24
 
-- Latest App source/test validation: Validation Only #44 / run `43899329198` / job `133411358928`, tested input SHA `4a875b3d63beea6e7d469c27f0c8930ab9b7cd09`, terminal SUCCESS. Locked dependencies PASS; Dart formatter final PASS (18 files checked, two reformatted in the runner workspace); analyzer PASS (107 info-level findings, zero warning/error failures); Flutter tests **205/205 PASS**; format-only commit `0a2b3c03af433a17d82afa1d4db60beb7b1bd023`.
-- The latest published App package is Build #165 / run `43905426531` / job `133432846684`, source SHA `cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d`, Release ID `403010611`, tag `jexfyz-latest`. APK and matching source ZIP passed Release/tag/source parity, downloaded checksum, ZIP and V1/V2/V3 signing checks. This package includes the Bluetooth display-name correction below.
-- The App-only Bluetooth Connection display-name correction and regression tests passed Validation Only #44 and are **included in Build #165's APK and corresponding source ZIP**.
-- Flutter version remains `1.0.0+3`; protected Android Gradle `versionName "Telegram @horizontalzzz"` remains unchanged.
-- Local Flutter/Dart executables are unavailable in this runtime; the source/test gate above is hosted CI evidence. Visual/OEM rendering, owner installation and actual phone-to-cooler BLE behavior remain separate and **NOT VERIFIED**.
+### Current source, CI and release baseline
+
+- **Latest published App package:** Build #167 / Actions run `44510421466` / job `135512909555` / Issue #44 / immutable source SHA `0dd96228d33b08c66e736ae91a8a6c3e5c3ddb81`. Run and job terminal SUCCESS; steps 1–21 and cleanup 39–43 SUCCESS.
+- **Latest source-only prevalidation:** Validation Only #49 / run `44510028619` / job `135511540876` / source `35038f4126725f0ac18ccf3add453d92f9ae84fe`: locked dependencies PASS; read-only formatter 18 files / 0 changes; analyzer 107 info-level findings / zero warnings-errors; Flutter tests 205/205 PASS.
+- **Build #167 hosted gates:** analyzer 107 info-level findings / zero warnings-errors; Flutter tests 205/205 PASS; Android Gradle `BUILD SUCCESSFUL` in 2m59s; security/architecture audit and locked dependencies PASS. Native App JUnit tasks were `NO-SOURCE`; no native App JUnit cases ran.
+- **Published Release:** ID `403010611`, tag `jexfyz-latest`. Release target, Git tag and embedded source ZIP marker all match Build #167 source SHA. Exactly one APK and one matching source ZIP; Actions step 21 freshly downloaded and verified both. [Open Release](https://github.com/TenzoNkz/JEXFYZ-App/releases/tag/jexfyz-latest).
+- **APK:** `JEXFYZ-release.apk`, 56,180,827 bytes, SHA-256 `d7c461478e033b4598d1744e2ea7ec969eea8046bf5e4a3d6caaf511bc461691`. V1/V2/V3 checks passed; one signer matches pinned certificate SHA-256 `dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0`.
+- **Matching source ZIP:** `JEXFYZ-corresponding-source.zip`, 3,259,558 bytes, SHA-256 `58711342358639695624bbe05cc598220c9f20710bb04deaa785b93b85ca1546`. Embedded source marker exactly matches `0dd96228d33b08c66e736ae91a8a6c3e5c3ddb81`; ZIP integrity and fresh downloaded-byte checks passed.
+- **Included Home sizing correction:** right cooler column flex 14; uniform `Transform.scale(scale: 1.08)` anchored at `Alignment.centerRight`; `BoxFit.contain` retained; seven left telemetry rows stay 45 dp. Cooler asset blob `bf065985acceab8639d72c670344b805d9e5ba6f`. BLE/P1, telemetry authority, 360-dp canvas, Home header, NOTIFY and tab contracts are unchanged.
+- **Retained warnings:** self-signed/untrusted PKIX certificate chain and META-INF signature-coverage warnings remain; they did not fail the required V1/V2/V3 gates. Do not represent these warnings as fixed.
+- **Visual/OEM outcome: VISUAL NOT VERIFIED.** No actual Android screenshot/render was provided for Build #167. Inspect the Home cooler at 350-dp/420-dp, EN/ID, Light/Dark, portrait/constrained height; verify complete silhouette/no crop, metric-label clearance, NOTIFY spacing, safe margins and transparency. Flutter/widget/CI results do not prove visual acceptance.
+- **Scope boundary:** Build #167 is hosted App CI/release evidence only. It is not Firmware compilation/BIN provenance, Firebase, OTA, flashing, physical BLE/RF, thermal/electrical or device validation. No such operations were performed.
+- Protected versions remain Flutter `1.0.0+3` and Android Gradle `versionName "Telegram @horizontalzzz"`.
 
 ### Bluetooth peripheral name — current App behavior
 
@@ -15,7 +22,7 @@
 - The Connection row now displays the current BLE advertisement local name (`advertisementData.advName`) first, falls back to the platform device name (`device.platformName`) when the advertisement omits a name, and uses localized `Device` / `Perangkat` only if both are empty.
 - The change is App presentation only. BLE service UUIDs, device matching/filtering, scan ownership, connection handoff, P1 framing, and Firmware advertisement name are unchanged.
 - Regression coverage includes advertised-name precedence, platform-name fallback, empty-name fallback, and a widget source-contract check that the Connection row calls the App display-name helper and does not mask `JE X FYZ`. Firmware V7.2's `BLE_NAME` / `BLEDevice::init(BLE_NAME)` was separately confirmed by read-only source inspection; the widget test does not read the Firmware file.
-- **Owner report — 2026-11-18 (USER-REPORTED):** the owner says the App again safely displays `JE X FYZ`. No screenshot was attached, and the exact installed APK/build and live advertisement payload were not independently verified. This records the reported App-visible result; it does not independently establish RF/OEM behavior. Build #165 already contains the display-name correction and passed hosted validation, so this report alone does not call for another source fix or App Build.
+- **Owner report — 2026-11-18 (USER-REPORTED):** the owner says the App again safely displays `JE X FYZ`. No screenshot was attached, and the exact installed APK/build and live advertisement payload were not independently verified. This records the reported App-visible result; it does not independently establish RF/OEM behavior. Build #165 and Build #167 include the display-name correction and passed hosted validation. This report alone does not call for another source fix or App Build.
 
 ---
 # JE X FYZ / JE Cooler — App Behavior Reference
