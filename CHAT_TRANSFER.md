@@ -76,4 +76,14 @@
 - `AnimationBehavior.normal` reduces animation duration when `disableAnimations=true`. Flutter documentation specifically says `preserve` is used for repeating animations to avoid them flashing rapidly when a widget does not handle the preference. It is incorrect to rely on duration shortening for infinite loops.
 - Implementation should explicitly observe the inherited `disableAnimations` value, stop nonessential repeats and paint a stable/static status; retain phase-continuous hardware semantics for Fan/LED only when allowed by the user's motion preference, and do not globally override animationBehavior (physics/scroll behavior is a distinct case).
 - Official API references returned via Context7: `https://api.flutter.dev/flutter/widgets/MediaQuery-class.html`, `https://api.flutter.dev/flutter/animation/AnimationController/animationBehavior.html`, `https://api.flutter.dev/flutter/animation/AnimationBehavior.html`.
+
+## Latest Discussion — quality readiness assessment — 2026-11-25
+
+- **Current evidence:** main tree at review start: 141 entries / `truncated=false`. Build #167 remains latest published package. Validation Only #56 is latest observed source-only CI success (212/212 Flutter tests; formatter clean; analyzer 107 info, zero warning/error). Overall visual outcome remains **VISUAL NOT VERIFIED**.
+- **Confirmed repository gaps:** no `integration_test/`, no golden/screenshot regression suite, no checked-in Gradle Wrapper under the expected paths, and no `.github/dependabot.yml`. The PR-validation workflow exists but there is no open PR and no observed PR-triggered run.
+- **Coverage gaps:** Build #167 native Android JUnit was `NO-SOURCE`; one Home/EN/Light/disconnected screenshot does not cover the visual matrix or secondary/native surfaces. Usage Statistics 1h/6h/24h soak and real-device BLE/P1/OEM notification/overlay checks remain unverified.
+- **Priorities:** obtain reproducible Build #167 visual baseline; finish the staged UI/motion work with reduced-motion/state/lifecycle tests; add Flutter `integration_test` and golden coverage; profile Statistics and native Floating Monitor on real devices; exercise PR validation before branch gates/Dependabot; handle Flutter/Material UI/AGP/Gradle/Kotlin/package migration separately with a checksum-verified Wrapper; keep BLE identity and OTA trust as separate protected projects.
+- **Tools:** GitHub/Figma/Context7 are sufficient ChatGPT connections. Main practical dependency is the owner's Android Studio/SDK/ADB/AVD/Flutter/DevTools workstation plus physical Android phone and JE Cooler hardware. No new connector or animation plugin is recommended.
+- **Evidence boundary:** Diskusi review only; no executable source, tests, dependencies, config, workflow, build, release, Firmware/BIN, Firebase, OTA, flash or device operation changed/run. Next direction is continued planning; execution was not authorized.
+
 <!-- ACTIVE_CHECKPOINT_END -->
