@@ -16,6 +16,19 @@ This is the current App pre-build/packaging snapshot. Build #167 has already com
 
 **Readiness decision:** Build #167 is already released. No new App Build is indicated absent a demonstrated source defect and a fresh explicit `Eksekusi Build App!` authorization. A future source repair belongs in Eksekusi Code Full! first, not in Discussion or this report.
 
+
+## Quality readiness review — Diskusi assessment — 2026-11-25
+
+- **Evidence baseline:** current main was inspected at commit `943ab579827265dc63caa1dec3f80b4244ac61a0` (141 tree entries, recursive tree not truncated). Build #167 remains the latest published APK; Validation Only #56 is the latest observed source-only CI success (212/212 Flutter tests, formatter clean, 107 info diagnostics, zero warnings/errors). These are hosted source/build checks, not whole-device or visual acceptance.
+- **Visual outcome remains VISUAL NOT VERIFIED:** only one owner-provided Home screenshot (English / Light / disconnected) has been reviewed. No complete source-SHA-tagged screenshot matrix covers 350/420 dp, EN/ID, Light/Dark, connected/disconnected/error, constrained portrait, enlarged text and reduced motion, nor the secondary screens/native Floating Monitor.
+- **Repository QA infrastructure gaps (CURRENT TREE CHECK):** no `integration_test/` directory, no checked-in golden/screenshot test suite, no Gradle Wrapper files under the inspected wrapper paths, and no `.github/dependabot.yml`. The read-only PR validator exists, but no open PR was present and no PR-triggered run was observed; the workflow has not yet been exercised by a normal PR.
+- **Native/device coverage:** Build #167 Android JUnit task was `NO-SOURCE`; it did not execute native App JUnit test cases. Flutter widget/hosted tests do not establish OEM permissions, notifications, overlays, BLE/P1, radio or physical cooler behavior. Those require emulator/physical Android and actual hardware.
+- **Performance:** Usage Statistics long-session CPU/memory/storage soak (1h/6h/24h) remains unverified. Profile the current implementation first; preserve SQLite v2/migration, 30-day retention, raw 1-Hz samples, explicit gaps, P1 freshness and bounded queue semantics.
+- **Separate security tracks:** BLE App-only identity remains NOT IMPLEMENTED; Online OTA server identity remains unauthenticated while `setInsecure()` is used. These are distinct high-priority architecture/security projects with separate authorization; do not fold them into UI, dependency or build work.
+- **Recommended sequence:** (1) capture a reproducible Build #167 Android baseline and finish the visual matrix; (2) implement the already-proposed staged UI/motion work with reduced-motion, state-truth and lifecycle tests; (3) add `integration_test` and screenshot/golden regression coverage, then native Patrol only for required OS UI flows; (4) profile Usage Statistics and native Floating Monitor on representative devices; (5) exercise PR validation, then separately decide required checks/Dependabot with human review and no auto-merge; (6) migrate Flutter/Material UI/AGP/Gradle/Kotlin/packages in a compatibility matrix with a checked-in checksum-verified Gradle Wrapper; (7) scope BLE identity and OTA trust separately.
+- **Tooling decision:** GitHub, Figma and Context7 are sufficient connected ChatGPT integrations for the current roadmap. Prioritize an owner-controlled Android Studio + SDK/ADB + AVD + Flutter/DevTools workstation and a physical Android phone + JE Cooler unit. No extra ChatGPT plugin or animation package is currently justified.
+- **Scope/evidence:** this is a Diskusi static repository/workflow-metadata assessment. No App source, tests, dependencies, config, workflow, build, release, Firmware, Firebase, OTA, flash or device operation changed or ran.
+
 ---
 
 ## HISTORICAL / SUPERSEDED — pre-Build #167 packaging audit (2026-11-19)
