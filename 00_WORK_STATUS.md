@@ -6,22 +6,22 @@
 
 | Field | Value |
 |---|---|
-| **STATUS** | **IN_PROGRESS** |
-| SESSION STATUS | IN_PROGRESS — Confirmed the recommended next workspace is Eksekusi Code Full! and recorded the handoff recommendation. |
-| WORK STATUS | IN_PROGRESS — the audit is complete; a separate implementation task is now recommended for guarded Build App workflow security hardening. No implementation is authorized or started in this Diskusi interaction. |
+| **STATUS** | **COMPLETED** |
+| SESSION STATUS | COMPLETED — Confirmed the recommended next workspace is Eksekusi Code Full! and recorded the handoff scope in the Diskusi status marker. |
+| WORK STATUS | COMPLETED — this decision/handoff discussion is complete. The separate workflow-hardening implementation remains unstarted and requires an explicit command in the dedicated Code Full conversation. |
 | WORKSPACE | DISKUSI |
 | Mode | Diskusi! — read-only technical discussion and planning. |
 | Request / work item | Confirm whether the project should proceed to Eksekusi Code Full! after the full improvement audit. |
 | Started | 2026-11-24 20:31 (+07:00, Asia/Jakarta) |
 | Last updated | 2026-11-24 20:32 (+07:00, Asia/Jakarta) |
-| Current phase | Session close after confirming the recommended handoff, preserving workspace boundaries and recording the precise implementation scope. |
-| Last completed milestone | Full audit checkpoint remains saved in CHAT_TRANSFER.md. Both documentation-memory-governance skill mirrors correctly state the three dedicated workspace prompts and are byte-identical. |
-| Last verified source checkpoint | 6507a3d0037831de12db9fd8cfa6a5e123e890f0 (audit closeout). |
+| Current phase | Session closed after confirming the next workspace and the first implementation scope. |
+| Last completed milestone | Full improvement audit remains saved in CHAT_TRANSFER.md. Both documentation-memory-governance skill mirrors are corrected to exactly three prompts and byte-identical. |
+| Last verified source checkpoint | 6507a3d0037831de12db9fd8cfa6a5e123e890f0 (full audit closeout); handoff status commit follows. |
 | EXTERNAL OPERATION | Build #167 / run 44510421466 / job 135512909555 / source 0dd96228d33b08c66e736ae91a8a6c3e5c3ddb81 previously verified terminal success. No new build, release, test, firmware or device operation was started. |
 | EXTERNAL OPERATION STATUS | COMPLETED / SUCCESS (last live verified). |
-| Result / evidence | Owner confirms discussion about the next workspace. Recommendation: Eksekusi Code Full! first, scoped to guarded Build workflow security hardening and related checks; do not combine with Build App release, Firmware, BLE identity rollout or OTA. |
-| Blocker / remaining evidence | Code Full work is not yet authorized by this message in its dedicated workspace. Build #167 visual acceptance still requires owner screenshots. BLE identity and OTA remain separate security projects with protected boundaries. |
-| Next action | Owner should open/select the dedicated Eksekusi Code Full! conversation and submit the prepared scoped instruction. This recommendation does not grant build/release or device authorization. |
+| Result / evidence | Recommendation: proceed to the dedicated Eksekusi Code Full! conversation for guarded Build App workflow security hardening. The proposed scope is limited to verified action SHA pinning, checkout credential persistence, least-privilege token/permissions and step-scoped signing secrets, preserving all current owner/title/token guards and release gates. |
+| Blocker / remaining evidence | Implementation is not authorized or started in this Diskusi conversation. BLE App identity, OTA trust redesign and Build #167 visual acceptance remain separate follow-up workstreams. |
+| Next action | Owner opens/selects Eksekusi Code Full! and submits the scoped implementation command. Build App release still requires its own separate Eksekusi Build App! command. |
 
 ## Status model
 
