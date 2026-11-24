@@ -1,4 +1,15 @@
-## Latest guarded App Build #165 — TERMINAL SUCCESS / RELEASE VERIFIED — 2026-11-16
+## Current package baseline — Build #167 RELEASED / VERIFIED — 2026-11-24
+
+- Current published package: Build #167 / Actions run `44510421466` / job `135512909555` / source SHA `0dd96228d33b08c66e736ae91a8a6c3e5c3ddb81`; terminal SUCCESS.
+- Release ID `403010611` / tag `jexfyz-latest`; Release target, Git tag and embedded source marker match the immutable package source. Exactly one APK and one matching source ZIP; step 21 fresh-download checks passed.
+- Analyzer 107 info-level findings / zero warnings-errors; Flutter tests 205/205; Android Gradle `BUILD SUCCESSFUL` in 2m59s. Native App JUnit tasks are `NO-SOURCE`.
+- APK SHA-256 `d7c461478e033b4598d1744e2ea7ec969eea8046bf5e4a3d6caaf511bc461691`; corresponding source ZIP SHA-256 `58711342358639695624bbe05cc598220c9f20710bb04deaa785b93b85ca1546`. Full attempt detail remains in `APP_BUILD_REPORT.md`.
+- The Build #167 Home cooler enlargement is packaged. Actual Android visual acceptance remains NOT VERIFIED; follow `DESIGN_NOTES.md` and `VISUAL_QUALITY_GATE.md`.
+- No new build is indicated merely to repeat successful gates. Use the guarded Build App flow only after a new, explicit owner `Eksekusi Build App!` command.
+
+---
+
+## Historical guarded App Build #165 — TERMINAL SUCCESS / RELEASE VERIFIED — 2026-11-16
 
 - **Disposition: COMPLETED / SUCCESS.** Owner-authorized Issue #42 created exactly one guarded Build #165 run 43905426531 / job 133432846684, source SHA cbe8a8df5dfac7427dafca9b372beb3c3fa81b0d; all steps 1–21 and cleanup 39–43 completed successfully.
 - **CI evidence:** Flutter 3.47.2 / Dart 3.13.2; Java 17; Gradle 9.3.1. App security/architecture audit and dependencies PASS; analyzer 107 info-level findings / 0 warnings / 0 errors; Flutter tests 205/205 PASS. Android Gradle BUILD SUCCESSFUL in 3m20s; 162 actionable tasks (161 executed, 1 up-to-date); native app JUnit tasks NO-SOURCE.
@@ -328,4 +339,4 @@
 - Retry only after a concrete fix or a documented transient infrastructure cause. Never launch duplicate builds blindly.
 - If permissions, runner allocation, signing secrets, external services or owner/device action blocks progress, record the exact blocker and stop as BLOCKED.
 - A successful App build does not authorize Firmware compilation, BIN publication/replacement, Firebase mutation, OTA, flash or device actions. Those require separate explicit permission.
-- Use Prompt 2 in CHAT_TRANSFER_PROMPTS.md for chat-limit LOAD + CONTINUE of the guarded Build App/QC workflow. Its copy-ready block already begins with Eksekusi Build App! (without the @Thinking prefix); paste it as one complete message without a duplicate command line. Keep the run ledger, not a recap chat, as the continuation source.
+- Use Prompt 3 in CHAT_TRANSFER_PROMPTS.md for chat-limit LOAD + CONTINUE of the guarded Build App/QC workflow. Its copy-ready block already begins with Eksekusi Build App! (without the @Thinking prefix); paste it as one complete message without a duplicate command line. Keep the run ledger, not a recap chat, as the continuation source.
