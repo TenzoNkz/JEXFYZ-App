@@ -1,3 +1,9 @@
+## Current package baseline — Build #167 — 2026-11-24
+
+- The Home cooler enlargement (right image column flex 14; uniform 1.08× scale anchored right; `BoxFit.contain`; seven left metrics unchanged at 45 dp) is now included in the published Build #167 package.
+- Package source: `0dd96228d33b08c66e736ae91a8a6c3e5c3ddb81`; Release `403010611` / tag `jexfyz-latest`.
+- UI acceptance remains **VISUAL NOT VERIFIED** until actual installed Android screenshots are reviewed at the viewport/locale/theme matrix in the Home cooler artwork section below. Hosted Flutter tests and Build App CI do not replace screenshot evidence.
+
 ## Usage Statistics alignment refinement — included in Build #163 — 2026-11-16
 
 **Status: SOURCE INCLUDED IN BUILD #163 / VERIFIED CI / VISUAL NOT VERIFIED.** The alignment refinement described here is packaged in the latest verified App Release; it is no longer NOT RELEASED. The design remains subject to screenshot-based visual acceptance.
@@ -31,9 +37,10 @@ This describes the Build #162 package baseline. The current main alignment refin
 
 This document stores owner-approved, screen-specific visual constraints, not a build history. Live App source determines current implementation. PRODUCT_DESIGN_CONSTITUTION.md defines cross-screen design principles; VISUAL_QUALITY_GATE.md defines evidence-based acceptance. CHANGELOG.md / APP_BUILD_REPORT.md retain dated validation evidence.
 
-## Latest implementation status — current App UI is packaged in Build #163 — 2026-11-16
+## Current published UI baseline — Build #167 — 2026-11-24
 
-The current App source package is Build #163 on immutable source `9466e8eeb269da5bc8806f0df1d4212cf24e1746`. It includes the previously owner-approved UI refinements, About handle, Usage Statistics alignment, and native Floating Monitor Fan correction. Build #163 passed analyzer (118 info-level findings, zero warnings/errors), Flutter 197/197 and the Android Gradle test gate (BUILD SUCCESSFUL; native Android App JUnit tasks NO-SOURCE). Release ID 403010611 / tag `jexfyz-latest` point to the exact package source. The guarded build also verified the APK/source ZIP identities and signatures; see APP_NOTES.md and PROJECT_STATE.md for checksums and warnings. Actual Android screenshot/OEM acceptance remains **VISUAL NOT VERIFIED**.
+The latest published App package is Build #167 / Actions run `44510421466` / job `135512909555`, immutable source `0dd96228d33b08c66e736ae91a8a6c3e5c3ddb81`. It includes the Home cooler artwork sizing correction below plus the previously approved UI refinements. Analyzer reported 107 info-level findings with zero warnings/errors; Flutter tests passed 205/205; Android Gradle completed `BUILD SUCCESSFUL` in 2m59s. Native Android App JUnit tasks were `NO-SOURCE`. Release ID `403010611` / tag `jexfyz-latest`, APK and corresponding source ZIP match the exact source; V1/V2/V3 and downloaded-asset checks passed. APK and source ZIP hashes and retained warnings are in `APP_NOTES.md` and `APP_BUILD_REPORT.md`. Actual Android screenshot/OEM acceptance remains **VISUAL NOT VERIFIED**.
+
 
 ## Product identity and supplied assets
 
