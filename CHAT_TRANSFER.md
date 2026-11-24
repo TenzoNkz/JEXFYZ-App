@@ -69,4 +69,11 @@
 - First live API lookup resolved Flutter official API reference to `/websites/api_flutter_dev` (High source reputation) and returned current docs for `MediaQuery.disableAnimationsOf(context)`, `AccessibilityFeatures.disableAnimations`, and `AnimationBehavior.normal`. Flutter says `AnimationBehavior.normal` reduces controller duration/frames when animations are disabled; this does not eliminate the need for project-specific policy to stop nonessential repeating loops and render a static/fade state.
 - Use Context7 later for version-specific Flutter/Dart/Material UI/AGP/Gradle/Firebase docs during grouped implementation. Do not replace repository source/tests or authoritative platform/Firmware contracts with Context7 snippets.
 - Documentation reconciliation commits: `SKILLS_INDEX.md` `9fc58ce31d7684a0fe72e46bd22e157b0df05953`; `PROJECT_STATE.md` `3cc9b4c004d37a0151f09163cff9fa310c236c97`; `HANDOVER.md` `7e344a8ff1cf72ea4fd2d7ceacaadc2a16edfa2f`; this active checkpoint follows. No source/tests/config/dependencies/build/release/Firebase/Firmware/OTA/device changes.
+
+### Flutter reduced-motion API nuance from second Context7 query — 2026-11-25
+
+- Flutter docs: `MediaQuery.disableAnimationsOf(context)` reads the current platform accessibility preference. `AnimationController.new` defaults to `AnimationBehavior.normal`; `AnimationController.unbounded` defaults to `AnimationBehavior.preserve`.
+- `AnimationBehavior.normal` reduces animation duration when `disableAnimations=true`. Flutter documentation specifically says `preserve` is used for repeating animations to avoid them flashing rapidly when a widget does not handle the preference. It is incorrect to rely on duration shortening for infinite loops.
+- Implementation should explicitly observe the inherited `disableAnimations` value, stop nonessential repeats and paint a stable/static status; retain phase-continuous hardware semantics for Fan/LED only when allowed by the user's motion preference, and do not globally override animationBehavior (physics/scroll behavior is a distinct case).
+- Official API references returned via Context7: `https://api.flutter.dev/flutter/widgets/MediaQuery-class.html`, `https://api.flutter.dev/flutter/animation/AnimationController/animationBehavior.html`, `https://api.flutter.dev/flutter/animation/AnimationBehavior.html`.
 <!-- ACTIVE_CHECKPOINT_END -->
