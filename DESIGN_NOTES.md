@@ -11,6 +11,62 @@
 - **Candidate P3 interaction review:** the locked display submenu explains that the device must be connected, but the overlay has no direct Connect action. Consider one explicit action that opens the existing Bluetooth connection flow, while retaining the single BLE owner and all session gates.
 - **Accessibility review:** current Home and `JexFixedScalePage` override text scaling with `TextScaler.noScaling` to preserve the fixed 360-dp canvas. Evaluate an owner-approved accessible text/reflow mode that does not break the standard DPI/canvas contract; do not simply remove the scale override without a viewport and interaction regression plan.
 
+## Whole-App visual and motion audit — owner direction — 2026-11-25
+
+**Status: DISCUSSION PROPOSAL / STATIC SOURCE REVIEW ONLY.** The owner requested a whole-App UI refinement that avoids generic AI-generated styling and feels smoother with purposeful animation. This review does not change App source, tests, dependencies, native UI, workflow or release. Implementation requires a fresh explicit command in the separate Eksekusi Code Full workspace; package delivery still requires Eksekusi Build App.
+
+### Design direction
+
+- Treat JE Cooler as a precision instrument interface for a real thermoelectric device: confident hierarchy, measured spacing, crisp typography, matte surfaces, restrained semantic color and clear physical/device state.
+- Preserve JE X FYZ/Horizon identity, existing cooler artwork/aspect ratio/transparency, Phosphor icon family, current Home composition, 360-dp master canvas and the approved DPI compensation rules. Do not replace the app with a generic card dashboard or add neon gradients/glass/glow/shadows/badges by default.
+- Consolidate existing visual decisions into one source of truth: semantic light/dark surfaces, text roles, spacing, corners, borders, focus/disabled/pending states and motion durations. Reuse shared components instead of styling every tab independently.
+- Keep product-specific density, but improve the smallest labels and long EN/ID copy after actual 350-dp/420-dp screenshot review. Do not solve fit by shrinking text or touch areas. New/materially changed controls target 48 x 48 dp; do not shrink the documented compact Connection controls.
+
+### Proposed motion language
+
+- **Press/selection feedback:** approximately 100–140 ms; subtle scale/ink/tonal response, never a large bounce.
+- **Control and state transition:** approximately 160–220 ms with one shared easing family; only reflect a confirmed device state. Pending command, ACK and telemetry-confirmed output remain visually distinct.
+- **Tab content:** approximately 180–240 ms; short fade plus 4–8 dp directional movement, with stable tab keys and scroll state. Do not slide the entire Home canvas or animate every row independently.
+- **Dialogs/sheets/routes:** approximately 220–300 ms; coherent fade/scale for dialogs and native sheet/page motion for navigation. Avoid a different flourish on every dialog.
+- **Telemetry presentation:** preserve exact readings. Prefer a brief text cross-fade/highlight on a newly received value, not a fabricated rolling number or a value that appears to be real measurement between samples.
+- **Hardware-correlated motion:** Fan rotor speed/coast must continue to follow confirmed Fan state and existing Voltage/PWM policy; LED preview must remain synchronized to Firmware LED phase; Peltier visuals must remain gated by confirmed state and keep their explicit presentation-only semantics. Stop/reset where required on disconnect/lifecycle loss.
+- **Reduced motion:** explicitly respect platform animation-reduction preferences for custom looping motion. Replace non-essential movement with short fades or a static state; never make a repeating animation accelerate when animations are disabled.
+- **Performance:** use implicit animation for simple property changes and explicit controllers only for phase/state-driven motion. Isolate the animated region, pass invariant subtrees through AnimatedBuilder.child, dispose controllers, pause unnecessary off-screen loops, and profile before optimizing.
+
+### Current source findings (STATIC SOURCE CHECK)
+
+- `lib/main.dart` is about 11,434 lines and still combines Home/tab rendering, BLE/P1 session state, command lifecycle, telemetry and OTA coordination. `lib/floating_monitor.dart` is about 1,959 lines; `lib/app_settings.dart` about 1,904; `lib/usage_statistics.dart` about 3,650.
+- `JexAnimatedIcon` allocates seven AnimationControllers in its State regardless of icon kind. Its `.glyph` constructor is a static generic icon path, yet still creates that animated State/controllers before build returns a normal Icon. This is a concrete allocation-reduction candidate; runtime impact is not measured.
+- Battery, Hotside and Voltage animation permission remains true whenever BLE is connected, even when their displayed reading is unchanged. Consider changing these to event-driven value/warning transitions rather than perpetual sensor loops. Keep active Fan/Adaptive/Peltier and phase-synchronized LED motion only where it communicates actual hardware state.
+- `JexLedStripPreview` wraps its full Row, arrows and mode text in AnimatedBuilder without using the child parameter; the entire subtree is rebuilt on each phase tick. Prebuild invariant UI and animate only the LED strip custom paints.
+- No AnimatedSwitcher, Hero or PageRouteBuilder transition system was found in the inspected Dart UI files. The five dashboard tabs replace keyed subtrees without a dedicated content transition; MaterialPageRoute/default platform transitions still exist, and two custom modal transition builders already use fade/scale.
+- `main.dart` contains nine AnimatedContainer sites, one AnimatedOpacity, one TweenAnimationBuilder and two AnimatedBuilder sites; `usage_statistics.dart` already has custom animated charts. The app is not motionless, but motion is distributed rather than governed by one motion spec.
+- No explicit `MediaQuery.disableAnimations` / `reduceMotion` handling was found in the inspected App UI Dart files. Repeating controllers need an explicit reduced-motion policy; verify the exact current Flutter API after the planned SDK migration.
+- `TextScaler.noScaling` is applied to Home and `JexFixedScalePage`, preserving the fixed-canvas contract but preventing user text-size scaling on those surfaces. A dedicated accessible reflow/text mode needs design and regression work; do not remove the scale override casually.
+- The disconnected Home Notification currently falls through to a mint-green shield/check treatment while its message says the device is disconnected. Review an informational/neutral connection state so the color/icon does not imply a successful safety check. The lock overlay also blurs the full submenu and does not offer a direct Connect action; consider a direct entry to the existing Bluetooth flow without creating a second BLE owner.
+- The Usage Statistics charts already animate the latest plotted value and cursor/timeline. Any refinement must preserve the raw 1-Hz record, session boundaries, explicit gaps, HOT-only P1 freshness, decimation, timestamp mapping and no interpolation across invalid gaps. Long-session performance remains a separate profile-first concern.
+- Native Floating Monitor is rendered by `FloatingMonitorService.kt` custom Canvas/WindowManager rather than Flutter widgets. Its drag/resize/attach experience must be evaluated as a native surface, not assumed to inherit Flutter route/theme animation.
+
+### Screen-by-screen implementation proposal
+
+1. **Home:** retain the cooler-led composition and seven 45-dp metrics; refine typography/spacing, connection/safety semantics, notification state colors and safe margins; add a clear Connect action to the disconnected lock panel; animate state changes, not fabricated telemetry.
+2. **Voltage / Control / Adaptive:** add a coherent tab indicator and content transition; unify control feedback and pending/confirmed/disabled styles; preserve every existing Voltage, Adaptive, Lock Voltage, Fan/Peltier interlock and firmware command gate.
+3. **LED:** retain the firmware-phase-synchronized LED preview and color selection; optimize the animated subtree; animate selection/brightness feedback without extra decorative glow.
+4. **Temperature:** make steppers, locked zones and value changes consistent with the shared control system; preserve all configured ranges and firmware-owned limits.
+5. **Bluetooth Connection:** make permission, adapter, scan, discovery, connect, sync-ready and failure states easy to distinguish; animate only real scan/result/state changes; preserve passive Auto Connect, scan ownership and P1 readiness semantics.
+6. **Settings and subpages:** use consistent section/list hierarchy, typography, icon alignment, focus/pressed feedback and route transitions; retain compact Settings theme, persisted keys, EN/ID behavior and current page order.
+7. **Usage Statistics:** refine chart/summary hierarchy and cursor/selected-time transitions; retain exact data truth, event ordering, gap/session rules and SQLite schema/retention; profile long sessions before adding effects.
+8. **Floating Monitor:** unify configuration UI with the App visual system while treating the native overlay separately; smooth drag/resize and attach/detach only if native profiling supports it; preserve one BLE owner and telemetry forwarding.
+9. **Dialogs / sheets / Firmware Update:** adopt one transition language and clear progress/error hierarchy. Firmware progress must represent actual stages; this UI scope must not modify OTA transport, certificate policy, metadata, recovery or Firmware behavior.
+
+### Acceptance and sequencing
+
+- First create a stable visual/motion baseline and shared primitives; then fix high-value Home/lock/status semantics and tab/control transitions; then Settings/Connection; then Statistics/Floating Monitor/dialogs. Do not combine a visual rewrite, SDK upgrade and BLE/OTA refactor in one uncontrolled change.
+- Add behavioral/widget tests for connected/disconnected/scanning/sync/pending/error/reduced-motion states, with stable keys and controller disposal. Add targeted golden/screenshot coverage with animations settled or disabled; use actual Android screenshots for final visual acceptance.
+- Review at 350-dp and 420-dp, English and Indonesian, Light and Dark, connected/disconnected/error, normal and constrained portrait height, normal/enlarged text settings and reduced-motion settings. Retain real-device/OEM verification as a separate gate.
+- Proposed visual outcome for the single supplied Home screenshot remains limited to that one state; whole-App outcome remains **VISUAL NOT VERIFIED** until the complete matrix is inspected.
+- No new animation package is required by this proposal: Flutter already supplies implicit and explicit animation primitives. Prefer the framework over adding another dependency solely for motion.
+
 ## Usage Statistics alignment refinement — included in Build #163 — 2026-11-16
 
 **Status: SOURCE INCLUDED IN BUILD #163 AND RETAINED IN BUILD #167 / VERIFIED CI / VISUAL NOT VERIFIED.** This refinement entered the package in Build #163 and remains part of the latest published Build #167. The design remains subject to screenshot-based visual acceptance.
