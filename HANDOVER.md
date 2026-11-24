@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — Current Handover
 
-Last reconciled: 2026-11-24 (Asia/Jakarta). Authority: `MASTER_PROMPT.md`.
+Last reconciled: 2026-11-25 (Asia/Jakarta). Authority: `MASTER_PROMPT.md`.
 
 ## Three dedicated ChatGPT workspaces — SETUP IN REPOSITORY
 
@@ -24,13 +24,15 @@ Last reconciled: 2026-11-24 (Asia/Jakarta). Authority: `MASTER_PROMPT.md`.
 - **Warnings / limitations:** self-signed/untrusted PKIX chain and META-INF signature-coverage warnings remain. They did not fail explicit V1/V2/V3 checks. No Actions artifacts were produced; Release assets are the delivery. Android JUnit task is NO-SOURCE.
 - **Visual acceptance: NOT VERIFIED.** One owner screenshot of Build #167 Home (English / Light / disconnected) was reviewed on 2026-11-24; it shows the complete cooler silhouette and readable metric labels. The screenshot does not identify exact source SHA or logical dp/density, and does not cover the required viewport/locale/theme/connected-state matrix. CI/widget tests cannot prove the full rendered layout. See `DESIGN_NOTES.md`.
 
-## Immediate next action — staged whole-App modernization (PROPOSED, NOT AUTHORIZED)
+## Immediate next action — whole-App UI and motion refinement (PROPOSED, NOT IMPLEMENTED)
 
-- The next implementation session should be opened in the separate **Eksekusi Code Full!** conversation. Start with a bounded platform/dependency modernization phase; do not combine SDK migration, whole-App architecture rewrite and all UI changes in one uncontrolled patch.
-- Foundation phase proposal: move Flutter/Dart to stable 3.50.1/3.14.0 and migrate framework Material imports to official `material_ui`; coordinate Android AGP 9.5.2 / Gradle 9.9.2 / AGP built-in Kotlin migration; restore a committed, checksum-pinned Gradle Wrapper; keep JDK 17, compileSdk 37, targetSdk 36, minSdk 24 and `versionName "Telegram @horizontalzzz"` unchanged. Update and keep all Flutter SDK versions consistent across Validation Only, PR Validation and guarded Build App workflows.
-- Upgrade Firebase Core/App Check and SQLite in separate validated commits. Hold `flutter_blue_plus` 2.3.15 until the owner confirms commercial-use licensing/entitlement; do not change BLE/P1 semantics or create a second BLE client.
-- After the foundation passes hosted validation, incrementally extract Dashboard/BLE state, Usage Statistics storage/analytics/UI and Settings/theme/localization boundaries; then refine Home, Connection, control tabs, Settings, Statistics, Floating Monitor, dialogs and Firmware Update presentation with behavioral and screenshot regressions.
-- Owner-provided visual evidence is still required across 350-dp/420-dp, EN/ID, Light/Dark and connected/disconnected/error/constrained-height states. Build #167 remains the latest published package. Any implementation requires a new explicit Code Full command in its own chat; any package republish requires a separate fresh `Eksekusi Build App!` authorization. This proposal grants neither.
+- Continue in the separate **Eksekusi Code Full!** conversation with a fresh explicit owner command. The current Diskusi remains read-only. Do not combine this UI task with the separate Flutter/Material UI/Android toolchain and Firebase/SQLite upgrade roadmap.
+- **Stage 1 — motion foundation and high-value Home fixes:** create one shared, documented JE motion spec/theme layer; explicitly honor Android `disableAnimations` and iOS `reduceMotion`; make static `.glyph` icons avoid animated-controller allocation; make animated icon controllers lazy/only allocate what each icon kind needs; replace perpetual Battery/Hotside/Voltage loops with change/warning feedback; preserve telemetry-driven Fan coast and Firmware-phase LED motion; use `AnimatedBuilder.child` for static LED preview content; add a short keyed tab-content transition; correct the disconnected Notification success-like tint and add a direct Connect action to the disconnected lock panel through the existing Bluetooth flow.
+- **Stage 2 — controls, Connection and Settings:** unify control pending/confirmed/disabled/locked/pressed styles; add restrained transitions to Voltage/Control/Adaptive/LED/Temperature tabs; refine scan/discovery/connection/sync/failure feedback; align Settings sections and subpage navigation with the Home identity. Preserve all BLE P1 gates, command/ACK/telemetry distinctions, passive Auto Connect, persisted keys, EN/ID and 360-dp scaling contracts.
+- **Stage 3 — Statistics, Floating Monitor, dialogs and Firmware Update presentation:** optimize chart animation/build scopes without changing historical data, raw 1-Hz collection, null gaps, session boundaries, SQLite schema/retention or time mapping; treat native Floating Monitor as a native Canvas/WindowManager surface; apply the same motion language to dialogs/sheets; show only actual Firmware update stages/progress. Do not alter OTA transport/security, metadata, recovery or Firmware behavior.
+- Do not add an animation plugin solely for these effects; Flutter SDK primitives already provide implicit and explicit animations. Hold broad dependency/toolchain upgrades for their separately validated project.
+- **Acceptance:** widget/behavior tests for reduced motion, controller disposal, state transitions, command pending vs telemetry confirmed, disconnected/unknown state, tab switching and lifecycle; screenshot/golden matrix at 350-dp/420-dp, English/Indonesian, Light/Dark, connected/disconnected/error and constrained portrait; actual Build #167 screenshot comparison plus real Android rendering after a separately authorized package. No visual PASS without rendered evidence.
+- Build #167 remains the latest published package. A fresh Code Full command authorizes only the named App source/tests/docs work; a new APK/build/release still requires a separate fresh `Eksekusi Build App!` authorization. BLE App identity and OTA certificate trust remain separate protected projects.
 
 ## Other boundaries
 
