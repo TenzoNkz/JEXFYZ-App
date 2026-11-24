@@ -2,6 +2,14 @@
 
 Last reconciled: 2026-11-24 (Asia/Jakarta). Operating authority: `MASTER_PROMPT.md`.
 
+## Three dedicated ChatGPT workspaces — current operating model
+
+- The repository now defines three independent owner-created ChatGPT conversations: **Diskusi!**, **Eksekusi Code Full!**, and **Eksekusi Build App!**. Each has one copy-ready starter in `CHAT_TRANSFER_PROMPTS.md`; exactly three prompts are maintained.
+- The owner must create/select the three chats manually. GitHub/repository prompts cannot open ChatGPT conversations. Chat transcripts are not shared automatically; the three chats share GitHub `main` and canonical memory.
+- `MASTER_PROMPT.md` is the single authority. `Eksekusi Full!` is a backward-compatible alias for `Eksekusi Code Full!`. `Chat Stuck!` is recovery inside the existing workspace, not a fourth chat or permission expansion.
+- Shared writes/builds are single-writer: do not commit or launch an external operation from multiple chats concurrently. `00_WORK_STATUS.md` now records `WORKSPACE` as `DISKUSI`, `CODE_FULL` or `BUILD_APP`; it is event-driven, not a lock.
+- Current workspace during this repository maintenance: `CODE_FULL`. No App Build/Release was started.
+
 ## Repository and latest App package
 
 - Canonical repository/branch: `TenzoNkz/JEXFYZ-App` / `main`.
@@ -35,5 +43,5 @@ Last reconciled: 2026-11-24 (Asia/Jakarta). Operating authority: `MASTER_PROMPT.
 
 - Build #167 source SHA is immutable. Recovery comparison against current main found only documentation changes (`00_WORK_STATUS.md`, `APP_BUILD_REPORT.md`, `CHAT_TRANSFER.md` at the time of check); no source, test or workflow changes were introduced after the package source.
 - Recursive main tree at the recovery checkpoint: 140 entries / 94 blobs / 46 trees; `truncated=false`. Re-verify final HEAD/tree after the current documentation sync.
-- **Immediate next acceptance:** obtain actual Build #167 Android screenshots for the Home cooler matrix above. Do not trigger another build merely to repeat successful CI. A source repair requires separate explicit `Eksekusi Full!`; repackaging requires fresh explicit `Eksekusi Build App!`.
+- **Immediate next acceptance:** obtain actual Build #167 Android screenshots for the Home cooler matrix above. Do not trigger another build merely to repeat successful CI. A source repair requires separate explicit `Eksekusi Code Full!` (legacy alias `Eksekusi Full!`); repackaging requires fresh explicit `Eksekusi Build App!`.
 - `APP_BUILD_REPORT.md` holds build history; `CHAT_TRANSFER.md` is the bounded continuation checkpoint; `HANDOVER.md` holds the immediate next step. Subject requirements remain in `APP_NOTES.md`, `DESIGN_NOTES.md`, `PRODUCT_DESIGN_CONSTITUTION.md` and `VISUAL_QUALITY_GATE.md`.
