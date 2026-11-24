@@ -1,3 +1,18 @@
+## 2026-11-24 — Split JE X FYZ into three dedicated ChatGPT workspaces; repository documentation and source comment cleanup
+
+- **Owner request:** separate the three commands into their own ChatGPT conversations: `Diskusi!`, `Eksekusi Code Full!`, and `Eksekusi Build App!`; clean up/update the repository and improve important comments.
+- **Operating authority:** `MASTER_PROMPT.md` now defines the three distinct workspaces and their strict boundaries. `Eksekusi Full!` remains an exact compatibility alias for `Eksekusi Code Full!`. `Chat Stuck!` recovers only the authorization of the currently selected workspace.
+- **Three starter prompts:** `CHAT_TRANSFER_PROMPTS.md` now contains exactly three complete copy-ready LOAD + CONTINUE prompts, one per workspace. The owner must create/select the three ChatGPT conversations manually; the GitHub repository cannot create ChatGPT chats. Conversations share GitHub canonical memory but not transcripts. A single-writer rule serializes commits and external operations; the `WORKSPACE` field in `00_WORK_STATUS.md` identifies `DISKUSI`, `CODE_FULL` or `BUILD_APP` but is not a lock.
+- **Pointer alignment:** updated `CHAT_RULES.md`, `AGENTS.md` and `README.md` to route to the three-workspace model without duplicating the Master Prompt.
+- **Current-state alignment:** refreshed `APP_NOTES.md`, `APP_PREBUILD_AUDIT.md`, `DESIGN_NOTES.md`, `PROJECT_STATE.md`, `HANDOVER.md`, `MEMORY_INDEX.md` and `SKILLS_INDEX.md` to reflect Build #167 as the latest published App package, preserve its hashes/evidence and keep visual acceptance explicitly NOT VERIFIED. The current toolchain snapshot records that Flutter/Dart/Gradle/ADB/Arduino CLI/ESP-IDF are absent from this runtime.
+- **Source comment defect:** corrected the first block comment in `firmware/JEXFYZ-V7.2.ino` from “Firmware V7.1 source” to “Firmware V7.2 source”, matching the active filename and `FW_VERSION`. Commit `bfc2f0de8a14d68f9a2c91e35d0a3e6ff0c494f6` changes exactly one comment line only. No executable token, control flow, version constant or functional behavior changed. `FIRMWARE_NOTES.md` records the correction and the fact that no compile/BIN/device validation was performed.
+- **Comment convention:** important comments should describe non-obvious intent, invariants, units, ownership, order, safety gates, persistence and side effects. Avoid mechanical per-line annotations; keep comments accurate and synchronized with the code.
+- **Repository hygiene evidence:** 140 recursive tree entries, `truncated=false`; 53 Markdown files inventoried; all 12 canonical `.agents/skills` definitions and 12 `.github/skills` mirrors were compared byte-for-byte and match. No actionable missing active relative links were found. All four archive snapshots remain immutable.
+- **Validation boundary:** documentation and source-file reads/writebacks were verified via GitHub. Local formatter, Flutter tests/analyzer, Android Gradle build, Arduino compile and device checks were NOT RUN because their toolchains are unavailable. Build #167 remains terminal SUCCESS and no new App Build/release was triggered by this workspace task.
+- **Next owner action:** manually create the three named ChatGPT conversations and paste Prompts 1–3 from `CHAT_TRANSFER_PROMPTS.md`; use each conversation only for its assigned permission boundary.
+
+---
+
 ## 2026-11-16 — Restore JE X FYZ Bluetooth name in Connection list (source + hosted validation passed)
 
 - Root cause was App presentation: the Connection `ListTile` mapped an actual `JE X FYZ` BLE local name to the generic localized `Perangkat` label. Firmware V7.2 already declares `BLE_NAME = "JE X FYZ"` and uses `BLEDevice::init(BLE_NAME)`; Firmware source/BIN was not changed.
