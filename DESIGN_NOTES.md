@@ -3,6 +3,13 @@
 - The Home cooler enlargement (right image column flex 14; uniform 1.08× scale anchored right; `BoxFit.contain`; seven left metrics unchanged at 45 dp) is now included in the published Build #167 package.
 - Package source: `0dd96228d33b08c66e736ae91a8a6c3e5c3ddb81`; Release `403010611` / tag `jexfyz-latest`.
 - UI acceptance remains **VISUAL NOT VERIFIED** until actual installed Android screenshots are reviewed at the viewport/locale/theme matrix in the Home cooler artwork section below. Hosted Flutter tests and Build App CI do not replace screenshot evidence.
+### Owner screenshot review — Build #167 Home — 2026-11-24
+
+- **Evidence:** SCREENSHOT REVIEWED — owner supplied one portrait Home screenshot labelled Build #167. It shows English / Light appearance / BLE disconnected. The cooler silhouette is fully visible in the captured viewport; all seven metric labels remain readable; the Notification card and locked submenu overlay are visible. Screenshot metadata does not identify exact source SHA, logical dp width/density or text-scale configuration.
+- **Outcome:** overall acceptance remains **VISUAL NOT VERIFIED**. This is one screenshot/state, not the required 350-dp/420-dp, English/Indonesian, Light/Dark, connected/disconnected, portrait/constrained-height matrix; Settings, Connection, Usage Statistics, Floating Monitor and Firmware Update screens were not supplied.
+- **Candidate P2 semantic review:** in the disconnected state, the Home notification renderer falls through to the mint-green shield/check treatment because its warning predicate is conditioned on `connected` and disconnection itself is not an error predicate. On the supplied image this green success-like treatment accompanies “Device disconnected.” Review a neutral/informational connection-state treatment so color/icon semantics do not imply success. This is a review finding, not an approved new mapping.
+- **Candidate P3 interaction review:** the locked display submenu explains that the device must be connected, but the overlay has no direct Connect action. Consider one explicit action that opens the existing Bluetooth connection flow, while retaining the single BLE owner and all session gates.
+- **Accessibility review:** current Home and `JexFixedScalePage` override text scaling with `TextScaler.noScaling` to preserve the fixed 360-dp canvas. Evaluate an owner-approved accessible text/reflow mode that does not break the standard DPI/canvas contract; do not simply remove the scale override without a viewport and interaction regression plan.
 
 ## Usage Statistics alignment refinement — included in Build #163 — 2026-11-16
 
