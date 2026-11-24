@@ -13,7 +13,7 @@ Flutter Android companion App and ESP32-C3 Firmware source for the JE X FYZ ther
 5. [PROJECT_STATE.md](PROJECT_STATE.md) — concise current product/source/release/validation truth.
 6. [MEMORY_INDEX.md](MEMORY_INDEX.md) — canonical document map and Markdown retention policy.
 7. [HANDOVER.md](HANDOVER.md) — immediate next action.
-8. [CHAT_TRANSFER_PROMPTS.md](CHAT_TRANSFER_PROMPTS.md) — exactly two copy-ready LOAD + CONTINUE prompts.
+8. [CHAT_TRANSFER_PROMPTS.md](CHAT_TRANSFER_PROMPTS.md) — exactly three copy-ready LOAD + CONTINUE prompts, one for each dedicated ChatGPT workspace.
 9. [CHAT_RULES.md](CHAT_RULES.md) — compatibility pointer to the Master Prompt.
 10. App, Firmware, OTA, voltage-transition and BLE-auth contracts: [APP_NOTES.md](APP_NOTES.md), [DESIGN_NOTES.md](DESIGN_NOTES.md), [PRODUCT_DESIGN_CONSTITUTION.md](PRODUCT_DESIGN_CONSTITUTION.md), [VISUAL_QUALITY_GATE.md](VISUAL_QUALITY_GATE.md), [FIRMWARE_NOTES.md](FIRMWARE_NOTES.md), [Firmware technical reference](firmware/FIRMWARE_TECHNICAL_REFERENCE.md), [OTA protection](OTA_PROTECTION.md), [OTA incident record](OTA_REGRESSION_MEMORY.md), [voltage transition memory](VOLTAGE_TRANSITION_MEMORY.md), [BLE App authorization](BLE_APP_AUTH.md).
 11. [BUILD_NOTES.md](BUILD_NOTES.md) is the current App release procedure; [APP_BUILD_REPORT.md](APP_BUILD_REPORT.md) is its append-only attempt/evidence ledger.
@@ -31,9 +31,11 @@ Flutter Android companion App and ESP32-C3 Firmware source for the JE X FYZ ther
 ## Operating modes
 
 - Diskusi! — analysis and planning, read-only for executable source/config/tests/workflow/build/device operations. Documentation-only memory updates may follow a substantive conclusion.
-- Eksekusi Full! — only the specifically authorized source/docs/tests/static-audit scope. No App Build or Firmware/device operations.
+- Eksekusi Code Full! — only the specifically authorized source/docs/tests/static-audit scope. Legacy Eksekusi Full! is a compatibility alias; no App Build or Firmware/device operations.
 - Eksekusi Build App! — guarded App Build/QC/release only.
 - Chat Stuck! — recover only an already-authorized in-progress operation.
+
+Create three separate ChatGPT conversations and paste the matching block from CHAT_TRANSFER_PROMPTS.md into each. The owner creates these chats manually; the repository cannot open ChatGPT conversations. The three chats share GitHub memory but not transcripts. Serialize all writes/build operations because they share main and the single workspace status/checkpoint.
 
 The Master Prompt is authoritative; chat-transfer blocks select a mode but do not widen it. The status lifecycle is governed by Section 2A of MASTER_PROMPT.md: update at each project-interaction start, real milestone/state transition and terminal close. It is event-driven, not a background heartbeat.
 
