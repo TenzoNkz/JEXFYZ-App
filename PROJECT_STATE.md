@@ -65,6 +65,16 @@ Last reconciled: 2026-11-25 (Asia/Jakarta). Operating authority: `MASTER_PROMPT.
 - **QA strategy:** existing Flutter unit/widget/hosted CI plus `integration_test` on emulator/physical Android; consider Patrol only for native Android permission/system UI flows. Use Flutter DevTools profile-mode frame/build/raster and CPU/memory evidence plus Android Studio Profiler. Actual BLE/P1, OEM notification/overlay and hardware behavior require physical-device evidence.
 - GitHub, Figma and Context7 are confirmed connected. Full catalog status, Figma/repository skill inventory, QA workstation stack and official tooling references are recorded in `SKILLS_INDEX.md`. No additional ChatGPT connector is recommended for the current scope.
 
+
+## Remaining quality gates — assessment 2026-11-25
+
+- **Visual:** overall acceptance remains VISUAL NOT VERIFIED. One Home / EN / Light / disconnected screenshot is not the required 350/420-dp, EN/ID, Light/Dark, connected/disconnected/error, constrained-height and accessibility matrix.
+- **Automated QA:** current tree has no Flutter `integration_test/` or checked-in golden/screenshot regression suite. Build #167 native Android JUnit was NO-SOURCE. PR validation exists but has not been exercised by a real PR; no open PR was found in this review.
+- **Developer/device QA:** prioritize Android Studio, Android SDK/ADB, AVD, Flutter SDK/DevTools, a physical Android phone and the JE Cooler unit. Add real-device BLE/P1, notification, permission and native Floating Monitor evidence; use profile-mode performance measurements.
+- **Performance:** Usage Statistics 1h/6h/24h CPU, memory and storage soak remains unverified; measure before changing architecture or queue behavior.
+- **Governance:** add/enable reviewed PR and controlled Dependabot only after the read-only PR workflow is observed in a normal PR. Restore a checksum-verified Gradle Wrapper as part of the separately reviewed Android toolchain migration.
+- BLE App-only identity and OTA server identity remain separate high-priority security projects; not part of UI/toolchain scope.
+
 ## Current repository evidence and next action
 
 - Build #167 package source SHA is immutable. After that checkout, current `main` contains canonical documentation updates, one non-functional Firmware opening-comment correction in `firmware/JEXFYZ-V7.2.ino` (V7.1 text → V7.2), the guarded Build App workflow security hardening and its static source-contract test. No executable App/Firmware runtime code or Firmware behavior changed; the current workflow/test hardening is not included in the Build #167 package.
