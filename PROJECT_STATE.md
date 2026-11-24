@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — Current Project State
 
-Last reconciled: 2026-11-24 (Asia/Jakarta). Operating authority: `MASTER_PROMPT.md`.
+Last reconciled: 2026-11-25 (Asia/Jakarta). Operating authority: `MASTER_PROMPT.md`.
 
 ## Three dedicated ChatGPT workspaces — current operating model
 
@@ -48,6 +48,13 @@ Last reconciled: 2026-11-24 (Asia/Jakarta). Operating authority: `MASTER_PROMPT.
 - Stable platform candidate (checked 2026-11-24): Flutter 3.50.1 / Dart 3.14.0 and Material UI 1.11.1 migration; Android AGP 9.5.2 / Gradle 9.9.2 with AGP built-in Kotlin, retaining JDK 17, compileSdk 37, targetSdk 36, minSdk 24 and Android versionName `Telegram @horizontalzzz` unless separately approved.
 - Candidate direct package upgrades: firebase_core 5.2.0, firebase_app_check 0.5.2 and sqflite 2.4.6. flutter_blue_plus 2.3.15 is gated on confirming its current commercial-license terms/entitlement before any update. flutter_secure_storage 11.2.0, permission_handler 13.0.2, phosphor_icons 3.0.1, flutter_lints 6.0.0 and path 1.9.1 are already at the stable versions found in this review.
 - No source, dependency manifest/lockfile, workflow, Android build configuration or release was changed by this Discussion. This modernization proposal is not an implementation authorization; each phase belongs in the separate Eksekusi Code Full workspace. Build #167 remains the latest published package.
+
+## Whole-App UI / motion refinement — Discussion proposal — 2026-11-25
+
+- Owner requested a full App UI refinement that avoids generic AI-slop patterns and feels smoother with purposeful animation. Current Diskusi review is read-only; no App source, tests, dependency, native code, configuration or release was changed.
+- Static source baseline: `lib/main.dart` ~11,434 lines, `lib/floating_monitor.dart` ~1,959, `lib/app_settings.dart` ~1,904, `lib/usage_statistics.dart` ~3,650. `JexAnimatedIcon` allocates seven controllers even for static `.glyph` icons; connected Battery/Hotside/Voltage loops repeat without a reading change; LED preview rebuilds invariant row content on each animation tick; no explicit app-level reduced-motion handling or dedicated tab content transition was found.
+- Full visual/motion proposal and screen-by-screen sequence are recorded in `DESIGN_NOTES.md`. Direction: precision JE Cooler hardware interface; preserve approved identity/Home/canvas/telemetry and hardware-correlated Fan/LED motion; unify shared visual/motion tokens; add short meaningful tab/route/control feedback; honor Android/iOS reduced-motion; optimize animated subtree/controller allocation; never synthesize telemetry or progress.
+- Implementation is not started. A bounded implementation must be authorized in the separate Eksekusi Code Full conversation. No extra animation plugin is recommended; use Flutter framework animation primitives already available. Build #167 remains latest package and any new package requires separate Eksekusi Build App authorization.
 
 ## Current repository evidence and next action
 
