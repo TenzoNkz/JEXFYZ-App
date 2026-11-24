@@ -34,6 +34,13 @@ Last reconciled: 2026-11-25 (Asia/Jakarta). Authority: `MASTER_PROMPT.md`.
 - **Acceptance:** widget/behavior tests for reduced motion, controller disposal, state transitions, command pending vs telemetry confirmed, disconnected/unknown state, tab switching and lifecycle; screenshot/golden matrix at 350-dp/420-dp, English/Indonesian, Light/Dark, connected/disconnected/error and constrained portrait; actual Build #167 screenshot comparison plus real Android rendering after a separately authorized package. No visual PASS without rendered evidence.
 - Build #167 remains the latest published package. A fresh Code Full command authorizes only the named App source/tests/docs work; a new APK/build/release still requires a separate fresh `Eksekusi Build App!` authorization. BLE App identity and OTA certificate trust remain separate protected projects.
 
+## Tooling readiness before the next grouped execution batch — 2026-11-25
+
+- GitHub and Figma are already connected; no duplicate integration is needed. Context7 has been suggested as the only optional new ChatGPT connection for version-aware Flutter/Dart/Gradle/Firebase documentation; it is not yet connected and requires the owner's action.
+- Skip PostHog, Datadog, Firebase, Atlassian and Product Design ChatGPT connectors for now; the first two require an observability/privacy plan, Firebase has broad backend access near protected OTA state, Atlassian duplicates GitHub and Product Design overlaps Figma.
+- Prepare the developer workstation with Android Studio, SDK/Platform Tools (`adb`), AVD emulator, Flutter stable SDK/DevTools and a physical Android phone + JE Cooler hardware. Use Flutter `integration_test` for app flows and consider Patrol only when native permission/system UI interaction is required. Profile with Flutter DevTools (profile mode) and Android Studio Profiler.
+- Existing JE repository skills already cover Flutter engineering, product design/anti-AI-slop, Flutter test/regression, BLE P1, Firmware safety, OTA/release integrity, GitHub Actions and documentation governance. Prefer extending these; only add focused Android visual/device-QA or dependency-upgrade-matrix skills when those workflows are formally adopted. Details and sources are in `SKILLS_INDEX.md`.
+
 ## Other boundaries
 
 - PR validation workflow `.github/workflows/jexfyz-app-pr-validation.yml` is implemented; no open PR or PR-triggered run was observed in the 2026-11-24 recovery check.
