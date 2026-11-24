@@ -7,6 +7,18 @@
 - The Build #167 Home cooler enlargement is packaged. Actual Android visual acceptance remains NOT VERIFIED; follow `DESIGN_NOTES.md` and `VISUAL_QUALITY_GATE.md`.
 - No new build is indicated merely to repeat successful gates. Use the guarded Build App flow only after a new, explicit owner `Eksekusi Build App!` command.
 
+
+## Guarded App Build workflow security baseline — 2026-11-24 (source-only; no package built)
+
+- **Source change:** commit `39c33cabe549a9199d118bafa6390ec21081daa6` hardens `.github/workflows/jexfyz-app-build-trigger.yml`. The four direct actions now pin to immutable, upstream-tag-verified commits: checkout v6 `d23441a48e516b6c34aea4fa41551a30e30af803`; setup-java v6 `d1374f8ac74474200d16ef8ecee22c7ae7a51880`; Flutter action v2 `1a449444c387b1966244ae4d4f8c696479add0b2`; Gradle setup v6 `8da46b539cd8fe6ab27ca75128919a18d757604c`.
+- **Token/checkout boundary:** checkout uses `persist-credentials: false`; workflow token permissions default to none, with only `contents: write` granted at the guarded release job because that job creates/updates the Release tag/assets.
+- **Composite action boundary:** Flutter action cache is disabled because the pinned composite itself references `actions/cache@v5` for Flutter/pub caches. This prevents that nested mutable ref from executing; the independently SHA-pinned Gradle setup retains its Gradle cache.
+- **Signing-secret lifetime:** the preparation step receives only `ANDROID_KEYSTORE_BASE64` to decode the temporary keystore. The path alone (`ANDROID_KEYSTORE_FILE`) is placed in `GITHUB_ENV`. Store password, alias and key password are injected only into the Gradle APK build step and the V1/V2/V3 apksigner step. `GH_TOKEN` remains limited to Release publication and the final downloaded-asset verification.
+- **Protected contracts retained:** issue-open/reopen trigger, repository-owner/title/body-token guard, serialized non-cancelling queue, dependency/analyzer/Flutter-test/Android unit-test/build/signing/certificate/tag/source-integrity/two-asset checks, and release publication semantics were not weakened or bypassed.
+- **Regression coverage:** `test/github_actions_workflow_contract_test.dart` locks the trigger guard, immutable direct action SHAs, checkout credential persistence, token permissions, signing-secret scope, Release-token scope and key release gates.
+- **Hosted source validation:** Validation Only run #56 / ID `45408666963` on source `9f40c6f73881133327b9227654617eb64c51f4e0` completed SUCCESS. Dart format precheck/final PASS (no auto-format patch/commit), analyzer completed with 107 info diagnostics and no warning/error findings, and Flutter tests passed **212/212**. This was a non-publishing validation run, not the guarded Build App workflow.
+- **Boundary:** no APK was built, no Release/tag/asset changed, and no App Build issue was opened. Build #167 remains the latest published package; the runtime/device and visual acceptance boundaries are unchanged.
+
 ---
 
 ## Historical guarded App Build #165 — TERMINAL SUCCESS / RELEASE VERIFIED — 2026-11-16
