@@ -1,3 +1,15 @@
+## 2026-11-24 — Harden guarded App Build workflow security (source-only; no APK built)
+
+- Pinned all four direct actions in `.github/workflows/jexfyz-app-build-trigger.yml` to immutable full commit SHAs verified against upstream v6/v2 tags: checkout, setup-java, subosito/flutter-action and gradle/actions/setup-gradle.
+- Disabled checkout credential persistence; workflow token permissions are deny-by-default with `contents: write` only at the guarded release job. Disabled Flutter composite caching to prevent its nested mutable `actions/cache@v5` references from running.
+- Limited Android signing secrets to the APK build and V1/V2/V3 apksigner steps. The keystore preparation step receives only the base64 keystore secret; only the non-secret temporary keystore path is written to `GITHUB_ENV`. Release `GH_TOKEN` remains limited to publication and final downloaded-asset verification.
+- Preserved manual issue-open/reopen trigger, owner/title/body-token authorization, serialized non-cancelling queue, validation/build/signing/release integrity gates and two-asset release contract.
+- Added `test/github_actions_workflow_contract_test.dart` for trigger authorization, SHA pins, checkout credentials, token permission, signing-secret lifetime, Release-token scope and release gates.
+- Validation Only #56 / run `45408666963` / job `138496176455` — SUCCESS on tested source `9f40c6f73881133327b9227654617eb64c51f4e0`: Dart formatter clean, analyzer 107 info-only diagnostics / zero warnings-errors, Flutter tests **212/212 PASS**.
+- No App Build/APK, Release/tag/asset, Firmware/BIN, Firebase, OTA, flash or device operation was started. Build #167 remains latest published package. The guarded Build App workflow itself still requires a fresh explicit Build App authorization for end-to-end release execution.
+
+---
+
 ## 2026-11-24 — Split JE X FYZ into three dedicated ChatGPT workspaces; repository documentation and source comment cleanup
 
 - **Owner request:** separate the three commands into their own ChatGPT conversations: `Diskusi!`, `Eksekusi Code Full!`, and `Eksekusi Build App!`; clean up/update the repository and improve important comments.
