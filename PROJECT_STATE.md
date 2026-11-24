@@ -56,6 +56,15 @@ Last reconciled: 2026-11-25 (Asia/Jakarta). Operating authority: `MASTER_PROMPT.
 - Full visual/motion proposal and screen-by-screen sequence are recorded in `DESIGN_NOTES.md`. Direction: precision JE Cooler hardware interface; preserve approved identity/Home/canvas/telemetry and hardware-correlated Fan/LED motion; unify shared visual/motion tokens; add short meaningful tab/route/control feedback; honor Android/iOS reduced-motion; optimize animated subtree/controller allocation; never synthesize telemetry or progress.
 - Implementation is not started. A bounded implementation must be authorized in the separate Eksekusi Code Full conversation. No extra animation plugin is recommended; use Flutter framework animation primitives already available. Build #167 remains latest package and any new package requires separate Eksekusi Build App authorization.
 
+## Plugin / engineering tools audit — 2026-11-25
+
+- **Already connected:** GitHub and Figma. No duplicate connector is needed. Figma-specific design/motion/library skills and the JE repository engineering skills are already available.
+- **One optional ChatGPT connection:** Context7 was suggested but is **not connected yet**. It can provide version-aware framework/library documentation during the future coordinated Flutter/Dart/Material UI/Android/Firebase upgrades.
+- **Do not install more ChatGPT plugins for now:** PostHog/Datadog need actual product analytics/observability instrumentation and privacy/operations policy; Firebase connector has broad backend access near protected OTA state; Atlassian duplicates GitHub workflow; Product Design overlaps Figma and existing design skills. A targeted catalog query did not surface Sentry.
+- **High-value developer workstation setup:** Android Studio + Android SDK/Platform Tools/ADB + AVD emulator + Flutter stable SDK/DevTools, plus a physical Android phone and actual JE Cooler unit. These are local tools, not ChatGPT plugins. The current ChatGPT execution container lacks Flutter/Dart/Gradle/ADB.
+- **QA strategy:** existing Flutter unit/widget/hosted CI plus `integration_test` on emulator/physical Android; consider Patrol only for native Android permission/system UI flows. Use Flutter DevTools profile-mode frame/build/raster and CPU/memory evidence plus Android Studio Profiler. Actual BLE/P1, OEM notification/overlay and hardware behavior require physical-device evidence.
+- Full catalog status, reusable Figma skills, proposed repository-skill refinements and official tooling references are recorded in `SKILLS_INDEX.md`. No additional plugin is confirmed connected; only the Context7 suggestion was presented.
+
 ## Current repository evidence and next action
 
 - Build #167 package source SHA is immutable. After that checkout, current `main` contains canonical documentation updates, one non-functional Firmware opening-comment correction in `firmware/JEXFYZ-V7.2.ino` (V7.1 text → V7.2), the guarded Build App workflow security hardening and its static source-contract test. No executable App/Firmware runtime code or Firmware behavior changed; the current workflow/test hardening is not included in the Build #167 package.
