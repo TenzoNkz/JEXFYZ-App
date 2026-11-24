@@ -25,7 +25,9 @@ void main() {
     ).readAsStringSync();
   });
 
-  test('only the manually guarded issue event can enter the release workflow', () {
+  test(
+    'only the manually guarded issue event can enter the release workflow',
+    () {
     expect(
       workflow,
       contains('  issues:\n    types:\n      - opened\n      - reopened'),
@@ -55,9 +57,12 @@ void main() {
     expect(workflow, contains('group: jexfyz-cooler-build'));
     expect(workflow, contains('cancel-in-progress: false'));
     expect(workflow, contains('queue: max'));
-  });
+    },
+  );
 
-  test('every direct third-party action is pinned to its verified full commit SHA', () {
+  test(
+    'every direct third-party action is pinned to its verified full commit SHA',
+    () {
     final uses = RegExp(
       r'(?m)^\s+uses:\s*([^\s#]+)',
     ).allMatches(workflow).map((match) => match.group(1)!).toList();
@@ -75,18 +80,24 @@ void main() {
         reason: 'Action reference is not immutable: $reference',
       );
     }
-  });
+    },
+  );
 
-  test('checkout drops its token and nested Flutter cache action stays disabled', () {
+  test(
+    'checkout drops its token and nested Flutter cache action stays disabled',
+    () {
     final checkout = _namedStep(workflow, 'Checkout repository');
     expect(checkout, contains('persist-credentials: false'));
 
     final flutter = _namedStep(workflow, 'Set up Flutter');
     expect(flutter, contains('cache: false'));
     expect(workflow, isNot(contains('actions/cache@')));
-  });
+    },
+  );
 
-  test('write permission is denied by default and granted only to the guarded release job', () {
+  test(
+    'write permission is denied by default and granted only to the guarded release job',
+    () {
     expect(workflow, contains('\npermissions: {}\n'));
     expect(workflow, contains('\n    permissions:\n      contents: write\n'));
     expect(
@@ -97,9 +108,12 @@ void main() {
       RegExp(r'(?m)^\s*contents:\s*write\s*$').allMatches(workflow),
       hasLength(1),
     );
-  });
+    },
+  );
 
-  test('keystore and signing credentials are scoped to steps that consume them', () {
+  test(
+    'keystore and signing credentials are scoped to steps that consume them',
+    () {
     final prepare = _namedStep(workflow, 'Prepare production release signing');
     expect(
       prepare,
@@ -141,9 +155,12 @@ void main() {
     ]) {
       expect(environmentWrites.single, isNot(contains(secret)));
     }
-  });
+    },
+  );
 
-  test('GitHub write token remains limited to release publication and verification', () {
+  test(
+    'GitHub write token remains limited to release publication and verification',
+    () {
     final publish = _namedStep(
       workflow,
       'Publish APK and corresponding source to GitHub Release',
@@ -156,9 +173,12 @@ void main() {
       RegExp(r'(?m)^\s*GH_TOKEN:').allMatches(workflow),
       hasLength(2),
     );
-  });
+    },
+  );
 
-  test('release validation, signing and artifact integrity gates remain present', () {
+  test(
+    'release validation, signing and artifact integrity gates remain present',
+    () {
     for (final gate in [
       'flutter analyze --no-fatal-infos',
       'flutter test',
@@ -171,7 +191,11 @@ void main() {
       'test "$APK_COUNT" = "1"',
       'test "$ASSET_COUNT" = "2"',
     ]) {
-      expect(workflow, contains(gate), reason: 'Required release gate missing: $gate');
+      expect(
+        workflow,
+        contains(gate),
+        reason: 'Required release gate missing: $gate',
+      );
     }
   });
 }
