@@ -1,4 +1,4 @@
-| Last updated | 2026-11-24 21:16 (+07:00, Asia/Jakarta) |
+| Last updated | 2026-11-24 21:26 (+07:00, Asia/Jakarta) |
 
 > Single current snapshot for JE X FYZ project interactions. Event-driven marker; not a background heartbeat.
 
@@ -6,22 +6,22 @@
 
 | Field | Value |
 |---|---|
-| **STATUS** | **COMPLETED** |
-| SESSION STATUS | COMPLETED — Read-only review of the successful CODE_FULL handoff and live repository/Actions/Release evidence completed; residual job-wide GITHUB_TOKEN permission nuance recorded in canonical documentation and active checkpoint. |
-| WORK STATUS | COMPLETED — The active authorized CODE_FULL scope (workflow supply-chain/credential hardening, regression tests, source/static review, canonical subject notes and transfer checkpoint) is implemented and verified. No App package/release work was authorized or performed. |
+| **STATUS** | **IN_PROGRESS** |
+| SESSION STATUS | IN_PROGRESS — Owner requested a broad UI/App improvement and dependency/tool-version modernization review from the supplied Build #167 screenshot. Diskusi remains read-only. |
+| WORK STATUS | IN_PROGRESS — Define an evidence-based, risk-ranked whole-App improvement roadmap and assess current dependencies versus stable upstream releases; no implementation/build/release is authorized in Diskusi. |
 | WORKSPACE | DISKUSI |
 | Mode | Diskusi! — read-only project review and planning. No executable source/tests/config/workflows/Actions/Release/Firmware/BIN/Firebase/OTA/flashing/device mutations or execution. |
 | Request / work item | Execute the owner's exact “MASTER PROMPT LOAD + CONTINUE — JE X FYZ CODE IMPLEMENTATION WORKSPACE” command: load canonical authority and bounded checkpoint, inspect live repository and operations, continue the active workflow security repair, add regression coverage, audit caller/gate preservation and full diff, run available checks, update durable notes/checkpoint, commit directly to main, verify all writes and final tree. |
-| Started | 2026-11-24 21:07 (+07:00, Asia/Jakarta) |
+| Started | 2026-11-24 21:26 (+07:00, Asia/Jakarta) |
 | Last updated | 2026-11-24 21:16 (+07:00, Asia/Jakarta) |
-| Current phase | COMPLETED — live evidence reconciled, token-scope nuance recorded in BUILD_NOTES.md / PROJECT_STATE.md / CHAT_TRANSFER.md, stale workspace label corrected, and final status closeout prepared. |
-| Last completed milestone | CODE_FULL source/test scope completed: `.github/workflows/jexfyz-app-build-trigger.yml` hardening commit `39c33cabe549a9199d118bafa6390ec21081daa6`; Validation Only #56 run `45408666963` / job `138496176455` on `9f40c6f73881133327b9227654617eb64c51f4e0` terminal SUCCESS (formatter clean, analyzer 107 info-only / zero warnings-errors, Flutter tests 212/212). Diskusi review verified Build #167 / Release `403010611` unchanged and recorded that `contents: write` applies at job level despite explicit GH_TOKEN env only on Release steps. Updated BUILD_NOTES.md, PROJECT_STATE.md and active CHAT_TRANSFER checkpoint; corrected stale workspace wording. |
-| Last verified source checkpoint | Pre-close main SHA `cbdc6604ddd8433185247aaa28c79fe561eeaddd`; recursive tree verified with 141 entries and `truncated=false`. The closing status write advances main once; final HEAD/tree read-back follows. |
+| Current phase | IN_PROGRESS — inspect current project authority, Build #167 screenshot, dependencies, UI surfaces, test coverage, architecture and latest stable upstream compatibility. |
+| Last completed milestone | Previous CODE_FULL workflow security hardening and Validation Only #56 verified SUCCESS; owner now supplied an actual Build #167 Home screenshot and requested a broad UI/App modernization roadmap. |
+| Last verified source checkpoint | Live main HEAD at session open: 9f30cfdc25e1d00607ef7fe9256d33ad9d0e9caf; prior known recursive tree had 141 entries / truncated=false. |
 | EXTERNAL OPERATION | Validation Only #56 / run `45408666963` / job `138496176455` / tested source `9f40c6f73881133327b9227654617eb64c51f4e0`: COMPLETED / SUCCESS. Independent Build #167 / run `44510421466` / job `135512909555` / package source `0dd96228d33b08c66e736ae91a8a6c3e5c3ddb81`: COMPLETED / SUCCESS; Release ID `403010611` / tag `jexfyz-latest` unchanged. Validation Only #50–#55 are retained as terminal failed intermediate revisions; latest #56 is success. No new Build App run was started. |
 | EXTERNAL OPERATION STATUS | COMPLETED / SUCCESS — latest authorized Validation Only #56 independently confirmed terminal success; Build #167 remains separately completed. |
 | Result / evidence | CURRENT / VERIFIED. Validation Only #56 completed SUCCESS: dependency resolution and format SUCCESS, analyzer 107 info-only findings / zero warnings-errors, Flutter tests 212/212. Static workflow review verified immutable action refs, checkout credential behavior, signing-secret scope and preserved manual/release gates. Explicit GH_TOKEN is scoped to publish/verification steps, but effective `contents: write` is job-wide; no leak evidence or post-hardening Build App runtime evidence. Build #167 remains latest published package. Documentation read-back verified; main/tree 141 entries, not truncated. |
 | Blocker / remaining evidence | No blocker for the completed CODE_FULL scope. Residual NOT RUN: local Flutter/Dart/Gradle (toolchains unavailable) and actionlint/YAML parser validation. Guarded Build App workflow was not run after hardening, so no new end-to-end signing/release runtime evidence exists. Actual Build #167 Android visual acceptance remains NOT VERIFIED; owner screenshots are needed. |
-| Next action | Owner supplies actual installed Build #167 Home screenshots for the 350-dp/420-dp, EN/ID, Light/Dark and constrained-portrait visual review. Any workflow permission-isolation follow-up requires a separate scoped `Eksekusi Code Full!`; any republish requires fresh `Eksekusi Build App!` authorization. |
+| Next action | Complete read-only architecture, UI, dependency and current-upstream compatibility audit; deliver prioritized modernization plan and exact verification/authorization boundaries. |
 
 ## Status model
 
