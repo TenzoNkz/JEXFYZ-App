@@ -101,17 +101,16 @@ void main() {
     'write permission is denied by default and granted only to the guarded release job',
     () {
       expect(workflow, contains('\npermissions: {}\n'));
-      expect(
-        workflow,
-        contains('\n    permissions:\n      contents: write\n'),
-      );
+      expect(workflow, contains('\n    permissions:\n      contents: write\n'));
       expect(
         RegExp(r'^\s*permissions:', multiLine: true).allMatches(workflow),
         hasLength(2),
       );
       expect(
-        RegExp(r'^\s*contents:\s*write\s*', multiLine: true)
-            .allMatches(workflow),
+        RegExp(
+          r'^\s*contents:\s*write\s*',
+          multiLine: true,
+        ).allMatches(workflow),
         hasLength(1),
       );
     },
@@ -143,10 +142,7 @@ void main() {
       }
 
       final build = _namedStep(workflow, 'Build latest release APK');
-      final enforce = _namedStep(
-        workflow,
-        'Enforce V1/V2/V3 APK signing',
-      );
+      final enforce = _namedStep(workflow, 'Enforce V1/V2/V3 APK signing');
       final verify = _namedStep(workflow, 'Verify APK signature');
       for (final secret in [
         'ANDROID_KEYSTORE_PASSWORD',
