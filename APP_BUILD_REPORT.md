@@ -1,3 +1,24 @@
+## BUILD #167 — TERMINAL SUCCESS / RELEASE + DOWNLOADED ASSETS VERIFIED — 2026-11-19
+
+- **Disposition:** COMPLETED / SUCCESS. This entry supersedes the immediately following historical in-progress snapshot; that snapshot is retained unchanged as an audit trail.
+- **Authorization / trigger:** one owner-authored Issue #44, exact guarded title `JE X FYZ — EKSEKUSI BUILD APP TRIGGER`, body token `JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1`. No duplicate trigger or retry was created.
+- **Run / job / workflow:** Build #167 / Actions run `44510421466` / workflow `374946166` / issue event / attempt 1; job `build` / `135512909555`; terminal run and job status `completed / success`. [Actions run](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/44510421466).
+- **Immutable source:** `0dd96228d33b08c66e736ae91a8a6c3e5c3ddb81`. The guarded issue, Actions run checkout, Release target, Git tag and embedded source-archive marker all identify this exact source.
+- **Included Home correction:** right-hand cooler column flex 14 (previously 13); uniform `Transform.scale(scale: 1.08)` anchored at `Alignment.centerRight`; `BoxFit.contain` retained; the seven left-side metric rows remain 45 dp. Cooler image asset `assets/jexfyzcooler.png`, blob `bf065985acceab8639d72c670344b805d9e5ba6f` (2,130,606 bytes). The validated candidate preserves Home header, notification area, tabs, 360-dp canvas, theme/localization and BLE/P1/telemetry contracts.
+- **Flutter analyzer:** `flutter analyze --no-fatal-infos` passed with 107 info-level findings and zero warning/error diagnostics.
+- **Flutter tests:** `flutter test` passed — 205/205 tests.
+- **Android Gradle gate:** `./gradlew --no-daemon :app:testDebugUnitTest` completed `BUILD SUCCESSFUL` in 2m59s. Native App tasks `:app:compileDebugUnitTestKotlin`, `:app:compileDebugUnitTestJavaWithJavac`, `:app:processDebugUnitTestJavaRes` and `:app:testDebugUnitTest` were `NO-SOURCE`; therefore this gate succeeded but no native App JUnit test cases ran.
+- **Workflow gates:** steps 1–21 and post-job cleanup 39–43 all completed SUCCESS, including security/architecture audit, locked dependencies, obfuscated production APK, V1/V2/V3 signing enforcement, signature verification, source archive packaging, Release publication and step 21 fresh downloaded-asset verification.
+- **APK:** Release asset `JEXFYZ-release.apk`, asset ID `767350299`, 56,180,827 bytes, SHA-256 `d7c461478e033b4598d1744e2ea7ec969eea8046bf5e4a3d6caaf511bc461691`. V1/JAR, V2 and V3 signature checks passed. The single signer matches pinned certificate SHA-256 `dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0`.
+- **Corresponding source archive:** Release asset `JEXFYZ-corresponding-source.zip`, asset ID `767350301`, 3,259,558 bytes, SHA-256 `58711342358639695624bbe05cc598220c9f20710bb04deaa785b93b85ca1546`. Embedded source marker identifies exact source `0dd96228d33b08c66e736ae91a8a6c3e5c3ddb81`; ZIP integrity and fresh downloaded-byte verification passed.
+- **Release / tag parity:** Release ID `403010611`, tag `jexfyz-latest`; Release target, Git tag ref and source marker match the Build #167 source. Exactly two assets are present: one APK and one corresponding source ZIP. Step 21 re-downloaded and verified both release assets. [Open Release](https://github.com/TenzoNkz/JEXFYZ-App/releases/tag/jexfyz-latest). No separate Actions artifacts were produced; delivery uses the Release assets.
+- **Retained caveats:** APK tooling reports the certificate's self-signed / untrusted PKIX chain and META-INF signature-coverage warnings. These warnings did not fail the explicitly required V1/V2/V3 checks; they are not represented as fixed. V3.1/V3.2/V4 were not part of the required gate and were not reported as verified.
+- **Visual acceptance:** **VISUAL NOT VERIFIED.** No post-change screenshot or physical Android rendering was included in the CI evidence. Review an actual Build #167 installation at 350-dp/420-dp, English/Indonesian, Light/Dark, portrait/constrained height; check the full cooler silhouette/no crop, longest metric-label clearance, NOTIFY spacing and safe margins.
+- **Scope boundary:** hosted App CI and release integrity only. No Firmware compilation/BIN, Firebase mutation, OTA, flashing, BLE field validation, thermal/electrical acceptance or physical-device operation was performed.
+- **Final live reconciliation:** run `44510421466` and job `135512909555` are terminal SUCCESS. Release API assets and the Actions step 21 downloaded hashes match. Subsequent main changes since the immutable build checkout are documentation-only; Build #167 source remains the shipped source.
+
+---
+
 ## BUILD #167 — ACTIVE / JAVA 17 SETUP — 2026-11-19
 
 - **Trigger / authorization:** exactly one fresh owner-authored Issue #44, opened by `TenzoNkz` at 2026-11-19 17:57:31 +07:00, exact guarded title `JE X FYZ — EKSEKUSI BUILD APP TRIGGER` and body token `JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1`. No prior issue was reused.
