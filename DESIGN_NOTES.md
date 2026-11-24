@@ -6,7 +6,7 @@
 
 ## Usage Statistics alignment refinement — included in Build #163 — 2026-11-16
 
-**Status: SOURCE INCLUDED IN BUILD #163 / VERIFIED CI / VISUAL NOT VERIFIED.** The alignment refinement described here is packaged in the latest verified App Release; it is no longer NOT RELEASED. The design remains subject to screenshot-based visual acceptance.
+**Status: SOURCE INCLUDED IN BUILD #163 AND RETAINED IN BUILD #167 / VERIFIED CI / VISUAL NOT VERIFIED.** This refinement entered the package in Build #163 and remains part of the latest published Build #167. The design remains subject to screenshot-based visual acceptance.
 
 - **Problem evidence:** supplied Android screenshots showed left-aligned Min/Avg/Max and selected-time readouts within equal columns, a Selected time heading/time pair that was not optically centered, Activity elapsed labels that did not share the chart plot gutters, and overly heavy discrete state bars.
 - **Layout correction:** center the Usage Statistics AppBar title; center each Min/Avg/Max label/value pair; align Activity start/end labels with the same 34-dp left and 8-dp right plot insets used by temperature chart, timeline and shared cursor geometry.
@@ -14,8 +14,8 @@
 - **Activity lanes:** render Voltage, Adaptive and Peltier state bars at 18 dp and vertically centered within the existing 34-dp gesture lane. The interaction/hit area remains 34 dp; Fan Speed remains its own 54-dp plot.
 - **Protected invariants:** raw 1-Hz capture, SQLite schema/retention, recorder queue, event analytics, timestamp weighting, Hotside threshold semantics, session/P1 boundaries, authoritative telemetry, null gaps, decimation, interpolation rules, tap/drag timestamp mapping and six metric values remain unchanged.
 - **Source/test lineage:** alignment implementation `b4b57e83261c0b1fcb7873efa8544c3410ad0208`; formatter-only follow-up `873a825020659dadcac2e5c7242e759209776414`. Validation Only #16 passed its 188-test baseline. Later Validation Only #19 passed the latest package source lineage with 197/197 tests; the subsequent compare to Build #163 shows only documentation/skill/status/checkpoint changes.
-- **Latest package evidence:** Build #163 / run `43679305537` / job `132706236782`, package source `9466e8eeb269da5bc8806f0df1d4212cf24e1746`, terminal SUCCESS. Analyzer 118 infos / zero warnings/errors; Flutter 197/197; Android Gradle gate SUCCESS.
-- **Visual outcome:** **VISUAL NOT VERIFIED.** CI/widget tests do not prove Android rendering. Actual Build #163 screenshots still need review at 350-dp/420-dp, EN/ID, Light/Dark, portrait/constrained height and selected-cursor states.
+- **Original package evidence:** Build #163 / run `43679305537` / job `132706236782`, package source `9466e8eeb269da5bc8806f0df1d4212cf24e1746`, terminal SUCCESS. Analyzer 118 infos / zero warnings-errors; Flutter 197/197; Android Gradle gate SUCCESS. This remains historical evidence for the original inclusion; Build #167 is the current package baseline at the top of this design note.
+- **Visual outcome:** **VISUAL NOT VERIFIED.** CI/widget tests do not prove Android rendering. Actual Build #167 screenshots still need review at 350-dp/420-dp, EN/ID, Light/Dark, portrait/constrained height and selected-cursor states.
 
 
 ---
@@ -75,7 +75,7 @@ The latest published App package is Build #167 / Actions run `44510421466` / job
 - **Automated regression evidence:** the hosted Build #131 Flutter suite passed 142/142. Coverage includes the 360-dp density canvas contract, compact-theme rendering at 350-dp/420-dp logical widths with inherited palette checks, scan-state mapping and source/layout regression contracts. This establishes test-suite behavior; it does not establish physical display/OEM visual quality.
 - Compact Theme remains opt-in (`compactUi: true`) on Settings root, Language/Appearance/Notifications/Bluetooth/Floating Settings subpages and the Connection sheet. Other fixed-canvas dialogs remain unchanged. Do not add a second transform or compromise the master canvas.
 - Do not change Home geometry, the 360-dp master canvas, `scale = width / 360`, safe-area/inset conversion, localization, status colors, BLE P1 behavior or Firmware behavior without a separately authorized scope.
-- **Physical visual status:** screenshot review and Android/OEM validation at 350-dp/420-dp remain NOT VERIFIED. Build #163 is the latest verified package and includes the four App UI refinements from `a5d4586` plus subsequent About, Statistics and Floating Monitor corrections; actual visual acceptance still requires owner-side installation and screenshots.
+- **Physical visual status:** screenshot review and Android/OEM validation at 350-dp/420-dp remain NOT VERIFIED. Build #167 is the latest verified package. Build #163 remains the historical package checkpoint for the original four App UI refinements from `a5d4586`; later About, Statistics, Floating Monitor and Home cooler sizing corrections are included in the newer package. Actual visual acceptance still requires owner-side installation and screenshots.
 
 ### Peltier safety dialog and LED Color Picker — compact refinement and 60-color palette (2026-11-11)
 
