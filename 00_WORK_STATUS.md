@@ -6,21 +6,21 @@
 
 | Field | Value |
 |---|---|
-| **STATUS** | **IN_PROGRESS** |
-| SESSION STATUS | IN_PROGRESS — Diskusi!; checkpoint recovery, authority review and live repository/Actions verification. |
-| WORK STATUS | IN_PROGRESS — Build #167 recovery is confirmed terminal SUCCESS; finish asset/tag/source evidence reconciliation and persist the terminal checkpoint. Visual Android acceptance remains separately unverified. |
-| Mode | Diskusi! — read-only for executable artifacts and external operations; canonical documentation/memory only may be updated after a substantive conclusion. |
-| Request / work item | Restore current durable checkpoint and live repository evidence for JE Cooler; continue only within Discussion permissions. First reconcile unfinished Build #167 recovery state. |
+| **STATUS** | **COMPLETED** |
+| SESSION STATUS | COMPLETED — Diskusi recovery finished; Build #167's previously unfinished operation was reconciled to terminal SUCCESS, evidence verified, and canonical checkpoint/docs saved and read back. |
+| WORK STATUS | COMPLETED — recovered and closed the Build #167 workstream state; no repeat execution or side effect. Actual Android visual acceptance is a separate owner-evidence follow-up. |
+| Mode | Diskusi! — read-only for executable source, tests, config, workflows, Actions/Release mutations, Firmware/BIN, Firebase, OTA, flashing and device operations. |
+| Request / work item | Restore durable JE Cooler checkpoint, reconcile the unfinished Build #167 operation against live GitHub, refresh canonical memory and identify the next safe action. |
 | Started | 2026-11-24 19:07 (+07:00, Asia/Jakarta) |
 | Last updated | 2026-11-24 19:07 (+07:00, Asia/Jakarta) |
-| Current phase | Build #167 run/job verified terminal SUCCESS; completing Release asset digest/source-archive evidence and canonical documentation checkpoint. Discussion only; no executable or external side effect authorized. |
-| Last completed milestone | CURRENT / VERIFIED: Build #167 run 44510421466 / job 135512909555 terminal SUCCESS; steps 1–21 and cleanup 39–43 SUCCESS. Log confirms 107 analyzer info findings, Flutter tests 205/205, Android Gradle BUILD SUCCESSFUL in 2m59s, V1/V2/V3 verification and Release re-download verification. |
-| Last verified source checkpoint | Build #167 immutable checkout SHA 0dd96228d33b08c66e736ae91a8a6c3e5c3ddb81. Current main HEAD 19ebd0493d5c1dc4c9765e6778c33b6597428350 is 11 documentation-only commits ahead of that source (compare reports only 00_WORK_STATUS.md, APP_BUILD_REPORT.md and CHAT_TRANSFER.md); recursive tree 140 entries / 94 blobs / 46 trees / truncated=false. Home source candidate remains flex14 + uniform 1.08x right-anchored scale, BoxFit.contain, cooler PNG blob bf065985acceab8639d72c670344b805d9e5ba6f. |
-| EXTERNAL OPERATION | Build #167 / run 44510421466 / job 135512909555 / source 0dd96228d33b08c66e736ae91a8a6c3e5c3ddb81: COMPLETED / SUCCESS. Build #166 and Validation Only #49 are also terminal SUCCESS. |
-| EXTERNAL OPERATION STATUS | COMPLETED / SUCCESS — live Actions run and build job are terminal; no retry or duplicate trigger. |
-| Result / evidence | Exactly one owner-authored Issue #44 triggered Build #167. All required workflow steps 1–21 and cleanup 39–43 SUCCESS. Analyzer 107 info-only findings; Flutter tests 205/205; Android Gradle BUILD SUCCESSFUL in 2m59s; APK signing V1/V2/V3 and pinned certificate verified; source ZIP packaged; Release #403010611/tag jexfyz-latest moved to exact source 0dd96228d33b08c66e736ae91a8a6c3e5c3ddb81; step 21 downloaded-asset verification PASS. No Actions artifacts; delivery is by Release assets. |
-| Blocker / remaining evidence | VISUAL NOT VERIFIED: no post-change actual Android screenshot/device render. Review Build #167 at 350-dp/420-dp, EN/ID, Light/Dark, portrait/constrained height, full cooler silhouette/no crop, metric label clearance, NOTIFY spacing and safe margins. Retain self-signed PKIX trust and META-INF signature-coverage warnings; native app JUnit task evidence must be checked for NO-SOURCE. Firmware/BIN, Firebase, OTA, flashing, BLE field, thermal/electrical and physical-device acceptance remain out of scope/unverified. |
-| Next action | Finish the Build #167 terminal entry in APP_BUILD_REPORT.md; update the bounded CHAT_TRANSFER checkpoint, PROJECT_STATE.md and HANDOVER.md with the verified release and visual-acceptance caveat; verify each write and final main HEAD/tree. |
+| Current phase | Session closed. Live Actions/Release/tag evidence reconciled; Build #167 terminal record, bounded chat checkpoint, concise Project State and immediate Handover updated and verified. |
+| Last completed milestone | CURRENT / VERIFIED: Build #167 run 44510421466 / job 135512909555 terminal SUCCESS; steps 1–21 and cleanup 39–43 SUCCESS. Analyzer 107 info-only findings, Flutter tests 205/205, Android Gradle BUILD SUCCESSFUL in 2m59s; V1/V2/V3 and pinned certificate verified; Release step 21 downloaded-asset checks passed. |
+| Last verified source checkpoint | Immutable Build #167 source 0dd96228d33b08c66e736ae91a8a6c3e5c3ddb81. Immediately before this closeout, main HEAD 34348dc1012d277b4511977254a52d9746b6d9e8; compare from build source shows only canonical documentation changes (00_WORK_STATUS.md, APP_BUILD_REPORT.md, CHAT_TRANSFER.md, PROJECT_STATE.md, HANDOVER.md), no source/test/config/workflow changes. Recursive tree: 140 entries / 94 blobs / 46 trees; truncated=false. |
+| EXTERNAL OPERATION | Build #167 / run 44510421466 / job 135512909555 / source 0dd96228d33b08c66e736ae91a8a6c3e5c3ddb81: COMPLETED / SUCCESS. |
+| EXTERNAL OPERATION STATUS | COMPLETED / SUCCESS — live run and job terminal; no retry, rerun or duplicate trigger. |
+| Result / evidence | Release #403010611 and Git tag jexfyz-latest point to Build #167 source. APK 56,180,827 bytes / SHA-256 d7c461478e033b4598d1744e2ea7ec969eea8046bf5e4a3d6caaf511bc461691; matching source ZIP 3,259,558 bytes / SHA-256 58711342358639695624bbe05cc598220c9f20710bb04deaa785b93b85ca1546. Exactly two assets; both freshly downloaded and verified. APP_BUILD_REPORT, bounded CHAT_TRANSFER, PROJECT_STATE (40 lines) and HANDOVER updated and read back. |
+| Blocker / remaining evidence | VISUAL NOT VERIFIED: no post-change actual Android screenshot/render. Owner evidence is needed for 350-dp/420-dp, EN/ID, Light/Dark, portrait/constrained height, complete silhouette/no crop, metric-label clearance, NOTIFY spacing and margins. Self-signed PKIX trust and META-INF signature-coverage warnings remain; native App JUnit tasks were NO-SOURCE. Firmware/BIN, Firebase, OTA, flashing, BLE field, thermal/electrical and physical-device acceptance remain unverified/out of scope. |
+| Next action | Owner supplies actual Build #167 Home screenshots for the approved visual matrix; review them against DESIGN_NOTES.md and VISUAL_QUALITY_GATE.md. Do not rebuild absent a confirmed source defect and a fresh explicit authorization. |
 
 ## Status model
 
@@ -59,7 +59,7 @@ STATUS is a compatibility alias for the current SESSION STATUS. Keep SESSION STA
 
 1. Every JE X FYZ owner message opens SESSION STATUS = IN_PROGRESS before extended work.
 2. Refresh after meaningful milestones, tool results, tests, commits, blockers, authorization changes and external-operation transitions.
-3. Close the current session truthfully while retaining independent external Actions status.
+3. Close the current session truthfully while retaining independent Actions status.
 4. If status persistence fails, report it explicitly.
 
 ## Automation boundary
@@ -73,5 +73,4 @@ This marker is event-driven, not a background heartbeat.
 - Current product state: PROJECT_STATE.md
 - Immediate next action: HANDOVER.md
 - App visual contract: DESIGN_NOTES.md / PRODUCT_DESIGN_CONSTITUTION.md / VISUAL_QUALITY_GATE.md
-- App Build evidence: APP_BUILD_REPORT.md
-- Current package/source readiness: APP_PREBUILD_AUDIT.md
+- App Build evidence ledger: APP_BUILD_REPORT.md
