@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — Skills & Capability Index
 
-Last reconciled: 2026-11-18 19:43:40 (Asia/Jakarta). This is the discovery map for reusable agent skills and the actual tool capabilities available to project chats. The operating authority remains MASTER_PROMPT.md.
+Last reconciled: 2026-11-24 (Asia/Jakarta). This is the discovery map for reusable agent skills and the actual tool capabilities available to project chats. The operating authority remains MASTER_PROMPT.md.
 
 ## Skill locations and loading
 
@@ -70,11 +70,12 @@ For non-trivial UI changes, load the product-design skill plus the Flutter engin
 - The active Ruleset `main-safety-guard` (ID `27528678`) protects the default branch from deletion and non-fast-forward updates, with no bypass actors. The separate classic branch-protection API returned 403, so that state remains unverified.
 - A repository-specific security-scanning plugin was not surfaced in the current plugin searches. No separate security plugin is needed to decide the current App rebuild question; review workflow/dependency automation separately if desired.
 
-## Current execution-environment snapshot
+## Current execution-environment snapshot — checked 2026-11-24
 
-- Checked 2026-11-13: Git, Python 3 and Java are available in the current runtime. Dart, Flutter, Gradle, ADB, Arduino CLI and ESP-IDF are absent. GitHub repository read/write is available through the connector; local Flutter/Android/Firmware compilation and physical-device validation cannot be claimed from this runtime.
-- App Actions now include the push-to-main Validation Only workflow (which may commit only formatter changes under `lib/` and `test/`), a separate read-only `pull_request` Flutter validator (source implemented, hosted CI NOT RUN because there is no PR), and the guarded Build/QC/release workflow. The new PR validator does not build or publish an App; only the explicit Build App mode authorizes that release path.
-- No toolchain was installed and no local build/test command was attempted in this audit.
+- Current container verification: Git 2.47.3, Python 3.13.5, Java and Javac are available. Flutter, Dart, Gradle, ADB, Arduino CLI and ESP-IDF are absent. Do not claim local Flutter/Android/Firmware compilation, tests or physical-device validation from this runtime.
+- GitHub repository read/write and Actions inspection are available through the connected integration, subject to the selected workspace authorization. Local SDK absence does not prevent read-only repository review or GitHub-hosted CI evidence inspection.
+- Do not install toolchains or mutate the environment merely to force validation within a project chat. Record missing SDK checks as BLOCKED / NOT RUN and use the existing authorized hosted workflows where appropriate.
+- App Actions comprise the push-to-main Validation Only workflow (which may commit only formatter changes under `lib/` and `test/`), a separate read-only `pull_request` Flutter validator, and the guarded Build/QC/release workflow. Only the explicit Eksekusi Build App! workspace authorizes the release path.
 
 
 ## High-rigor work pattern
