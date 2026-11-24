@@ -1,4 +1,3 @@
-
 ## Current App source and published package — Build #167 — 2026-11-24
 
 ### Current source, CI and release baseline
