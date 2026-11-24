@@ -59,11 +59,11 @@ Last reconciled: 2026-11-25 (Asia/Jakarta). Operating authority: `MASTER_PROMPT.
 ## Plugin / engineering tools audit — 2026-11-25
 
 - **Already connected:** GitHub and Figma. No duplicate connector is needed. Figma-specific design/motion/library skills and the JE repository engineering skills are already available.
-- **One optional ChatGPT connection:** Context7 was suggested but is **not connected yet**. It can provide version-aware framework/library documentation during the future coordinated Flutter/Dart/Material UI/Android/Firebase upgrades.
+- **Context7 connected (2026-11-25):** Context7's library resolver and documentation query tools are available. A first live Flutter API lookup confirmed `MediaQuery.disableAnimationsOf(context)` exposes the platform `disableAnimations` preference and `AnimationBehavior.normal` shortens controller animation duration when that preference is true. Repeating custom loops still need explicit stop/static fallback handling. Use Context7 for version-specific upstream docs; still verify project-specific behavior against live source/tests.
 - **Do not install more ChatGPT plugins for now:** PostHog/Datadog need actual product analytics/observability instrumentation and privacy/operations policy; Firebase connector has broad backend access near protected OTA state; Atlassian duplicates GitHub workflow; Product Design overlaps Figma and existing design skills. A targeted catalog query did not surface Sentry.
 - **High-value developer workstation setup:** Android Studio + Android SDK/Platform Tools/ADB + AVD emulator + Flutter stable SDK/DevTools, plus a physical Android phone and actual JE Cooler unit. These are local tools, not ChatGPT plugins. The current ChatGPT execution container lacks Flutter/Dart/Gradle/ADB.
 - **QA strategy:** existing Flutter unit/widget/hosted CI plus `integration_test` on emulator/physical Android; consider Patrol only for native Android permission/system UI flows. Use Flutter DevTools profile-mode frame/build/raster and CPU/memory evidence plus Android Studio Profiler. Actual BLE/P1, OEM notification/overlay and hardware behavior require physical-device evidence.
-- Full catalog status, reusable Figma skills, proposed repository-skill refinements and official tooling references are recorded in `SKILLS_INDEX.md`. No additional plugin is confirmed connected; only the Context7 suggestion was presented.
+- GitHub, Figma and Context7 are confirmed connected. Full catalog status, Figma/repository skill inventory, QA workstation stack and official tooling references are recorded in `SKILLS_INDEX.md`. No additional ChatGPT connector is recommended for the current scope.
 
 ## Current repository evidence and next action
 
