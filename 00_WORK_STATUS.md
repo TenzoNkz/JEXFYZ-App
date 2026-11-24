@@ -1,4 +1,4 @@
-| Last updated | 2026-11-24 19:52 (+07:00, Asia/Jakarta) |
+| Last updated | 2026-11-24 20:12 (+07:00, Asia/Jakarta) |
 
 > Single current snapshot for JE X FYZ project interactions. Event-driven marker; not a background heartbeat.
 
@@ -6,22 +6,22 @@
 
 | Field | Value |
 |---|---|
-| **STATUS** | **IN_PROGRESS** |
-| SESSION STATUS | IN_PROGRESS — Reconcile the now-confirmed Figma connection on this ChatGPT account and update the active discussion checkpoint. |
-| WORK STATUS | IN_PROGRESS — account-specific integration state has changed since the prior recommendation; update canonical memory and verify the resulting repository state. No project implementation or external operation is authorized or started. |
+| **STATUS** | **COMPLETED** |
+| SESSION STATUS | COMPLETED — Reconciled the platform-confirmed Figma connection for this ChatGPT account and verified the canonical account-specific checkpoint/capability record. |
+| WORK STATUS | COMPLETED — plugin advisory and account-state reconciliation are complete. Figma is connected and available in this account. No design file or project implementation/external operation was initiated. |
 | WORKSPACE | DISKUSI |
 | Mode | Diskusi! — read-only technical discussion and planning. |
-| Request / work item | Identify useful optional ChatGPT plugins/apps for JE X FYZ on a different account; distinguish existing native capabilities from useful add-ons. Figma was recommended and is now confirmed connected by the platform. |
+| Request / work item | Identify useful optional ChatGPT plugins/apps for JE X FYZ on a different account; distinguish existing native capabilities from useful add-ons. Figma was recommended and the platform subsequently confirmed its connection. |
 | Started | 2026-11-24 19:52 (+07:00, Asia/Jakarta) |
-| Last updated | 2026-11-24 19:52 (+07:00, Asia/Jakarta) |
-| Current phase | Confirm connected Figma actions, revise the account-specific plugin status, and verify canonical repository read-back. |
-| Last completed milestone | Prior plugin inventory and recommendation are complete. Platform now confirms Figma successfully connected for this account; this supersedes the prior installed=false checkpoint. |
-| Last verified source checkpoint | e44aa73fe1a4a555ac792b7e0701ed32275642b2 (previous discussion checkpoint; this session will record the connection event). |
+| Last updated | 2026-11-24 20:12 (+07:00, Asia/Jakarta) |
+| Current phase | Session closed after reconciling Figma's connection, updating canonical memory and verifying repository read-back. |
+| Last completed milestone | Active checkpoint and SKILLS_INDEX.md now state that Figma is connected for this account and its Figma Design / FigJam / Slides connector is available. Earlier same-day installed=false observation is superseded. |
+| Last verified source checkpoint | d63cf648de7d787613f2493f0ec72a98645cccac (SKILLS_INDEX.md update; final status closeout follows). |
 | EXTERNAL OPERATION | Build #167 / run 44510421466 / job 135512909555 / source 0dd96228d33b08c66e736ae91a8a6c3e5c3ddb81 previously verified completed / success; this session did not start or change any external operation. |
 | EXTERNAL OPERATION STATUS | COMPLETED / SUCCESS (last live verified). |
-| Result / evidence | Platform connection event explicitly confirms Figma is connected and its tools are now available in this account. GitHub, web, file, Python and automation capabilities were previously visible in this session. |
-| Blocker / remaining evidence | None for confirming Figma connection. No Figma file or design operation has been requested in this interaction. Google Drive remains admin-disabled based on the prior account catalog snapshot; recheck if needed. |
-| Next action | Use Figma for an actual JE X FYZ design/diagram task when requested; no Figma write is initiated merely by connecting the plugin. |
+| Result / evidence | Platform connection event explicitly confirms Figma is connected and Figma tools are available in this account. The `mcp__Figma__use_figma` action is visible in the connector inventory. CHAT_TRANSFER.md and SKILLS_INDEX.md read back with the updated account-scoped state. Recursive main tree: 140 entries, truncated=false. |
+| Blocker / remaining evidence | None for recording the connection. No Figma design action was requested or performed. Prior Google Drive/Gmail/Calendar catalog findings are account- and time-scoped and were not rechecked after the Figma connection event. |
+| Next action | Use the connected Figma integration for a concrete JE X FYZ UI/design or FigJam task when requested. The core technical next action remains actual Build #167 Android Home visual evidence review. |
 
 ## Status model
 
@@ -51,7 +51,7 @@ STATUS is a compatibility alias for the current SESSION STATUS. Keep SESSION STA
 
 - **NOT_APPLICABLE** — no independent process exists.
 - **QUEUED** — operation confirmed queued.
-- **IN_PROGRESS** — run/job confirmed active.
+- **IN_PROGRESS** — operation confirmed active.
 - **COMPLETED / SUCCESS** — terminal success.
 - **FAILED** or **CANCELLED** — terminal result.
 - **UNKNOWN** — live state could not be verified.
