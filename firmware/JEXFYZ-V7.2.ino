@@ -1,5 +1,5 @@
 /*
- * JE X FYZ / JE Cooler — Firmware V7.1 source.
+ * JE X FYZ / JE Cooler — Firmware V7.2 source.
  * Owns the ESP32-C3 control loop, thermal protection, BLE/P1, RGB, and OTA state machines.
  * Safety contract: preserve cooperative millis() timing, safe outputs, radio ownership,
  * voltage/Peltier transitions, and Local/Online OTA recovery semantics.
