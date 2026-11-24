@@ -2,6 +2,15 @@
 
 Last reconciled: 2026-11-24 (Asia/Jakarta). Authority: `MASTER_PROMPT.md`.
 
+## Three dedicated ChatGPT workspaces — SETUP IN REPOSITORY
+
+- Create three separate ChatGPT conversations manually: **JE X FYZ — Diskusi**, **JE X FYZ — Eksekusi Code Full**, and **JE X FYZ — Eksekusi Build App**.
+- Start each conversation with its matching copy-ready block in `CHAT_TRANSFER_PROMPTS.md` (Prompts 1, 2 and 3). There are exactly three; do not re-use one prompt by simply changing the command line in an existing chat.
+- `MASTER_PROMPT.md` is the sole rules authority. `Eksekusi Full!` is a legacy alias for `Eksekusi Code Full!`. `Chat Stuck!` recovers only the active workspace's existing authorization.
+- All three chats share the same GitHub `main` and canonical memory but not their chat transcripts. `00_WORK_STATUS.md` identifies the active workspace (`DISKUSI`, `CODE_FULL`, `BUILD_APP`). Repository state is global, not three separate branches or isolated copies.
+- **Single-writer rule:** finish/close any mutating session before another chat commits, updates shared memory or starts an external Build App operation. The WORKSPACE marker is not a lock.
+- The repository cannot create ChatGPT chat windows. The owner must create/select each conversation and paste the corresponding starter prompt.
+
 ## Current state — BUILD #167 PUBLISHED / CI AND RELEASE VERIFIED
 
 - **Latest App package:** Build #167 / Actions run `44510421466` / job `135512909555` / Issue #44 / immutable source `0dd96228d33b08c66e736ae91a8a6c3e5c3ddb81`. Run/job terminal SUCCESS; all workflow steps 1–21 and cleanup 39–43 SUCCESS.
@@ -17,7 +26,7 @@ Last reconciled: 2026-11-24 (Asia/Jakarta). Authority: `MASTER_PROMPT.md`.
 
 - Owner installs the published Build #167 and supplies actual Home screenshots/render evidence at 350-dp and 420-dp, English and Indonesian, Light and Dark, portrait/constrained-height states.
 - Review full cooler silhouette/no crop, longest metric-label clearance, NOTIFY spacing, safe margins, transparency and overall balance against the approved contract in `DESIGN_NOTES.md` and `VISUAL_QUALITY_GATE.md`.
-- Do not trigger another App Build merely to repeat successful CI. If visual evidence reveals a source defect, a separate explicit `Eksekusi Full!` is required for repair; a later repackaging step needs a fresh explicit `Eksekusi Build App!`. Neither is authorized by the current `Diskusi!`.
+- Do not trigger another App Build merely to repeat successful CI. If visual evidence reveals a source defect, a separate explicit `Eksekusi Code Full!` (legacy alias `Eksekusi Full!`) is required for repair; a later repackaging step needs a fresh explicit `Eksekusi Build App!`. Neither is authorized by the current `Diskusi!`.
 
 ## Other boundaries
 
