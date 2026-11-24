@@ -11,7 +11,7 @@ Keep project memory concise, traceable and internally consistent without destroy
 ## Authority model
 - MASTER_PROMPT.md is the single full operating ruleset.
 - CHAT_RULES.md is only a compatibility pointer.
-- CHAT_TRANSFER_PROMPTS.md contains exactly two LOAD + CONTINUE prompts.
+- CHAT_TRANSFER_PROMPTS.md contains exactly three copy-ready LOAD + CONTINUE prompts, one for each dedicated workspace: Diskusi, Eksekusi Code Full and Eksekusi Build App.
 - CHAT_TRANSFER.md is one bounded active checkpoint, not a transcript. Routine loading reads only the explicit active markers; older content is preserved in archive and is opened only for targeted forensic research.
 - PROJECT_STATE.md is current-only truth; HANDOVER.md is the immediate next action.
 - Subject notes own durable App/Firmware/design/security contracts.
