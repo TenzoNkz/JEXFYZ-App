@@ -58,6 +58,13 @@ For non-trivial UI changes, load the product-design skill plus the Flutter engin
 - Connected tool families visible in this session include GitHub repository/Actions/PR/issue tools, web research, Python/container utilities, Shopee product search, plugin management and task automations. Each action remains subject to tool availability, account connection, permission and the command-mode authorization in MASTER_PROMPT.md.
 - No direct Gemini connector is available in this workflow. The owner manually pastes the prompt and returns Gemini's response for verification.
 
+### Account-specific plugin connection snapshot — checked 2026-11-24
+
+- The platform confirmed Figma successfully connected for the active ChatGPT account on 2026-11-24. The `mcp__Figma__use_figma` connector action is now available and supports Figma Design files, FigJam boards and Figma Slides, including creating/editing/syncing UI screens, components, styles and variables. This current connector capability supersedes the older 2026-11-18 limitation note below for the active account; plugin status remains account-specific.
+- Before every `mcp__Figma__use_figma` call, load the installed `figma-use` skill as required by the connector. No Figma file or design was created/changed during the 2026-11-24 plugin-advisory follow-up.
+- The separate 2026-11-24 catalog check earlier in the same advisory initially showed Figma as not connected; the later platform connection event supersedes that result. Google Drive was then reported `DISABLED_BY_ADMIN`; Gmail and Google Calendar were available but not connected. Those are account- and time-scoped observations, not guarantees for other ChatGPT accounts, and were not rechecked after the Figma connection event.
+- Do not infer that Figma is connected in the owner's other ChatGPT accounts. Re-check the target account before relying on external app availability.
+
 ### Plugin and GitHub workflow snapshot — checked 2026-11-18
 
 - GitHub ChatGPT integration is installed/enabled and already provides repository, issue/PR, Actions run/job/log, Release and tag access. Do not add a duplicate GitHub connector.
