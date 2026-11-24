@@ -41,6 +41,15 @@ Last reconciled: 2026-11-25 (Asia/Jakarta). Authority: `MASTER_PROMPT.md`.
 - Prepare the developer workstation with Android Studio, SDK/Platform Tools (`adb`), AVD emulator, Flutter stable SDK/DevTools and a physical Android phone + JE Cooler hardware. Use Flutter `integration_test` for app flows and consider Patrol only when native permission/system UI interaction is required. Profile with Flutter DevTools (profile mode) and Android Studio Profiler.
 - Existing JE repository skills already cover Flutter engineering, product design/anti-AI-slop, Flutter test/regression, BLE P1, Firmware safety, OTA/release integrity, GitHub Actions and documentation governance. Prefer extending these; only add focused Android visual/device-QA or dependency-upgrade-matrix skills when those workflows are formally adopted. Details and sources are in `SKILLS_INDEX.md`.
 
+
+## Remaining quality gates — Diskusi assessment — 2026-11-25
+
+- Current tree has no `integration_test/`, golden/screenshot regression suite, checked-in Gradle Wrapper or Dependabot configuration. The read-only PR validator is implemented but still has no observed PR run; exercise it through a normal reviewable PR before making branch checks mandatory.
+- Build #167 and Validation Only #56 succeeded, but visual acceptance remains NOT VERIFIED. Only one Home / EN / Light / disconnected screenshot was reviewed; capture actual installed-app evidence at 350/420 dp, EN/ID, Light/Dark, connected/disconnected/error, constrained portrait, accessibility text scale and reduced-motion states. Cover Home, each control tab, Connection, Settings, Usage Statistics, native Floating Monitor, dialogs and Firmware Update presentation.
+- Next quality investments: Flutter `integration_test` for real app flows; goldens for stable Flutter widgets/screens; Patrol only if native Android permission/system UI needs automation; profile-mode DevTools and Android Studio Profiler; 1h/6h/24h Usage Statistics soak. Native overlay/BLE/P1 requires physical Android and cooler hardware.
+- Keep architecture work incremental; profile long-session Statistics before optimizing. Keep BLE App identity and OTA certificate/server trust as separate protected projects. Do not combine either with visual or toolchain migration.
+- No extra ChatGPT connector or animation dependency is recommended. GitHub, Figma and Context7 are sufficient; owner workstation/device tooling remains the main practical gap.
+
 ## Other boundaries
 
 - PR validation workflow `.github/workflows/jexfyz-app-pr-validation.yml` is implemented; no open PR or PR-triggered run was observed in the 2026-11-24 recovery check.
