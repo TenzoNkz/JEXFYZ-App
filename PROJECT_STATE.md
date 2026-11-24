@@ -43,7 +43,7 @@ Last reconciled: 2026-11-24 (Asia/Jakarta). Operating authority: `MASTER_PROMPT.
 
 ## Current repository evidence and next action
 
-- Build #167 package source SHA is immutable. After that checkout, current `main` contains canonical documentation updates plus one non-functional Firmware header-comment correction in `firmware/JEXFYZ-V7.2.ino` (V7.1 text → V7.2). No executable App/Firmware behavior, tests, configuration, workflow or release asset changed after the package source.
-- Recursive main tree at the recovery checkpoint: 140 entries / 94 blobs / 46 trees; `truncated=false`. Re-verify final HEAD/tree after the current documentation sync.
+- Build #167 package source SHA is immutable. After that checkout, current `main` contains canonical documentation updates, one non-functional Firmware opening-comment correction in `firmware/JEXFYZ-V7.2.ino` (V7.1 text → V7.2), the guarded Build App workflow security hardening and its static source-contract test. No executable App/Firmware runtime code or Firmware behavior changed; the current workflow/test hardening is not included in the Build #167 package.
+- Recursive `main` tree at the post-hardening documentation checkpoint: 141 entries / 95 blobs / 46 trees; `truncated=false` (tree SHA `c07492eb4f5e281d753c006bdbde9c9fcd2cbc1e`). Re-verify final HEAD/tree after the final status/checkpoint writes.
 - **Immediate next acceptance:** obtain actual Build #167 Android screenshots for the Home cooler matrix above. Do not trigger another build merely to repeat successful CI. A source repair requires separate explicit `Eksekusi Code Full!` (legacy alias `Eksekusi Full!`); repackaging requires fresh explicit `Eksekusi Build App!`.
 - `APP_BUILD_REPORT.md` holds build history; `CHAT_TRANSFER.md` is the bounded continuation checkpoint; `HANDOVER.md` holds the immediate next step. Subject requirements remain in `APP_NOTES.md`, `DESIGN_NOTES.md`, `PRODUCT_DESIGN_CONSTITUTION.md` and `VISUAL_QUALITY_GATE.md`.
