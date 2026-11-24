@@ -14,9 +14,8 @@ on:
       - opened
       - reopened
 
-permissions:
-  # APK delivery is handled by a GitHub Release asset, not an Actions artifact.
-  contents: write
+# Deny all token scopes by default. The guarded release job opts into contents: write only.
+permissions: {}
 
 env:
   EXPECTED_SIGNING_CERT_SHA256: "dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0"
@@ -36,32 +35,40 @@ jobs:
       queue: max
     runs-on: ubuntu-24.04
     timeout-minutes: 30
+    # Only Release asset/tag operations need repository write access.
+    permissions:
+      contents: write
 
     steps:
-      # Fetch App source/assets only.
+      # Direct actions are pinned to verified immutable commits; comments retain their upstream release labels.
+      # Fetch App source/assets only, without leaving the token in Git configuration.
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
 
       # APK delivery intentionally avoids Actions-artifact storage quota.
 
       # Tested Android release toolchain.
       - name: Set up Java 17
-        uses: actions/setup-java@v6
+        uses: actions/setup-java@d1374f8ac74474200d16ef8ecee22c7ae7a51880 # v6
         with:
           distribution: zulu
           java-version: "17"
 
       # Tested Flutter version for the App.
       - name: Set up Flutter
-        uses: subosito/flutter-action@v2
+        uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2
         with:
           flutter-version: "3.47.2"
           channel: stable
-          cache: true
+          # The pinned composite action invokes actions/cache@v5 internally when enabled.
+          # Keep that nested mutable ref disabled; the pinned Gradle action retains Gradle caching.
+          cache: false
 
       # Tested Gradle version for the App.
       - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@v6
+        uses: gradle/actions/setup-gradle@8da46b539cd8fe6ab27ca75128919a18d757604c # v6
         with:
           gradle-version: "9.3.1"
 
@@ -85,12 +92,9 @@ jobs:
         shell: bash
         env:
           ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
-          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
-          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
-          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
         run: |
           set -euo pipefail
-          for name in ANDROID_KEYSTORE_BASE64 ANDROID_KEYSTORE_PASSWORD ANDROID_KEY_ALIAS ANDROID_KEY_PASSWORD; do
+          for name in ANDROID_KEYSTORE_BASE64; do
             if [ -z "${!name}" ]; then
               echo "Missing required GitHub secret: $name"
               exit 1
@@ -102,12 +106,8 @@ jobs:
           printf '%s' "$ANDROID_KEYSTORE_BASE64" | base64 --decode > "$RUNNER_TEMP/signing/jexfyz-release.p12"
           test -s "$RUNNER_TEMP/signing/jexfyz-release.p12"
 
-          {
-            echo "ANDROID_KEYSTORE_FILE=$RUNNER_TEMP/signing/jexfyz-release.p12"
-            echo "ANDROID_KEYSTORE_PASSWORD=$ANDROID_KEYSTORE_PASSWORD"
-            echo "ANDROID_KEY_ALIAS=$ANDROID_KEY_ALIAS"
-            echo "ANDROID_KEY_PASSWORD=$ANDROID_KEY_PASSWORD"
-          } >> "$GITHUB_ENV"
+          # Only the temporary file path is shared; credentials are injected where they are consumed.
+          echo "ANDROID_KEYSTORE_FILE=$RUNNER_TEMP/signing/jexfyz-release.p12" >> "$GITHUB_ENV"
 
       - name: Restore Gradle wrapper if missing
         working-directory: android
@@ -274,13 +274,29 @@ jobs:
 
       # Obfuscated production APK plus symbols.
       - name: Build latest release APK
-        run: flutter build apk --release --obfuscate --split-debug-info=build/symbols
+        env:
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          set -euo pipefail
+          for name in ANDROID_KEYSTORE_PASSWORD ANDROID_KEY_ALIAS ANDROID_KEY_PASSWORD; do
+            if [ -z "${!name}" ]; then
+              echo "Missing required GitHub secret: $name"
+              exit 1
+            fi
+          done
+          flutter build apk --release --obfuscate --split-debug-info=build/symbols
 
       # Explicitly sign all required APK schemes with the official production key.
       # The current AGP build output may omit JAR/v1 signing even when requested
       # by the Gradle DSL, so enforce it directly before verification/publication.
       - name: Enforce V1/V2/V3 APK signing
         shell: bash
+        env:
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
         run: |
           set -euo pipefail
           APK="build/app/outputs/flutter-apk/app-release.apk"
