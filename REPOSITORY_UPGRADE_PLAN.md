@@ -156,7 +156,7 @@ A failed gate blocks dependent work. Retry only after classifying root cause (so
 | `CHAT_TRANSFER.md` | Rolling active continuation checkpoint | ACTIVE CODE_FULL CHECKPOINT | UPGRADE — CLOSED / READ-BACK VERIFIED (2026-11-26) |
 | `DESIGN_NOTES.md` | Owner-approved screen-specific visual contracts | ACTIVE DESIGN SUBJECT REFERENCE | UPGRADE — CLOSED / READ-BACK VERIFIED (2026-11-26) |
 | `FIRMWARE_NOTES.md` | Firmware and hardware requirements reference | PROTECTED — OUTSIDE APP-ONLY SCOPE | PROTECTED — NO CHANGE (2026-11-26) |
-| `firmware/FIRMWARE_TECHNICAL_REFERENCE.md` | Project/configuration file | REVIEW REQUIRED | INVENTORIED — CONTENT REVIEW PENDING |
+| `firmware/FIRMWARE_TECHNICAL_REFERENCE.md` | Firmware source-level architecture and safety reference | PROTECTED — OUTSIDE APP-ONLY SCOPE | PROTECTED — NO CHANGE (2026-11-26) |
 | `firmware/JEXFYZ-V7.2.ino` | Firmware source | PROTECTED — FIRMWARE AUTHORIZATION REQUIRED | INVENTORIED — CONTENT REVIEW PENDING |
 | `HANDOVER.md` | Session continuity | ACTIVE STATUS / CHECKPOINT | INVENTORIED — CONTENT REVIEW PENDING |
 | `lib/app_settings.dart` | Flutter App source | APP SOURCE — CODE AUTHORIZATION | INVENTORIED — CONTENT REVIEW PENDING (FORMATTER ONLY, `003bccd6`) |
@@ -302,6 +302,16 @@ A failed gate blocks dependent work. Retry only after classifying root cause (so
 - **Disposition:** **PROTECTED — NO CHANGE**. No Firmware source, version, sketch filename, technical reference, OTA/BLE security document, Firebase, BIN, Release, flash or device file was edited. Do not treat this as a pass on Firmware behavior or physical safety.
 - **Acceptance evidence:** complete content inspection, repository consumer search, current tree/path check and exact live sketch blob comparison **PASS — STATIC SOURCE CHECK** for this audit decision. No Arduino compile, Firmware test, BIN, Firebase, OTA, flashing, NVS power-cycle or physical operation was run or authorized. No App test/build is claimed for this Firmware reference.
 - **Next file:** `firmware/FIRMWARE_TECHNICAL_REFERENCE.md` (next inventory path). Continue its review as a protected reference only; do not repair Firmware claims or source fingerprints under this App-only work package.
+
+### WP0 — `firmware/FIRMWARE_TECHNICAL_REFERENCE.md` — PROTECTED / NO CHANGE (2026-11-26)
+
+- **Reviewed checkpoint:** `main` HEAD `b5dea79c4b62b4b3100b4cbb134080af99f9ae9e`; technical-reference blob `004923c4638398b11bec5d9136d006f3b33515a0`. The complete 91-line document was inspected.
+- **Role and consumers:** canonical source-level Firmware architecture, GPIO/timing/safety, voltage/Peltier transitions, Hotside/Adaptive, Touch/LED/persistence, OTA and evidence reference. It is referenced by `README.md`, `MASTER_PROMPT.md`, `MEMORY_INDEX.md`, `FIRMWARE_NOTES.md`, `BLE_APP_AUTH.md`, `OTA_PROTECTION.md`, `OTA_REGRESSION_MEMORY.md`, `VOLTAGE_TRANSITION_MEMORY.md`, and the canonical/mirrored ESP32-C3 safety skills. Historical and protected source-link paths remain resolvable; the file has no Markdown link destinations requiring repair.
+- **Protected-scope finding:** the document correctly states that Firmware telemetry owns physical state, App ACK does not prove outputs, and source-contract tests do not prove Arduino compilation, BIN provenance, NVS power-cycle, electrical/thermal safety, BLE security or OTA/device behavior. These contracts are outside the owner-approved App-only code work package and were not edited.
+- **Discrepancies recorded, not repaired:** the “Current source blob” still identifies `140e758e7101cadc3ccc58cc5c52e49534b0032c`, whereas the live recursive tree identifies the active `firmware/JEXFYZ-V7.2.ino` as `842e2a3952739001b232a3d9e327c592ff9a6b5a`. The note also says the opening sketch comment still says V7.1; the live sketch header now reads “Firmware V7.2 source.” These are documentation/reference drifts, not evidence that the active sketch source/version is wrong. Because the reference is a protected Firmware contract and this workspace has no Firmware-doc repair authorization, leave it unchanged and record the discrepancy for a separately authorized Firmware documentation pass.
+- **Disposition:** **PROTECTED — NO CHANGE**. No Firmware source/BIN/version, App source, test, workflow, OTA, Firebase, release, signing, flashing or device file changed.
+- **Acceptance evidence:** full document review, current tree/blob identity, live sketch header (first 40 lines), consumer search and path checks **PASS — STATIC SOURCE CHECK** for the protection decision only. No Arduino compile, Firmware tests, BIN generation, OTA, flashing, physical hardware or thermal/electrical check was run or authorized.
+- **Next file:** `firmware/JEXFYZ-V7.2.ino` (next inventory entry). Record it as a Firmware-protected source path only; do not perform functional source review, edit, compile or operation in this App-only workspace.
 
 ### Formatter-only side effect — 12 Dart files — CONTENT REVIEW PENDING (2026-11-26)
 
