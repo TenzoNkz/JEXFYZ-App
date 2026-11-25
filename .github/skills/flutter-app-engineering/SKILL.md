@@ -39,4 +39,4 @@ For every non-trivial UI/UX task, load `.agents/skills/product-design-and-visual
 ## Guardrails
 - No UI improvement may weaken Firmware safety or BLE gating.
 - Do not reintroduce retired pages/features without a new request.
-- Diskusi: read-only. Eksekusi Full: only the specifically authorized App source/tests/docs. App packaging requires separate Eksekusi Build App!
+- Diskusi: read-only. Eksekusi Code! implements only the specifically authorized App source/tests/docs/config work package. Legacy Eksekusi Code Full! and Eksekusi Full! are aliases. App packaging requires separate Eksekusi Build App!.
