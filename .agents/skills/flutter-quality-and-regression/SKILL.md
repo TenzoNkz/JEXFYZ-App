@@ -46,4 +46,4 @@ Use STATIC SOURCE CHECK, TESTED, VERIFIED CI, DEVICE VERIFIED, BLOCKED / NOT RUN
 - OTA lifecycle state and recovery (only within explicit authorization).
 
 ## Guardrails
-No test execution or source edit in Diskusi. Eksekusi Full only authorizes the requested tests/change. App Build/release still requires Eksekusi Build App!.
+No test execution or source edit in Diskusi. Eksekusi Code! authorizes only the exact requested/approved source and test work; legacy Eksekusi Code Full! and Eksekusi Full! remain aliases. App Build/release still requires separate Eksekusi Build App! authorization.
