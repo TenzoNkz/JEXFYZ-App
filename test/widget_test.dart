@@ -1190,12 +1190,24 @@ void main() {
       expect(painter, contains('const start = math.pi;'));
       expect(painter, contains('const sweep = math.pi;'));
       expect(
-        containsDartFragment(
-          source,
-          'active: animatedKind == JexAnimatedIconKind.speed',
-        ),
-        isTrue,
+        source,
+        contains('active: connected && (animationActive ?? active)'),
       );
+      expect(source, contains('continuousLoop: continuousLoop'));
+      final homeStart = source.lastIndexOf(
+        'Widget _buildHomeArea(double height)',
+      );
+      final home = source.substring(homeStart);
+      for (final kind in [
+        JexAnimatedIconKind.battery,
+        JexAnimatedIconKind.hotside,
+        JexAnimatedIconKind.voltage,
+      ]) {
+        expect(
+          home,
+          contains('animatedKind: JexAnimatedIconKind.$kind,'),
+        );
+      }
       expect(
         source,
         contains('active: connected && runtimeOutputsKnown && fanOn'),
