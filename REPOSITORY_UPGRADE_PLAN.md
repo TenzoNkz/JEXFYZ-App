@@ -152,13 +152,13 @@ A failed gate blocks dependent work. Retry only after classifying root cause (so
 | `firmware/FIRMWARE_TECHNICAL_REFERENCE.md` | Project/configuration file | REVIEW REQUIRED | INVENTORIED — CONTENT REVIEW PENDING |
 | `firmware/JEXFYZ-V7.2.ino` | Firmware source | PROTECTED — FIRMWARE AUTHORIZATION REQUIRED | INVENTORIED — CONTENT REVIEW PENDING |
 | `HANDOVER.md` | Session continuity | ACTIVE STATUS / CHECKPOINT | INVENTORIED — CONTENT REVIEW PENDING |
-| `lib/app_settings.dart` | Flutter App source | APP SOURCE — CODE AUTHORIZATION | INVENTORIED — CONTENT REVIEW PENDING |
+| `lib/app_settings.dart` | Flutter App source | APP SOURCE — CODE AUTHORIZATION | INVENTORIED — CONTENT REVIEW PENDING (FORMATTER ONLY, `003bccd6`) |
 | `lib/connection_scan_coordinator.dart` | Flutter App source | APP SOURCE — CODE AUTHORIZATION | INVENTORIED — CONTENT REVIEW PENDING |
 | `lib/connection_scan_state.dart` | Flutter App source | APP SOURCE — CODE AUTHORIZATION | INVENTORIED — CONTENT REVIEW PENDING |
-| `lib/floating_monitor.dart` | Flutter App source | APP SOURCE — CODE AUTHORIZATION | INVENTORIED — CONTENT REVIEW PENDING |
+| `lib/floating_monitor.dart` | Flutter App source | APP SOURCE — CODE AUTHORIZATION | INVENTORIED — CONTENT REVIEW PENDING (FORMATTER ONLY, `003bccd6`) |
 | `lib/jex_animated_glyph.dart` | Flutter App source | APP SOURCE — CODE AUTHORIZATION | INVENTORIED — CONTENT REVIEW PENDING |
-| `lib/main.dart` | Flutter App source | APP SOURCE — CODE AUTHORIZATION | INVENTORIED — CONTENT REVIEW PENDING |
-| `lib/usage_statistics.dart` | Flutter App source | APP SOURCE — CODE AUTHORIZATION | INVENTORIED — CONTENT REVIEW PENDING |
+| `lib/main.dart` | Flutter App source | APP SOURCE — CODE AUTHORIZATION | INVENTORIED — CONTENT REVIEW PENDING (FORMATTER ONLY, `003bccd6`) |
+| `lib/usage_statistics.dart` | Flutter App source | APP SOURCE — CODE AUTHORIZATION | INVENTORIED — CONTENT REVIEW PENDING (FORMATTER ONLY, `003bccd6`) |
 | `MASTER_PROMPT.md` | Operating governance | CANONICAL GOVERNANCE | INVENTORIED — CONTENT REVIEW PENDING |
 | `MEMORY_INDEX.md` | Operating governance | CANONICAL GOVERNANCE | INVENTORIED — CONTENT REVIEW PENDING |
 | `OTA_PROTECTION.md` | Project/configuration file | REVIEW REQUIRED | INVENTORIED — CONTENT REVIEW PENDING |
@@ -166,21 +166,21 @@ A failed gate blocks dependent work. Retry only after classifying root cause (so
 | `PRODUCT_DESIGN_CONSTITUTION.md` | Project/configuration file | REVIEW REQUIRED | INVENTORIED — CONTENT REVIEW PENDING |
 | `PROJECT_STATE.md` | Operating governance | CANONICAL GOVERNANCE | INVENTORIED — CONTENT REVIEW PENDING |
 | `pubspec.lock` | Flutter dependency manifest/lock | DEPENDENCY CONTRACT — REVIEW BEFORE CHANGE | INVENTORIED — CONTENT REVIEW PENDING |
-| `pubspec.yaml` | Flutter dependency manifest/lock | DEPENDENCY CONTRACT — REVIEW BEFORE CHANGE | INVENTORIED — CONTENT REVIEW PENDING |
+| `pubspec.yaml` | Flutter dependency manifest/lock | DEPENDENCY CONTRACT — REVIEW BEFORE CHANGE | UPGRADE — CLOSED / READ-BACK VERIFIED (2026-11-26) |
 | `README.md` | Operating governance | CANONICAL GOVERNANCE | INVENTORIED — CONTENT REVIEW PENDING |
 | `SKILLS_INDEX.md` | Operating governance | CANONICAL GOVERNANCE | INVENTORIED — CONTENT REVIEW PENDING |
 | `test/app_protocol_notify_contract_test.dart` | Dart test | TEST / REGRESSION | INVENTORIED — CONTENT REVIEW PENDING |
-| `test/connection_scan_coordinator_test.dart` | Dart test | TEST / REGRESSION | INVENTORIED — CONTENT REVIEW PENDING |
+| `test/connection_scan_coordinator_test.dart` | Dart test | TEST / REGRESSION | INVENTORIED — CONTENT REVIEW PENDING (FORMATTER ONLY, `003bccd6`) |
 | `test/connection_scan_state_test.dart` | Dart test | TEST / REGRESSION | INVENTORIED — CONTENT REVIEW PENDING |
-| `test/device_copy_notification_contract_test.dart` | Dart test | TEST / REGRESSION | INVENTORIED — CONTENT REVIEW PENDING |
-| `test/firmware_qc_contract_test.dart` | Dart test | TEST / REGRESSION | INVENTORIED — CONTENT REVIEW PENDING |
+| `test/device_copy_notification_contract_test.dart` | Dart test | TEST / REGRESSION | INVENTORIED — CONTENT REVIEW PENDING (FORMATTER ONLY, `003bccd6`) |
+| `test/firmware_qc_contract_test.dart` | Dart test | TEST / REGRESSION | INVENTORIED — CONTENT REVIEW PENDING (FORMATTER ONLY, `003bccd6`) |
 | `test/firmware_touch_adaptive_sync_test.dart` | Dart test | TEST / REGRESSION | INVENTORIED — CONTENT REVIEW PENDING |
-| `test/floating_monitor_layout_contract_test.dart` | Dart test | TEST / REGRESSION | INVENTORIED — CONTENT REVIEW PENDING |
-| `test/github_actions_workflow_contract_test.dart` | Dart test | TEST / REGRESSION | INVENTORIED — CONTENT REVIEW PENDING |
-| `test/localization_contract_test.dart` | Dart test | TEST / REGRESSION | INVENTORIED — CONTENT REVIEW PENDING |
+| `test/floating_monitor_layout_contract_test.dart` | Dart test | TEST / REGRESSION | INVENTORIED — CONTENT REVIEW PENDING (FORMATTER ONLY, `003bccd6`) |
+| `test/github_actions_workflow_contract_test.dart` | Dart test | TEST / REGRESSION | INVENTORIED — CONTENT REVIEW PENDING (FORMATTER ONLY, `003bccd6`) |
+| `test/localization_contract_test.dart` | Dart test | TEST / REGRESSION | INVENTORIED — CONTENT REVIEW PENDING (FORMATTER ONLY, `003bccd6`) |
 | `test/support/source_contract_helpers.dart` | Dart test | TEST / REGRESSION | INVENTORIED — CONTENT REVIEW PENDING |
-| `test/usage_statistics_test.dart` | Dart test | TEST / REGRESSION | INVENTORIED — CONTENT REVIEW PENDING |
-| `test/widget_test.dart` | Dart test | TEST / REGRESSION | INVENTORIED — CONTENT REVIEW PENDING |
+| `test/usage_statistics_test.dart` | Dart test | TEST / REGRESSION | INVENTORIED — CONTENT REVIEW PENDING (FORMATTER ONLY, `003bccd6`) |
+| `test/widget_test.dart` | Dart test | TEST / REGRESSION | INVENTORIED — CONTENT REVIEW PENDING (FORMATTER ONLY, `003bccd6`) |
 | `VISUAL_QUALITY_GATE.md` | Project/configuration file | REVIEW REQUIRED | INVENTORIED — CONTENT REVIEW PENDING |
 | `VOLTAGE_TRANSITION_MEMORY.md` | Project/configuration file | REVIEW REQUIRED | INVENTORIED — CONTENT REVIEW PENDING |
 | `REPOSITORY_UPGRADE_PLAN.md` | Repository-wide upgrade register | Canonical per-file audit register | CREATED — inventory snapshot maintained above |
@@ -197,6 +197,38 @@ A failed gate blocks dependent work. Retry only after classifying root cause (so
 - **Local validation:** Dart and Flutter executables are not installed in the current execution container. Local formatter/analyzer/test commands are **BLOCKED / NOT RUN**; no local test result is claimed. YAML-specific formatter/test is not applicable to this one-include policy.
 - **Scope:** this review changes only the inventory disposition. It does not authorize changes to dependencies, analyzer rules, tests, workflows or App packaging.
 - **Next file:** review `pubspec.yaml` and its lockfile/import/workflow consumers as a separate dependency-manifest audit.
+
+### WP1 — `pubspec.yaml` — UPGRADE / CLOSED / READ-BACK VERIFIED (2026-11-26)
+
+- **Reviewed checkpoint:** current `main` HEAD `003bccd6e88b38710557df1d352386665491a254`; manifest blob `a0b8698c7c89efe43bb32b3ac6871c66bfcc873d`; lock blob `7475e368d4c6c237c726a61a38631b75bb84f0c1`; regression test blob after format-only commit `e0851999ca7177e3ef080e0b9c5ad1be10ba062d`.
+- **Role and consumers:** this is the Flutter package manifest, defining package identity/version, SDK bounds, direct runtime/dev dependencies and the two registered assets. Every direct package has a source/test or platform integration consumer: Firebase Core/App Check, BLE `flutter_blue_plus`, secure storage, permissions, Phosphor icons, `path` and local SQLite via `sqflite`; Flutter Test and `flutter_lints` serve tests/analyzer. Android integration is resolved through Flutter's Gradle plugin loader and the tracked platform manifest/services. Both `assets/jexfyzcooler.png` and `assets/jexfyzicon.png` are present in the repository and declared here.
+- **Finding / repair:** the prior Dart lower bound `>=3.9.0` was below the resolved dependency graph's lockfile minimum `>=3.13.0`, and the manifest omitted the lockfile's Flutter SDK minimum `>=3.38.4`. Validation Only and guarded Build App workflows use Flutter `3.47.2`. Updated `environment.sdk` to `>=3.13.0 <4.0.0`, added `environment.flutter: '>=3.38.4'`, and changed only the root `sqflite` constraint from exact `2.4.2` to `^2.4.2`. A nearby comment explains that the lockfile preserves the exact resolved release/CI version.
+- **Dependency/lock invariants:** no package version was upgraded, removed or added. `pubspec.lock` is unchanged and still pins `sqflite 2.4.2`; all other resolved package versions and checksums remain unchanged. App version `1.0.0+3` and both asset declarations remain unchanged. The locked graph and root constraints are now consistent.
+- **Regression repair:** `test/usage_statistics_test.dart` now asserts that the root manifest uses the intended caret range rather than pinning the exact package version, while preserving the assertions for local SQLite tables/schema/upgrade path and the exclusion of Firebase persistence. The file was restored from the verified pre-edit baseline before applying this one-assertion/comment change.
+- **Validation evidence:** local YAML parsing and manifest/source/asset structural checks PASS. Validation Only #72 / run `45700008025` / job `139507345524` completed SUCCESS on input source `27ac09c5b77401c37f5fdbfd575001bab5ea9544`: locked dependency resolution (`flutter pub get --enforce-lockfile`) PASS; formatter applied and post-format verification PASS; analyzer PASS (106 info-level notices, no warning/error failures); Flutter tests **219/219 PASS**. The same job committed the formatter-only child `003bccd6e88b38710557df1d352386665491a254` with message `style: format Dart sources and tests`; it touched exactly 12 paths under `lib/` and `test/` and is the current main HEAD. The commit parent is the tested source SHA. No further run was triggered by the bot's GITHUB_TOKEN push, so CI evidence is labelled against the parent source; the child is strictly the workflow's Dart formatter output, and the job's post-format check was PASS.
+- **Local toolchain boundary:** Flutter, Dart, Gradle and ADB are unavailable in the execution container. Local Dart format/analyzer/Flutter tests are **BLOCKED / NOT RUN**. The local YAML parser/structural checks are STATIC SOURCE CHECK evidence, not Flutter test execution.
+- **Release boundary:** the manifest/test changes and formatter commit are not included in the immutable Build #167 APK. No Build App, APK, signing, tag, Release or asset operation occurred.
+- **Scope/disposition:** change is limited to SDK lower bounds, the `sqflite` root version range/comment and its regression assertion; no dependency upgrade or lockfile rewrite was performed. Disposition: **UPGRADE — CLOSED / READ-BACK VERIFIED**.
+- **Next file:** audit `pubspec.lock` independently as the exact resolved dependency graph: direct/transitive declarations, SDK constraints, package sources/checksums, platform packages and correspondence to the manifest/workflows. Do not update package versions unless a specific mismatch or defect is demonstrated.
+
+### Formatter-only side effect — 12 Dart files — CONTENT REVIEW PENDING (2026-11-26)
+
+Validation Only #72's formatter gate identified 12 existing files requiring the workflow's locked Dart formatter. The workflow applied formatting, verified the post-format state, passed analyzer and all 219 Flutter tests, and committed the resulting formatter-only patch as `003bccd6e88b38710557df1d352386665491a254` (parent/source tested by run #72: `27ac09c5b77401c37f5fdbfd575001bab5ea9544`). Exact paths:
+
+- `lib/app_settings.dart`
+- `lib/floating_monitor.dart`
+- `lib/main.dart`
+- `lib/usage_statistics.dart`
+- `test/connection_scan_coordinator_test.dart`
+- `test/device_copy_notification_contract_test.dart`
+- `test/firmware_qc_contract_test.dart`
+- `test/floating_monitor_layout_contract_test.dart`
+- `test/github_actions_workflow_contract_test.dart`
+- `test/localization_contract_test.dart`
+- `test/usage_statistics_test.dart`
+- `test/widget_test.dart`
+
+These files received only the workflow's `dart format` output; this is not their file-level content/dependency/security review or final KEEP/UPGRADE disposition. Their register rows explicitly remain **CONTENT REVIEW PENDING (FORMATTER ONLY)** until each is inspected individually. No semantic modernization is claimed from formatting alone.
 
 ## Current disposition
 
