@@ -1,4 +1,4 @@
-| Last updated | 2026-11-26T06:00:00+07:00 (Asia/Jakarta) |
+| Last updated | 2026-11-26T06:27:00+07:00 (Asia/Jakarta) |
 
 > Single current snapshot for JE X FYZ project interactions. Event-driven marker; not a background heartbeat.
 
@@ -6,22 +6,22 @@
 
 | Field | Value |
 |---|---|
-| **STATUS** | **COMPLETED** |
-| SESSION STATUS | COMPLETED — Diskusi recovery and read-only Floating Monitor source review completed. Started: 2026-11-26T06:00:00+07:00 (Asia/Jakarta). Closed: 2026-11-26T06:00:00+07:00 (Asia/Jakarta). |
-| WORK STATUS | IN_PROGRESS — The broader owner-approved App rework remains unfinished in its separate Eksekusi Code workstream. WP0 register remains 16/96; this Diskusi review did not close a disposition or authorize implementation. Twelve formatter-touched Dart/test files remain pending individual review. |
+| **STATUS** | **IN_PROGRESS** |
+| SESSION STATUS | IN_PROGRESS — Diskusi workspace recovery and restore of canonical project context; waiting for the owner to nominate a concrete technical discussion topic. Started: 2026-11-26T06:27:00+07:00 (Asia/Jakarta). Last updated: 2026-11-26T06:27:00+07:00 (Asia/Jakarta). |
+| WORK STATUS | IN_PROGRESS — Current owner-requested context restoration and readiness for technical discussion are underway. The broader owner-approved App rework remains unfinished in its separate Eksekusi Code workstream. WP0 register remains 16/96; prior formatter-touched Dart/test files remain pending individual review unless live docs establish otherwise. |
 | WORKSPACE | DISKUSI |
-| Mode | Diskusi — read-only technical discussion and source review. No executable source, test, configuration, workflow, build, release, Firebase, Firmware/BIN, OTA, flash or device action. |
-| Request / work item | Restore canonical JE X FYZ context, verify live main, and perform a read-only preliminary audit of lib/floating_monitor.dart, its native bridge, telemetry caller and relevant tests. |
-| Started | 2026-11-26T06:00:00+07:00 (Asia/Jakarta) |
-| Last updated | 2026-11-26T06:00:00+07:00 (Asia/Jakarta) |
-| Current phase | COMPLETED — MASTER_PROMPT and bounded checkpoint loaded; live repository metadata, main HEAD and complete recursive tree verified; Floating Monitor ownership, persistence, bridge, lifecycle and test surface statically reviewed. |
-| Last completed milestone | Floating Monitor static source review completed. Dashboard remains the Flutter telemetry owner; native overlay is a separate renderer. Same-session service-death recovery remains a source-derived risk; direct Bridge and secure-store tests were not found in 12 Dart test files. Canonical documentation close-out completed and read-back verified in CHAT_TRANSFER.md, APP_PREBUILD_AUDIT.md, PROJECT_STATE.md and HANDOVER.md; duplicate audit insertion was removed. |
-| Last verified source checkpoint | main HEAD 22b02bc3c5dab2e3ed53efa47cf6bcb77a1ed690; root tree 731afff3abd88a11d43b504aaf57fbd82c998946; 142 entries / 96 blobs / 46 trees; truncated=false. Reviewed blobs: lib/floating_monitor.dart 176a21242602eb0db44420d2a9324eebe05e95b5; FloatingMonitorService.kt 8e66da2525b5cc75ef8780c2d480607328492df6; MainActivity.kt cab1cabf10b57a0f5d547fccf85b76b067503c0e; test/floating_monitor_layout_contract_test.dart 4784fb775388f226d19fd4acb02beea9f7074d03. |
-| EXTERNAL OPERATION | No external operation was initiated in this Diskusi session. Validation Only #72 / run 45700008025 is a historical terminal SUCCESS recorded in the prior checkpoint; no live Actions/Release inspection was needed for this source review. |
+| Mode | Diskusi — read-only technical discussion and source review. No executable source, test, configuration, workflow, build, release, Firebase, Firmware/BIN, OTA, flash or device action. Canonical status/memory documentation may be updated only as allowed by MASTER_PROMPT and serialized with other workspaces. |
+| Request / work item | Restore durable JE X FYZ project context, verify live main repository metadata/HEAD/tree, and resume technical discussion, planning, risk analysis or read-only source review. No narrower technical subject has yet been specified. |
+| Started | 2026-11-26T06:27:00+07:00 (Asia/Jakarta) |
+| Last updated | 2026-11-26T06:27:00+07:00 (Asia/Jakarta) |
+| Current phase | IN_PROGRESS — 00_WORK_STATUS.md read; opening SESSION STATUS persisted. Next: load MASTER_PROMPT fully and bounded active checkpoint, then verify repository metadata and current documentation truth. |
+| Last completed milestone | Prior status snapshot read. The previous checkpoint recorded a completed Floating Monitor static source review, but its source checkpoint and documentation state have not yet been re-verified against live main in this session. |
+| Last verified source checkpoint | Pending live verification in this session. Prior snapshot records main HEAD 22b02bc3c5dab2e3ed53efa47cf6bcb77a1ed690 and root tree 731afff3abd88a11d43b504aaf57fbd82c998946 (142 entries / 96 blobs / 46 trees; truncated=false); treat as historical until re-fetched. |
+| EXTERNAL OPERATION | No external operation has been initiated in this Diskusi session. Prior status records Validation Only #72 / run 45700008025 as historical terminal SUCCESS; no process has been started or continued here. |
 | EXTERNAL OPERATION STATUS | NOT_APPLICABLE — no independent operation was started or continued by this session. Historical #72 status is not a current process. |
-| Result / evidence | CURRENT / VERIFIED source snapshot: repository TenzoNkz/JEXFYZ-App, branch main, reviewed source HEAD 22b02bc3c5dab2e3ed53efa47cf6bcb77a1ed690; recursive tree 142 entries / 96 blobs / 46 trees, truncated=false. MASTER_PROMPT loaded fully; only bounded active checkpoint read. STATIC SOURCE CHECK: Dashboard owns telemetry and publishes through FloatingBridge; MainActivity routes to FloatingMonitorService; native service owns WindowManager/Canvas but no BLE/GATT. Same-session service-death recovery risk identified from START_NOT_STICKY, route-scoped health timer and per-session start-attempt guard. Across 12 Dart test files no direct FloatingBridge MethodChannel mock or FloatingStore secure-storage test was found. Canonical documentation updates (CHAT_TRANSFER, APP_PREBUILD_AUDIT, PROJECT_STATE, HANDOVER and this status marker) were read-back verified. No executable source/tests/config/workflows changed; no test/build/device/Actions operation run. |
-| Blocker / remaining evidence | Runtime behavior remains UNVERIFIED: no Flutter/Dart/Gradle/ADB toolchain or Android device was used; no permission/OEM WindowManager attach/detach, service-kill/restart, UI screenshot or telemetry timing was exercised. The recovery gap is a static risk, not a reproduced defect. Bridge/storage error paths lack direct test evidence in the current test inventory. |
-| Next action | Continue in Diskusi by deciding whether the product contract requires automatic same-session recovery after unexpected native overlay service termination. If required, define the single watchdog owner, retry/backoff and acceptance evidence before any separately authorized Eksekusi Code work. |
+| Result / evidence | Opening checkpoint persisted after reading 00_WORK_STATUS.md. This is a session marker only; canonical authority, active checkpoint, live main HEAD/tree and current project documentation remain to be reloaded/verified. |
+| Blocker / remaining evidence | No concrete technical discussion subject has been nominated yet. The current repository state, checkpoint, operating permissions and external operation state remain pending live verification. |
+| Next action | Read MASTER_PROMPT.md fully, then only the bounded active checkpoint in CHAT_TRANSFER.md; continue the mandated read-only repository recovery. |
 
 ## Status model
 
