@@ -1570,11 +1570,7 @@ class _JexLedStripPreviewState extends State<JexLedStripPreview>
         height: 58,
         child: Row(
           children: [
-            _modeArrow(
-              context,
-              left: true,
-              enabled: widget.previousEnabled,
-            ),
+            _modeArrow(context, left: true, enabled: widget.previousEnabled),
             const SizedBox(width: 4),
             Expanded(
               child: AnimatedBuilder(
@@ -1584,8 +1580,7 @@ class _JexLedStripPreviewState extends State<JexLedStripPreview>
                   final elapsed = math
                       .max(
                         0,
-                        _phaseClock.elapsedMilliseconds -
-                            _phaseAnchorElapsedMs,
+                        _phaseClock.elapsedMilliseconds - _phaseAnchorElapsedMs,
                       )
                       .toInt();
                   final syncedPhase = ((_phaseAnchorMs + elapsed) % cycle)
@@ -1627,11 +1622,7 @@ class _JexLedStripPreviewState extends State<JexLedStripPreview>
               ),
             ),
             const SizedBox(width: 4),
-            _modeArrow(
-              context,
-              left: false,
-              enabled: widget.nextEnabled,
-            ),
+            _modeArrow(context, left: false, enabled: widget.nextEnabled),
           ],
         ),
       ),

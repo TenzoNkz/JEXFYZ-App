@@ -262,7 +262,8 @@ void main() {
           tester.widget<AnimatedBuilder>(animatedBuilder).child,
         ),
         isTrue,
-        reason: 'The mode label must remain stable across LED animation frames.',
+        reason:
+            'The mode label must remain stable across LED animation frames.',
       );
       final updatedControlsRow = tester.widget<Row>(controlsRowFinder);
       expect(identical(leftControl, updatedControlsRow.children.first), isTrue);
