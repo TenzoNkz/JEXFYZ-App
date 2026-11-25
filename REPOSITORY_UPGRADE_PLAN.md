@@ -88,7 +88,7 @@ A failed gate blocks dependent work. Retry only after classifying root cause (so
 
 - The owner requested a full App-side repository rework and complete premium/elegant UI redesign. The detailed execution plan and ordered WPs are in `APP_PREBUILD_AUDIT.md` → “Owner-requested full App rework + premium UI redesign — 2026-11-26”; design direction and screen brief are in `DESIGN_NOTES.md` → “Full App visual redesign brief — owner request 2026-11-26”.
 - This register remains the single source of truth for **per-file disposition**. Review every file against actual role, consumers, contracts and evidence. Do not mass-edit or mark every file UPGRADE just because the request says “full rework”.
-- At this handoff: 3/96 blob dispositions are recorded (analysis_options.yaml KEEP / VERIFIED; pubspec.yaml UPGRADE / CLOSED / READ-BACK VERIFIED; pubspec.lock KEEP / VERIFIED). The 12 formatter-touched Dart files still require individual content review. The next unreviewed inventory path after the lockfile is `README.md`.
+- At the 2026-11-26 Diskusi handoff: **17/96 blob dispositions** are recorded. `lib/floating_monitor.dart` is now UPGRADE APPROVED after a full static source/caller/bridge/test review; source implementation remains in the separate Eksekusi Code workspace. Eleven of the 12 formatter-touched Dart/test files still require individual content review. The next unreviewed inventory path is `lib/jex_animated_glyph.dart`.
 - In the Code workspace, first reconcile live HEAD/tree/status, then resume WP0 and WP1. Keep the App-only scope and protected path exclusions in the active plan; Firmware/BIN, BLE protocol/security changes, OTA, Firebase production, signing, package/release, flashing and device operation are not authorized by this register or owner UI request.
 
 ## File inventory
@@ -162,7 +162,7 @@ A failed gate blocks dependent work. Retry only after classifying root cause (so
 | `lib/app_settings.dart` | Flutter App source — persisted App preferences, localization and shared themes | APP SOURCE — TIER 2 / STATE & PRESENTATION CONTRACT | KEEP / VERIFIED (2026-11-26) |
 | `lib/connection_scan_coordinator.dart` | Flutter App source — process-wide BLE scanner ownership coordinator | APP SOURCE — TIER 1 / CONCURRENCY & LIFECYCLE CONTRACT | KEEP / VERIFIED (2026-11-26) |
 | `lib/connection_scan_state.dart` | Flutter App source — Connection empty-state and device-name presentation mapping | APP SOURCE — TIER 2 / PRESENTATION STATE CONTRACT | KEEP / VERIFIED (2026-11-26) |
-| `lib/floating_monitor.dart` | Flutter App source | APP SOURCE — CODE AUTHORIZATION | INVENTORIED — CONTENT REVIEW PENDING (FORMATTER ONLY, `003bccd6`) |
+| `lib/floating_monitor.dart` | Flutter App source — Settings navigation/subpages and Floating Monitor configuration/native projection | APP SOURCE — TIER 2 / SETTINGS + OVERLAY BRIDGE | UPGRADE APPROVED — SPLIT SETTINGS/PREFERENCES FROM FLOATING MONITOR CONFIGURATION/BRIDGE/PRESENTATION (2026-11-26) |
 | `lib/jex_animated_glyph.dart` | Flutter App source | APP SOURCE — CODE AUTHORIZATION | INVENTORIED — CONTENT REVIEW PENDING |
 | `lib/main.dart` | Flutter App source | APP SOURCE — CODE AUTHORIZATION | INVENTORIED — CONTENT REVIEW PENDING (FORMATTER ONLY, `003bccd6`) |
 | `lib/usage_statistics.dart` | Flutter App source | APP SOURCE — CODE AUTHORIZATION | INVENTORIED — CONTENT REVIEW PENDING (FORMATTER ONLY, `003bccd6`) |
@@ -395,12 +395,20 @@ Validation Only #72's formatter gate identified 12 existing files requiring the 
 - `test/usage_statistics_test.dart`
 - `test/widget_test.dart`
 
-These files received only the workflow's `dart format` output; this is not their file-level content/dependency/security review or final KEEP/UPGRADE disposition. Their register rows explicitly remain **CONTENT REVIEW PENDING (FORMATTER ONLY)** until each is inspected individually. No semantic modernization is claimed from formatting alone.
+All 12 paths received only the workflow's `dart format` output at that time; this is not a substitute for file-level content/dependency/security review. `lib/floating_monitor.dart` has since received an individual static review and UPGRADE APPROVED disposition as recorded above. The other 11 paths remain **CONTENT REVIEW PENDING (FORMATTER ONLY)**, including the companion `test/floating_monitor_layout_contract_test.dart`. No semantic modernization is claimed from formatting alone.
+
+## WP0 source review — `lib/floating_monitor.dart` — 2026-11-26
+
+- **Reviewed checkpoint:** live `main` source blob `176a21242602eb0db44420d2a9324eebe05e95b5` (1,961 lines); callers in `lib/main.dart` blob `9663736fbe4bd7d251a8b3632b735a9cafb0b4d1`; regression test blob `4784fb775388f226d19fd4acb02beea9f7074d03`; native receiver `MainActivity.kt` blob `cab1cabf10b57a0f5d547fccf85b76b067503c0e`; native service `FloatingMonitorService.kt` blob `8e66da2525b5cc75ef8780c2d480607328492df6`. Latest source-fix commit `9a501fcdac5814abe4e98b229ca157eb771206d9`; Validation Only #73 / run `45717895008` / job `139568563820` completed SUCCESS on that SHA.
+- **Boundary finding:** the file combines Floating Monitor models/store/bridge/settings with Settings navigation, shared 360-dp/compact-theme canvas, Lock Voltage row, About, Language, Appearance, Notifications and Bluetooth pages. `main.dart` remains the only BLE/GATT/P1/session owner and publishes the connected, synchronized telemetry projection. `MainActivity.kt` receives the matching `je_x_fyz/floating` MethodChannel; `FloatingMonitorService.kt` owns the foreground overlay/WindowManager/HUD and contains no BLE client.
+- **Contract findings:** Flutter Secure Storage key `jexfyz_floating_v1` stores configuration only; native SharedPreferences `jexfyz_floating_native_v1` stores overlay geometry. Native gesture operations persist geometry and Flutter reconciles size/orientation through the 3-second runtime-state poll. The existing v2 B/H/V/A/P/F metric migration and unknown-while-disconnected behavior must remain intact. No concrete persistence corruption was observed.
+- **Lifecycle/test gap:** commit #73 added a mounted guard before the periodic timer; the test asserts source-token order rather than exercising late async completion after dispose. `FloatingStore.save` updates the notifier before its secure-storage write and suppresses write errors; no direct round-trip/failure test was found in the current test tree. These are coverage/observability gaps, not reproduced product defects.
+- **Disposition:** **UPGRADE APPROVED** under the existing App-only rework plan: separate Settings navigation/shared presentation and AppSettings-backed subpages from Floating Monitor configuration/persistence/bridge/application/presentation. This is a future Eksekusi Code source work package, not a change made or executed in Diskusi. The companion test file remains a separate pending inventory item; local tests, Android/OEM overlay and visual/device acceptance were not performed here.
 
 ## Current disposition
 
 - Inventory coverage: **95/95 existing tracked blobs** at the baseline HEAD above; this register is the 96th file after creation and must be included in subsequent tree snapshots.
 - Content review coverage: **not yet complete**. The fact that every path is listed does not mean every file's contents, callers, security or runtime behavior has been reviewed.
 - No blanket source/config/workflow/Firmware/BIN/asset update is authorized by this plan.
-- The current open source work item remains WP1 in the separate Code workspace. It must not be silently merged with this repository-wide roadmap.
+- The owner-approved App-only WP0–WP10 work item remains IN_PROGRESS. This current interaction is the permanent DISKUSI workspace; source implementation and executable validation remain in the separate Eksekusi Code workspace. Do not infer implementation authorization from a discussion disposition.
 - Refresh the inventory when files are added/removed/renamed; update the row of every file touched; re-check the recursive tree and all references before closing a WP.
