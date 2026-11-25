@@ -1,4 +1,4 @@
-| Last updated | 2026-11-26T06:27:00+07:00 (Asia/Jakarta) |
+| Last updated | 2026-11-26T06:33:05+07:00 (Asia/Jakarta) |
 
 > Single current snapshot for JE X FYZ project interactions. Event-driven marker; not a background heartbeat.
 
@@ -6,22 +6,22 @@
 
 | Field | Value |
 |---|---|
-| **STATUS** | **IN_PROGRESS** |
-| SESSION STATUS | IN_PROGRESS — Diskusi workspace recovery and restore of canonical project context; waiting for the owner to nominate a concrete technical discussion topic. Started: 2026-11-26T06:27:00+07:00 (Asia/Jakarta). Last updated: 2026-11-26T06:27:00+07:00 (Asia/Jakarta). |
-| WORK STATUS | IN_PROGRESS — Current owner-requested context restoration and readiness for technical discussion are underway. The broader owner-approved App rework remains unfinished in its separate Eksekusi Code workstream. WP0 register remains 16/96; prior formatter-touched Dart/test files remain pending individual review unless live docs establish otherwise. |
+| **STATUS** | **COMPLETED** |
+| SESSION STATUS | COMPLETED — Diskusi context restoration and expanded read-only Floating Monitor service-loss analysis completed; canonical memory updates committed and read-back verified. Started: 2026-11-26T06:27:00+07:00 (Asia/Jakarta). Closed: 2026-11-26T06:33:05+07:00 (Asia/Jakarta). |
+| WORK STATUS | WAITING_OWNER — The current Discussion continuation needs one product-contract decision: should the enabled Floating Monitor intent trigger bounded same-session recovery while the App is foreground/resumed, BLE/P1 is fully synchronized and overlay permission is granted? The broader owner-approved App WP0–WP10 rework remains IN_PROGRESS in its separate Eksekusi Code workstream; WP0 register remains 16/96 and twelve formatter-touched Dart/test files remain pending individual review. |
 | WORKSPACE | DISKUSI |
-| Mode | Diskusi — read-only technical discussion and source review. No executable source, test, configuration, workflow, build, release, Firebase, Firmware/BIN, OTA, flash or device action. Canonical status/memory documentation may be updated only as allowed by MASTER_PROMPT and serialized with other workspaces. |
-| Request / work item | Restore durable JE X FYZ project context, verify live main repository metadata/HEAD/tree, and resume technical discussion, planning, risk analysis or read-only source review. No narrower technical subject has yet been specified. |
+| Mode | Diskusi — read-only technical discussion, planning and source review. No executable source, tests, configuration, workflows, Actions/Release operations, Firmware/BIN, Firebase, OTA, flashing, build, test or device actions. Only canonical documentation/memory updates recording verified findings and the next decision were made, serialized through main. |
+| Request / work item | Restore durable JE X FYZ context and continue the pending technical discussion about Floating Monitor same-session recovery after unexpected native service termination. |
 | Started | 2026-11-26T06:27:00+07:00 (Asia/Jakarta) |
-| Last updated | 2026-11-26T06:27:00+07:00 (Asia/Jakarta) |
-| Current phase | IN_PROGRESS — 00_WORK_STATUS.md read; opening SESSION STATUS persisted. Next: load MASTER_PROMPT fully and bounded active checkpoint, then verify repository metadata and current documentation truth. |
-| Last completed milestone | Prior status snapshot read. The previous checkpoint recorded a completed Floating Monitor static source review, but its source checkpoint and documentation state have not yet been re-verified against live main in this session. |
-| Last verified source checkpoint | Pending live verification in this session. Prior snapshot records main HEAD 22b02bc3c5dab2e3ed53efa47cf6bcb77a1ed690 and root tree 731afff3abd88a11d43b504aaf57fbd82c998946 (142 entries / 96 blobs / 46 trees; truncated=false); treat as historical until re-fetched. |
-| EXTERNAL OPERATION | No external operation has been initiated in this Diskusi session. Prior status records Validation Only #72 / run 45700008025 as historical terminal SUCCESS; no process has been started or continued here. |
-| EXTERNAL OPERATION STATUS | NOT_APPLICABLE — no independent operation was started or continued by this session. Historical #72 status is not a current process. |
-| Result / evidence | Opening checkpoint persisted after reading 00_WORK_STATUS.md. This is a session marker only; canonical authority, active checkpoint, live main HEAD/tree and current project documentation remain to be reloaded/verified. |
-| Blocker / remaining evidence | No concrete technical discussion subject has been nominated yet. The current repository state, checkpoint, operating permissions and external operation state remain pending live verification. |
-| Next action | Read MASTER_PROMPT.md fully, then only the bounded active checkpoint in CHAT_TRANSFER.md; continue the mandated read-only repository recovery. |
+| Last updated | 2026-11-26T06:33:05+07:00 (Asia/Jakarta) |
+| Current phase | COMPLETED — MASTER_PROMPT and bounded checkpoint loaded; repository metadata, main commit and full recursive tree verified; current source lifecycle/persistence/test surfaces reviewed statically; official Android foreground-service start restrictions checked; canonical memory updates committed and verified. |
+| Last completed milestone | Expanded static review found Dashboard's per-session start guard is not reset on native service death; telemetry update does not start a missing service; Settings route's health timer disables and persists enabled=false when service/window is absent; native config and telemetry are in memory, so START_STICKY alone is not a recovery fix. Recommendation and pending owner decision saved in CHAT_TRANSFER.md and APP_PREBUILD_AUDIT.md; PROJECT_STATE.md and HANDOVER.md reconciled. |
+| Last verified source checkpoint | Source-review base HEAD 2978a8c093fef1b5095acea9c2fb6458473e4a93; root tree 6de8b2fc2af5a12e1d44b3690084a41daeeb2249; 142 entries / 96 blobs / 46 trees; truncated=false. Reviewed source blobs: lib/main.dart 9663736fbe4bd7d251a8b3632b735a9cafb0b4d1; lib/floating_monitor.dart 176a21242602eb0db44420d2a9324eebe05e95b5; MainActivity.kt cab1cabf10b57a0f5d547fccf85b76b067503c0e; FloatingMonitorService.kt 8e66da2525b5cc75ef8780c2d480607328492df6; test/floating_monitor_layout_contract_test.dart 4784fb775388f226d19fd4acb02beea9f7074d03. Subsequent commits in this session are canonical Markdown only. |
+| EXTERNAL OPERATION | No independent Actions, build, release, Firebase, Firmware, OTA, flash or device operation was started or continued in this Diskusi session. Prior Validation Only #72/#73 records remain historical and were not re-queried. |
+| EXTERNAL OPERATION STATUS | NOT_APPLICABLE — no independent operation was started or continued by this session. |
+| Result / evidence | CURRENT / VERIFIED: repo TenzoNkz/JEXFYZ-App, branch main. Opening session commit 2978a8c093fef1b5095acea9c2fb6458473e4a93 changed only 00_WORK_STATUS.md. Canonical documentation commits: APP_PREBUILD_AUDIT.md 439f74ccff0df650976aba61e33b32d2cdae7270; CHAT_TRANSFER.md 2c27731a2ebe583791764c59a2d37439ab372a07; PROJECT_STATE.md 1801110a0ab98624d922cdb26bad9c6ba6b380e9; HANDOVER.md 625b904e154e1780acad829d0162305f7ee19b7a. Every updated file was read back. STATIC SOURCE CHECK only; no executable source/test/config/workflow change, no local test/build/analyzer/formatter run, no Actions/Release inspection, no runtime or device verification. |
+| Blocker / remaining evidence | Owner's product decision is pending. Same-session service-death behavior, actual Android/OEM foreground-service behavior, overlay permission/WindowManager reattachment and restart timing remain UNVERIFIED on device. Direct FloatingBridge MethodChannel and FloatingStore secure-storage tests were not found in the current test inventory. The source-derived gap is not a reproduced device defect. |
+| Next action | Ask the owner whether enabled=true must remain the desired intent across unexpected native service loss and trigger bounded recovery only while the App is foreground/resumed, BLE/P1 is fully synchronized and overlay permission is granted. Recommendation: yes under those gates, with one Flutter/App-session supervisor and finite retry/backoff; owner decision is not implementation authorization. |
 
 ## Status model
 
