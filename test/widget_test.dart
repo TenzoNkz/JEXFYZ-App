@@ -2078,8 +2078,15 @@ void main() {
         hasError: true,
         warning: true,
       );
+      final disconnectedForeground = jexHomeNotifyForegroundColor(
+        darkTheme: false,
+        hasError: true,
+        warning: true,
+        connected: false,
+      );
 
       expect(successForeground, const Color(0xFF027A48));
+      expect(disconnectedForeground, const Color(0xFF475467));
       expect(warningForeground, const Color(0xFFB54708));
       expect(errorForeground, const Color(0xFFB42318));
 
@@ -2133,8 +2140,36 @@ void main() {
         ),
         const Color(0xFFFF5164),
       );
+      expect(
+        jexHomeNotifyForegroundColor(
+          darkTheme: true,
+          hasError: true,
+          warning: true,
+          connected: false,
+        ),
+        const Color(0xFFB8C1CC),
+      );
+
+      final neutralSurface = Color.alphaBlend(
+        const Color(0xFF7C8797).withValues(alpha: .08),
+        light.colorScheme.surface,
+      );
+      expect(jexContrastRatio(disconnectedForeground, neutralSurface), greaterThanOrEqualTo(4.5));
     },
   );
+
+  test('Disconnected submenu lock opens the existing Bluetooth connection flow', () {
+    final source = File('lib/main.dart').readAsStringSync();
+    final start = source.indexOf('Widget _lockedDisplayMenu(');
+    final end = source.indexOf('// AI-METHOD / HOME-CONTRACT', start);
+    expect(start, isNonNegative);
+    expect(end, greaterThan(start));
+    final lockedMenu = source.substring(start, end);
+    expect(lockedMenu, contains('if (disconnected) ...['));
+    expect(lockedMenu, contains('onPressed: _showBluetoothMenu'));
+    expect(lockedMenu, contains("JexText.phrase('Connect', 'Hubungkan')"));
+    expect(lockedMenu, contains('minimumSize: const Size.fromHeight(48)'));
+  });
 
   test(
     'Home Notify keeps a fixed-height left Row and scales wrapped copy to two lines',
@@ -2148,6 +2183,9 @@ void main() {
 
       expect(card, contains('height: 44,'));
       expect(card, contains('jexHomeNotifyForegroundColor('));
+      expect(card, contains('final hasError = connected && isNotifyErrorMessage(custom);'));
+      expect(card, contains('PhosphorIconsRegular.info'));
+      expect(card, contains('connected: connected,'));
       expect(card, contains('color: foregroundColor'));
       expect(card, contains('foregroundColor.withValues(alpha: .28)'));
       expect(card, contains('color.withValues(alpha: hasError ? .11 : .08)'));
@@ -2378,8 +2416,26 @@ void main() {
             kind: kind,
             stateActive: false,
           ),
+          isFalse,
+          reason: '$kind must not loop without an active measured state.',
+        );
+        expect(
+          jexIconAnimationPermitted(
+            connected: true,
+            kind: kind,
+            stateActive: true,
+          ),
           isTrue,
-          reason: '$kind is a continuous telemetry indicator while connected.',
+        );
+        expect(
+          jexIconAnimationPermitted(
+            connected: true,
+            kind: kind,
+            stateActive: true,
+            continuousLoop: false,
+          ),
+          isFalse,
+          reason: '$kind uses value/warning transitions instead of an idle loop.',
         );
         expect(
           jexIconAnimationPermitted(
@@ -2986,6 +3042,34 @@ void main() {
       expect(bluetooth, isNot(contains('drawCircle')));
     },
   );
+
+  test('LED phase helper wraps elapsed time from the firmware sync anchor', () {
+    expect(jexSynchronizedLedPhaseMs(phaseAnchorMs: 950, elapsedSinceAnchorMs: 100, cycleMs: 1000), 50);
+    expect(jexSynchronizedLedPhaseMs(phaseAnchorMs: 250, elapsedSinceAnchorMs: 75, cycleMs: 1000), 325);
+    expect(jexSynchronizedLedPhaseMs(phaseAnchorMs: 900, elapsedSinceAnchorMs: -10, cycleMs: 1000), 900);
+    expect(jexSynchronizedLedPhaseMs(phaseAnchorMs: 900, elapsedSinceAnchorMs: 10, cycleMs: 0), 0);
+  });
+
+  test('LED preview re-anchors on sync revision without resetting its clock', () {
+    final source = File('lib/main.dart').readAsStringSync();
+    final stateStart = source.indexOf('class _JexLedStripPreviewState');
+    final updateStart = source.indexOf('void didUpdateWidget(covariant JexLedStripPreview oldWidget)', stateStart);
+    final updateEnd = source.indexOf('@override', updateStart);
+    expect(stateStart, isNonNegative);
+    expect(updateStart, greaterThan(stateStart));
+    expect(updateEnd, greaterThan(updateStart));
+    final update = source.substring(updateStart, updateEnd);
+    expect(update, contains('widget.ledSyncRevision != oldWidget.ledSyncRevision'));
+    expect(update, contains('_phaseAnchorMs = widget.ledPhaseMs % _safeCycle(widget.ledCycleMs);'));
+    expect(update, contains('_phaseAnchorElapsedMs = _phaseClock.elapsedMilliseconds;'));
+
+    final motionStart = source.indexOf('void _applyMotionPreference()', stateStart);
+    final motionEnd = source.indexOf('@override', motionStart);
+    final motion = source.substring(motionStart, motionEnd);
+    expect(motion, contains('controller.stop();'));
+    expect(motion, isNot(contains('_phaseAnchorMs =')));
+    expect(motion, isNot(contains('_phaseClock.reset()')));
+  });
 
   test('LED preview timing matches the firmware animation cycles', () {
     expect(ledAnimationCycleMs(1), 1000);

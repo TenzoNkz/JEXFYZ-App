@@ -1335,6 +1335,21 @@ double displayMenuOverlayTop({
   return math.min(desired, math.max(12.0, availableHeight * .64)).toDouble();
 }
 
+/// Resolve the firmware-anchored LED phase in milliseconds.
+///
+/// The elapsed clock is monotonic; a new firmware sync snapshot replaces the
+/// anchor, while reduced motion only pauses frame scheduling.
+int jexSynchronizedLedPhaseMs({
+  required int phaseAnchorMs,
+  required int elapsedSinceAnchorMs,
+  required int cycleMs,
+}) {
+  final cycle = math.max(1, cycleMs).toInt();
+  final anchor = phaseAnchorMs % cycle;
+  final elapsed = math.max(0, elapsedSinceAnchorMs).toInt();
+  return (anchor + elapsed) % cycle;
+}
+
 class JexLedStripPreview extends StatefulWidget {
   final int mode;
   final String colorHex;
@@ -1449,6 +1464,8 @@ class _JexLedStripPreviewState extends State<JexLedStripPreview>
     }
 
     if (widget.ledSyncRevision != oldWidget.ledSyncRevision) {
+      // A full firmware snapshot is a new time origin; keep elapsed time relative
+      // to that snapshot instead of snapping the preview back to local phase zero.
       _phaseAnchorMs = widget.ledPhaseMs % _safeCycle(widget.ledCycleMs);
       _phaseAnchorElapsedMs = _phaseClock.elapsedMilliseconds;
     }
@@ -1583,8 +1600,11 @@ class _JexLedStripPreviewState extends State<JexLedStripPreview>
                         _phaseClock.elapsedMilliseconds - _phaseAnchorElapsedMs,
                       )
                       .toInt();
-                  final syncedPhase = ((_phaseAnchorMs + elapsed) % cycle)
-                      .toInt();
+                  final syncedPhase = jexSynchronizedLedPhaseMs(
+                    phaseAnchorMs: _phaseAnchorMs,
+                    elapsedSinceAnchorMs: elapsed,
+                    cycleMs: cycle,
+                  );
                   final levels = ledPreviewLevels(
                     mode: widget.mode,
                     phaseMs: syncedPhase,
@@ -2001,8 +2021,10 @@ bool jexIconAnimationPermitted({
   required JexAnimatedIconKind kind,
   required bool stateActive,
   bool reduceMotion = false,
+  bool continuousLoop = true,
 }) {
-  if (!connected ||
+  if (!continuousLoop ||
+      !connected ||
       reduceMotion ||
       kind == JexAnimatedIconKind.generic ||
       kind == JexAnimatedIconKind.bluetooth) {
@@ -2011,7 +2033,7 @@ bool jexIconAnimationPermitted({
   if (kind == JexAnimatedIconKind.battery ||
       kind == JexAnimatedIconKind.hotside ||
       kind == JexAnimatedIconKind.voltage) {
-    return true;
+    return stateActive;
   }
   // Fan Speed interpolates actual BLE PWM updates; it must not run a decorative cycle.
   if (kind == JexAnimatedIconKind.speed) return false;
@@ -2341,6 +2363,7 @@ class JexAnimatedIcon extends StatefulWidget {
   final bool connected;
   final double size;
   final bool active;
+  final bool continuousLoop;
   final double level;
   final int voltageLevel;
   final bool warning;
@@ -2356,6 +2379,7 @@ class JexAnimatedIcon extends StatefulWidget {
     this.size = 24,
     this.connected = false,
     this.active = false,
+    this.continuousLoop = true,
     this.level = 1,
     this.voltageLevel = 5,
     this.warning = false,
@@ -2621,6 +2645,7 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
     if (!mounted ||
         _reduceMotion ||
         !widget.connected ||
+        !widget.continuousLoop ||
         !widget.active ||
         widget.kind == JexAnimatedIconKind.generic ||
         widget.kind == JexAnimatedIconKind.bluetooth ||
@@ -2657,6 +2682,7 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
             kind: widget.kind,
             stateActive: widget.active,
             reduceMotion: _reduceMotion,
+            continuousLoop: widget.continuousLoop,
           )) {
         controller.repeat();
       }
@@ -2805,6 +2831,7 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
       connected: widget.connected,
       kind: widget.kind,
       stateActive: widget.active,
+      continuousLoop: widget.continuousLoop,
     );
     if (!animationPermitted) {
       controller.stop();
@@ -4501,7 +4528,13 @@ Color jexHomeNotifyForegroundColor({
   required bool darkTheme,
   required bool hasError,
   required bool warning,
+  bool connected = true,
 }) {
+  if (!connected) {
+    return darkTheme
+        ? const Color(0xFFB8C1CC)
+        : const Color(0xFF475467);
+  }
   if (darkTheme) {
     if (hasError) return const Color(0xFFFF5164);
     if (warning) return const Color(0xFFFFB72B);
@@ -8304,6 +8337,7 @@ class _DashboardScreenState extends State<DashboardScreen>
     bool warning = false,
     bool? animationActive,
     bool animationValueKnown = true,
+    bool continuousLoop = true,
     int voltageLevel = 5,
   }) {
     final display = value == '--' ? '--' : value + unit;
@@ -8378,14 +8412,10 @@ class _DashboardScreenState extends State<DashboardScreen>
                                 lightOutlineColor:
                                     theme.colorScheme.onSurfaceVariant,
                                 connected: connected,
-                                active:
-                                    animatedKind == JexAnimatedIconKind.speed
-                                    ? (animationActive ?? active)
-                                    : jexIconAnimationPermitted(
-                                        connected: connected,
-                                        kind: animatedKind,
-                                        stateActive: animationActive ?? active,
-                                      ),
+                                continuousLoop: continuousLoop,
+                                // Keep the painter's real sensor/output state separate
+                                // from whether its optional autonomous phase loop is enabled.
+                                active: connected && (animationActive ?? active),
                                 valueKnown:
                                     animatedKind != JexAnimatedIconKind.speed ||
                                     (connected && animationValueKnown),
@@ -8765,7 +8795,8 @@ class _DashboardScreenState extends State<DashboardScreen>
         ? const Color(0xFFF4F6FA)
         : const Color(0xFF16181D);
     final custom = notice.trim().toUpperCase();
-    final hasError = isNotifyErrorMessage(custom);
+    // A stale command error must not make an offline device look like an active fault.
+    final hasError = connected && isNotifyErrorMessage(custom);
     final warning =
         connected &&
         ((safetyReason != 'NONE' &&
@@ -8777,16 +8808,21 @@ class _DashboardScreenState extends State<DashboardScreen>
         ? PhosphorIconsBold.xCircle
         : alert
         ? PhosphorIconsBold.warning
+        : !connected
+        ? PhosphorIconsRegular.info
         : PhosphorIconsRegular.shieldCheck;
     final color = hasError
         ? const Color(0xFFFF5164)
         : alert
         ? const Color(0xFFFFB72B)
+        : !connected
+        ? const Color(0xFF7C8797)
         : const Color(0xFF4DE7B7);
     final foregroundColor = jexHomeNotifyForegroundColor(
       darkTheme: headerDark,
       hasError: hasError,
       warning: warning,
+      connected: connected,
     );
 
     return Container(
@@ -10265,6 +10301,31 @@ class _DashboardScreenState extends State<DashboardScreen>
                           fontWeight: FontWeight.w600,
                         ),
                       ),
+                      if (disconnected) ...[
+                        const SizedBox(height: 14),
+                        SizedBox(
+                          width: double.infinity,
+                          child: TextButton.icon(
+                            // Reuse the established Bluetooth sheet and its serialized scan owner.
+                            onPressed: _showBluetoothMenu,
+                            icon: const Icon(
+                              PhosphorIconsRegular.bluetooth,
+                              size: 18,
+                            ),
+                            label: Text(
+                              JexText.phrase('Connect', 'Hubungkan'),
+                            ),
+                            style: TextButton.styleFrom(
+                              minimumSize: const Size.fromHeight(48),
+                              foregroundColor: accent,
+                              backgroundColor: accent.withValues(alpha: .10),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(14),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ],
                   ),
                 ),
@@ -10421,6 +10482,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                                 color: jexThermalBatteryColor(batteryValue),
                                 icon: PhosphorIconsRegular.batteryHigh,
                                 animatedKind: JexAnimatedIconKind.battery,
+                                continuousLoop: false,
                                 level: jexThermalBatteryLevel(batteryValue),
                                 warning: jexThermalBatteryFireActive(
                                   batteryValue,
@@ -10436,6 +10498,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                                 ),
                                 icon: PhosphorIconsRegular.thermometer,
                                 animatedKind: JexAnimatedIconKind.hotside,
+                                continuousLoop: false,
                                 level: jexTemperatureIndicatorLevel(
                                   hotValue,
                                   minC: 30,
@@ -10456,6 +10519,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                                 color: jexVoltageIndicatorColor(voltageValue),
                                 icon: PhosphorIconsRegular.lightning,
                                 animatedKind: JexAnimatedIconKind.voltage,
+                                continuousLoop: false,
                                 level: jexVoltageEnergyLevel(voltageValue),
                                 voltageLevel: jexVoltageAnimationLevel(
                                   voltageValue,
