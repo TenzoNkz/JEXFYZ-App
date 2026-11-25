@@ -1373,12 +1373,21 @@ class _JexLedStripPreviewState extends State<JexLedStripPreview>
   late final Stopwatch _phaseClock;
   int _phaseAnchorMs = 0;
   int _phaseAnchorElapsedMs = 0;
+  bool _mediaQueryDisableAnimations = false;
+  bool _systemReduceMotion = false;
+  bool _hasMotionPreference = false;
+
+  bool get _reduceMotion =>
+      _mediaQueryDisableAnimations || _systemReduceMotion;
 
   int _safeCycle(int value) => math.max(1, value);
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    _systemReduceMotion =
+        WidgetsBinding.instance.platformDispatcher.accessibilityFeatures.reduceMotion;
     _phaseClock = Stopwatch()..start();
     _phaseAnchorMs = widget.ledPhaseMs % _safeCycle(widget.ledCycleMs);
     _phaseAnchorElapsedMs = _phaseClock.elapsedMilliseconds;
@@ -1386,7 +1395,37 @@ class _JexLedStripPreviewState extends State<JexLedStripPreview>
       vsync: this,
       duration: Duration(milliseconds: _safeCycle(widget.ledCycleMs)),
     );
-    if (widget.active) controller.repeat();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final disableAnimations = MediaQuery.disableAnimationsOf(context);
+    if (!_hasMotionPreference ||
+        disableAnimations != _mediaQueryDisableAnimations) {
+      _mediaQueryDisableAnimations = disableAnimations;
+      _hasMotionPreference = true;
+      _applyMotionPreference();
+    }
+  }
+
+  @override
+  void didChangeAccessibilityFeatures() {
+    final reduceMotion =
+        WidgetsBinding.instance.platformDispatcher.accessibilityFeatures.reduceMotion;
+    if (reduceMotion == _systemReduceMotion) return;
+    _systemReduceMotion = reduceMotion;
+    _applyMotionPreference();
+  }
+
+  void _applyMotionPreference() {
+    if (!_hasMotionPreference) return;
+    if (_reduceMotion) {
+      // Keep the phase clock monotonic; only stop continuous frame scheduling.
+      controller.stop();
+    } else if (widget.active && !controller.isAnimating) {
+      controller.repeat();
+    }
   }
 
   @override
@@ -1397,7 +1436,11 @@ class _JexLedStripPreviewState extends State<JexLedStripPreview>
       controller.duration = Duration(
         milliseconds: _safeCycle(widget.ledCycleMs),
       );
-      if (widget.active) controller.repeat();
+      if (widget.active && !_reduceMotion) {
+        controller.repeat();
+      } else if (_reduceMotion) {
+        controller.stop();
+      }
     }
 
     if (widget.ledSyncRevision != oldWidget.ledSyncRevision) {
@@ -1407,18 +1450,19 @@ class _JexLedStripPreviewState extends State<JexLedStripPreview>
 
     if (widget.active != oldWidget.active) {
       if (widget.active) {
-        controller.repeat();
+        if (!_reduceMotion) controller.repeat();
       } else {
         controller.stop();
         controller.value = 0;
       }
-    } else if (widget.active && !controller.isAnimating) {
+    } else if (widget.active && !_reduceMotion && !controller.isAnimating) {
       controller.repeat();
     }
   }
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     controller.dispose();
     super.dispose();
   }
@@ -1944,8 +1988,10 @@ bool jexIconAnimationPermitted({
   required bool connected,
   required JexAnimatedIconKind kind,
   required bool stateActive,
+  bool reduceMotion = false,
 }) {
   if (!connected ||
+      reduceMotion ||
       kind == JexAnimatedIconKind.generic ||
       kind == JexAnimatedIconKind.bluetooth) {
     return false;
@@ -2354,7 +2400,7 @@ class _JexFanRotationSimulation extends Simulation {
 }
 
 class _JexAnimatedIconState extends State<JexAnimatedIcon>
-    with TickerProviderStateMixin {
+    with TickerProviderStateMixin, WidgetsBindingObserver {
   late final AnimationController controller;
   late final AnimationController fanPhaseController;
   late final AnimationController activityTransitionController;
@@ -2373,6 +2419,12 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
   bool _fanCoasting = false;
   _JexFanRotationSimulation? _fanRotationSimulation;
   double _fanTargetCyclesPerSecond = 0.0;
+  bool _mediaQueryDisableAnimations = false;
+  bool _systemReduceMotion = false;
+  bool _hasMotionPreference = false;
+
+  bool get _reduceMotion =>
+      _mediaQueryDisableAnimations || _systemReduceMotion;
 
   double _currentSpeedLevel() => jexSmoothFanSpeedLevel(
     from: _speedFromLevel,
@@ -2396,15 +2448,27 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
   }
 
   void _retargetWarningLevel(bool warning) {
-    _warningFromLevel = _currentWarningLevel();
     _warningTargetLevel = warning ? 1.0 : 0.0;
+    if (_reduceMotion) {
+      _warningFromLevel = _warningTargetLevel;
+      warningTransitionController.stop();
+      warningTransitionController.value = 1;
+      return;
+    }
+    _warningFromLevel = _currentWarningLevel();
     warningTransitionController.duration = const Duration(milliseconds: 280);
     warningTransitionController.forward(from: 0);
   }
 
   void _retargetIndicatorLevel(double target) {
-    _indicatorLevelFrom = _currentIndicatorLevel();
     _indicatorLevelTarget = target.clamp(0.0, 1.0).toDouble();
+    if (_reduceMotion) {
+      _indicatorLevelFrom = _indicatorLevelTarget;
+      indicatorLevelTransitionController.stop();
+      indicatorLevelTransitionController.value = 1;
+      return;
+    }
+    _indicatorLevelFrom = _currentIndicatorLevel();
     indicatorLevelTransitionController.duration = const Duration(
       milliseconds: 520,
     );
@@ -2412,9 +2476,14 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
   }
 
   void _retargetSpeedLevel(double target, {required Duration duration}) {
-    final current = _currentSpeedLevel();
-    _speedFromLevel = current;
     _speedTargetLevel = target.clamp(0.0, 1.0).toDouble();
+    if (_reduceMotion) {
+      _speedFromLevel = _speedTargetLevel;
+      speedLevelTransitionController.stop();
+      speedLevelTransitionController.value = 1;
+      return;
+    }
+    _speedFromLevel = _currentSpeedLevel();
     speedLevelTransitionController.duration = duration;
     speedLevelTransitionController.forward(from: 0);
   }
@@ -2456,6 +2525,7 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
     double targetCyclesPerSecond, {
     required Duration transition,
   }) {
+    if (_reduceMotion) return;
     unawaited(
       _retargetFanRotation(
         targetCyclesPerSecond,
@@ -2481,6 +2551,10 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
         !widget.connected ||
         widget.kind != JexAnimatedIconKind.fan ||
         widget.active) {
+      return;
+    }
+    if (_reduceMotion) {
+      _applyReducedMotionState();
       return;
     }
 
@@ -2509,6 +2583,11 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
   }
 
   Future<void> _animateActivityTransition(bool active) async {
+    if (_reduceMotion) {
+      activityTransitionController.stop();
+      activityTransitionController.value = active ? 1 : 0;
+      return;
+    }
     try {
       await activityTransitionController
           .animateTo(
@@ -2526,6 +2605,7 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
 
   void _resumeCycleWithoutPhaseSnap() {
     if (!mounted ||
+        _reduceMotion ||
         !widget.connected ||
         !widget.active ||
         widget.kind == JexAnimatedIconKind.generic ||
@@ -2562,6 +2642,7 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
             connected: widget.connected,
             kind: widget.kind,
             stateActive: widget.active,
+            reduceMotion: _reduceMotion,
           )) {
         controller.repeat();
       }
@@ -2592,10 +2673,92 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
     warningTransitionController.value = 1;
   }
 
+  void _applyReducedMotionState() {
+    controller.stop();
+    controller.value = 0;
+    fanPhaseController.stop();
+    _fanRotationSimulation = null;
+    _fanTargetCyclesPerSecond = 0.0;
+    _fanCoasting = false;
+
+    activityTransitionController.stop();
+    activityTransitionController.value = widget.active ? 1 : 0;
+
+    frostTransitionController.stop();
+    if (widget.kind == JexAnimatedIconKind.peltier && widget.active) {
+      _frostFromIntensity = jexPeltierFrostIntensity(widget.voltageLevel);
+      _frostFromParticleCount = jexPeltierFrostParticleCount(
+        widget.voltageLevel,
+      ).toDouble();
+      frostTransitionController.value = 1;
+    }
+
+    final speedTarget = widget.active && widget.valueKnown
+        ? widget.level.clamp(0.0, 1.0).toDouble()
+        : 0.0;
+    _speedFromLevel = speedTarget;
+    _speedTargetLevel = speedTarget;
+    speedLevelTransitionController.stop();
+    speedLevelTransitionController.value = 1;
+
+    final indicatorTarget = widget.level.clamp(0.0, 1.0).toDouble();
+    _indicatorLevelFrom = indicatorTarget;
+    _indicatorLevelTarget = indicatorTarget;
+    indicatorLevelTransitionController.stop();
+    indicatorLevelTransitionController.value = 1;
+
+    _warningFromLevel = widget.warning ? 1.0 : 0.0;
+    _warningTargetLevel = _warningFromLevel;
+    warningTransitionController.stop();
+    warningTransitionController.value = 1;
+  }
+
+  void _applyMotionPreference() {
+    if (!_hasMotionPreference) return;
+    if (!widget.connected) {
+      _stopAnimationsForDisconnect();
+    } else if (_reduceMotion) {
+      _applyReducedMotionState();
+    } else {
+      _syncAnimation();
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final disableAnimations = MediaQuery.disableAnimationsOf(context);
+    if (!_hasMotionPreference ||
+        disableAnimations != _mediaQueryDisableAnimations) {
+      _mediaQueryDisableAnimations = disableAnimations;
+      _hasMotionPreference = true;
+      _applyMotionPreference();
+    }
+  }
+
+  @override
+  void didChangeAccessibilityFeatures() {
+    final reduceMotion =
+        WidgetsBinding.instance.platformDispatcher.accessibilityFeatures.reduceMotion;
+    if (reduceMotion == _systemReduceMotion) return;
+    _systemReduceMotion = reduceMotion;
+    _applyMotionPreference();
+  }
+
   void _syncAnimation() {
     if (!widget.connected) {
       _stopAnimationsForDisconnect();
       return;
+    }
+    if (_reduceMotion) {
+      _applyReducedMotionState();
+      return;
+    }
+    if (widget.kind == JexAnimatedIconKind.peltier &&
+        widget.active &&
+        !frostTransitionController.isAnimating &&
+        frostTransitionController.value == 0) {
+      frostTransitionController.forward(from: 0);
     }
 
     if (widget.kind == JexAnimatedIconKind.fan) {
@@ -2639,6 +2802,9 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    _systemReduceMotion =
+        WidgetsBinding.instance.platformDispatcher.accessibilityFeatures.reduceMotion;
     controller = AnimationController(
       vsync: this,
       duration: jexIconAnimationDuration(
@@ -2661,9 +2827,6 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
       vsync: this,
       duration: const Duration(milliseconds: 420),
     )..value = widget.kind == JexAnimatedIconKind.peltier ? 0 : 1;
-    if (widget.kind == JexAnimatedIconKind.peltier && widget.active) {
-      frostTransitionController.forward(from: 0);
-    }
     final initialSpeedLevel =
         widget.kind == JexAnimatedIconKind.speed && widget.active
         ? widget.level.clamp(0.0, 1.0).toDouble()
@@ -2686,7 +2849,6 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
       vsync: this,
       duration: const Duration(milliseconds: 420),
     )..value = 1;
-    _syncAnimation();
   }
 
   @override
@@ -2824,6 +2986,7 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     controller.dispose();
     fanPhaseController.dispose();
     activityTransitionController.dispose();
