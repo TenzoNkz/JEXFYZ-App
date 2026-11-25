@@ -708,6 +708,9 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage>
   // AI-METHOD / RUNTIME-SYNC-CONTRACT
   // Bounded reconciliation for native overlay attachment and size/orientation changes.
   void _startRuntimeSync() {
+    // Permission and service futures can complete after this route is disposed.
+    // Do not recreate a periodic timer after dispose has cancelled the existing one.
+    if (!mounted) return;
     runtimeTimer?.cancel();
     runtimeTimer = Timer.periodic(
       const Duration(seconds: 3),

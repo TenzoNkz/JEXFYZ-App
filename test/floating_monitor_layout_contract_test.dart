@@ -79,6 +79,12 @@ void main() {
     expect(runtime, contains('_runtimeSyncInFlight'));
     expect(runtime, contains('finally'));
     expect(runtime, isNot(contains('Duration(milliseconds: 300)')));
+
+    // Async startup can complete after dispose; the timer guard must run first.
+    final mountedGuard = runtime.indexOf('if (!mounted) return;');
+    final timerStart = runtime.indexOf('runtimeTimer = Timer.periodic(');
+    expect(mountedGuard, isNonNegative);
+    expect(timerStart, greaterThan(mountedGuard));
     expect(source, contains('runtimeTimer?.cancel();'));
     expect(source, contains('WidgetsBindingObserver'));
   });
