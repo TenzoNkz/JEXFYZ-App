@@ -73,7 +73,6 @@ Last reconciled: 2026-11-25 (Asia/Jakarta). Operating authority: `MASTER_PROMPT.
 - **QA strategy:** existing Flutter unit/widget/hosted CI plus `integration_test` on emulator/physical Android; consider Patrol only for native Android permission/system UI flows. Use Flutter DevTools profile-mode frame/build/raster and CPU/memory evidence plus Android Studio Profiler. Actual BLE/P1, OEM notification/overlay and hardware behavior require physical-device evidence.
 - GitHub, Figma and Context7 are confirmed connected. Full catalog status, Figma/repository skill inventory, QA workstation stack and official tooling references are recorded in `SKILLS_INDEX.md`. No additional ChatGPT connector is recommended for the current scope.
 
-
 ## Remaining quality gates — assessment 2026-11-25
 
 - **Visual:** overall acceptance remains VISUAL NOT VERIFIED. One Home / EN / Light / disconnected screenshot is not the required 350/420-dp, EN/ID, Light/Dark, connected/disconnected/error, constrained-height and accessibility matrix.
@@ -82,7 +81,6 @@ Last reconciled: 2026-11-25 (Asia/Jakarta). Operating authority: `MASTER_PROMPT.
 - **Performance:** Usage Statistics 1h/6h/24h CPU, memory and storage soak remains unverified; measure before changing architecture or queue behavior.
 - **Governance:** add/enable reviewed PR and controlled Dependabot only after the read-only PR workflow is observed in a normal PR. Restore a checksum-verified Gradle Wrapper as part of the separately reviewed Android toolchain migration.
 - BLE App-only identity and OTA server identity remain separate high-priority security projects; not part of UI/toolchain scope.
-
 
 ## CODE_FULL source checkpoint — WP1 motion / LED update — 2026-11-26
 
@@ -96,6 +94,6 @@ Last reconciled: 2026-11-25 (Asia/Jakarta). Operating authority: `MASTER_PROMPT.
 ## Current repository evidence and next action
 
 - Build #167 package source SHA is immutable. After that checkout, current `main` contains canonical documentation updates, one non-functional Firmware opening-comment correction in `firmware/JEXFYZ-V7.2.ino` (V7.1 text → V7.2), the guarded Build App workflow security hardening and its static source-contract test. No executable App/Firmware runtime code or Firmware behavior changed; the current workflow/test hardening is not included in the Build #167 package.
-- Final verified CODE_FULL main checkpoint: HEAD `9cbb8d60fb889fc22640f05d507f63b6e3249968`; recursive tree 142 entries / 96 blobs / 46 trees; `truncated=false`. This includes the WP1 source/test implementation, canonical status updates and formatter-only follow-up.
+- Latest App source/test checkpoint: source `538c0eb760f89cdcf6efb13e0bb4a906d941668e` has VERIFIED CI from Validation Only #67 (formatter/analyzer PASS; 219/219 Flutter tests). The repository-wide content audit has resumed with `analysis_options.yaml` recorded KEEP / VERIFIED in `REPOSITORY_UPGRADE_PLAN.md` (register update `d1e6a939c933174915caa9dc867f0ffbb7b299a3`).
 - **Immediate next acceptance:** continue the repository-wide per-file content review in dependency order using `REPOSITORY_UPGRADE_PLAN.md`; inventory completion is not content-review completion. Keep Android screenshot/device acceptance separate and do not trigger another Build App without fresh explicit `Eksekusi Build App!` authorization.
 - `APP_BUILD_REPORT.md` holds build history; `CHAT_TRANSFER.md` is the bounded continuation checkpoint; `HANDOVER.md` holds the immediate next step. Subject requirements remain in `APP_NOTES.md`, `DESIGN_NOTES.md`, `PRODUCT_DESIGN_CONSTITUTION.md` and `VISUAL_QUALITY_GATE.md`.
