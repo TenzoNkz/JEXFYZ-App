@@ -1,5 +1,14 @@
 # JE X FYZ / JE Cooler — Documentation Map & Retention Policy
 
+## Reconciliation — 2026-11-26 — repository-wide file-by-file workflow
+
+- Owner-directed workflow refresh introduces `Eksekusi Code!` as the canonical implementation command. `Eksekusi Code Full!` and `Eksekusi Full!` remain legacy aliases for compatibility; new prompts/handoffs use only `Eksekusi Code!`. Internal `WORKSPACE=CODE_FULL` remains unchanged to avoid a needless status-schema migration.
+- `REPOSITORY_UPGRADE_PLAN.md` is the single file-level register. Baseline inventory contains 95/95 tracked blobs, with 141 total tree entries and `truncated=false`; file contents are not yet fully audited. Each row must receive an evidence-backed disposition. Existing good files are marked KEEP / VERIFIED rather than changed for activity. Archives remain immutable; APP_BUILD_REPORT and CHANGELOG remain append-only; Firmware, Firebase/OTA, signing, release and device operations retain separate authorization boundaries.
+- The three workspaces retain separate permissions and handoff: Diskusi produces a decision packet, Eksekusi Code implements the approved file set and regression coverage, and Eksekusi Build App packages/releases only with fresh explicit authorization. One shared writer at a time; all handoffs are validated against live main.
+
+---
+
+
 Last reconciled: 2026-11-24 (Asia/Jakarta). This file is the navigation and retention index, not an alternate operating ruleset or current-state ledger. Read MASTER_PROMPT.md for all operating instructions. Verify current implementation against live main/source/tests and current Actions/Release evidence.
 
 ## Authority order
@@ -18,8 +27,9 @@ Last reconciled: 2026-11-24 (Asia/Jakarta). This file is the navigation and rete
 | README.md | Project entrypoint and navigation; links directly to the current work marker | Active index | KEEP; no duplicated build history |
 | MASTER_PROMPT.md | Single authority for commands, scope, Gemini, loading, memory cadence, evidence and protected contracts | Active operating policy | KEEP; maintain as the only full ruleset |
 | CHAT_RULES.md | Compatibility pointer to MASTER_PROMPT.md | Active pointer | KEEP while legacy links refer to it; do not duplicate rules |
-| CHAT_TRANSFER_PROMPTS.md | Exactly three copy-ready LOAD + CONTINUE prompts for the Diskusi, Eksekusi Code Full and Eksekusi Build App workspaces | Active templates | KEEP exactly three prompts; each belongs in its own owner-created ChatGPT conversation; MASTER_PROMPT remains the only rules authority |
+| CHAT_TRANSFER_PROMPTS.md | Exactly three copy-ready LOAD + CONTINUE prompts for the Diskusi, Eksekusi Code and Eksekusi Build App workspaces | Active templates | KEEP exactly three prompts; each belongs in its own owner-created ChatGPT conversation; MASTER_PROMPT remains the only rules authority |
 | CHAT_TRANSFER.md | Rolling latest verified checkpoint for chat continuation | Active checkpoint | KEEP concise/current; not a transcript |
+| REPOSITORY_UPGRADE_PLAN.md | Complete tracked-file inventory and rolling one-file-at-a-time upgrade/disposition register | Active governance register | KEEP; every tracked blob must have one row; update only after live tree refresh; do not turn it into session status/build history |
 | MEMORY_INDEX.md | This authority map, file classification and retention policy | Active index | KEEP; update whenever Markdown structure changes |
 | PROJECT_STATE.md | Current-only product/source/release/validation truth | Active state | KEEP below 100 lines; move build chronology to APP_BUILD_REPORT / CHANGELOG |
 | HANDOVER.md | Immediate next action and nearest blockers | Active handover | KEEP short; no duplicate history |
@@ -48,7 +58,7 @@ Last reconciled: 2026-11-24 (Asia/Jakarta). This file is the navigation and rete
 
 ## Reconciliation — 2026-11-24
 
-- **Three-workspace model:** MASTER_PROMPT.md now defines three dedicated ChatGPT workspaces: Diskusi!, Eksekusi Code Full! (legacy Eksekusi Full! alias), and Eksekusi Build App!. CHAT_TRANSFER_PROMPTS.md contains exactly three copy-ready starters. The owner creates the three ChatGPT conversations manually; repository files cannot create chats. The chats share GitHub memory but not transcripts and follow a single-writer rule for repository mutations/builds.
+- **Three-workspace model:** MASTER_PROMPT.md now defines three dedicated ChatGPT workspaces: Diskusi!, Eksekusi Code! (legacy aliases: Eksekusi Code Full! and Eksekusi Full!), and Eksekusi Build App!. CHAT_TRANSFER_PROMPTS.md contains exactly three copy-ready starters. The owner creates the three ChatGPT conversations manually; repository files cannot create chats. The chats share GitHub memory but not transcripts and follow a single-writer rule for repository mutations/builds.
 - **Status routing:** `00_WORK_STATUS.md` identifies the active `WORKSPACE` as `DISKUSI`, `CODE_FULL` or `BUILD_APP`. It remains one global event-driven marker, not a concurrency lock. Serialize writes and external operations across the three chats.
 - **Comment policy:** comments should explain non-obvious intent, invariants, units, ownership, ordering, safety gates and side effects. Do not mechanically comment every syntax line; stale/wrong comments must be corrected and kept synchronized with source.
 - **Repository audit:** the live recursive tree has 140 entries, `truncated=false`, and 53 Markdown files (12 canonical skills, 12 Copilot mirrors, active root/subject docs, one Firmware technical reference and four immutable archives). All 12 canonical/mirror skill pairs were fetched and compared byte-for-byte; every pair matches. Active document relative links were checked; no actionable broken repository path was confirmed. Archive references remain immutable and may preserve their historical paths.
