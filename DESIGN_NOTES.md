@@ -3,6 +3,45 @@
 - The Home cooler enlargement (right image column flex 14; uniform 1.08× scale anchored right; `BoxFit.contain`; seven left metrics unchanged at 45 dp) is now included in the published Build #167 package.
 - Package source: `0dd96228d33b08c66e736ae91a8a6c3e5c3ddb81`; Release `403010611` / tag `jexfyz-latest`.
 - UI acceptance remains **VISUAL NOT VERIFIED** until actual installed Android screenshots are reviewed at the viewport/locale/theme matrix in the Home cooler artwork section below. Hosted Flutter tests and Build App CI do not replace screenshot evidence.
+
+
+## Full App visual redesign brief — owner request 2026-11-26
+
+**Direction: “Quiet Luxury / Precision Instrument”.** This is the design brief for the full App rework recorded in `APP_PREBUILD_AUDIT.md`. It expands the earlier motion refinement into a screen-by-screen visual system; it is not a new brand/asset/font/palette approval and is not yet implemented.
+
+### Visual character
+
+JE Cooler should feel like a considered premium hardware product: quiet confidence, precise information, tactile controls, generous but disciplined spacing and responsive feedback. Elegance comes from typography, proportions, alignment, material restraint and predictable interaction—not a stack of rounded cards, gradients, glows or decorative movement.
+
+- Define a semantic palette with clear background/surface/elevated/outline/foreground/accent/status roles and deliberate Light/Dark mappings. Derive exact values from the existing JE X FYZ theme and owner-approved reference screenshots; do not invent final HEX values from taste alone.
+- Establish a type scale with a clear brand/title, screen title, metric/value, section, body, supporting and micro-label role. Avoid all-caps microcopy for ordinary content, over-bold labels and multiple unrelated fonts. Check small-device readability and long Indonesian copy.
+- Set one spacing rhythm, corner scale, border weight, elevation policy and control geometry. Use a small number of semantic surface types; avoid nesting multiple cards to contain each other.
+- Keep functional accent color meaningful: selected tab/action and real hardware/safety semantics only. Disconnected, unknown, pending, acknowledged, confirmed, warning, locked and error states must not share misleading color/icon treatment.
+- Use the existing Phosphor family and approved cooler art. Retain the full transparent artwork and do not generate a replacement logo/asset as part of this code plan.
+
+### Screen composition goals
+
+- **Home:** cooler remains the hero; metrics form a calm, easy-to-scan information column; header and controls feel balanced; connection state and Notification are explicit; primary Connect/Settings affordances are discoverable. Preserve the seven metric rows and approved 360-dp geometry until any proposed composition change has its own owner-reviewed visual decision.
+- **Five control tabs:** retain individual task identity but share a clear tab selector, consistent control sizes, alignment, state labels and interaction feedback. Give primary settings the strongest hierarchy and secondary explanation enough space without clutter. Avoid making every tab a clone.
+- **Connection:** use a clear progression rather than a generic scanning spinner: permission and adapter prerequisites, scan action, discovered device, connecting, P1 syncing/ready and failure/retry. Animate actual transitions, not invented device activity.
+- **Settings:** concise grouped sections, clear page titles and subtitles, aligned leading icons, readable supporting text and predictable navigation. Make the important device-level setting distinct without introducing excess containers.
+- **Usage Statistics:** present session identity/time range, key metrics, temperature trends, activity state lanes and selected-time details as one analytical composition. Use a restrained chart grid and readable axes; retain real gaps and exact timestamp mapping.
+- **Floating Monitor:** make its Settings/configuration visually coherent with the App, but establish a native Canvas typography/spacing/contrast specification for the actual overlay. Review real available width, localization, drag/resize handles and OEM/window insets separately.
+- **Dialogs and sheets:** one hierarchy for title, concise explanation, consequence, primary action and secondary escape. Use consistent corner treatment and motion; do not use color alone to signal risk.
+- **Firmware Update presentation:** show only actual state/stage, confirmed progress, actionable error and recovery message. This visual work cannot change transport/trust/security/retry/recovery implementation.
+
+### Interaction and motion goals
+
+Use the motion timings recorded in the 2026-11-25 proposal (100–140 ms press, 160–220 ms control/state, 180–240 ms tab, 220–300 ms route/dialog). Keep the same easing family and distance logic across the App. Keep transitions interruptible and lifecycle-safe. Hardware-coupled Fan/LED/Peltier motion remains tied to its existing confirmed state and LED phase contract; telemetry numbers never roll through fabricated intermediate values. Platform reduced-motion preference must replace nonessential loops with stable states.
+
+### Visual decision rule
+
+Before changing an approved Home composition, cooler scale, master canvas/DPI formula, typography contract, theme identity or asset, record the problem, screenshot evidence, alternative treatments and impact on accessibility/localization. This owner-requested full redesign permits that exploration, but the final specific layout/token change still requires a recorded decision; no silent contract replacement.
+
+### Visual acceptance matrix
+
+Capture actual App screenshots and review Home, each control tab, Connection, Settings/subpages, Usage Statistics, dialogs/sheets and Floating Monitor. Cover applicable 350-dp/420-dp fixed-canvas cases, narrow supported viewport, portrait/constrained height, EN/ID, Light/Dark, connected/disconnected/error/locked states, supported enlarged text and reduced motion. Record source SHA, device/Android version, logical dp/density and all relevant settings. Goldens and widget tests are regression aids; they do not substitute for Android rendering. Until the real-screen matrix is inspected, report **VISUAL NOT VERIFIED**.
+
 ### Owner screenshot review — Build #167 Home — 2026-11-24
 
 - **Evidence:** SCREENSHOT REVIEWED — owner supplied one portrait Home screenshot labelled Build #167. It shows English / Light appearance / BLE disconnected. The cooler silhouette is fully visible in the captured viewport; all seven metric labels remain readable; the Notification card and locked submenu overlay are visible. Screenshot metadata does not identify exact source SHA, logical dp width/density or text-scale configuration.
