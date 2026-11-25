@@ -4531,9 +4531,7 @@ Color jexHomeNotifyForegroundColor({
   bool connected = true,
 }) {
   if (!connected) {
-    return darkTheme
-        ? const Color(0xFFB8C1CC)
-        : const Color(0xFF475467);
+    return darkTheme ? const Color(0xFFB8C1CC) : const Color(0xFF475467);
   }
   if (darkTheme) {
     if (hasError) return const Color(0xFFFF5164);
@@ -8415,7 +8413,8 @@ class _DashboardScreenState extends State<DashboardScreen>
                                 continuousLoop: continuousLoop,
                                 // Keep the painter's real sensor/output state separate
                                 // from whether its optional autonomous phase loop is enabled.
-                                active: connected && (animationActive ?? active),
+                                active:
+                                    connected && (animationActive ?? active),
                                 valueKnown:
                                     animatedKind != JexAnimatedIconKind.speed ||
                                     (connected && animationValueKnown),
@@ -10312,9 +10311,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                               PhosphorIconsRegular.bluetooth,
                               size: 18,
                             ),
-                            label: Text(
-                              JexText.phrase('Connect', 'Hubungkan'),
-                            ),
+                            label: Text(JexText.phrase('Connect', 'Hubungkan')),
                             style: TextButton.styleFrom(
                               minimumSize: const Size.fromHeight(48),
                               foregroundColor: accent,
