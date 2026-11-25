@@ -4,9 +4,9 @@ Last reconciled: 2026-11-25 (Asia/Jakarta). Authority: `MASTER_PROMPT.md`.
 
 ## Three dedicated ChatGPT workspaces — SETUP IN REPOSITORY
 
-- Create three separate ChatGPT conversations manually: **JE X FYZ — Diskusi**, **JE X FYZ — Eksekusi Code Full**, and **JE X FYZ — Eksekusi Build App**.
+- Create three separate ChatGPT conversations manually: **JE X FYZ — Diskusi**, **JE X FYZ — Eksekusi Code**, and **JE X FYZ — Eksekusi Build App**.
 - Start each conversation with its matching copy-ready block in `CHAT_TRANSFER_PROMPTS.md` (Prompts 1, 2 and 3). There are exactly three; do not re-use one prompt by simply changing the command line in an existing chat.
-- `MASTER_PROMPT.md` is the sole rules authority. `Eksekusi Full!` is a legacy alias for `Eksekusi Code Full!`. `Chat Stuck!` recovers only the active workspace's existing authorization.
+- `MASTER_PROMPT.md` is the sole rules authority. `Eksekusi Code Full!` and `Eksekusi Full!` are legacy aliases for `Eksekusi Code!`. `Chat Stuck!` recovers only the active workspace's existing authorization.
 - All three chats share the same GitHub `main` and canonical memory but not their chat transcripts. `00_WORK_STATUS.md` identifies the active workspace (`DISKUSI`, `CODE_FULL`, `BUILD_APP`). Repository state is global, not three separate branches or isolated copies.
 - **Single-writer rule:** finish/close any mutating session before another chat commits, updates shared memory or starts an external Build App operation. The WORKSPACE marker is not a lock.
 - The repository cannot create ChatGPT chat windows. The owner must create/select each conversation and paste the corresponding starter prompt.
@@ -30,7 +30,7 @@ Last reconciled: 2026-11-25 (Asia/Jakarta). Authority: `MASTER_PROMPT.md`.
 - **Latest source validation:** Validation Only #63 / run `45688790870` / job `139468394666`, terminal SUCCESS on input SHA `94cddc93ebee26b3edc35f4ae5e567b886a3ffe5`. Post-format check clean (19 files / 0 changed), analyzer succeeded and Flutter tests **216/216 PASS**. The workflow's formatter-only output was committed as `2fab1f1313d22152fdafbc78131b07c3deae7fb7`. Run #63 did not build/release an APK.
 - **Remaining WP1:** (1) replace connected Battery/Hotside/Voltage idle loops with meaningful measured-value-change/warning feedback; (2) correct disconnected Home Notification to a neutral informational state and add Connect only through the existing Bluetooth sheet/controller; (3) add direct regression coverage for LED phase math/re-anchor when `ledSyncRevision` changes and for reduced-motion phase stability. Keep Fan coast, Peltier gating, BLE P1 sync/session readiness, authoritative telemetry and command/ACK/telemetry semantics unchanged.
 - **Acceptance gaps:** the LED test verifies widget identity, not numeric phase synchronization. No runtime FPS/raster/jank/memory profile or physical-device test has been performed. Whole-App visual acceptance remains **VISUAL NOT VERIFIED**; retain the 350/420-dp, EN/ID, Light/Dark and connected/disconnected/error screenshot matrix.
-- **Workspace boundary:** this handover is viewed from DISKUSI. Resume implementation only in the separate owner-selected `Eksekusi Code Full!` chat with its valid authorization. Any APK/package/release still needs a separate fresh `Eksekusi Build App!` command. Build #167 / Release `jexfyz-latest` remains the latest package in the current project record.
+- **Workspace boundary:** this handover is viewed from DISKUSI. Resume implementation only in the separate owner-selected `Eksekusi Code!` chat with its valid authorization. Any APK/package/release still needs a separate fresh `Eksekusi Build App!` command. Build #167 / Release `jexfyz-latest` remains the latest package in the current project record.
 
 ## Tooling readiness before the next grouped execution batch — 2026-11-25
 
