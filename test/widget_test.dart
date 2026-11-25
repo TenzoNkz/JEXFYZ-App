@@ -1190,8 +1190,11 @@ void main() {
       expect(painter, contains('const start = math.pi;'));
       expect(painter, contains('const sweep = math.pi;'));
       expect(
-        source,
-        contains('active: connected && (animationActive ?? active)'),
+        containsDartFragment(
+          source,
+          'active: connected && (animationActive ?? active)',
+        ),
+        isTrue,
       );
       expect(source, contains('continuousLoop: continuousLoop'));
       final homeStart = source.lastIndexOf(
