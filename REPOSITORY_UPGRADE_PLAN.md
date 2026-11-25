@@ -174,7 +174,7 @@ A failed gate blocks dependent work. Retry only after classifying root cause (so
 | `PROJECT_STATE.md` | Operating governance | CANONICAL GOVERNANCE | INVENTORIED — CONTENT REVIEW PENDING |
 | `pubspec.lock` | Flutter dependency manifest/lock | DEPENDENCY CONTRACT — REVIEW BEFORE CHANGE | KEEP / VERIFIED (2026-11-26) |
 | `pubspec.yaml` | Flutter dependency manifest/lock | DEPENDENCY CONTRACT — REVIEW BEFORE CHANGE | UPGRADE — CLOSED / READ-BACK VERIFIED (2026-11-26) |
-| `README.md` | Operating governance | CANONICAL GOVERNANCE | INVENTORIED — CONTENT REVIEW PENDING |
+| `README.md` | Project entrypoint / navigation index | ACTIVE PROJECT INDEX | KEEP / VERIFIED (2026-11-26) |
 | `SKILLS_INDEX.md` | Operating governance | CANONICAL GOVERNANCE | INVENTORIED — CONTENT REVIEW PENDING |
 | `test/app_protocol_notify_contract_test.dart` | Dart test | TEST / REGRESSION | INVENTORIED — CONTENT REVIEW PENDING |
 | `test/connection_scan_coordinator_test.dart` | Dart test | TEST / REGRESSION | INVENTORIED — CONTENT REVIEW PENDING (FORMATTER ONLY, `003bccd6`) |
@@ -229,6 +229,16 @@ A failed gate blocks dependent work. Retry only after classifying root cause (so
 - **Local validation boundary:** Flutter/Dart executables are unavailable in the current ChatGPT execution container. No local `flutter pub get`, formatter, analyzer or test was run. This interaction's package/constraint/source checks are **STATIC SOURCE CHECK** only.
 - **Finding / disposition:** no missing/extra direct package, out-of-range locked direct version, SDK-bound mismatch, non-pub.dev hosted source, absent hosted checksum, or Git/path dependency was found. Rewriting the lockfile would create churn without correcting an evidenced defect. Disposition: **KEEP / VERIFIED**; lockfile remains unchanged.
 - **Next file:** `README.md` remains the next inventory entry for the separate repository-wide content audit. The audit remains incomplete; the 12 formatter-only Dart files still require individual content review.
+
+### WP0 — `README.md` — KEEP / VERIFIED (2026-11-26)
+
+- **Reviewed checkpoint:** `main` HEAD `0f6a5e1e1edb7ec8f6898211c5b17022c6666baa`; README blob `f6232cb8685202f43d0b68c06feb5455d86e96fa`. The complete 64-line / 6,557-byte file was inspected.
+- **Role and consumers:** root project entrypoint and navigation index. It routes users and repository-aware agents to the canonical Master Prompt, workspace prompts, status/checkpoint, current-state and handover documents, skill index, App/design references, protected Firmware/OTA notes and evidence ledgers. Repository search also confirms the guarded Build App source-archive step explicitly includes `README.md` in the corresponding source ZIP; no release workflow change is included in this review.
+- **Link/reference audit:** all 31 Markdown path links in README were resolved against the current recursive tree (142 entries; `truncated=false`); no missing path was found. No external URL dependency was embedded in README. Duplicate links in separate navigation sections are intentional cross-entry points, not broken references.
+- **Finding / disposition:** content accurately describes the repository purpose, three isolated workspaces and permissions, current memory/navigation authorities, twelve reusable skills and release boundaries. It does not fork the Master Prompt into a second policy or duplicate product/build chronology. No obsolete path, inaccurate skill count or actionable content defect was found. Rewriting it as part of the App UI redesign would add unrelated churn. Disposition: **KEEP / VERIFIED**.
+- **Acceptance evidence:** complete content review and internal-link/path check **PASS — STATIC SOURCE CHECK**. README remained unchanged from the Validation Only #72 tested source; that Flutter validation did not validate Markdown content. No Markdown linter was available or required by this review; no Flutter test, formatter, analyzer, build or screenshot is claimed for README.
+- **Scope:** inventory row and this audit record only. `README.md`, source, tests, workflow, assets and package/release configuration remain unchanged. No source ZIP/APK or Release operation was initiated.
+- **Next file:** `SKILLS_INDEX.md` (next inventory entry). Continue the remaining file review one path at a time; the 12 formatter-touched Dart files remain pending separate content review.
 
 ### Formatter-only side effect — 12 Dart files — CONTENT REVIEW PENDING (2026-11-26)
 
