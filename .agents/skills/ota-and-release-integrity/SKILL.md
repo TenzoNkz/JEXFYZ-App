@@ -9,7 +9,7 @@ description: Use for protected OTA lifecycle analysis or App release provenance,
 Keep two separate release domains safe: App APK publication and Firmware OTA transport/application.
 
 ## App release procedure
-1. Require explicit Eksekusi Build App! before a release attempt. Eksekusi Full and Diskusi never imply release permission.
+1. Require explicit Eksekusi Build App! before a release attempt. Eksekusi Code! and Diskusi never imply release permission; legacy Eksekusi Code Full! and Eksekusi Full! are aliases and do not widen scope.
 2. Read BUILD_NOTES.md, APP_BUILD_REPORT.md and the full live guarded workflow. Verify exact issue title/body-token guard, no push/PR release trigger and all current security/test/analyzer gates.
 3. Fetch live main HEAD and current Actions runs/jobs/logs before triggering. Never duplicate an active or completed intended run.
 4. Match the run head SHA to the intended source commit. Record run ID, job IDs, actual gates and failures.
