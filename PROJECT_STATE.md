@@ -4,9 +4,9 @@ Last reconciled: 2026-11-25 (Asia/Jakarta). Operating authority: `MASTER_PROMPT.
 
 ## Three dedicated ChatGPT workspaces — current operating model
 
-- The repository now defines three independent owner-created ChatGPT conversations: **Diskusi!**, **Eksekusi Code Full!**, and **Eksekusi Build App!**. Each has one copy-ready starter in `CHAT_TRANSFER_PROMPTS.md`; exactly three prompts are maintained.
+- The repository now defines three independent owner-created ChatGPT conversations: **Diskusi!**, **Eksekusi Code!**, and **Eksekusi Build App!**. Each has one copy-ready starter in `CHAT_TRANSFER_PROMPTS.md`; exactly three prompts are maintained.
 - The owner must create/select the three chats manually. GitHub/repository prompts cannot open ChatGPT conversations. Chat transcripts are not shared automatically; the three chats share GitHub `main` and canonical memory.
-- `MASTER_PROMPT.md` is the single authority. `Eksekusi Full!` is a backward-compatible alias for `Eksekusi Code Full!`. `Chat Stuck!` is recovery inside the existing workspace, not a fourth chat or permission expansion.
+- `MASTER_PROMPT.md` is the single authority. `Eksekusi Full!` is a backward-compatible alias for `Eksekusi Code!`. `Chat Stuck!` is recovery inside the existing workspace, not a fourth chat or permission expansion.
 - Shared writes/builds are single-writer: do not commit or launch an external operation from multiple chats concurrently. `00_WORK_STATUS.md` now records `WORKSPACE` as `DISKUSI`, `CODE_FULL` or `BUILD_APP`; it is event-driven, not a lock.
 - Most recent implementation session: `CODE_FULL` completed on 2026-11-24; the follow-up owner review is in the separate `DISKUSI` workspace. No App Build/Release was started.
 
@@ -47,7 +47,7 @@ Last reconciled: 2026-11-25 (Asia/Jakarta). Operating authority: `MASTER_PROMPT.
 - Current architecture baseline: `lib/main.dart` is approximately 11.4k lines and combines Dashboard, BLE/P1 lifecycle, command/telemetry and OTA coordination with presentation. `lib/usage_statistics.dart` is approximately 3.65k lines and combines models, SQLite, recorder/queue, analytics, UI and charts. Prefer incremental feature/service extraction, not a rewrite.
 - Stable platform candidate (checked 2026-11-24): Flutter 3.50.1 / Dart 3.14.0 and Material UI 1.11.1 migration; Android AGP 9.5.2 / Gradle 9.9.2 with AGP built-in Kotlin, retaining JDK 17, compileSdk 37, targetSdk 36, minSdk 24 and Android versionName `Telegram @horizontalzzz` unless separately approved.
 - Candidate direct package upgrades: firebase_core 5.2.0, firebase_app_check 0.5.2 and sqflite 2.4.6. flutter_blue_plus 2.3.15 is gated on confirming its current commercial-license terms/entitlement before any update. flutter_secure_storage 11.2.0, permission_handler 13.0.2, phosphor_icons 3.0.1, flutter_lints 6.0.0 and path 1.9.1 are already at the stable versions found in this review.
-- No source, dependency manifest/lockfile, workflow, Android build configuration or release was changed by this Discussion. This modernization proposal is not an implementation authorization; each phase belongs in the separate Eksekusi Code Full workspace. Build #167 remains the latest published package.
+- No source, dependency manifest/lockfile, workflow, Android build configuration or release was changed by this Discussion. This modernization proposal is not an implementation authorization; each phase belongs in the separate Eksekusi Code workspace. Build #167 remains the latest published package.
 
 ## Whole-App UI / motion refinement — Discussion proposal — 2026-11-25
 
@@ -89,5 +89,5 @@ Last reconciled: 2026-11-25 (Asia/Jakarta). Operating authority: `MASTER_PROMPT.
 
 - Build #167 package source SHA is immutable. After that checkout, current `main` contains canonical documentation updates, one non-functional Firmware opening-comment correction in `firmware/JEXFYZ-V7.2.ino` (V7.1 text → V7.2), the guarded Build App workflow security hardening and its static source-contract test. No executable App/Firmware runtime code or Firmware behavior changed; the current workflow/test hardening is not included in the Build #167 package.
 - Recursive `main` tree at the post-hardening documentation checkpoint: 141 entries / 95 blobs / 46 trees; `truncated=false`. The final HEAD and recursive tree are re-verified after the closing status write.
-- **Immediate next acceptance:** obtain actual Build #167 Android screenshots for the Home cooler matrix above. Do not trigger another build merely to repeat successful CI. A source repair requires separate explicit `Eksekusi Code Full!` (legacy alias `Eksekusi Full!`); repackaging requires fresh explicit `Eksekusi Build App!`.
+- **Immediate next acceptance:** obtain actual Build #167 Android screenshots for the Home cooler matrix above. Do not trigger another build merely to repeat successful CI. A source repair requires separate explicit `Eksekusi Code!` (legacy aliases `Eksekusi Code Full!` and `Eksekusi Full!`); repackaging requires fresh explicit `Eksekusi Build App!`.
 - `APP_BUILD_REPORT.md` holds build history; `CHAT_TRANSFER.md` is the bounded continuation checkpoint; `HANDOVER.md` holds the immediate next step. Subject requirements remain in `APP_NOTES.md`, `DESIGN_NOTES.md`, `PRODUCT_DESIGN_CONSTITUTION.md` and `VISUAL_QUALITY_GATE.md`.
