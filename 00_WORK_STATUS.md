@@ -1,4 +1,4 @@
-| Last updated | 2026-11-25 14:19 (+07:00, Asia/Jakarta) |
+| Last updated | 2026-11-25 14:32 (+07:00, Asia/Jakarta) |
 
 > Single current snapshot for JE X FYZ project interactions. Event-driven marker; not a background heartbeat.
 
@@ -13,15 +13,15 @@
 | Mode | Diskusi! — read-only project review and planning. No executable source/tests/config/workflows/Actions/Release/Firmware/BIN/Firebase/OTA/flashing/device mutations or execution. |
 | Request / work item | Diskusi: owner says “Lakukan apa saja yang kamu mau”; proactively reduce future implementation risk without crossing Diskusi read-only boundary. |
 | Started | 2026-11-25 14:19 (+07:00, Asia/Jakarta) |
-| Last updated | 2026-11-25 14:19 (+07:00, Asia/Jakarta) |
-| Current phase | IN_PROGRESS — open session, read Master Prompt/checkpoint, inspect relevant live sources/skills and produce prioritized execution brief. |
-| Last completed milestone | Confirmed previous quality-readiness assessment is complete; opening this new Diskusi interaction against current main. |
-| Last verified source checkpoint | Incoming main HEAD b62ee6dfd4508a0567e224286e11280ad86ed9d7; no source or test changes authorized. |
+| Last updated | 2026-11-25 14:32 (+07:00, Asia/Jakarta) |
+| Current phase | IN_PROGRESS — live source/test inventory complete; preparing precise execution work packages and correcting icon-path scope from direct source inspection. |
+| Last completed milestone | Read relevant Flutter/design/quality/memory skills; verified 141-entry tree (not truncated), 11 test Dart files + helper, no integration_test/goldens/native test/Gradle wrapper; inspected JexAnimatedIcon allocation, active glyph call sites, LED AnimatedBuilder and Stats flush/summary path. |
+| Last verified source checkpoint | 41bf4c7e637b2b2742974f44f04d694137defaab; app source unchanged. Static source evidence: main.dart 11,434 lines; usage_statistics.dart 3,650 lines; JexAnimatedIcon.initState allocates seven controllers before glyph-only build returns Icon; 12 .glyph call sites in main.dart. |
 | EXTERNAL OPERATION | Validation Only #56 / run `45408666963` / job `138496176455` / tested source `9f40c6f73881133327b9227654617eb64c51f4e0`: COMPLETED / SUCCESS. Independent Build #167 / run `44510421466` / job `135512909555` / package source `0dd96228d33b08c66e736ae91a8a6c3e5c3ddb81`: COMPLETED / SUCCESS; Release ID `403010611` / tag `jexfyz-latest` unchanged. Validation Only #50–#55 are retained as terminal failed intermediate revisions; latest #56 is success. No new Build App run was started. |
 | EXTERNAL OPERATION STATUS | NOT_APPLICABLE — no independent process started in this Diskusi session; historical Build #167 and Validation Only #56 statuses remain recorded above. |
-| Result / evidence | Review in progress. The previous assessment identified visual QA, integration/golden tests, long-session profiling, PR validation and toolchain gaps. |
+| Result / evidence | STATIC SOURCE CHECK: JexAnimatedIcon glyph call-sites are live; seven controllers are allocated unconditionally before the static glyph build branch. Separate JexAnimatedGlyph is StatelessWidget. Stats `_flushLiveUpdates` rebuilds summary from merged selected-session history; impact remains unmeasured. |
 | Blocker / remaining evidence | Actual Android screenshots/device/profile evidence remain owner-side. This session is planning and read-only source review only. |
-| Next action | Read Master Prompt and bounded active checkpoint, then construct a source-backed staged execution brief. |
+| Next action | Record the source-verified sequencing, target test coverage and acceptance dependencies into canonical design/audit/checkpoint docs; no implementation in Diskusi. |
 
 ## Status model
 
