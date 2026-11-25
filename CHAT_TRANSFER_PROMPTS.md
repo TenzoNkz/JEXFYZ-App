@@ -95,7 +95,7 @@ This owner request authorizes the App-only source/test/docs/static-audit scope i
 
 STARTUP / PRE-FLIGHT
 - First reconcile 00_WORK_STATUS.md, current main HEAD, recursive tree and single-writer/external-operation state. The plan was opened against HEAD 0ff34de66963a193034c3c737ae4dc6d7de886ac; later documentation-only commits have advanced main, so this is an historical source checkpoint, NOT permission to edit using stale blobs/line numbers.
-- Verify the current file register. Repository content audit has only 3/96 dispositions recorded; 12 formatter-touched Dart files remain pending individual content review. The next unreviewed path after the already reviewed pubspec.lock is README.md. Resume from live state, and finish every file-level disposition.
+- Verify the live recursive tree and `REPOSITORY_UPGRADE_PLAN.md` register. Reconcile the current disposition count and resume at the first unreviewed path in the live inventory; do not rely on a count, path or source SHA embedded in an older handoff. Independently review every formatter-touched Dart file still marked pending, then finish every file-level disposition.
 - Establish and record current behavior/test baseline before extraction or visual changes. Review existing tests for genuine behavior coverage and false-positive/brittle source assertions.
 
 IMPLEMENTATION TARGET
