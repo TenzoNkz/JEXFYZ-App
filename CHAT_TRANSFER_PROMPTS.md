@@ -90,6 +90,31 @@ IMPLEMENTATION BOUNDARY
 - Review existing comments for stale versions, wrong units, obsolete assumptions and statements that overclaim tests/device behavior.
 - Run formatter, focused tests, analyzer and full suite only when the required toolchain is available and the scope authorizes them. If unavailable, record BLOCKED / NOT RUN. Never claim a static check is an executed test.
 
+OWNER-APPROVED ACTIVE WORK PACKAGE — FULL APP REWORK + PREMIUM UI REDESIGN (2026-11-26)
+This owner request authorizes the App-only source/test/docs/static-audit scope in this dedicated Eksekusi Code chat. Read APP_PREBUILD_AUDIT.md's section “Owner-requested full App rework + premium UI redesign — 2026-11-26” and DESIGN_NOTES.md's “Full App visual redesign brief — owner request 2026-11-26”; they are the detailed execution/design authorities for this work. The plan is incremental, WP0–WP10, not a big-bang rewrite.
+
+STARTUP / PRE-FLIGHT
+- First reconcile 00_WORK_STATUS.md, current main HEAD, recursive tree and single-writer/external-operation state. The plan was opened against HEAD 0ff34de66963a193034c3c737ae4dc6d7de886ac; later documentation-only commits have advanced main, so this is an historical source checkpoint, NOT permission to edit using stale blobs/line numbers.
+- Verify the current file register. Repository content audit has only 3/96 dispositions recorded; 12 formatter-touched Dart files remain pending individual content review. The next unreviewed path after the already reviewed pubspec.lock is README.md. Resume from live state, and finish every file-level disposition.
+- Establish and record current behavior/test baseline before extraction or visual changes. Review existing tests for genuine behavior coverage and false-positive/brittle source assertions.
+
+IMPLEMENTATION TARGET
+- Progress from one oversized main.dart toward explicit App/bootstrap, shared design system, device-session/P1 ownership, feature-screen and persistence boundaries. Use the proposed target map and data flow in APP_PREBUILD_AUDIT.md, but inspect callers and migrate one coherent responsibility at a time.
+- The single BLE/GATT owner remains authoritative. Preserve P1 UUIDs/framing/commands, SYNC/SYNC_READY gates, serialized writes, scan ownership/generation invalidation, reconnect and disposal. Keep command intent, ACK and telemetry-confirmed physical state separate.
+- Build one semantic Flutter design system before re-skinning every screen. Follow the “Quiet Luxury / Precision Instrument” art direction: premium through hierarchy, typography, proportion, spacing, tactile controls and restrained purposeful motion. Do not create generic dashboard/card templates or add visual effects by default.
+- Redesign Home, Voltage, Control, Adaptive, LED, Temperature, Bluetooth Connection, Settings/subpages, Usage Statistics, dialogs/sheets and Floating Monitor configuration. Treat native FloatingMonitorService Canvas/WindowManager as a distinct renderer sharing the visual language, not as Flutter widgets or a BLE owner.
+- Keep Usage Statistics schema v2 and v1→v2 migration, 30-day retention, raw 1-Hz samples, session/timestamp semantics, HOT-only freshness, explicit null gaps, gap-safe decimation and bounded 64+8+1 queue. Profile 1h/6h/24h before optimizing.
+- Use WP0–WP10 dependency order and close each package with focused tests, full relevant checks, complete diff review and durable notes. Do not attempt all layers/screens in one mega-commit.
+
+HARD EXCLUSIONS
+No Firmware or BIN work, P1 wire-protocol change, BLE App identity/security implementation, online OTA transport/certificate/image-authentication/recovery, Firebase production/backend mutation, signing secrets/keystores, guarded Build App/release workflow, APK/Release/tag/asset operation, flashing or physical device operation. OTA remains protected/frozen. Firmware Update UI changes are presentation only and may not alter transport/security/recovery. No new state-management/navigation/animation package without a separate compatibility/value case. Do not change app/storage identity or settings/SQLite schemas without an explicit migration decision.
+
+VISUAL / QUALITY EXIT
+- Respect PRODUCT_DESIGN_CONSTITUTION.md, VISUAL_QUALITY_GATE.md and the screen-specific DESIGN_NOTES.md contracts. Do not silently replace brand/assets/font/palette/Home composition/360-dp canvas/DPI formula or fixed-canvas scaling behavior. A new composition/token proposal must record evidence, alternatives, accessibility and localization impact.
+- Preserve English/Indonesian, semantic light/dark behavior, meaningful contrast, screen-reader/focus semantics and touch areas. New/changed controls aim for 48x48 dp; never shrink documented 40–42 dp Connection controls.
+- Apply 350/420 dp where relevant, narrow supported width, portrait/constrained height, EN/ID, Light/Dark, connected/disconnected/error/locked, enlarged text/accessibility and reduced-motion states. Distinguish widget/golden/CI from actual Android/OEM screenshots. No VISUAL PASS without real rendered evidence; mark VISUAL NOT VERIFIED when evidence is missing.
+- Formatter, analyzer, focused and full tests must be run where the toolchain permits; otherwise record BLOCKED / NOT RUN. Preserve test failures and repair root causes; do not weaken gates.
+
 CONTINUE — NO RECAP
 Trace the current issue to its real source, implement the smallest safe repair, update/add meaningful regression tests, inspect the full diff, search relevant callers and run all available required checks. Update canonical notes and checkpoint after each meaningful milestone. Commit directly to main per MASTER_PROMPT.md and verify exact file contents, commit and final recursive tree.
 
