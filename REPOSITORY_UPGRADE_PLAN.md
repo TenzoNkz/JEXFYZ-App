@@ -158,7 +158,7 @@ A failed gate blocks dependent work. Retry only after classifying root cause (so
 | `FIRMWARE_NOTES.md` | Firmware and hardware requirements reference | PROTECTED — OUTSIDE APP-ONLY SCOPE | PROTECTED — NO CHANGE (2026-11-26) |
 | `firmware/FIRMWARE_TECHNICAL_REFERENCE.md` | Firmware source-level architecture and safety reference | PROTECTED — OUTSIDE APP-ONLY SCOPE | PROTECTED — NO CHANGE (2026-11-26) |
 | `firmware/JEXFYZ-V7.2.ino` | Active versioned Firmware source | PROTECTED — EXPLICIT FIRMWARE AUTHORIZATION REQUIRED | PROTECTED — NO CHANGE (2026-11-26) |
-| `HANDOVER.md` | Session continuity | ACTIVE STATUS / CHECKPOINT | INVENTORIED — CONTENT REVIEW PENDING |
+| `HANDOVER.md` | Immediate next-action handover | ACTIVE CURRENT HANDOVER | UPGRADE — CLOSED / READ-BACK VERIFIED (2026-11-26) |
 | `lib/app_settings.dart` | Flutter App source | APP SOURCE — CODE AUTHORIZATION | INVENTORIED — CONTENT REVIEW PENDING (FORMATTER ONLY, `003bccd6`) |
 | `lib/connection_scan_coordinator.dart` | Flutter App source | APP SOURCE — CODE AUTHORIZATION | INVENTORIED — CONTENT REVIEW PENDING |
 | `lib/connection_scan_state.dart` | Flutter App source | APP SOURCE — CODE AUTHORIZATION | INVENTORIED — CONTENT REVIEW PENDING |
@@ -321,6 +321,16 @@ A failed gate blocks dependent work. Retry only after classifying root cause (so
 - **Acceptance evidence:** recursive tree/path identity and first-line/header inspection **PASS — STATIC SOURCE CHECK** for the protection decision. Arduino-ESP32 Core 3.3.7 compile, tests, BIN, NVS, OTA, flashing, BLE/Touch/rail/thermal and physical validation are **NOT RUN / UNVERIFIED** under this authorization.
 - **Scope:** no bytes of the Firmware sketch or any Firmware/BIN/Firebase/OTA/device artifact were changed.
 - **Next file:** `HANDOVER.md` in live inventory order. Review whether its immediate-next-action role is concise/current and reconcile links with the already refreshed CODE_FULL checkpoint.
+
+### WP0 — `HANDOVER.md` — UPGRADE / CLOSED / READ-BACK VERIFIED (2026-11-26)
+
+- **Reviewed checkpoint:** prior `main` HEAD `de2f6c74aebcdccf75068b958af827e81ca5d45f`; prior handover blob `2e3a1899c1074ee7dd7911cea8b22e102b922b37`; corrected blob `91d5ddf1486e7d15f6c4c85ac94d4ec5e8ab4abd`; commit `8197d101aaa9d737de1b9615b44acce8f5b62245`. The complete prior 120-line / 26,376-byte file was inspected.
+- **Role and consumers:** immediate next-action handover. Current links/references from `README.md`, `MASTER_PROMPT.md`, `CHAT_TRANSFER_PROMPTS.md`, `CHAT_TRANSFER.md`, `PROJECT_STATE.md` and memory governance are preserved. Repository search found no `HANDOVER.md#...` anchor references.
+- **Finding / repair:** the former file repeated the three-workspace setup, Workflow v2 policy, Gemini risk review, Diskusi restore, Build #167 artifact hashes, historic WP1 checkpoints and obsolete 8/96 / README-first instructions. Those are already retained in their authoritative locations (`MASTER_PROMPT.md`, `APP_PREBUILD_AUDIT.md`, `PROJECT_STATE.md`, `CHAT_TRANSFER.md`, `APP_BUILD_REPORT.md`, `CHANGELOG.md` and immutable archives). The handover is now a concise 17-line CODE_FULL action packet with live audit position, exact current next file, #72 historical CI boundary, local tooling blockers, Build #167 package boundary and hard exclusions. No unique historical evidence was deleted.
+- **Acceptance evidence:** current active workspace, 12/96 progress, protected exclusions, CI/evidence qualifiers and single next action were verified by exact read-back; obsolete Diskusi/Gemini history is absent. Result: **PASS — STATIC SOURCE CHECK**. No build, Flutter test, formatter, analyzer, screenshot or device check was run for this Markdown rewrite.
+- **Scope:** `HANDOVER.md` and this register row/record only. No source/tests/config/workflows/Firmware/OTA/Firebase/package/release/device files changed.
+- **Disposition:** **UPGRADE — CLOSED / READ-BACK VERIFIED**.
+- **Next file:** `lib/app_settings.dart` in the live inventory. Review persisted keys/defaults, theme/language ownership, side effects, callers and tests before proposing any App-only source change.
 
 ### Formatter-only side effect — 12 Dart files — CONTENT REVIEW PENDING (2026-11-26)
 
