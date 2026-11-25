@@ -1333,3 +1333,12 @@ Chronological record of durable App/Firmware decisions and prior approaches. Liv
 ## HISTORICAL / SUPERSEDED — Pre-V5 history
 
 Detailed V4.x/V5.0–V5.3 changes are retained in earlier commit history and the previous changelog entries. When investigating an old regression, inspect the relevant commits and source diff, but never treat an old baseline as current implementation.
+
+## 2026-11-26 — Engineering Workflow v2 and Eksekusi Code command rename
+
+- **Owner direction:** replace the user-facing implementation command `Eksekusi Code Full!` with the shorter canonical command `Eksekusi Code!`. Historical `Eksekusi Code Full!` and `Eksekusi Full!` remain compatibility aliases; the internal `WORKSPACE=CODE_FULL` status token is intentionally retained to avoid breaking existing records.
+- **Workflow:** `MASTER_PROMPT.md` now defines the file-by-file review/disposition process, dependency-ordered work packages, standard Diskusi→Eksekusi Code→Build App handoff packet, G0–G8 fail-closed quality gates, root-cause retry discipline and final verification. Every tracked file must receive a justified disposition; files already meeting their contracts are retained as KEEP / VERIFIED rather than edited for activity.
+- **Inventory:** added `REPOSITORY_UPGRADE_PLAN.md` with all 95 blobs from baseline `main` HEAD `f2ef6932cfe62d7a4d1f4056a866009c18ba3fc7` (141 tree entries, recursive tree not truncated). The register is the 96th file after creation. Inventory coverage is complete for that baseline; content-level review of all rows remains outstanding.
+- **Canonical prompt/pointer updates:** renamed the second workspace in `CHAT_TRANSFER_PROMPTS.md`; updated `README.md`, `AGENTS.md`, `CHAT_RULES.md`, `MEMORY_INDEX.md`, `SKILLS_INDEX.md`, `PROJECT_STATE.md`, `HANDOVER.md`, `APP_PREBUILD_AUDIT.md` and protected-operation guidance. Relevant canonical skills and their Copilot mirrors were updated and read back byte-identical.
+- **Boundaries:** this was a DISKUSI governance/documentation change only. No App/Firmware source, tests, configuration, workflow, Build App, Release, Firebase, OTA, BIN, flashing or device operation was executed. The previously open WP1 source work remains IN_PROGRESS in the separate CODE_FULL workstream. Archives and historical evidence were not rewritten.
+- **Reliability statement:** zero failures cannot be guaranteed. The new process aims to minimize preventable failures through scope isolation, explicit acceptance gates, exact evidence and safe recovery; external runner/network/tool/device failures remain possible.
