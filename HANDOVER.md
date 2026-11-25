@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — Current Handover
 
-Last reconciled: 2026-11-25 (Asia/Jakarta). Authority: `MASTER_PROMPT.md`.
+Last reconciled: 2026-11-26 (Asia/Jakarta). Authority: `MASTER_PROMPT.md`.
 
 ## Three dedicated ChatGPT workspaces — SETUP IN REPOSITORY
 
@@ -10,6 +10,15 @@ Last reconciled: 2026-11-25 (Asia/Jakarta). Authority: `MASTER_PROMPT.md`.
 - All three chats share the same GitHub `main` and canonical memory but not their chat transcripts. `00_WORK_STATUS.md` identifies the active workspace (`DISKUSI`, `CODE_FULL`, `BUILD_APP`). Repository state is global, not three separate branches or isolated copies.
 - **Single-writer rule:** finish/close any mutating session before another chat commits, updates shared memory or starts an external Build App operation. The WORKSPACE marker is not a lock.
 - The repository cannot create ChatGPT chat windows. The owner must create/select each conversation and paste the corresponding starter prompt.
+
+## Repository-wide Engineering Workflow v2 — owner direction 2026-11-26
+
+- **Canonical implementation command:** `Eksekusi Code!`. `Eksekusi Code Full!` and `Eksekusi Full!` remain legacy aliases. Internal status `WORKSPACE=CODE_FULL` stays stable for compatibility.
+- **Single file register:** `REPOSITORY_UPGRADE_PLAN.md` lists every baseline tracked file and stores its disposition/review state. Baseline: 95/95 files enumerated, recursive tree complete (`truncated=false`); register is the 96th file. File contents are not yet comprehensively reviewed.
+- **Required workflow:** Diskusi defines the requirement, decision, excluded paths and acceptance matrix; Eksekusi Code verifies the handoff against live main and changes only the approved files; Eksekusi Build App consumes a separately approved build-ready handoff and fresh explicit build authorization. Chat Stuck only recovers the active workspace's existing permission.
+- **Per-file discipline:** every file is reviewed individually and assigned UPGRADE, KEEP / VERIFIED, PROTECTED, REPLACE, RETIRE CANDIDATE or IMMUTABLE. No mass rewrite and no edits just to make activity. Archives stay immutable, APP_BUILD_REPORT/CHANGELOG stay append-only, and Firmware/Firebase/OTA/signing/release/device boundaries do not widen.
+- **Quality gates:** G0 session/HEAD/single-writer; G1 authorization/protected paths; G2 full inventory/dependency map; G3 accepted design and tests; G4 scoped implementation; G5 diff review/tests/format/analyze; G6 exact source/CI; G7 separately authorized package/release; G8 durable memory/read-back/final tree/closure. A failed gate blocks dependent work.
+- **Next action:** use the separate Eksekusi Code chat for the currently open WP1 acceptance tasks, then proceed through the repository register in dependency order. Do not treat inventory completion as content-audit completion. 0% failure cannot be guaranteed; the process is designed to minimize preventable failures and stop safely when evidence fails.
 
 ## Current state — BUILD #167 PUBLISHED / CI AND RELEASE VERIFIED
 
