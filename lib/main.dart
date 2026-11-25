@@ -1368,7 +1368,7 @@ class JexLedStripPreview extends StatefulWidget {
 }
 
 class _JexLedStripPreviewState extends State<JexLedStripPreview>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin, WidgetsBindingObserver {
   late final AnimationController controller;
   late final Stopwatch _phaseClock;
   int _phaseAnchorMs = 0;
