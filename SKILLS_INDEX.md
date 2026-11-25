@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — Skills & Capability Index
 
-Last reconciled: 2026-11-24 (Asia/Jakarta). This is the discovery map for reusable agent skills and the actual tool capabilities available to project chats. The operating authority remains MASTER_PROMPT.md.
+Last reconciled: 2026-11-26 (Asia/Jakarta). This is the discovery map for reusable agent skills and the actual tool capabilities available to project chats. The operating authority remains MASTER_PROMPT.md. The repository-wide file-by-file inventory and upgrade disposition register is `REPOSITORY_UPGRADE_PLAN.md`; all new implementation handoffs use the shorter `Eksekusi Code!` command (legacy aliases are retained).
 
 ## Skill locations and loading
 
