@@ -8125,10 +8125,6 @@ class _DashboardScreenState extends State<DashboardScreen>
   }) {
     final display = value == '--' ? '--' : value + unit;
     final active = value != '--';
-    final animationIsActive = jexIndicatorAnimationActive(
-      connected: connected,
-      stateActive: animationActive ?? active,
-    );
     final theme = Theme.of(context);
     final homeDark = jexHomeHeaderUsesDarkPalette(appThemeNotifier.value);
     // AI-THEME / DASHBOARD-LIGHT-CONTRAST-CONTRACT
@@ -10738,11 +10734,7 @@ class _ConnectionSheetContentState extends State<_ConnectionSheetContent>
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                JexAnimatedGlyph(
-                  icon: icon,
-                  size: 18,
-                  color: color,
-                ),
+                JexAnimatedGlyph(icon: icon, size: 18, color: color),
                 const SizedBox(width: 6),
                 Flexible(
                   child: Text(
