@@ -1198,14 +1198,13 @@ void main() {
         'Widget _buildHomeArea(double height)',
       );
       final home = source.substring(homeStart);
-      for (final kind in [
-        JexAnimatedIconKind.battery,
-        JexAnimatedIconKind.hotside,
-        JexAnimatedIconKind.voltage,
-      ]) {
+      for (final kind in ['battery', 'hotside', 'voltage']) {
         expect(
           home,
-          contains('animatedKind: JexAnimatedIconKind.$kind,'),
+          contains(
+            'animatedKind: JexAnimatedIconKind.$kind,\n'
+            '                                continuousLoop: false,',
+          ),
         );
       }
       expect(
