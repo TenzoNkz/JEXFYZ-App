@@ -47,6 +47,18 @@
 - The Usage Statistics charts already animate the latest plotted value and cursor/timeline. Any refinement must preserve the raw 1-Hz record, session boundaries, explicit gaps, HOT-only P1 freshness, decimation, timestamp mapping and no interpolation across invalid gaps. Long-session performance remains a separate profile-first concern.
 - Native Floating Monitor is rendered by `FloatingMonitorService.kt` custom Canvas/WindowManager rather than Flutter widgets. Its drag/resize/attach experience must be evaluated as a native surface, not assumed to inherit Flutter route/theme animation.
 
+
+#### Direct source verification — animation ownership and target paths — 2026-11-25
+
+The following refinement was checked against live `lib/main.dart`, `lib/jex_animated_glyph.dart`, `lib/floating_monitor.dart`, `lib/usage_statistics.dart` and `test/widget_test.dart` during the Diskusi review. It remains a static source finding, not a runtime performance measurement.
+
+- `JexAnimatedIcon.glyph` is not a lightweight stateless path. It creates the same `StatefulWidget` as animated indicators. `_JexAnimatedIconState.initState()` unconditionally constructs seven controllers (`controller`, `fanPhaseController`, `activityTransitionController`, `frostTransitionController`, `speedLevelTransitionController`, `indicatorLevelTransitionController`, `warningTransitionController`) before `build()` returns a plain `Icon` for `widget.glyph != null`. The `.glyph` constructor has 12 call sites in `lib/main.dart` at this review baseline. Therefore the allocation candidate is real, but the expected runtime benefit must be measured.
+- `JexAnimatedGlyph` in `lib/jex_animated_glyph.dart` is a separate `StatelessWidget` that wraps a normal `Icon` in `RepaintBoundary` and contains no controller/repeat. Do not confuse this class with `JexAnimatedIcon.glyph`; preserve its current appearance and callers.
+- The current `test/widget_test.dart` static-glyph contract checks that `JexAnimatedGlyph` has no controller/repeat and checks for the animated-state class/policy helper. It does not prove that `JexAnimatedIcon.glyph` avoids constructing the seven controllers. Add a behavioral/ticker-lifecycle regression for the actual glyph constructor when optimizing it; avoid making the only acceptance a broad source-string count.
+- `jexIconAnimationPermitted()` explicitly allows Battery/Hotside/Voltage loops whenever connected; these are active source paths, not only unused API. A later change should replace unchanged-value idle loops with data-change/warning feedback while preserving exact readings and warning thresholds.
+- `JexLedStripPreview.build()` places its complete Row (arrows, both LED columns and central mode label) inside the per-frame `AnimatedBuilder.builder`. The builder does not use `child:`; isolate the animated CustomPaint portions and hoist invariant controls/text without changing LED phase anchoring or firmware-phase synchronization.
+- `UsageStatisticsPage._flushLiveUpdates()` merges newly received events into the selected-session snapshot and calls `UsageStatsAnalytics.summarize(workingSnapshot)` inside the one-second diagram flush. The summarizer traverses/group-sorts session events before rebuilding summary segments. This is a measurable profiling target, not proof of a performance defect. Baseline 1h/6h/24h first; do not change the bounded 64 + 8 + 1 queue or raw-history/gap contracts on assumption alone.
+
 ### Screen-by-screen implementation proposal
 
 1. **Home:** retain the cooler-led composition and seven 45-dp metrics; refine typography/spacing, connection/safety semantics, notification state colors and safe margins; add a clear Connect action to the disconnected lock panel; animate state changes, not fabricated telemetry.
