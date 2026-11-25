@@ -44,4 +44,4 @@ Change protected OTA only for a demonstrated defect after discussion and explici
 
 - Firmware functional changes require a version bump and matching filename; exactly one active versioned .ino.
 - The owner compiles Firmware separately. Do not compile, generate or publish BIN, change Firebase metadata, perform physical OTA, flash hardware, operate devices, or run App Build unless each is separately authorized.
-- App Build does not authorize Firmware operations. Eksekusi Full does not authorize App Build.
+- App Build does not authorize Firmware operations. Eksekusi Code does not authorize App Build; both scopes remain separate.
