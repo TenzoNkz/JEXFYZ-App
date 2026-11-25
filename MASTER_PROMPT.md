@@ -40,7 +40,7 @@ Rules for isolation:
 
 ## 2A. Per-interaction work-status lifecycle
 
-`00_WORK_STATUS.md` is the single root-level live snapshot. Its `WORKSPACE` field identifies `DISKUSI`, `CODE_FULL` or `BUILD_APP`; the top-level `STATUS` field is a compatibility alias for the current `SESSION STATUS`, so it opens as `IN_PROGRESS` for every new project message. `WORK STATUS` tracks the requested objective across steps/chats, separately from independently running external operations. `CHAT_TRANSFER.md` preserves the durable continuation checkpoint; `APP_BUILD_REPORT.md` remains the append-only Build App evidence ledger.
+`00_WORK_STATUS.md` is the single root-level live snapshot. Its `WORKSPACE` field identifies `DISKUSI`, `CODE_FULL` or `BUILD_APP`; the top-level `STATUS` field is a compatibility alias for the current `SESSION STATUS`, so it opens as `IN_PROGRESS` for every new project message. `CODE_FULL` is the stable internal workspace identifier for the user-facing `Eksekusi Code!` command; do not rename this enum as part of the display-name change or silently migrate existing records. `WORK STATUS` tracks the requested objective across steps/chats, separately from independently running external operations. `CHAT_TRANSFER.md` preserves the durable continuation checkpoint; `APP_BUILD_REPORT.md` remains the append-only Build App evidence ledger.
 
 ### Start — mandatory for every JE X FYZ interaction
 
@@ -237,7 +237,7 @@ Use the existing canonical files; do not create parallel status documents or dup
 - CHAT_TRANSFER_PROMPTS.md — exactly three copy-ready LOAD + CONTINUE prompts, one per dedicated workspace: Diskusi, Eksekusi Code and Eksekusi Build App.
 - 00_WORK_STATUS.md — top-level latest-session status marker (IN_PROGRESS / COMPLETED / BLOCKED / WAITING_OWNER / RECOVERY_REQUIRED); not a live heartbeat.
 - CHAT_TRANSFER.md — concise rolling checkpoint for the next chat. Routine load reads only the bounded text between `<!-- ACTIVE_CHECKPOINT_START -->` and `<!-- ACTIVE_CHECKPOINT_END -->`; never load history below/outside those markers by default. Pre-compaction history is preserved under `archive/`.
-- REPOSITORY_UPGRADE_PLAN.md — the single 95-file repository inventory and file-by-file upgrade register; every current tracked blob has a disposition, review/verification state and work-package link. It is a quality register, not another session-status ledger.
+- REPOSITORY_UPGRADE_PLAN.md — the single complete tracked-file inventory and file-by-file upgrade register; every current tracked blob has a disposition, review/verification state and work-package link. It is a quality register, not another session-status ledger.
 - MEMORY_INDEX.md — source-of-truth map, file roles and Markdown retention policy.
 - PROJECT_STATE.md — concise current product/source/release/validation truth; no long build chronology.
 - HANDOVER.md — immediate next action only; no duplicated long history.
