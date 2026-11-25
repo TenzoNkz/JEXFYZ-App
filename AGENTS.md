@@ -15,7 +15,7 @@ This file is a small interoperability entrypoint for repository-aware coding age
 ## Non-negotiable boundaries
 
 - Diskusi! is read-only for executable source, tests, config, workflows and external operations; substantive conclusions may update canonical documentation only.
-- Eksekusi Code Full! is limited to the specifically authorized source/docs/tests/static-audit scope. Legacy Eksekusi Full! is a compatibility alias. Neither authorizes App Build/APK release, Firmware compilation, BIN/Firebase, OTA, flashing or device operations.
+- Eksekusi Code! is limited to the exact owner-approved App source/tests/docs/config/static-audit work package. Legacy Eksekusi Code Full! and Eksekusi Full! are compatibility aliases. It does not authorize App Build/APK release, Firmware compilation, BIN/Firebase production mutation, OTA, flashing or device operations.
 - Eksekusi Build App! alone authorizes the guarded App Build/QC/release workflow. Preserve its issue/title/token guard and all gates.
 - Use three separate ChatGPT conversations, one per command. The owner creates the chats manually from `CHAT_TRANSFER_PROMPTS.md`; do not switch workspace inside a chat. `Chat Stuck!` inherits only the active workspace's existing authorization.
 - All chats share `main` and canonical memory. Serialize writes and external operations; no concurrent project writers. The `WORKSPACE` status field identifies the active chat but is not a lock.
