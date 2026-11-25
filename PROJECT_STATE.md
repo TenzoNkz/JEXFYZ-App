@@ -75,6 +75,14 @@ Last reconciled: 2026-11-25 (Asia/Jakarta). Operating authority: `MASTER_PROMPT.
 - **Governance:** add/enable reviewed PR and controlled Dependabot only after the read-only PR workflow is observed in a normal PR. Restore a checksum-verified Gradle Wrapper as part of the separately reviewed Android toolchain migration.
 - BLE App-only identity and OTA server identity remain separate high-priority security projects; not part of UI/toolchain scope.
 
+
+## Prepared grouped execution plan — 2026-11-25
+
+- APP_PREBUILD_AUDIT.md now contains the bounded WP0–WP7 plan: reproducible Build #167 visual baseline; motion/Home; controls/Connection/Settings; integration/golden QA; measured Statistics/native Floating Monitor; isolated toolchain migration; PR governance; separate BLE identity and OTA trust tracks.
+- Direct source check: `JexAnimatedIcon.glyph` is used 12 times in main.dart and still allocates seven controllers in initState before build returns a static Icon. `JexAnimatedGlyph` is a separate stateless class. LED AnimatedBuilder and live Statistics full-summary rebuild targets are documented in DESIGN_NOTES.md; runtime impact remains unmeasured.
+- The current test tree has 11 test Dart files plus helper, no integration_test, golden suite, Android native test sources, checked-in Gradle Wrapper or Dependabot configuration. PR validation exists but has no observed PR run.
+- No source/test/dependency/config/workflow/build/release/device operation was performed. Execution remains deferred until the owner selects the grouped Code Full batch; App release remains a separate Build App authorization.
+
 ## Current repository evidence and next action
 
 - Build #167 package source SHA is immutable. After that checkout, current `main` contains canonical documentation updates, one non-functional Firmware opening-comment correction in `firmware/JEXFYZ-V7.2.ino` (V7.1 text → V7.2), the guarded Build App workflow security hardening and its static source-contract test. No executable App/Firmware runtime code or Firmware behavior changed; the current workflow/test hardening is not included in the Build #167 package.
