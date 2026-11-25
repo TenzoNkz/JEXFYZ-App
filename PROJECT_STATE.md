@@ -1,6 +1,17 @@
 # JE X FYZ / JE Cooler — Current Project State
 
-Last reconciled: 2026-11-25 (Asia/Jakarta). Operating authority: `MASTER_PROMPT.md`.
+Last reconciled: 2026-11-26 (Asia/Jakarta). Operating authority: `MASTER_PROMPT.md`.
+
+## Owner request — full App repository rework + premium UI redesign — 2026-11-26
+
+- **Status:** planning packet ready for the dedicated Eksekusi Code workspace; implementation NOT STARTED. Diskusi remains read-only for source/tests/config/workflows/build/release/device actions.
+- **Scope:** App-only repository audit, incremental Flutter architecture decomposition, shared design system, complete screen-by-screen UI redesign, tests and relevant App-side Kotlin bridge/overlay. Full scope and WP0–WP10 sequencing are in `APP_PREBUILD_AUDIT.md`; visual art direction and per-screen requirements are in `DESIGN_NOTES.md`.
+- **Architecture baseline at plan opening:** `main` HEAD `0ff34de66963a193034c3c737ae4dc6d7de886ac`, root tree `eaf84dbb2ea306a82075cea22b0351b976d23ee9`, 142 entries / 96 blobs / 46 trees, `truncated=false`. `lib/main.dart` was 11,622 lines / ~409 KB and holds most app startup, Dashboard, BLE/P1, telemetry/command and UI responsibilities. Subsequent plan commits are documentation-only; new Code work must reconcile live HEAD first.
+- **Design direction:** “Quiet Luxury / Precision Instrument”. Premium/elegant through composition, type, spacing, tactile control behavior, meaningful state and restrained motion. Do not silently replace JE X FYZ/Horizon identity, assets, palette, typography or approved layout contracts.
+- **First priorities:** WP0 complete per-file audit (3/96 dispositions current; 12 formatter-touched Dart files pending; next register item is `README.md`) and WP1 behavioral characterization/regression foundation. Execute each later WP incrementally with its own tests and review.
+- **Must preserve:** one BLE/GATT owner; P1 framing/session/SYNC_READY; serialized writes; ACK versus telemetry truth; safety gates; persisted keys/defaults; SQLite schema v2 and v1→v2 migration, 30-day/raw-1-Hz/session/gap/queue rules; native Floating Monitor remains a projection and not a BLE client.
+- **Explicit exclusions:** Firmware/BIN and protocol changes, BLE identity/security, OTA transport/certificates/image/recovery, Firebase production, signing, App Build/Release workflow, APK/tag/asset publication, flashing and physical device operation. Firmware Update screen is presentation-only.
+- **Dedicated Code start:** owner opens separate JE X FYZ — Eksekusi Code and uses Prompt 2 in `CHAT_TRANSFER_PROMPTS.md` with `@Thinking Eksekusi Code!`. This Diskusi workspace must close before Code writes to shared main. Build/release still requires Eksekusi Build App and a fresh command.
 
 ## Three dedicated ChatGPT workspaces — current operating model
 
