@@ -40,7 +40,7 @@ Read these before reviewing or changing a non-trivial UI:
 - Never trade usability or accessibility for density. Aim for 48 × 48 dp hit targets for new/materially changed controls; do not shrink the legacy 40–42 dp compact Connection targets without explicit review.
 - Do not change approved Home, 360-dp canvas, DPI, insets, localization, BLE, safety or Firmware contracts during an unrelated visual cleanup.
 - Do not add gradients, shadows, blur, glow, glassmorphism, cards, pills, badges, rounded surfaces or animations by default. Evaluate each by its purpose.
-- Do not change source in Diskusi. Eksekusi Full edits only the specifically authorized App source/tests/docs. App packaging still requires separate Eksekusi Build App!.
+- Do not change source in Diskusi. Eksekusi Code! edits only the exact owner-authorized App source/tests/docs/config scope; legacy Eksekusi Code Full! and Eksekusi Full! remain aliases. App packaging still requires separate Eksekusi Build App!.
 
 ## Evidence labels
 
