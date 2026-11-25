@@ -24,15 +24,13 @@ Last reconciled: 2026-11-25 (Asia/Jakarta). Authority: `MASTER_PROMPT.md`.
 - **Warnings / limitations:** self-signed/untrusted PKIX chain and META-INF signature-coverage warnings remain. They did not fail explicit V1/V2/V3 checks. No Actions artifacts were produced; Release assets are the delivery. Android JUnit task is NO-SOURCE.
 - **Visual acceptance: NOT VERIFIED.** One owner screenshot of Build #167 Home (English / Light / disconnected) was reviewed on 2026-11-24; it shows the complete cooler silhouette and readable metric labels. The screenshot does not identify exact source SHA or logical dp/density, and does not cover the required viewport/locale/theme/connected-state matrix. CI/widget tests cannot prove the full rendered layout. See `DESIGN_NOTES.md`.
 
-## Immediate next action — whole-App UI and motion refinement (PROPOSED, NOT IMPLEMENTED)
+## Immediate next action — continue WP1 motion/Home refinement (partially implemented)
 
-- Continue in the separate **Eksekusi Code Full!** conversation with a fresh explicit owner command. The current Diskusi remains read-only. Do not combine this UI task with the separate Flutter/Material UI/Android toolchain and Firebase/SQLite upgrade roadmap.
-- **Stage 1 — motion foundation and high-value Home fixes:** create one shared, documented JE motion spec/theme layer; explicitly honor Android `disableAnimations` and iOS `reduceMotion`; make static `.glyph` icons avoid animated-controller allocation; make animated icon controllers lazy/only allocate what each icon kind needs; replace perpetual Battery/Hotside/Voltage loops with change/warning feedback; preserve telemetry-driven Fan coast and Firmware-phase LED motion; use `AnimatedBuilder.child` for static LED preview content; add a short keyed tab-content transition; correct the disconnected Notification success-like tint and add a direct Connect action to the disconnected lock panel through the existing Bluetooth flow.
-- **Stage 2 — controls, Connection and Settings:** unify control pending/confirmed/disabled/locked/pressed styles; add restrained transitions to Voltage/Control/Adaptive/LED/Temperature tabs; refine scan/discovery/connection/sync/failure feedback; align Settings sections and subpage navigation with the Home identity. Preserve all BLE P1 gates, command/ACK/telemetry distinctions, passive Auto Connect, persisted keys, EN/ID and 360-dp scaling contracts.
-- **Stage 3 — Statistics, Floating Monitor, dialogs and Firmware Update presentation:** optimize chart animation/build scopes without changing historical data, raw 1-Hz collection, null gaps, session boundaries, SQLite schema/retention or time mapping; treat native Floating Monitor as a native Canvas/WindowManager surface; apply the same motion language to dialogs/sheets; show only actual Firmware update stages/progress. Do not alter OTA transport/security, metadata, recovery or Firmware behavior.
-- Do not add an animation plugin solely for these effects; Flutter SDK primitives already provide implicit and explicit animations. Hold broad dependency/toolchain upgrades for their separately validated project.
-- **Acceptance:** widget/behavior tests for reduced motion, controller disposal, state transitions, command pending vs telemetry confirmed, disconnected/unknown state, tab switching and lifecycle; screenshot/golden matrix at 350-dp/420-dp, English/Indonesian, Light/Dark, connected/disconnected/error and constrained portrait; actual Build #167 screenshot comparison plus real Android rendering after a separately authorized package. No visual PASS without rendered evidence.
-- Build #167 remains the latest published package. A fresh Code Full command authorizes only the named App source/tests/docs work; a new APK/build/release still requires a separate fresh `Eksekusi Build App!` authorization. BLE App identity and OTA certificate trust remain separate protected projects.
+- **Completed Code Full increment (2026-11-26):** all 12 static `JexAnimatedIcon.glyph` usages now render through the existing `JexAnimatedGlyph` StatelessWidget. The obsolete stateful static-glyph path was removed; its old `active`/`warning` arguments were inert. The regression checks actual Icon data/color/size and the absence of the old path. Validation Only #58 passed (formatter clean; analyzer 107 info-only, zero warnings/errors; 213/213 Flutter tests).
+- **Next bounded WP1 items:** read and apply `MediaQuery.disableAnimationsOf(context)` to nonessential repeating indicators with a stable reduced-motion state; replace Battery/Hotside/Voltage idle loops with value-change/warning feedback; use `AnimatedBuilder.child` or equivalent to hoist invariant LED row/arrows/mode label while preserving Firmware phase anchoring and sync; correct disconnected Notification's success-like semantics and add Connect through the existing Bluetooth sheet/controller only.
+- Preserve exact Fan coast/rotation state, Peltier gating, BLE P1 sync/session readiness, passive Auto Connect, command/ACK/telemetry distinction, 360-dp canvas, 45-dp Home rows, themes, localization and notification identity. Do not add an animation dependency or broaden this into toolchain/OTA/Firmware scope.
+- **Acceptance:** focused lifecycle/reduced-motion/indicator/connection tests, formatter, analyzer and full suite. Record the source SHA and exact hosted CI evidence. Actual Android screenshots/profile-mode performance are separate acceptance gates; whole-App visual status remains VISUAL NOT VERIFIED.
+- WP2–WP7 remain separate staged work packages in `APP_PREBUILD_AUDIT.md`. Build #167 remains the latest published package. A new package still requires a separate, fresh `Eksekusi Build App!` command; this CODE_FULL workspace does not authorize packaging/release.
 
 ## Tooling readiness before the next grouped execution batch — 2026-11-25
 
@@ -61,10 +59,12 @@ Last reconciled: 2026-11-25 (Asia/Jakarta). Authority: `MASTER_PROMPT.md`.
 - Execution remains **deferred**, consistent with the owner's earlier instruction to group the work with other pending tasks. No source/test/dep/config/workflow/build/release/Firmware/Firebase/OTA/device action was performed in this Diskusi.
 
 
-## Recovery disposition — 2026-11-25
+## Recovery disposition — CODE_FULL — 2026-11-26
 
-- A `Chat Stuck!` recovery in Diskusi found no unfinished work or active external operation. The prior grouped execution plan had already been closed and read back; recent GitHub Actions runs were all terminal. No operation was repeated.
-- Continue to defer WP0–WP7 until a fresh explicit command in the separate `Eksekusi Code Full!` chat. Keep Build App/release authority separate.
+- `@Thinking Chat Stuck!` recovered inside the existing CODE_FULL workspace and inherited only the last valid source/tests/docs/static-audit authorization. Live `main` was `edf9a62cac12339e445dbb1fe86dbb0fc46ef3a9` before this documentation closeout.
+- Validation Only #58 / run `45660178142` on that exact SHA is terminal SUCCESS; formatter 19 files / 0 changed, analyzer 107 info-only with zero warnings/errors, Flutter tests 213/213. #57 is retained as a corrected intermediate failure. No queued/in-progress Actions run was present at recovery.
+- No operation was repeated. Build #167 / Release `jexfyz-latest` was not changed; no App Build, Firmware/BIN, Firebase, OTA, flashing or device action occurred.
+- Continue remaining WP1 items and later WP2–WP7 only within the authorized CODE_FULL scope; keep Build App and release authority separate.
 
 ## Other boundaries
 

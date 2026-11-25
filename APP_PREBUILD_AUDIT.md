@@ -17,6 +17,18 @@ This is the current App pre-build/packaging snapshot. Build #167 has already com
 **Readiness decision:** Build #167 is already released. No new App Build is indicated absent a demonstrated source defect and a fresh explicit `Eksekusi Build App!` authorization. A future source repair belongs in Eksekusi Code Full! first, not in Discussion or this report.
 
 
+## CODE_FULL implementation increment — static action glyph lifecycle — 2026-11-26
+
+**Status: SOURCE + REGRESSION IMPLEMENTED / VALIDATION ONLY #58 SUCCESS / NOT RELEASED.**
+
+- Replaced the 12 production `JexAnimatedIcon.glyph` call sites in `lib/main.dart` with the existing `JexAnimatedGlyph` stateless widget. Removed the obsolete stateful `.glyph` constructor, glyph field and static build branch; this avoids allocating the seven animated-indicator controllers for plain icons.
+- Preserved rendered output through the existing `RepaintBoundary` + Flutter `Icon` implementation. Removed inert `active`/`warning` parameters only from static usages; custom animated indicators remain on `JexAnimatedIcon`.
+- Added static-path contract assertions and a widget rendering regression for icon data, color and size. Removed the unused `animationIsActive` local left behind after static usages stopped consuming that value.
+- Commits: `ac8e9113ad947ff370b4f09aa57351ca41fdd58d` (source/test migration); `edf9a62cac12339e445dbb1fe86dbb0fc46ef3a9` (analyzer/formatter follow-up).
+- Validation Only #58 / run `45660178142` / job `139367583668`, source SHA `edf9a62cac12339e445dbb1fe86dbb0fc46ef3a9`: locked dependency resolution PASS; Dart formatter PASS (19 files, 0 changed); analyzer PASS (107 info-only diagnostics, zero warnings/errors); Flutter tests **213/213 PASS**. Workflow terminal SUCCESS.
+- Validation Only #57 / run `45659724890` is a retained intermediate FAILURE: formatter identified one required source-format correction and analyzer reported the obsolete `animationIsActive` local as unused. The correction was committed and #58 reran all gates successfully.
+- This increment is not in Build #167 and no APK/build/release was created. Runtime profiling and actual Android screenshot/device acceptance were not run; whole-App status remains **VISUAL NOT VERIFIED**.
+
 ## Quality readiness review — Diskusi assessment — 2026-11-25
 
 - **Evidence baseline:** current main was inspected at commit `943ab579827265dc63caa1dec3f80b4244ac61a0` (141 tree entries, recursive tree not truncated). Build #167 remains the latest published APK; Validation Only #56 is the latest observed source-only CI success (212/212 Flutter tests, formatter clean, 107 info diagnostics, zero warnings/errors). These are hosted source/build checks, not whole-device or visual acceptance.
@@ -47,7 +59,7 @@ This is the current App pre-build/packaging snapshot. Build #167 has already com
 
 - Establish a shared JE motion contract using existing Flutter APIs; no animation package is justified.
 - Explicitly read platform reduced-motion preference through the current Flutter API and stop/replace nonessential repeating loops with stable visuals. Do not rely on shortening an infinite controller duration and do not globally override controller behavior used by scroll/physics.
-- Remove unnecessary seven-controller allocation from the 12 active `JexAnimatedIcon.glyph` call sites or make the static path genuinely stateless/lazy. Preserve glyph shape, size, color, tap target, semantics and every animated indicator contract. The separate `JexAnimatedGlyph` is already stateless and is not the same class.
+- **COMPLETED sub-item (2026-11-26):** the 12 `JexAnimatedIcon.glyph` production call sites now use the existing stateless `JexAnimatedGlyph`; the obsolete stateful glyph constructor/branch was removed and a widget-render regression was added. Validation Only #58 passed formatter, analyzer and 213/213 Flutter tests. See the CODE_FULL increment above and `DESIGN_NOTES.md`. No performance claim is made without a device profile.
 - Replace connected Battery/Hotside/Voltage idle loops with meaningful reading-change/warning feedback; preserve real thresholds and exact values.
 - Keep Fan rotation/coast bound to confirmed state and Voltage/PWM; keep LED preview synchronized to the Firmware phase; preserve Peltier gating. Optimize LED strip rebuild scope by hoisting static arrows/mode label and animating only LED paint/content that changes.
 - Correct Home's disconnected Notification semantics so it cannot look like successful/green state while disconnected. Add a direct Connect affordance through the existing Bluetooth sheet/controller; never create a second BLE client or bypass P1 synchronization.

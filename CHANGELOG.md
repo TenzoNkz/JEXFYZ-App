@@ -1,3 +1,13 @@
+## 2026-11-26 — Move static App glyphs to the stateless icon path (source + hosted validation; not released)
+
+- Replaced all 12 production `JexAnimatedIcon.glyph` calls in `lib/main.dart` with the existing `JexAnimatedGlyph` from `lib/jex_animated_glyph.dart`. Removed the unused static-glyph constructor, state field and build branch from the stateful animated-indicator widget; plain action icons no longer allocate the seven indicator AnimationControllers.
+- Kept the same `RepaintBoundary` and `Icon(icon, size, color)` output. Removed the legacy `active`/`warning` arguments from static usages because the old glyph branch ignored them.
+- Added `test/widget_test.dart` source-contract checks for stateless routing and legacy-path removal, plus a widget test asserting the rendered Phosphor icon, color and size. Removed the now-unused `animationIsActive` local after static usages stopped consuming that value.
+- Commits: `ac8e9113ad947ff370b4f09aa57351ca41fdd58d` and `edf9a62cac12339e445dbb1fe86dbb0fc46ef3a9`.
+- Validation Only #57 / run `45659724890` is retained as a terminal intermediate FAILURE: formatter identified one required formatting correction, and analyzer found the unused `animationIsActive` local; the test suite still passed 213/213. The follow-up source correction was committed.
+- Validation Only #58 / run `45660178142` / job `139367583668` on exact SHA `edf9a62cac12339e445dbb1fe86dbb0fc46ef3a9` — terminal SUCCESS: locked dependencies PASS; formatter 19 files / 0 changed; analyzer 107 info-only diagnostics / zero warnings-errors; Flutter tests **213/213 PASS**.
+- No APK/build/release was initiated. Build #167 remains the latest published package; device profiling and whole-App visual acceptance remain NOT VERIFIED.
+
 ## 2026-11-24 — Harden guarded App Build workflow security (source-only; no APK built)
 
 - Pinned all four direct actions in `.github/workflows/jexfyz-app-build-trigger.yml` to immutable full commit SHAs verified against upstream v6/v2 tags: checkout, setup-java, subosito/flutter-action and gradle/actions/setup-gradle.
