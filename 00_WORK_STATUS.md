@@ -1,4 +1,4 @@
-| Last updated | 2026-11-26 02:26 (+07:00, Asia/Jakarta) |
+| Last updated | 2026-11-26 02:27 (+07:00, Asia/Jakarta) |
 
 > Single current snapshot for JE X FYZ project interactions. Event-driven marker; not a background heartbeat.
 
@@ -8,20 +8,20 @@
 |---|---|
 | **STATUS** | **IN_PROGRESS** |
 | SESSION STATUS | IN_PROGRESS — Owner issued “@Thinking Chat Stuck!” again in CODE_FULL. Reconcile the newer reduced-motion and LED accessibility commits plus terminal Validation Only #59/#60 failures; inherit only the original CODE_FULL source/tests/docs/static-audit authorization. |
-| WORK STATUS | IN_PROGRESS — Static-glyph sub-item complete; two subsequent WP1 accessibility/motion commits exist but their validation failures need log-level diagnosis before any further edits. |
+| WORK STATUS | IN_PROGRESS — Reduced-motion implementation and regression repair committed; Validation Only #61 is running on the repair SHA. Await exact CI evidence before further changes. |
 | WORKSPACE | CODE_FULL |
 | Mode | Eksekusi Code Full — scoped source/tests/docs/static-audit implementation and verification only. No Firmware edits absent an explicitly scoped Firmware-source request; no Firmware compilation/BIN/publication, Firebase, OTA, flashing, device operation, Android APK/App Build, signing, Release/tag/asset changes. |
 | Request / work item | Exact current recovery request: “@Thinking Chat Stuck!”; reconcile live main/tree, commits `0ac6ac1` and `a1edadc`, diagnose Validation Only #59/#60, and continue only a safe in-scope WP1 repair without repeating side effects. |
 | Started | 2026-11-26 02:17 (+07:00, Asia/Jakarta) |
 | Last updated | 2026-11-26 02:26 (+07:00, Asia/Jakarta) |
-| Current phase | IN_PROGRESS — main HEAD `a1edadc89c9d776c5aaa6a2880ad19d09c5422a6`, recursive tree 141 entries / truncated=false; Validation Only #59 and #60 terminal FAILURE, job logs now required to determine blockers. |
-| Last completed milestone | Static-glyph closeout is present; WP1 reduced-motion and LED accessibility commits `0ac6ac1…` and `a1edadc…` are now on main; no active Actions run. |
-| Last verified source checkpoint | Main HEAD `a1edadc89c9d776c5aaa6a2880ad19d09c5422a6`; recursive tree 141 entries / `truncated=false`. Validation #58 source `edf9a62…` predates the two newer WP1 commits and does not validate them. |
+| Current phase | IN_PROGRESS — repair commit `2ae9f8a4af8b21b3b0cf49b32109861a550681f7` on main; Validation Only #61 / run `45685566077` queued/running against exact repair SHA. |
+| Last completed milestone | Diagnosed #59 missing LED observer mixin; diagnosed #60 Material-less LED test harness, unnotified platform preference test and stale Fan Speed retarget ordering; repaired source/test and pushed commit `2ae9f8a…`. |
+| Last verified source checkpoint | Main HEAD `2ae9f8a4af8b21b3b0cf49b32109861a550681f7`; recursive tree SHA `a64862ab1d61ad8f49b5d01f992099ad6834eaef`; run #61 validates this source. |
 | EXTERNAL OPERATION | Validation Only #58 / run `45660178142` / source `edf9a62cac12339e445dbb1fe86dbb0fc46ef3a9` terminal SUCCESS. Validation Only #57 / run `45659724890` terminal FAILURE on prior intermediate source; follow-up removed the unused local reported by analyzer and committed formatter output. Build App #167 / run `44510421466` remains terminal SUCCESS, package source `0dd96228…`; Release ID `403010611` / tag `jexfyz-latest` unchanged. |
-| EXTERNAL OPERATION STATUS | COMPLETED / FAILURE — Validation Only #59 and #60 are both terminal FAILURE; no queued/in-progress run exists. Build App #167 / Release #403010611 unchanged. No App Build/Release was triggered. |
-| Result / evidence | CURRENT / VERIFIED: source commits `ac8e9113…` + `edf9a62…`; Validation Only #58 SUCCESS (format clean, analyzer 107 info-only/0 warnings-errors, 213/213 tests); changelog/design/audit/project/handover/checkpoint updated and read back; Build #167 / Release #403010611 unchanged; no active external run. |
-| Blocker / remaining evidence | Root causes of Validation Only #59/#60 are not yet established from job logs; do not make further source changes until logs and exact failed gate are inspected. |
-| Next action | Fetch both job logs for runs #59/#60, identify the exact failure stage and whether the two WP1 patches are implicated; then inspect changed source/test diffs and decide minimal correction. |
+| EXTERNAL OPERATION STATUS | IN_PROGRESS — Validation Only #61 / run `45685566077` queued against exact source `2ae9f8a4af8b21b3b0cf49b32109861a550681f7`. Runs #59/#60 are terminal failures retained in history. Build App #167 / Release #403010611 unchanged; no App Build/App Release. |
+| Result / evidence | CURRENT / VERIFIED: static glyph closeout retained; reduced-motion + LED observer changes and regression repairs committed as `2ae9f8a…`; CI #61 pending. Build #167 / Release #403010611 unchanged. |
+| Blocker / remaining evidence | Await terminal run #61 logs; verify whether iOS Reduce Motion observer resumes motion and all tests/analyzer/formatter pass. |
+| Next action | Monitor existing run #61 only; do not dispatch or repeat validation. If terminal success, update durable notes/checkpoint; if failure, diagnose logs before another patch. |
 
 ## Status model
 
