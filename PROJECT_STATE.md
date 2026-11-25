@@ -6,9 +6,17 @@ Last reconciled: 2026-11-25 (Asia/Jakarta). Operating authority: `MASTER_PROMPT.
 
 - The repository now defines three independent owner-created ChatGPT conversations: **Diskusi!**, **Eksekusi Code!**, and **Eksekusi Build App!**. Each has one copy-ready starter in `CHAT_TRANSFER_PROMPTS.md`; exactly three prompts are maintained.
 - The owner must create/select the three chats manually. GitHub/repository prompts cannot open ChatGPT conversations. Chat transcripts are not shared automatically; the three chats share GitHub `main` and canonical memory.
-- `MASTER_PROMPT.md` is the single authority. `Eksekusi Full!` is a backward-compatible alias for `Eksekusi Code!`. `Chat Stuck!` is recovery inside the existing workspace, not a fourth chat or permission expansion.
+- `MASTER_PROMPT.md` is the single authority. `Eksekusi Code Full!` and `Eksekusi Full!` are backward-compatible aliases for `Eksekusi Code!`. `Chat Stuck!` is recovery inside the existing workspace, not a fourth chat or permission expansion.
 - Shared writes/builds are single-writer: do not commit or launch an external operation from multiple chats concurrently. `00_WORK_STATUS.md` now records `WORKSPACE` as `DISKUSI`, `CODE_FULL` or `BUILD_APP`; it is event-driven, not a lock.
 - Most recent implementation session: `CODE_FULL` completed on 2026-11-24; the follow-up owner review is in the separate `DISKUSI` workspace. No App Build/Release was started.
+
+## Repository-wide upgrade workflow v2 — owner request 2026-11-26
+
+- Canonical implementation command is now **Eksekusi Code!**. The older **Eksekusi Code Full!** and **Eksekusi Full!** labels remain compatibility aliases; internal `WORKSPACE=CODE_FULL` is intentionally retained to avoid breaking existing status/checkpoint records.
+- `REPOSITORY_UPGRADE_PLAN.md` is the single file-by-file register. Its complete baseline inventory enumerates 95/95 tracked files at HEAD `f2ef6932cfe62d7a4d1f4056a866009c18ba3fc7` (141 tree entries; `truncated=false`); the register itself is the 96th blob after creation. This is path-complete inventory, not a completed content audit.
+- New flow: Diskusi records the decision/handoff packet; Eksekusi Code verifies live main, works only on the approved file set and validates it; Eksekusi Build App consumes a separate build-ready handoff and fresh explicit release authorization. One writer at a time and no transcript-only handoffs.
+- Each tracked file receives an evidence-backed disposition: UPGRADE, KEEP / VERIFIED, PROTECTED, REPLACE, RETIRE CANDIDATE or IMMUTABLE. A file already meeting its contract must not be changed for activity. Archives stay immutable; APP_BUILD_REPORT and CHANGELOG stay append-only; Firmware, Firebase, OTA, signing, release and device scopes retain separate authorization.
+- Quality gates G0–G8, fail-closed retry rules, cross-workspace packet fields and per-file completion requirements are defined in `MASTER_PROMPT.md` and `REPOSITORY_UPGRADE_PLAN.md`. Zero failures cannot be guaranteed; preventable risk is minimized through scope isolation and observed validation.
 
 ## Repository and latest App package
 
@@ -54,7 +62,7 @@ Last reconciled: 2026-11-25 (Asia/Jakarta). Operating authority: `MASTER_PROMPT.
 - Owner requested a full App UI refinement that avoids generic AI-slop patterns and feels smoother with purposeful animation. Current Diskusi review is read-only; no App source, tests, dependency, native code, configuration or release was changed.
 - Static source baseline: `lib/main.dart` ~11,434 lines, `lib/floating_monitor.dart` ~1,959, `lib/app_settings.dart` ~1,904, `lib/usage_statistics.dart` ~3,650. `JexAnimatedIcon` allocates seven controllers even for static `.glyph` icons; connected Battery/Hotside/Voltage loops repeat without a reading change; LED preview rebuilds invariant row content on each animation tick; no explicit app-level reduced-motion handling or dedicated tab content transition was found.
 - Full visual/motion proposal and screen-by-screen sequence are recorded in `DESIGN_NOTES.md`. Direction: precision JE Cooler hardware interface; preserve approved identity/Home/canvas/telemetry and hardware-correlated Fan/LED motion; unify shared visual/motion tokens; add short meaningful tab/route/control feedback; honor Android/iOS reduced-motion; optimize animated subtree/controller allocation; never synthesize telemetry or progress.
-- Implementation is not started. A bounded implementation must be authorized in the separate Eksekusi Code Full conversation. No extra animation plugin is recommended; use Flutter framework animation primitives already available. Build #167 remains latest package and any new package requires separate Eksekusi Build App authorization.
+- Implementation is not started. A bounded implementation must be authorized in the separate Eksekusi Code conversation. No extra animation plugin is recommended; use Flutter framework animation primitives already available. Build #167 remains latest package and any new package requires separate Eksekusi Build App authorization.
 
 ## Plugin / engineering tools audit — 2026-11-25
 
