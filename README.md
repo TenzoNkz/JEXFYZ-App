@@ -31,7 +31,7 @@ Flutter Android companion App and ESP32-C3 Firmware source for the JE X FYZ ther
 ## Operating modes
 
 - Diskusi! — analysis and planning, read-only for executable source/config/tests/workflow/build/device operations. Documentation-only memory updates may follow a substantive conclusion.
-- Eksekusi Code Full! — only the specifically authorized source/docs/tests/static-audit scope. Legacy Eksekusi Full! is a compatibility alias; no App Build or Firmware/device operations.
+- Eksekusi Code! — only the owner-approved App source/tests/docs/config/static-audit scope. Legacy Eksekusi Code Full! and Eksekusi Full! are aliases; no App Build or Firmware/device operations.
 - Eksekusi Build App! — guarded App Build/QC/release only.
 - Chat Stuck! — recover only an already-authorized in-progress operation.
 
