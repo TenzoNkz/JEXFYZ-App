@@ -151,7 +151,7 @@ A failed gate blocks dependent work. Retry only after classifying root cause (so
 | `BLE_APP_AUTH.md` | Project/configuration file | REVIEW REQUIRED | INVENTORIED — CONTENT REVIEW PENDING |
 | `BUILD_NOTES.md` | Project/configuration file | REVIEW REQUIRED | INVENTORIED — CONTENT REVIEW PENDING |
 | `CHANGELOG.md` | Append-only evidence ledger | APPEND-ONLY / NO REWRITE | INVENTORIED — CONTENT REVIEW PENDING |
-| `CHAT_RULES.md` | Operating governance | CANONICAL GOVERNANCE | INVENTORIED — CONTENT REVIEW PENDING |
+| `CHAT_RULES.md` | Compatibility pointer to canonical operating policy | ACTIVE POLICY POINTER | KEEP / VERIFIED (2026-11-26) |
 | `CHAT_TRANSFER_PROMPTS.md` | Operating governance | CANONICAL GOVERNANCE | INVENTORIED — CONTENT REVIEW PENDING |
 | `CHAT_TRANSFER.md` | Session continuity | ACTIVE STATUS / CHECKPOINT | INVENTORIED — CONTENT REVIEW PENDING |
 | `DESIGN_NOTES.md` | Project/configuration file | REVIEW REQUIRED | INVENTORIED — CONTENT REVIEW PENDING |
@@ -251,6 +251,16 @@ A failed gate blocks dependent work. Retry only after classifying root cause (so
 - **Acceptance evidence:** full content review, 12/12 mirror-hash comparisons and tool/runtime inventory are **STATIC SOURCE CHECK**. The Markdown file has no Markdown-link destinations requiring path repair; path consumers were searched. No Flutter formatter, analyzer, unit/widget tests, build, or visual/device checks apply to this index; the local Flutter toolchain is unavailable. No CI was started.
 - **Scope:** `SKILLS_INDEX.md` and its disposition/record in this inventory only. No skills, source, tests, workflows, dependency files or assets changed; no plugins were installed or external operation started.
 - **Next file:** `CHAT_RULES.md` in current tree order; continue WP0 one path at a time. Twelve formatter-touched Dart files remain pending individual review.
+
+### WP0 — `CHAT_RULES.md` — KEEP / VERIFIED (2026-11-26)
+
+- **Reviewed checkpoint:** `main` HEAD `55ae74be4bc996b2200a4db12ebc6f68cdaa6c69`; file blob `49677fd773ad434c09991ee6ee8c401007c01ebc`. The complete 18-line compatibility pointer was inspected.
+- **Role and consumers:** preserves existing repository/chat-transfer links while routing all command permissions and policy to `MASTER_PROMPT.md`. It describes the three dedicated workspaces and directs owners to the three matching prompts in `CHAT_TRANSFER_PROMPTS.md`; it does not create a competing rule source.
+- **Reference audit:** repository search confirms current references from `README.md`, `MASTER_PROMPT.md`, `CHAT_TRANSFER_PROMPTS.md`, `MEMORY_INDEX.md`, `PROJECT_STATE.md`, `HANDOVER.md`, and the documentation-governance skill pair. Historical references in `CHANGELOG.md` and immutable archives are intentional. The linked `MASTER_PROMPT.md` and `CHAT_TRANSFER_PROMPTS.md` exist in the live tree; no broken path or migration is required.
+- **Finding / disposition:** the file clearly labels itself as a compatibility pointer, defers to the canonical operating authority and avoids duplicating authorization or safety rules. It remains useful for legacy links and onboarding. No content change is justified. Disposition: **KEEP / VERIFIED**.
+- **Acceptance evidence:** complete content review and repository path/caller search **PASS — STATIC SOURCE CHECK**. No Markdown linter, formatter, Flutter analyzer/test, build or visual check was run or applicable to this pointer; no external operation was initiated.
+- **Scope:** register disposition and this record only. `CHAT_RULES.md`, source, tests, config, workflows, assets and release artifacts remain unchanged.
+- **Next file:** `CHAT_TRANSFER_PROMPTS.md` in current tree order. Continue the file-by-file WP0 audit; the 12 formatter-touched Dart files remain pending individual content review.
 
 ### Formatter-only side effect — 12 Dart files — CONTENT REVIEW PENDING (2026-11-26)
 
