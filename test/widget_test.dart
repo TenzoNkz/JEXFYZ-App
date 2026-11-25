@@ -212,6 +212,7 @@ void main() {
       kind: JexAnimatedIconKind.battery,
       color: Colors.white,
       connected: true,
+      active: true,
     );
     await tester.pumpWidget(
       const Directionality(
