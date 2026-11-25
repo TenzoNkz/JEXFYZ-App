@@ -242,11 +242,11 @@ The latest published App package is Build #167 / Actions run `44510421466` / job
 
 ### Usage Statistics density and performance follow-up — current main
 
-- Temperature chart height is 160 dp (reduced from 170 dp); y-axis and elapsed-time painter labels use 10 dp. Y-axis tick precision follows tick spacing so narrow temperature ranges do not repeat the same rounded label. Battery/Hotside and Hotside/Activity section gaps are 18 dp. Min/Avg/Max/Observed, Hotside limit, four activity timelines and all aggregates remain.
+- Temperature chart height is 160 dp (reduced from 170 dp); y-axis and elapsed-time painter labels use 10 dp. Y-axis tick precision follows tick spacing so narrow temperature ranges do not repeat the same rounded label. Battery/Hotside and Hotside/Activity section gaps are 18 dp. The visible summary is Min/Avg/Max only; the Observed row, More details disclosure and Last sample footer remain removed. The Hotside limit and four activity timelines remain, while observed-duration aggregates are retained for analytics.
 - Current live analytics uses one session/metric event index, event identity set, ordered merge and a single summary per one-second live batch. Event groups are sorted only when not already chronological. Decimated chart points are cached in the summary; cursor lookup uses binary search.
 - SQLite schema/version 2 and retention stay unchanged. Temperature sample insert + matching freshness update are one transaction. The writer uses 64 normal + 8 reserved + 1 critical endSession slot; producers do not wait for admission, overflow is rejected and shown as a persistent recording warning, and accepted work remains FIFO. Raw 1-Hz samples, explicit null gaps and HOT-only P1 coverage remain.
 - **Performance boundary:** current implementation still performs one full selected-session summary and chart-decimation pass per one-second refresh. This is a linear indexed pass rather than the earlier repeated filtering/sorting and per-update summarization. A long-duration Android CPU/memory soak has not been performed.
-- **Status:** INCLUDED IN BUILD #162 / 188 OF 188 FLUTTER TESTS PASSED / LONG-DURATION DEVICE SOAK AND VISUAL ACCEPTANCE NOT VERIFIED.
+- **Status:** Current presentation is retained in Build #167 (`0dd96228d33b08c66e736ae91a8a6c3e5c3ddb81`); the Build #167 Flutter suite passed 205/205 tests. Long-duration Android CPU/memory soak and screenshot-based visual acceptance remain **NOT VERIFIED**.
 
 
 ### Peltier safety popup — implemented in Build #153
