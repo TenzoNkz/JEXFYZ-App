@@ -2,6 +2,126 @@
 
 This is the current App pre-build/packaging snapshot. Build #167 has already completed and published the Home cooler sizing correction. Do not trigger another build merely to repeat successful CI.
 
+
+## Owner-requested full App rework + premium UI redesign — 2026-11-26
+
+**Disposition: OWNER-REQUESTED / DISKUSI PLAN READY FOR EKSEKUSI CODE / NOT IMPLEMENTED.** The owner asked for a broad repository rework and a complete App UI redesign that feels less rigid, more premium and elegant. This is an App-only, incremental modernization plan. This section supersedes the narrower WP0–WP7 sequencing below where the scopes overlap; the protected boundaries and evidence requirements remain unchanged.
+
+### Verified opening baseline
+
+- Current `main` HEAD at the start of this plan: `0ff34de66963a193034c3c737ae4dc6d7de886ac`; root tree `eaf84dbb2ea306a82075cea22b0351b976d23ee9`; recursive tree **142 entries / 96 blobs / 46 trees**, `truncated=false`.
+- Current source snapshot: `lib/main.dart` 11,622 lines / about 409 KB (blob `9663736fbe4bd7d251a8b3632b735a9cafb0b4d1`); `lib/app_settings.dart` about 1,894 lines (blob `1a1f1482eddc47914755c484d4301b30dbb16e31`); `lib/floating_monitor.dart` about 1,958 lines (blob `b47f960a076bfec7ce13b4bfcda6af7194efedc4`); `lib/usage_statistics.dart` 3,640 lines (blob `1e23b445697ce042c634ed4a382068cbf7908619`). The seven production Dart files and current test inventory were inspected statically.
+- `main.dart` still co-locates startup, Dashboard state, BLE/GATT lifecycle, P1 parsing/sync, serialized commands and ACK waiters, telemetry mapping, reconnect/background behavior, OTA presentation/orchestration and Home/five-tab rendering. This is the primary architectural concentration risk; it is not proof that every responsibility currently fails.
+- Settings/preferences/localization, scan coordination, statistics and Floating Monitor already have partial file boundaries. The goal is to strengthen those boundaries rather than replace working contracts wholesale.
+- Latest published package remains **Build #167**, immutable source `0dd96228d33b08c66e736ae91a8a6c3e5c3ddb81`, Release `403010611` / `jexfyz-latest`. It predates subsequent source changes on `main`; do not describe the current source as included in Build #167.
+- Repository inventory still has 3/96 content dispositions and 12 formatter-touched Dart files pending individual review. The audit is mandatory work within the broader repository rework, not a reason to mass-edit every file.
+
+### Scope and explicit exclusions
+
+**Included in the Eksekusi Code workstream after this handoff is opened in its dedicated chat:** individual review of all tracked files; Flutter/Dart App architecture and UI source; App-side Kotlin bridge/overlay only when a specific integration or visual defect requires it; tests; documentation; static analysis; and justified App configuration changes. Every file receives an evidence-backed KEEP / VERIFIED, UPGRADE, PROTECTED, REPLACE, RETIRE CANDIDATE or IMMUTABLE disposition.
+
+**Excluded from this work package:** Firmware behavior/source/BIN, BLE wire-protocol changes, BLE App identity/security implementation, online OTA transport/certificate/image-authentication/recovery changes, Firebase production/backend metadata, signing keys/keystores, guarded Build App publication/release logic, APK/release/tag/asset operations, flashing and physical device/hardware operation. OTA remains frozen/protected. Firmware Update UI may be redesigned only as a truthful presentation of existing lifecycle states; do not change its transport or security behavior.
+
+### Target architecture — incremental destination, not a big-bang rewrite
+
+Proposed target map (not an instruction to create all folders immediately):
+
+~~~text
+lib/
+  app/                  # bootstrap, app root, navigation and lifecycle wiring
+  core/
+    design_system/      # semantic tokens, light/dark themes, type, spacing, motion
+    localization/       # existing EN/ID source of truth, migration only if justified
+    platform/           # narrow Android MethodChannel adapters and permissions
+  features/
+    device_session/
+      domain/           # immutable device state, protocol-facing models
+      data/             # the single BLE/GATT transport owner and P1 framing/parser
+      application/      # connection/session orchestration and command use cases
+    home/presentation/
+    controls/presentation/
+    connection/presentation/
+    settings/{data,domain,presentation}/
+    usage_statistics/{data,domain,application,presentation}/
+    floating_monitor/{bridge,application,presentation}/
+    firmware_update/presentation/  # presentation only; protected OTA client untouched
+  shared/               # small reusable UI primitives and utilities
+test/
+  unit/
+  widget/
+  golden/
+integration_test/       # deterministic App flows where supported
+~~~
+
+This is a target map, not an instruction to create all directories immediately. The Code workspace must check current callers, import cycles and tests at each extraction. Do not add Riverpod/BLoC/router/animation packages merely to create a new architecture. Prefer existing Flutter primitives and current state/listener patterns until a measured, justified dependency decision is approved.
+
+**Authoritative data flow:** the one BLE/GATT owner receives P1 frames → validates protocol/session and produces a typed device snapshot → app/session controller publishes state → presentation selectors/view models render Home, Controls and Floating Monitor. User actions become command intents → one serialized writer/session gate → ACK/pending result → physical output is shown as confirmed only after authoritative device telemetry. The native Floating Monitor receives a projection of the same Flutter-owned telemetry through the existing bridge; it never creates a second BLE client.
+
+### UI direction — “Quiet Luxury / Precision Instrument”
+
+Aim for an elegant hardware-instrument interface: composed, tactile, highly legible and calm. Premium quality should come from hierarchy, spacing, typography, proportion, component craftsmanship and coherent feedback—not visual effects or decoration.
+
+- Preserve JE X FYZ / Horizon identity, approved cooler image/transparency/aspect ratio, Phosphor icon family and the approved Home/360-dp/DPI contracts unless a screen-specific design decision is reviewed and approved. The full redesign scope permits proposing better compositions; it does not silently approve a new brand, logo, asset, font, palette, or replacement layout contract.
+- Consolidate one semantic design system: light/dark surfaces, foreground levels, semantic device/safety colors, borders, type roles, spacing, radii, component states and motion. Inspect current `ThemeData` and style helpers first; avoid a parallel palette in page files. Define exact token values only after screenshot/reference comparison and contrast validation.
+- Reduce excessive nested cards and repeated containers. Use clear sections and intentional surface contrast; reserve accent color for primary action, selected state or real device semantics. No default neon, glassmorphism, ornamental glow, heavy shadows, gratuitous gradients, floating badges or random corner radii.
+- Replace rigid feeling with meaningful micro-interactions, balanced whitespace, predictable transitions and coherent pressed/focused/pending/disabled/error states. Do not animate every row or use animation to disguise a weak information hierarchy.
+- Retain English and Indonesian as first-class languages through the single localization source. Check longest real strings, units, decimal/date/number formatting, error messages and technical terminology.
+- Design an accessible text/reflow mode before changing the existing `TextScaler.noScaling` fixed-canvas behavior. Do not remove it casually or break the 360-dp/DPI compensation contract. Newly introduced/materially changed touch targets aim for 48 × 48 dp; the current compact Connection controls remain at least their documented 40–42 dp and are not reduced.
+- Use Flutter's built-in animation system; no additional animation package is currently justified. Preserve platform reduced-motion behavior and lifecycle-safe controller disposal.
+
+### Whole-App screen redesign brief
+
+1. **Home:** preserve the cooler as the visual product hero, full silhouette and transparency. Establish a calm brand/header zone, clear connection and safety status, readable seven-metric hierarchy, balanced negative space, concise Notification/status treatment and obvious Connect/Settings affordances. No artificial data, fake graphs or color that suggests success while disconnected.
+2. **Voltage / Control / Adaptive / LED / Temperature:** unify tab navigation, selection indicator, control geometry, labels, action hierarchy and state feedback. Give each tab its own task-focused layout rather than forcing all five into one generic card template. Pending command, ACK, telemetry-confirmed output, unavailable/locked and error are distinct states. Preserve Voltage options, Adaptive profiles, Lock Voltage, Fan/Peltier interlocks, temperature limits and existing command gates.
+3. **Bluetooth Connection:** give permission, adapter, scanning, device discovery, connecting, P1 syncing/ready and failure clear progressive states; use real state changes for motion. Preserve passive Auto Connect, one scan owner, generation invalidation, saved device identity and current connection handoff.
+4. **Settings and subpages:** use an editorial information hierarchy with consistent section/list rhythm, descriptions, icon alignment and route/sheet transitions. Preserve page order, settings keys/defaults, theme behavior, language names and the compact Settings contract unless a separate decision authorizes a migration.
+5. **Usage Statistics:** redesign as a precise analytical surface: session context, important summaries, temperature trends, activity timeline and selected-time detail should read as one coherent analysis. Charts represent recorded values only; retain real gaps, session boundaries and correct time mapping. Profile long sessions before changing rendering or data architecture.
+6. **Floating Monitor settings and overlay:** make Flutter configuration feel native to the App design system. Separately refine the Android Canvas/WindowManager overlay for clear metric priority, localization, contrast and drag/resize affordance. The native view remains a separate renderer fed by Flutter; do not create a second BLE owner.
+7. **Dialogs, sheets and Firmware Update presentation:** use a coherent hierarchy for title, explanation, impact, primary/secondary actions and actual progress/failure. Firmware Update presentation may consume existing state only; do not modify OTA transport, trust, metadata, retry, recovery or Firmware.
+8. **App-wide states:** audit first-launch/empty, loading, disconnected, syncing, ready, pending, locked, stale/unknown, warning, safety lock, error, permission denied and lifecycle restoration. Every state must be semantically truthful and localized.
+
+### Motion language
+
+Use one small motion system rather than individual ad-hoc timings:
+- Press / selection feedback: **100–140 ms**, subtle scale/tonal/ink response.
+- Control and confirmed-state transitions: **160–220 ms**; do not advance physical-state visuals on command intent or ACK alone.
+- Tab content: **180–240 ms**, short fade plus roughly 4–8 dp movement; keep stable keys, selection and per-tab scroll state.
+- Dialogs / sheets / routes: **220–300 ms**, consistent curve and platform-appropriate navigation behavior.
+- Telemetry: brief value cross-fade/highlight only when a real new sample arrives; never interpolate invented readings.
+- Fan/LED/Peltier visuals remain bound to existing confirmed output/phase behavior. Preserve Stopwatch/phase-anchor/LED sync revision contracts and Fan coast behavior.
+- Respect Android reduced-animation preference: nonessential repeating loops stop or become a stable static state; do not merely shorten an infinite loop. Dispose controllers and isolate animated subtrees.
+
+### Execution work packages and dependency order
+
+| WP | Scope | Required outcome / gate |
+|---|---|---|
+| **WP0 — Repository recovery and full inventory** | Reconcile HEAD/status and all file dispositions; resume after the already reviewed lockfile at `README.md`; individually review the 12 formatter-touched Dart files; continue all remaining 96-blob audit entries. | Complete source/consumer map, exact KEEP/UPGRADE/PROTECTED/REPLACE/RETIRE/IMMUTABLE decisions. No mass formatting/rewrite as a substitute for review. |
+| **WP1 — Characterization and regression foundation** | Review existing tests for behavioral coverage and false positives; add targeted pure/unit/widget contracts around BLE state, P1 sync, ACK vs telemetry, Settings persistence, chart gaps, localization, native bridge payloads and lifecycle before moving code. | Baseline commands/results recorded at exact SHA; every critical invariant maps to an observable test. No existing regression is deleted to force green. |
+| **WP2 — App shell, bootstrap and shared core** | Separate startup/security/Firebase initialization orchestration, App root/navigation, settings/preferences/localization adapters and theme source of truth into small modules. | Existing boot/tamper gate, App Check behavior, stored IDs/defaults, language/theme behavior and Android identity unchanged. |
+| **WP3 — Device session and P1 boundary** | Extract typed models, one BLE/GATT transport adapter, scan/connection/session coordinator, P1 parser and serialized command/ACK handling from the large Dashboard State. Dashboard becomes a consumer of a state/controller interface. | Single BLE owner; same UUIDs/framing/commands/P1 `SYNC`/`SYNC_READY` gates, reconnect invalidation, permission flow, timers/disposal, ACK ordering and telemetry truth. No protocol/Firmware change. |
+| **WP4 — Shared design system** | Create central semantic tokens, theme extensions/helpers as justified, typography/spacing/radius/elevation roles, reusable controls/surfaces/status and motion primitives. | One source of truth for all Flutter routes; light/dark and compact Settings contracts; contrast and component-state matrix. No unnecessary package or parallel theme. |
+| **WP5 — Home and five control surfaces** | Extract screen widgets; implement the approved premium art direction for Home and Voltage/Control/Adaptive/LED/Temperature with coherent navigation, state feedback and transitions. | Per-tab behavioral tests; stable state/scroll/selection; protected cooler geometry and telemetry; no change to thresholds or commands. |
+| **WP6 — Connection, Settings and overlays/dialogs** | Redesign Bluetooth sheet and progressive states, Settings/subpages, dialogs, sheets and Firmware Update presentation; improve content hierarchy and accessibility. | Permission/scan/connect/sync/failure state tests; storage compatibility; full EN/ID/theme/inset checks; OTA/Firmware runtime unchanged. |
+| **WP7 — Usage Statistics architecture and UI** | Separate model/analytics/store/queue/recorder/presentation into clear boundaries, then refine charts and information hierarchy. | Preserve schema v2 and v1→v2 migration, 30-day retention, raw 1-Hz records, timestamp weighting, sessions, HOT-only freshness, null gaps, gap-safe decimation and bounded 64+8+1 queue. Profile 1h/6h/24h before optimization. |
+| **WP8 — Floating Monitor Flutter/native split** | Separate configuration, bridge and presentation concerns; refine Flutter Settings and the native Canvas/WindowManager visual system only where justified. | Existing MethodChannel contract, service/permission/lifecycle/drag/resize behavior and Flutter-owned telemetry preserved; no native BLE/GATT. Native/device claims require actual Android evidence. |
+| **WP9 — Screenshot, golden, integration and platform validation** | Add a small stable set of component/screen goldens and deterministic Flutter integration flows; add native tests only for a meaningful pure Kotlin boundary. | Freeze animation/use deterministic telemetry in goldens; no brittle full-screen pixel tests. Exercise locale/theme/viewport/text-scale/reduced-motion/state matrix. Real Android/OEM screenshot evidence remains separate from widget/golden/CI PASS. |
+| **WP10 — Repository closure and governance** | Finish per-file register, reconcile docs/skills, inspect dependency/toolchain compatibility and CI scope, update cross-links and review the entire diff. | All tracked files have a recorded disposition; format/analyze/focused/full tests pass where tools permit; exact SHA/CI evidence reconciled. Package/release stays in Build App workspace. |
+
+Implement in dependency-sized increments and commit each coherent package. Do not extract multiple owners or redesign all screens in one risky patch. Re-check current main and exact target SHAs before every increment; previous line numbers and blobs are discovery evidence, not stable edit anchors.
+
+### Required acceptance and stop gates
+
+- **Architecture:** no Flutter page owns BLE/GATT; device/session/command/telemetry responsibilities are explicit; no duplicate state source; no dependency cycle or broad service locator introduced merely to hide coupling.
+- **Behavior:** all existing App and hardware-facing state contracts have regression coverage, especially disconnected/unknown, reconnect, P1 session readiness, command pending/ACK/confirmed telemetry, Fan/Peltier/Adaptive/Lock Voltage, LED phase/re-anchor and notification semantics.
+- **Persistence:** no setting key, default, SQLite schema, migration or stored identity changes without a separately documented migration plan and explicit review.
+- **Visual:** review every major screen in 350-dp/420-dp conditions for applicable fixed-canvas surfaces, English/Indonesian, Light/Dark, connected/disconnected/error, portrait/constrained height, supported enlarged text/accessibility and reduced motion. Include screenshots with exact source SHA, device/Android, logical dp/density and configuration.
+- **Accessibility:** contrast, semantics, focus, screen reader, touch areas, system text scaling and color-independent state cues.
+- **Quality:** changed Dart formatted; analyzer reviewed; focused + full Flutter tests run where tools are available; actual results and exact SHA recorded; full diff reviewed. Missing toolchain/device is BLOCKED / NOT RUN, never PASS.
+- **Visual result:** choose only VISUAL PASS, VISUAL PASS WITH ACCEPTED LIMITS, VISUAL REJECT or VISUAL NOT VERIFIED under `VISUAL_QUALITY_GATE.md`. Test/build/mockup does not prove actual Android rendering.
+- **Stop immediately** on a safety/truth regression, BLE ownership conflict, data migration risk, signing/secret exposure, protected OTA/Firmware path change, unexplained CI behavior or material owner-contract conflict. Do not work around a failed gate by weakening tests or scope.
+
+**Next workspace:** this plan is ready to continue in the owner's separate **Eksekusi Code!** conversation with a fresh request `@Thinking Eksekusi Code!`. That command authorizes only this App Code/static-audit package; it does not authorize App Build/release, Firmware/BIN, Firebase, OTA, flashing or device operation. This Diskusi interaction itself makes no source/test/config/workflow/build changes.
+
 ## Current package and source
 
 - **Latest published package:** Build #167 / Actions run `44510421466` / job `135512909555` / Issue #44 / immutable source `0dd96228d33b08c66e736ae91a8a6c3e5c3ddb81`, terminal SUCCESS. All steps 1–21 and cleanup 39–43 SUCCESS.
