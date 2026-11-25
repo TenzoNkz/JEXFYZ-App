@@ -50,6 +50,16 @@ Last reconciled: 2026-11-25 (Asia/Jakarta). Authority: `MASTER_PROMPT.md`.
 - Keep architecture work incremental; profile long-session Statistics before optimizing. Keep BLE App identity and OTA certificate/server trust as separate protected projects. Do not combine either with visual or toolchain migration.
 - No extra ChatGPT connector or animation dependency is recommended. GitHub, Figma and Context7 are sufficient; owner workstation/device tooling remains the main practical gap.
 
+
+## Grouped execution readiness — clarified source targets — 2026-11-25
+
+- The execution plan is now recorded in `APP_PREBUILD_AUDIT.md` (WP0–WP7). Read it before source work. `DESIGN_NOTES.md` contains the animation/Statistics source clarification.
+- Direct source check confirms `JexAnimatedIcon.glyph` has 12 `main.dart` call sites and still constructs the stateful icon's seven controllers in `initState` before returning a static Icon in `build`. The separate `JexAnimatedGlyph` is stateless. Optimize the actual static constructor/call sites and add lifecycle regression evidence; do not treat source allocation alone as measured jank.
+- `JexLedStripPreview` rebuilds its Row and invariant mode/arrows inside the per-frame AnimatedBuilder. Profile/optimize by isolating animated paint while preserving LED phase anchor/sync.
+- Usage Statistics merges live session events then re-summarizes the selected snapshot during diagram flush. Profile 1h/6h/24h first; preserve raw 1-Hz data, schema v2/migration, 30-day retention, explicit gaps, HOT freshness and bounded 64+8+1 queue.
+- Repository currently has 11 test Dart files plus helper, no `integration_test/`, no golden suite, no native Android test source, no checked-in Gradle Wrapper and no Dependabot config. PR validation is implemented but has no observed PR run.
+- Execution remains **deferred**, consistent with the owner's earlier instruction to group the work with other pending tasks. No source/test/dep/config/workflow/build/release/Firmware/Firebase/OTA/device action was performed in this Diskusi.
+
 ## Other boundaries
 
 - PR validation workflow `.github/workflows/jexfyz-app-pr-validation.yml` is implemented; no open PR or PR-triggered run was observed in the 2026-11-24 recovery check.
