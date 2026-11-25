@@ -72,6 +72,7 @@ import 'app_settings.dart';
 import 'connection_scan_state.dart';
 import 'connection_scan_coordinator.dart';
 import 'floating_monitor.dart';
+import 'jex_animated_glyph.dart';
 import 'usage_statistics.dart';
 
 // Premium icon system: Phosphor Icons (Regular/Bold).
@@ -1889,13 +1890,12 @@ class _JexColorPickerCardState extends State<_JexColorPickerCard> {
                                       : null,
                                 ),
                                 child: isSelected
-                                    ? JexAnimatedIcon.glyph(
+                                    ? JexAnimatedGlyph(
                                         icon: PhosphorIconsBold.check,
                                         color: isWhite
                                             ? Colors.black
                                             : Colors.white,
                                         size: 16,
-                                        active: true,
                                       )
                                     : null,
                               ),
@@ -2279,7 +2279,6 @@ double jexVoltageEnergyLevel(String voltage) {
 
 class JexAnimatedIcon extends StatefulWidget {
   final JexAnimatedIconKind kind;
-  final IconData? glyph;
   final Color color;
   final bool connected;
   final double size;
@@ -2295,7 +2294,6 @@ class JexAnimatedIcon extends StatefulWidget {
   const JexAnimatedIcon({
     super.key,
     required this.kind,
-    this.glyph,
     required this.color,
     this.size = 24,
     this.connected = false,
@@ -2308,23 +2306,6 @@ class JexAnimatedIcon extends StatefulWidget {
     this.lightSurfaceColor = Colors.white,
     this.lightOutlineColor = const Color(0xFF3F444D),
   });
-
-  const JexAnimatedIcon.glyph({
-    super.key,
-    required IconData icon,
-    required this.color,
-    this.size = 24,
-    this.active = false,
-    this.warning = false,
-  }) : connected = false,
-       kind = JexAnimatedIconKind.generic,
-       glyph = icon,
-       level = 1,
-       voltageLevel = 5,
-       valueKnown = false,
-       lightTheme = false,
-       lightSurfaceColor = Colors.white,
-       lightOutlineColor = const Color(0xFF3F444D);
 
   @override
   State<JexAnimatedIcon> createState() => _JexAnimatedIconState();
@@ -2855,14 +2836,6 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
 
   @override
   Widget build(BuildContext context) {
-    // Generic/action glyphs are intentionally static. Full custom motion is reserved
-    // for JE X FYZ status/indicator kinds.
-    if (widget.glyph != null) {
-      return RepaintBoundary(
-        child: Icon(widget.glyph!, size: widget.size, color: widget.color),
-      );
-    }
-
     return RepaintBoundary(
       child: AnimatedBuilder(
         animation: Listenable.merge(<Listenable>[
@@ -8212,12 +8185,10 @@ class _DashboardScreenState extends State<DashboardScreen>
                           ),
                         ),
                         child: animatedKind == null
-                            ? JexAnimatedIcon.glyph(
+                            ? JexAnimatedGlyph(
                                 icon: icon,
                                 size: 26,
                                 color: indicatorColor,
-                                active: animationIsActive,
-                                warning: warning,
                               )
                             : JexAnimatedIcon(
                                 kind: animatedKind,
@@ -8661,11 +8632,10 @@ class _DashboardScreenState extends State<DashboardScreen>
             width: 45,
             height: 34,
             child: Center(
-              child: JexAnimatedIcon.glyph(
+              child: JexAnimatedGlyph(
                 icon: icon,
                 size: 27,
                 color: foregroundColor,
-                active: true,
               ),
             ),
           ),
@@ -10237,11 +10207,10 @@ class _DashboardScreenState extends State<DashboardScreen>
                           'settings',
                           appLanguageNotifier.value,
                         ),
-                        icon: JexAnimatedIcon.glyph(
+                        icon: JexAnimatedGlyph(
                           icon: PhosphorIconsRegular.gear,
                           color: headerForeground,
                           size: 25,
-                          active: true,
                         ),
                         onPressed: _openSettings,
                       ),
@@ -10769,11 +10738,10 @@ class _ConnectionSheetContentState extends State<_ConnectionSheetContent>
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                JexAnimatedIcon.glyph(
+                JexAnimatedGlyph(
                   icon: icon,
                   size: 18,
                   color: color,
-                  active: true,
                 ),
                 const SizedBox(width: 6),
                 Flexible(
@@ -10858,11 +10826,10 @@ class _ConnectionSheetContentState extends State<_ConnectionSheetContent>
                     height: 42,
                   ),
                   onPressed: () => Navigator.pop(context),
-                  icon: JexAnimatedIcon.glyph(
+                  icon: JexAnimatedGlyph(
                     icon: PhosphorIconsRegular.x,
                     color: scheme.onSurfaceVariant,
                     size: 22,
-                    active: true,
                   ),
                 ),
               ],
@@ -10918,11 +10885,10 @@ class _ConnectionSheetContentState extends State<_ConnectionSheetContent>
                   ),
                   tooltip: JexText.of('scan', lang),
                   onPressed: _requestScan,
-                  icon: JexAnimatedIcon.glyph(
+                  icon: JexAnimatedGlyph(
                     icon: PhosphorIconsRegular.arrowClockwise,
                     color: const Color(0xFF5C9DFF),
                     size: 22,
-                    active: true,
                   ),
                 ),
               ],
@@ -10987,7 +10953,7 @@ class _ConnectionSheetContentState extends State<_ConnectionSheetContent>
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            JexAnimatedIcon.glyph(
+                            JexAnimatedGlyph(
                               icon: unavailable || failed
                                   ? PhosphorIconsRegular.bluetoothSlash
                                   : PhosphorIconsRegular.bluetooth,
@@ -10997,8 +10963,6 @@ class _ConnectionSheetContentState extends State<_ConnectionSheetContent>
                                   ? scheme.error
                                   : const Color(0xFF5C9DFF),
                               size: 32,
-                              active: !unavailable && !failed && scanning,
-                              warning: unavailable || failed,
                             ),
                             const SizedBox(height: 8),
                             Text(
@@ -11017,11 +10981,10 @@ class _ConnectionSheetContentState extends State<_ConnectionSheetContent>
                               onPressed: unavailable || scanning
                                   ? null
                                   : _requestScan,
-                              icon: JexAnimatedIcon.glyph(
+                              icon: JexAnimatedGlyph(
                                 icon: PhosphorIconsRegular.arrowClockwise,
                                 color: Theme.of(context).colorScheme.onPrimary,
                                 size: 16,
-                                active: true,
                               ),
                               label: Text(JexText.of('scan', lang)),
                             ),
@@ -11046,11 +11009,10 @@ class _ConnectionSheetContentState extends State<_ConnectionSheetContent>
                         );
                         return ListTile(
                           dense: true,
-                          leading: JexAnimatedIcon.glyph(
+                          leading: JexAnimatedGlyph(
                             icon: PhosphorIconsRegular.bluetooth,
                             color: const Color(0xFF63E6BE),
                             size: 19,
-                            active: true,
                           ),
                           title: Text(
                             displayName,
@@ -11356,11 +11318,10 @@ class _FirmwareUpdateDialogState extends State<FirmwareUpdateDialog> {
                 controller: ssid,
                 decoration: InputDecoration(
                   labelText: JexText.of('ssid', appLanguageNotifier.value),
-                  prefixIcon: JexAnimatedIcon.glyph(
+                  prefixIcon: JexAnimatedGlyph(
                     icon: PhosphorIconsRegular.wifiHigh,
                     color: Theme.of(context).colorScheme.onSurfaceVariant,
                     size: 20,
-                    active: true,
                   ),
                 ),
               ),
@@ -11370,11 +11331,10 @@ class _FirmwareUpdateDialogState extends State<FirmwareUpdateDialog> {
                 obscureText: !passwordVisible,
                 decoration: InputDecoration(
                   labelText: JexText.of('password', appLanguageNotifier.value),
-                  prefixIcon: JexAnimatedIcon.glyph(
+                  prefixIcon: JexAnimatedGlyph(
                     icon: PhosphorIconsBold.lock,
                     color: Theme.of(context).colorScheme.onSurfaceVariant,
                     size: 20,
-                    active: true,
                   ),
                   suffixIcon: IconButton(
                     tooltip: JexText.of(

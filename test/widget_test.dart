@@ -15,6 +15,7 @@ import 'dart:math' as math;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter/material.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
+import 'package:jexfyz_cooler/jex_animated_glyph.dart';
 import 'package:jexfyz_cooler/main.dart';
 import 'package:jexfyz_cooler/app_settings.dart';
 import 'package:jexfyz_cooler/floating_monitor.dart';
@@ -87,10 +88,43 @@ void main() {
       expect(glyph, isNot(contains('AnimationController')));
       expect(glyph, isNot(contains('.repeat(')));
       expect(glyph, isNot(contains('Transform.scale')));
+      expect(app, contains("import 'jex_animated_glyph.dart';"));
+      expect(app, contains('JexAnimatedGlyph('));
+      expect(app, isNot(contains('JexAnimatedIcon.glyph(')));
+      expect(app, isNot(contains('IconData? glyph;')));
+      expect(app, isNot(contains('widget.glyph')));
       expect(app, contains('class _JexAnimatedIconState'));
       expect(app, contains('jexIconAnimationPermitted'));
     },
   );
+
+  testWidgets('Static action glyph preserves its rendered Icon contract', (
+    tester,
+  ) async {
+    const glyphColor = Color(0xFF5C9DFF);
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: Center(
+            child: JexAnimatedGlyph(
+              icon: PhosphorIconsBold.check,
+              color: glyphColor,
+              size: 16,
+            ),
+          ),
+        ),
+      ),
+    );
+
+    final renderedIcon = tester.widget<Icon>(
+      find.byIcon(PhosphorIconsBold.check),
+    );
+    expect(renderedIcon.icon, PhosphorIconsBold.check);
+    expect(renderedIcon.color, glyphColor);
+    expect(renderedIcon.size, 16);
+    expect(find.byType(JexAnimatedGlyph), findsOneWidget);
+  });
 
   test(
     'Home NOTIFY preserves readable text inside its fixed 44dp geometry',
