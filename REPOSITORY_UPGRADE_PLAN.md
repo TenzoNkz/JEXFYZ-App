@@ -152,7 +152,7 @@ A failed gate blocks dependent work. Retry only after classifying root cause (so
 | `BUILD_NOTES.md` | Project/configuration file | REVIEW REQUIRED | INVENTORIED — CONTENT REVIEW PENDING |
 | `CHANGELOG.md` | Append-only evidence ledger | APPEND-ONLY / NO REWRITE | INVENTORIED — CONTENT REVIEW PENDING |
 | `CHAT_RULES.md` | Compatibility pointer to canonical operating policy | ACTIVE POLICY POINTER | KEEP / VERIFIED (2026-11-26) |
-| `CHAT_TRANSFER_PROMPTS.md` | Operating governance | CANONICAL GOVERNANCE | INVENTORIED — CONTENT REVIEW PENDING |
+| `CHAT_TRANSFER_PROMPTS.md` | Three dedicated workspace LOAD + CONTINUE templates | ACTIVE WORKSPACE TEMPLATES | UPGRADE — CLOSED / READ-BACK VERIFIED (2026-11-26) |
 | `CHAT_TRANSFER.md` | Session continuity | ACTIVE STATUS / CHECKPOINT | INVENTORIED — CONTENT REVIEW PENDING |
 | `DESIGN_NOTES.md` | Project/configuration file | REVIEW REQUIRED | INVENTORIED — CONTENT REVIEW PENDING |
 | `FIRMWARE_NOTES.md` | Project/configuration file | REVIEW REQUIRED | INVENTORIED — CONTENT REVIEW PENDING |
@@ -261,6 +261,16 @@ A failed gate blocks dependent work. Retry only after classifying root cause (so
 - **Acceptance evidence:** complete content review and repository path/caller search **PASS — STATIC SOURCE CHECK**. No Markdown linter, formatter, Flutter analyzer/test, build or visual check was run or applicable to this pointer; no external operation was initiated.
 - **Scope:** register disposition and this record only. `CHAT_RULES.md`, source, tests, config, workflows, assets and release artifacts remain unchanged.
 - **Next file:** `CHAT_TRANSFER_PROMPTS.md` in current tree order. Continue the file-by-file WP0 audit; the 12 formatter-touched Dart files remain pending individual content review.
+
+### WP0 — `CHAT_TRANSFER_PROMPTS.md` — UPGRADE / CLOSED / READ-BACK VERIFIED (2026-11-26)
+
+- **Reviewed checkpoint:** `main` HEAD `b3378c99fd95a28be939737af583c74af7b703c0`; prior file blob `a8804f75a20c96e0292d26eabd2ee3ba7ff28cf9`; corrected file blob `ebf275817689ab9a64274e87cb4cb6e5d337b658`. The complete 178-line, three-prompt file was inspected.
+- **Role and consumers:** provides the exact three first-message workspace payloads (Diskusi, CODE_FULL and guarded Build App) and onboarding instructions. Direct consumers include `README.md`, `MASTER_PROMPT.md`, `AGENTS.md`, `HANDOVER.md` and `BUILD_NOTES.md`; their current references resolve and retain the intended separation. Current Prompt 2 contains the owner-approved App WP0–WP10 scope and hard exclusions.
+- **Finding / repair:** Prompt 2's startup block hard-coded the historical 3/96 audit count and told the next session to start at `README.md`, which became stale once WP0 dispositions advanced. Replaced this with a live-tree/register instruction: recalculate current disposition counts, resume at the first unreviewed live inventory path, and individually review formatter-touched Dart files still pending. This prevents duplicated audit work without changing authorization or the owner-approved work package.
+- **Structure / safety check — STATIC SOURCE CHECK:** exactly three prompt headings remain; Prompt 1 remains Diskusi read-only; Prompt 2 remains CODE_FULL with App-only code/docs/tests/static-audit scope and protected exclusions; Prompt 3 remains the separate guarded Build App workspace. The stale 3/96/README startup text is absent and the dynamic live-register instruction is present. No prompt's permissions were widened.
+- **Acceptance evidence:** full text review, consumer search and three-prompt/stale-checkpoint assertions **PASS — STATIC SOURCE CHECK**. Current environment command inventory confirms Git 2.47.3, Python 3.13.5 and OpenJDK 21.0.12.1; Flutter, Dart, Gradle and ADB are **NOT FOUND**. No Flutter format/analyzer/test, Android build, visual screenshot or device test was run. No CI or external operation was started.
+- **Scope:** one stale startup instruction in Prompt 2 plus its register row/record. No source, tests, dependency files, workflow, Firmware, assets, APK, Release, signing or device files changed.
+- **Next file:** `CHAT_TRANSFER.md` (active checkpoint). Refresh its bounded checkpoint for CODE_FULL recovery and then continue WP0 at the next unreviewed path after `CHAT_TRANSFER_PROMPTS.md`.
 
 ### Formatter-only side effect — 12 Dart files — CONTENT REVIEW PENDING (2026-11-26)
 
