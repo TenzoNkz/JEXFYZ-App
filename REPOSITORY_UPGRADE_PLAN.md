@@ -153,7 +153,7 @@ A failed gate blocks dependent work. Retry only after classifying root cause (so
 | `CHANGELOG.md` | Append-only evidence ledger | APPEND-ONLY / NO REWRITE | INVENTORIED — CONTENT REVIEW PENDING |
 | `CHAT_RULES.md` | Compatibility pointer to canonical operating policy | ACTIVE POLICY POINTER | KEEP / VERIFIED (2026-11-26) |
 | `CHAT_TRANSFER_PROMPTS.md` | Three dedicated workspace LOAD + CONTINUE templates | ACTIVE WORKSPACE TEMPLATES | UPGRADE — CLOSED / READ-BACK VERIFIED (2026-11-26) |
-| `CHAT_TRANSFER.md` | Session continuity | ACTIVE STATUS / CHECKPOINT | INVENTORIED — CONTENT REVIEW PENDING |
+| `CHAT_TRANSFER.md` | Rolling active continuation checkpoint | ACTIVE CODE_FULL CHECKPOINT | UPGRADE — CLOSED / READ-BACK VERIFIED (2026-11-26) |
 | `DESIGN_NOTES.md` | Project/configuration file | REVIEW REQUIRED | INVENTORIED — CONTENT REVIEW PENDING |
 | `FIRMWARE_NOTES.md` | Project/configuration file | REVIEW REQUIRED | INVENTORIED — CONTENT REVIEW PENDING |
 | `firmware/FIRMWARE_TECHNICAL_REFERENCE.md` | Project/configuration file | REVIEW REQUIRED | INVENTORIED — CONTENT REVIEW PENDING |
@@ -271,6 +271,15 @@ A failed gate blocks dependent work. Retry only after classifying root cause (so
 - **Acceptance evidence:** full text review, consumer search and three-prompt/stale-checkpoint assertions **PASS — STATIC SOURCE CHECK**. Current environment command inventory confirms Git 2.47.3, Python 3.13.5 and OpenJDK 21.0.12.1; Flutter, Dart, Gradle and ADB are **NOT FOUND**. No Flutter format/analyzer/test, Android build, visual screenshot or device test was run. No CI or external operation was started.
 - **Scope:** one stale startup instruction in Prompt 2 plus its register row/record. No source, tests, dependency files, workflow, Firmware, assets, APK, Release, signing or device files changed.
 - **Next file:** `CHAT_TRANSFER.md` (active checkpoint). Refresh its bounded checkpoint for CODE_FULL recovery and then continue WP0 at the next unreviewed path after `CHAT_TRANSFER_PROMPTS.md`.
+
+### WP0 — `CHAT_TRANSFER.md` — UPGRADE / CLOSED / READ-BACK VERIFIED (2026-11-26)
+
+- **Reviewed checkpoint:** prior `main` HEAD `f13924f85350fe187d3e066e9d80c6e76381c7aa`; prior file blob `fd80756a13c93abc49044641a164fde033ca3b5a`; updated file blob `8503075a7842411e5c465114e9956d0682c55ec8`; checkpoint commit `6ef502cd238ce40060390045b779e9f613591a04`. The complete 46-line file and its bounded checkpoint markers were inspected.
+- **Role and consumers:** single rolling handoff checkpoint read between `ACTIVE_CHECKPOINT_START/END`; `MASTER_PROMPT.md` defines this boundary and root onboarding/agent documents link to the file. The checkpoint must not duplicate the full policy or historical build ledger.
+- **Finding / repair:** prior active content was a Diskusi restore and still said implementation had not started, directed the next session to open a separate Code chat, and retained the obsolete 3/96 / README-first position. Replaced only the bounded active checkpoint with a concise `CODE_FULL` recovery state: current HEAD/tree, seven dispositions, next file, CI/Actions/release evidence, toolchain absence, protected invariants/exclusions and WP1 evidence limits. No archived history or separate build ledger was added.
+- **Acceptance evidence:** exact marker pair, new active workspace/state and required continuation fields are verified by file read-back. Result: **PASS — STATIC SOURCE CHECK**. No Markdown linter/formatter or Flutter tests apply to the checkpoint; no local Flutter tests/build/device checks were run.
+- **Scope:** bounded checkpoint content plus this register row/record. No source, tests, config, workflows, Firmware, OTA, Firebase, assets or release artifacts changed.
+- **Next file:** `PROJECT_STATE.md` (current-only project state summary). Refresh its former “planning only / 3 of 96 / next README” statements against live evidence; then reconcile `HANDOVER.md`.
 
 ### Formatter-only side effect — 12 Dart files — CONTENT REVIEW PENDING (2026-11-26)
 
