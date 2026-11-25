@@ -6,31 +6,28 @@ import '../lib/connection_scan_coordinator.dart';
 
 void main() {
   group('ConnectionScanCoordinator', () {
-    test(
-      'opening the manual sheet invalidates a passive attempt suspended in prerequisites',
-      () async {
-        final coordinator = ConnectionScanCoordinator();
-        final prerequisites = Completer<void>();
-        var scannerStarted = false;
+    test('opening the manual sheet invalidates a passive attempt suspended in prerequisites', () async {
+      final coordinator = ConnectionScanCoordinator();
+      final prerequisites = Completer<void>();
+      var scannerStarted = false;
 
-        final attempt = coordinator.beginPassiveAttempt()!;
-        final suspendedAttempt = () async {
-          await prerequisites.future;
-          if (coordinator.isPassiveAttemptCurrent(attempt)) {
-            scannerStarted = true;
-          }
-          coordinator.finishPassiveAttempt(attempt);
-        }();
+      final attempt = coordinator.beginPassiveAttempt()!;
+      final suspendedAttempt = () async {
+        await prerequisites.future;
+        if (coordinator.isPassiveAttemptCurrent(attempt)) {
+          scannerStarted = true;
+        }
+        coordinator.finishPassiveAttempt(attempt);
+      }();
 
-        expect(coordinator.openManualSheet(), isTrue);
-        prerequisites.complete();
-        await suspendedAttempt;
+      expect(coordinator.openManualSheet(), isTrue);
+      prerequisites.complete();
+      await suspendedAttempt;
 
-        expect(scannerStarted, isFalse);
-        expect(coordinator.isManualSheetOpen, isTrue);
-        expect(coordinator.beginPassiveAttempt(), isNull);
-      },
-    );
+      expect(scannerStarted, isFalse);
+      expect(coordinator.isManualSheetOpen, isTrue);
+      expect(coordinator.beginPassiveAttempt(), isNull);
+    });
 
     test('manual ownership blocks passive attempts until neutral close', () {
       final coordinator = ConnectionScanCoordinator();
@@ -43,23 +40,20 @@ void main() {
       coordinator.finishPassiveAttempt(resumed);
     });
 
-    test(
-      'selected-device dismissal does not authorize passive reconnect resumption',
-      () {
-        final coordinator = ConnectionScanCoordinator();
-        expect(coordinator.openManualSheet(), isTrue);
-        coordinator.markManualDeviceSelected();
+    test('selected-device dismissal does not authorize passive reconnect resumption', () {
+      final coordinator = ConnectionScanCoordinator();
+      expect(coordinator.openManualSheet(), isTrue);
+      coordinator.markManualDeviceSelected();
 
-        expect(coordinator.manualDeviceSelected, isTrue);
-        expect(coordinator.closeManualSheet(), isFalse);
-        expect(coordinator.isManualSheetOpen, isFalse);
-        expect(coordinator.isConnectionHandoffActive, isTrue);
-        expect(coordinator.beginPassiveAttempt(), isNull);
+      expect(coordinator.manualDeviceSelected, isTrue);
+      expect(coordinator.closeManualSheet(), isFalse);
+      expect(coordinator.isManualSheetOpen, isFalse);
+      expect(coordinator.isConnectionHandoffActive, isTrue);
+      expect(coordinator.beginPassiveAttempt(), isNull);
 
-        coordinator.completeConnectionHandoff();
-        expect(coordinator.isConnectionHandoffActive, isFalse);
-      },
-    );
+      coordinator.completeConnectionHandoff();
+      expect(coordinator.isConnectionHandoffActive, isFalse);
+    });
 
     test(
       'beginning connection handoff invalidates and blocks passive attempts',
@@ -192,32 +186,29 @@ void main() {
       },
     );
 
-    test(
-      'opening the manual sheet invalidates a one-shot attempt suspended in prerequisites',
-      () async {
-        final coordinator = ConnectionScanCoordinator();
-        final prerequisites = Completer<void>();
-        var scannerStarted = false;
+    test('opening the manual sheet invalidates a one-shot attempt suspended in prerequisites', () async {
+      final coordinator = ConnectionScanCoordinator();
+      final prerequisites = Completer<void>();
+      var scannerStarted = false;
 
-        final attempt = coordinator.beginOneShotAttempt()!;
-        final suspendedAttempt = () async {
-          await prerequisites.future;
-          if (coordinator.isOneShotAttemptCurrent(attempt)) {
-            scannerStarted = true;
-          }
-          coordinator.finishOneShotAttempt(attempt);
-        }();
+      final attempt = coordinator.beginOneShotAttempt()!;
+      final suspendedAttempt = () async {
+        await prerequisites.future;
+        if (coordinator.isOneShotAttemptCurrent(attempt)) {
+          scannerStarted = true;
+        }
+        coordinator.finishOneShotAttempt(attempt);
+      }();
 
-        expect(coordinator.openManualSheet(), isTrue);
-        expect(coordinator.isOneShotAttemptCurrent(attempt), isFalse);
-        prerequisites.complete();
-        await suspendedAttempt;
+      expect(coordinator.openManualSheet(), isTrue);
+      expect(coordinator.isOneShotAttemptCurrent(attempt), isFalse);
+      prerequisites.complete();
+      await suspendedAttempt;
 
-        expect(scannerStarted, isFalse);
-        expect(coordinator.isManualSheetOpen, isTrue);
-        expect(coordinator.beginOneShotAttempt(), isNull);
-      },
-    );
+      expect(scannerStarted, isFalse);
+      expect(coordinator.isManualSheetOpen, isTrue);
+      expect(coordinator.beginOneShotAttempt(), isNull);
+    });
 
     test(
       'connection handoff invalidates and blocks a pending one-shot attempt',
@@ -236,22 +227,19 @@ void main() {
       },
     );
 
-    test(
-      'finishing an invalidated one-shot attempt does not clear a newer reservation',
-      () {
-        final coordinator = ConnectionScanCoordinator();
-        final oldAttempt = coordinator.beginOneShotAttempt()!;
-        coordinator.invalidatePassiveAttempts();
+    test('finishing an invalidated one-shot attempt does not clear a newer reservation', () {
+      final coordinator = ConnectionScanCoordinator();
+      final oldAttempt = coordinator.beginOneShotAttempt()!;
+      coordinator.invalidatePassiveAttempts();
 
-        final newAttempt = coordinator.beginOneShotAttempt()!;
-        expect(coordinator.isOneShotAttemptCurrent(newAttempt), isTrue);
+      final newAttempt = coordinator.beginOneShotAttempt()!;
+      expect(coordinator.isOneShotAttemptCurrent(newAttempt), isTrue);
 
-        coordinator.finishOneShotAttempt(oldAttempt);
-        expect(coordinator.isOneShotAttemptCurrent(newAttempt), isTrue);
+      coordinator.finishOneShotAttempt(oldAttempt);
+      expect(coordinator.isOneShotAttemptCurrent(newAttempt), isTrue);
 
-        coordinator.finishOneShotAttempt(newAttempt);
-        expect(coordinator.hasActiveOneShotAttempt, isFalse);
-      },
-    );
+      coordinator.finishOneShotAttempt(newAttempt);
+      expect(coordinator.hasActiveOneShotAttempt, isFalse);
+    });
   });
 }

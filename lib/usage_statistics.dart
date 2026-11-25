@@ -2371,10 +2371,8 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
               'Suhu baterai dan sisi panas direkam setiap detik selama pendingin dipastikan beroperasi. Pembacaan yang hilang atau tidak valid tetap ditampilkan sebagai celah. Riwayat disimpan secara lokal di ponsel ini.',
               language,
             ),
-            style: Theme.of(dialogContext).textTheme.bodyMedium?.copyWith(
-              color: scheme.onSurfaceVariant,
-              height: 1.4,
-            ),
+            style: Theme.of(dialogContext).textTheme.bodyMedium
+                ?.copyWith(color: scheme.onSurfaceVariant, height: 1.4),
           ),
           actions: [
             TextButton(
@@ -2422,9 +2420,8 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
             _sessionStartLabel(session, language),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: Theme.of(
-              context,
-            ).textTheme.bodySmall?.copyWith(color: scheme.onSurfaceVariant),
+            style: Theme.of(context).textTheme.bodySmall
+                ?.copyWith(color: scheme.onSurfaceVariant),
           ),
         ],
       );
@@ -2490,9 +2487,8 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
   }
 
   String _sessionOptionLabel(UsageStatsSession session, AppLanguage language) {
-    final start = DateTime.fromMillisecondsSinceEpoch(
-      session.startedAtMs,
-    ).toLocal();
+    final start = DateTime.fromMillisecondsSinceEpoch(session.startedAtMs)
+        .toLocal();
     final prefix = session.isActive
         ? JexText.phrase('Active · ', 'Aktif · ', language)
         : '';
@@ -2500,9 +2496,8 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
   }
 
   String _sessionStartLabel(UsageStatsSession session, AppLanguage language) {
-    final start = DateTime.fromMillisecondsSinceEpoch(
-      session.startedAtMs,
-    ).toLocal();
+    final start = DateTime.fromMillisecondsSinceEpoch(session.startedAtMs)
+        .toLocal();
     return formatUsageSessionDate(start, language);
   }
 
@@ -2532,9 +2527,8 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
           Text(
             message,
             textAlign: TextAlign.center,
-            style: Theme.of(
-              context,
-            ).textTheme.bodyMedium?.copyWith(color: scheme.onSurfaceVariant),
+            style: Theme.of(context).textTheme.bodyMedium
+                ?.copyWith(color: scheme.onSurfaceVariant),
           ),
           if (action != null) ...[const SizedBox(height: 8), action],
         ],
@@ -2609,9 +2603,8 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
               textAlign: TextAlign.center,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: Theme.of(
-                context,
-              ).textTheme.labelSmall?.copyWith(color: scheme.onSurfaceVariant),
+              style: Theme.of(context).textTheme.labelSmall
+                  ?.copyWith(color: scheme.onSurfaceVariant),
             ),
             const SizedBox(height: 2),
             Text(
@@ -2782,9 +2775,8 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
             JexText.phrase('Limit · ', 'Batas · ', language) +
                 JexText.formatNumber(referenceValue, language) +
                 ' °C',
-            style: Theme.of(
-              context,
-            ).textTheme.labelSmall?.copyWith(color: scheme.onSurfaceVariant),
+            style: Theme.of(context).textTheme.labelSmall
+                ?.copyWith(color: scheme.onSurfaceVariant),
           ),
         ],
         const SizedBox(height: 7),
@@ -2834,9 +2826,8 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
                       'Tidak ada pembacaan valid pada periode ini.',
                       language,
                     ),
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: scheme.onSurfaceVariant,
-                    ),
+                    style: Theme.of(context).textTheme.bodySmall
+                        ?.copyWith(color: scheme.onSurfaceVariant),
                   ),
                 ),
         ),
@@ -3038,9 +3029,8 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
         Text(
           label,
           textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.labelSmall?.copyWith(
-            color: Theme.of(context).colorScheme.onSurfaceVariant,
-          ),
+          style: Theme.of(context).textTheme.labelSmall
+              ?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
         ),
         const SizedBox(height: 2),
         Text(

@@ -140,9 +140,8 @@ String localizedOtaSuccessSummary(
     details.add(normalizedMode);
   }
   final normalizedVersion = version?.trim() ?? '';
-  if (RegExp(
-    r'^[A-Za-z0-9][A-Za-z0-9._+\-]{0,31}$',
-  ).hasMatch(normalizedVersion)) {
+  if (RegExp(r'^[A-Za-z0-9][A-Za-z0-9._+\-]{0,31}$')
+      .hasMatch(normalizedVersion)) {
     details.add(normalizedVersion);
   }
   return details.join(' • ');
@@ -2867,9 +2866,8 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
       value: widget.active ? 1 : 0,
     );
     _frostFromIntensity = jexPeltierFrostIntensity(widget.voltageLevel);
-    _frostFromParticleCount = jexPeltierFrostParticleCount(
-      widget.voltageLevel,
-    ).toDouble();
+    _frostFromParticleCount = jexPeltierFrostParticleCount(widget.voltageLevel)
+        .toDouble();
     frostTransitionController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 420),
@@ -3005,9 +3003,8 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
       final previousIntensity = jexPeltierFrostIntensity(
         oldWidget.voltageLevel,
       );
-      final previousCount = jexPeltierFrostParticleCount(
-        oldWidget.voltageLevel,
-      ).toDouble();
+      final previousCount = jexPeltierFrostParticleCount(oldWidget.voltageLevel)
+          .toDouble();
       _frostFromIntensity +=
           (previousIntensity - _frostFromIntensity) * previousT;
       _frostFromParticleCount +=
@@ -4553,9 +4550,8 @@ bool isTransientOtaResultEvent(String value) {
 
 // AI-METHOD: parseFirmwareVersion — Parse supported V<major>.<minor> labels only.
 List<int>? parseFirmwareVersion(String version) {
-  final match = RegExp(
-    r'^V(\d+)(?:\.(\d+))?$',
-  ).firstMatch(version.trim().toUpperCase());
+  final match = RegExp(r'^V(\d+)(?:\.(\d+))?$')
+      .firstMatch(version.trim().toUpperCase());
   if (match == null) return null;
   final major = int.tryParse(match.group(1)!);
   final minor = int.tryParse(match.group(2) ?? '0');
@@ -4693,9 +4689,8 @@ class TamperScreen extends StatelessWidget {
                       language,
                     ),
                     textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.w800,
-                    ),
+                    style: Theme.of(context).textTheme.titleLarge
+                        ?.copyWith(fontWeight: FontWeight.w800),
                   ),
                   const SizedBox(height: 10),
                   Text(
@@ -4705,10 +4700,8 @@ class TamperScreen extends StatelessWidget {
                       language,
                     ),
                     textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: scheme.onSurfaceVariant,
-                      height: 1.4,
-                    ),
+                    style: Theme.of(context).textTheme.bodyMedium
+                        ?.copyWith(color: scheme.onSurfaceVariant, height: 1.4),
                   ),
                   const SizedBox(height: 24),
                   SizedBox(
@@ -5025,14 +5018,13 @@ class _DashboardScreenState extends State<DashboardScreen>
 
   Future<void> _postNotification(String title, String body, int id) async {
     try {
-      await const MethodChannel(
-        'je_x_fyz/notifications',
-      ).invokeMethod<void>('showNotification', <String, dynamic>{
-        'title': title,
-        'body': body,
-        'id': id,
-        'language': appLanguageNotifier.value.name,
-      });
+      await const MethodChannel('je_x_fyz/notifications')
+          .invokeMethod<void>('showNotification', <String, dynamic>{
+            'title': title,
+            'body': body,
+            'id': id,
+            'language': appLanguageNotifier.value.name,
+          });
     } catch (e) {
       debugPrint('Notification: $e');
     }
@@ -7123,9 +7115,10 @@ class _DashboardScreenState extends State<DashboardScreen>
                     final compactHeight = constraints.maxHeight < 520;
                     final scheme = Theme.of(dialogContext).colorScheme;
                     final fontFamily =
-                        Theme.of(
-                          dialogContext,
-                        ).textTheme.bodyMedium?.fontFamily ??
+                        Theme.of(dialogContext)
+                            .textTheme
+                            .bodyMedium
+                            ?.fontFamily ??
                         'Roboto';
                     final verticalPadding = compactHeight ? 11.0 : 14.0;
                     final sectionGap = compactHeight ? 6.0 : 8.0;
@@ -7217,9 +7210,8 @@ class _DashboardScreenState extends State<DashboardScreen>
                                         width: 40,
                                         height: 40,
                                         decoration: BoxDecoration(
-                                          color: const Color(
-                                            0xFFD69A38,
-                                          ).withValues(alpha: .14),
+                                          color: const Color(0xFFD69A38)
+                                              .withValues(alpha: .14),
                                           borderRadius: BorderRadius.circular(
                                             12,
                                           ),

@@ -304,8 +304,7 @@ class JexText {
     'firmwareUpdateAvailableBody': {
       AppLanguage.english:
           'Version {version} is available. Connect your device to update.',
-      AppLanguage.indonesia:
-          'Versi {version} tersedia. Hubungkan perangkat untuk memperbarui firmware.',
+      AppLanguage.indonesia: 'Versi {version} tersedia. Hubungkan perangkat untuk memperbarui firmware.',
     },
     'deviceConnectionNotifications': {
       AppLanguage.english: 'Device connection',
@@ -834,10 +833,8 @@ class JexText {
       AppLanguage.indonesia: 'Kipas harus menyala sebelum pendinginan.',
     },
     'peltierCoolingPrerequisite': {
-      AppLanguage.english:
-          'Peltier needs airflow to remove heat. The fan must be confirmed ON before Peltier starts.',
-      AppLanguage.indonesia:
-          'Peltier memerlukan aliran udara untuk membuang panas. Kipas harus dipastikan menyala sebelum Peltier mulai bekerja.',
+      AppLanguage.english: 'Peltier needs airflow to remove heat. The fan must be confirmed ON before Peltier starts.',
+      AppLanguage.indonesia: 'Peltier memerlukan aliran udara untuk membuang panas. Kipas harus dipastikan menyala sebelum Peltier mulai bekerja.',
     },
     'turnOnFanAndPeltier': {
       AppLanguage.english: 'Turn on Fan & Peltier',
@@ -1013,8 +1010,7 @@ class JexText {
     'notificationSafetyDescription': {
       AppLanguage.english:
           'Send a notification when Hotside reaches the set limit.',
-      AppLanguage.indonesia:
-          'Kirim notifikasi saat suhu sisi panas mencapai batas yang ditetapkan.',
+      AppLanguage.indonesia: 'Kirim notifikasi saat suhu sisi panas mencapai batas yang ditetapkan.',
     },
     'otaFailed': {
       AppLanguage.english: 'Firmware update failed.',
@@ -1158,10 +1154,8 @@ class JexText {
       AppLanguage.indonesia: 'OTA gagal: ',
     },
     'otaSizeMismatchDetailed': {
-      AppLanguage.english:
-          'OTA failed: {receivedBytes} bytes received; {expectedBytes} bytes expected.',
-      AppLanguage.indonesia:
-          'OTA gagal: {receivedBytes} byte diterima; {expectedBytes} byte diharapkan.',
+      AppLanguage.english: 'OTA failed: {receivedBytes} bytes received; {expectedBytes} bytes expected.',
+      AppLanguage.indonesia: 'OTA gagal: {receivedBytes} byte diterima; {expectedBytes} byte diharapkan.',
     },
     'otaLocalSuccessful': {
       AppLanguage.english: 'Local OTA successful.',
@@ -1465,10 +1459,8 @@ class JexText {
           'Monitor Melayang akan tampil saat perangkat terhubung.',
     },
     'floatingPermissionMessage': {
-      AppLanguage.english:
-          'The app needs permission to display Floating Monitor over other apps. Android will open the display-over-other-apps setting.',
-      AppLanguage.indonesia:
-          'Aplikasi memerlukan izin untuk menampilkan Monitor Melayang di atas aplikasi lain. Android akan membuka pengaturan tampilan di atas aplikasi lain.',
+      AppLanguage.english: 'The app needs permission to display Floating Monitor over other apps. Android will open the display-over-other-apps setting.',
+      AppLanguage.indonesia: 'Aplikasi memerlukan izin untuk menampilkan Monitor Melayang di atas aplikasi lain. Android akan membuka pengaturan tampilan di atas aplikasi lain.',
     },
     'overlayPermissionDenied': {
       AppLanguage.english: 'Overlay permission was not granted.',
@@ -1481,10 +1473,8 @@ class JexText {
           'Pengaturan izin tampilan mengambang Android tidak dapat dibuka.',
     },
     'floatingStartFailed': {
-      AppLanguage.english:
-          'Floating Monitor could not be started. Check its permissions and try again.',
-      AppLanguage.indonesia:
-          'Monitor Melayang tidak dapat dijalankan. Periksa izinnya, lalu coba lagi.',
+      AppLanguage.english: 'Floating Monitor could not be started. Check its permissions and try again.',
+      AppLanguage.indonesia: 'Monitor Melayang tidak dapat dijalankan. Periksa izinnya, lalu coba lagi.',
     },
     'synchronizingDevice': {
       AppLanguage.english: 'Syncing device…',

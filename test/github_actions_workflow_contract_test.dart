@@ -21,46 +21,42 @@ void main() {
   late String workflow;
 
   setUpAll(() {
-    workflow = File(
-      '.github/workflows/jexfyz-app-build-trigger.yml',
-    ).readAsStringSync();
+    workflow = File('.github/workflows/jexfyz-app-build-trigger.yml')
+        .readAsStringSync();
   });
 
-  test(
-    'only the manually guarded issue event can enter the release workflow',
-    () {
-      expect(
-        workflow,
-        contains('  issues:\n    types:\n      - opened\n      - reopened'),
-      );
-      expect(
-        workflow,
-        contains('github.event.issue.user.login == github.repository_owner'),
-      );
-      expect(
-        workflow,
-        contains(
-          "github.event.issue.title == 'JE X FYZ — EKSEKUSI BUILD APP TRIGGER'",
-        ),
-      );
-      expect(
-        workflow,
-        contains(
-          "contains(github.event.issue.body, 'JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1')",
-        ),
-      );
-      expect(
-        RegExp(
-          r'^  (?:push|pull_request|workflow_dispatch):',
-          multiLine: true,
-        ).hasMatch(workflow),
-        isFalse,
-      );
-      expect(workflow, contains('group: jexfyz-cooler-build'));
-      expect(workflow, contains('cancel-in-progress: false'));
-      expect(workflow, contains('queue: max'));
-    },
-  );
+  test('only the manually guarded issue event can enter the release workflow', () {
+    expect(
+      workflow,
+      contains('  issues:\n    types:\n      - opened\n      - reopened'),
+    );
+    expect(
+      workflow,
+      contains('github.event.issue.user.login == github.repository_owner'),
+    );
+    expect(
+      workflow,
+      contains(
+        "github.event.issue.title == 'JE X FYZ — EKSEKUSI BUILD APP TRIGGER'",
+      ),
+    );
+    expect(
+      workflow,
+      contains(
+        "contains(github.event.issue.body, 'JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1')",
+      ),
+    );
+    expect(
+      RegExp(
+        r'^  (?:push|pull_request|workflow_dispatch):',
+        multiLine: true,
+      ).hasMatch(workflow),
+      isFalse,
+    );
+    expect(workflow, contains('group: jexfyz-cooler-build'));
+    expect(workflow, contains('cancel-in-progress: false'));
+    expect(workflow, contains('queue: max'));
+  });
 
   test(
     'every direct third-party action is pinned to its verified full commit SHA',
@@ -97,24 +93,18 @@ void main() {
     },
   );
 
-  test(
-    'write permission is denied by default and granted only to the guarded release job',
-    () {
-      expect(workflow, contains('\npermissions: {}\n'));
-      expect(workflow, contains('\n    permissions:\n      contents: write\n'));
-      expect(
-        RegExp(r'^\s*permissions:', multiLine: true).allMatches(workflow),
-        hasLength(2),
-      );
-      expect(
-        RegExp(
-          r'^\s*contents:\s*write\s*',
-          multiLine: true,
-        ).allMatches(workflow),
-        hasLength(1),
-      );
-    },
-  );
+  test('write permission is denied by default and granted only to the guarded release job', () {
+    expect(workflow, contains('\npermissions: {}\n'));
+    expect(workflow, contains('\n    permissions:\n      contents: write\n'));
+    expect(
+      RegExp(r'^\s*permissions:', multiLine: true).allMatches(workflow),
+      hasLength(2),
+    );
+    expect(
+      RegExp(r'^\s*contents:\s*write\s*', multiLine: true).allMatches(workflow),
+      hasLength(1),
+    );
+  });
 
   test(
     'keystore and signing credentials are scoped to steps that consume them',
@@ -176,26 +166,23 @@ void main() {
     },
   );
 
-  test(
-    'GitHub write token remains limited to release publication and verification',
-    () {
-      final publish = _namedStep(
-        workflow,
-        'Publish APK and corresponding source to GitHub Release',
-      );
-      final verify = _namedStep(
-        workflow,
-        'Verify downloaded GitHub Release asset',
-      );
+  test('GitHub write token remains limited to release publication and verification', () {
+    final publish = _namedStep(
+      workflow,
+      'Publish APK and corresponding source to GitHub Release',
+    );
+    final verify = _namedStep(
+      workflow,
+      'Verify downloaded GitHub Release asset',
+    );
 
-      expect(publish, contains(r'GH_TOKEN: ${{ github.token }}'));
-      expect(verify, contains(r'GH_TOKEN: ${{ github.token }}'));
-      expect(
-        RegExp(r'^\s*GH_TOKEN:', multiLine: true).allMatches(workflow),
-        hasLength(2),
-      );
-    },
-  );
+    expect(publish, contains(r'GH_TOKEN: ${{ github.token }}'));
+    expect(verify, contains(r'GH_TOKEN: ${{ github.token }}'));
+    expect(
+      RegExp(r'^\s*GH_TOKEN:', multiLine: true).allMatches(workflow),
+      hasLength(2),
+    );
+  });
 
   test(
     'release validation, signing and artifact integrity gates remain present',

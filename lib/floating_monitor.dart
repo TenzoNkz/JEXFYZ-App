@@ -850,9 +850,9 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage>
                               contentPadding: EdgeInsets.zero,
                               leading: JexAnimatedGlyph(
                                 icon: PhosphorIconsRegular.dotsSixVertical,
-                                color: Theme.of(
-                                  context,
-                                ).colorScheme.onSurfaceVariant,
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .onSurfaceVariant,
                                 size: 20,
                               ),
                               title: Text(
@@ -1810,12 +1810,11 @@ class NotificationsSettingsPage extends StatelessWidget {
     if (value) {
       try {
         final granted =
-            await const MethodChannel(
-              'je_x_fyz/notifications',
-            ).invokeMethod<bool>(
-              'requestNotificationPermission',
-              <String, dynamic>{'language': appLanguageNotifier.value.name},
-            ) ??
+            await const MethodChannel('je_x_fyz/notifications')
+                .invokeMethod<bool>(
+                  'requestNotificationPermission',
+                  <String, dynamic>{'language': appLanguageNotifier.value.name},
+                ) ??
             false;
         if (!granted) return;
       } catch (_) {
