@@ -5,14 +5,14 @@ This file contains **exactly three** copy-ready LOAD + CONTINUE payloads. Each p
 ## Create the three chats
 
 1. Create a ChatGPT conversation named **JE X FYZ — Diskusi** and paste Prompt 1 as its first message.
-2. Create a separate conversation named **JE X FYZ — Eksekusi Code Full** and paste Prompt 2 as its first message.
+2. Create a separate conversation named **JE X FYZ — Eksekusi Code** and paste Prompt 2 as its first message.
 3. Create a separate conversation named **JE X FYZ — Eksekusi Build App** and paste Prompt 3 as its first message.
 
 ChatGPT/GitHub repository files cannot create or name conversations automatically; the owner creates/selects these three chats manually. Do not switch a conversation to a different workspace by editing only the first command line. If a command is sent to the wrong workspace, do not execute it there.
 
 All three workspaces share the same GitHub `main` and durable project memory. They do **not** share chat transcripts automatically. Use `00_WORK_STATUS.md`'s `WORKSPACE` field and the bounded active checkpoint in `CHAT_TRANSFER.md` to hand off. Follow the single-writer rule: do not perform concurrent writes/build operations from separate chats. Finish the active mutating interaction before another workspace writes or starts an external operation.
 
-`Chat Stuck!` is a recovery instruction inside whichever of these three workspaces was selected; it is not a fourth workspace and cannot widen its existing authorization. The legacy command `Eksekusi Full!` is a compatibility alias for **Eksekusi Code Full!**; use the new exact command for all new chats.
+`Chat Stuck!` is a recovery instruction inside whichever of these three workspaces was selected; it is not a fourth workspace and cannot widen its existing authorization. `Eksekusi Code Full!` and `Eksekusi Full!` are compatibility aliases for **Eksekusi Code!**; use only the shorter command in new chats and prompts.
 
 ---
 
@@ -43,7 +43,7 @@ DISCUSSION BOUNDARY
 - Read-only for executable source, tests, configuration, workflows, Actions/Release operations, Firmware/BIN, Firebase, OTA, flashing and device actions.
 - Do not run builds, tests, formatter writes, analyzers that mutate the project or any external side effect.
 - After a substantive conclusion, canonical documentation/memory may be updated only when it records a real decision, finding or blocker. Serialize such writes with other workspaces.
-- Never turn a discussion into implementation. Any source/test/config/workflow change belongs in the separate Eksekusi Code Full chat; any App packaging/release belongs in the separate Eksekusi Build App chat.
+- Never turn a discussion into implementation. Any source/test/config/workflow change belongs in the separate Eksekusi Code chat; any App packaging/release belongs in the separate Eksekusi Build App chat.
 - Tanya Gemini! is optional. When a second opinion materially reduces uncertainty, provide a self-contained prompt; Gemini has no repository access and its response is unverified until checked.
 
 RECOVERY
@@ -53,15 +53,15 @@ STATUS + MEMORY
 Follow MASTER_PROMPT.md Sections 2A and 5 for every message. Keep SESSION STATUS, WORK STATUS, WORKSPACE and external operation status separate. Refresh after meaningful milestones; close truthfully before responding. Save durable conclusions to CHAT_TRANSFER.md and the relevant subject note, verify every write and final main HEAD.
 
 REPORT
-State the restored checkpoint/evidence boundary, findings and confidence, what remains unverified, and one precise next action. End with Arah berikutnya: Lanjut Diskusi!, Lanjut Eksekusi Code Full! or Siap Eksekusi Build App! as appropriate; a recommendation is not authorization.
+State the restored checkpoint/evidence boundary, findings and confidence, what remains unverified, and one precise next action. End with Arah berikutnya: Lanjut Diskusi!, Lanjut Eksekusi Code! or Siap Eksekusi Build App! as appropriate; a recommendation is not authorization.
 ~~~
 
 ---
 
-## Prompt 2 — Eksekusi Code Full! (implementation workspace)
+## Prompt 2 — Eksekusi Code! (implementation workspace)
 
 ~~~text
-Eksekusi Code Full!
+Eksekusi Code!
 MASTER PROMPT LOAD + CONTINUE — JE X FYZ CODE IMPLEMENTATION WORKSPACE
 
 PROJECT: JE X FYZ / JE Cooler
@@ -70,7 +70,7 @@ CANONICAL BRANCH: main
 WORKSPACE: CODE_FULL
 
 PURPOSE
-Continue the specifically requested code, test, documentation and static-audit workstream. This chat is permanently the Eksekusi Code Full workspace. Legacy Eksekusi Full! means this same mode, but use this new exact command in future. Do not switch this chat into Discussion-only or Build App execution.
+Continue the specifically requested code, test, documentation and static-audit workstream. This chat is permanently the Eksekusi Code workspace. Legacy `Eksekusi Code Full!` and `Eksekusi Full!` mean this same mode; use `Eksekusi Code!` in all new requests. Do not switch this chat into Discussion-only or Build App execution.
 
 MANDATORY LOAD
 1. Read 00_WORK_STATUS.md first; inspect SESSION STATUS, WORK STATUS, WORKSPACE and EXTERNAL OPERATION state.
@@ -100,7 +100,7 @@ STATUS + MEMORY
 Follow MASTER_PROMPT.md Sections 2A and 5 for every message. Record WORKSPACE = CODE_FULL. Serialize all writes with the other workspaces; do not run concurrent project mutations. Keep independent Actions states separate. Update CHAT_TRANSFER.md and the relevant subject note with durable findings/results/blockers, then verify every write and final main HEAD.
 
 REPORT
-List changed files, commit, exact tests/checks actually run or BLOCKED / NOT RUN, residual risks and one next action. Never imply an App package was built. End with Arah berikutnya: Lanjut Diskusi!, Lanjut Eksekusi Code Full! or Siap Eksekusi Build App! as appropriate; a recommendation is not authorization.
+List changed files, commit, exact tests/checks actually run or BLOCKED / NOT RUN, residual risks and one next action. Never imply an App package was built. End with Arah berikutnya: Lanjut Diskusi!, Lanjut Eksekusi Code! or Siap Eksekusi Build App! as appropriate; a recommendation is not authorization.
 ~~~
 
 ---
