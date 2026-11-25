@@ -13,7 +13,7 @@
 
 ## Whole-App visual and motion audit — owner direction — 2026-11-25
 
-**Status: DISCUSSION PROPOSAL / STATIC SOURCE REVIEW ONLY.** The owner requested a whole-App UI refinement that avoids generic AI-generated styling and feels smoother with purposeful animation. This review does not change App source, tests, dependencies, native UI, workflow or release. Implementation requires a fresh explicit command in the separate Eksekusi Code workspace; package delivery still requires Eksekusi Build App.
+**Status: DISCUSSION PROPOSAL / STATIC SOURCE REVIEW ONLY.** The owner requested a whole-App UI refinement that avoids generic AI-generated styling and feels smoother with purposeful animation. This review does not change App source, tests, dependencies, native UI, workflow or release. Implementation requires a fresh explicit command in the separate Eksekusi Code! workspace; package delivery still requires Eksekusi Build App.
 
 ### Design direction
 
