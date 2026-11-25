@@ -157,7 +157,7 @@ A failed gate blocks dependent work. Retry only after classifying root cause (so
 | `DESIGN_NOTES.md` | Owner-approved screen-specific visual contracts | ACTIVE DESIGN SUBJECT REFERENCE | UPGRADE — CLOSED / READ-BACK VERIFIED (2026-11-26) |
 | `FIRMWARE_NOTES.md` | Firmware and hardware requirements reference | PROTECTED — OUTSIDE APP-ONLY SCOPE | PROTECTED — NO CHANGE (2026-11-26) |
 | `firmware/FIRMWARE_TECHNICAL_REFERENCE.md` | Firmware source-level architecture and safety reference | PROTECTED — OUTSIDE APP-ONLY SCOPE | PROTECTED — NO CHANGE (2026-11-26) |
-| `firmware/JEXFYZ-V7.2.ino` | Firmware source | PROTECTED — FIRMWARE AUTHORIZATION REQUIRED | INVENTORIED — CONTENT REVIEW PENDING |
+| `firmware/JEXFYZ-V7.2.ino` | Active versioned Firmware source | PROTECTED — EXPLICIT FIRMWARE AUTHORIZATION REQUIRED | PROTECTED — NO CHANGE (2026-11-26) |
 | `HANDOVER.md` | Session continuity | ACTIVE STATUS / CHECKPOINT | INVENTORIED — CONTENT REVIEW PENDING |
 | `lib/app_settings.dart` | Flutter App source | APP SOURCE — CODE AUTHORIZATION | INVENTORIED — CONTENT REVIEW PENDING (FORMATTER ONLY, `003bccd6`) |
 | `lib/connection_scan_coordinator.dart` | Flutter App source | APP SOURCE — CODE AUTHORIZATION | INVENTORIED — CONTENT REVIEW PENDING |
@@ -312,6 +312,15 @@ A failed gate blocks dependent work. Retry only after classifying root cause (so
 - **Disposition:** **PROTECTED — NO CHANGE**. No Firmware source/BIN/version, App source, test, workflow, OTA, Firebase, release, signing, flashing or device file changed.
 - **Acceptance evidence:** full document review, current tree/blob identity, live sketch header (first 40 lines), consumer search and path checks **PASS — STATIC SOURCE CHECK** for the protection decision only. No Arduino compile, Firmware tests, BIN generation, OTA, flashing, physical hardware or thermal/electrical check was run or authorized.
 - **Next file:** `firmware/JEXFYZ-V7.2.ino` (next inventory entry). Record it as a Firmware-protected source path only; do not perform functional source review, edit, compile or operation in this App-only workspace.
+
+### WP0 — `firmware/JEXFYZ-V7.2.ino` — PROTECTED / NO CHANGE (2026-11-26)
+
+- **Reviewed checkpoint:** live `main` before this register update: `106e3c819c8aaeaf8928058abfc875bf4bce4f1c`; recursive tree `142 entries / 96 blobs / 46 trees / truncated=false`. The tree contains exactly one active `firmware/*.ino`: `firmware/JEXFYZ-V7.2.ino`, blob `842e2a3952739001b232a3d9e327c592ff9a6b5a`, 177,751 bytes. Only the first 40 lines were fetched to confirm the filename-matching V7.2 header; no functional source review was performed.
+- **Role and authorization:** active ESP32-C3 Firmware sketch containing hardware control, BLE/P1, thermal/rail safety, Touch/LED and OTA behavior. The current owner request explicitly excludes all Firmware/BIN work and reserves Firmware edits for a separate explicitly scoped request with the Firmware safety skill/references. This App-only audit cannot authorize a functional review, edit, compile, BIN, Firebase, OTA, flash or device operation.
+- **Disposition:** **PROTECTED — NO CHANGE**. Keep the single current sketch and its versioned filename untouched. The current tree's one-sketch count and V7.2 header are inventory evidence only; they are not proof of compilation, BIN provenance, installed-device identity, thermal/electrical safety or physical behavior.
+- **Acceptance evidence:** recursive tree/path identity and first-line/header inspection **PASS — STATIC SOURCE CHECK** for the protection decision. Arduino-ESP32 Core 3.3.7 compile, tests, BIN, NVS, OTA, flashing, BLE/Touch/rail/thermal and physical validation are **NOT RUN / UNVERIFIED** under this authorization.
+- **Scope:** no bytes of the Firmware sketch or any Firmware/BIN/Firebase/OTA/device artifact were changed.
+- **Next file:** `HANDOVER.md` in live inventory order. Review whether its immediate-next-action role is concise/current and reconcile links with the already refreshed CODE_FULL checkpoint.
 
 ### Formatter-only side effect — 12 Dart files — CONTENT REVIEW PENDING (2026-11-26)
 
