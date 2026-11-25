@@ -84,6 +84,13 @@ The three chats must remain separate. The shared `WORKSPACE` marker is identific
 
 A failed gate blocks dependent work. Retry only after classifying root cause (source defect, test defect, formatting, dependency/network, runner/queue, credentials, workflow guard, artifact/release, environment or device). Never downgrade a required gate or make a retry to hide a failure.
 
+## Active owner request — full App rework overlay — 2026-11-26
+
+- The owner requested a full App-side repository rework and complete premium/elegant UI redesign. The detailed execution plan and ordered WPs are in `APP_PREBUILD_AUDIT.md` → “Owner-requested full App rework + premium UI redesign — 2026-11-26”; design direction and screen brief are in `DESIGN_NOTES.md` → “Full App visual redesign brief — owner request 2026-11-26”.
+- This register remains the single source of truth for **per-file disposition**. Review every file against actual role, consumers, contracts and evidence. Do not mass-edit or mark every file UPGRADE just because the request says “full rework”.
+- At this handoff: 3/96 blob dispositions are recorded (analysis_options.yaml KEEP / VERIFIED; pubspec.yaml UPGRADE / CLOSED / READ-BACK VERIFIED; pubspec.lock KEEP / VERIFIED). The 12 formatter-touched Dart files still require individual content review. The next unreviewed inventory path after the lockfile is `README.md`.
+- In the Code workspace, first reconcile live HEAD/tree/status, then resume WP0 and WP1. Keep the App-only scope and protected path exclusions in the active plan; Firmware/BIN, BLE protocol/security changes, OTA, Firebase production, signing, package/release, flashing and device operation are not authorized by this register or owner UI request.
+
 ## File inventory
 
 | Path | File class | Guard / authority | Current review state |
