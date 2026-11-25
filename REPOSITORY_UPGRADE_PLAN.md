@@ -165,7 +165,7 @@ A failed gate blocks dependent work. Retry only after classifying root cause (so
 | `OTA_REGRESSION_MEMORY.md` | Project/configuration file | REVIEW REQUIRED | INVENTORIED — CONTENT REVIEW PENDING |
 | `PRODUCT_DESIGN_CONSTITUTION.md` | Project/configuration file | REVIEW REQUIRED | INVENTORIED — CONTENT REVIEW PENDING |
 | `PROJECT_STATE.md` | Operating governance | CANONICAL GOVERNANCE | INVENTORIED — CONTENT REVIEW PENDING |
-| `pubspec.lock` | Flutter dependency manifest/lock | DEPENDENCY CONTRACT — REVIEW BEFORE CHANGE | INVENTORIED — CONTENT REVIEW PENDING |
+| `pubspec.lock` | Flutter dependency manifest/lock | DEPENDENCY CONTRACT — REVIEW BEFORE CHANGE | KEEP / VERIFIED (2026-11-26) |
 | `pubspec.yaml` | Flutter dependency manifest/lock | DEPENDENCY CONTRACT — REVIEW BEFORE CHANGE | UPGRADE — CLOSED / READ-BACK VERIFIED (2026-11-26) |
 | `README.md` | Operating governance | CANONICAL GOVERNANCE | INVENTORIED — CONTENT REVIEW PENDING |
 | `SKILLS_INDEX.md` | Operating governance | CANONICAL GOVERNANCE | INVENTORIED — CONTENT REVIEW PENDING |
@@ -210,6 +210,18 @@ A failed gate blocks dependent work. Retry only after classifying root cause (so
 - **Release boundary:** the manifest/test changes and formatter commit are not included in the immutable Build #167 APK. No Build App, APK, signing, tag, Release or asset operation occurred.
 - **Scope/disposition:** change is limited to SDK lower bounds, the `sqflite` root version range/comment and its regression assertion; no dependency upgrade or lockfile rewrite was performed. Disposition: **UPGRADE — CLOSED / READ-BACK VERIFIED**.
 - **Next file:** audit `pubspec.lock` independently as the exact resolved dependency graph: direct/transitive declarations, SDK constraints, package sources/checksums, platform packages and correspondence to the manifest/workflows. Do not update package versions unless a specific mismatch or defect is demonstrated.
+
+### WP1 — `pubspec.lock` — KEEP / VERIFIED (2026-11-26)
+
+- **Reviewed checkpoint:** current `main` HEAD `46ab7901341a5dda943c756f9ba01efdf72bf4c6`; lock blob `7475e368d4c6c237c726a61a38631b75bb84f0c1`; matching manifest blob `a0b8698c7c89efe43bb32b3ac6871c66bfcc873d`.
+- **Role and graph:** generated Flutter package lock containing 91 package records: 9 direct runtime, 2 direct development, and 80 transitive/SDK-support records. The 11 direct package declarations match `pubspec.yaml` one-for-one. Each locked direct hosted version satisfies its declared caret constraint; `flutter` and `flutter_test` are SDK dependencies.
+- **Integrity/source structure:** 87 hosted package records resolve from `https://pub.dev` and each includes a SHA-256 checksum. Four packages are supplied by the Flutter SDK. No Git or path package source is present. Locked platform-interface/implementation families exist for Firebase Core/App Check, BLE, secure storage, permission handling and SQLite/sqflite. This verifies the lock graph's declared package structure, not runtime behavior on every platform.
+- **SDK correspondence:** lockfile Dart constraint `>=3.13.0 <4.0.0` and Flutter constraint `>=3.38.4` exactly match the current manifest environment bounds. The locked `sqflite 2.4.2` satisfies the manifest's `^2.4.2`; no package is outside the current direct constraints.
+- **Workflow consumers:** Validation Only and the read-only PR validator both use Flutter `3.47.2` and run `flutter pub get --enforce-lockfile`. The PR workflow has `contents: read`, disables checkout credential persistence and cache, and does not write files. Validation Only's formatter commit is explicitly restricted to `lib/` and `test/`; it does not regenerate or stage `pubspec.lock`.
+- **Acceptance evidence:** Validation Only #72 / run `45700008025` / job `139507345524` recorded locked dependency resolution PASS on input source `27ac09c5b77401c37f5fdbfd575001bab5ea9544`. The current `main` manifest and lock blobs are byte-identical to those at that tested input SHA, so that specific CI dependency-resolution evidence applies to the same manifest/lock contents. This is **VERIFIED CI** from the recorded run, not a run executed during this Diskusi session.
+- **Local validation boundary:** Flutter/Dart executables are unavailable in the current ChatGPT execution container. No local `flutter pub get`, formatter, analyzer or test was run. This interaction's package/constraint/source checks are **STATIC SOURCE CHECK** only.
+- **Finding / disposition:** no missing/extra direct package, out-of-range locked direct version, SDK-bound mismatch, non-pub.dev hosted source, absent hosted checksum, or Git/path dependency was found. Rewriting the lockfile would create churn without correcting an evidenced defect. Disposition: **KEEP / VERIFIED**; lockfile remains unchanged.
+- **Next file:** `README.md` remains the next inventory entry for the separate repository-wide content audit. The audit remains incomplete; the 12 formatter-only Dart files still require individual content review.
 
 ### Formatter-only side effect — 12 Dart files — CONTENT REVIEW PENDING (2026-11-26)
 
