@@ -2476,6 +2476,9 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
   }
 
   void _retargetSpeedLevel(double target, {required Duration duration}) {
+    // Capture the in-flight interpolation before changing its target, so rapid
+    // PWM updates retarget from the currently rendered needle position.
+    final current = _currentSpeedLevel();
     _speedTargetLevel = target.clamp(0.0, 1.0).toDouble();
     if (_reduceMotion) {
       _speedFromLevel = _speedTargetLevel;
@@ -2483,7 +2486,7 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
       speedLevelTransitionController.value = 1;
       return;
     }
-    _speedFromLevel = _currentSpeedLevel();
+    _speedFromLevel = current;
     speedLevelTransitionController.duration = duration;
     speedLevelTransitionController.forward(from: 0);
   }

@@ -139,9 +139,10 @@ void main() {
           ),
           child: Theme(
             data: ThemeData.dark(),
-            child: SizedBox(
-              width: 360,
-              child: Column(
+            child: Material(
+              child: SizedBox(
+                width: 360,
+                child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   const JexAnimatedIcon(
@@ -170,6 +171,7 @@ void main() {
                     onNext: () {},
                   ),
                 ],
+              ),
               ),
             ),
           ),
@@ -228,6 +230,7 @@ void main() {
 
     tester.binding.platformDispatcher.accessibilityFeaturesTestValue =
         const FakeAccessibilityFeatures();
+    tester.binding.handleAccessibilityFeaturesChanged();
     await tester.pump();
     expect(
       tester.binding.transientCallbackCount,
