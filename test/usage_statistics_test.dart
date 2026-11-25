@@ -786,7 +786,433 @@ void main() {
       final usage = File('lib/usage_statistics.dart').readAsStringSync();
       final pubspec = File('pubspec.yaml').readAsStringSync();
 
-      expect(pubspec, contains('sqflite: 2.4.2'));
+      // Keep a compatible root constraint; pubspec.lock records the exact tested resolution.
+      expect(
+        pubspec,
+        matches(RegExp(r'(?m)^  sqflite: \\^2\\.\\d+\\.\\d+
+      expect(usage, contains('CREATE TABLE usage_sessions'));
+      expect(usage, contains('CREATE TABLE usage_events'));
+      expect(usage, contains('CREATE TABLE usage_samples'));
+      expect(usage, contains('version: 2'));
+      expect(usage, contains('onUpgrade: (database, oldVersion, newVersion)'));
+      expect(usage, contains('recordTemperatureSample('));
+      expect(usage, contains("insertBaseline('peltier', textValue: peltier)"));
+      expect(usage, contains("metric: 'peltier'"));
+      expect(usage, contains("case 'adaptive':\n        case 'peltier':"));
+      expect(usage, contains('usageSessionCoverageEndMs('));
+      expect(usage, contains('Stream<UsageStatsLiveUpdate> get liveUpdates'));
+      // Diagram animation is frame-synchronized through Flutter tickers, not a fixed 16-ms timer.
+      expect(usage, contains('with SingleTickerProviderStateMixin'));
+      expect(usage, contains('vsync: this'));
+      expect(usage, contains('AnimationController('));
+      expect(usage, contains('Curves.easeOutCubic'));
+      expect(usage, contains('Duration(milliseconds: 320)'));
+      expect(usage, contains('Duration(milliseconds: 280)'));
+      expect(usage, contains('decimatePoints('));
+      expect(usage, isNot(contains('Duration(milliseconds: 450)')));
+      expect(usage, contains('battery_seen'));
+      expect(usage, contains('hotside_seen'));
+      expect(usage, contains('loadSessionSnapshot('));
+      expect(usage, isNot(contains('UsagePeriod')));
+      expect(usage, isNot(contains('_periodSelector')));
+      expect(usage, contains('ON DELETE CASCADE'));
+      expect(usage, contains('last_hotside_seen_at_ms'));
+      expect(usage, contains('end_reason'));
+      expect(
+        usage,
+        contains(
+          'Only the Firmware HOT heartbeat proves the P1 device session is fresh.',
+        ),
+      );
+      expect(usage, contains('SELECT MAX(id) FROM usage_events'));
+      expect(usage, contains('CREATE INDEX usage_events_timestamp'));
+      expect(usage, contains('const Duration(hours: 24).inMilliseconds'));
+      expect(usage, isNot(contains('FirebaseDatabase')));
+    },
+  );
+
+  group('Usage Statistics page', () {
+    testWidgets(
+      'sampling and local-storage provenance remains available on demand',
+      (tester) async {
+        final previousLanguage = appLanguageNotifier.value;
+        addTearDown(() => appLanguageNotifier.value = previousLanguage);
+        appLanguageNotifier.value = AppLanguage.english;
+
+        await tester.pumpWidget(
+          MaterialApp(
+            theme: ThemeData.light(useMaterial3: true),
+            home: UsageStatisticsPage(
+              coolerId: 'AA:BB:CC',
+              repository: _FakeUsageRepository(_sampleSnapshot()),
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+
+        expect(find.textContaining('sampled once per second'), findsNothing);
+        await tester.tap(find.byTooltip('Statistics information'));
+        await tester.pumpAndSettle();
+        expect(find.text('About this history'), findsOneWidget);
+        expect(find.textContaining('sampled once per second'), findsOneWidget);
+        expect(
+          find.textContaining('stored locally on this phone'),
+          findsOneWidget,
+        );
+        await tester.tap(find.text('Close'));
+        await tester.pumpAndSettle();
+        expect(tester.takeException(), isNull);
+      },
+    );
+
+    testWidgets(
+      'shows a localized empty state without inventing chart values',
+      (tester) async {
+        final previousLanguage = appLanguageNotifier.value;
+        addTearDown(() => appLanguageNotifier.value = previousLanguage);
+        appLanguageNotifier.value = AppLanguage.english;
+
+        final repository = _FakeUsageRepository(
+          const UsageStatsSnapshot.empty(fromMs: 0, toMs: 10000),
+        );
+
+        await tester.pumpWidget(
+          MaterialApp(
+            theme: ThemeData.light(useMaterial3: true),
+            home: UsageStatisticsPage(
+              coolerId: 'AA:BB:CC',
+              repository: repository,
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+
+        expect(find.text('Usage Statistics'), findsOneWidget);
+        expect(find.text('No cooling history yet.'), findsOneWidget);
+        for (final obsolete in ['1H', '24H', '7D', '30D']) {
+          expect(find.text(obsolete), findsNothing);
+        }
+        for (final key in <Key>[
+          const ValueKey<String>('usage-temperature-chart-battery'),
+          const ValueKey<String>('usage-temperature-chart-hotside'),
+          const ValueKey<String>('usage-profile-timeline-voltage'),
+          const ValueKey<String>('usage-profile-timeline-adaptive'),
+          const ValueKey<String>('usage-profile-timeline-peltier'),
+          const ValueKey<String>('usage-profile-timeline-fan_speed'),
+        ]) {
+          expect(find.byKey(key), findsNothing);
+        }
+        expect(tester.takeException(), isNull);
+      },
+    );
+
+    testWidgets('surfaces a visible warning after local recorder writes fail', (
+      tester,
+    ) async {
+      final recorder = UsageStatisticsRecorder.instance;
+      final previousError = recorder.lastWriteError;
+      recorder.lastWriteError = 'simulated write failure';
+      addTearDown(() => recorder.lastWriteError = previousError);
+
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: ThemeData.light(useMaterial3: true),
+          home: UsageStatisticsPage(
+            coolerId: 'AA:BB:CC',
+            repository: _FakeUsageRepository(
+              const UsageStatsSnapshot.empty(fromMs: 0, toMs: 10000),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('History recording may be incomplete.'), findsOneWidget);
+      expect(
+        find.text(
+          'The local history writer could not keep up with incoming readings or storage failed. Some history may be missing; check available phone storage.',
+        ),
+        findsOneWidget,
+      );
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets(
+      'renders active cooling run sections in the compact Home canvas',
+      (tester) async {
+        final previousLanguage = appLanguageNotifier.value;
+        addTearDown(() => appLanguageNotifier.value = previousLanguage);
+        addTearDown(tester.view.resetPhysicalSize);
+        addTearDown(tester.view.resetDevicePixelRatio);
+        appLanguageNotifier.value = AppLanguage.indonesia;
+
+        final repository = _FakeUsageRepository(_sampleSnapshot());
+
+        Future<void> pumpAtWidth(double width, ThemeData theme) async {
+          tester.view.devicePixelRatio = 1;
+          tester.view.physicalSize = Size(width, 800);
+          await tester.pumpWidget(
+            MaterialApp(
+              theme: theme,
+              home: JexFixedScalePage(
+                compactUi: true,
+                child: UsageStatisticsPage(
+                  key: ValueKey<double>(width),
+                  coolerId: 'AA:BB:CC',
+                  repository: repository,
+                ),
+              ),
+            ),
+          );
+          await tester.pumpAndSettle();
+          expect(tester.takeException(), isNull);
+        }
+
+        await pumpAtWidth(350, ThemeData.light(useMaterial3: true));
+        expect(find.text('Suhu Baterai'), findsOneWidget);
+        expect(find.text('Suhu Sisi Panas'), findsOneWidget);
+        expect(find.text('30D'), findsNothing);
+        expect(find.text('1H'), findsNothing);
+        expect(find.text('24H'), findsNothing);
+        expect(find.text('7D'), findsNothing);
+        expect(find.text('Selesai'), findsOneWidget);
+        final elapsedHeader = tester.widget<Text>(
+          find.byKey(const ValueKey<String>('usage-session-elapsed')),
+        );
+        expect(elapsedHeader.data, '00:10');
+        expect(
+          tester.widget<AppBar>(find.byType(AppBar).first).centerTitle,
+          isTrue,
+        );
+        for (final label in ['Min', 'Rata-rata', 'Maks']) {
+          final labels = tester.widgetList<Text>(find.text(label));
+          expect(labels, isNotEmpty);
+          expect(
+            labels.every((text) => text.textAlign == TextAlign.center),
+            isTrue,
+          );
+        }
+        for (final key in <Key>[
+          const ValueKey<String>('usage-temperature-chart-battery'),
+          const ValueKey<String>('usage-temperature-chart-hotside'),
+        ]) {
+          expect(find.byKey(key), findsOneWidget);
+        }
+
+        final profileHeadingLight = find.text('Aktivitas');
+        await tester.scrollUntilVisible(
+          profileHeadingLight,
+          240,
+          scrollable: find.byType(Scrollable).first,
+        );
+        await tester.pumpAndSettle();
+        expect(profileHeadingLight, findsOneWidget);
+        final activityAxisStart = find.byKey(
+          const ValueKey<String>('usage-profile-time-axis-start'),
+        );
+        final voltageHitArea = find.byKey(
+          const ValueKey<String>('usage-profile-timeline-hit-area-voltage'),
+        );
+        expect(activityAxisStart, findsOneWidget);
+        expect(voltageHitArea, findsOneWidget);
+        expect(
+          tester.getTopLeft(activityAxisStart).dx,
+          closeTo(tester.getTopLeft(voltageHitArea).dx + 34, 1),
+        );
+        expect(
+          tester
+              .getSize(
+                find.byKey(
+                  const ValueKey<String>(
+                    'usage-profile-timeline-track-voltage',
+                  ),
+                ),
+              )
+              .height,
+          34,
+        );
+        expect(find.text('Rincian'), findsNothing);
+        expect(find.text('More details'), findsNothing);
+        expect(find.textContaining('Rata-rata kipas'), findsNothing);
+        expect(find.textContaining('Touch any chart'), findsNothing);
+        expect(find.text('Terpantau'), findsNothing);
+        expect(find.textContaining('Sampel terakhir'), findsNothing);
+        // The session header is a lazy ListView child and may unmount
+        // after scrolling; its one elapsed timer was asserted before scrolling.
+        for (final key in <Key>[
+          const ValueKey<String>('usage-profile-timeline-voltage'),
+          const ValueKey<String>('usage-profile-timeline-adaptive'),
+          const ValueKey<String>('usage-profile-timeline-peltier'),
+          const ValueKey<String>('usage-profile-timeline-fan_speed'),
+        ]) {
+          expect(find.byKey(key), findsOneWidget);
+        }
+        final peltierHitArea = find.byKey(
+          const ValueKey<String>('usage-profile-timeline-hit-area-peltier'),
+        );
+        await tester.scrollUntilVisible(
+          peltierHitArea,
+          180,
+          scrollable: find.byType(Scrollable).first,
+        );
+        await tester.ensureVisible(peltierHitArea);
+        await tester.pumpAndSettle();
+        await tester.tap(peltierHitArea);
+        await tester.pump();
+        final selectedDock = find.byKey(
+          const ValueKey<String>('usage-selected-time-dock'),
+        );
+        expect(selectedDock, findsOneWidget);
+        expect(
+          find.descendant(
+            of: selectedDock,
+            matching: find.text('Waktu dipilih'),
+          ),
+          findsOneWidget,
+        );
+        final selectedHeading = find.byKey(
+          const ValueKey<String>('usage-selected-time-heading'),
+        );
+        expect(selectedHeading, findsOneWidget);
+        expect(
+          tester.getCenter(selectedHeading).dx,
+          closeTo(tester.getCenter(selectedDock).dx, 1),
+        );
+        for (final label in [
+          'Baterai',
+          'Sisi Panas',
+          'Tegangan',
+          'Adaptif',
+          'Peltier',
+          'Kecepatan Kipas',
+        ]) {
+          final metricLabel = find.descendant(
+            of: selectedDock,
+            matching: find.text(label),
+          );
+          expect(metricLabel, findsOneWidget);
+          expect(tester.widget<Text>(metricLabel).textAlign, TextAlign.center);
+        }
+        expect(tester.getSize(selectedDock).height, lessThanOrEqualTo(200));
+        final clearCursor = find.byTooltip('Hapus waktu pilihan');
+        expect(clearCursor, findsOneWidget);
+        final clearCursorSize = tester.getSize(clearCursor);
+        expect(clearCursorSize.width, greaterThanOrEqualTo(48));
+        expect(clearCursorSize.height, greaterThanOrEqualTo(48));
+        await tester.tap(clearCursor);
+        await tester.pumpAndSettle();
+        expect(
+          find.byKey(const ValueKey<String>('usage-selected-time-dock')),
+          findsNothing,
+        );
+        expect(tester.takeException(), isNull);
+
+        await pumpAtWidth(420, ThemeData.dark(useMaterial3: true));
+        expect(find.text('Suhu Baterai'), findsOneWidget);
+        expect(find.text('Suhu Sisi Panas'), findsOneWidget);
+        expect(find.text('30D'), findsNothing);
+        expect(find.text('1H'), findsNothing);
+        expect(find.text('24H'), findsNothing);
+        expect(find.text('7D'), findsNothing);
+        expect(find.text('Selesai'), findsOneWidget);
+        final profileHeadingDark = find.text('Aktivitas');
+        await tester.scrollUntilVisible(
+          profileHeadingDark,
+          240,
+          scrollable: find.byType(Scrollable).first,
+        );
+        await tester.pumpAndSettle();
+        expect(profileHeadingDark, findsOneWidget);
+        expect(tester.takeException(), isNull);
+      },
+    );
+
+    testWidgets(
+      'session selector and dashboard expose only one elapsed timer',
+      (tester) async {
+        final previousLanguage = appLanguageNotifier.value;
+        addTearDown(() => appLanguageNotifier.value = previousLanguage);
+        addTearDown(tester.view.resetPhysicalSize);
+        addTearDown(tester.view.resetDevicePixelRatio);
+        tester.view.devicePixelRatio = 1;
+        tester.view.physicalSize = const Size(420, 1000);
+        appLanguageNotifier.value = AppLanguage.english;
+
+        final base = _sampleSnapshot();
+        final secondSession = UsageStatsSession(
+          id: 2,
+          coolerId: 'AA:BB:CC',
+          startedAtMs: 20000,
+          endedAtMs: 30000,
+          lastSeenAtMs: 30000,
+          lastHotsideSeenAtMs: 30000,
+          lastBatterySeenAtMs: 30000,
+        );
+        final snapshot = UsageStatsSnapshot(
+          fromMs: base.fromMs,
+          toMs: base.toMs,
+          sessions: [...base.sessions, secondSession],
+          events: base.events,
+        );
+
+        await tester.pumpWidget(
+          MaterialApp(
+            theme: ThemeData.light(useMaterial3: true),
+            home: UsageStatisticsPage(
+              coolerId: 'AA:BB:CC',
+              repository: _FakeUsageRepository(snapshot),
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+
+        final sessionSelector = find.byKey(
+          const ValueKey<String>('usage-session-selector'),
+        );
+        expect(sessionSelector, findsOneWidget);
+        expect(
+          tester.getSize(sessionSelector).height,
+          greaterThanOrEqualTo(48),
+        );
+        expect(
+          find.byKey(const ValueKey<String>('usage-session-elapsed')),
+          findsOneWidget,
+        );
+        expect(find.textContaining('Last sample'), findsNothing);
+        expect(find.text('More details'), findsNothing);
+        expect(find.text('Observed'), findsNothing);
+        expect(tester.takeException(), isNull);
+      },
+    );
+
+    testWidgets('clear action delegates to the injected local repository', (
+      tester,
+    ) async {
+      final repository = _FakeUsageRepository(_sampleSnapshot());
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: ThemeData.light(useMaterial3: true),
+          home: UsageStatisticsPage(
+            coolerId: 'AA:BB:CC',
+            repository: repository,
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byTooltip('Clear statistics'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Clear').last);
+      await tester.pumpAndSettle();
+
+      expect(repository.clearCalls, 1);
+      expect(find.text('No cooling history yet.'), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    });
+  });
+}
+)),
+      );
       expect(usage, contains('CREATE TABLE usage_sessions'));
       expect(usage, contains('CREATE TABLE usage_events'));
       expect(usage, contains('CREATE TABLE usage_samples'));
