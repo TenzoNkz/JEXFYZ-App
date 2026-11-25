@@ -202,6 +202,78 @@ void main() {
   );
 
   testWidgets(
+    'LED preview keeps static controls outside its animated rebuild',
+    (tester) async {
+      Widget surface({required String modeName}) {
+        return MaterialApp(
+          home: Scaffold(
+            body: Center(
+              child: SizedBox(
+                width: 360,
+                child: JexLedStripPreview(
+                  mode: 0,
+                  colorHex: '#FFFFFF',
+                  active: true,
+                  ledPhaseMs: 110,
+                  ledCycleMs: 1000,
+                  ledSyncRevision: 0,
+                  modeName: modeName,
+                  previousEnabled: true,
+                  nextEnabled: true,
+                  onPrevious: () {},
+                  onNext: () {},
+                ),
+              ),
+            ),
+          ),
+        );
+      }
+
+      await tester.pumpWidget(surface(modeName: 'RAINBOW'));
+
+      final preview = find.byType(JexLedStripPreview);
+      final animatedBuilder = find.descendant(
+        of: preview,
+        matching: find.byType(AnimatedBuilder),
+      );
+      expect(animatedBuilder, findsOneWidget);
+
+      final animated = tester.widget<AnimatedBuilder>(animatedBuilder);
+      final staticLabel = animated.child;
+      final controlsRowFinder = find.ancestor(
+        of: animatedBuilder,
+        matching: find.byType(Row),
+      );
+      expect(controlsRowFinder, findsOneWidget);
+      final controlsRow = tester.widget<Row>(controlsRowFinder);
+      final leftControl = controlsRow.children.first;
+      final rightControl = controlsRow.children.last;
+
+      expect(staticLabel, isA<Center>());
+      expect(find.text('RAINBOW'), findsOneWidget);
+      expect(find.byIcon(PhosphorIconsBold.caretLeft), findsOneWidget);
+      expect(find.byIcon(PhosphorIconsBold.caretRight), findsOneWidget);
+
+      await tester.pump(const Duration(milliseconds: 120));
+
+      expect(
+        identical(
+          staticLabel,
+          tester.widget<AnimatedBuilder>(animatedBuilder).child,
+        ),
+        isTrue,
+        reason: 'The mode label must remain stable across LED animation frames.',
+      );
+      final updatedControlsRow = tester.widget<Row>(controlsRowFinder);
+      expect(identical(leftControl, updatedControlsRow.children.first), isTrue);
+      expect(identical(rightControl, updatedControlsRow.children.last), isTrue);
+
+      await tester.pumpWidget(surface(modeName: 'STATIC'));
+      expect(find.text('STATIC'), findsOneWidget);
+    },
+  );
+
+  testWidgets(
     'iOS Reduce Motion accessibility changes stop and resume icon motion',
     (tester) async {
       tester.binding.platformDispatcher.accessibilityFeaturesTestValue =

@@ -1529,95 +1529,111 @@ class _JexLedStripPreviewState extends State<JexLedStripPreview>
   @override
   Widget build(BuildContext context) {
     final cycle = _safeCycle(widget.ledCycleMs);
-    return RepaintBoundary(
-      child: AnimatedBuilder(
-        animation: controller,
-        builder: (_, __) {
-          final elapsed = math
-              .max(0, _phaseClock.elapsedMilliseconds - _phaseAnchorElapsedMs)
-              .toInt();
-          final syncedPhase = ((_phaseAnchorMs + elapsed) % cycle).toInt();
-          final levels = ledPreviewLevels(
-            mode: widget.mode,
-            phaseMs: syncedPhase,
-          );
-          final colors = ledPreviewColors(
-            mode: widget.mode,
-            phaseMs: syncedPhase,
-            baseColor: widget.colorHex,
-          );
-          final background = Theme.of(context).brightness == Brightness.dark
-              ? const Color(0xFF2B2F37)
-              : const Color(0xFFDDE1E7);
-          final scheme = Theme.of(context).colorScheme;
+    final background = Theme.of(context).brightness == Brightness.dark
+        ? const Color(0xFF2B2F37)
+        : const Color(0xFFDDE1E7);
+    final scheme = Theme.of(context).colorScheme;
 
-          return SizedBox(
-            height: 58,
-            child: Row(
-              children: [
-                _modeArrow(
-                  context,
-                  left: true,
-                  enabled: widget.previousEnabled,
-                ),
-                const SizedBox(width: 4),
-                _ledColumn(
-                  leftSide: true,
-                  mode: widget.mode,
-                  levels: levels,
-                  colors: colors,
-                  active: widget.active,
-                  background: background,
-                ),
-                const SizedBox(width: 4),
-                Expanded(
-                  child: Center(
-                    child: ConstrainedBox(
-                      constraints: const BoxConstraints(maxWidth: 148),
-                      child: Container(
-                        width: double.infinity,
-                        alignment: Alignment.center,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 10,
-                          vertical: 10,
-                        ),
-                        decoration: BoxDecoration(
-                          color: scheme.surface,
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: scheme.outlineVariant),
-                        ),
-                        child: Text(
-                          widget.modeName.toUpperCase(),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: scheme.onSurface,
-                            fontSize: 11.5,
-                            height: 1.0,
-                            fontWeight: FontWeight.w900,
-                            letterSpacing: .25,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 4),
-                _ledColumn(
-                  leftSide: false,
-                  mode: widget.mode,
-                  levels: levels,
-                  colors: colors,
-                  active: widget.active,
-                  background: background,
-                ),
-                const SizedBox(width: 4),
-                _modeArrow(context, left: false, enabled: widget.nextEnabled),
-              ],
+    // These controls and the mode label do not depend on LED phase. Keep them
+    // outside the ticker-driven builder so each LED frame only rebuilds paint.
+    final modeLabel = Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 148),
+        child: Container(
+          width: double.infinity,
+          alignment: Alignment.center,
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+          decoration: BoxDecoration(
+            color: scheme.surface,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: scheme.outlineVariant),
+          ),
+          child: Text(
+            widget.modeName.toUpperCase(),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: scheme.onSurface,
+              fontSize: 11.5,
+              height: 1.0,
+              fontWeight: FontWeight.w900,
+              letterSpacing: .25,
             ),
-          );
-        },
+          ),
+        ),
+      ),
+    );
+
+    return RepaintBoundary(
+      child: SizedBox(
+        height: 58,
+        child: Row(
+          children: [
+            _modeArrow(
+              context,
+              left: true,
+              enabled: widget.previousEnabled,
+            ),
+            const SizedBox(width: 4),
+            Expanded(
+              child: AnimatedBuilder(
+                animation: controller,
+                child: modeLabel,
+                builder: (_, staticModeLabel) {
+                  final elapsed = math
+                      .max(
+                        0,
+                        _phaseClock.elapsedMilliseconds -
+                            _phaseAnchorElapsedMs,
+                      )
+                      .toInt();
+                  final syncedPhase = ((_phaseAnchorMs + elapsed) % cycle)
+                      .toInt();
+                  final levels = ledPreviewLevels(
+                    mode: widget.mode,
+                    phaseMs: syncedPhase,
+                  );
+                  final colors = ledPreviewColors(
+                    mode: widget.mode,
+                    phaseMs: syncedPhase,
+                    baseColor: widget.colorHex,
+                  );
+
+                  return Row(
+                    children: [
+                      _ledColumn(
+                        leftSide: true,
+                        mode: widget.mode,
+                        levels: levels,
+                        colors: colors,
+                        active: widget.active,
+                        background: background,
+                      ),
+                      const SizedBox(width: 4),
+                      Expanded(child: staticModeLabel!),
+                      const SizedBox(width: 4),
+                      _ledColumn(
+                        leftSide: false,
+                        mode: widget.mode,
+                        levels: levels,
+                        colors: colors,
+                        active: widget.active,
+                        background: background,
+                      ),
+                    ],
+                  );
+                },
+              ),
+            ),
+            const SizedBox(width: 4),
+            _modeArrow(
+              context,
+              left: false,
+              enabled: widget.nextEnabled,
+            ),
+          ],
+        ),
       ),
     );
   }
