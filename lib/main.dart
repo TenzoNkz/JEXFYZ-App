@@ -1377,8 +1377,7 @@ class _JexLedStripPreviewState extends State<JexLedStripPreview>
   bool _systemReduceMotion = false;
   bool _hasMotionPreference = false;
 
-  bool get _reduceMotion =>
-      _mediaQueryDisableAnimations || _systemReduceMotion;
+  bool get _reduceMotion => _mediaQueryDisableAnimations || _systemReduceMotion;
 
   int _safeCycle(int value) => math.max(1, value);
 
@@ -1386,8 +1385,11 @@ class _JexLedStripPreviewState extends State<JexLedStripPreview>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    _systemReduceMotion =
-        WidgetsBinding.instance.platformDispatcher.accessibilityFeatures.reduceMotion;
+    _systemReduceMotion = WidgetsBinding
+        .instance
+        .platformDispatcher
+        .accessibilityFeatures
+        .reduceMotion;
     _phaseClock = Stopwatch()..start();
     _phaseAnchorMs = widget.ledPhaseMs % _safeCycle(widget.ledCycleMs);
     _phaseAnchorElapsedMs = _phaseClock.elapsedMilliseconds;
@@ -1411,8 +1413,11 @@ class _JexLedStripPreviewState extends State<JexLedStripPreview>
 
   @override
   void didChangeAccessibilityFeatures() {
-    final reduceMotion =
-        WidgetsBinding.instance.platformDispatcher.accessibilityFeatures.reduceMotion;
+    final reduceMotion = WidgetsBinding
+        .instance
+        .platformDispatcher
+        .accessibilityFeatures
+        .reduceMotion;
     if (reduceMotion == _systemReduceMotion) return;
     _systemReduceMotion = reduceMotion;
     _applyMotionPreference();
@@ -2423,8 +2428,7 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
   bool _systemReduceMotion = false;
   bool _hasMotionPreference = false;
 
-  bool get _reduceMotion =>
-      _mediaQueryDisableAnimations || _systemReduceMotion;
+  bool get _reduceMotion => _mediaQueryDisableAnimations || _systemReduceMotion;
 
   double _currentSpeedLevel() => jexSmoothFanSpeedLevel(
     from: _speedFromLevel,
@@ -2741,8 +2745,11 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
 
   @override
   void didChangeAccessibilityFeatures() {
-    final reduceMotion =
-        WidgetsBinding.instance.platformDispatcher.accessibilityFeatures.reduceMotion;
+    final reduceMotion = WidgetsBinding
+        .instance
+        .platformDispatcher
+        .accessibilityFeatures
+        .reduceMotion;
     if (reduceMotion == _systemReduceMotion) return;
     _systemReduceMotion = reduceMotion;
     _applyMotionPreference();
@@ -2806,8 +2813,11 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    _systemReduceMotion =
-        WidgetsBinding.instance.platformDispatcher.accessibilityFeatures.reduceMotion;
+    _systemReduceMotion = WidgetsBinding
+        .instance
+        .platformDispatcher
+        .accessibilityFeatures
+        .reduceMotion;
     controller = AnimationController(
       vsync: this,
       duration: jexIconAnimationDuration(

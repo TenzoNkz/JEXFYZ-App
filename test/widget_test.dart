@@ -126,119 +126,124 @@ void main() {
     expect(find.byType(JexAnimatedGlyph), findsOneWidget);
   });
 
-  testWidgets('Android reduced motion stops icon and LED ticker loops, then resumes', (
-    tester,
-  ) async {
-    Widget surface({required bool disableAnimations}) {
-      return Directionality(
-        textDirection: TextDirection.ltr,
-        child: MediaQuery(
-          data: MediaQueryData(
-            size: const Size(360, 240),
-            disableAnimations: disableAnimations,
-          ),
-          child: Theme(
-            data: ThemeData.dark(),
-            child: Material(
-              child: SizedBox(
-                width: 360,
-                child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const JexAnimatedIcon(
-                    kind: JexAnimatedIconKind.battery,
-                    color: Colors.white,
-                    connected: true,
+  testWidgets(
+    'Android reduced motion stops icon and LED ticker loops, then resumes',
+    (tester) async {
+      Widget surface({required bool disableAnimations}) {
+        return Directionality(
+          textDirection: TextDirection.ltr,
+          child: MediaQuery(
+            data: MediaQueryData(
+              size: const Size(360, 240),
+              disableAnimations: disableAnimations,
+            ),
+            child: Theme(
+              data: ThemeData.dark(),
+              child: Material(
+                child: SizedBox(
+                  width: 360,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const JexAnimatedIcon(
+                        kind: JexAnimatedIconKind.battery,
+                        color: Colors.white,
+                        connected: true,
+                      ),
+                      const JexAnimatedIcon(
+                        kind: JexAnimatedIconKind.fan,
+                        color: Colors.white,
+                        connected: true,
+                        active: true,
+                        level: .7,
+                      ),
+                      JexLedStripPreview(
+                        mode: 0,
+                        colorHex: '#FFFFFF',
+                        active: true,
+                        ledPhaseMs: 120,
+                        ledCycleMs: 1000,
+                        ledSyncRevision: 0,
+                        modeName: 'STATIC',
+                        previousEnabled: true,
+                        nextEnabled: true,
+                        onPrevious: () {},
+                        onNext: () {},
+                      ),
+                    ],
                   ),
-                  const JexAnimatedIcon(
-                    kind: JexAnimatedIconKind.fan,
-                    color: Colors.white,
-                    connected: true,
-                    active: true,
-                    level: .7,
-                  ),
-                  JexLedStripPreview(
-                    mode: 0,
-                    colorHex: '#FFFFFF',
-                    active: true,
-                    ledPhaseMs: 120,
-                    ledCycleMs: 1000,
-                    ledSyncRevision: 0,
-                    modeName: 'STATIC',
-                    previousEnabled: true,
-                    nextEnabled: true,
-                    onPrevious: () {},
-                    onNext: () {},
-                  ),
-                ],
-              ),
+                ),
               ),
             ),
           ),
+        );
+      }
+
+      await tester.pumpWidget(surface(disableAnimations: true));
+      expect(
+        tester.binding.transientCallbackCount,
+        0,
+        reason:
+            'Reduced motion must stop continuous indicator and LED repaint tickers.',
+      );
+      await tester.pump(const Duration(seconds: 3));
+      expect(tester.binding.transientCallbackCount, 0);
+
+      await tester.pumpWidget(surface(disableAnimations: false));
+      expect(
+        tester.binding.transientCallbackCount,
+        greaterThan(0),
+        reason: 'Restoring motion may resume phase-driven animations.',
+      );
+
+      await tester.pumpWidget(surface(disableAnimations: true));
+      expect(tester.binding.transientCallbackCount, 0);
+    },
+  );
+
+  testWidgets(
+    'iOS Reduce Motion accessibility changes stop and resume icon motion',
+    (tester) async {
+      tester.binding.platformDispatcher.accessibilityFeaturesTestValue =
+          const FakeAccessibilityFeatures(reduceMotion: true);
+      addTearDown(
+        tester.binding.platformDispatcher.clearAccessibilityFeaturesTestValue,
+      );
+
+      const icon = JexAnimatedIcon(
+        kind: JexAnimatedIconKind.battery,
+        color: Colors.white,
+        connected: true,
+        active: true,
+      );
+      await tester.pumpWidget(
+        const Directionality(
+          textDirection: TextDirection.ltr,
+          child: MediaQuery(
+            data: MediaQueryData(size: Size(360, 100)),
+            child: icon,
+          ),
         ),
       );
-    }
+      expect(
+        tester.binding.transientCallbackCount,
+        0,
+        reason:
+            'iOS Reduce Motion is separate from MediaQuery.disableAnimations.',
+      );
 
-    await tester.pumpWidget(surface(disableAnimations: true));
-    expect(
-      tester.binding.transientCallbackCount,
-      0,
-      reason: 'Reduced motion must stop continuous indicator and LED repaint tickers.',
-    );
-    await tester.pump(const Duration(seconds: 3));
-    expect(tester.binding.transientCallbackCount, 0);
-
-    await tester.pumpWidget(surface(disableAnimations: false));
-    expect(
-      tester.binding.transientCallbackCount,
-      greaterThan(0),
-      reason: 'Restoring motion may resume phase-driven animations.',
-    );
-
-    await tester.pumpWidget(surface(disableAnimations: true));
-    expect(tester.binding.transientCallbackCount, 0);
-  });
-
-  testWidgets('iOS Reduce Motion accessibility changes stop and resume icon motion', (
-    tester,
-  ) async {
-    tester.binding.platformDispatcher.accessibilityFeaturesTestValue =
-        const FakeAccessibilityFeatures(reduceMotion: true);
-    addTearDown(
-      tester.binding.platformDispatcher.clearAccessibilityFeaturesTestValue,
-    );
-
-    const icon = JexAnimatedIcon(
-      kind: JexAnimatedIconKind.battery,
-      color: Colors.white,
-      connected: true,
-      active: true,
-    );
-    await tester.pumpWidget(
-      const Directionality(
-        textDirection: TextDirection.ltr,
-        child: MediaQuery(
-          data: MediaQueryData(size: Size(360, 100)),
-          child: icon,
-        ),
-      ),
-    );
-    expect(
-      tester.binding.transientCallbackCount,
-      0,
-      reason: 'iOS Reduce Motion is separate from MediaQuery.disableAnimations.',
-    );
-
-    tester.binding.platformDispatcher.accessibilityFeaturesTestValue =
-        const FakeAccessibilityFeatures();
-    tester.binding.handleAccessibilityFeaturesChanged();
-    await tester.pump();
-    expect(
-      tester.binding.transientCallbackCount,
-      greaterThan(0),
-      reason: 'The observer should resume motion after the platform preference clears.',
-    );
-  });
+      tester.binding.platformDispatcher.accessibilityFeaturesTestValue =
+          const FakeAccessibilityFeatures();
+      tester.binding.handleAccessibilityFeaturesChanged();
+      await tester.pump();
+      expect(
+        tester.binding.transientCallbackCount,
+        greaterThan(0),
+        reason:
+            'The observer should resume motion after the platform preference clears.',
+      );
+    },
+  );
 
   test(
     'Home NOTIFY preserves readable text inside its fixed 44dp geometry',
@@ -2320,7 +2325,8 @@ void main() {
             reduceMotion: true,
           ),
           isFalse,
-          reason: '$kind must stop its continuous loop when reduced motion is enabled.',
+          reason:
+              '$kind must stop its continuous loop when reduced motion is enabled.',
         );
       }
 
