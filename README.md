@@ -19,6 +19,7 @@ Flutter Android companion App and ESP32-C3 Firmware source for the JE X FYZ ther
 11. [BUILD_NOTES.md](BUILD_NOTES.md) is the current App release procedure; [APP_BUILD_REPORT.md](APP_BUILD_REPORT.md) is its append-only attempt/evidence ledger.
 12. [APP_PREBUILD_AUDIT.md](APP_PREBUILD_AUDIT.md) — current full App pre-build findings, prioritized remediation and definition of build-ready.
 13. [CHANGELOG.md](CHANGELOG.md) is dated history. [archive/](archive/) contains immutable forensic snapshots.
+14. [REPOSITORY_UPGRADE_PLAN.md](REPOSITORY_UPGRADE_PLAN.md) is the complete per-file inventory and rolling upgrade register; review every tracked file once and record KEEP / VERIFIED where no change is justified.
 
 ## Fast chat-load path
 
