@@ -787,9 +787,7 @@ void main() {
       final pubspec = File('pubspec.yaml').readAsStringSync();
 
       // Keep a compatible root constraint; pubspec.lock records the exact tested resolution.
-      expect(
-        pubspec,
-        matches(RegExp(r'(?m)^  sqflite: \\^2\\.\\d+\\.\\d+
+      expect(pubspec, contains('sqflite: ^2.4.2'));
       expect(usage, contains('CREATE TABLE usage_sessions'));
       expect(usage, contains('CREATE TABLE usage_events'));
       expect(usage, contains('CREATE TABLE usage_samples'));
