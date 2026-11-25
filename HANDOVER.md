@@ -60,6 +60,12 @@ Last reconciled: 2026-11-25 (Asia/Jakarta). Authority: `MASTER_PROMPT.md`.
 - Repository currently has 11 test Dart files plus helper, no `integration_test/`, no golden suite, no native Android test source, no checked-in Gradle Wrapper and no Dependabot config. PR validation is implemented but has no observed PR run.
 - Execution remains **deferred**, consistent with the owner's earlier instruction to group the work with other pending tasks. No source/test/dep/config/workflow/build/release/Firmware/Firebase/OTA/device action was performed in this Diskusi.
 
+
+## Recovery disposition — 2026-11-25
+
+- A `Chat Stuck!` recovery in Diskusi found no unfinished work or active external operation. The prior grouped execution plan had already been closed and read back; recent GitHub Actions runs were all terminal. No operation was repeated.
+- Continue to defer WP0–WP7 until a fresh explicit command in the separate `Eksekusi Code Full!` chat. Keep Build App/release authority separate.
+
 ## Other boundaries
 
 - PR validation workflow `.github/workflows/jexfyz-app-pr-validation.yml` is implemented; no open PR or PR-triggered run was observed in the 2026-11-24 recovery check.
