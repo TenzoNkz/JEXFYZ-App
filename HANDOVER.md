@@ -2,6 +2,19 @@
 
 Last reconciled: 2026-11-26 (Asia/Jakarta). Authority: `MASTER_PROMPT.md`.
 
+## Current owner request — full App rework + premium UI redesign — 2026-11-26
+
+- **Current decision:** the owner requested the full App repository/architecture rework and a complete premium/elegant UI redesign. The Diskusi planning packet is complete and documented; no implementation has started.
+- **Primary execution source:** read `APP_PREBUILD_AUDIT.md` → “Owner-requested full App rework + premium UI redesign — 2026-11-26” for exact scope, target architecture, WP0–WP10 sequence, acceptance and exclusions. Read `DESIGN_NOTES.md` → “Full App visual redesign brief — owner request 2026-11-26” for the art direction and screen-by-screen UI goals.
+- **Code prompt:** `CHAT_TRANSFER_PROMPTS.md` → Prompt 2 now includes the active owner-approved scope. Owner must open the separate **JE X FYZ — Eksekusi Code** conversation and paste Prompt 2 with the command `@Thinking Eksekusi Code!`. Do not turn this Diskusi chat into Code mode.
+- **Baseline at plan opening:** `main` HEAD `0ff34de66963a193034c3c737ae4dc6d7de886ac`, root tree `eaf84dbb2ea306a82075cea22b0351b976d23ee9`, 142 entries / 96 blobs / 46 trees, not truncated. That source checkpoint is historical after the subsequent documentation-only commits; Code must re-fetch live HEAD and file SHAs before modifying anything.
+- **First Code priority:** WP0 full repository file audit and WP1 characterization/regression baseline. Continue after the already reviewed `pubspec.lock` at `README.md`; individually review the 12 formatter-touched Dart files. Then execute WP2–WP10 incrementally; do not mass-rewrite.
+- **Core architecture goal:** decompose the 11,622-line `lib/main.dart` and improve boundaries among app bootstrap, settings/localization/theme, single-owner BLE/P1 session, application commands, feature screens, statistics and Floating Monitor. Preserve one BLE owner and command/ACK/telemetry separation.
+- **Design goal:** “Quiet Luxury / Precision Instrument”—hierarchy, typography, proportion, whitespace, tactile controls and restrained motion. Preserve JE X FYZ identity, approved assets, existing per-screen contracts and truthful device states; a new logo/font/palette/layout contract is not silently approved.
+- **Protected exclusions:** Firmware/BIN, BLE wire-protocol/security changes, OTA transport/trust/recovery, Firebase production, signing, App package/release workflow, APK/Release/tag/asset publication, flashing and physical device operations. Firmware Update UI may change presentation only. Build #167 remains the last published package and predates current main.
+- **One-writer rule:** this Diskusi session must finish and close before a separate Code chat begins mutating the shared repository. No App Build permission is implied; Build/release requires the separate Eksekusi Build App chat and fresh command.
+
+
 ## Three dedicated ChatGPT workspaces — SETUP IN REPOSITORY
 
 - Create three separate ChatGPT conversations manually: **JE X FYZ — Diskusi**, **JE X FYZ — Eksekusi Code**, and **JE X FYZ — Eksekusi Build App**.
@@ -51,8 +64,9 @@ Last reconciled: 2026-11-26 (Asia/Jakarta). Authority: `MASTER_PROMPT.md`.
 - **Warnings / limitations:** self-signed/untrusted PKIX chain and META-INF signature-coverage warnings remain. They did not fail explicit V1/V2/V3 checks. No Actions artifacts were produced; Release assets are the delivery. Android JUnit task is NO-SOURCE.
 - **Visual acceptance: NOT VERIFIED.** One owner screenshot of Build #167 Home (English / Light / disconnected) was reviewed on 2026-11-24; it shows the complete cooler silhouette and readable metric labels. The screenshot does not identify exact source SHA or logical dp/density, and does not cover the required viewport/locale/theme/connected-state matrix. CI/widget tests cannot prove the full rendered layout. See `DESIGN_NOTES.md`.
 
-## Immediate next action — audit pubspec.lock
+## Historical CODE_FULL checkpoint — source and dependency audit progress
 
+- **Superseded for the current task:** the lockfile was subsequently reviewed and closed as KEEP / VERIFIED. The next unreviewed repository inventory path is `README.md`, as recorded in `REPOSITORY_UPGRADE_PLAN.md` and the active `CHAT_TRANSFER.md` checkpoint.
 - **Completed:** 12 static glyph call sites were migrated to `JexAnimatedGlyph`; custom `JexAnimatedIcon` and `JexLedStripPreview` have platform/system reduced-motion handling; LED preview arrows and static mode label were isolated from the phase-driven builder while the Stopwatch/anchor/`ledSyncRevision` path remains.
 - **Latest source validation:** Validation Only #63 / run `45688790870` / job `139468394666`, terminal SUCCESS on input SHA `94cddc93ebee26b3edc35f4ae5e567b886a3ffe5`. Post-format check clean (19 files / 0 changed), analyzer succeeded and Flutter tests **216/216 PASS**. The workflow's formatter-only output was committed as `2fab1f1313d22152fdafbc78131b07c3deae7fb7`. Run #63 did not build/release an APK.
 - **WP1 source/test increment — VERIFIED (2026-11-26):** (1) connected Battery/Hotside/Voltage Home indicators avoid autonomous idle loops while retaining measured-level/warning transitions; (2) disconnected Home Notification is neutral/informational and the submenu lock panel provides Connect through the existing Bluetooth sheet/controller; (3) numeric LED phase wraparound and `ledSyncRevision` re-anchor/reduced-motion clock-preservation regressions were added. Validation Only #67 / run `45696341946` / job `139494616397` passed formatter, analyzer and **219/219 Flutter tests** on source `538c0eb760f89cdcf6efb13e0bb4a906d941668e`; formatter-only commit `9cbb8d60fb889fc22640f05d507f63b6e3249968`. Keep Fan coast, Peltier gating, BLE P1 sync/session readiness, authoritative telemetry and command/ACK/telemetry semantics unchanged.
