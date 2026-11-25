@@ -1,4 +1,4 @@
-| Last updated | 2026-11-26 02:49 (+07:00, Asia/Jakarta) |
+| Last updated | 2026-11-26 03:02 (+07:00, Asia/Jakarta) |
 
 > Single current snapshot for JE X FYZ project interactions. Event-driven marker; not a background heartbeat.
 
@@ -6,22 +6,22 @@
 
 | Field | Value |
 |---|---|
-| **STATUS** | **COMPLETED** |
-| SESSION STATUS | COMPLETED — Restored canonical JE X FYZ context in the permanent DISKUSI workspace, reconciled the stale CODE_FULL checkpoint with live Actions #63 and current source, updated the checkpoint/subject/handover notes, and verified documentation read-backs. No source/test/config/workflow or external operation was performed in this session. |
-| WORK STATUS | IN_PROGRESS — WP1 remains open in the separate CODE_FULL workstream: sensor idle-loop feedback, disconnected Notification semantics/Connect, and a direct LED phase/`ledSyncRevision` re-anchor regression are still outstanding. This DISKUSI session records findings only and does not authorize implementation. |
+| **STATUS** | **IN_PROGRESS** |
+| SESSION STATUS | IN_PROGRESS — Owner requests a redesigned end-to-end workflow for all repository files and all three workspaces, including renaming `Eksekusi Code Full!` to `Eksekusi Code!`. The current conversation remains the permanent DISKUSI workspace; this message does not switch to implementation. |
+| WORK STATUS | IN_PROGRESS — WP1 remains open in the separate code-execution workstream. This new objective is to design a phased, evidence-gated, repository-wide file governance/upgrade workflow and standardize the execution command name. No blanket rewrite or source/workflow implementation is authorized in DISKUSI. |
 | WORKSPACE | DISKUSI |
-| Mode | Diskusi — read-only repository inspection, source analysis and project-memory updates only. No executable source, tests, configuration, workflows, Actions/Release operations, Firmware/BIN, Firebase, OTA, flashing or device changes/actions. |
-| Request / work item | Restore canonical context; reconcile active WP1 evidence and durable handover for the DISKUSI workspace. |
-| Started | 2026-11-26 02:49 (+07:00, Asia/Jakarta) |
+| Mode | Diskusi — read-only repository inventory, planning and governance review; canonical documentation/status updates only. No executable source, tests, configuration, workflows, Actions/Release operations, Firmware/BIN, Firebase, OTA, flashing or device actions. |
+| Request / work item | Design a reliable end-to-end JE X FYZ workflow with one-by-one file inventory/upgrade, durable Diskusi→Eksekusi Code→Build App handoffs, and command rename to `Eksekusi Code!`. |
+| Started | 2026-11-26 03:02 (+07:00, Asia/Jakarta) |
 | Last updated | 2026-11-26 02:49 (+07:00, Asia/Jakarta) |
-| Current phase | COMPLETED — initial marker persisted; MASTER_PROMPT and bounded checkpoint loaded; live main/tree and Validation Only #63 verified; current source/CI scope reviewed; canonical WP1 notes and handover updated. |
-| Last completed milestone | Reconciled Validation Only #63 input SHA `94cddc93…`, formatter-only commit `2fab1f1…`, 216/216 hosted Flutter tests, and the mainline documentation checkpoint; updated `APP_PREBUILD_AUDIT.md`, `DESIGN_NOTES.md`, `CHAT_TRANSFER.md`, `PROJECT_STATE.md` and `HANDOVER.md`. |
-| Last verified source checkpoint | Source: `94cddc93ebee26b3edc35f4ae5e567b886a3ffe5`; formatter-only follow-up `2fab1f1313d22152fdafbc78131b07c3deae7fb7`. Current main before this closing status write: `9e31423ec31e1fbaf93f9a0af8b1fa261f33699f` (documentation commits only after the source checkpoint). |
+| Current phase | IN_PROGRESS — opening marker persisted; next inspect live main/tree and all tracked path classes, search command-name references and canonical handoff/status surfaces; then formulate staged workflow and acceptance gates. |
+| Last completed milestone | Reconciled previous session's source/CI checkpoint #63 and final main HEAD `7229ea5a3ac4baa248597773531c0ea53e3c01c0`; existing WORKSPACE remains DISKUSI. |
+| Last verified source checkpoint | Main HEAD at session start `7229ea5a3ac4baa248597773531c0ea53e3c01c0`; full tree and file inventory to be re-fetched and verified for this request. |
 | EXTERNAL OPERATION | Validation Only #63 / run `45688790870` / job `139468394666` on input source `94cddc93ebee26b3edc35f4ae5e567b886a3ffe5`: terminal SUCCESS. Post-format check clean (19 files / 0 changed), analyzer succeeded, Flutter tests 216/216 PASS. Formatter-only commit `2fab1f1313d22152fdafbc78131b07c3deae7fb7` was created inside that run. No Actions run was observed active in the latest run list. Build App #167 / Release `403010611` / tag `jexfyz-latest` remains the latest package according to project records; not re-queried in this session. |
 | EXTERNAL OPERATION STATUS | COMPLETED / SUCCESS — Validation Only #63 / run `45688790870`, source `94cddc93…`, formatter follow-up commit `2fab1f1…`; exact run/job outputs were inspected live. No active run observed. No Build App, Release, Firmware, BIN, Firebase, OTA, flashing or device operation was run from this session. |
 | Result / evidence | COMPLETED: canonical authority and bounded checkpoint loaded; live repository metadata/main commit/tree verified (`141` entries, `95` blobs, `46` trees, `truncated=false`); run #63/job/logs inspected; five canonical docs updated and read back. Evidence labels: CURRENT / VERIFIED, STATIC SOURCE CHECK, VERIFIED CI. |
 | Blocker / remaining evidence | WP1 still lacks direct numeric LED phase/re-anchor coverage; connected Battery/Hotside/Voltage idle loops and disconnected Notification/Connect remain open. No runtime FPS/raster/jank/memory profile, Android screenshot matrix, physical BLE/P1, thermal/electrical or device verification. Visual acceptance remains NOT VERIFIED. |
-| Next action | Continue WP1 implementation only in the separate owner-selected `Eksekusi Code Full!` chat with valid authorization; add the LED phase/re-anchor regression, then address the remaining sensor indicator and disconnected Notification/Connect behavior. Do not rerun #63 or create a package for this discussion. |
+| Next action | Read the current canonical authority, enumerate the full tracked repository tree and command-name references, then propose/record the new workflow and transition plan. |
 
 ## Status model
 
