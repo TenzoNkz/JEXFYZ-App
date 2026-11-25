@@ -1,4 +1,4 @@
-| Last updated | 2026-11-26 04:35 (+07:00, Asia/Jakarta) |
+| Last updated | 2026-11-26 04:37 (+07:00, Asia/Jakarta) |
 
 > Single current snapshot for JE X FYZ project interactions. Event-driven marker; not a background heartbeat.
 
@@ -6,22 +6,22 @@
 
 | Field | Value |
 |---|---|
-| **STATUS** | **IN_PROGRESS** |
-| SESSION STATUS | IN_PROGRESS — Diskusi requested a project-wide governance and consistency improvement review, including identifying high-leverage rules and when a Gemini second opinion would help. Read-only discussion scope. |
-| WORK STATUS | IN_PROGRESS — Prior WP1 App source/test increment is CLOSED. Repository-wide 96-blob content audit remains IN_PROGRESS with 3 dispositions: `analysis_options.yaml` KEEP / VERIFIED, `pubspec.yaml` UPGRADE / CLOSED / READ-BACK VERIFIED, `pubspec.lock` KEEP / VERIFIED. The unfinished CODE_FULL audit is preserved as RECOVERY_REQUIRED in its separate workspace; 12 formatter-only Dart files remain content-review pending. |
+| **STATUS** | **COMPLETED** |
+| SESSION STATUS | COMPLETED — Project-wide improvement review completed. Added and read-back verified five durable quality guardrails in MASTER_PROMPT.md, saved the active Diskusi checkpoint, and confirmed the current QA infrastructure gaps. No source/test/config/workflow implementation, build, Actions operation, release or device action was performed. |
+| WORK STATUS | IN_PROGRESS — Prior WP1 App source/test increment is CLOSED. Repository-wide 96-blob content audit remains IN_PROGRESS with 3 dispositions: `analysis_options.yaml` KEEP / VERIFIED, `pubspec.yaml` UPGRADE / CLOSED / READ-BACK VERIFIED, `pubspec.lock` KEEP / VERIFIED. The unfinished CODE_FULL audit remains RECOVERY_REQUIRED in its dedicated workspace; 12 formatter-only Dart files still need individual content review. |
 | WORKSPACE | DISKUSI |
-| Mode | Diskusi — read-only project governance/architecture review and prioritized improvement planning. No executable source, tests, config, workflows, Actions/Release, Firmware/BIN, Firebase, OTA, flashing or device operations. |
-| Request / work item | Propose high-leverage operating/engineering rules to improve JE X FYZ consistency, stability and delivery quality; identify relevant Gemini review questions. |
+| Mode | Diskusi — read-only governance and technical planning. Canonical policy/checkpoint documentation updated for the owner's request. No executable source, tests, config, workflow, Actions/Release, Firmware/BIN, Firebase, OTA, flashing or physical-device operation. |
+| Request / work item | Define important project rules and prioritize JE Cooler improvements for consistency, stability and smooth delivery; prepare optional Gemini second-opinion handoff. |
 | Started | 2026-11-26 04:35 (+07:00, Asia/Jakarta) |
 | Last updated | 2026-11-26 04:32 (+07:00, Asia/Jakarta) |
-| Current phase | Governance review — inspect current rules, state and evidence gaps; prepare prioritized rule set and decision boundary. |
-| Last completed milestone | Previous Diskusi close verified at main HEAD `e2009803664a073d2715e4dc31e31fab66790e38`; latest tree 142 entries / 96 blobs / 46 trees, `truncated=false`; lockfile recorded KEEP / VERIFIED. |
-| Last verified source checkpoint | Current branch HEAD at session opening `e2009803664a073d2715e4dc31e31fab66790e38`; source-format baseline `003bccd6e88b38710557df1d352386665491a254`; previous tree 142 entries / 96 blobs / 46 trees, `truncated=false`. Source will not be modified in Diskusi. |
+| Current phase | Terminal close — project quality guardrails persisted; QA gap assessment and Gemini handoff prepared; final status/tree read-back. |
+| Last completed milestone | Added project quality guardrails in MASTER_PROMPT.md commit `ca70f3c1640a39f09fbc3a93b989bdf31c787943`; active checkpoint saved in `CHAT_TRANSFER.md` commit `ac96411bb994ea9a6f14af1ebf180234690e683a`. |
+| Last verified source checkpoint | Latest main HEAD before this status-close commit `ac96411bb994ea9a6f14af1ebf180234690e683a`; source-format baseline `003bccd6e88b38710557df1d352386665491a254`; recursive tree 142 entries / 96 blobs / 46 trees, `truncated=false`. Changes in this interaction are documentation-only. |
 | EXTERNAL OPERATION | Validation Only #72 / run `45700008025` / job `139507345524`: prior recorded terminal SUCCESS on input source `27ac09c5b77401c37f5fdbfd575001bab5ea9544`; same manifest and lock blobs are present on current main. Latest package record remains Build #167 / Release ID `403010611` / tag `jexfyz-latest`; release was not rechecked in this Diskusi session. |
-| EXTERNAL OPERATION STATUS | NOT_APPLICABLE — no external operation initiated or requested; prior Validation Only #72 is historical terminal SUCCESS and will not be retried. |
-| Result / evidence | CURRENT / VERIFIED: main/commit/tree reconciled; 142 entries / 96 blobs / 46 trees, `truncated=false`. STATIC SOURCE CHECK: lock contains 91 records, 11 direct packages align to manifest constraints, 87 hosted pub.dev packages carry SHA-256, 4 SDK packages, no Git/path sources, matching Dart/Flutter SDK bounds and expected platform plugin families. VERIFIED CI: Validation Only #72 previously passed locked dependency resolution and 219/219 tests on source `27ac09c...`; current manifest/lock blobs are identical to that run's input. Register/checkpoint/project-state/handover changes were read back. No tests were run during this Diskusi. |
-| Blocker / remaining evidence | Repository-wide audit is not complete; 12 files modified by formatter-only commit `003bccd6` still require individual content review. This session did not rerun Flutter/Dart validation. Visual acceptance, runtime performance, physical BLE/P1, Firmware compile/BIN, Firebase, OTA, flashing and hardware behavior remain UNVERIFIED. |
-| Next action | Read relevant governance/design/quality evidence; formulate prioritized safeguards and a clearly scoped optional Gemini review prompt; record only durable policy decisions, not speculative implementation. |
+| EXTERNAL OPERATION STATUS | NOT_APPLICABLE — no external operation was initiated; prior Validation Only #72 remains historical terminal SUCCESS and was not retried. |
+| Result / evidence | CURRENT / VERIFIED: live main and recursive tree reconciled; 142 entries / 96 blobs / 46 trees, `truncated=false`. Master Prompt now includes DoR, one source of truth per contract, dependency/toolchain admission, measure-before-optimize, evidence-bound DoD and risk-first stop rules. Tree confirms no `integration_test/`, golden/screenshot suite, Gradle Wrapper or `.github/dependabot.yml`. `APP_PREBUILD_AUDIT.md` records visual acceptance NOT VERIFIED, Usage Statistics soak NOT VERIFIED and PR validator not yet exercised by a normal PR. Master/checkpoint writes are durable; no source/tests were run. |
+| Blocker / remaining evidence | Gemini has no direct connector/access in this workflow; an owner-pasted second-opinion prompt is prepared, not sent. Physical visual matrix, performance soak, real PR validator exercise, integration/golden coverage, native/device behavior and separate BLE identity/OTA trust security work remain unverified. The wider file audit remains unfinished. |
+| Next action | Optionally paste the supplied self-contained project-governance/roadmap review prompt into Gemini and return its answer for verification. Keep this conversation in Diskusi; resume the separate repository-wide file audit only in the dedicated Eksekusi Code chat. No implementation or release authorization is granted. |
 
 ## Status model
 
