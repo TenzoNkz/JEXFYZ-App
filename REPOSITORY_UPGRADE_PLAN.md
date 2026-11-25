@@ -175,7 +175,7 @@ A failed gate blocks dependent work. Retry only after classifying root cause (so
 | `pubspec.lock` | Flutter dependency manifest/lock | DEPENDENCY CONTRACT — REVIEW BEFORE CHANGE | KEEP / VERIFIED (2026-11-26) |
 | `pubspec.yaml` | Flutter dependency manifest/lock | DEPENDENCY CONTRACT — REVIEW BEFORE CHANGE | UPGRADE — CLOSED / READ-BACK VERIFIED (2026-11-26) |
 | `README.md` | Project entrypoint / navigation index | ACTIVE PROJECT INDEX | KEEP / VERIFIED (2026-11-26) |
-| `SKILLS_INDEX.md` | Operating governance | CANONICAL GOVERNANCE | INVENTORIED — CONTENT REVIEW PENDING |
+| `SKILLS_INDEX.md` | Reusable skill and capability catalogue | ACTIVE CAPABILITY INDEX | UPGRADE — CLOSED / READ-BACK VERIFIED (2026-11-26) |
 | `test/app_protocol_notify_contract_test.dart` | Dart test | TEST / REGRESSION | INVENTORIED — CONTENT REVIEW PENDING |
 | `test/connection_scan_coordinator_test.dart` | Dart test | TEST / REGRESSION | INVENTORIED — CONTENT REVIEW PENDING (FORMATTER ONLY, `003bccd6`) |
 | `test/connection_scan_state_test.dart` | Dart test | TEST / REGRESSION | INVENTORIED — CONTENT REVIEW PENDING |
@@ -239,6 +239,18 @@ A failed gate blocks dependent work. Retry only after classifying root cause (so
 - **Acceptance evidence:** complete content review and internal-link/path check **PASS — STATIC SOURCE CHECK**. README remained unchanged from the Validation Only #72 tested source; that Flutter validation did not validate Markdown content. No Markdown linter was available or required by this review; no Flutter test, formatter, analyzer, build or screenshot is claimed for README.
 - **Scope:** inventory row and this audit record only. `README.md`, source, tests, workflow, assets and package/release configuration remain unchanged. No source ZIP/APK or Release operation was initiated.
 - **Next file:** `SKILLS_INDEX.md` (next inventory entry). Continue the remaining file review one path at a time; the 12 formatter-touched Dart files remain pending separate content review.
+
+### WP0 — `SKILLS_INDEX.md` — UPGRADE / CLOSED / READ-BACK VERIFIED (2026-11-26)
+
+- **Reviewed checkpoint:** `main` HEAD `e1e5e1ed08da968f0cedc0bf26e4c52d9f13f84a`; prior index blob `79491279a7720f85bff0940439b94bb4d3343403`. The full 116-line capability/skill index was inspected; updated blob `cd8924f7eebbb815f204a5ae34d517dbcb8ea773`.
+- **Role and consumers:** single catalogue for the 12 canonical project skills, 12 GitHub Copilot mirror paths, current product-design references, connected tool families, local engineering environment and task-to-tool boundaries. Search confirms active references from `AGENTS.md`, `README.md`, `MASTER_PROMPT.md`, `MEMORY_INDEX.md`, `PROJECT_STATE.md`, `HANDOVER.md`, `CHAT_TRANSFER.md`, `CHAT_TRANSFER_PROMPTS.md` and historical `CHANGELOG.md`; their roles remain compatible with the updated index.
+- **Skill-library check — STATIC SOURCE CHECK:** current recursive tree lists 12 `.agents/skills/*/SKILL.md` canonical skills and 12 `.github/skills/*/SKILL.md` mirrors. All 12 canonical/mirror blob SHA pairs are equal; no skill file was modified.
+- **Capability correction:** this session's available tool catalogue confirms GitHub, Figma, Context7, file/skill, and automation tool families, plus general web product search. It did **not** expose a dedicated Shopee connector. The former Shopee-specific capability row and session claim were replaced with a precise web product-discovery statement; this does not claim Shopee account/listing integration.
+- **Environment correction:** live container checks on 2026-11-26 report Git 2.47.3, Python 3.13.5, OpenJDK/Javac 21.0.12.1; `flutter`, `dart`, `gradle`, `adb`, `arduino-cli` and `idf.py` are absent from PATH. The environment heading/date and exact absence boundary were refreshed. Do not infer availability from an older environment snapshot.
+- **Finding / disposition:** the skill catalogue and product-design routing remain accurate; no new skill or connector is justified. Updating the current capability/toolchain facts prevents a false implication of Shopee-specific access and stale SDK availability. Disposition: **UPGRADE — CLOSED / READ-BACK VERIFIED**.
+- **Acceptance evidence:** full content review, 12/12 mirror-hash comparisons and tool/runtime inventory are **STATIC SOURCE CHECK**. The Markdown file has no Markdown-link destinations requiring path repair; path consumers were searched. No Flutter formatter, analyzer, unit/widget tests, build, or visual/device checks apply to this index; the local Flutter toolchain is unavailable. No CI was started.
+- **Scope:** `SKILLS_INDEX.md` and its disposition/record in this inventory only. No skills, source, tests, workflows, dependency files or assets changed; no plugins were installed or external operation started.
+- **Next file:** `CHAT_RULES.md` in current tree order; continue WP0 one path at a time. Twelve formatter-touched Dart files remain pending individual review.
 
 ### Formatter-only side effect — 12 Dart files — CONTENT REVIEW PENDING (2026-11-26)
 
