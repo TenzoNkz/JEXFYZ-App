@@ -5711,7 +5711,16 @@ class _DashboardScreenState extends State<DashboardScreen>
                       knownCoolerRemoteIdNotifier.value;
               if (serviceMatch && knownMatch) {
                 unawaited(_cancelDisconnectRediscovery());
-                unawaited(_connect(result.device));
+                // Passive rediscovery has no awaiting caller; consume connection failures
+                // after _connect updates the existing disconnected/error presentation.
+                unawaited(
+                  _connect(result.device).catchError((
+                    Object error,
+                    StackTrace stackTrace,
+                  ) {
+                    debugPrint('BLE passive connection: $error');
+                  }),
+                );
                 break;
               }
             }
