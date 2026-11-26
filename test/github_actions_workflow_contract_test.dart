@@ -96,9 +96,7 @@ void main() {
     },
   );
 
-  test(
-    'main-only Validation Only disables the composite action cache',
-    () {
+  test('main-only Validation Only disables the composite action cache', () {
       expect(
         _namedStep(validationOnlyWorkflow, 'Set up Flutter'),
         contains('cache: false'),
@@ -106,9 +104,7 @@ void main() {
     },
   );
 
-  test(
-    'Validation Only is direct-main, read-only and cannot mutate repository refs',
-    () {
+  test('Validation Only is direct-main, read-only and cannot mutate repository refs', () {
       expect(
         RegExp(
           r'^  push:\n    branches:\n      - main$',
