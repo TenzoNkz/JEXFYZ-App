@@ -11454,9 +11454,9 @@ class _FirmwareUpdateDialogState extends State<FirmwareUpdateDialog> {
         );
         if (shouldNotify) {
           try {
-            await const MethodChannel(
+            final notificationShown = await const MethodChannel(
               'je_x_fyz/notifications',
-            ).invokeMethod<void>('showNotification', <String, dynamic>{
+            ).invokeMethod<bool>('showNotification', <String, dynamic>{
               'title': JexText.of('firmwareUpdate', appLanguageNotifier.value),
               'body': JexText.of(
                 'firmwareUpdateAvailableBody',
@@ -11465,7 +11465,9 @@ class _FirmwareUpdateDialogState extends State<FirmwareUpdateDialog> {
               'id': 2104,
               'language': appLanguageNotifier.value.name,
             });
-            await AppSettingsStore.markFirmwareNotified(version);
+            if (notificationShown == true) {
+              await AppSettingsStore.markFirmwareNotified(version);
+            }
           } catch (e) {
             debugPrint('Firmware notification: $e');
           }

@@ -149,6 +149,79 @@ void main() {
     );
   });
 
+  test(
+    'Firmware notification cooldown is recorded only after native post succeeds',
+    () {
+      final main = File('lib/main.dart').readAsStringSync();
+      final activity = File(
+        'android/app/src/main/kotlin/com/horizontalzzz/jexfyz/MainActivity.kt',
+      ).readAsStringSync();
+
+      final otaStart = main.indexOf(
+        'if (updateAvailable && appNotifyFirmwareNotifier.value)',
+      );
+      final otaEnd = main.indexOf(
+        "debugPrint('Firebase OTA metadata:",
+        otaStart,
+      );
+      expect(otaStart, greaterThanOrEqualTo(0));
+      expect(otaEnd, greaterThan(otaStart));
+
+      final otaNotification = main.substring(otaStart, otaEnd);
+      final showCall = otaNotification.indexOf(
+        ".invokeMethod<bool>('showNotification'",
+      );
+      final successGuard = otaNotification.indexOf(
+        'if (notificationShown == true)',
+      );
+      final markNotified = otaNotification.indexOf(
+        'await AppSettingsStore.markFirmwareNotified(version);',
+      );
+      expect(showCall, greaterThanOrEqualTo(0));
+      expect(successGuard, greaterThan(showCall));
+      expect(markNotified, greaterThan(successGuard));
+      expect(
+        otaNotification,
+        isNot(contains(".invokeMethod<void>('showNotification'")),
+      );
+
+      final showStart = activity.indexOf(
+        'private fun showUserNotification(',
+      );
+      final showEnd = activity.indexOf(
+        'private fun openBluetoothSettings(',
+        showStart,
+      );
+      expect(showStart, greaterThanOrEqualTo(0));
+      expect(showEnd, greaterThan(showStart));
+
+      final showImplementation = activity.substring(showStart, showEnd);
+      final permissionCheck = showImplementation.indexOf(
+        'PackageManager.PERMISSION_GRANTED',
+      );
+      final permissionRequest = showImplementation.indexOf(
+        'requestNotificationPermission(language)',
+        permissionCheck,
+      );
+      final deniedResult = showImplementation.indexOf(
+        'return false',
+        permissionRequest,
+      );
+      final postNotification = showImplementation.indexOf(
+        '.notify(id, notification)',
+      );
+      final successfulResult = showImplementation.indexOf(
+        '\n            true',
+        postNotification,
+      );
+      expect(permissionCheck, greaterThanOrEqualTo(0));
+      expect(permissionRequest, greaterThan(permissionCheck));
+      expect(deniedResult, greaterThan(permissionRequest));
+      expect(postNotification, greaterThan(deniedResult));
+      expect(successfulResult, greaterThan(postNotification));
+    },
+  );
+
   test('All Android notification channels follow the selected App language', () {
     final main = File('lib/main.dart').readAsStringSync();
     final activity = File(
