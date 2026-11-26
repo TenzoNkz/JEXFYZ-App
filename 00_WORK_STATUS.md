@@ -1,4 +1,4 @@
-| Last updated | 2026-11-26T20:38:57+07:00 (Asia/Jakarta) |
+| Last updated | 2026-11-26T20:43:50+07:00 (Asia/Jakarta) |
 
 > Single current snapshot for JE X FYZ project interactions. Event-driven marker; not a background heartbeat.
 
@@ -8,20 +8,20 @@
 |---|---|
 | **STATUS** | **IN_PROGRESS** |
 | SESSION STATUS | IN_PROGRESS — Owner command: “@Thinking Chat Stuck!” Recover only the latest authorized CODE_FULL App-only WP0–WP10 rework. Reconcile the previous interrupted interaction against live `main`, bounded checkpoint, register, source/test state and independent Actions state before resuming; do not repeat any completed commit or external side effect. Preserve all exclusions: no Build App/APK/release, Firmware/BIN, BLE P1 protocol/security, OTA transport/security, Firebase production, signing, flash or device operation. Started: 2026-11-26T20:32:55+07:00 (Asia/Jakarta). |
-| WORK STATUS | IN_PROGRESS — App-only WP0–WP10 remains active in CODE_FULL. All 12 canonical skill/mirror pairs, `.gitignore`, Validation Only cache hardening and workflow-contract regression are dispositioned; current register has 46/96 closed dispositions. Nine formatter-touched Dart/test files remain pending individual review. |
+| WORK STATUS | IN_PROGRESS — Owner-approved App-only WP0–WP10 rework remains active. WP0 now has 49/96 dispositions; the first remaining sorted inventory path is `android/app/build.gradle`; eight formatter-touched Dart/test files remain pending. WP1 Android API-guard regression correction is verified by Validation Only #77. |
 | WORKSPACE | CODE_FULL |
 | Mode | Eksekusi Code — owner-authorized App-only source/test/docs/static-audit workstream. No App package build, signing, release, Firmware/BIN, Firebase production mutation, OTA transport/security, flashing or physical device operation. |
 | Request / work item | Continue owner-approved full App rework + premium UI redesign WP0–WP10 (2026-11-26) in CODE_FULL. Reconcile live repository inventory and active checkpoint; start from the first unreviewed live path and implement the smallest safe in-scope milestone. |
 | Started | 2026-11-26T19:33:00+07:00 (Asia/Jakarta) |
-| Last updated | 2026-11-26T20:38:57+07:00 |
-| Current phase | WP1 regression refinement — Validation Only #77 is actively running on exact source/test SHA `b1ee13ddc5e2b13c72485a30518c70c06c77c13f`. Formatter precheck and post-format, locked dependencies have passed; analyzer is in progress; Flutter tests have not started. |
-| Last completed milestone | Validation Only #76 / run `45827382093` / job `139934913868` completed SUCCESS on `8f1493cfaa51f3d1322e5f3abf6921b11871ffbb`: locked dependencies, formatter 19 files / 0 changed, analyzer and 221/221 Flutter tests PASS. The location API gate source fix is in `MainActivity.kt`; the Flutter method has no current Dart caller. Regression assertion tightened in test commit `b1ee13d`. |
-| Last verified source checkpoint | CURRENT / VERIFIED `main` HEAD `b1ee13ddc5e2b13c72485a30518c70c06c77c13f`; root tree `0096edafa71aeb0274d26d6607115dc0acc3303e`; 142 entries / 96 blobs / 46 trees; `truncated=false`. Validation Only #77 / run `45830921047` is queued for this exact SHA. |
-| EXTERNAL OPERATION | Validation Only #77 — run `45830921047`, job `139947149887`, source SHA `b1ee13ddc5e2b13c72485a30518c70c06c77c13f`; live API reports IN_PROGRESS at analyzer. |
-| EXTERNAL OPERATION STATUS | IN_PROGRESS — Validation Only #77 / run `45830921047` / job `139947149887`. |
-| Result / evidence | Test commit `b1ee13ddc5e2b13c72485a30518c70c06c77c13f` added `expect(api28Call, lessThan(legacyBranch))` with an adjacent invariant comment; exact file blob `e32e17d0be304ae44d04e2bb3409058626734555` read back. The new tree retains all 142 entries / 96 blobs and is not truncated. |
-| Blocker / remaining evidence | Validation #77 has not yet reached a terminal state. Local Flutter/Dart/Gradle/ADB remain absent. Android Gradle/Kotlin compile and API 24–27 device behavior are NOT RUN; Visual remains NOT VERIFIED. |
-| Next action | Re-query run #77 for analyzer/test terminal results; then update canonical WP0 dispositions/checkpoint and close this recovery interaction without marking the broader App rework complete. |
+| Last updated | 2026-11-26T20:43:50+07:00 |
+| Current phase | CHAT STUCK RECOVERY — all previous side effects reconciled; run #77 validated the corrected test on exact SHA. Current recovery documentation/register/checkpoint is being committed and read back. Broader WP0–WP10 remains IN_PROGRESS. |
+| Last completed milestone | Validation Only #77 / run `45830921047` / job `139947149887` completed SUCCESS on `b1ee13ddc5e2b13c72485a30518c70c06c77c13f`: locked dependencies PASS; formatter precheck/final PASS (19 files / 0 changed; apply/patch/commit skipped); analyzer SUCCESS (`--no-fatal-infos`); **221/221 Flutter tests PASS**. WP0 status and AGENTS entrypoints are reviewed; the API-28 branch-order false positive in the test was fixed. |
+| Last verified source checkpoint | CURRENT / VERIFIED source/test SHA `b1ee13ddc5e2b13c72485a30518c70c06c77c13f`; tree `0096edafa71aeb0274d26d6607115dc0acc3303e`; 142 entries / 96 blobs / 46 trees; `truncated=false`. Latest code/test CI #77 is terminal SUCCESS. Current main before this docs commit: `c494f0c6104c705b5b00a7ad090e8fc95f461b22`. |
+| EXTERNAL OPERATION | Validation Only #77 — run `45830921047`, job `139947149887`, source SHA `b1ee13ddc5e2b13c72485a30518c70c06c77c13f`; terminal SUCCESS. No Build App/Firmware/OTA/device operation. |
+| EXTERNAL OPERATION STATUS | COMPLETED / SUCCESS — Validation Only #77 / run `45830921047`; no independent operation remains active. |
+| Result / evidence | Test correction commit `b1ee13ddc5e2b13c72485a30518c70c06c77c13f` (test blob `e32e17d0be304ae44d04e2bb3409058626734555`) was validated by #77. WP0 register now records 49/96 dispositions. Documentation/checkpoint updates are pending final read-back. |
+| Blocker / remaining evidence | Local Flutter/Dart/Gradle/ADB absent. Kotlin/Android Gradle compilation, API 24–27 device behavior and OEM permission/BLE behavior remain BLOCKED / NOT RUN. Actual screenshot matrix remains VISUAL NOT VERIFIED. |
+| Next action | Verify this documentation commit and final main/tree/status read-back. Then continue WP0 at `android/app/build.gradle`; keep Build App/Release and all excluded Firmware/OTA/device scopes closed. |
 
 ## Status model
 

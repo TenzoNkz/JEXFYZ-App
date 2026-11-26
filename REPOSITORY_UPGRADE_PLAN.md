@@ -123,8 +123,8 @@ A failed gate blocks dependent work. Retry only after classifying root cause (so
 | `.github/workflows/jexfyz-app-pr-validation.yml` | Validation workflow | WORKFLOW — SECURITY / SCOPE GATED | KEEP / VERIFIED (2026-11-26) |
 | `.github/workflows/jexfyz-app-validation.yml` | Validation workflow | WORKFLOW — SECURITY / SCOPE GATED | UPGRADE — CLOSED / READ-BACK VERIFIED (2026-11-26) |
 | `.gitignore` | Repository ignore policy | REPOSITORY CONFIG | KEEP / VERIFIED (2026-11-26) |
-| `00_WORK_STATUS.md` | Session continuity | ACTIVE STATUS / CHECKPOINT | INVENTORIED — CONTENT REVIEW PENDING |
-| `AGENTS.md` | Operating governance | CANONICAL GOVERNANCE | INVENTORIED — CONTENT REVIEW PENDING |
+| `00_WORK_STATUS.md` | Session continuity | ACTIVE STATUS / CHECKPOINT | KEEP / VERIFIED (2026-11-26) |
+| `AGENTS.md` | Operating governance | CANONICAL GOVERNANCE | KEEP / VERIFIED (2026-11-26) |
 | `analysis_options.yaml` | Dart analyzer policy | QUALITY CONFIG — ANALYZER GATE | KEEP / VERIFIED — 2026-11-26 (WP1) |
 | `android/app/build.gradle` | Android build configuration | BUILD CONFIG — COMPATIBILITY GATED | INVENTORIED — CONTENT REVIEW PENDING |
 | `android/app/google-services.json` | Firebase Android config | PROTECTED — SENSITIVE CONFIGURATION | INVENTORIED — CONTENT REVIEW PENDING |
@@ -179,7 +179,7 @@ A failed gate blocks dependent work. Retry only after classifying root cause (so
 | `test/app_protocol_notify_contract_test.dart` | Dart test | TEST / REGRESSION | INVENTORIED — CONTENT REVIEW PENDING |
 | `test/connection_scan_coordinator_test.dart` | Dart test | TEST / REGRESSION | INVENTORIED — CONTENT REVIEW PENDING (FORMATTER ONLY, `003bccd6`) |
 | `test/connection_scan_state_test.dart` | Dart test | TEST / REGRESSION | INVENTORIED — CONTENT REVIEW PENDING |
-| `test/device_copy_notification_contract_test.dart` | Dart test | TEST / REGRESSION | INVENTORIED — CONTENT REVIEW PENDING (FORMATTER ONLY, `003bccd6`) |
+| `test/device_copy_notification_contract_test.dart` | Dart test | TEST / REGRESSION | UPGRADE — CLOSED / READ-BACK VERIFIED (2026-11-26) |
 | `test/firmware_qc_contract_test.dart` | Dart test | TEST / REGRESSION | INVENTORIED — CONTENT REVIEW PENDING (FORMATTER ONLY, `003bccd6`) |
 | `test/firmware_touch_adaptive_sync_test.dart` | Dart test | TEST / REGRESSION | INVENTORIED — CONTENT REVIEW PENDING |
 | `test/floating_monitor_layout_contract_test.dart` | Dart test | TEST / REGRESSION | INVENTORIED — CONTENT REVIEW PENDING (FORMATTER ONLY, `003bccd6`) |
@@ -460,11 +460,33 @@ The Firmware-safety and hardware/power skills are retained as protected project 
 - **Lifecycle/test gap:** commit #73 added a mounted guard before the periodic timer; the test asserts source-token order rather than exercising late async completion after dispose. `FloatingStore.save` updates the notifier before its secure-storage write and suppresses write errors; no direct round-trip/failure test was found in the current test tree. These are coverage/observability gaps, not reproduced product defects.
 - **Disposition:** **UPGRADE APPROVED** under the existing App-only rework plan: separate Settings navigation/shared presentation and AppSettings-backed subpages from Floating Monitor configuration/persistence/bridge/application/presentation. This is a future Eksekusi Code source work package, not a change made or executed in Diskusi. The companion test file remains a separate pending inventory item; local tests, Android/OEM overlay and visual/device acceptance were not performed here.
 
+### WP0 — 00_WORK_STATUS.md — KEEP / VERIFIED (2026-11-26)
+
+- Reviewed the live status marker and status model. It keeps SESSION STATUS, cross-workspace WORK STATUS, WORKSPACE and independent EXTERNAL OPERATION STATUS separate; records Asia/Jakarta timestamps, phase, evidence, blocker and next action; and explicitly identifies itself as event-driven rather than a heartbeat or lock.
+- Dynamic status values are intentionally updated per JE X FYZ interaction. No product/source behavior, credential, release or device data belongs in this file. The status schema is consistent with MASTER_PROMPT.md Section 2A.
+- **Disposition:** KEEP / VERIFIED. No schema or policy change required.
+
+### WP0 — AGENTS.md — KEEP / VERIFIED (2026-11-26)
+
+- Reviewed the full cross-agent entrypoint. It routes to MASTER_PROMPT.md and SKILLS_INDEX.md, accurately distinguishes Diskusi / Eksekusi Code / Build App, preserves the single-writer rule and protected Firmware/OTA/Firebase/device boundaries, and does not establish a competing operating policy.
+- Referenced root authority/index files are present in the live tree. No stale path or conflicting permission instruction was found.
+- **Disposition:** KEEP / VERIFIED. Retain as the concise interoperability pointer.
+
+### WP1 — test/device_copy_notification_contract_test.dart — UPGRADE / CLOSED / READ-BACK VERIFIED (2026-11-26)
+
+- Reviewed the complete test file. Its assertions are explicitly source-contract checks for bilingual device copy, notification ID separation, Floating Monitor full-sync gating, deferred OTA messaging and native notification-channel language; they do not claim runtime Android/permission/device coverage.
+- The Android location compatibility check covers the private MainActivity.isLocationServiceEnabled() body. The initial assertion verified only that manager.isLocationEnabled appeared after the SDK guard and could pass if the API-28-only property were misplaced inside the legacy else branch.
+- Corrected the false-positive by asserting api28Call < legacyBranch, with a nearby comment explaining the API-28 / minSdk 24–27 invariant. The current test blob is e32e17d0be304ae44d04e2bb3409058626734555; current implementation is on MainActivity.kt blob ff5e852bfaf33143fe6565a5fd37a560f8950c90.
+- **VERIFIED CI:** Validation Only #77 / run 45830921047 / job 139947149887, exact source/test SHA b1ee13ddc5e2b13c72485a30518c70c06c77c13f, terminal SUCCESS. Locked dependencies PASS; formatter precheck/final PASS (19 files / 0 changed); analyzer step SUCCESS with --no-fatal-infos; Flutter tests 221/221 PASS. Formatter apply, patch upload and formatting commit were SKIPPED.
+- **Evidence limit:** this test is a static source contract. The Validation Only workflow checks Flutter/Dart only; it does not compile Kotlin/Android or prove API 24–27 device behavior. Those remain BLOCKED / NOT RUN in this runtime.
+- **Disposition:** UPGRADE / CLOSED / READ-BACK VERIFIED. Preserve the distinction between static source assertions and native runtime validation.
+
 ## Current disposition
 
-- Inventory coverage: **96/96 tracked blobs** at live `main` HEAD `b5990d9ec9d6230e28b11a09fc180f6fe4dd68ce`; recursive root tree `28b0498b15e44d04bba2e6d9eed66efbc5c9707c`; 142 entries / 96 blobs / 46 trees; `truncated=false`.
-- Content review coverage: **46/96 dispositions** after closing the Validation Only cache hardening, workflow-contract regression test and `.gitignore` review. Continue file-by-file WP0 audit from the next pending inventory row.
-- Nine formatter-touched Dart/test files remain individually pending content review: `lib/main.dart`, `lib/usage_statistics.dart`, `test/connection_scan_coordinator_test.dart`, `test/device_copy_notification_contract_test.dart`, `test/firmware_qc_contract_test.dart`, `test/floating_monitor_layout_contract_test.dart`, `test/localization_contract_test.dart`, `test/usage_statistics_test.dart` and `test/widget_test.dart`. The workflow-contract test moved to IN_PROGRESS for its substantive regression correction.
+- Inventory coverage: **96/96 tracked blobs** at pre-documentation HEAD `c494f0c6104c705b5b00a7ad090e8fc95f461b22`; root tree `48cbcd7fada5637e6ccfc44db74b34ac4e7a7242`; 142 entries / 96 blobs / 46 trees; `truncated=false`.
+- Content review coverage: **49/96 dispositions** after `00_WORK_STATUS.md`, `AGENTS.md` and `test/device_copy_notification_contract_test.dart` were reviewed and dispositioned. The audit remains incomplete.
+- Eight formatter-touched Dart/test files remain individually pending content review: `lib/main.dart`, `lib/usage_statistics.dart`, `test/connection_scan_coordinator_test.dart`, `test/firmware_qc_contract_test.dart`, `test/floating_monitor_layout_contract_test.dart`, `test/localization_contract_test.dart`, `test/usage_statistics_test.dart` and `test/widget_test.dart`. `test/device_copy_notification_contract_test.dart` is now closed after its API-28 branch-order regression assertion was corrected and passed CI #77.
 - No blanket source/config/workflow/Firmware/BIN/asset update is authorized by this plan.
+- The next unreviewed live inventory path is `android/app/build.gradle`; review it and the following sensitive/protected Android configuration paths in order. No Android Gradle compile has been run.
 - The owner-approved App-only WP0–WP10 work item remains IN_PROGRESS in `WORKSPACE=CODE_FULL`; this is the active Eksekusi Code implementation workspace. App Build/release, Firmware/BIN, BLE P1 wire/security, OTA, Firebase production, signing and device operations remain excluded.
 - Refresh the inventory when files are added/removed/renamed; update the row of every file touched; re-check the recursive tree and all references before closing a WP.
