@@ -4067,13 +4067,29 @@ void main() {
       );
     },
   );
+  test(
+    'Connection sheet filters with the service UUID injected by Dashboard',
+    () {
+      final source = File('lib/connection_sheet.dart').readAsStringSync();
+      final serviceMatch = source.indexOf(
+        'uuid.toString().toLowerCase() ==',
+      );
+      expect(serviceMatch, isNonNegative);
+      final serviceMatchEnd = source.indexOf(',', serviceMatch);
+      expect(serviceMatchEnd, greaterThan(serviceMatch));
+      final filter = source.substring(serviceMatch, serviceMatchEnd);
+      expect(filter, contains('widget.serviceUuid'));
+      expect(filter, isNot(contains('== serviceUuid')));
+    },
+  );
+
   test('Connection status polling is lifecycle-aware and prevents overlapping native reads', () {
     final source = File('lib/connection_sheet.dart').readAsStringSync();
     final start = source.indexOf('class _ConnectionSheetContentState');
     final end = source.indexOf('Future<int> _getAndroidSdkInt', start);
     expect(start, isNonNegative);
     expect(end, greaterThan(start));
-    final connection = source.substring(start, end);
+    final sheet = source.substring(start, end);
     expect(sheet, contains('Duration(seconds: 3)'));
     expect(sheet, contains('_statusRefreshInFlight'));
     expect(sheet, contains('WidgetsBindingObserver'));

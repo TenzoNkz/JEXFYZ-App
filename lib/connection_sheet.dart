@@ -375,7 +375,7 @@ class _ConnectionSheetContentState extends State<ConnectionSheetContent>
                               .any(
                                 (uuid) =>
                                     uuid.toString().toLowerCase() ==
-                                    serviceUuid,
+                                    widget.serviceUuid,
                               );
                           final name = r.device.platformName
                               .trim()
