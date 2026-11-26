@@ -54,6 +54,7 @@ void main() {
     test('literal inline phrase pairs preserve placeholder parity', () {
       const paths = <String>[
         'lib/main.dart',
+        'lib/home_notify.dart',
         'lib/floating_monitor.dart',
         'lib/usage_statistics.dart',
       ];
