@@ -334,7 +334,9 @@ void main() {
     'Home NOTIFY preserves readable text inside its fixed 44dp geometry',
     () {
       final source = File('lib/home_notify.dart').readAsStringSync();
-      final start = source.indexOf('class HomeNotifyCard extends StatelessWidget');
+      final start = source.indexOf(
+        'class HomeNotifyCard extends StatelessWidget',
+      );
       expect(start, isNonNegative);
       final notify = source.substring(start);
       expect(notify, contains('height: 44'));

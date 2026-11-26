@@ -69,8 +69,12 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          dart format --output=show test/widget_test.dart > "$RUNNER_TEMP/formatted-widget-test.dart"
-          diff -u test/widget_test.dart "$RUNNER_TEMP/formatted-widget-test.dart" || true
+          for file in lib/home_notify.dart test/widget_test.dart; do
+            output="$RUNNER_TEMP/formatted-$(basename "$file")"
+            dart format --output=show "$file" > "$output"
+            echo "===== formatter diff: $file ====="
+            diff -u "$file" "$output" || true
+          done
 
       - name: Analyze Flutter and Dart source
         id: analyzer
