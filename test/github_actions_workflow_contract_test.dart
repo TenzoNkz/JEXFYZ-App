@@ -19,15 +19,11 @@ String _namedStep(String workflow, String name) {
 
 void main() {
   late String workflow;
-  late String pullRequestValidationWorkflow;
   late String validationOnlyWorkflow;
 
   setUpAll(() {
     workflow = File('.github/workflows/jexfyz-app-build-trigger.yml')
         .readAsStringSync();
-    pullRequestValidationWorkflow = File(
-      '.github/workflows/jexfyz-app-pr-validation.yml',
-    ).readAsStringSync();
     validationOnlyWorkflow = File('.github/workflows/jexfyz-app-validation.yml')
         .readAsStringSync();
   });
@@ -101,14 +97,41 @@ void main() {
   );
 
   test(
-    'non-publishing Flutter workflows disable the composite action cache',
+    'main-only Validation Only disables the composite action cache',
     () {
-      for (final source in [
-        pullRequestValidationWorkflow,
+      expect(
+        _namedStep(validationOnlyWorkflow, 'Set up Flutter'),
+        contains('cache: false'),
+      );
+    },
+  );
+
+  test(
+    'Validation Only is direct-main, read-only and cannot mutate repository refs',
+    () {
+      expect(
         validationOnlyWorkflow,
-      ]) {
-        expect(_namedStep(source, 'Set up Flutter'), contains('cache: false'));
-      }
+        contains('  push:\\n    branches:\\n      - main'),
+      );
+      expect(
+        validationOnlyWorkflow,
+        contains('permissions:\\n  contents: read'),
+      );
+      expect(validationOnlyWorkflow, contains('persist-credentials: false'));
+      expect(
+        validationOnlyWorkflow,
+        contains('dart format --output=none --set-exit-if-changed lib test'),
+      );
+      expect(validationOnlyWorkflow, contains('flutter analyze --no-fatal-infos'));
+      expect(validationOnlyWorkflow, contains('flutter test'));
+      expect(validationOnlyWorkflow, isNot(contains('pull_request:')));
+      expect(validationOnlyWorkflow, isNot(contains('contents: write')));
+      expect(validationOnlyWorkflow, isNot(contains('git push')));
+      expect(validationOnlyWorkflow, isNot(contains('dart format lib test')));
+      expect(
+        File('.github/workflows/jexfyz-app-pr-validation.yml').existsSync(),
+        isFalse,
+      );
     },
   );
 

@@ -1,4 +1,4 @@
-# Non-publishing Flutter/Dart validation only. This workflow never builds or releases the App.
+# Read-only Flutter/Dart validation for the sole project branch. Never builds or releases the App.
 name: JE X FYZ — Validation Only
 
 on:
@@ -14,22 +14,24 @@ on:
       - "test/**"
       - "assets/**"
 
-# The validation job needs repository read access only.
 permissions:
   contents: read
+
+concurrency:
+  group: jexfyz-validation-main
+  cancel-in-progress: true
 
 jobs:
   validate:
     name: Flutter quality checks (non-publishing)
     runs-on: ubuntu-24.04
     timeout-minutes: 30
-    # This one job may write only a verified formatter-only commit to lib/ and test/.
-    permissions:
-      contents: write
 
     steps:
-      - name: Checkout selected revision
+      - name: Checkout selected main revision
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
 
       - name: Set up Flutter
         uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2
@@ -52,29 +54,9 @@ jobs:
           set -euo pipefail
           flutter pub get --enforce-lockfile
 
-      # Keep each quality gate observable and allow the remaining checks to run
-      # even when one gate fails. The final summary step restores a failing job.
+      # Keep each read-only gate observable and report all results in one run.
       - name: Check Dart formatting (read-only)
         id: formatter
-        if: ${{ !cancelled() && steps.dependencies.outcome == 'success' }}
-        continue-on-error: true
-        shell: bash
-        run: |
-          set -euo pipefail
-          dart format --output=none --set-exit-if-changed lib test
-
-      - name: Apply Dart formatting (format-only)
-        id: formatter_apply
-        if: ${{ !cancelled() && steps.dependencies.outcome == 'success' && steps.formatter.outcome == 'failure' }}
-        continue-on-error: true
-        shell: bash
-        run: |
-          set -euo pipefail
-          dart format lib test
-          git diff --check -- lib test
-
-      - name: Verify formatter after format
-        id: formatter_final
         if: ${{ !cancelled() && steps.dependencies.outcome == 'success' }}
         continue-on-error: true
         shell: bash
@@ -100,85 +82,13 @@ jobs:
           set -euo pipefail
           flutter test
 
-      # Produce a formatting-only patch after checks have run. This changes only
-      # the ephemeral runner workspace; the artifact is reviewed before any source commit.
-      - name: Prepare formatter patch for review
-        id: formatter_preview
-        if: ${{ !cancelled() && steps.dependencies.outcome == 'success' && steps.formatter.outcome == 'failure' && steps.formatter_final.outcome == 'success' }}
-        continue-on-error: true
-        shell: bash
-        run: |
-          set -euo pipefail
-          mkdir -p "$RUNNER_TEMP/jexfyz-format-preview"
-          git diff --check -- lib test
-          git diff --binary -- lib test > "$RUNNER_TEMP/jexfyz-format-preview/jexfyz-dart-format.patch"
-          git diff --stat -- lib test > "$RUNNER_TEMP/jexfyz-format-preview/format-stat.txt"
-          git diff --name-only -- lib test > "$RUNNER_TEMP/jexfyz-format-preview/format-files.txt"
-          test -s "$RUNNER_TEMP/jexfyz-format-preview/jexfyz-dart-format.patch"
-          if grep -Ev '^(lib|test)/' "$RUNNER_TEMP/jexfyz-format-preview/format-files.txt"; then
-            echo "Unexpected path outside lib/ and test/ in formatter preview." >&2
-            exit 1
-          fi
-          echo "Prepared a formatter-only patch scoped to lib/ and test/; no repository source has been committed or published."
-
-      - name: Upload formatter patch preview (non-publishing)
-        id: formatter_preview_upload
-        if: ${{ !cancelled() && steps.formatter_preview.outcome == 'success' }}
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
-        with:
-          name: jexfyz-dart-format-preview
-          path: ${{ runner.temp }}/jexfyz-format-preview/
-          if-no-files-found: error
-          retention-days: 7
-
-      - name: Commit verified formatter-only changes
-        id: formatter_commit
-        if: ${{ !cancelled() && steps.formatter_apply.outcome == 'success' && steps.formatter_final.outcome == 'success' && steps.analyzer.outcome == 'success' && steps.flutter_tests.outcome == 'success' }}
-        shell: bash
-        run: |
-          set -euo pipefail
-
-          git add -- lib test
-          if git diff --cached --quiet; then
-            echo "commit_sha=none" >> "$GITHUB_OUTPUT"
-            echo "No formatter changes remain to commit."
-            exit 0
-          fi
-
-          unexpected="$(git diff --cached --name-only | grep -Ev '^(lib|test)/' || true)"
-          if [[ -n "$unexpected" ]]; then
-            echo "Refusing to commit paths outside lib/ and test/:" >&2
-            printf '%s\n' "$unexpected" >&2
-            exit 1
-          fi
-          git diff --cached --check
-
-          # Do not overwrite or race a newer main commit.
-          git fetch --no-tags origin main
-          remote_head="$(git rev-parse refs/remotes/origin/main)"
-          if [[ "$remote_head" != "$GITHUB_SHA" ]]; then
-            echo "main advanced after this validation checkout; refusing the formatter commit." >&2
-            exit 1
-          fi
-
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git commit -m "style: format Dart sources and tests"
-          git push origin HEAD:refs/heads/main
-          echo "commit_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
-
       - name: Summarize validation results
         if: ${{ always() }}
         shell: bash
         env:
           SOURCE_SHA: ${{ github.sha }}
           DEPENDENCIES_OUTCOME: ${{ steps.dependencies.outcome }}
-          FORMATTER_PRECHECK_OUTCOME: ${{ steps.formatter.outcome }}
-          FORMATTER_APPLY_OUTCOME: ${{ steps.formatter_apply.outcome }}
-          FORMATTER_FINAL_OUTCOME: ${{ steps.formatter_final.outcome }}
-          FORMATTER_PREVIEW_OUTCOME: ${{ steps.formatter_preview.outcome }}
-          FORMATTER_COMMIT_OUTCOME: ${{ steps.formatter_commit.outcome }}
-          FORMATTER_COMMIT_SHA: ${{ steps.formatter_commit.outputs.commit_sha }}
+          FORMATTER_OUTCOME: ${{ steps.formatter.outcome }}
           ANALYZER_OUTCOME: ${{ steps.analyzer.outcome }}
           FLUTTER_TESTS_OUTCOME: ${{ steps.flutter_tests.outcome }}
         run: |
@@ -192,24 +102,15 @@ jobs:
             echo "| Check | Outcome |"
             echo "|---|---|"
             echo "| Locked dependency resolution | $DEPENDENCIES_OUTCOME |"
-            echo "| Formatter before auto-format | $FORMATTER_PRECHECK_OUTCOME |"
-            echo "| Formatter apply | $FORMATTER_APPLY_OUTCOME |"
-            echo "| Formatter after auto-format | $FORMATTER_FINAL_OUTCOME |"
-            echo "| Formatter patch preview | $FORMATTER_PREVIEW_OUTCOME |"
-            echo "| Formatting commit | $FORMATTER_COMMIT_OUTCOME |"
-            echo "| Formatting commit SHA | ${FORMATTER_COMMIT_SHA:-none} |"
+            echo "| Dart formatter (read-only) | $FORMATTER_OUTCOME |"
             echo "| Flutter analyzer | $ANALYZER_OUTCOME |"
             echo "| Flutter tests | $FLUTTER_TESTS_OUTCOME |"
           } >> "$GITHUB_STEP_SUMMARY"
 
           failed=0
-          for outcome in "$DEPENDENCIES_OUTCOME" "$FORMATTER_FINAL_OUTCOME" "$ANALYZER_OUTCOME" "$FLUTTER_TESTS_OUTCOME"; do
+          for outcome in "$DEPENDENCIES_OUTCOME" "$FORMATTER_OUTCOME" "$ANALYZER_OUTCOME" "$FLUTTER_TESTS_OUTCOME"; do
             if [[ "$outcome" != "success" ]]; then
               failed=1
             fi
           done
-          if [[ "$FORMATTER_APPLY_OUTCOME" == "success" && "$FORMATTER_COMMIT_OUTCOME" != "success" ]]; then
-            failed=1
-          fi
-
           exit "$failed"
