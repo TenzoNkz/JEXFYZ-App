@@ -3,6 +3,8 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 
+import 'support/source_contract_helpers.dart';
+
 import '../lib/connection_scan_coordinator.dart';
 
 void main() {
@@ -254,8 +256,11 @@ void main() {
 
         final rediscovery = source.substring(start, end);
         expect(
-          rediscovery,
-          contains('_connect(result.device).catchError('),
+          containsDartFragment(
+            rediscovery,
+            '_connect(result.device).catchError(',
+          ),
+          isTrue,
         );
         expect(
           rediscovery,
