@@ -4050,19 +4050,17 @@ void main() {
   test(
     'Connection device row preserves the advertised JE X FYZ Bluetooth name',
     () {
-      final source = File('lib/main.dart').readAsStringSync();
-      final start = source.indexOf('class _ConnectionSheetContentState');
-      final end = source.indexOf('class StaticSwitcher', start);
+      final connection = File('lib/connection_sheet.dart').readAsStringSync();
+      final start = connection.indexOf('class _ConnectionSheetContentState');
       expect(start, isNonNegative);
-      expect(end, greaterThan(start));
-      final connection = source.substring(start, end);
+      final sheet = connection.substring(start);
 
-      expect(connection, contains('connectionDeviceDisplayName('));
+      expect(sheet, contains('connectionDeviceDisplayName('));
       expect(
         connection,
         contains('advertisedName: result.advertisementData.advName'),
       );
-      expect(connection, contains("fallback: JexText.of('device', lang)"));
+      expect(sheet, contains("fallback: JexText.of('device', lang)"));
       expect(
         connection,
         isNot(contains("name.trim().toLowerCase() == 'je x fyz'")),
@@ -4070,15 +4068,15 @@ void main() {
     },
   );
   test('Connection status polling is lifecycle-aware and prevents overlapping native reads', () {
-    final source = File('lib/main.dart').readAsStringSync();
+    final source = File('lib/connection_sheet.dart').readAsStringSync();
     final start = source.indexOf('class _ConnectionSheetContentState');
     final end = source.indexOf('Future<int> _getAndroidSdkInt', start);
     expect(start, isNonNegative);
     expect(end, greaterThan(start));
     final connection = source.substring(start, end);
-    expect(connection, contains('Duration(seconds: 3)'));
-    expect(connection, contains('_statusRefreshInFlight'));
-    expect(connection, contains('WidgetsBindingObserver'));
-    expect(connection, isNot(contains('Duration(milliseconds: 650)')));
+    expect(sheet, contains('Duration(seconds: 3)'));
+    expect(sheet, contains('_statusRefreshInFlight'));
+    expect(sheet, contains('WidgetsBindingObserver'));
+    expect(sheet, isNot(contains('Duration(milliseconds: 650)')));
   });
 }

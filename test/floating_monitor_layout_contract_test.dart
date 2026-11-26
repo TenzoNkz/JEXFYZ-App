@@ -306,11 +306,10 @@ void main() {
     );
 
     expect(main, contains('compactUi: true,\n          child: SettingsPage('));
-    final connectionStart = main.indexOf('class _ConnectionSheetContentState');
-    final connectionEnd = main.indexOf('class StaticSwitcher', connectionStart);
+    final connectionSource = File('lib/connection_sheet.dart').readAsStringSync();
+    final connectionStart = connectionSource.indexOf('class _ConnectionSheetContentState');
     expect(connectionStart, isNonNegative);
-    expect(connectionEnd, greaterThan(connectionStart));
-    final connection = main.substring(connectionStart, connectionEnd);
+    final connection = connectionSource.substring(connectionStart);
     expect(connection, contains('height: 60,'));
     expect(connection, contains('fontSize: 16,'));
     expect(connection, contains('fontSize: 9.5,'));
@@ -353,14 +352,15 @@ void main() {
     expect(
       containsDartFragment(
         main,
-        'compactUi: true, child: _ConnectionSheetContent(',
+        'compactUi: true, child: ConnectionSheetContent(',
       ),
       isTrue,
     );
-    expect(main, contains('stream: FlutterBluePlus.isScanning'));
-    expect(main, contains('stream: FlutterBluePlus.onScanResults'));
-    expect(main, contains('key: ValueKey<int>(_scanGeneration)'));
-    expect(main, contains('_scanErrorKey'));
+    expect(main, contains('serviceUuid: serviceUuid'));
+    expect(connectionSource, contains('stream: FlutterBluePlus.isScanning'));
+    expect(connectionSource, contains('stream: FlutterBluePlus.onScanResults'));
+    expect(connectionSource, contains('key: ValueKey<int>(_scanGeneration)'));
+    expect(connectionSource, contains('_scanErrorKey'));
     expect(main, contains('ConnectionScanCoordinator();'));
     expect(main, contains('beginPassiveAttempt()'));
     expect(main, contains('isPassiveAttemptCurrent(attempt)'));
