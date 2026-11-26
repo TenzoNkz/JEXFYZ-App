@@ -139,7 +139,7 @@ A failed gate blocks dependent work. Retry only after classifying root cause (so
 | `android/build.gradle` | Android root build configuration | BUILD CONFIG — COMPATIBILITY GATED | KEEP / VERIFIED (same blob as Build #167; 2026-11-26) |
 | `android/gradle.properties` | Android Gradle properties | BUILD CONFIG — COMPATIBILITY GATED | KEEP / VERIFIED (same blob as Build #167; 2026-11-26) |
 | `android/settings.gradle` | Android plugin/bootstrap configuration | BUILD CONFIG — COMPATIBILITY GATED | KEEP / VERIFIED (same blob as Build #167; KGP matrix caveat recorded; 2026-11-26) |
-| `APP_BUILD_REPORT.md` | Append-only evidence ledger | APPEND-ONLY / NO REWRITE | INVENTORIED — CONTENT REVIEW PENDING |
+| `APP_BUILD_REPORT.md` | Append-only evidence ledger | APPEND-ONLY / NO REWRITE | APPEND-ONLY / READ-ONLY / REVIEWED (2026-11-26) |
 | `APP_NOTES.md` | Project/configuration file | REVIEW REQUIRED | INVENTORIED — CONTENT REVIEW PENDING |
 | `APP_PREBUILD_AUDIT.md` | Project/configuration file | REVIEW REQUIRED | INVENTORIED — CONTENT REVIEW PENDING |
 | `archive/ARTIFACT_REPO_NOTES_PRE_BIN_ONLY_2026-10-14.md` | Immutable archive | IMMUTABLE / HISTORICAL | INVENTORIED — CONTENT REVIEW PENDING |
@@ -580,9 +580,17 @@ The Firmware-safety and hardware/power skills are retained as protected project 
 ## Current disposition
 
 - Inventory coverage: **96/96 tracked blobs** at live main checkpoint before this documentation update: HEAD `123184396b6bc32e3cc05feff3050467a47682d8`; root tree `b7784209e9698c392dcbc8775d55caa466be9aeb`; recursive tree 142 entries / 96 blobs / 46 trees; truncated=false.
-- Content review coverage: **63/96 closed dispositions** after review/disposition of the Android launcher PNG (protected without editing), notification vector, root Gradle build file, Gradle properties and plugin settings. The audit remains incomplete.
+- Content review coverage: **66/96 dispositioned files** in the live 96-blob register. The register table had 65 existing dispositions before this ledger review; the append-only Build evidence file is now reviewed and retained read-only, bringing the count to 66/96. The audit remains incomplete.
 - Seven formatter-touched Dart/test files remain pending full-file content review: lib/main.dart (targeted notification result fix is validated but whole-file audit is open), lib/usage_statistics.dart, test/connection_scan_coordinator_test.dart, test/firmware_qc_contract_test.dart, test/localization_contract_test.dart, test/usage_statistics_test.dart and test/widget_test.dart. test/device_copy_notification_contract_test.dart is closed after the API-28 and Firmware notification-result assertions passed #77/#79; test/floating_monitor_layout_contract_test.dart is closed after the native overlay ownership contract passed #78.
 - No blanket source/config/workflow/Firmware/BIN/asset update is authorized by this plan.
 - The next unreviewed live inventory path is `APP_BUILD_REPORT.md` (append-only release evidence ledger). The launcher asset's alpha mismatch is documented as protected; no image edit or asset publication occurred. Current-main Android compilation and physical API/OEM evidence have not been obtained.
 - The owner-approved App-only WP0–WP10 work item remains IN_PROGRESS in `WORKSPACE=CODE_FULL`; this is the active Eksekusi Code implementation workspace. App Build/release, Firmware/BIN, BLE P1 wire/security, OTA, Firebase production, signing and device operations remain excluded.
 - Refresh the inventory when files are added/removed/renamed; update the row of every file touched; re-check the recursive tree and all references before closing a WP.
+
+### WP0 — `APP_BUILD_REPORT.md` — APPEND-ONLY / READ-ONLY / REVIEWED (2026-11-26)
+
+- **Reviewed blob:** `78fd4d18f4d27935d0d7083afb8f818face36145` (706,193 characters). The ledger's latest entry at the top is Build #167 terminal SUCCESS on immutable source `0dd96228d33b08c66e736ae91a8a6c3e5c3ddb81`, Actions run `44510421466`, job `135512909555`; the exact APK and corresponding source ZIP hashes, Release/tag parity and fresh-download evidence are recorded there.
+- **Role and evidence boundary:** append-only chronology for guarded App Build attempts, source SHAs, workflows/jobs, gates, artifacts, signatures, Release/tag and checksum verification. Historical ACTIVE/QUEUED entries remain in the file as time-scoped snapshots followed by later terminal records; they are not current process state. Live Actions and Release state must always be reconciled independently.
+- **Current package interpretation:** Build #167 remains the latest package in the ledger. It is not a build of the current post-release `main` tree and does not validate subsequent WP1/App source changes. The ledger itself records Android Gradle success with native App JUnit tasks NO-SOURCE, retained PKIX/META-INF signing warnings, and whole-App visual acceptance as VISUAL NOT VERIFIED.
+- **Disposition:** preserve exactly as append-only evidence. Do not rewrite, reorder, compact, amend historical entries or append Code-workspace audit notes. New Build attempt evidence belongs only to the separately authorized Build App workspace. No ledger content was changed.
+- **Acceptance:** latest terminal ledger entry and chronology were checked against the active workspace checkpoint; no current Build App operation is inferred from old ACTIVE labels. No APK/build/release/test operation was started.
