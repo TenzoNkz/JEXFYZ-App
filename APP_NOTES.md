@@ -1,3 +1,16 @@
+## Current App source checkpoint — Validation Only #87 — 2026-11-26
+
+- **Latest tested source/test input:** `59fb624120b01ba505d23691df0928e55eefed3b`; Validation Only #87 / run `45865736407` / job `140067960188`, terminal SUCCESS. Formatter-only follow-up: `16b9f78f384011ca59def5e0ac32bb6bc33e4178`; root tree `832dfc9b4091d73f24addece1615a12221ca17c1` (144 entries / 98 blobs / 46 trees / `truncated=false`).
+- **Validation:** locked dependencies PASS; formatter final/post-format PASS; analyzer PASS with 106 information-level diagnostics under `--no-fatal-infos`; Flutter tests **230/230 PASS**. No Android Gradle/Kotlin build or APK was run.
+- **Passive BLE rediscovery:** unawaited passive `_connect()` failures are consumed/logged; the existing Dashboard state and connection flow remain authoritative. Regression passed #85 (226/226).
+- **WP2 AppSecurity extraction:** `lib/app_security.dart` owns the existing `je_x_fyz/security` native channel and fail-closed official-install decision. `main.dart` calls `isOfficialBuild()`; TamperScreen retains developer contact. Native verifier, debug allowance, release certificate comparison, channel/method and signing inputs are unchanged. Tests cover non-Android, true, false/null and exception.
+- **Validation Only #86** is retained as intermediate FAILURE (220 pass / 10 fail): legacy widget source contracts used the removed channel declaration as a painter block end sentinel. #87 repairs these boundaries and retains all painter assertions.
+- **Current source blobs:** `main.dart` `80360d5d5576bb6487e36ee05f0cac8c120a1a94` (409,312 bytes / 11,621 lines); `app_security.dart` `d068875271d0f0ba29b7e60dfb61b1a79d984e0b`; `app_security_test.dart` `8dc3421643be284984015834141fe3bc156a9b27`; `widget_test.dart` `d6295320db42f2d3d25862b317cefbc2f4afcd63`; `connection_scan_coordinator_test.dart` `76337e2ad396a3bc7a468152f58019ccd59e9b5c`.
+- **Release boundary:** Build #167 remains latest release on older source `0dd96228d33b08c66e736ae91a8a6c3e5c3ddb81`; current main is not packaged. No Build App, APK, signing, Release, Firmware/BIN, OTA, Firebase production or device operation occurred.
+- **Open scope:** full `main.dart` content/architecture audit; WP2–WP10 design/session/screen/Settings/Statistics/Floating Monitor work; current-main Android compile/device, screenshot matrix, SQLite upgrade fixture and long-session profile remain NOT RUN / NOT VERIFIED. Whole-App visual status **VISUAL NOT VERIFIED**.
+
+---
+
 ## Current Usage Statistics correction — Clear History and P1 HOT freshness — 2026-11-26
 
 - **Current source:** `lib/usage_statistics.dart` blob `6c0bb51f2283e9e0a46851962b951ffd820f6ee9` (3,640 lines) and `test/usage_statistics_test.dart` blob `aa5bc741760fe67dec06d4e4f272ffe4f598332e` (1,248 lines), after the Validation Only formatter follow-up.

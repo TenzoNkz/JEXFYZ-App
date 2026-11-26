@@ -1,35 +1,42 @@
 # JE X FYZ / JE Cooler — Current Project State
 
-Last reconciled: 2026-11-26T22:55:00+07:00 (Asia/Jakarta). Authority: `MASTER_PROMPT.md`.
+Last reconciled: 2026-11-26 (Asia/Jakarta). Authority: `MASTER_PROMPT.md`.
 
-## Current owner request and execution mode
+## Owner request and mode
 
-- **Workspace:** `CODE_FULL` / **Eksekusi Code!**. The owner clarified that each command means one continuous full-cycle execution through all currently authorized App-only WP0–WP10 work and a verified build-ready handoff—not a single-file tranche followed by a request to continue. This rule is in `MASTER_PROMPT.md` and Prompt 2 of `CHAT_TRANSFER_PROMPTS.md`.
-- **Work status:** IN_PROGRESS. Continue incrementally and in dependency order. Do not mark blocked, unverified or unimplemented work as complete.
-- **Scope:** Flutter/Dart App source, tests, App-side Android code/config justified by App scope, docs, static audits and available non-publishing Validation Only CI.
-- **Excluded:** Build App/APK/package build, signing/release/tags/assets publication; Firmware/BIN/protocol; BLE identity/security/backend; OTA transport/trust/recovery; Firebase production changes; signing secrets/keystores; flashing and physical devices. Build App remains separately authorized only by a fresh explicit owner command.
+- **Workspace:** `CODE_FULL` / **Eksekusi Code!**. Each command is one continuous full-cycle execution through the owner-authorized App-only WP0–WP10 work and build-ready handoff—not a single-file tranche.
+- **Work status:** IN_PROGRESS. Continue in coherent dependency-ordered commits until source work and available acceptance gates are complete or a concrete protected/evidence boundary blocks a claim.
+- **Included:** Flutter/Dart App source/tests, justified App-side Android source/config, docs, static audit and non-publishing Validation Only CI.
+- **Excluded:** Build App/APK/package build, signing/release/tag/assets publication; Firmware/BIN/P1 wire changes; BLE identity/security/backend; OTA transport/trust/recovery; Firebase production; signing secrets/keystores; flashing/physical device.
 
-## Current main and validation
+## Current code/test checkpoint
 
-- **Canonical repository:** `TenzoNkz/JEXFYZ-App`, branch `main`.
-- **Current HEAD:** `9317f70f164ab28ae0c590af1459903501ea1543`; root tree `cf22f0bf44e03feeda8d0321b5944cc4d2d69459`. Recursive inventory: 142 entries / 96 blobs / 46 trees; truncated=false.
-- **Latest Validation Only:** #82 / run `45858238070` / job `140042152884`; terminal SUCCESS on source/test SHA `b5b11ac0f37c201b51f1cfb0e816ee56813f1d1b`. Locked dependencies, Dart formatter/post-format, analyzer and Flutter tests **225/225 PASS**. Current HEAD also contains only the CI formatter-only follow-up `8b5b662725cfcf5b5b084209ed97989361148d13` for `lib/usage_statistics.dart` and `test/usage_statistics_test.dart`.
-- **Latest published package:** Build #167 / source SHA `0dd96228d33b08c66e736ae91a8a6c3e5c3ddb81`. It predates the current main changes and is historical evidence only, not a package of current HEAD.
-- **Latest source correction:** Usage Statistics Clear History no longer reclassifies cached Battery/Hotside readings as new samples or advances P1 HOT freshness. A real HOT telemetry receipt is required before the new session has P1 coverage. The exact behavior and regression are recorded in `APP_NOTES.md` and `CHANGELOG.md`.
+- **Latest tested source/test SHA:** `59fb624120b01ba505d23691df0928e55eefed3b`.
+- **Current code/test HEAD after formatter-only follow-up:** `16b9f78f384011ca59def5e0ac32bb6bc33e4178`; root tree `832dfc9b4091d73f24addece1615a12221ca17c1`; 144 entries / 98 blobs / 46 trees; `truncated=false`.
+- **Validation Only #87:** run `45865736407` / job `140067960188`, terminal SUCCESS. Locked dependencies, formatter/post-format, analyzer and full Flutter tests **230/230 PASS**. Analyzer emitted 106 information-level diagnostics with `--no-fatal-infos`.
+- **Latest published package:** Build #167 / immutable source `0dd96228d33b08c66e736ae91a8a6c3e5c3ddb81`; it predates current main and does not include these source changes.
+
+## Implemented source increments
+
+- **Usage Statistics Clear History:** cached Battery/Hotside values are not turned into new samples or a fake HOT receipt; coverage waits for actual HOT telemetry. Validation Only #82 passed 225/225.
+- **Passive BLE rediscovery:** unawaited passive `_connect()` failures are consumed/logged. Dashboard and scan/GATT/P1 ownership remain unchanged. Validation Only #85 passed 226/226.
+- **App official-build gate:** `lib/app_security.dart` isolates the existing `je_x_fyz/security` channel; Android accepts only native Boolean true, false/null/error denies, non-Android behavior is unchanged. `main.dart` delegates through `isOfficialBuild()`; TamperScreen retains developer contact. Native Kotlin certificate verification and signing config are unchanged.
+- **Regression repair:** Validation Only #86 failed ten legacy widget source checks because they used the removed channel declaration as painter-section sentinel. The painter code remained. #87 uses the following `TamperApp` class boundary; all 230 tests pass.
+- **Current read-back:** `lib/main.dart` blob `80360d5d5576bb6487e36ee05f0cac8c120a1a94`; `lib/app_security.dart` `d068875271d0f0ba29b7e60dfb61b1a79d984e0b`; `test/app_security_test.dart` `8dc3421643be284984015834141fe3bc156a9b27`; `test/widget_test.dart` `d6295320db42f2d3d25862b317cefbc2f4afcd63`.
 
 ## Audit, architecture and visual status
 
-- `REPOSITORY_UPGRADE_PLAN.md` contains an explicit disposition for all 96 tracked files. This is not full WP0 completion: `lib/main.dart` remains an open full-file content/architecture audit. Several earlier native/config files are KEEP / VERIFIED; the six-plus previously formatter-touched Dart/test files have now been inspected.
-- **Architecture:** WP2–WP8 are not complete. `lib/main.dart` remains the largest concentration of dashboard, BLE/P1 session, command, telemetry, OTA presentation orchestration and screen UI responsibilities. No risky big-bang extraction or redesign has been declared complete.
-- **Usage Statistics:** whole `lib/usage_statistics.dart` and `test/usage_statistics_test.dart` reviewed; Clear History freshness bug fixed. No actual SQLite v1→v2 fixture/integration run or long-duration Android performance soak was performed.
-- **BLE App-only authorization:** BLOCKED / NOT IMPLEMENTED. Existing Just Works + SYNC_READY does not cryptographically authenticate the official App. A valid solution requires separately scoped Firmware and trusted backend enrollment/grant design; no static APK secret/first-peer shortcut was introduced.
-- **Visual:** **VISUAL NOT VERIFIED**. No current-main Android screenshots exist for the full Home/control/Connection/Settings/Statistics/Floating Monitor locale/theme/viewport matrix. The launcher icon remains an opaque RGB asset despite the documented transparency target; protected pending a separate design decision. The cooler hero binary could not be inspected directly in this workspace and remains protected.
-- **Toolchain:** Flutter/Dart/Gradle/ADB are not available locally. Validation Only runs Flutter/Dart only; it does not compile Kotlin/Android or prove API/OEM behavior. Current-main Android compile and device validation are NOT RUN.
+- The repository register has **98/98 file dispositions**. This is not full WP0 completion: the complete content/architecture audit of `lib/main.dart` remains OPEN.
+- **Architecture:** WP2 has begun with the AppSecurity adapter; Dashboard still owns the sole BLE/GATT/P1 session, command/ACK, telemetry and screen rendering. WP2–WP8 extraction/redesign is incomplete.
+- **Usage Statistics:** source/tests reviewed and Clear History freshness defect fixed. SQLite v1→v2 runtime fixture and long-session CPU/memory soak remain NOT RUN.
+- **BLE App-only authorization:** BLOCKED / NOT IMPLEMENTED. Just Works + SYNC_READY does not cryptographically identify the official App; a valid solution requires separately scoped Firmware + trusted backend work.
+- **Visual:** **VISUAL NOT VERIFIED**. No current-main Android screenshots for the complete screen/viewport/locale/theme/state matrix. Launcher PNG remains protected as opaque RGB without alpha; hero PNG bytes were unavailable for direct visual review.
+- **Toolchain/evidence:** Flutter/Dart/Gradle/ADB absent locally. Validation Only is Flutter/Dart-only; it does not compile Kotlin/Android or prove OEM/device behavior. Current-main Android compile/device and performance soak are NOT RUN.
 
 ## Required invariants
 
-Single BLE/GATT owner; immutable P1 framing/UUID/commands and SYNC/SYNC_READY gate; serialized writes and scan-generation invalidation; command intent vs ACK vs confirmed telemetry; SQLite schema v2 / v1→v2 migration, 30-day retention, raw 1-Hz, session/gap semantics, HOT-only freshness and 64+8+1 queue; preserve JE X FYZ/Horizon identity, asset, theme, type, localization, accessibility and approved Home contracts. Native Floating Monitor remains a presentation-only projection of Flutter-owned telemetry.
+One BLE/GATT owner; unchanged P1 framing/UUIDs/commands/SYNC/SYNC_READY; serialized writes and scan-generation invalidation; command intent vs ACK vs confirmed telemetry; SQLite schema v2/v1→v2, 30-day retention, raw 1-Hz samples, session/gap semantics, HOT-only freshness and 64+8+1 queue; JE X FYZ/Horizon identity, assets, theme, typography, localization, accessibility and Home/360-dp contracts. Native Floating Monitor remains a presentation-only projection.
 
 ## Next work
 
-Continue the full `lib/main.dart` audit, map the current owners/callers before WP2/WP3 extraction, then progress through design system/screens and native visual work only where evidence and authorization permit. Keep commits coherent; run Validation Only on every source/test increment. Do not proceed to Build App from this workspace.
+Continue complete `lib/main.dart` audit and use current callers/tests to choose the next pure, well-bounded extraction. Then progress through remaining WP2–WP10 layers, screens, Settings, Statistics, Floating Monitor and screenshot/integration validation. Keep commits coherent and run Validation Only for each source/test increment. Do not invoke Build App in this workspace.

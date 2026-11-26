@@ -16,6 +16,12 @@ This is the single file-level inventory and rolling review register for the cano
 - Extensions: 53 Markdown, 19 Dart, 3 workflow YML, 2 YAML, 1 Gitignore, 3 Gradle, 1 JSON, 1 ProGuard, 2 XML, 4 Kotlin, 3 PNG, 1 properties, 1 Firmware INO and 1 lockfile.
 - This inventory is **path-complete, not content-audited**. Except for files explicitly reviewed in a linked work-package note, all rows begin with CONTENT REVIEW PENDING.
 
+## Latest live inventory — CODE_FULL checkpoint after Validation Only #87
+
+- **Code/test checkpoint:** `main` HEAD `16b9f78f384011ca59def5e0ac32bb6bc33e4178`; root tree `832dfc9b4091d73f24addece1615a12221ca17c1`; recursive inventory **144 entries / 98 blobs / 46 trees**, `truncated=false`.
+- The 98-blob inventory includes `lib/app_security.dart` and `test/app_security_test.dart`; both have explicit dispositions below. All 98 current paths have file-level dispositions, but this does not mean all WP0 audits or WP2–WP10 implementation/visual gates are complete.
+- Validation Only #87 / run `45865736407` / job `140067960188` is terminal SUCCESS on tested SHA `59fb624120b01ba505d23691df0928e55eefed3b`; formatter-only follow-up is `16b9f78f384011ca59def5e0ac32bb6bc33e4178`. Locked deps, formatter post-check, analyzer and Flutter tests **230/230 PASS**; analyzer emitted 106 info-level diagnostics under `--no-fatal-infos`.
+
 ## File state model
 
 `INVENTORIED — CONTENT REVIEW PENDING` → `REVIEWED — DECISION RECORDED` → one of:
@@ -160,11 +166,12 @@ A failed gate blocks dependent work. Retry only after classifying root cause (so
 | `firmware/JEXFYZ-V7.2.ino` | Active versioned Firmware source | PROTECTED — EXPLICIT FIRMWARE AUTHORIZATION REQUIRED | PROTECTED — NO CHANGE (2026-11-26) |
 | `HANDOVER.md` | Immediate next-action handover | ACTIVE CURRENT HANDOVER | UPGRADE — CLOSED / READ-BACK VERIFIED (2026-11-26) |
 | `lib/app_settings.dart` | Flutter App source — persisted App preferences, localization and shared themes | APP SOURCE — TIER 2 / STATE & PRESENTATION CONTRACT | KEEP / VERIFIED (2026-11-26) |
+| `lib/app_security.dart` | Flutter App security/platform adapter | APP SOURCE — CODE AUTHORIZATION | UPGRADE / CLOSED — OFFICIAL-BUILD FAIL-CLOSED ADAPTER (#87) |
 | `lib/connection_scan_coordinator.dart` | Flutter App source — process-wide BLE scanner ownership coordinator | APP SOURCE — TIER 1 / CONCURRENCY & LIFECYCLE CONTRACT | KEEP / VERIFIED (2026-11-26) |
 | `lib/connection_scan_state.dart` | Flutter App source — Connection empty-state and device-name presentation mapping | APP SOURCE — TIER 2 / PRESENTATION STATE CONTRACT | KEEP / VERIFIED (2026-11-26) |
 | `lib/floating_monitor.dart` | Flutter App source — Settings navigation/subpages and Floating Monitor configuration/native projection | APP SOURCE — TIER 2 / SETTINGS + OVERLAY BRIDGE | UPGRADE APPROVED — SPLIT SETTINGS/PREFERENCES FROM FLOATING MONITOR CONFIGURATION/BRIDGE/PRESENTATION (2026-11-26) |
 | `lib/jex_animated_glyph.dart` | Flutter App source | APP SOURCE — CODE AUTHORIZATION | KEEP / VERIFIED — STATELESS STATIC ICON |
-| `lib/main.dart` | Flutter App source | APP SOURCE — CODE AUTHORIZATION | UPGRADE — TARGETED NOTIFICATION ACKNOWLEDGEMENT FIX VALIDATED; FULL-FILE REVIEW PENDING (2026-11-26) |
+| `lib/main.dart` | Flutter App source | APP SOURCE — CODE AUTHORIZATION | UPGRADE — OFFICIAL-BUILD GATE EXTRACTED / VALIDATED (#87); FULL CONTENT/ARCHITECTURE AUDIT OPEN (2026-11-26) |
 | `lib/usage_statistics.dart` | Flutter App source | APP SOURCE — CODE AUTHORIZATION | UPGRADE / CLOSED — CLEAR HISTORY DOES NOT MANUFACTURE HOT FRESHNESS (#82) |
 | `MASTER_PROMPT.md` | Operating governance | CANONICAL GOVERNANCE | UPGRADE / REVIEWED — FULL-CYCLE EKSEKUSI CODE POLICY |
 | `MEMORY_INDEX.md` | Operating governance | CANONICAL GOVERNANCE | UPGRADE / REVIEWED — INVENTORY AND FULL-CYCLE MEMORY RECONCILED |
@@ -177,7 +184,8 @@ A failed gate blocks dependent work. Retry only after classifying root cause (so
 | `README.md` | Project entrypoint / navigation index | ACTIVE PROJECT INDEX | KEEP / VERIFIED (2026-11-26) |
 | `SKILLS_INDEX.md` | Reusable skill and capability catalogue | ACTIVE CAPABILITY INDEX | UPGRADE — CLOSED / READ-BACK VERIFIED (2026-11-26) |
 | `test/app_protocol_notify_contract_test.dart` | Dart test | TEST / REGRESSION | KEEP / VERIFIED — P1 / NOTIFICATION SOURCE CONTRACT |
-| `test/connection_scan_coordinator_test.dart` | Dart test | TEST / REGRESSION | KEEP / VERIFIED — SCAN LEASE / INVALIDATION REGRESSION |
+| `test/app_security_test.dart` | Dart test | TEST / REGRESSION | UPGRADE / CLOSED — TRUE/FALSE/NULL/EXCEPTION CHANNEL CONTRACT (#87) |
+| `test/connection_scan_coordinator_test.dart` | Dart test | TEST / REGRESSION | UPGRADE / CLOSED — PASSIVE REDISCOVERY ERROR CONSUMPTION TEST (#85) |
 | `test/connection_scan_state_test.dart` | Dart test | TEST / REGRESSION | KEEP / VERIFIED — CONNECTION STATE PRIORITY |
 | `test/device_copy_notification_contract_test.dart` | Dart test | TEST / REGRESSION | UPGRADE — CLOSED / READ-BACK VERIFIED (2026-11-26) |
 | `test/firmware_qc_contract_test.dart` | Dart test | TEST / REGRESSION | KEEP / VERIFIED — FIRMWARE CONTRACT SOURCE TESTS ONLY |
@@ -187,7 +195,7 @@ A failed gate blocks dependent work. Retry only after classifying root cause (so
 | `test/localization_contract_test.dart` | Dart test | TEST / REGRESSION | KEEP / VERIFIED — EN / ID PARITY AND TOKEN CONTRACT |
 | `test/support/source_contract_helpers.dart` | Dart test | TEST / REGRESSION | KEEP / VERIFIED — SOURCE ASSERTION NORMALIZATION |
 | `test/usage_statistics_test.dart` | Dart test | TEST / REGRESSION | UPGRADE / CLOSED — CLEAR HISTORY HOT FRESHNESS REGRESSION (#82) |
-| `test/widget_test.dart` | Dart test | TEST / REGRESSION | KEEP / VERIFIED — WIDGET / SOURCE CONTRACT SUITE (#82) |
+| `test/widget_test.dart` | Dart test | TEST / REGRESSION | KEEP / VERIFIED — WIDGET / SOURCE CONTRACT SUITE (#87, 230/230) |
 | `VISUAL_QUALITY_GATE.md` | Project/configuration file | REVIEW REQUIRED | KEEP / VERIFIED — ACTUAL SCREENSHOTS STILL REQUIRED |
 | `VOLTAGE_TRANSITION_MEMORY.md` | Project/configuration file | REVIEW REQUIRED | PROTECTED / REVIEWED — FIRMWARE-OWNED RAIL / SAFETY CONTRACT |
 | `REPOSITORY_UPGRADE_PLAN.md` | Repository-wide upgrade register | Canonical per-file audit register | CREATED — inventory snapshot maintained above |
@@ -579,8 +587,8 @@ The Firmware-safety and hardware/power skills are retained as protected project 
 
 ## Current disposition
 
-- Inventory coverage: **96/96 tracked blobs** at live main checkpoint before this documentation update: HEAD `123184396b6bc32e3cc05feff3050467a47682d8`; root tree `b7784209e9698c392dcbc8775d55caa466be9aeb`; recursive tree 142 entries / 96 blobs / 46 trees; truncated=false.
-- File disposition coverage: **96/96 tracked blobs now have an explicit KEEP / UPGRADE / PROTECTED / BLOCKED / IMMUTABLE decision** in the live 96-blob register. The full source audit of `lib/main.dart` remains deliberately OPEN; two protected binary visual assets still have evidence limitations, and BLE App-only authorization is blocked outside the App-only scope. `WORK STATUS` therefore remains IN_PROGRESS; a full register disposition is not a claim that WP0–WP10 or build readiness is complete.
+- Inventory coverage: **98/98 tracked blobs** at verified code/test checkpoint: HEAD `16b9f78f384011ca59def5e0ac32bb6bc33e4178`; root tree `832dfc9b4091d73f24addece1615a12221ca17c1`; recursive tree 144 entries / 98 blobs / 46 trees; `truncated=false`.
+- File disposition coverage: **98/98 tracked blobs have explicit KEEP / UPGRADE / PROTECTED / BLOCKED / IMMUTABLE decisions** in the live register. The full content/architecture audit of `lib/main.dart` remains deliberately OPEN; two protected binary visual assets still have evidence limitations, and BLE App-only authorization is blocked outside the App-only scope. `WORK STATUS` therefore remains IN_PROGRESS; a full register disposition is not a claim that WP0–WP10 or build readiness is complete.
 - Seven formatter-touched Dart/test files remain pending full-file content review: lib/main.dart (targeted notification result fix is validated but whole-file audit is open), lib/usage_statistics.dart, test/connection_scan_coordinator_test.dart, test/firmware_qc_contract_test.dart, test/localization_contract_test.dart, test/usage_statistics_test.dart and test/widget_test.dart. test/device_copy_notification_contract_test.dart is closed after the API-28 and Firmware notification-result assertions passed #77/#79; test/floating_monitor_layout_contract_test.dart is closed after the native overlay ownership contract passed #78.
 - No blanket source/config/workflow/Firmware/BIN/asset update is authorized by this plan.
 - The next unreviewed live inventory path is `APP_BUILD_REPORT.md` (append-only release evidence ledger). The launcher asset's alpha mismatch is documented as protected; no image edit or asset publication occurred. Current-main Android compilation and physical API/OEM evidence have not been obtained.
@@ -648,3 +656,15 @@ The Firmware-safety and hardware/power skills are retained as protected project 
 - `assets/jexfyzicon.png` is byte-identical to the Android launcher bitmap, 1254×1254 RGB with no alpha/tRNS transparency. This conflicts with the transparent-asset statement in design notes. It is left protected pending owner design decision; no artwork was changed.
 - `assets/jexfyzcooler.png` is a 2,130,606-byte PNG in the live tree. This Code workspace could not retrieve its binary bytes for direct visual/integrity inspection. The approved product hero is protected; retain unchanged and mark binary visual review BLOCKED rather than infer transparency, silhouette or image quality.
 
+
+
+### WP2 — `lib/app_security.dart`, `lib/main.dart` and `test/app_security_test.dart` — UPGRADE / VERIFIED CI / READ-BACK VERIFIED (2026-11-26)
+
+- **Implementation commit:** `b567cf7f51bb99dbcc874686547409519c2b632d`, parent `04300ac69fa22d15ae7d1337cdfc4d6fc846b4ed`. It adds `lib/app_security.dart` as the sole Dart owner of the existing `je_x_fyz/security` MethodChannel and official-install gate. `main.dart` imports the adapter and calls `isOfficialBuild()`; TamperScreen retains `openDeveloperContact`.
+- **Fail-closed contract:** non-Android behavior remains allowed as before. Android returns true only for native Boolean `true`; false, null, invalid/missing result or channel exception returns false. Native `MainActivity.isOfficialBuild()`, debug allowance, release certificate comparison, configured signing identity, channel name/method and manifest are unchanged. This is App package-integrity validation, not BLE peer authentication.
+- **Regression:** `test/app_security_test.dart` covers non-Android bypass, true, false, null and PlatformException. Tamper-screen widget test imports the channel from the extracted module.
+- **Validation Only #86:** run `45865142367`, terminal FAILURE; locked deps, formatter-final and analyzer succeeded; 220 tests passed / 10 failed. Ten legacy widget tests used the removed channel declaration as the painter block end sentinel; the painter remained present and all new AppSecurity tests passed.
+- **Regression repair:** commit `59fb624120b01ba505d23691df0928e55eefed3b` replaces the ten brittle delimiters in `test/widget_test.dart` with the real following class boundary `class TamperApp extends StatelessWidget`. Existing painter assertions remain in force.
+- **Validation Only #87:** run `45865736407` / job `140067960188`, exact tested SHA `59fb624120b01ba505d23691df0928e55eefed3b`, terminal SUCCESS. Locked dependencies PASS; formatter apply/post-check PASS; analyzer PASS with 106 info-level diagnostics; Flutter tests **230/230 PASS**. Formatter-only follow-up `16b9f78f384011ca59def5e0ac32bb6bc33e4178` changes only `test/app_security_test.dart` and `test/widget_test.dart`.
+- **Read-back blobs:** `lib/app_security.dart` `d068875271d0f0ba29b7e60dfb61b1a79d984e0b`; `lib/main.dart` `80360d5d5576bb6487e36ee05f0cac8c120a1a94`; `test/app_security_test.dart` `8dc3421643be284984015834141fe3bc156a9b27`; `test/widget_test.dart` `d6295320db42f2d3d25862b317cefbc2f4afcd63`. No Kotlin, manifest, workflow, signing material, APK, Release, Firmware, OTA or Firebase file changed.
+- **Evidence boundary:** Flutter/Dart Validation Only only. No Kotlin/Android compile, device certificate test, screenshot, OEM or physical-device test. Whole-App visual status remains `VISUAL NOT VERIFIED`.

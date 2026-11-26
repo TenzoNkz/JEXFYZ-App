@@ -1,3 +1,15 @@
+## 2026-11-26 — Isolate App official-build gate and handle passive rediscovery errors (source + Validation Only; not released)
+
+- Extracted the existing `je_x_fyz/security` MethodChannel and official-build fail-closed decision to `lib/app_security.dart`. Android accepts only native Boolean true; false/null/channel failure denies. Non-Android behavior remains unchanged. `main.dart` delegates to the adapter; Tamper contact remains.
+- Added security tests for non-Android bypass, true, false, null and PlatformException. Native Kotlin signing/certificate verification, debug behavior and configured signing identity were not modified.
+- Passive disconnect rediscovery now consumes/logs a failing unawaited `_connect()` future. Scanner lease, generation invalidation, GATT owner, P1 and command/telemetry semantics remain unchanged.
+- **Validation Only #85:** run `45864308959` / job `140063062307`, source/test `79b9f39a0fd0b0bf89ae5901fb2c46efa0a66102`, terminal SUCCESS; locked deps, formatter/post-format, analyzer and **226/226 tests PASS**.
+- **Validation Only #86:** run `45865142367`, terminal FAILURE with 220 pass / 10 fail; ten legacy widget source checks used the removed channel declaration as painter-section sentinel. The new security tests passed.
+- **Validation Only #87:** run `45865736407` / job `140067960188`, tested SHA `59fb624120b01ba505d23691df0928e55eefed3b`, terminal SUCCESS; 230/230 tests, analyzer, locked deps and formatter/post-format PASS. Formatter-only commit `16b9f78f384011ca59def5e0ac32bb6bc33e4178`.
+- Current source is not packaged; Build #167 remains the latest release. No Android Gradle/Kotlin build, APK/sign/release, Firmware/BIN, Firebase production, OTA, flash or physical-device operation. Visual status remains **VISUAL NOT VERIFIED**.
+
+---
+
 ## 2026-11-26 — Preserve P1 HOT freshness when clearing Usage Statistics (source + hosted validation; not released)
 
 - **Defect:** Clear History previously opened a replacement session using cached Battery/Hotside values, inserted them as a new temperature baseline and advanced the last-HOT receipt timestamp to the clear time. The recorder also reset its live HOT freshness marker to “now”. This could make old sensor data appear newly received and extend the plotted/live P1 coverage without a real HOT packet.
