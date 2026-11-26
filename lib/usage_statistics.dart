@@ -216,13 +216,18 @@ int usageSessionCoverageEndMs({
   required UsageStatsSession session,
   required int publishedAtMs,
 }) {
-  final endedAt = session.endedAtMs;
-  if (endedAt != null) return endedAt;
+  // A session with no HOT receipt has no verified P1 coverage yet.
+  final lastHotReceiptAtMs = session.lastHotsideSeenAtMs;
+  if (lastHotReceiptAtMs == null) return session.startedAtMs;
+
+  final freshnessEndMs =
+      lastHotReceiptAtMs +
+      const Duration(milliseconds: 1500).inMilliseconds;
+  final coverageEndMs = session.endedAtMs ?? publishedAtMs;
   return math
-      .min(
-        publishedAtMs,
-        session.lastSeenAtMs +
-            const Duration(milliseconds: 1500).inMilliseconds,
+      .max(
+        session.startedAtMs,
+        math.min(coverageEndMs, freshnessEndMs),
       )
       .toInt();
 }
@@ -715,16 +720,10 @@ class UsageStatsAnalytics {
       final sessionStart = math
           .max(snapshot.fromMs, session.startedAtMs)
           .toInt();
-      final sessionEnd = math
-          .min(
-            snapshot.toMs,
-            math.min(
-              session.endedAtMs ?? snapshot.toMs,
-              session.lastSeenAtMs +
-                  const Duration(milliseconds: 1500).inMilliseconds,
-            ),
-          )
-          .toInt();
+      final sessionEnd = usageSessionCoverageEndMs(
+        session: session,
+        publishedAtMs: snapshot.toMs,
+      );
       if (sessionEnd <= sessionStart) continue;
 
       final events =
@@ -968,6 +967,7 @@ class UsageStatisticsStore implements UsageStatisticsRepository {
     String? adaptive,
     String? peltier,
     int? fanSpeed,
+    bool includeTemperatureBaseline = true,
   }) async {
     final database = await _database;
     return database.transaction((transaction) async {
@@ -982,19 +982,26 @@ class UsageStatisticsStore implements UsageStatisticsRepository {
         'cooler_id': coolerId,
         'started_at_ms': timestampMs,
         'last_seen_at_ms': timestampMs,
-        'last_hotside_seen_at_ms': timestampMs,
-        'last_battery_seen_at_ms': timestampMs,
+        'last_hotside_seen_at_ms': includeTemperatureBaseline
+            ? timestampMs
+            : null,
+        'last_battery_seen_at_ms': includeTemperatureBaseline
+            ? timestampMs
+            : null,
       });
 
-      // The start snapshot is the first sample of this confirmed active run.
-      await transaction.insert('usage_samples', {
-        'session_id': sessionId,
-        'timestamp_ms': timestampMs,
-        'battery_seen': 1,
-        'battery_c': batteryC,
-        'hotside_seen': 1,
-        'hotside_c': hotsideC,
-      });
+      // Only a real P1 session start gets a temperature receipt baseline.
+      // Clear History deliberately starts an empty interval until new sensors arrive.
+      if (includeTemperatureBaseline) {
+        await transaction.insert('usage_samples', {
+          'session_id': sessionId,
+          'timestamp_ms': timestampMs,
+          'battery_seen': 1,
+          'battery_c': batteryC,
+          'hotside_seen': 1,
+          'hotside_c': hotsideC,
+        });
+      }
 
       Future<void> insertBaseline(
         String metric, {
@@ -1140,14 +1147,10 @@ class UsageStatisticsStore implements UsageStatisticsRepository {
     }
 
     final session = UsageStatsSession.fromMap(sessionRows.first);
-    final recordedEnd =
-        session.endedAtMs ??
-        math.min(
-          now,
-          session.lastSeenAtMs +
-              const Duration(milliseconds: 1500).inMilliseconds,
-        );
-    final end = math.max(session.startedAtMs, recordedEnd).toInt();
+    final end = usageSessionCoverageEndMs(
+      session: session,
+      publishedAtMs: now,
+    );
 
     final stateRows = await database.query(
       'usage_events',
@@ -1746,20 +1749,24 @@ class UsageStatisticsRecorder {
         _sessionId = await _store.startSession(
           coolerId: safeId,
           timestampMs: now,
-          batteryC: _temperatures['battery'],
-          hotsideC: _temperatures['hotside'],
+          // Clear history must not relabel cached temperatures as new samples.
+          batteryC: null,
+          hotsideC: null,
           voltage: _states['voltage'] as String?,
           adaptive: _states['adaptive'] as String?,
           peltier: _states['peltier'] as String?,
           fanSpeed: (_states['fan_speed'] as num?)?.toInt(),
+          includeTemperatureBaseline: false,
         );
-        _lastSensorSeenMs
+        _temperatures
           ..clear()
-          ..['battery'] = now
-          ..['hotside'] = now;
+          ..['battery'] = null
+          ..['hotside'] = null;
+        _lastSensorSeenMs.clear();
         _sessionStartedAtMs = now;
         _sessionEndedAtMs = null;
-        _lastP1ReceiptAtMs = now;
+        // A fresh HOT packet, not the Clear History action, restarts P1 freshness.
+        _lastP1ReceiptAtMs = null;
         _startP1FreshnessWatchdog();
         final sessionId = _sessionId!;
         _publishLiveUpdate(
