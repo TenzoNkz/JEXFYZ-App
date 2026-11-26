@@ -17,6 +17,42 @@ This is the current App pre-build/packaging snapshot. Build #167 has already com
 - **Local toolchain:** this runtime has Git 2.47.3 and OpenJDK 21, but `flutter`, `dart`, `gradle` and `adb` are absent from PATH. Local formatting, analyzer, Flutter tests, Android compilation and device checks are BLOCKED / NOT RUN unless a separately authorized/available environment provides them.
 - **First WP0 disposition:** `.agents/skills/ble-p1-protocol-audit/SKILL.md` and `.github/skills/ble-p1-protocol-audit/SKILL.md` were read and confirmed byte-identical by Git blob SHA `264fdb1617770a63899db97575fe83db0fc9f933`; both are KEEP / VERIFIED. No executable source or test changed in this milestone.
 
+### CODE_FULL milestone — full skill catalogue, workflow and regression-test audit — 2026-11-26
+
+### WP0 — skill catalogue and mirror audit — 2026-11-26
+
+All 12 canonical skills under `.agents/skills/*/SKILL.md` and all 12 `.github/skills/*/SKILL.md` mirrors were read. Each canonical/mirror pair is byte-identical by Git blob SHA; no skill file was edited.
+
+| Skill | Matching canonical/mirror blob SHA | Disposition |
+|---|---|---|
+| `ble-p1-protocol-audit` | `264fdb1617770a63899db97575fe83db0fc9f933` | KEEP / VERIFIED |
+| `code-review` | `08944ea149006db8a7fa1236fffefb74315080a8` | KEEP / VERIFIED |
+| `documentation-memory-governance` | `7ef1d2a0721bec7d1d2b7044cc66a1a9c9c0ff4d` | KEEP / VERIFIED |
+| `esp32c3-firmware-safety` | `7052fadd98e7bac0c76974e1c3dcd78e44a12b69` | PROTECTED — NO CHANGE |
+| `flutter-app-engineering` | `958129caf70528071827f076678e08802ce3b524` | KEEP / VERIFIED |
+| `flutter-quality-and-regression` | `a1a1c57ad01dae50f0de945ce6e6b08a4dbec4e8` | KEEP / VERIFIED |
+| `github-actions-triage` | `252cbf1ac50edac89c5fbda7c57ac2261aefdf91` | KEEP / VERIFIED |
+| `hardware-power-thermal-analysis` | `bc633e8b2e2e71c1398c12f074075452d62f7d08` | PROTECTED — NO CHANGE |
+| `ota-and-release-integrity` | `a58aceff1d2836761f11ff350cd31ff8997ed7bf` | KEEP / VERIFIED |
+| `product-design-and-visual-quality` | `6034864cf500da55a658f89e1f9e4c51fc452db8` | KEEP / VERIFIED |
+| `repository-forensics` | `a0746adce83ab77428038ff544940a248e55cb44` | KEEP / VERIFIED |
+| `technical-research-and-second-opinion` | `4135f29236c469e22743dc827dae86cdb7d278f6` | KEEP / VERIFIED |
+
+The Firmware-safety and hardware/power skills are retained as protected project references but are not being applied to the App work package. The three actively loaded engineering/design skills remain `flutter-app-engineering`, `flutter-quality-and-regression` and `product-design-and-visual-quality`.
+
+### WP1 / WP6 — non-publishing CI workflow and contract-test review — 2026-11-26
+
+- **Guarded Build App:** `.github/workflows/jexfyz-app-build-trigger.yml` blob `28281db3118e36fd1658cdaef2e30c78e6c4977b` is PROTECTED — NO CHANGE. Static review verified the issue-only opened/reopened trigger, owner + exact title + body-token guard, non-cancelling serialized queue, immutable direct action SHAs, checkout credential persistence disabled, mandatory analyzer/Flutter/Android/signing/tag/source-archive/download checks and the single intended APK plus source ZIP. No workflow was invoked and no Build App authorization is implied.
+- **Release token caveat:** workflow-level permissions are empty, but `contents: write` is granted at the guarded `build` job level. Explicit `GH_TOKEN` environment wiring occurs only in Release publish/final verification steps; that is not a true step-level permission boundary because Actions can access `github.token` from the context without explicit pass-through. `BUILD_NOTES.md` already records this accurately. The contract test previously overclaimed that the “GitHub write token remains limited” to those two steps; the test is corrected to state that only explicit `GH_TOKEN` env wiring is scoped while the job token remains write-enabled. **Residual risk:** the job-level write permission remains available to all actions/steps in the job. A split read-only build + narrowly write-enabled publish boundary is a separate future hardening decision; the protected Build workflow is not edited here.
+- **PR validation:** `.github/workflows/jexfyz-app-pr-validation.yml` blob `175606f80d4f916be919c9b2fd997067288368ff` is KEEP / VERIFIED: pull-request-only, `contents: read`, immutable action SHAs, nested cache disabled, locked dependency resolution, read-only formatter/analyzer/tests and fail-closed summary.
+- **Validation Only:** `.github/workflows/jexfyz-app-validation.yml` blob `b6b35f7ce65e30f69124e3e780e0c9c99518a748` had `cache: true` on the SHA-pinned Flutter composite action, enabling its nested mutable `actions/cache@v5` reference. This was inconsistent with both PR validation and the release workflow, which set `cache: false`. Minimal hardening changes only this value to `false`; locked dependencies, read-only formatter check, conditional formatter-only patch/commit guard, analyzer and full Flutter test gates are unchanged.
+- **Regression test:** `test/github_actions_workflow_contract_test.dart` previous blob `15b6982588a7e0ce8b6d1e858e6fe3c14f3653af` is upgraded to load both non-publishing workflows and assert that each Flutter setup step keeps `cache: false`; it also makes the job-level-vs-explicit-`GH_TOKEN` permission distinction observable. New source blobs: workflow `c0b75430a406d6756e301065bb727d84e4e0fea7`; test `3adace43dfad6b10aa267f45fbf99d9ccc6ee435`. This is a source-contract check, not an Actions execution.
+- **Validation state:** local Flutter/Dart toolchain is unavailable, so local formatter/analyzer/focused/full tests are BLOCKED / NOT RUN. The source push includes `.github/workflows/jexfyz-app-validation.yml` and `test/**`, so confirm the actual live run, source SHA and all result steps after commit. Do not trigger Build App.
+
+
+- **Changed App-side paths:** `.github/workflows/jexfyz-app-validation.yml` changes only Flutter composite cache from `true` to `false`; `test/github_actions_workflow_contract_test.dart` clarifies effective Build job token scope and adds regression assertions for both non-publishing workflows. The protected Build App trigger workflow remains byte-identical.
+- **Evidence boundary:** source blobs `c0b75430a406d6756e301065bb727d84e4e0fea7` and `3adace43dfad6b10aa267f45fbf99d9ccc6ee435` are the proposed changes; hosted Validation Only evidence is pending.
+
 ### Verified opening baseline
 
 - Current `main` HEAD at the start of this plan: `0ff34de66963a193034c3c737ae4dc6d7de886ac`; root tree `eaf84dbb2ea306a82075cea22b0351b976d23ee9`; recursive tree **142 entries / 96 blobs / 46 trees**, `truncated=false`.

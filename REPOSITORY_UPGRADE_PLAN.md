@@ -96,32 +96,32 @@ A failed gate blocks dependent work. Retry only after classifying root cause (so
 | Path | File class | Guard / authority | Current review state |
 |---|---|---|---|
 | `.agents/skills/ble-p1-protocol-audit/SKILL.md` | Canonical agent skill | CANONICAL SKILL | KEEP / VERIFIED (2026-11-26) |
-| `.agents/skills/code-review/SKILL.md` | Canonical agent skill | CANONICAL SKILL | INVENTORIED — CONTENT REVIEW PENDING |
-| `.agents/skills/documentation-memory-governance/SKILL.md` | Canonical agent skill | CANONICAL SKILL | INVENTORIED — CONTENT REVIEW PENDING |
-| `.agents/skills/esp32c3-firmware-safety/SKILL.md` | Canonical agent skill | CANONICAL SKILL | INVENTORIED — CONTENT REVIEW PENDING |
-| `.agents/skills/flutter-app-engineering/SKILL.md` | Canonical agent skill | CANONICAL SKILL | INVENTORIED — CONTENT REVIEW PENDING |
-| `.agents/skills/flutter-quality-and-regression/SKILL.md` | Canonical agent skill | CANONICAL SKILL | INVENTORIED — CONTENT REVIEW PENDING |
-| `.agents/skills/github-actions-triage/SKILL.md` | Canonical agent skill | CANONICAL SKILL | INVENTORIED — CONTENT REVIEW PENDING |
-| `.agents/skills/hardware-power-thermal-analysis/SKILL.md` | Canonical agent skill | CANONICAL SKILL | INVENTORIED — CONTENT REVIEW PENDING |
-| `.agents/skills/ota-and-release-integrity/SKILL.md` | Canonical agent skill | CANONICAL SKILL | INVENTORIED — CONTENT REVIEW PENDING |
-| `.agents/skills/product-design-and-visual-quality/SKILL.md` | Canonical agent skill | CANONICAL SKILL | INVENTORIED — CONTENT REVIEW PENDING |
-| `.agents/skills/repository-forensics/SKILL.md` | Canonical agent skill | CANONICAL SKILL | INVENTORIED — CONTENT REVIEW PENDING |
-| `.agents/skills/technical-research-and-second-opinion/SKILL.md` | Canonical agent skill | CANONICAL SKILL | INVENTORIED — CONTENT REVIEW PENDING |
+| `.agents/skills/code-review/SKILL.md` | Canonical agent skill | CANONICAL SKILL | KEEP / VERIFIED (2026-11-26) |
+| `.agents/skills/documentation-memory-governance/SKILL.md` | Canonical agent skill | CANONICAL SKILL | KEEP / VERIFIED (2026-11-26) |
+| `.agents/skills/esp32c3-firmware-safety/SKILL.md` | Canonical agent skill | CANONICAL SKILL | PROTECTED — NO CHANGE (2026-11-26) |
+| `.agents/skills/flutter-app-engineering/SKILL.md` | Canonical agent skill | CANONICAL SKILL | KEEP / VERIFIED (2026-11-26) |
+| `.agents/skills/flutter-quality-and-regression/SKILL.md` | Canonical agent skill | CANONICAL SKILL | KEEP / VERIFIED (2026-11-26) |
+| `.agents/skills/github-actions-triage/SKILL.md` | Canonical agent skill | CANONICAL SKILL | KEEP / VERIFIED (2026-11-26) |
+| `.agents/skills/hardware-power-thermal-analysis/SKILL.md` | Canonical agent skill | CANONICAL SKILL | PROTECTED — NO CHANGE (2026-11-26) |
+| `.agents/skills/ota-and-release-integrity/SKILL.md` | Canonical agent skill | CANONICAL SKILL | KEEP / VERIFIED (2026-11-26) |
+| `.agents/skills/product-design-and-visual-quality/SKILL.md` | Canonical agent skill | CANONICAL SKILL | KEEP / VERIFIED (2026-11-26) |
+| `.agents/skills/repository-forensics/SKILL.md` | Canonical agent skill | CANONICAL SKILL | KEEP / VERIFIED (2026-11-26) |
+| `.agents/skills/technical-research-and-second-opinion/SKILL.md` | Canonical agent skill | CANONICAL SKILL | KEEP / VERIFIED (2026-11-26) |
 | `.github/skills/ble-p1-protocol-audit/SKILL.md` | Copilot skill mirror | MIRROR — MUST MATCH CANONICAL | KEEP / VERIFIED (2026-11-26) |
-| `.github/skills/code-review/SKILL.md` | Copilot skill mirror | MIRROR — MUST MATCH CANONICAL | INVENTORIED — CONTENT REVIEW PENDING |
-| `.github/skills/documentation-memory-governance/SKILL.md` | Copilot skill mirror | MIRROR — MUST MATCH CANONICAL | INVENTORIED — CONTENT REVIEW PENDING |
-| `.github/skills/esp32c3-firmware-safety/SKILL.md` | Copilot skill mirror | MIRROR — MUST MATCH CANONICAL | INVENTORIED — CONTENT REVIEW PENDING |
-| `.github/skills/flutter-app-engineering/SKILL.md` | Copilot skill mirror | MIRROR — MUST MATCH CANONICAL | INVENTORIED — CONTENT REVIEW PENDING |
-| `.github/skills/flutter-quality-and-regression/SKILL.md` | Copilot skill mirror | MIRROR — MUST MATCH CANONICAL | INVENTORIED — CONTENT REVIEW PENDING |
-| `.github/skills/github-actions-triage/SKILL.md` | Copilot skill mirror | MIRROR — MUST MATCH CANONICAL | INVENTORIED — CONTENT REVIEW PENDING |
-| `.github/skills/hardware-power-thermal-analysis/SKILL.md` | Copilot skill mirror | MIRROR — MUST MATCH CANONICAL | INVENTORIED — CONTENT REVIEW PENDING |
-| `.github/skills/ota-and-release-integrity/SKILL.md` | Copilot skill mirror | MIRROR — MUST MATCH CANONICAL | INVENTORIED — CONTENT REVIEW PENDING |
-| `.github/skills/product-design-and-visual-quality/SKILL.md` | Copilot skill mirror | MIRROR — MUST MATCH CANONICAL | INVENTORIED — CONTENT REVIEW PENDING |
-| `.github/skills/repository-forensics/SKILL.md` | Copilot skill mirror | MIRROR — MUST MATCH CANONICAL | INVENTORIED — CONTENT REVIEW PENDING |
-| `.github/skills/technical-research-and-second-opinion/SKILL.md` | Copilot skill mirror | MIRROR — MUST MATCH CANONICAL | INVENTORIED — CONTENT REVIEW PENDING |
-| `.github/workflows/jexfyz-app-build-trigger.yml` | Guarded release workflow | WORKFLOW — SECURITY / SCOPE GATED | INVENTORIED — CONTENT REVIEW PENDING |
-| `.github/workflows/jexfyz-app-pr-validation.yml` | Validation workflow | WORKFLOW — SECURITY / SCOPE GATED | INVENTORIED — CONTENT REVIEW PENDING |
-| `.github/workflows/jexfyz-app-validation.yml` | Validation workflow | WORKFLOW — SECURITY / SCOPE GATED | INVENTORIED — CONTENT REVIEW PENDING |
+| `.github/skills/code-review/SKILL.md` | Copilot skill mirror | MIRROR — MUST MATCH CANONICAL | KEEP / VERIFIED (2026-11-26) |
+| `.github/skills/documentation-memory-governance/SKILL.md` | Copilot skill mirror | MIRROR — MUST MATCH CANONICAL | KEEP / VERIFIED (2026-11-26) |
+| `.github/skills/esp32c3-firmware-safety/SKILL.md` | Copilot skill mirror | MIRROR — MUST MATCH CANONICAL | PROTECTED — NO CHANGE (2026-11-26) |
+| `.github/skills/flutter-app-engineering/SKILL.md` | Copilot skill mirror | MIRROR — MUST MATCH CANONICAL | KEEP / VERIFIED (2026-11-26) |
+| `.github/skills/flutter-quality-and-regression/SKILL.md` | Copilot skill mirror | MIRROR — MUST MATCH CANONICAL | KEEP / VERIFIED (2026-11-26) |
+| `.github/skills/github-actions-triage/SKILL.md` | Copilot skill mirror | MIRROR — MUST MATCH CANONICAL | KEEP / VERIFIED (2026-11-26) |
+| `.github/skills/hardware-power-thermal-analysis/SKILL.md` | Copilot skill mirror | MIRROR — MUST MATCH CANONICAL | PROTECTED — NO CHANGE (2026-11-26) |
+| `.github/skills/ota-and-release-integrity/SKILL.md` | Copilot skill mirror | MIRROR — MUST MATCH CANONICAL | KEEP / VERIFIED (2026-11-26) |
+| `.github/skills/product-design-and-visual-quality/SKILL.md` | Copilot skill mirror | MIRROR — MUST MATCH CANONICAL | KEEP / VERIFIED (2026-11-26) |
+| `.github/skills/repository-forensics/SKILL.md` | Copilot skill mirror | MIRROR — MUST MATCH CANONICAL | KEEP / VERIFIED (2026-11-26) |
+| `.github/skills/technical-research-and-second-opinion/SKILL.md` | Copilot skill mirror | MIRROR — MUST MATCH CANONICAL | KEEP / VERIFIED (2026-11-26) |
+| `.github/workflows/jexfyz-app-build-trigger.yml` | Guarded release workflow | WORKFLOW — SECURITY / SCOPE GATED | PROTECTED — NO CHANGE (2026-11-26) |
+| `.github/workflows/jexfyz-app-pr-validation.yml` | Validation workflow | WORKFLOW — SECURITY / SCOPE GATED | KEEP / VERIFIED (2026-11-26) |
+| `.github/workflows/jexfyz-app-validation.yml` | Validation workflow | WORKFLOW — SECURITY / SCOPE GATED | IN_PROGRESS (WP6 cache hardening) |
 | `.gitignore` | Repository ignore policy | REPOSITORY CONFIG | INVENTORIED — CONTENT REVIEW PENDING |
 | `00_WORK_STATUS.md` | Session continuity | ACTIVE STATUS / CHECKPOINT | INVENTORIED — CONTENT REVIEW PENDING |
 | `AGENTS.md` | Operating governance | CANONICAL GOVERNANCE | INVENTORIED — CONTENT REVIEW PENDING |
@@ -183,7 +183,7 @@ A failed gate blocks dependent work. Retry only after classifying root cause (so
 | `test/firmware_qc_contract_test.dart` | Dart test | TEST / REGRESSION | INVENTORIED — CONTENT REVIEW PENDING (FORMATTER ONLY, `003bccd6`) |
 | `test/firmware_touch_adaptive_sync_test.dart` | Dart test | TEST / REGRESSION | INVENTORIED — CONTENT REVIEW PENDING |
 | `test/floating_monitor_layout_contract_test.dart` | Dart test | TEST / REGRESSION | INVENTORIED — CONTENT REVIEW PENDING (FORMATTER ONLY, `003bccd6`) |
-| `test/github_actions_workflow_contract_test.dart` | Dart test | TEST / REGRESSION | INVENTORIED — CONTENT REVIEW PENDING (FORMATTER ONLY, `003bccd6`) |
+| `test/github_actions_workflow_contract_test.dart` | Dart test | TEST / REGRESSION | IN_PROGRESS (WP1 workflow-contract precision + cache regression) |
 | `test/localization_contract_test.dart` | Dart test | TEST / REGRESSION | INVENTORIED — CONTENT REVIEW PENDING (FORMATTER ONLY, `003bccd6`) |
 | `test/support/source_contract_helpers.dart` | Dart test | TEST / REGRESSION | INVENTORIED — CONTENT REVIEW PENDING |
 | `test/usage_statistics_test.dart` | Dart test | TEST / REGRESSION | INVENTORIED — CONTENT REVIEW PENDING (FORMATTER ONLY, `003bccd6`) |
@@ -397,6 +397,36 @@ Validation Only #72's formatter gate identified 12 existing files requiring the 
 
 All 12 paths received only the workflow's `dart format` output at that time; this is not a substitute for file-level content/dependency/security review. `lib/floating_monitor.dart` has since received an individual static review and UPGRADE APPROVED disposition as recorded above. The other 11 paths remain **CONTENT REVIEW PENDING (FORMATTER ONLY)**, including the companion `test/floating_monitor_layout_contract_test.dart`. No semantic modernization is claimed from formatting alone.
 
+### WP0 — skill catalogue and mirror audit — 2026-11-26
+
+All 12 canonical skills under `.agents/skills/*/SKILL.md` and all 12 `.github/skills/*/SKILL.md` mirrors were read. Each canonical/mirror pair is byte-identical by Git blob SHA; no skill file was edited.
+
+| Skill | Matching canonical/mirror blob SHA | Disposition |
+|---|---|---|
+| `ble-p1-protocol-audit` | `264fdb1617770a63899db97575fe83db0fc9f933` | KEEP / VERIFIED |
+| `code-review` | `08944ea149006db8a7fa1236fffefb74315080a8` | KEEP / VERIFIED |
+| `documentation-memory-governance` | `7ef1d2a0721bec7d1d2b7044cc66a1a9c9c0ff4d` | KEEP / VERIFIED |
+| `esp32c3-firmware-safety` | `7052fadd98e7bac0c76974e1c3dcd78e44a12b69` | PROTECTED — NO CHANGE |
+| `flutter-app-engineering` | `958129caf70528071827f076678e08802ce3b524` | KEEP / VERIFIED |
+| `flutter-quality-and-regression` | `a1a1c57ad01dae50f0de945ce6e6b08a4dbec4e8` | KEEP / VERIFIED |
+| `github-actions-triage` | `252cbf1ac50edac89c5fbda7c57ac2261aefdf91` | KEEP / VERIFIED |
+| `hardware-power-thermal-analysis` | `bc633e8b2e2e71c1398c12f074075452d62f7d08` | PROTECTED — NO CHANGE |
+| `ota-and-release-integrity` | `a58aceff1d2836761f11ff350cd31ff8997ed7bf` | KEEP / VERIFIED |
+| `product-design-and-visual-quality` | `6034864cf500da55a658f89e1f9e4c51fc452db8` | KEEP / VERIFIED |
+| `repository-forensics` | `a0746adce83ab77428038ff544940a248e55cb44` | KEEP / VERIFIED |
+| `technical-research-and-second-opinion` | `4135f29236c469e22743dc827dae86cdb7d278f6` | KEEP / VERIFIED |
+
+The Firmware-safety and hardware/power skills are retained as protected project references but are not being applied to the App work package. The three actively loaded engineering/design skills remain `flutter-app-engineering`, `flutter-quality-and-regression` and `product-design-and-visual-quality`.
+
+### WP1 / WP6 — non-publishing CI workflow and contract-test review — 2026-11-26
+
+- **Guarded Build App:** `.github/workflows/jexfyz-app-build-trigger.yml` blob `28281db3118e36fd1658cdaef2e30c78e6c4977b` is PROTECTED — NO CHANGE. Static review verified the issue-only opened/reopened trigger, owner + exact title + body-token guard, non-cancelling serialized queue, immutable direct action SHAs, checkout credential persistence disabled, mandatory analyzer/Flutter/Android/signing/tag/source-archive/download checks and the single intended APK plus source ZIP. No workflow was invoked and no Build App authorization is implied.
+- **Release token caveat:** workflow-level permissions are empty, but `contents: write` is granted at the guarded `build` job level. Explicit `GH_TOKEN` environment wiring occurs only in Release publish/final verification steps; that is not a true step-level permission boundary because Actions can access `github.token` from the context without explicit pass-through. `BUILD_NOTES.md` already records this accurately. The contract test previously overclaimed that the “GitHub write token remains limited” to those two steps; the test is corrected to state that only explicit `GH_TOKEN` env wiring is scoped while the job token remains write-enabled. **Residual risk:** the job-level write permission remains available to all actions/steps in the job. A split read-only build + narrowly write-enabled publish boundary is a separate future hardening decision; the protected Build workflow is not edited here.
+- **PR validation:** `.github/workflows/jexfyz-app-pr-validation.yml` blob `175606f80d4f916be919c9b2fd997067288368ff` is KEEP / VERIFIED: pull-request-only, `contents: read`, immutable action SHAs, nested cache disabled, locked dependency resolution, read-only formatter/analyzer/tests and fail-closed summary.
+- **Validation Only:** `.github/workflows/jexfyz-app-validation.yml` blob `b6b35f7ce65e30f69124e3e780e0c9c99518a748` had `cache: true` on the SHA-pinned Flutter composite action, enabling its nested mutable `actions/cache@v5` reference. This was inconsistent with both PR validation and the release workflow, which set `cache: false`. Minimal hardening changes only this value to `false`; locked dependencies, read-only formatter check, conditional formatter-only patch/commit guard, analyzer and full Flutter test gates are unchanged.
+- **Regression test:** `test/github_actions_workflow_contract_test.dart` previous blob `15b6982588a7e0ce8b6d1e858e6fe3c14f3653af` is upgraded to load both non-publishing workflows and assert that each Flutter setup step keeps `cache: false`; it also makes the job-level-vs-explicit-`GH_TOKEN` permission distinction observable. New source blobs: workflow `c0b75430a406d6756e301065bb727d84e4e0fea7`; test `3adace43dfad6b10aa267f45fbf99d9ccc6ee435`. This is a source-contract check, not an Actions execution.
+- **Validation state:** local Flutter/Dart toolchain is unavailable, so local formatter/analyzer/focused/full tests are BLOCKED / NOT RUN. The source push includes `.github/workflows/jexfyz-app-validation.yml` and `test/**`, so confirm the actual live run, source SHA and all result steps after commit. Do not trigger Build App.
+
 ### WP0 — BLE P1 audit skill and Copilot mirror — KEEP / VERIFIED (2026-11-26)
 
 - **Reviewed canonical file:** `.agents/skills/ble-p1-protocol-audit/SKILL.md`, live blob `264fdb1617770a63899db97575fe83db0fc9f933`. The recursive tree records the same Git blob SHA for `.github/skills/ble-p1-protocol-audit/SKILL.md`, confirming a byte-identical mirror.
@@ -416,8 +446,8 @@ All 12 paths received only the workflow's `dart format` output at that time; thi
 ## Current disposition
 
 - Inventory coverage: **96/96 tracked blobs** at live `main` HEAD `b5990d9ec9d6230e28b11a09fc180f6fe4dd68ce`; recursive root tree `28b0498b15e44d04bba2e6d9eed66efbc5c9707c`; 142 entries / 96 blobs / 46 trees; `truncated=false`.
-- Content review coverage: **19/96 dispositions** after the BLE P1 audit skill and byte-identical Copilot mirror were reviewed and retained. Content review remains incomplete; an inventory row alone is not a review.
-- Ten formatter-touched Dart/test files remain individually pending content review: `lib/main.dart`, `lib/usage_statistics.dart`, `test/connection_scan_coordinator_test.dart`, `test/device_copy_notification_contract_test.dart`, `test/firmware_qc_contract_test.dart`, `test/floating_monitor_layout_contract_test.dart`, `test/github_actions_workflow_contract_test.dart`, `test/localization_contract_test.dart`, `test/usage_statistics_test.dart` and `test/widget_test.dart`. This corrects the earlier stale count of eleven.
+- Content review coverage: **43/96 dispositions** after the full 12-skill canonical/mirror audit and workflow-contract review. Validation Only cache hardening and its contract regression test remain IN_PROGRESS pending hosted CI.
+- Nine formatter-touched Dart/test files remain individually pending content review: `lib/main.dart`, `lib/usage_statistics.dart`, `test/connection_scan_coordinator_test.dart`, `test/device_copy_notification_contract_test.dart`, `test/firmware_qc_contract_test.dart`, `test/floating_monitor_layout_contract_test.dart`, `test/localization_contract_test.dart`, `test/usage_statistics_test.dart` and `test/widget_test.dart`. The workflow-contract test moved to IN_PROGRESS for its substantive regression correction.
 - No blanket source/config/workflow/Firmware/BIN/asset update is authorized by this plan.
 - The owner-approved App-only WP0–WP10 work item remains IN_PROGRESS in `WORKSPACE=CODE_FULL`; this is the active Eksekusi Code implementation workspace. App Build/release, Firmware/BIN, BLE P1 wire/security, OTA, Firebase production, signing and device operations remain excluded.
 - Refresh the inventory when files are added/removed/renamed; update the row of every file touched; re-check the recursive tree and all references before closing a WP.
