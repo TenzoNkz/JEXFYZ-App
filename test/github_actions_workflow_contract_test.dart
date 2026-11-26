@@ -97,57 +97,55 @@ void main() {
   );
 
   test('main-only Validation Only disables the composite action cache', () {
-      expect(
-        _namedStep(validationOnlyWorkflow, 'Set up Flutter'),
-        contains('cache: false'),
-      );
-    },
-  );
+    expect(
+      _namedStep(validationOnlyWorkflow, 'Set up Flutter'),
+      contains('cache: false'),
+    );
+  });
 
   test('Validation Only is direct-main, read-only and cannot mutate repository refs', () {
-      expect(
-        RegExp(
-          r'^  push:\n    branches:\n      - main$',
-          multiLine: true,
-        ).hasMatch(validationOnlyWorkflow),
-        isTrue,
-      );
-      expect(
-        RegExp(
-          r'^permissions:\n  contents: read$',
-          multiLine: true,
-        ).hasMatch(validationOnlyWorkflow),
-        isTrue,
-      );
-      expect(validationOnlyWorkflow, contains('persist-credentials: false'));
-      expect(
-        validationOnlyWorkflow,
-        contains('dart format --output=none --set-exit-if-changed lib test'),
-      );
-      expect(
-        validationOnlyWorkflow,
-        contains('flutter analyze --no-fatal-infos'),
-      );
-      expect(validationOnlyWorkflow, contains('flutter test'));
-      expect(
-        validationOnlyWorkflow,
-        isNot(contains('pull_request:')),
-      );
-      expect(
-        validationOnlyWorkflow,
-        isNot(contains('contents: write')),
-      );
-      expect(validationOnlyWorkflow, isNot(contains('git push')));
-      expect(
-        validationOnlyWorkflow,
-        isNot(contains('dart format lib test')),
-      );
-      expect(
-        File('.github/workflows/jexfyz-app-pr-validation.yml').existsSync(),
-        isFalse,
-      );
-    },
-  );
+    expect(
+      RegExp(
+        r'^  push:\n    branches:\n      - main$',
+        multiLine: true,
+      ).hasMatch(validationOnlyWorkflow),
+      isTrue,
+    );
+    expect(
+      RegExp(
+        r'^permissions:\n  contents: read$',
+        multiLine: true,
+      ).hasMatch(validationOnlyWorkflow),
+      isTrue,
+    );
+    expect(validationOnlyWorkflow, contains('persist-credentials: false'));
+    expect(
+      validationOnlyWorkflow,
+      contains('dart format --output=none --set-exit-if-changed lib test'),
+    );
+    expect(
+      validationOnlyWorkflow,
+      contains('flutter analyze --no-fatal-infos'),
+    );
+    expect(validationOnlyWorkflow, contains('flutter test'));
+    expect(
+      validationOnlyWorkflow,
+      isNot(contains('pull_request:')),
+    );
+    expect(
+      validationOnlyWorkflow,
+      isNot(contains('contents: write')),
+    );
+    expect(validationOnlyWorkflow, isNot(contains('git push')));
+    expect(
+      validationOnlyWorkflow,
+      isNot(contains('dart format lib test')),
+    );
+    expect(
+      File('.github/workflows/jexfyz-app-pr-validation.yml').existsSync(),
+      isFalse,
+    );
+  });
 
   test('write permission is denied by default and granted only to the guarded release job', () {
     expect(workflow, contains('\npermissions: {}\n'));
