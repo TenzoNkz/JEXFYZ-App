@@ -638,6 +638,59 @@ void main() {
     },
   );
 
+  test('Native Floating Monitor remains a presentation-only overlay owner', () {
+    final native = File(
+      'android/app/src/main/kotlin/com/horizontalzzz/jexfyz/FloatingMonitorService.kt',
+    ).readAsStringSync();
+    final manifest = File(
+      'android/app/src/main/AndroidManifest.xml',
+    ).readAsStringSync();
+    final activity = File(
+      'android/app/src/main/kotlin/com/horizontalzzz/jexfyz/MainActivity.kt',
+    ).readAsStringSync();
+    final floatingBridge = File('lib/floating_monitor.dart').readAsStringSync();
+
+    expect(native, contains('class FloatingMonitorService : Service()'));
+    expect(native, isNot(contains('BluetoothGatt')));
+    expect(native, isNot(contains('FlutterBluePlus')));
+    expect(native, contains('ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE'));
+    expect(manifest, contains('android.permission.FOREGROUND_SERVICE_SPECIAL_USE'));
+    expect(manifest, contains('android:foregroundServiceType="specialUse"'));
+    expect(manifest, contains('android:name=".FloatingMonitorService"'));
+    expect(native, contains('windowManager.addView(view, layoutParams)'));
+    expect(native, contains('windowManager.removeView(view)'));
+
+    final updateDataStart = native.indexOf(
+      'fun updateData(context: Context, json: String)',
+    );
+    final updateDataEnd = native.indexOf(
+      'fun updateNotificationChannelLanguage(',
+      updateDataStart,
+    );
+    expect(updateDataStart, isNonNegative);
+    expect(updateDataEnd, greaterThan(updateDataStart));
+    final updateData = native.substring(updateDataStart, updateDataEnd);
+    expect(updateData, contains('instance?.applyData(json)'));
+    expect(updateData, isNot(contains('start(context')));
+
+    final destroyStart = native.indexOf('override fun onDestroy()');
+    final bindStart = native.indexOf('override fun onBind(', destroyStart);
+    expect(destroyStart, isNonNegative);
+    expect(bindStart, greaterThan(destroyStart));
+    final destroy = native.substring(destroyStart, bindStart);
+    expect(destroy, contains('removeOverlay()'));
+    expect(destroy, contains('instance = null'));
+    expect(native, contains('return START_NOT_STICKY'));
+
+    expect(
+      floatingBridge,
+      contains("MethodChannel('je_x_fyz/floating')"),
+    );
+    expect(activity, contains('private val FLOATING_CHANNEL = "je_x_fyz/floating"'));
+    expect(activity, contains('"updateFloatingData"'));
+    expect(activity, contains('FloatingMonitorService.updateData('));
+  });
+
   test('Settings uses concise horizontal rows and meaningful values', () {
     final settingsSource = File('lib/floating_monitor.dart').readAsStringSync();
     final localizationSource = File('lib/app_settings.dart').readAsStringSync();
