@@ -130,10 +130,10 @@ A failed gate blocks dependent work. Retry only after classifying root cause (so
 | `android/app/google-services.json` | Firebase Android config | PROTECTED — SENSITIVE CONFIGURATION | PROTECTED — NO CHANGE (METADATA ONLY; CONTENT NOT OPENED) |
 | `android/app/proguard-rules.pro` | Android shrinker rules | ANDROID CONFIG — PLATFORM REGRESSION | KEEP / VERIFIED (2026-11-26) |
 | `android/app/src/main/AndroidManifest.xml` | Android manifest/resource/security config | ANDROID CONFIG — PLATFORM REGRESSION | KEEP / VERIFIED (2026-11-26) |
-| `android/app/src/main/kotlin/com/horizontalzzz/jexfyz/FloatingMonitorService.kt` | Android native source | ANDROID NATIVE — CODE AUTHORIZATION | INVENTORIED — CONTENT REVIEW PENDING |
-| `android/app/src/main/kotlin/com/horizontalzzz/jexfyz/JeForegroundService.kt` | Android native source | ANDROID NATIVE — CODE AUTHORIZATION | INVENTORIED — CONTENT REVIEW PENDING |
-| `android/app/src/main/kotlin/com/horizontalzzz/jexfyz/JexNotificationUtils.kt` | Android native source | ANDROID NATIVE — CODE AUTHORIZATION | INVENTORIED — CONTENT REVIEW PENDING |
-| `android/app/src/main/kotlin/com/horizontalzzz/jexfyz/MainActivity.kt` | Android native source | ANDROID NATIVE — CODE AUTHORIZATION | INVENTORIED — CONTENT REVIEW PENDING |
+| `android/app/src/main/kotlin/com/horizontalzzz/jexfyz/FloatingMonitorService.kt` | Android native source | ANDROID NATIVE — CODE AUTHORIZATION | KEEP / VERIFIED (2026-11-26) |
+| `android/app/src/main/kotlin/com/horizontalzzz/jexfyz/JeForegroundService.kt` | Android native source | ANDROID NATIVE — CODE AUTHORIZATION | KEEP / VERIFIED (2026-11-26) |
+| `android/app/src/main/kotlin/com/horizontalzzz/jexfyz/JexNotificationUtils.kt` | Android native source | ANDROID NATIVE — CODE AUTHORIZATION | KEEP / VERIFIED (2026-11-26) |
+| `android/app/src/main/kotlin/com/horizontalzzz/jexfyz/MainActivity.kt` | Android native source | ANDROID NATIVE — CODE AUTHORIZATION | KEEP / VERIFIED (2026-11-26) |
 | `android/app/src/main/res/drawable-nodpi/jexfyzicon.png` | Binary visual asset | BINARY ASSET — VISUAL / INTEGRITY REVIEW | INVENTORIED — CONTENT REVIEW PENDING |
 | `android/app/src/main/res/drawable/ic_notification.xml` | Android manifest/resource/security config | ANDROID CONFIG — PLATFORM REGRESSION | INVENTORIED — CONTENT REVIEW PENDING |
 | `android/build.gradle` | Android build configuration | BUILD CONFIG — COMPATIBILITY GATED | INVENTORIED — CONTENT REVIEW PENDING |
@@ -164,7 +164,7 @@ A failed gate blocks dependent work. Retry only after classifying root cause (so
 | `lib/connection_scan_state.dart` | Flutter App source — Connection empty-state and device-name presentation mapping | APP SOURCE — TIER 2 / PRESENTATION STATE CONTRACT | KEEP / VERIFIED (2026-11-26) |
 | `lib/floating_monitor.dart` | Flutter App source — Settings navigation/subpages and Floating Monitor configuration/native projection | APP SOURCE — TIER 2 / SETTINGS + OVERLAY BRIDGE | UPGRADE APPROVED — SPLIT SETTINGS/PREFERENCES FROM FLOATING MONITOR CONFIGURATION/BRIDGE/PRESENTATION (2026-11-26) |
 | `lib/jex_animated_glyph.dart` | Flutter App source | APP SOURCE — CODE AUTHORIZATION | INVENTORIED — CONTENT REVIEW PENDING |
-| `lib/main.dart` | Flutter App source | APP SOURCE — CODE AUTHORIZATION | INVENTORIED — CONTENT REVIEW PENDING (FORMATTER ONLY, `003bccd6`) |
+| `lib/main.dart` | Flutter App source | APP SOURCE — CODE AUTHORIZATION | UPGRADE — TARGETED NOTIFICATION ACKNOWLEDGEMENT FIX VALIDATED; FULL-FILE REVIEW PENDING (2026-11-26) |
 | `lib/usage_statistics.dart` | Flutter App source | APP SOURCE — CODE AUTHORIZATION | INVENTORIED — CONTENT REVIEW PENDING (FORMATTER ONLY, `003bccd6`) |
 | `MASTER_PROMPT.md` | Operating governance | CANONICAL GOVERNANCE | INVENTORIED — CONTENT REVIEW PENDING |
 | `MEMORY_INDEX.md` | Operating governance | CANONICAL GOVERNANCE | INVENTORIED — CONTENT REVIEW PENDING |
@@ -182,7 +182,7 @@ A failed gate blocks dependent work. Retry only after classifying root cause (so
 | `test/device_copy_notification_contract_test.dart` | Dart test | TEST / REGRESSION | UPGRADE — CLOSED / READ-BACK VERIFIED (2026-11-26) |
 | `test/firmware_qc_contract_test.dart` | Dart test | TEST / REGRESSION | INVENTORIED — CONTENT REVIEW PENDING (FORMATTER ONLY, `003bccd6`) |
 | `test/firmware_touch_adaptive_sync_test.dart` | Dart test | TEST / REGRESSION | INVENTORIED — CONTENT REVIEW PENDING |
-| `test/floating_monitor_layout_contract_test.dart` | Dart test | TEST / REGRESSION | INVENTORIED — CONTENT REVIEW PENDING (FORMATTER ONLY, `003bccd6`) |
+| `test/floating_monitor_layout_contract_test.dart` | Dart test | TEST / REGRESSION | UPGRADE — CLOSED / READ-BACK VERIFIED (2026-11-26) |
 | `test/github_actions_workflow_contract_test.dart` | Dart test | TEST / REGRESSION | UPGRADE — CLOSED / READ-BACK VERIFIED (2026-11-26) |
 | `test/localization_contract_test.dart` | Dart test | TEST / REGRESSION | INVENTORIED — CONTENT REVIEW PENDING (FORMATTER ONLY, `003bccd6`) |
 | `test/support/source_contract_helpers.dart` | Dart test | TEST / REGRESSION | INVENTORIED — CONTENT REVIEW PENDING |
@@ -478,6 +478,7 @@ The Firmware-safety and hardware/power skills are retained as protected project 
 - The Android location compatibility check covers the private MainActivity.isLocationServiceEnabled() body. The initial assertion verified only that manager.isLocationEnabled appeared after the SDK guard and could pass if the API-28-only property were misplaced inside the legacy else branch.
 - Corrected the false-positive by asserting api28Call < legacyBranch, with a nearby comment explaining the API-28 / minSdk 24–27 invariant. The current test blob is e32e17d0be304ae44d04e2bb3409058626734555; current implementation is on MainActivity.kt blob ff5e852bfaf33143fe6565a5fd37a560f8950c90.
 - **VERIFIED CI:** Validation Only #77 / run 45830921047 / job 139947149887, exact source/test SHA b1ee13ddc5e2b13c72485a30518c70c06c77c13f, terminal SUCCESS. Locked dependencies PASS; formatter precheck/final PASS (19 files / 0 changed); analyzer step SUCCESS with --no-fatal-infos; Flutter tests 221/221 PASS. Formatter apply, patch upload and formatting commit were SKIPPED.
+- **Caller reconciliation:** five Dart call sites exist for isLocationServiceEnabled in lib/main.dart: auto-connect, permission setup, one-shot scan, passive rediscovery and Bluetooth status refresh. The prior checkpoint statements that no Dart caller existed were incorrect; these are active legacy BLE prerequisites/status consumers, although no user-facing incident was reproduced. The API-28 guard's source-contract assertion is covered by the successful #77 run.
 - **Evidence limit:** this test is a static source contract. The Validation Only workflow checks Flutter/Dart only; it does not compile Kotlin/Android or prove API 24–27 device behavior. Those remain BLOCKED / NOT RUN in this runtime.
 - **Disposition:** UPGRADE / CLOSED / READ-BACK VERIFIED. Preserve the distinction between static source assertions and native runtime validation.
 
@@ -516,12 +517,37 @@ The Firmware-safety and hardware/power skills are retained as protected project 
 - **Validation:** static XML/source/path review only. Android lint/manifest merge, Gradle compilation, API 24–36 emulator/device behavior and OEM regression remain BLOCKED / NOT RUN; visual acceptance remains VISUAL NOT VERIFIED.
 - **Disposition:** `KEEP / VERIFIED`.
 
+
+### WP0 — Android native Kotlin services and MethodChannel host — KEEP / VERIFIED (2026-11-26)
+
+- Reviewed source blobs: FloatingMonitorService.kt 8e66da2525b5cc75ef8780c2d480607328492df6; JeForegroundService.kt 94b6fed7e4b8d99648eb427a87d10b1700363b35; JexNotificationUtils.kt 95110ac9b466ed7f6fe21d7cfe41386ec974cf23; MainActivity.kt ff5e852bfaf33143fe6565a5fd37a560f8950c90.
+- Floating Monitor owns only the special-use foreground overlay, WindowManager attach/detach, Canvas HUD, geometry and gestures. Dart FloatingBridge and MainActivity agree on je_x_fyz/floating and its start/stop/config/data/runtime methods. Telemetry updates only target instance?.applyData(json); they do not start another service. The service has no BluetoothGatt / FlutterBluePlus implementation, stays START_NOT_STICKY, gates attach on overlay permission and connected telemetry, and removes its view/singleton during destruction. Manifest specialUse permission/type match. No service source edit was required.
+- JeForegroundService backs an already-active Flutter BLE session only; MainActivity starts/stops it from the Dart session lifecycle. It contains no BLE/GATT client, uses the connected-device foreground type on API 29+ consistent with the Manifest, is not bound and is START_NOT_STICKY. Language updates do not change BLE ownership.
+- JexNotificationUtils uses the tracked ic_notification resource and a MainActivity PendingIntent with CLEAR_TOP | SINGLE_TOP; immutable PendingIntent flags are applied on API 23+, above minSdk 24. Shared notification construction is presentation-only.
+- MainActivity's four native MethodChannels match Dart callers (battery_temp, floating, security, notifications). The Activity remains the host for system settings, release-certificate comparison, battery temperature, notification permission/result and native support services; no BLE implementation is introduced. showUserNotification returns false when POST_NOTIFICATIONS is missing or posting fails, and true after NotificationManager.notify returns. The API-28 location guard is actively consumed at five Dart call sites as described above.
+- Acceptance evidence: complete static file and call-site review; Flutter source contract for Floating overlay ownership passed Validation Only #78; Firmware notification result contract passed Validation Only #79. No Kotlin compile, Android Gradle/Manifest merge, R8 or API/OEM runtime test. Disposition for all four native Kotlin files: KEEP / VERIFIED.
+
+### WP1 — test/floating_monitor_layout_contract_test.dart — UPGRADE / CLOSED / READ-BACK VERIFIED (2026-11-26)
+
+- Reviewed original test blob 4784fb775388f226d19fd4acb02beea9f7074d03; added a Native Floating Monitor remains a presentation-only overlay owner source-contract test in commit b29be367b3d359f1930864c55e73706579330d35; formatter-only follow-up e227a423d3ab1449eeb03474ca45db6f4c257f57; current blob fadfbc9568a9d66e4efd8a67b0aba346688e2478.
+- The new test checks no native BLE/GATT client, overlay specialUse manifest permission/type, WindowManager add/remove, instance-only telemetry forwarding, START_NOT_STICKY/destruction cleanup and the Dart/MainActivity MethodChannel contract.
+- VERIFIED CI: Validation Only #78 / run 45837090089 / job 139968713612, exact source/test SHA b29be367b3d359f1930864c55e73706579330d35, terminal SUCCESS. Formatter-only test reflow was committed after the run; no semantic change.
+- Evidence limit: source-contract + Flutter CI only. No Android compilation, WindowManager/OEM overlay or physical-device visual acceptance. Visual acceptance remains VISUAL NOT VERIFIED.
+- Disposition: UPGRADE / CLOSED / READ-BACK VERIFIED.
+
+### WP1 — lib/main.dart — targeted Firmware notification acknowledgement upgrade (whole-file audit remains open)
+
+- Reviewed original source blob 9663736fbe4bd7d251a8b3632b735a9cafb0b4d1; targeted fix commit 80fbb23e887eb4424114169947ac6f441d3dceca; formatter-only follow-up 32f870bccd1935efdaba6073ec46efb3e2b4d4e7; current blob 346ce5ff6cbdbef24afe2a08b25443e560b9c5eb.
+- The Firmware update dialog previously ignored the Boolean return from native showNotification and persisted the version cooldown unconditionally. It now invokes invokeMethod<bool> and calls markFirmwareNotified(version) only when the result is exactly true. Missing permission, null/false result or channel exception leaves the version eligible for a later check.
+- Regression evidence: test/device_copy_notification_contract_test.dart checks the Dart result guard and native false-on-permission-denied / true-after-notify contract. Current test blob 99f8a920ecb7c6aea743c861eee5724a486a9cfa. Validation Only #79 / run 45838156356 / job 139972413867 terminal SUCCESS on tested commit 80fbb23e887eb4424114169947ac6f441d3dceca; the subsequent 32f870b commit contains formatter reflow only.
+- Disposition: this targeted notification path is validated. The full lib/main.dart content/architecture review remains pending; retain it in the seven-file review queue.
+
 ## Current disposition
 
-- Inventory coverage: **96/96 tracked blobs** at live `main` checkpoint before this register update: HEAD `8cc168cd8f781657410c4c6547eb88fdbc1e60de`; root tree `93bf51eb9b94eddcaf57a52c4c8d89c743ab99e2`; recursive tree 142 entries / 96 blobs / 46 trees; `truncated=false`.
-- Content review coverage: **53/96 dispositions** after four Android app configuration paths were dispositioned in this checkpoint. The audit remains incomplete.
-- Eight formatter-touched Dart/test files remain individually pending content review: `lib/main.dart`, `lib/usage_statistics.dart`, `test/connection_scan_coordinator_test.dart`, `test/firmware_qc_contract_test.dart`, `test/floating_monitor_layout_contract_test.dart`, `test/localization_contract_test.dart`, `test/usage_statistics_test.dart` and `test/widget_test.dart`. `test/device_copy_notification_contract_test.dart` is now closed after its API-28 branch-order regression assertion was corrected and passed CI #77.
+- Inventory coverage: **96/96 tracked blobs** at live main checkpoint before this documentation update: HEAD `32f870bccd1935efdaba6073ec46efb3e2b4d4e7`; root tree `403e8130adc3b89ce8b01a25b2b89856c3331884`; recursive tree 142 entries / 96 blobs / 46 trees; truncated=false.
+- Content review coverage: **58/96 closed dispositions** after all four native Kotlin files and the Floating Monitor contract test were reviewed and dispositioned. The audit remains incomplete.
+- Seven formatter-touched Dart/test files remain pending full-file content review: lib/main.dart (targeted notification result fix is validated but whole-file audit is open), lib/usage_statistics.dart, test/connection_scan_coordinator_test.dart, test/firmware_qc_contract_test.dart, test/localization_contract_test.dart, test/usage_statistics_test.dart and test/widget_test.dart. test/device_copy_notification_contract_test.dart is closed after the API-28 and Firmware notification-result assertions passed #77/#79; test/floating_monitor_layout_contract_test.dart is closed after the native overlay ownership contract passed #78.
 - No blanket source/config/workflow/Firmware/BIN/asset update is authorized by this plan.
-- The next unreviewed live inventory path is `android/app/src/main/kotlin/com/horizontalzzz/jexfyz/FloatingMonitorService.kt`. Android Gradle/Kotlin compilation and device evidence have not been obtained.
+- The next unreviewed live inventory path is `android/app/src/main/res/drawable-nodpi/jexfyzicon.png`. Android Gradle/Kotlin compilation, Manifest merge/R8 and physical API/OEM device evidence have not been obtained.
 - The owner-approved App-only WP0–WP10 work item remains IN_PROGRESS in `WORKSPACE=CODE_FULL`; this is the active Eksekusi Code implementation workspace. App Build/release, Firmware/BIN, BLE P1 wire/security, OTA, Firebase production, signing and device operations remain excluded.
 - Refresh the inventory when files are added/removed/renamed; update the row of every file touched; re-check the recursive tree and all references before closing a WP.
