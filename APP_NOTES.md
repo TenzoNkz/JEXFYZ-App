@@ -1,3 +1,12 @@
+## Current main-source reconciliation — recovered App behavior and notification acknowledgement — 2026-11-26
+
+- **Live source:** `lib/main.dart` is currently 409,357 bytes / 11,627 lines, blob `346ce5ff6cbdbef24afe2a08b25443e560b9c5eb`. It contains one active `TamperApp`, `DashboardScreen` and `_DashboardScreenState`; the repeated declarations/parser corruption described by the 2026-11-16 recovery snapshot are not present in this current source.
+- **Historical note qualification:** retain “Live recovery audit — 2026-11-16” below as an immutable record of the then-observed corrupted revision. Its claim that current main is corrupted is superseded by the later restored source and subsequent CI evidence; do not apply its old byte counts, duplicate declaration list or recovery instructions to the live source.
+- **Latest source correction:** Firmware-update notification de-duplication is persisted only when the native `showNotification` MethodChannel returns `true`. Permission denial, failed posting or null/false response leaves the version eligible for a later attempt. This change is App notification presentation/persistence only; OTA transport, trust, metadata, recovery and Firmware are unchanged.
+- **Validation evidence:** Validation Only #79 / run `45838156356` / job `139972413867` completed SUCCESS on source/test SHA `80fbb23e887eb4424114169947ac6f441d3dceca`. Locked dependency resolution, Dart formatting, analyzer and full Flutter suite passed; the workflow's formatter-only follow-up `32f870bccd1935efdaba6073ec46efb3e2b4d4e7` changed formatting only in `lib/main.dart` and `test/device_copy_notification_contract_test.dart`. This CI evidence does not compile Kotlin or prove current-main Android rendering/device behavior.
+- **Audit status:** the notification and Android API-28 location-guard paths have focused source-contract coverage and their source revisions passed Validation Only #77/#79. The whole `main.dart` content/architecture review is still open in WP0; this note is not a claim that the 11,627-line file has been fully audited or refactored.
+
+---
 ## Current App source and published package — Build #167 — 2026-11-24
 
 ### Current source, CI and release baseline
