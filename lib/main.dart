@@ -68,6 +68,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
 
+import 'app_security.dart';
 import 'app_settings.dart';
 import 'connection_scan_state.dart';
 import 'connection_scan_coordinator.dart';
@@ -4426,20 +4427,6 @@ class _JexIconPainter extends CustomPainter {
       oldDelegate.lightOutlineColor != lightOutlineColor;
 }
 
-const MethodChannel securityChannel = MethodChannel('je_x_fyz/security');
-
-// AI-METHOD: _isOfficialBuild — Production signing-integrity gate; debug builds are intentionally allowed.
-Future<bool> _isOfficialBuild() async {
-  if (!Platform.isAndroid) return true;
-  try {
-    final result = await securityChannel.invokeMethod<bool>('isOfficialBuild');
-    return result == true;
-  } catch (e) {
-    debugPrint('Security check: $e');
-    return false;
-  }
-}
-
 // AI-METHOD: isVoltageCommand — Accept only 5V, 9V, or 12V.
 bool isVoltageCommand(String value) {
   final v = value.trim().toUpperCase();
@@ -4592,7 +4579,7 @@ bool canAutoConnect({
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  final officialBuild = await _isOfficialBuild();
+  final officialBuild = await isOfficialBuild();
   if (!officialBuild) {
     await SystemChrome.setPreferredOrientations(const [
       DeviceOrientation.portraitUp,
