@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 
@@ -241,5 +242,26 @@ void main() {
       coordinator.finishOneShotAttempt(newAttempt);
       expect(coordinator.hasActiveOneShotAttempt, isFalse);
     });
+
+    test(
+      'passive rediscovery consumes asynchronous connection failures',
+      () async {
+        final source = await File('lib/main.dart').readAsString();
+        final start = source.indexOf('void _startDisconnectRediscovery()');
+        final end = source.indexOf('void _startUsageStatisticsSession()', start);
+        expect(start, isNonNegative);
+        expect(end, greaterThan(start));
+
+        final rediscovery = source.substring(start, end);
+        expect(
+          rediscovery,
+          contains('_connect(result.device).catchError('),
+        );
+        expect(
+          rediscovery,
+          contains("debugPrint('BLE passive connection: \$error')"),
+        );
+      },
+    );
   });
 }
