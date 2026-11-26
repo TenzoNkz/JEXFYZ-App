@@ -1284,7 +1284,10 @@ void main() {
     final start = source.indexOf(
       'class _JexIconPainter extends CustomPainter {',
     );
-    final end = source.indexOf('class TamperApp extends StatelessWidget', start);
+    final end = source.indexOf(
+      'class TamperApp extends StatelessWidget',
+      start,
+    );
     expect(start, greaterThanOrEqualTo(0));
     expect(end, greaterThan(start));
     final painter = source.substring(start, end);

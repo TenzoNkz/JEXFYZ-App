@@ -32,17 +32,19 @@ void main() {
     expect(await isOfficialBuild(isAndroid: true), isTrue);
   });
 
-  test('Android fails closed when native verification is false or null',
-      () async {
-    for (final result in <bool?>[false, null]) {
-      messenger.setMockMethodCallHandler(securityChannel, (call) async {
-        expect(call.method, 'isOfficialBuild');
-        return result;
-      });
+  test(
+    'Android fails closed when native verification is false or null',
+    () async {
+      for (final result in <bool?>[false, null]) {
+        messenger.setMockMethodCallHandler(securityChannel, (call) async {
+          expect(call.method, 'isOfficialBuild');
+          return result;
+        });
 
-      expect(await isOfficialBuild(isAndroid: true), isFalse);
-    }
-  });
+        expect(await isOfficialBuild(isAndroid: true), isFalse);
+      }
+    },
+  );
 
   test('Android fails closed when the security channel throws', () async {
     messenger.setMockMethodCallHandler(securityChannel, (call) async {
