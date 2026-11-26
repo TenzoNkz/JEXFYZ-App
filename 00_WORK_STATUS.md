@@ -1,4 +1,4 @@
-| Last updated | 2026-11-26T20:32:55+07:00 (Asia/Jakarta) |
+| Last updated | 2026-11-26T20:37:00+07:00 (Asia/Jakarta) |
 
 > Single current snapshot for JE X FYZ project interactions. Event-driven marker; not a background heartbeat.
 
@@ -13,15 +13,15 @@
 | Mode | Eksekusi Code — owner-authorized App-only source/test/docs/static-audit workstream. No App package build, signing, release, Firmware/BIN, Firebase production mutation, OTA transport/security, flashing or physical device operation. |
 | Request / work item | Continue owner-approved full App rework + premium UI redesign WP0–WP10 (2026-11-26) in CODE_FULL. Reconcile live repository inventory and active checkpoint; start from the first unreviewed live path and implement the smallest safe in-scope milestone. |
 | Started | 2026-11-26T19:33:00+07:00 (Asia/Jakarta) |
-| Last updated | 2026-11-26T20:01:38+07:00 (Asia/Jakarta) |
-| Current phase | CHAT STUCK RECOVERY — status marker opened; verify live main HEAD/tree and prior checkpoint/write state, then reconcile outstanding WP0 dispositions and the exact next action. |
-| Last completed milestone | Inherited live marker at `2026-11-26T20:09:20+07:00` reports Validation Only #75 / run `45825556040` / job `139928665698` terminal SUCCESS on source/test SHA `a7466305d094e975b9f5ef2e1ffc08271bc20c25`, 220/220 tests, locked dependencies, formatter and analyzer PASS; 46/96 inventory dispositions; nine formatter-touched files pending. This is a recovery lead, not yet reverified in this interaction. |
-| Last verified source checkpoint | SOURCE / TEST / WORKFLOW CURRENT / VERIFIED `a7466305d094e975b9f5ef2e1ffc08271bc20c25`; root tree `aee3cdf5e1b6687a373d1ed1400e7dd2829fd1f4`; 142 entries / 96 blobs / 46 trees; `truncated=false`. Validation Only #75 checked out this exact SHA and completed SUCCESS; subsequent changes in this milestone are docs/status only. |
-| EXTERNAL OPERATION | Inherited marker reports Validation Only #75 / run `45825556040` / job `139928665698` terminal SUCCESS; must re-query live Actions before resuming. No Build App/Firmware/device operation reported. |
-| EXTERNAL OPERATION STATUS | UNKNOWN — inherited marker says #75 terminal SUCCESS, but live recovery reconciliation is pending. |
-| Result / evidence | Previous live marker fetched and captured at blob `085a45ca4bee3780e9ee89d17f00143fb65d9d45`; recovery interaction is now IN_PROGRESS. No commit or external side effect repeated. |
-| Blocker / remaining evidence | Need live main/tree/checkpoint reconciliation to determine whether prior write completed; validate the inherited CI and Actions state against current source. |
-| Next action | Fetch main branch commit/tree and bounded `CHAT_TRANSFER.md`; compare against status snapshot, inspect current register and Actions/Release state, then continue only from the next unreviewed path. |
+| Last updated | 2026-11-26T20:37:00+07:00 |
+| Current phase | WP0 / WP1 recovery — live main/tree and Actions reconciled. Validation Only #76 is terminal SUCCESS on source `8f1493cfaa51f3d1322e5f3abf6921b11871ffbb` (221/221 Flutter tests). Review the new Android API-gate source-contract test for false-positive ordering before proceeding with remaining inventory dispositions. |
+| Last completed milestone | Chat Stuck recovery verified current main HEAD `040c0ababb67fcaa34452eab334ba31aaeb1e9b6`, tree `9b5eb1c83f74965f21d8fc5b7055fc6b1eda87dc` (142 entries / 96 blobs / 46 trees; truncated=false). The source/test commit `8f1493cfaa51f3d1322e5f3abf6921b11871ffbb` has tree `45a9044ea66d700c3fbeb8de244718aa4fb83d58` and Validation Only #76 / run `45827382093` / job `139934913868` terminal SUCCESS: locked dependencies, formatter (19 files / 0 changed), analyzer and 221/221 Flutter tests. No run is active. |
+| Last verified source checkpoint | CURRENT / VERIFIED source/test SHA `8f1493cfaa51f3d1322e5f3abf6921b11871ffbb`; root tree `45a9044ea66d700c3fbeb8de244718aa4fb83d58`; 142 entries / 96 blobs / 46 trees; `truncated=false`. Current `main` HEAD `040c0ababb67fcaa34452eab334ba31aaeb1e9b6` is a status-only child. Validation Only #76 checks out the exact source/test SHA. |
+| EXTERNAL OPERATION | Validation Only #76 — run `45827382093`, job `139934913868`, source SHA `8f1493cfaa51f3d1322e5f3abf6921b11871ffbb`; terminal SUCCESS, 221/221 Flutter tests, formatter/analyzer/locked dependency gates PASS. No Build App/Firmware/device operation. |
+| EXTERNAL OPERATION STATUS | COMPLETED / SUCCESS — Validation Only #76 / run `45827382093`; no separate Build App operation. |
+| Result / evidence | Recovery commit `040c0ababb67fcaa34452eab334ba31aaeb1e9b6` was read back. Latest source fix `8f1493c` safely API-gates `LocationManager.isLocationEnabled` (API 28+) and provides GPS/Network provider fallback for minSdk 24–27; its source-contract regression passed in #76. The method currently has no Dart caller in `lib/`, so this is preventative bridge hardening, not a reproduced user-facing failure. |
+| Blocker / remaining evidence | Flutter/Dart/Gradle/ADB absent locally. Android/Kotlin compilation and API 24–27 device behavior are BLOCKED / NOT RUN; Validation Only is Flutter/Dart-only. Actual App screenshot/device matrix remains VISUAL NOT VERIFIED. Current register has 46/96 dispositions and nine formatter-touched test/source files pending. |
+| Next action | Review `test/device_copy_notification_contract_test.dart` for false-positive structural assertions; strengthen the new API 28 gate ordering check if warranted, then validate via the non-publishing Flutter workflow. Continue WP0 at `00_WORK_STATUS.md`/`AGENTS.md` and the live sorted register without repeating completed Actions runs. |
 
 ## Status model
 
