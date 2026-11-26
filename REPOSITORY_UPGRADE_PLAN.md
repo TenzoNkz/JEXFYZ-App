@@ -134,11 +134,11 @@ A failed gate blocks dependent work. Retry only after classifying root cause (so
 | `android/app/src/main/kotlin/com/horizontalzzz/jexfyz/JeForegroundService.kt` | Android native source | ANDROID NATIVE — CODE AUTHORIZATION | KEEP / VERIFIED (2026-11-26) |
 | `android/app/src/main/kotlin/com/horizontalzzz/jexfyz/JexNotificationUtils.kt` | Android native source | ANDROID NATIVE — CODE AUTHORIZATION | KEEP / VERIFIED (2026-11-26) |
 | `android/app/src/main/kotlin/com/horizontalzzz/jexfyz/MainActivity.kt` | Android native source | ANDROID NATIVE — CODE AUTHORIZATION | KEEP / VERIFIED (2026-11-26) |
-| `android/app/src/main/res/drawable-nodpi/jexfyzicon.png` | Binary visual asset | BINARY ASSET — VISUAL / INTEGRITY REVIEW | INVENTORIED — CONTENT REVIEW PENDING |
-| `android/app/src/main/res/drawable/ic_notification.xml` | Android manifest/resource/security config | ANDROID CONFIG — PLATFORM REGRESSION | INVENTORIED — CONTENT REVIEW PENDING |
-| `android/build.gradle` | Android build configuration | BUILD CONFIG — COMPATIBILITY GATED | INVENTORIED — CONTENT REVIEW PENDING |
-| `android/gradle.properties` | Android build configuration | BUILD CONFIG — COMPATIBILITY GATED | INVENTORIED — CONTENT REVIEW PENDING |
-| `android/settings.gradle` | Android build configuration | BUILD CONFIG — COMPATIBILITY GATED | INVENTORIED — CONTENT REVIEW PENDING |
+| `android/app/src/main/res/drawable-nodpi/jexfyzicon.png` | Binary visual asset | BINARY ASSET — VISUAL / INTEGRITY REVIEW | PROTECTED — NO CHANGE / OPAQUE-RGB TRANSPARENCY MISMATCH; OWNER VISUAL REVIEW REQUIRED (2026-11-26) |
+| `android/app/src/main/res/drawable/ic_notification.xml` | Android notification small icon vector | ANDROID RESOURCE — NOTIFICATION BRANDING | KEEP / VERIFIED (2026-11-26) |
+| `android/build.gradle` | Android root build configuration | BUILD CONFIG — COMPATIBILITY GATED | KEEP / VERIFIED (same blob as Build #167; 2026-11-26) |
+| `android/gradle.properties` | Android Gradle properties | BUILD CONFIG — COMPATIBILITY GATED | KEEP / VERIFIED (same blob as Build #167; 2026-11-26) |
+| `android/settings.gradle` | Android plugin/bootstrap configuration | BUILD CONFIG — COMPATIBILITY GATED | KEEP / VERIFIED (same blob as Build #167; KGP matrix caveat recorded; 2026-11-26) |
 | `APP_BUILD_REPORT.md` | Append-only evidence ledger | APPEND-ONLY / NO REWRITE | INVENTORIED — CONTENT REVIEW PENDING |
 | `APP_NOTES.md` | Project/configuration file | REVIEW REQUIRED | INVENTORIED — CONTENT REVIEW PENDING |
 | `APP_PREBUILD_AUDIT.md` | Project/configuration file | REVIEW REQUIRED | INVENTORIED — CONTENT REVIEW PENDING |
@@ -542,12 +542,47 @@ The Firmware-safety and hardware/power skills are retained as protected project 
 - Regression evidence: test/device_copy_notification_contract_test.dart checks the Dart result guard and native false-on-permission-denied / true-after-notify contract. Current test blob 99f8a920ecb7c6aea743c861eee5724a486a9cfa. Validation Only #79 / run 45838156356 / job 139972413867 terminal SUCCESS on tested commit 80fbb23e887eb4424114169947ac6f441d3dceca; the subsequent 32f870b commit contains formatter reflow only.
 - Disposition: this targeted notification path is validated. The full lib/main.dart content/architecture review remains pending; retain it in the seven-file review queue.
 
+
+### WP0 — Android launcher asset, notification icon and root Gradle configuration — 2026-11-26
+
+#### `android/app/src/main/res/drawable-nodpi/jexfyzicon.png` — PROTECTED / NO CHANGE
+
+- **Blob / identity:** `bad855f23416fd58aff194c30b7f8fd77f260ea8`; it is byte-identical to `assets/jexfyzicon.png` at the same blob SHA. The complete PNG chunk scan shows 1254×1254 pixels, 8-bit truecolor RGB (color type 2), no alpha channel and no `tRNS` transparency chunk. The visible artwork is the existing white JE monogram on an opaque black square.
+- **Consumer:** `AndroidManifest.xml` points application icon to `@drawable/jexfyzicon`; Flutter declares the matching `assets/jexfyzicon.png` resource. Workflow audit requires the Android icon path to remain present and rejects the retired reference.
+- **Contract discrepancy:** `APP_NOTES.md` and `DESIGN_NOTES.md` describe the supplied brand PNGs as transparent square assets, but this exact shared binary does not encode transparency. The pixel geometry/brand is preserved; this is an image-alpha contract mismatch, not an instruction to redraw or replace the logo.
+- **Disposition:** keep the current binary protected and unchanged. A future alpha/background conversion would alter the launcher/Home visual and must be handled as an explicit visual asset decision with screenshot review. No asset was generated, modified, published or replaced in this session.
+
+#### `android/app/src/main/res/drawable/ic_notification.xml` — KEEP / VERIFIED
+
+- **Reviewed blob:** `8f1a4f045f72810f3df421e74233d0c4e84c6c8d`; 24dp × 24dp vector with a single white JE monogram silhouette on a transparent vector canvas.
+- **Consumer and tests:** `JexNotificationUtils.kt` uses `setSmallIcon(R.drawable.ic_notification)`; the Widget source-contract test requires this vector, rejects the launcher PNG as a small icon and rejects a large-icon duplicate. This is the correct separation between launcher/Flutter artwork and Android's monochrome/tinted notification small icon.
+- **Disposition:** KEEP / VERIFIED. No drawable or notification behavior change.
+
+#### `android/build.gradle` — KEEP / VERIFIED
+
+- **Reviewed blob:** `bfc244a4fbee7d71556449b2f32f67830722011d`; identical at Build #167 source `0dd96228d33b08c66e736ae91a8a6c3e5c3ddb81`.
+- Shared repositories remain Google and Maven Central; generated output stays under the Flutter `build` directory; subprojects are evaluated against `:app`; `clean` deletes only generated root build output. Existing spacing/duplicate subproject blocks are valid and do not warrant a cleanup unrelated to behavior.
+- Build #167 previously completed Android Gradle successfully with this exact root configuration. No current source edit.
+
+#### `android/gradle.properties` — KEEP / VERIFIED
+
+- **Reviewed blob:** `8ff8f1f512e1a7b1b197fe1d9a84b9777ca7cdd3`; identical at Build #167 source. It pins the 4 GB Gradle JVM heap, AndroidX and Jetifier, and deliberately sets `android.builtInKotlin=false` plus `android.newDsl=false`.
+- Android's AGP 9 migration guidance identifies these two false properties as the paired temporary opt-out path for projects not yet migrated to built-in Kotlin. They are consistent with retaining the external `org.jetbrains.kotlin.android` plugin. No property was changed.
+- Build #167 previously completed its Android Gradle build with this exact file. Keep unchanged pending a separately measured built-in-Kotlin migration.
+
+#### `android/settings.gradle` — KEEP / VERIFIED WITH KGP MATRIX CAVEAT
+
+- **Reviewed blob:** `1e36982890cf4522836eb05598747b7af5da7b4c`; byte-identical at Build #167 source. Plugin pins: Flutter loader 1.0.0, AGP 9.1.1, Kotlin Gradle Plugin 2.2.20, Google Services 4.4.4; Flutter SDK is resolved from local `android/local.properties`; the project includes only `:app`.
+- Current Build App workflow explicitly pins Java 17, Flutter 3.47.2 and Gradle 9.3.1, and creates a local `gradlew` shell shim delegating to that already-installed Gradle; the repository intentionally does not track a binary wrapper. AGP 9.1.1's published minimum/default Gradle is 9.3.1, JDK requirement is 17, and its supported Android API ceiling is 37. The app's compileSdk 37 therefore falls within its declared AGP ceiling.
+- **Compatibility caveat:** Kotlin's published fully-supported matrix lists KGP 2.2.20–2.2.21 through AGP 8.11.1, not AGP 9.1.1; the AGP 9.1.1 release notes list KGP 2.2.10 as its default. The KGP/AGP pair is therefore outside the KGP table's fully-supported matrix, although no failure is evidenced. Crucially, Build #167 used this identical `settings.gradle`, `gradle.properties` and root `build.gradle` and completed Android Gradle successfully. The current app-module `android/app/build.gradle` blob has since changed, so Build #167 is historical configuration evidence rather than a current-main compile.
+- **Disposition:** KEEP / VERIFIED for the current pinned configuration; carry the KGP/AGP fully-supported-matrix caveat into the separately gated Android toolchain review. No plugin, DSL, Gradle wrapper, signing or build workflow change is made here.
+
 ## Current disposition
 
-- Inventory coverage: **96/96 tracked blobs** at live main checkpoint before this documentation update: HEAD `32f870bccd1935efdaba6073ec46efb3e2b4d4e7`; root tree `403e8130adc3b89ce8b01a25b2b89856c3331884`; recursive tree 142 entries / 96 blobs / 46 trees; truncated=false.
-- Content review coverage: **58/96 closed dispositions** after all four native Kotlin files and the Floating Monitor contract test were reviewed and dispositioned. The audit remains incomplete.
+- Inventory coverage: **96/96 tracked blobs** at live main checkpoint before this documentation update: HEAD `123184396b6bc32e3cc05feff3050467a47682d8`; root tree `b7784209e9698c392dcbc8775d55caa466be9aeb`; recursive tree 142 entries / 96 blobs / 46 trees; truncated=false.
+- Content review coverage: **63/96 closed dispositions** after review/disposition of the Android launcher PNG (protected without editing), notification vector, root Gradle build file, Gradle properties and plugin settings. The audit remains incomplete.
 - Seven formatter-touched Dart/test files remain pending full-file content review: lib/main.dart (targeted notification result fix is validated but whole-file audit is open), lib/usage_statistics.dart, test/connection_scan_coordinator_test.dart, test/firmware_qc_contract_test.dart, test/localization_contract_test.dart, test/usage_statistics_test.dart and test/widget_test.dart. test/device_copy_notification_contract_test.dart is closed after the API-28 and Firmware notification-result assertions passed #77/#79; test/floating_monitor_layout_contract_test.dart is closed after the native overlay ownership contract passed #78.
 - No blanket source/config/workflow/Firmware/BIN/asset update is authorized by this plan.
-- The next unreviewed live inventory path is `android/app/src/main/res/drawable-nodpi/jexfyzicon.png`. Android Gradle/Kotlin compilation, Manifest merge/R8 and physical API/OEM device evidence have not been obtained.
+- The next unreviewed live inventory path is `APP_BUILD_REPORT.md` (append-only release evidence ledger). The launcher asset's alpha mismatch is documented as protected; no image edit or asset publication occurred. Current-main Android compilation and physical API/OEM evidence have not been obtained.
 - The owner-approved App-only WP0–WP10 work item remains IN_PROGRESS in `WORKSPACE=CODE_FULL`; this is the active Eksekusi Code implementation workspace. App Build/release, Firmware/BIN, BLE P1 wire/security, OTA, Firebase production, signing and device operations remain excluded.
 - Refresh the inventory when files are added/removed/renamed; update the row of every file touched; re-check the recursive tree and all references before closing a WP.
