@@ -95,7 +95,7 @@ A failed gate blocks dependent work. Retry only after classifying root cause (so
 
 | Path | File class | Guard / authority | Current review state |
 |---|---|---|---|
-| `.agents/skills/ble-p1-protocol-audit/SKILL.md` | Canonical agent skill | CANONICAL SKILL | INVENTORIED — CONTENT REVIEW PENDING |
+| `.agents/skills/ble-p1-protocol-audit/SKILL.md` | Canonical agent skill | CANONICAL SKILL | KEEP / VERIFIED (2026-11-26) |
 | `.agents/skills/code-review/SKILL.md` | Canonical agent skill | CANONICAL SKILL | INVENTORIED — CONTENT REVIEW PENDING |
 | `.agents/skills/documentation-memory-governance/SKILL.md` | Canonical agent skill | CANONICAL SKILL | INVENTORIED — CONTENT REVIEW PENDING |
 | `.agents/skills/esp32c3-firmware-safety/SKILL.md` | Canonical agent skill | CANONICAL SKILL | INVENTORIED — CONTENT REVIEW PENDING |
@@ -107,7 +107,7 @@ A failed gate blocks dependent work. Retry only after classifying root cause (so
 | `.agents/skills/product-design-and-visual-quality/SKILL.md` | Canonical agent skill | CANONICAL SKILL | INVENTORIED — CONTENT REVIEW PENDING |
 | `.agents/skills/repository-forensics/SKILL.md` | Canonical agent skill | CANONICAL SKILL | INVENTORIED — CONTENT REVIEW PENDING |
 | `.agents/skills/technical-research-and-second-opinion/SKILL.md` | Canonical agent skill | CANONICAL SKILL | INVENTORIED — CONTENT REVIEW PENDING |
-| `.github/skills/ble-p1-protocol-audit/SKILL.md` | Copilot skill mirror | MIRROR — MUST MATCH CANONICAL | INVENTORIED — CONTENT REVIEW PENDING |
+| `.github/skills/ble-p1-protocol-audit/SKILL.md` | Copilot skill mirror | MIRROR — MUST MATCH CANONICAL | KEEP / VERIFIED (2026-11-26) |
 | `.github/skills/code-review/SKILL.md` | Copilot skill mirror | MIRROR — MUST MATCH CANONICAL | INVENTORIED — CONTENT REVIEW PENDING |
 | `.github/skills/documentation-memory-governance/SKILL.md` | Copilot skill mirror | MIRROR — MUST MATCH CANONICAL | INVENTORIED — CONTENT REVIEW PENDING |
 | `.github/skills/esp32c3-firmware-safety/SKILL.md` | Copilot skill mirror | MIRROR — MUST MATCH CANONICAL | INVENTORIED — CONTENT REVIEW PENDING |
@@ -397,6 +397,14 @@ Validation Only #72's formatter gate identified 12 existing files requiring the 
 
 All 12 paths received only the workflow's `dart format` output at that time; this is not a substitute for file-level content/dependency/security review. `lib/floating_monitor.dart` has since received an individual static review and UPGRADE APPROVED disposition as recorded above. The other 11 paths remain **CONTENT REVIEW PENDING (FORMATTER ONLY)**, including the companion `test/floating_monitor_layout_contract_test.dart`. No semantic modernization is claimed from formatting alone.
 
+### WP0 — BLE P1 audit skill and Copilot mirror — KEEP / VERIFIED (2026-11-26)
+
+- **Reviewed canonical file:** `.agents/skills/ble-p1-protocol-audit/SKILL.md`, live blob `264fdb1617770a63899db97575fe83db0fc9f933`. The recursive tree records the same Git blob SHA for `.github/skills/ble-p1-protocol-audit/SKILL.md`, confirming a byte-identical mirror.
+- **Content decision:** retain. The skill consistently treats BLE/P1 as a single-owner distributed state machine; separates command intent, ACK and authoritative physical telemetry; preserves unknown state through disconnect/unsynchronized periods; and keeps bonded SYNC_READY distinct from official App identity authentication. It requires caller/source/test evidence and regression mapping before protocol claims. No stale project contract or conflicting scope instruction was identified.
+- **Scope result:** these are governance/skill files, not an authorization to change BLE UUIDs, P1 framing, commands, retry cadence, security or Firmware. P1 wire protocol and BLE identity/security remain excluded from this App rework. No source, test, workflow or hardware file changed.
+- **Validation:** content and path review only; mirror identity is verified by matching Git blob SHA. No runtime/test/formatter/analyzer command is applicable to this documentation disposition.
+- **Disposition:** `KEEP / VERIFIED` for both paths. The next unreviewed live inventory path is `.agents/skills/code-review/SKILL.md`.
+
 ## WP0 source review — `lib/floating_monitor.dart` — 2026-11-26
 
 - **Reviewed checkpoint:** live `main` source blob `176a21242602eb0db44420d2a9324eebe05e95b5` (1,961 lines); callers in `lib/main.dart` blob `9663736fbe4bd7d251a8b3632b735a9cafb0b4d1`; regression test blob `4784fb775388f226d19fd4acb02beea9f7074d03`; native receiver `MainActivity.kt` blob `cab1cabf10b57a0f5d547fccf85b76b067503c0e`; native service `FloatingMonitorService.kt` blob `8e66da2525b5cc75ef8780c2d480607328492df6`. Latest source-fix commit `9a501fcdac5814abe4e98b229ca157eb771206d9`; Validation Only #73 / run `45717895008` / job `139568563820` completed SUCCESS on that SHA.
@@ -407,8 +415,9 @@ All 12 paths received only the workflow's `dart format` output at that time; thi
 
 ## Current disposition
 
-- Inventory coverage: **95/95 existing tracked blobs** at the baseline HEAD above; this register is the 96th file after creation and must be included in subsequent tree snapshots.
-- Content review coverage: **not yet complete**. The fact that every path is listed does not mean every file's contents, callers, security or runtime behavior has been reviewed.
+- Inventory coverage: **96/96 tracked blobs** at live `main` HEAD `b5990d9ec9d6230e28b11a09fc180f6fe4dd68ce`; recursive root tree `28b0498b15e44d04bba2e6d9eed66efbc5c9707c`; 142 entries / 96 blobs / 46 trees; `truncated=false`.
+- Content review coverage: **19/96 dispositions** after the BLE P1 audit skill and byte-identical Copilot mirror were reviewed and retained. Content review remains incomplete; an inventory row alone is not a review.
+- Ten formatter-touched Dart/test files remain individually pending content review: `lib/main.dart`, `lib/usage_statistics.dart`, `test/connection_scan_coordinator_test.dart`, `test/device_copy_notification_contract_test.dart`, `test/firmware_qc_contract_test.dart`, `test/floating_monitor_layout_contract_test.dart`, `test/github_actions_workflow_contract_test.dart`, `test/localization_contract_test.dart`, `test/usage_statistics_test.dart` and `test/widget_test.dart`. This corrects the earlier stale count of eleven.
 - No blanket source/config/workflow/Firmware/BIN/asset update is authorized by this plan.
-- The owner-approved App-only WP0–WP10 work item remains IN_PROGRESS. This current interaction is the permanent DISKUSI workspace; source implementation and executable validation remain in the separate Eksekusi Code workspace. Do not infer implementation authorization from a discussion disposition.
+- The owner-approved App-only WP0–WP10 work item remains IN_PROGRESS in `WORKSPACE=CODE_FULL`; this is the active Eksekusi Code implementation workspace. App Build/release, Firmware/BIN, BLE P1 wire/security, OTA, Firebase production, signing and device operations remain excluded.
 - Refresh the inventory when files are added/removed/renamed; update the row of every file touched; re-check the recursive tree and all references before closing a WP.

@@ -1,4 +1,4 @@
-| Last updated | 2026-11-26T19:33:00+07:00 (Asia/Jakarta) |
+| Last updated | 2026-11-26T19:45:27+07:00 (Asia/Jakarta) |
 
 > Single current snapshot for JE X FYZ project interactions. Event-driven marker; not a background heartbeat.
 
@@ -8,20 +8,20 @@
 |---|---|
 | **STATUS** | **IN_PROGRESS** |
 | SESSION STATUS | IN_PROGRESS — Owner request received: “MASTER PROMPT LOAD + CONTINUE — JE X FYZ CODE IMPLEMENTATION WORKSPACE”; open the dedicated CODE_FULL workspace; execute the owner-approved App-only WP0–WP10 full App rework + premium UI redesign incrementally; reconcile live `main`, tree/register, source inventory, single-writer and external-operation state; continue from the first unreviewed live path; baseline, implement only the smallest safely scoped repair in the active package, test/audit, update canonical notes and checkpoint, commit to `main`, and verify exact contents/commit/tree. No Firmware/BIN, P1 protocol, OTA transport/security, Firebase production, signing, APK/build/release, flash or device operation. Started: 2026-11-26T19:33:00+07:00 (Asia/Jakarta). |
-| WORK STATUS | IN_PROGRESS — Owner has explicitly continued the previously approved App-only full rework/redesign WP0–WP10 package in CODE_FULL. Current WP/register disposition and active package are UNVERIFIED until live `main`, `REPOSITORY_UPGRADE_PLAN.md`, APP_PREBUILD_AUDIT.md and CHAT_TRANSFER.md are re-read in this session; do not rely on historical 17/96 or pending-file counts. |
+| WORK STATUS | IN_PROGRESS — Owner-approved App-only WP0–WP10 full rework + premium UI redesign is active in CODE_FULL. Live main/tree, WP register, bounded checkpoint, operating/design references, Actions state and current CI baseline are reconciled. Current disposition is 19/96; next live path is `.agents/skills/code-review/SKILL.md`; ten formatter-touched Dart/test files remain pending individual review. |
 | WORKSPACE | CODE_FULL |
 | Mode | Eksekusi Code — owner-authorized App-only source/test/docs/static-audit workstream. No App package build, signing, release, Firmware/BIN, Firebase production mutation, OTA transport/security, flashing or physical device operation. |
 | Request / work item | Continue owner-approved full App rework + premium UI redesign WP0–WP10 (2026-11-26) in CODE_FULL. Reconcile live repository inventory and active checkpoint; start from the first unreviewed live path and implement the smallest safe in-scope milestone. |
 | Started | 2026-11-26T19:33:00+07:00 (Asia/Jakarta) |
-| Last updated | 2026-11-26T19:33:00+07:00 (Asia/Jakarta) |
-| Current phase | STARTUP / PRE-FLIGHT — incoming CODE_FULL request persisted; now fetch repository metadata and main HEAD/commit/tree, reconcile register/checkpoint and external/single-writer state, then read operating authorities and relevant App package scope. |
-| Last completed milestone | Previous Diskusi session read 00_WORK_STATUS.md at 2026-11-26T19:30:01+07:00; that snapshot reported HEAD c5d34bdc9f9fe165d3f33728cd941f77d9033b7a and tree 9bf1b0d70819a30eecb0a630e5d88376348818cd. These are historical startup hints only, not verified for this CODE_FULL session. |
-| Last verified source checkpoint | NONE YET IN THIS SESSION — re-fetch live `main`, exact commit and recursive tree before using any source SHA/line number. Prior Diskusi checkpoint is not write authorization or current source evidence. |
-| EXTERNAL OPERATION | No independent Actions, build, release, Firebase, Firmware, OTA, signing, flash or device operation has been started by this session. Live Actions/Release state and any external-operation markers must be reconciled before further work. |
-| EXTERNAL OPERATION STATUS | NOT_APPLICABLE — none initiated by this session; historical/live independent operations still require reconciliation. |
-| Result / evidence | Incoming CODE_FULL request persisted as a canonical status documentation commit; commit/tree read-back pending. No source, tests, workflows or build operations performed yet. |
-| Blocker / remaining evidence | Current live HEAD/tree, first pending register path, single-writer state, toolchain and active WP baseline are not yet verified in this session. |
-| Next action | Fetch live repo metadata, main branch HEAD/commit and recursive tree; reconcile `REPOSITORY_UPGRADE_PLAN.md` and bounded active `CHAT_TRANSFER.md`; then load MASTER_PROMPT and required policy/skill files. |
+| Last updated | 2026-11-26T19:45:27+07:00 (Asia/Jakarta) |
+| Current phase | WP0 — live repository and CI baseline reconciled; first pending BLE P1 skill + Copilot mirror reviewed KEEP / VERIFIED. Continue one-file-at-a-time content dispositions from current sorted inventory, then characterize behavior/tests before architecture or visual changes. |
+| Last completed milestone | Live repository verified: HEAD `b5990d9ec9d6230e28b11a09fc180f6fe4dd68ce`; recursive tree `28b0498b15e44d04bba2e6d9eed66efbc5c9707c`, 142 entries / 96 blobs / 46 trees, truncated=false. Actions has no active run; Validation Only #73 / run `45717895008` / job `139568563820` is SUCCESS with 219/219 tests and all validation steps PASS on executable content identical to current main. First WP0 BLE P1 skill and mirror reviewed KEEP / VERIFIED. |
+| Last verified source checkpoint | CURRENT / VERIFIED `main` HEAD `b5990d9ec9d6230e28b11a09fc180f6fe4dd68ce`; root tree `28b0498b15e44d04bba2e6d9eed66efbc5c9707c`; 142 entries / 96 blobs / 46 trees; truncated=false. Validation Only #73 input SHA `9a501fcdac5814abe4e98b229ca157eb771206d9` has identical App source/test content: 32 commits to opening HEAD changed six Markdown files only. |
+| EXTERNAL OPERATION | No independent Actions, build, release, Firebase, Firmware, OTA, signing, flash or device operation is active. The latest queried 100 Actions runs contain no queued/in-progress/waiting/requested run; Validation Only #73 is terminal SUCCESS. No Build App or device operation was started. |
+| EXTERNAL OPERATION STATUS | NOT_APPLICABLE — no independent operation is currently active. |
+| Result / evidence | Opening status commit `b5990d9ec9d6230e28b11a09fc180f6fe4dd68ce` was read back. Full current recursive inventory verified (`truncated=false`). Validation Only #73 confirms 219/219 Flutter tests, analyzer, formatter and locked dependencies PASS on source identical to current App source/test content. Current 19/96 file dispositions verified; BLE P1 skill/mirror are KEEP / VERIFIED. No App source/test implementation or package build in this milestone. |
+| Blocker / remaining evidence | Local Flutter/Dart/Gradle/ADB are absent: local formatter, analyzer, focused/full tests, Android compilation and device validation are BLOCKED / NOT RUN. Visual acceptance remains VISUAL NOT VERIFIED without actual rendered screenshots. Source changes have not started in this milestone. |
+| Next action | Review `.agents/skills/code-review/SKILL.md` and its Copilot mirror as the next live inventory path; update `REPOSITORY_UPGRADE_PLAN.md` with evidence, then continue WP0 in sorted live path order. Independently review all ten formatter-pending Dart/test files before extracting or redesigning code. |
 
 ## Status model
 
