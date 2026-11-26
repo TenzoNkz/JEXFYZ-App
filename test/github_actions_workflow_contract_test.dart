@@ -128,19 +128,10 @@ void main() {
       contains('flutter analyze --no-fatal-infos'),
     );
     expect(validationOnlyWorkflow, contains('flutter test'));
-    expect(
-      validationOnlyWorkflow,
-      isNot(contains('pull_request:')),
-    );
-    expect(
-      validationOnlyWorkflow,
-      isNot(contains('contents: write')),
-    );
+    expect(validationOnlyWorkflow, isNot(contains('pull_request:')));
+    expect(validationOnlyWorkflow, isNot(contains('contents: write')));
     expect(validationOnlyWorkflow, isNot(contains('git push')));
-    expect(
-      validationOnlyWorkflow,
-      isNot(contains('dart format lib test')),
-    );
+    expect(validationOnlyWorkflow, isNot(contains('dart format lib test')));
     expect(
       File('.github/workflows/jexfyz-app-pr-validation.yml').existsSync(),
       isFalse,
