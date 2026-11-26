@@ -250,7 +250,10 @@ void main() {
       () async {
         final source = await File('lib/main.dart').readAsString();
         final start = source.indexOf('void _startDisconnectRediscovery()');
-        final end = source.indexOf('void _startUsageStatisticsSession()', start);
+        final end = source.indexOf(
+          'void _startUsageStatisticsSession()',
+          start,
+        );
         expect(start, isNonNegative);
         expect(end, greaterThan(start));
 

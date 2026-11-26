@@ -5714,12 +5714,10 @@ class _DashboardScreenState extends State<DashboardScreen>
                 // Passive rediscovery has no awaiting caller; consume connection failures
                 // after _connect updates the existing disconnected/error presentation.
                 unawaited(
-                  _connect(result.device).catchError((
-                    Object error,
-                    StackTrace stackTrace,
-                  ) {
-                    debugPrint('BLE passive connection: $error');
-                  }),
+                  _connect(result.device)
+                      .catchError((Object error, StackTrace stackTrace) {
+                        debugPrint('BLE passive connection: $error');
+                      }),
                 );
                 break;
               }
