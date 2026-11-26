@@ -4071,9 +4071,7 @@ void main() {
     'Connection sheet filters with the service UUID injected by Dashboard',
     () {
       final source = File('lib/connection_sheet.dart').readAsStringSync();
-      final serviceMatch = source.indexOf(
-        'uuid.toString().toLowerCase() ==',
-      );
+      final serviceMatch = source.indexOf('uuid.toString().toLowerCase() ==');
       expect(serviceMatch, isNonNegative);
       final serviceMatchEnd = source.indexOf(',', serviceMatch);
       expect(serviceMatchEnd, greaterThan(serviceMatch));

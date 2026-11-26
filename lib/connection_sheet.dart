@@ -34,8 +34,7 @@ class ConnectionSheetContent extends StatefulWidget {
   });
 
   @override
-  State<ConnectionSheetContent> createState() =>
-      _ConnectionSheetContentState();
+  State<ConnectionSheetContent> createState() => _ConnectionSheetContentState();
 }
 
 class _ConnectionSheetContentState extends State<ConnectionSheetContent>

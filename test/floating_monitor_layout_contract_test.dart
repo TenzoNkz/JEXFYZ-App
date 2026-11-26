@@ -306,8 +306,11 @@ void main() {
     );
 
     expect(main, contains('compactUi: true,\n          child: SettingsPage('));
-    final connectionSource = File('lib/connection_sheet.dart').readAsStringSync();
-    final connectionStart = connectionSource.indexOf('class _ConnectionSheetContentState');
+    final connectionSource = File('lib/connection_sheet.dart')
+        .readAsStringSync();
+    final connectionStart = connectionSource.indexOf(
+      'class _ConnectionSheetContentState',
+    );
     expect(connectionStart, isNonNegative);
     final connection = connectionSource.substring(connectionStart);
     expect(connection, contains('height: 60,'));
