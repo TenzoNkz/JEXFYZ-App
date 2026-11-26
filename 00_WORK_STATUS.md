@@ -1,4 +1,4 @@
-| Last updated | 2026-11-27T01:48:22+07:00 (Asia/Jakarta) |
+| Last updated | 2026-11-27T01:59:34+07:00 (Asia/Jakarta) |
 
 > Single current snapshot for JE X FYZ project interactions. Event-driven marker; not a background heartbeat.
 
@@ -7,7 +7,7 @@
 | Field | Value |
 |---|---|
 | **STATUS** | **IN_PROGRESS** |
-| SESSION STATUS | IN_PROGRESS — Owner command received: “@Thinking Eksekusi Code!” with the exact MASTER PROMPT LOAD + CONTINUE CODE_FULL instructions in this conversation. Continue the existing owner-approved full App-only WP0–WP10 rework/redesign scope to evidence-backed completion; do not switch to REPO_FULL until CODE_FULL is complete. Current session checkpoint reconciled at 2026-11-27T01:48:22+07:00 (Asia/Jakarta). |
+| SESSION STATUS | IN_PROGRESS — Owner command: @Thinking Eksekusi Code! Reconfigure repository execution to direct-main only; remove active rulesets and all non-main branches; all source/docs/workflow changes remain in this one active subchat and are committed directly to main. Complete the authorized CODE_FULL App rework, then the approved REPO_FULL cycle; do not start Build App until a separate owner command. Timestamp: 2026-11-27T01:59:34+07:00 (Asia/Jakarta). |
 | WORK STATUS | IN_PROGRESS — CODE_FULL remains unfinished: App content/architecture audit, complete file-level disposition, WP2–WP10, design-system and screen redesign, evidence gates and final build-ready handoff remain open. Three presentation extractions (Home notification, LED controls/preview, animated indicators) are implemented and the latest relevant Validation Only #95 passed 230/230 on SHA e304c1f; main has subsequent documentation-only commits. Sequential REPO_FULL is authorized after, not before, CODE_FULL closure. |
 | WORKSPACE | CODE_FULL |
 | Mode | Eksekusi Code / CODE_FULL. Authorized App Flutter/Dart source, tests, docs, justified App config and static audit only. No App Build/APK/package/sign/release, Firmware/BIN/P1 protocol, BLE identity/security, OTA transport/trust/recovery, Firebase production, signing secrets/keystores, flashing or physical device operation. |
@@ -25,7 +25,7 @@
 | Blocker / remaining evidence | Flutter/Dart/Gradle/ADB availability must be checked locally; Validation Only is Flutter/Dart-only. No current-main Android/Kotlin compile, actual Android/OEM screenshot matrix, SQLite v1→v2 runtime fixture or 1h/6h/24h device soak has been established. Whole-App visual status remains VISUAL NOT VERIFIED. BLE App identity and OTA remain protected/out of scope. |
 | Next action | Continue CODE_FULL WP0–WP10 with caller/test traceability, reconcile the 101-blob inventory with REPOSITORY_UPGRADE_PLAN.md, close evidence-backed App handoff, then begin the single authorized REPO_FULL cycle. |
 | Blocker / remaining evidence | Prior local toolchain snapshot: Flutter, Dart, Gradle and ADB are absent. Verify again. Current App screenshots, Android/Kotlin compile, API/OEM tests, BLE hardware, SQLite migration fixture and performance profiles may remain blocked. Firmware source implementation/compilation/BIN/flash stay outside this permission; repo-wide Firmware review and docs/config audit may proceed, but functional Firmware edits require a separately explicit scoped Firmware-source authorization and firmware safety skill/references. Actions simplification may not weaken guarded release triggers, permissions, CI gates, pinning or mandatory release evidence. |
-| Next action | Audit remaining Dashboard/UI boundaries without altering BLE/P1 state machine, verify toolchain availability and exact test coverage, then advance WP0–WP10. After CODE_FULL closes, run REPO_FULL: deduplicate canonical guidance, archive rather than delete evidence, simplify validation workflows without weakening protected gates, complete path/content audit, optimize only profiled hotspots, run full regression and close with exact-SHA docs/CI handoff. |
+| Next action | Direct-main only: rulesets endpoint currently returns an empty list (user deletion already reflected); remove the two temporary work branches created in the prior step, remove formatter write permissions/auto-commit from Validation Only, update canonical policy/checkpoints to direct-main-only, then resume CODE_FULL and REPO_FULL. |
 
 ## Status model
 
