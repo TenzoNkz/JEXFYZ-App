@@ -47,6 +47,9 @@ void main() {
       final legacyBranch = implementation.indexOf('} else {', apiGuard);
       expect(apiGuard, greaterThanOrEqualTo(0));
       expect(api28Call, greaterThan(apiGuard));
+      // The API-28-only property must remain in the guarded branch, not the
+      // legacy provider fallback that executes on minSdk 24–27 devices.
+      expect(api28Call, lessThan(legacyBranch));
       expect(legacyBranch, greaterThan(apiGuard));
       expect(
         implementation.indexOf(
