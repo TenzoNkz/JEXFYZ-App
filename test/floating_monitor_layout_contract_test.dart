@@ -642,9 +642,8 @@ void main() {
     final native = File(
       'android/app/src/main/kotlin/com/horizontalzzz/jexfyz/FloatingMonitorService.kt',
     ).readAsStringSync();
-    final manifest = File(
-      'android/app/src/main/AndroidManifest.xml',
-    ).readAsStringSync();
+    final manifest = File('android/app/src/main/AndroidManifest.xml')
+        .readAsStringSync();
     final activity = File(
       'android/app/src/main/kotlin/com/horizontalzzz/jexfyz/MainActivity.kt',
     ).readAsStringSync();
@@ -654,7 +653,10 @@ void main() {
     expect(native, isNot(contains('BluetoothGatt')));
     expect(native, isNot(contains('FlutterBluePlus')));
     expect(native, contains('ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE'));
-    expect(manifest, contains('android.permission.FOREGROUND_SERVICE_SPECIAL_USE'));
+    expect(
+      manifest,
+      contains('android.permission.FOREGROUND_SERVICE_SPECIAL_USE'),
+    );
     expect(manifest, contains('android:foregroundServiceType="specialUse"'));
     expect(manifest, contains('android:name=".FloatingMonitorService"'));
     expect(native, contains('windowManager.addView(view, layoutParams)'));
@@ -682,11 +684,11 @@ void main() {
     expect(destroy, contains('instance = null'));
     expect(native, contains('return START_NOT_STICKY'));
 
+    expect(floatingBridge, contains("MethodChannel('je_x_fyz/floating')"));
     expect(
-      floatingBridge,
-      contains("MethodChannel('je_x_fyz/floating')"),
+      activity,
+      contains('private val FLOATING_CHANNEL = "je_x_fyz/floating"'),
     );
-    expect(activity, contains('private val FLOATING_CHANNEL = "je_x_fyz/floating"'));
     expect(activity, contains('"updateFloatingData"'));
     expect(activity, contains('FloatingMonitorService.updateData('));
   });
