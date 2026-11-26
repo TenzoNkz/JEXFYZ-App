@@ -1156,7 +1156,7 @@ void main() {
     expect(painter, contains('const sweep = math.pi;'));
     expect(
       containsDartFragment(
-        animationSource,
+        source,
         'active: connected && (animationActive ?? active)',
       ),
       isTrue,
