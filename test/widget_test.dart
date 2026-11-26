@@ -96,18 +96,19 @@ void main() {
       expect(glyph, isNot(contains('.repeat(')));
       expect(glyph, isNot(contains('Transform.scale')));
       expect(app, contains("import 'jex_animated_glyph.dart';"));
-      expect(app, contains('JexAnimatedGlyph('));
-      expect(app, isNot(contains('JexAnimatedIcon.glyph(')));
-      expect(app, isNot(contains('IconData? glyph;')));
-      expect(app, isNot(contains('widget.glyph')));
       expect(app, contains("import 'jex_animated_icon.dart';"));
-      expect(animation, contains('class _JexAnimatedIconState'));
-      expect(animation, contains('jexIconAnimationPermitted'));
       expect(animation, isNot(contains('FlutterBluePlus')));
       expect(animation, isNot(contains('BluetoothDevice')));
       expect(animation, isNot(contains('BluetoothCharacteristic')));
       expect(animation, isNot(contains('MethodChannel')));
       expect(animation, isNot(contains('FlutterSecureStorage')));
+      expect(app, contains('JexAnimatedGlyph('));
+      expect(app, isNot(contains('JexAnimatedIcon.glyph(')));
+      expect(app, isNot(contains('IconData? glyph;')));
+      expect(app, isNot(contains('widget.glyph')));
+      expect(app, isNot(contains('class _JexAnimatedIconState')));
+      expect(animation, contains('class _JexAnimatedIconState'));
+      expect(animation, contains('jexIconAnimationPermitted'));
     },
   );
 
@@ -556,7 +557,7 @@ void main() {
     expect(source, contains('JexAnimatedIconKind.peltier'));
     expect(source, contains('JexAnimatedIconKind.speed'));
     expect(animationSource, contains('jexIconAnimationPermitted('));
-    expect(source, contains('valueKnown'));
+    expect(animationSource, contains('valueKnown'));
   });
 
   test(
@@ -919,40 +920,40 @@ void main() {
       );
     }
     expect(
-      source,
+      animationSource,
       contains('late final AnimationController warningTransitionController;'),
     );
     expect(
-      source,
+      animationSource,
       contains(
         'warningTransitionController.duration = const Duration(milliseconds: 280)',
       ),
     );
     expect(
-      source,
+      animationSource,
       contains(
         'JexAnimatedIconKind.battery => const Duration(milliseconds: 1500)',
       ),
     );
     expect(
-      source,
+      animationSource,
       contains(
         'JexAnimatedIconKind.hotside => const Duration(milliseconds: 1650)',
       ),
     );
     expect(
-      source,
+      animationSource,
       contains(
         'JexAnimatedIconKind.peltier => const Duration(milliseconds: 2100)',
       ),
     );
     expect(
-      source,
+      animationSource,
       contains('_retargetWarningLevel(widget.connected && widget.warning)'),
     );
     expect(animationSource, contains('TickerFuture _retargetFanRotation('));
     expect(
-      source,
+      animationSource,
       contains('jexNormalizedFanProgress(fanPhaseController.value)'),
     );
     expect(painter, isNot(contains('_adaptiveLoop(s, angle)')));
@@ -1155,7 +1156,7 @@ void main() {
     expect(painter, contains('const sweep = math.pi;'));
     expect(
       containsDartFragment(
-        source,
+        animationSource,
         'active: connected && (animationActive ?? active)',
       ),
       isTrue,
