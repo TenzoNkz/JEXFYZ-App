@@ -333,18 +333,60 @@ void main() {
   test(
     'Home NOTIFY preserves readable text inside its fixed 44dp geometry',
     () {
-      final source = File('lib/main.dart').readAsStringSync();
-      final start = source.indexOf('Widget _homeNotify()');
-      final end = source.indexOf('Widget _card(', start);
+      final source = File('lib/home_notify.dart').readAsStringSync();
+      final start = source.indexOf('class HomeNotifyCard extends StatelessWidget');
       expect(start, isNonNegative);
-      expect(end, greaterThan(start));
-      final notify = source.substring(start, end);
+      final notify = source.substring(start);
       expect(notify, contains('height: 44'));
       expect(notify, contains('fontSize: 9.5'));
       expect(notify, contains('final fontSize = wraps ? 9.5 : 10.5;'));
       expect(notify, contains('maxLines: 2'));
       expect(notify, contains('overflow: TextOverflow.ellipsis'));
       expect(notify, isNot(contains('while (fontSize >')));
+    },
+  );
+
+  testWidgets(
+    'HomeNotifyCard renders disconnected and warning states in the fixed 44 dp frame',
+    (tester) async {
+      Widget host(HomeNotifyCard card) => MaterialApp(
+        home: Scaffold(
+          body: Center(child: SizedBox(width: 360, child: card)),
+        ),
+      );
+
+      await tester.pumpWidget(
+        host(
+          const HomeNotifyCard(
+            darkTheme: false,
+            hasError: false,
+            warning: false,
+            connected: false,
+            foregroundColor: Color(0xFF7C8797),
+            label: 'Notification',
+            message: 'Bluetooth disconnected.',
+          ),
+        ),
+      );
+      expect(tester.getSize(find.byType(HomeNotifyCard)).height, 44);
+      expect(find.text('Notification'), findsOneWidget);
+      expect(find.text('Bluetooth disconnected.'), findsOneWidget);
+
+      await tester.pumpWidget(
+        host(
+          const HomeNotifyCard(
+            darkTheme: true,
+            hasError: false,
+            warning: true,
+            connected: true,
+            foregroundColor: Color(0xFFFFB72B),
+            label: 'Notification',
+            message: 'Hotside temperature limit reached.',
+          ),
+        ),
+      );
+      expect(tester.getSize(find.byType(HomeNotifyCard)).height, 44);
+      expect(find.text('Hotside temperature limit reached.'), findsOneWidget);
     },
   );
 
@@ -2100,27 +2142,32 @@ void main() {
 
   test('Home Notify keeps a fixed-height left Row and scales wrapped copy to two lines', () {
     final source = File('lib/main.dart').readAsStringSync();
-    final start = source.indexOf('Widget _homeNotify() {');
-    final end = source.indexOf('Widget _card({required Widget child', start);
-    expect(start, isNonNegative);
-    expect(end, greaterThan(start));
-    final card = source.substring(start, end);
+    final notifySource = File('lib/home_notify.dart').readAsStringSync();
+    final cardStart = notifySource.indexOf(
+      'class HomeNotifyCard extends StatelessWidget',
+    );
+    expect(cardStart, isNonNegative);
+    final card = notifySource.substring(cardStart);
+    final adapterStart = source.indexOf('Widget _homeNotify() {');
+    final adapterEnd = source.indexOf('Widget _card(', adapterStart);
+    expect(adapterStart, isNonNegative);
+    expect(adapterEnd, greaterThan(adapterStart));
+    final adapter = source.substring(adapterStart, adapterEnd);
 
     expect(card, contains('height: 44,'));
-    expect(card, contains('jexHomeNotifyForegroundColor('));
+    expect(adapter, contains('jexHomeNotifyForegroundColor('));
     expect(
-      card,
+      adapter,
       contains('final hasError = connected && isNotifyErrorMessage(custom);'),
     );
     expect(card, contains('PhosphorIconsRegular.info'));
-    expect(card, contains('connected: connected,'));
+    expect(adapter, contains('connected: connected,'));
     expect(card, contains('color: foregroundColor'));
     expect(card, contains('foregroundColor.withValues(alpha: .28)'));
     expect(card, contains('color.withValues(alpha: hasError ? .11 : .08)'));
     expect(card, isNot(contains('BoxConstraints(minHeight: 44)')));
     expect(card, contains('TextPainter measure(double fontSize)'));
     expect(card, contains('final fontSize = wraps ? 9.5 : 10.5;'));
-    expect(card, contains('maxLines: 2'));
     expect(card, contains('maxLines: 2'));
     expect(card, contains('softWrap: true'));
     expect(card, contains('textAlign: TextAlign.start'));
@@ -2191,6 +2238,10 @@ void main() {
     expect(
       source.substring(categoryStart, categoryEnd),
       contains("JexText.of('notification', appLanguageNotifier.value)"),
+    );
+    expect(
+      adapter,
+      contains('homeHotsideLimitReached(hotsideTemp, hotLimit: hotLimit)'),
     );
   });
 

@@ -1,9 +1,13 @@
 // AI-MEMORY / FILE CONTRACT
-// Owns pure bilingual Home status/notification and OTA-result presentation helpers.
-// These functions do not own BLE, session state, native channels, storage, or OTA transport.
+// Owns localized Home/OTA copy helpers and the stateless Home NOTIFY presentation card.
+// It does not own BLE, session state, native channels, storage, or OTA transport.
 // Physical state and safety are supplied by callers from authoritative device telemetry.
 
+import 'package:flutter/material.dart';
+import 'package:phosphor_icons/phosphor_icons.dart';
+
 import 'app_settings.dart' show AppLanguage, JexText;
+import 'jex_animated_glyph.dart';
 
 String otaStageLocalizationKey(String stage) {
   const special = <String, String>{
@@ -940,3 +944,149 @@ bool shouldClearStaleNotifyError({
       upper.contains('GAGAL') ||
       upper.contains('KESALAHAN');
 }
+
+/// Fixed-height Home notification presentation.
+/// Dashboard supplies all status, safety, localization and contrast decisions;
+/// this widget only renders those values and never reads device/session state.
+class HomeNotifyCard extends StatelessWidget {
+  final bool darkTheme;
+  final bool hasError;
+  final bool warning;
+  final bool connected;
+  final Color foregroundColor;
+  final String label;
+  final String message;
+
+  const HomeNotifyCard({
+    super.key,
+    required this.darkTheme,
+    required this.hasError,
+    required this.warning,
+    required this.connected,
+    required this.foregroundColor,
+    required this.label,
+    required this.message,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final noticeTextColor = darkTheme
+        ? const Color(0xFFF4F6FA)
+        : const Color(0xFF16181D);
+    final alert = hasError || warning;
+    final icon = hasError
+        ? PhosphorIconsBold.xCircle
+        : alert
+        ? PhosphorIconsBold.warning
+        : !connected
+        ? PhosphorIconsRegular.info
+        : PhosphorIconsRegular.shieldCheck;
+    final color = hasError
+        ? const Color(0xFFFF5164)
+        : alert
+        ? const Color(0xFFFFB72B)
+        : !connected
+        ? const Color(0xFF7C8797)
+        : const Color(0xFF4DE7B7);
+
+    return Container(
+      width: double.infinity,
+      height: 44,
+      padding: const EdgeInsets.symmetric(vertical: 2),
+      decoration: BoxDecoration(
+        color: darkTheme
+            ? color.withValues(alpha: hasError ? .12 : .07)
+            : color.withValues(alpha: hasError ? .11 : .08),
+        borderRadius: BorderRadius.circular(13),
+        border: Border.all(
+          color: darkTheme
+              ? color.withValues(alpha: .25)
+              : foregroundColor.withValues(alpha: .28),
+        ),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          SizedBox(
+            width: 45,
+            height: 34,
+            child: Center(
+              child: JexAnimatedGlyph(
+                icon: icon,
+                size: 27,
+                color: foregroundColor,
+              ),
+            ),
+          ),
+          const SizedBox(width: 6),
+          Expanded(
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 2),
+                  child: Text(
+                    label,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.start,
+                    style: TextStyle(
+                      color: foregroundColor,
+                      fontSize: 9.5,
+                      fontWeight: FontWeight.w900,
+                      letterSpacing: 0.8,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Expanded(
+                  child: LayoutBuilder(
+                    builder: (context, constraints) {
+                      final bodyStyle = TextStyle(
+                        color: noticeTextColor,
+                        fontSize: 10.5,
+                        decoration: TextDecoration.none,
+                        height: 1.1,
+                        fontWeight: FontWeight.w800,
+                      );
+                      TextPainter measure(double fontSize) => TextPainter(
+                        text: TextSpan(
+                          text: message,
+                          style: bodyStyle.copyWith(fontSize: fontSize),
+                        ),
+                        textDirection: Directionality.of(context),
+                        maxLines: 2,
+                        ellipsis: '…',
+                      )..layout(maxWidth: constraints.maxWidth);
+
+                      final wraps =
+                          measure(10.5).computeLineMetrics().length > 1;
+                      final fontSize = wraps ? 9.5 : 10.5;
+                      // Keep NOTIFY readable. Longer copy is ellipsized to two lines,
+                      // never reduced to microtype to force the full message into 44 dp.
+                      return Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          message,
+                          maxLines: 2,
+                          softWrap: true,
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.start,
+                          style: bodyStyle.copyWith(fontSize: fontSize),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: 12),
+        ],
+      ),
+    );
+  }
+}
+

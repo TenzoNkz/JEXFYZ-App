@@ -5,7 +5,8 @@
         firmware telemetry mapping, command confirmation and OTA coordination.
   State authority: firmware telemetry is authoritative for physical Fan/Peltier/Adaptive/LED state.
   Presentation boundaries: connection_sheet.dart owns the manual Connection sheet; home_notify.dart
-  owns pure Home status copy; led_controls.dart owns LED controls/preview; jex_animated_icon.dart
+  owns the stateless Home NOTIFY card and localized copy; led_controls.dart owns LED controls/preview;
+  jex_animated_icon.dart
   owns status-indicator animation and glyph painting.
   These modules receive App values and must not own BLE/GATT, P1 writes or persisted device state.
   Localization: every user-facing string must use JexText or JexText.phrase().
@@ -4458,11 +4459,10 @@ class _DashboardScreenState extends State<DashboardScreen>
   // AI-METHOD: _homeNotify — Render the localized Home Notification card.
   // Retain the original icon-left / text-left Row; only the connection badge is removed.
   // Keep the 44-dp card geometry; long copy uses two-line ellipsis at readable text sizes.
+  // AI-METHOD: _homeNotify — Resolve Dashboard-owned status and pass a value-only view model.
+  // Physical/safety facts stay here; HomeNotifyCard is presentation-only.
   Widget _homeNotify() {
     final headerDark = jexHomeHeaderUsesDarkPalette(appThemeNotifier.value);
-    final noticeTextColor = headerDark
-        ? const Color(0xFFF4F6FA)
-        : const Color(0xFF16181D);
     final custom = notice.trim().toUpperCase();
     // A stale command error must not make an offline device look like an active fault.
     final hasError = connected && isNotifyErrorMessage(custom);
@@ -4472,21 +4472,6 @@ class _DashboardScreenState extends State<DashboardScreen>
                 safetyReason != 'WAITING_FOR_NTC' &&
                 safetyReason != 'WAITING_FOR_SENSOR_VALIDATION') ||
             homeHotsideLimitReached(hotsideTemp, hotLimit: hotLimit));
-    final alert = hasError || warning;
-    final icon = hasError
-        ? PhosphorIconsBold.xCircle
-        : alert
-        ? PhosphorIconsBold.warning
-        : !connected
-        ? PhosphorIconsRegular.info
-        : PhosphorIconsRegular.shieldCheck;
-    final color = hasError
-        ? const Color(0xFFFF5164)
-        : alert
-        ? const Color(0xFFFFB72B)
-        : !connected
-        ? const Color(0xFF7C8797)
-        : const Color(0xFF4DE7B7);
     final foregroundColor = jexHomeNotifyForegroundColor(
       darkTheme: headerDark,
       hasError: hasError,
@@ -4494,104 +4479,14 @@ class _DashboardScreenState extends State<DashboardScreen>
       connected: connected,
     );
 
-    return Container(
-      width: double.infinity,
-      height: 44,
-      padding: const EdgeInsets.symmetric(vertical: 2),
-      decoration: BoxDecoration(
-        color: headerDark
-            ? color.withValues(alpha: hasError ? .12 : .07)
-            : color.withValues(alpha: hasError ? .11 : .08),
-        borderRadius: BorderRadius.circular(13),
-        border: Border.all(
-          color: headerDark
-              ? color.withValues(alpha: .25)
-              : foregroundColor.withValues(alpha: .28),
-        ),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          SizedBox(
-            width: 45,
-            height: 34,
-            child: Center(
-              child: JexAnimatedGlyph(
-                icon: icon,
-                size: 27,
-                color: foregroundColor,
-              ),
-            ),
-          ),
-          const SizedBox(width: 6),
-          Expanded(
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(top: 2),
-                  child: Text(
-                    _notifyStateLabel(),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    textAlign: TextAlign.start,
-                    style: TextStyle(
-                      color: foregroundColor,
-                      fontSize: 9.5,
-                      fontWeight: FontWeight.w900,
-                      letterSpacing: 0.8,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 2),
-                Expanded(
-                  child: LayoutBuilder(
-                    builder: (context, constraints) {
-                      final message = _professionalNotice();
-                      final bodyStyle = TextStyle(
-                        color: noticeTextColor,
-                        fontSize: 10.5,
-                        decoration: TextDecoration.none,
-                        height: 1.1,
-                        fontWeight: FontWeight.w800,
-                      );
-                      TextPainter measure(double fontSize) => TextPainter(
-                        text: TextSpan(
-                          text: message,
-                          style: bodyStyle.copyWith(fontSize: fontSize),
-                        ),
-                        textDirection: Directionality.of(context),
-                        maxLines: 2,
-                        ellipsis: '…',
-                      )..layout(maxWidth: constraints.maxWidth);
-
-                      final wraps =
-                          measure(10.5).computeLineMetrics().length > 1;
-                      final fontSize = wraps ? 9.5 : 10.5;
-                      // Keep NOTIFY readable. Longer copy is ellipsized to two lines,
-                      // never reduced to microtype to force the full message into 44 dp.
-                      return Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          message,
-                          maxLines: 2,
-                          softWrap: true,
-                          overflow: TextOverflow.ellipsis,
-                          textAlign: TextAlign.start,
-                          style: bodyStyle.copyWith(fontSize: fontSize),
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(width: 12),
-        ],
-      ),
+    return HomeNotifyCard(
+      darkTheme: headerDark,
+      hasError: hasError,
+      warning: warning,
+      connected: connected,
+      foregroundColor: foregroundColor,
+      label: _notifyStateLabel(),
+      message: _professionalNotice(),
     );
   }
 
