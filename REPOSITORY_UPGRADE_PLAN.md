@@ -126,10 +126,10 @@ A failed gate blocks dependent work. Retry only after classifying root cause (so
 | `00_WORK_STATUS.md` | Session continuity | ACTIVE STATUS / CHECKPOINT | KEEP / VERIFIED (2026-11-26) |
 | `AGENTS.md` | Operating governance | CANONICAL GOVERNANCE | KEEP / VERIFIED (2026-11-26) |
 | `analysis_options.yaml` | Dart analyzer policy | QUALITY CONFIG — ANALYZER GATE | KEEP / VERIFIED — 2026-11-26 (WP1) |
-| `android/app/build.gradle` | Android build configuration | BUILD CONFIG — COMPATIBILITY GATED | INVENTORIED — CONTENT REVIEW PENDING |
-| `android/app/google-services.json` | Firebase Android config | PROTECTED — SENSITIVE CONFIGURATION | INVENTORIED — CONTENT REVIEW PENDING |
-| `android/app/proguard-rules.pro` | Android manifest/resource/security config | ANDROID CONFIG — PLATFORM REGRESSION | INVENTORIED — CONTENT REVIEW PENDING |
-| `android/app/src/main/AndroidManifest.xml` | Android manifest/resource/security config | ANDROID CONFIG — PLATFORM REGRESSION | INVENTORIED — CONTENT REVIEW PENDING |
+| `android/app/build.gradle` | Android build configuration | BUILD CONFIG — COMPATIBILITY GATED | KEEP / VERIFIED (2026-11-26) |
+| `android/app/google-services.json` | Firebase Android config | PROTECTED — SENSITIVE CONFIGURATION | PROTECTED — NO CHANGE (METADATA ONLY; CONTENT NOT OPENED) |
+| `android/app/proguard-rules.pro` | Android shrinker rules | ANDROID CONFIG — PLATFORM REGRESSION | KEEP / VERIFIED (2026-11-26) |
+| `android/app/src/main/AndroidManifest.xml` | Android manifest/resource/security config | ANDROID CONFIG — PLATFORM REGRESSION | KEEP / VERIFIED (2026-11-26) |
 | `android/app/src/main/kotlin/com/horizontalzzz/jexfyz/FloatingMonitorService.kt` | Android native source | ANDROID NATIVE — CODE AUTHORIZATION | INVENTORIED — CONTENT REVIEW PENDING |
 | `android/app/src/main/kotlin/com/horizontalzzz/jexfyz/JeForegroundService.kt` | Android native source | ANDROID NATIVE — CODE AUTHORIZATION | INVENTORIED — CONTENT REVIEW PENDING |
 | `android/app/src/main/kotlin/com/horizontalzzz/jexfyz/JexNotificationUtils.kt` | Android native source | ANDROID NATIVE — CODE AUTHORIZATION | INVENTORIED — CONTENT REVIEW PENDING |
@@ -481,12 +481,47 @@ The Firmware-safety and hardware/power skills are retained as protected project 
 - **Evidence limit:** this test is a static source contract. The Validation Only workflow checks Flutter/Dart only; it does not compile Kotlin/Android or prove API 24–27 device behavior. Those remain BLOCKED / NOT RUN in this runtime.
 - **Disposition:** UPGRADE / CLOSED / READ-BACK VERIFIED. Preserve the distinction between static source assertions and native runtime validation.
 
+
+### WP5 — `android/app/build.gradle` — KEEP / VERIFIED (2026-11-26)
+
+- **Reviewed checkpoint:** live `main` configuration blob `075add443ab2cd4ecd58e588124bb7e41f8e8185`; root inventory remains 142 entries / 96 blobs / 46 trees at pre-register checkpoint HEAD `8cc168cd8f781657410c4c6547eb88fdbc1e60de`.
+- **Identity/platform contract:** `namespace` and `applicationId` remain `com.horizontalzzz.jexfyz`; `minSdk 24`, `targetSdk 36`, `compileSdk 37`, Java 17 and Kotlin JVM 17 are retained. Flutter versionCode remains sourced from local properties with existing fallback; versionName is unchanged. Build features retain BuildConfig and AIDL.
+- **Signing boundary:** release signing values are read only from environment variables; the release variant fails closed when required material/certificate cannot be loaded. Debug embeds an empty official-certificate value; release certificate material is derived from the configured keystore. V1/V2/V3 signing remain enabled, V4 disabled. No secret values or signing material were read or changed.
+- **Finding / decision:** the earlier cleanup removed only an obsolete comment and an empty `dependencies {}` block; this review found no further justified source change. Keep the existing identity, signing and SDK contract unchanged.
+- **Validation:** content/static review only. No Gradle wrapper, Flutter/Dart or Android SDK is available in this runtime; Kotlin/Android Gradle compilation and SDK/plugin compatibility are BLOCKED / NOT RUN. No APK/package build was invoked.
+- **Disposition:** `KEEP / VERIFIED`.
+
+### WP9 — `android/app/google-services.json` — PROTECTED / NO CHANGE (2026-11-26)
+
+- **Metadata checkpoint:** path exists in the live recursive tree as blob `f3ed065a7ee56b2a44f0a943a48fa578ba72e0d7`. Only path/type/blob metadata was used to identify it.
+- **Protection decision:** Firebase Android configuration is a protected sensitive configuration path. The file content was deliberately not fetched, printed, parsed, copied, edited or included in diagnostics. No Firebase console, production project, credential, rules or data mutation was performed.
+- **Validation:** metadata/path-presence check only. Content validity, project registration and runtime Firebase initialization are expressly not claimed.
+- **Disposition:** `PROTECTED — NO CHANGE`; content remains unopened.
+
+### WP4 / WP5 — `android/app/proguard-rules.pro` — KEEP / VERIFIED (2026-11-26)
+
+- **Reviewed checkpoint:** blob `3831429706eafe4bfc354bbaf1f2c005e8c05740`; complete 11-line file reviewed alongside `AndroidManifest.xml` and the live `MainActivity.kt` class/bridge declaration.
+- **Role and references:** the rule retains `com.horizontalzzz.jexfyz.MainActivity` and all its members, preserving the manifest launcher entrypoint and Flutter MethodChannel host methods through R8. The manifest explicitly declares the native service components; their component declarations remain part of Android's manifest-based reachability contract.
+- **Finding / decision:** the keep rule is narrow to the host Activity and matches the current native entrypoint. Its comments are somewhat repetitive but do not create a correctness or maintenance defect sufficient to justify changing a shrinker rule without an authorized R8 build.
+- **Validation:** static rule and manifest cross-reference only. No release variant, R8/resource-shrinking or APK verification was run; those checks require the separately guarded Build App workflow and a fresh authorization.
+- **Disposition:** `KEEP / VERIFIED`.
+
+### WP4 — `android/app/src/main/AndroidManifest.xml` — KEEP / VERIFIED (2026-11-26)
+
+- **Reviewed checkpoint:** blob `776a62ae906b63603ecbec1b5b19da4cc91c1ee7`; complete manifest reviewed against live Gradle namespace/application ID, native Activity/service declarations and icon resource path.
+- **Permission matrix:** Android 12+ BLE scan/connect permissions are declared, with `neverForLocation` on scan; legacy Bluetooth and location permissions are capped at API 30. Foreground service base, connected-device and special-use permissions, notification permission, Internet and overlay special access are declared consistently with the existing features.
+- **Component contract:** `.MainActivity` remains the exported launcher Activity; `.JeForegroundService` is non-exported and declares `connectedDevice`; `.FloatingMonitorService` is non-exported and declares `specialUse` with the required subtype property. The corresponding Kotlin services promote themselves with the matching foreground-service type on API 29+ / API 34+, respectively. Flutter embedding v2 and the VIEW intent query remain present.
+- **Resource/identity references:** application label remains JE Cooler; application class placeholder is retained; `@drawable/jexfyzicon` resolves to the tracked `drawable-nodpi/jexfyzicon.png` path. No namespace, package, service ownership or permission broadening was introduced.
+- **Finding / decision:** declarations are internally consistent with the inspected native service implementations. Keep the manifest unchanged. This does not prove OEM-specific permission prompts, foreground-service eligibility, notification behavior or overlay behavior on physical devices.
+- **Validation:** static XML/source/path review only. Android lint/manifest merge, Gradle compilation, API 24–36 emulator/device behavior and OEM regression remain BLOCKED / NOT RUN; visual acceptance remains VISUAL NOT VERIFIED.
+- **Disposition:** `KEEP / VERIFIED`.
+
 ## Current disposition
 
-- Inventory coverage: **96/96 tracked blobs** at pre-documentation HEAD `c494f0c6104c705b5b00a7ad090e8fc95f461b22`; root tree `48cbcd7fada5637e6ccfc44db74b34ac4e7a7242`; 142 entries / 96 blobs / 46 trees; `truncated=false`.
-- Content review coverage: **49/96 dispositions** after `00_WORK_STATUS.md`, `AGENTS.md` and `test/device_copy_notification_contract_test.dart` were reviewed and dispositioned. The audit remains incomplete.
+- Inventory coverage: **96/96 tracked blobs** at live `main` checkpoint before this register update: HEAD `8cc168cd8f781657410c4c6547eb88fdbc1e60de`; root tree `93bf51eb9b94eddcaf57a52c4c8d89c743ab99e2`; recursive tree 142 entries / 96 blobs / 46 trees; `truncated=false`.
+- Content review coverage: **53/96 dispositions** after four Android app configuration paths were dispositioned in this checkpoint. The audit remains incomplete.
 - Eight formatter-touched Dart/test files remain individually pending content review: `lib/main.dart`, `lib/usage_statistics.dart`, `test/connection_scan_coordinator_test.dart`, `test/firmware_qc_contract_test.dart`, `test/floating_monitor_layout_contract_test.dart`, `test/localization_contract_test.dart`, `test/usage_statistics_test.dart` and `test/widget_test.dart`. `test/device_copy_notification_contract_test.dart` is now closed after its API-28 branch-order regression assertion was corrected and passed CI #77.
 - No blanket source/config/workflow/Firmware/BIN/asset update is authorized by this plan.
-- The next unreviewed live inventory path is `android/app/build.gradle`; review it and the following sensitive/protected Android configuration paths in order. No Android Gradle compile has been run.
+- The next unreviewed live inventory path is `android/app/src/main/kotlin/com/horizontalzzz/jexfyz/FloatingMonitorService.kt`. Android Gradle/Kotlin compilation and device evidence have not been obtained.
 - The owner-approved App-only WP0–WP10 work item remains IN_PROGRESS in `WORKSPACE=CODE_FULL`; this is the active Eksekusi Code implementation workspace. App Build/release, Firmware/BIN, BLE P1 wire/security, OTA, Firebase production, signing and device operations remain excluded.
 - Refresh the inventory when files are added/removed/renamed; update the row of every file touched; re-check the recursive tree and all references before closing a WP.
