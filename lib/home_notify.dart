@@ -1089,4 +1089,3 @@ class HomeNotifyCard extends StatelessWidget {
     );
   }
 }
-
