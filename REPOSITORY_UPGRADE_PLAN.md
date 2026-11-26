@@ -121,8 +121,8 @@ A failed gate blocks dependent work. Retry only after classifying root cause (so
 | `.github/skills/technical-research-and-second-opinion/SKILL.md` | Copilot skill mirror | MIRROR — MUST MATCH CANONICAL | KEEP / VERIFIED (2026-11-26) |
 | `.github/workflows/jexfyz-app-build-trigger.yml` | Guarded release workflow | WORKFLOW — SECURITY / SCOPE GATED | PROTECTED — NO CHANGE (2026-11-26) |
 | `.github/workflows/jexfyz-app-pr-validation.yml` | Validation workflow | WORKFLOW — SECURITY / SCOPE GATED | KEEP / VERIFIED (2026-11-26) |
-| `.github/workflows/jexfyz-app-validation.yml` | Validation workflow | WORKFLOW — SECURITY / SCOPE GATED | IN_PROGRESS (WP6 cache hardening) |
-| `.gitignore` | Repository ignore policy | REPOSITORY CONFIG | INVENTORIED — CONTENT REVIEW PENDING |
+| `.github/workflows/jexfyz-app-validation.yml` | Validation workflow | WORKFLOW — SECURITY / SCOPE GATED | UPGRADE — CLOSED / READ-BACK VERIFIED (2026-11-26) |
+| `.gitignore` | Repository ignore policy | REPOSITORY CONFIG | KEEP / VERIFIED (2026-11-26) |
 | `00_WORK_STATUS.md` | Session continuity | ACTIVE STATUS / CHECKPOINT | INVENTORIED — CONTENT REVIEW PENDING |
 | `AGENTS.md` | Operating governance | CANONICAL GOVERNANCE | INVENTORIED — CONTENT REVIEW PENDING |
 | `analysis_options.yaml` | Dart analyzer policy | QUALITY CONFIG — ANALYZER GATE | KEEP / VERIFIED — 2026-11-26 (WP1) |
@@ -183,7 +183,7 @@ A failed gate blocks dependent work. Retry only after classifying root cause (so
 | `test/firmware_qc_contract_test.dart` | Dart test | TEST / REGRESSION | INVENTORIED — CONTENT REVIEW PENDING (FORMATTER ONLY, `003bccd6`) |
 | `test/firmware_touch_adaptive_sync_test.dart` | Dart test | TEST / REGRESSION | INVENTORIED — CONTENT REVIEW PENDING |
 | `test/floating_monitor_layout_contract_test.dart` | Dart test | TEST / REGRESSION | INVENTORIED — CONTENT REVIEW PENDING (FORMATTER ONLY, `003bccd6`) |
-| `test/github_actions_workflow_contract_test.dart` | Dart test | TEST / REGRESSION | IN_PROGRESS (WP1 workflow-contract precision + cache regression) |
+| `test/github_actions_workflow_contract_test.dart` | Dart test | TEST / REGRESSION | UPGRADE — CLOSED / READ-BACK VERIFIED (2026-11-26) |
 | `test/localization_contract_test.dart` | Dart test | TEST / REGRESSION | INVENTORIED — CONTENT REVIEW PENDING (FORMATTER ONLY, `003bccd6`) |
 | `test/support/source_contract_helpers.dart` | Dart test | TEST / REGRESSION | INVENTORIED — CONTENT REVIEW PENDING |
 | `test/usage_statistics_test.dart` | Dart test | TEST / REGRESSION | INVENTORIED — CONTENT REVIEW PENDING (FORMATTER ONLY, `003bccd6`) |
@@ -427,6 +427,23 @@ The Firmware-safety and hardware/power skills are retained as protected project 
 - **Regression test:** `test/github_actions_workflow_contract_test.dart` previous blob `15b6982588a7e0ce8b6d1e858e6fe3c14f3653af` is upgraded to load both non-publishing workflows and assert that each Flutter setup step keeps `cache: false`; it also makes the job-level-vs-explicit-`GH_TOKEN` permission distinction observable. New source blobs: workflow `c0b75430a406d6756e301065bb727d84e4e0fea7`; test `3adace43dfad6b10aa267f45fbf99d9ccc6ee435`. This is a source-contract check, not an Actions execution.
 - **Validation state:** local Flutter/Dart toolchain is unavailable, so local formatter/analyzer/focused/full tests are BLOCKED / NOT RUN. The source push includes `.github/workflows/jexfyz-app-validation.yml` and `test/**`, so confirm the actual live run, source SHA and all result steps after commit. Do not trigger Build App.
 
+### WP0 — `.gitignore` — KEEP / VERIFIED (2026-11-26)
+
+- Source blob: `d5c04d9c03a160f52b101d6c2aa27b7672e78532`.
+- The rules separate Dart/Flutter generated output, Android local machine state, IDE files, private signing material/local environment files and OS noise. Canonical project memory, source and tests are not ignored.
+- The explicit patterns `.env`, `.env.*`, `android/local.properties`, `android/key.properties`, `*.jks`, `*.keystore` and `*.p12` protect local secrets and signing material.
+- The live recursive tree contains no tracked path matching those secret/property patterns. No source or test path is hidden by a broad ignore rule.
+- Decision: KEEP unchanged. Static content and recursive-path review only; not a runtime test.
+
+### WP1 / WP6 — Validation Only #74 / #75 closure — 2026-11-26
+
+- **#74:** run `45824943829`, job `139926598155`, source SHA `8e8e5bff2b9ab4c8ada53406b026520b194044f6`, terminal FAILURE. Locked dependencies, formatter-final, analyzer and **220/220 tests** passed. Formatter precheck detected new test formatting; formatter apply/final and patch preview succeeded. The formatter-only commit step correctly refused to push because `main` advanced to `27e02e5` while the job ran. No CI formatter commit was made.
+- **Recovery:** exact formatter patch artifact was applied only to `test/github_actions_workflow_contract_test.dart`, then committed as `a7466305d094e975b9f5ef2e1ffc08271bc20c25`. Read-back test blob: `f1707ad29ac572173393f1adb91ce7aa16efb35c`.
+- **#75:** run `45825556040`, job `139928665698`, event `push`, exact source SHA `a7466305d094e975b9f5ef2e1ffc08271bc20c25`, terminal SUCCESS. Locked dependencies PASS; read-only formatter precheck PASS; formatter apply SKIPPED; post-format verification PASS; analyzer step SUCCESS; Flutter tests **220/220 PASS**; formatter patch/commit steps SKIPPED because no diff remained. Run and step results were read back from GitHub.
+- **Closure:** Validation Only workflow cache hardening and workflow-contract regression/token-scope correction are `UPGRADE — CLOSED / READ-BACK VERIFIED`. No Build App workflow was edited or triggered.
+- **Analyzer qualification:** CI analyzer used `--no-fatal-infos`; it completed SUCCESS while printing information-level diagnostics. This is not a claim of zero informational diagnostics.
+- **Local validation:** Flutter/Dart/Gradle/ADB are unavailable locally; local format/analyzer/test/Android/device checks are BLOCKED / NOT RUN. Actual visual rendering remains `VISUAL NOT VERIFIED`.
+
 ### WP0 — BLE P1 audit skill and Copilot mirror — KEEP / VERIFIED (2026-11-26)
 
 - **Reviewed canonical file:** `.agents/skills/ble-p1-protocol-audit/SKILL.md`, live blob `264fdb1617770a63899db97575fe83db0fc9f933`. The recursive tree records the same Git blob SHA for `.github/skills/ble-p1-protocol-audit/SKILL.md`, confirming a byte-identical mirror.
@@ -446,7 +463,7 @@ The Firmware-safety and hardware/power skills are retained as protected project 
 ## Current disposition
 
 - Inventory coverage: **96/96 tracked blobs** at live `main` HEAD `b5990d9ec9d6230e28b11a09fc180f6fe4dd68ce`; recursive root tree `28b0498b15e44d04bba2e6d9eed66efbc5c9707c`; 142 entries / 96 blobs / 46 trees; `truncated=false`.
-- Content review coverage: **43/96 dispositions** after the full 12-skill canonical/mirror audit and workflow-contract review. Validation Only cache hardening and its contract regression test remain IN_PROGRESS pending hosted CI.
+- Content review coverage: **46/96 dispositions** after closing the Validation Only cache hardening, workflow-contract regression test and `.gitignore` review. Continue file-by-file WP0 audit from the next pending inventory row.
 - Nine formatter-touched Dart/test files remain individually pending content review: `lib/main.dart`, `lib/usage_statistics.dart`, `test/connection_scan_coordinator_test.dart`, `test/device_copy_notification_contract_test.dart`, `test/firmware_qc_contract_test.dart`, `test/floating_monitor_layout_contract_test.dart`, `test/localization_contract_test.dart`, `test/usage_statistics_test.dart` and `test/widget_test.dart`. The workflow-contract test moved to IN_PROGRESS for its substantive regression correction.
 - No blanket source/config/workflow/Firmware/BIN/asset update is authorized by this plan.
 - The owner-approved App-only WP0–WP10 work item remains IN_PROGRESS in `WORKSPACE=CODE_FULL`; this is the active Eksekusi Code implementation workspace. App Build/release, Firmware/BIN, BLE P1 wire/security, OTA, Firebase production, signing and device operations remain excluded.
