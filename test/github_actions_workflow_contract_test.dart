@@ -110,24 +110,42 @@ void main() {
     'Validation Only is direct-main, read-only and cannot mutate repository refs',
     () {
       expect(
-        validationOnlyWorkflow,
-        contains('  push:\\n    branches:\\n      - main'),
+        RegExp(
+          r'^  push:\n    branches:\n      - main$',
+          multiLine: true,
+        ).hasMatch(validationOnlyWorkflow),
+        isTrue,
       );
       expect(
-        validationOnlyWorkflow,
-        contains('permissions:\\n  contents: read'),
+        RegExp(
+          r'^permissions:\n  contents: read$',
+          multiLine: true,
+        ).hasMatch(validationOnlyWorkflow),
+        isTrue,
       );
       expect(validationOnlyWorkflow, contains('persist-credentials: false'));
       expect(
         validationOnlyWorkflow,
         contains('dart format --output=none --set-exit-if-changed lib test'),
       );
-      expect(validationOnlyWorkflow, contains('flutter analyze --no-fatal-infos'));
+      expect(
+        validationOnlyWorkflow,
+        contains('flutter analyze --no-fatal-infos'),
+      );
       expect(validationOnlyWorkflow, contains('flutter test'));
-      expect(validationOnlyWorkflow, isNot(contains('pull_request:')));
-      expect(validationOnlyWorkflow, isNot(contains('contents: write')));
+      expect(
+        validationOnlyWorkflow,
+        isNot(contains('pull_request:')),
+      );
+      expect(
+        validationOnlyWorkflow,
+        isNot(contains('contents: write')),
+      );
       expect(validationOnlyWorkflow, isNot(contains('git push')));
-      expect(validationOnlyWorkflow, isNot(contains('dart format lib test')));
+      expect(
+        validationOnlyWorkflow,
+        isNot(contains('dart format lib test')),
+      );
       expect(
         File('.github/workflows/jexfyz-app-pr-validation.yml').existsSync(),
         isFalse,
