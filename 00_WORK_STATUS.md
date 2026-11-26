@@ -1,4 +1,4 @@
-| Last updated | 2026-11-26T21:10:00+07:00 (Asia/Jakarta) |
+| Last updated | 2026-11-26T21:33:26+07:00 (Asia/Jakarta) |
 
 > Single current snapshot for JE X FYZ project interactions. Event-driven marker; not a background heartbeat.
 
@@ -7,21 +7,21 @@
 | Field | Value |
 |---|---|
 | **STATUS** | **IN_PROGRESS** |
-| SESSION STATUS | IN_PROGRESS — Opened `Eksekusi Code!`; revalidated live `main`, WP0 checkpoint and Actions before continuing Android configuration/native audit. Started: 2026-11-26T21:10:00+07:00 (Asia/Jakarta). |
-| WORK STATUS | IN_PROGRESS — Owner-approved App-only WP0–WP10 rework remains active. WP0 now has 49/96 dispositions; the first remaining sorted inventory path is `android/app/build.gradle`; eight formatter-touched Dart/test files remain pending. WP1 Android API-guard regression correction is verified by Validation Only #77. |
+| SESSION STATUS | COMPLETED — Reconciled main and Actions; audited Android app configuration and all four native Kotlin bridge/service files; added and validated Floating Monitor ownership and Firmware notification-result regression contracts; corrected the active API-28 caller record; updated/read back the canonical register, handover and active checkpoint. Started: 2026-11-26T21:10:00+07:00. Closed: 2026-11-26T21:33:26+07:00 (Asia/Jakarta). |
+| WORK STATUS | IN_PROGRESS — Owner-approved App-only WP0–WP10 rework remains active. WP0 now has 58/96 closed dispositions. Seven formatter-touched Dart/test files still need full-file review; lib/main.dart has only a targeted validated notification fix. The first remaining sorted inventory path is android/app/src/main/res/drawable-nodpi/jexfyzicon.png. |
 | WORKSPACE | CODE_FULL |
 | Mode | Eksekusi Code — owner-authorized App-only source/test/docs/static-audit workstream. No App package build, signing, release, Firmware/BIN, Firebase production mutation, OTA transport/security, flashing or physical device operation. |
 | Request / work item | Continue owner-approved full App rework + premium UI redesign WP0–WP10 (2026-11-26) in CODE_FULL. Reconcile live repository inventory and active checkpoint; start from the first unreviewed live path and implement the smallest safe in-scope milestone. |
 | Started | 2026-11-26T19:33:00+07:00 (Asia/Jakarta) |
-| Last updated | 2026-11-26T21:10:00+07:00 |
-| Current phase | IN_PROGRESS — WP0 Android configuration review; `android/app/build.gradle` re-read, protected Firebase config and Android manifest/ProGuard under review. |
-| Last completed milestone | Documentation/checkpoint commit `4555d1bfa22a4a2f2d0c2f1a3281bcefe08b797b` read back; final recursive tree `7469d3efc1b52b2b249ccfd298a2ea548bfb4c2e` has 142 entries / 96 blobs / 46 trees, `truncated=false`, with all 96 inventory paths matching exactly. Register is 49/96; eight formatter-touched Dart/test files remain pending. Validation Only #77 / run `45830921047` / job `139947149887` terminal SUCCESS on source/test SHA `b1ee13ddc5e2b13c72485a30518c70c06c77c13f`: 221/221 Flutter tests, locked dependencies, formatter and analyzer PASS. |
-| Last verified source checkpoint | CURRENT / VERIFIED source/test SHA `b1ee13ddc5e2b13c72485a30518c70c06c77c13f` (run #77). Latest docs checkpoint `4555d1bfa22a4a2f2d0c2f1a3281bcefe08b797b`, root tree `7469d3efc1b52b2b249ccfd298a2ea548bfb4c2e`; 142 entries / 96 blobs / 46 trees, `truncated=false`. |
-| EXTERNAL OPERATION | Validation Only #77 — run `45830921047`, job `139947149887`, source SHA `b1ee13ddc5e2b13c72485a30518c70c06c77c13f`; terminal SUCCESS. No other external operation active. |
-| EXTERNAL OPERATION STATUS | COMPLETED / SUCCESS — Validation Only #77 / run `45830921047`; no independent operation remains active. |
-| Result / evidence | Test correction commit `b1ee13ddc5e2b13c72485a30518c70c06c77c13f`; CI #77 221/221 PASS. Documentation/checkpoint/register commit `4555d1bfa22a4a2f2d0c2f1a3281bcefe08b797b` and exact final tree were read back. No App package build, Android Gradle build, Firmware/BIN, Firebase, OTA, flash or device operation. |
+| Last updated | 2026-11-26T21:33:26+07:00 |
+| Current phase | COMPLETED — WP0 Android configuration/native bridge audit and targeted WP1 regression fixes validated. Broader App architecture extraction and premium UI redesign remain not started. |
+| Last completed milestone | Source/test fix 80fbb23e887eb4424114169947ac6f441d3dceca; formatter-only follow-up 32f870bccd1935efdaba6073ec46efb3e2b4d4e7; canonical docs commit 1fa383140d5e7214ec923fcb7ea00566ccc5fefa read back. Inventory before the status close: 142 entries / 96 blobs / 46 trees, truncated=false; register 58/96 closed, seven formatter-touched full-file reviews pending. Validation Only #79 / run 45838156356 / job 139972413867 terminal SUCCESS; #78 also terminal SUCCESS for Floating Monitor contract. |
+| Last verified source checkpoint | CURRENT / VERIFIED source/test SHA 80fbb23e887eb4424114169947ac6f441d3dceca (Validation Only #79); formatter-only main follow-up 32f870bccd1935efdaba6073ec46efb3e2b4d4e7. Latest canonical docs checkpoint 1fa383140d5e7214ec923fcb7ea00566ccc5fefa, root tree 676cfb1bb5dd0363fc778f556630e898e975fad7; 142 entries / 96 blobs / 46 trees, truncated=false. |
+| EXTERNAL OPERATION | Validation Only #79 — run 45838156356, job 139972413867, tested source/test SHA 80fbb23e887eb4424114169947ac6f441d3dceca; terminal SUCCESS. Validation Only #78 also SUCCESS. No other external operation active. |
+| EXTERNAL OPERATION STATUS | COMPLETED / SUCCESS — Validation Only #79 / run 45838156356; #78 also completed successfully. No independent operation remains active. |
+| Result / evidence | Floating Monitor contract test commit b29be367b3d359f1930864c55e73706579330d35 passed #78; Firmware notification acknowledgement fix and regression test commit 80fbb23e887eb4424114169947ac6f441d3dceca passed #79. Formatter follow-up 32f870bccd1935efdaba6073ec46efb3e2b4d4e7; docs/read-back commit 1fa383140d5e7214ec923fcb7ea00566ccc5fefa. No App package build, Android Gradle build, Firmware/BIN, Firebase, OTA, flash or device operation. |
 | Blocker / remaining evidence | Flutter/Dart/Gradle/ADB unavailable locally. Kotlin/Android Gradle compilation and API 24–27/OEM device behavior remain BLOCKED / NOT RUN. Visual acceptance remains VISUAL NOT VERIFIED without rendered App screenshots. |
-| Next action | Close reviewed Android config dispositions with explicit evidence limits; continue in sorted order through native Kotlin and the eight pending formatter-touched Dart/test files. |
+| Next action | Continue WP0 at android/app/src/main/res/drawable-nodpi/jexfyzicon.png; review the remaining Android resources and seven formatter-touched files. Keep the full lib/main.dart review open despite the targeted notification fix. |
 
 ## Status model
 
