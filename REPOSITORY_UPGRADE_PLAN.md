@@ -142,15 +142,15 @@ A failed gate blocks dependent work. Retry only after classifying root cause (so
 | `APP_BUILD_REPORT.md` | Append-only evidence ledger | APPEND-ONLY / NO REWRITE | APPEND-ONLY / READ-ONLY / REVIEWED (2026-11-26) |
 | `APP_NOTES.md` | App behavior and UI contract reference | APP NOTES — CURRENT + HISTORICAL SNAPSHOTS | UPGRADE / REVIEWED (2026-11-26; historical corruption note superseded) |
 | `APP_PREBUILD_AUDIT.md` | Current App rework and acceptance plan | APP PREBUILD AUDIT — WP0–WP10 AUTHORITY | UPGRADE / REVIEWED (2026-11-26) |
-| `archive/ARTIFACT_REPO_NOTES_PRE_BIN_ONLY_2026-10-14.md` | Immutable archive | IMMUTABLE / HISTORICAL | INVENTORIED — CONTENT REVIEW PENDING |
-| `archive/CHAT_TRANSFER_PRE_COMPACTION_2026-11-15.md` | Immutable archive | IMMUTABLE / HISTORICAL | INVENTORIED — CONTENT REVIEW PENDING |
-| `archive/LEGACY_NOTES_SNAPSHOT_2026-10-14.md` | Immutable archive | IMMUTABLE / HISTORICAL | INVENTORIED — CONTENT REVIEW PENDING |
-| `archive/LEGACY_TRANSFER_HISTORY_2026-10-14.md` | Immutable archive | IMMUTABLE / HISTORICAL | INVENTORIED — CONTENT REVIEW PENDING |
-| `assets/jexfyzcooler.png` | Binary visual asset | BINARY ASSET — VISUAL / INTEGRITY REVIEW | INVENTORIED — CONTENT REVIEW PENDING |
-| `assets/jexfyzicon.png` | Binary visual asset | BINARY ASSET — VISUAL / INTEGRITY REVIEW | INVENTORIED — CONTENT REVIEW PENDING |
-| `BLE_APP_AUTH.md` | Project/configuration file | REVIEW REQUIRED | INVENTORIED — CONTENT REVIEW PENDING |
-| `BUILD_NOTES.md` | Project/configuration file | REVIEW REQUIRED | INVENTORIED — CONTENT REVIEW PENDING |
-| `CHANGELOG.md` | Append-only evidence ledger | APPEND-ONLY / NO REWRITE | INVENTORIED — CONTENT REVIEW PENDING |
+| `archive/ARTIFACT_REPO_NOTES_PRE_BIN_ONLY_2026-10-14.md` | Immutable archive | IMMUTABLE / HISTORICAL | IMMUTABLE / HISTORICAL / REVIEWED (2026-11-26) |
+| `archive/CHAT_TRANSFER_PRE_COMPACTION_2026-11-15.md` | Immutable archive | IMMUTABLE / HISTORICAL | IMMUTABLE / HISTORICAL / REVIEWED (2026-11-26; superseded) |
+| `archive/LEGACY_NOTES_SNAPSHOT_2026-10-14.md` | Immutable archive | IMMUTABLE / HISTORICAL | IMMUTABLE / HISTORICAL / REVIEWED (2026-11-26; never current truth) |
+| `archive/LEGACY_TRANSFER_HISTORY_2026-10-14.md` | Immutable archive | IMMUTABLE / HISTORICAL | IMMUTABLE / HISTORICAL / REVIEWED (2026-11-26; never current truth) |
+| `assets/jexfyzcooler.png` | Binary visual asset | BINARY ASSET — VISUAL / INTEGRITY REVIEW | PROTECTED / NO CHANGE — BINARY VISUAL REVIEW BLOCKED (bytes unavailable in Code workspace) |
+| `assets/jexfyzicon.png` | Binary visual asset | BINARY ASSET — VISUAL / INTEGRITY REVIEW | PROTECTED / NO CHANGE — OPAQUE RGB / TRANSPARENCY MISMATCH; OWNER REVIEW |
+| `BLE_APP_AUTH.md` | Project/configuration file | REVIEW REQUIRED | BLOCKED / PROTECTED — REQUIRES FIRMWARE + TRUSTED BACKEND SECURITY WORK |
+| `BUILD_NOTES.md` | Project/configuration file | REVIEW REQUIRED | KEEP / VERIFIED — BUILD #167 HISTORICAL; NO CURRENT BUILD |
+| `CHANGELOG.md` | Append-only evidence ledger | APPEND-ONLY / NO REWRITE | APPEND-ONLY / UPDATED — CLEAR HISTORY P1 FRESHNESS FIX (#82) |
 | `CHAT_RULES.md` | Compatibility pointer to canonical operating policy | ACTIVE POLICY POINTER | KEEP / VERIFIED (2026-11-26) |
 | `CHAT_TRANSFER_PROMPTS.md` | Three dedicated workspace LOAD + CONTINUE templates | ACTIVE WORKSPACE TEMPLATES | UPGRADE — CLOSED / READ-BACK VERIFIED (2026-11-26) |
 | `CHAT_TRANSFER.md` | Rolling active continuation checkpoint | ACTIVE CODE_FULL CHECKPOINT | UPGRADE — CLOSED / READ-BACK VERIFIED (2026-11-26) |
@@ -163,33 +163,33 @@ A failed gate blocks dependent work. Retry only after classifying root cause (so
 | `lib/connection_scan_coordinator.dart` | Flutter App source — process-wide BLE scanner ownership coordinator | APP SOURCE — TIER 1 / CONCURRENCY & LIFECYCLE CONTRACT | KEEP / VERIFIED (2026-11-26) |
 | `lib/connection_scan_state.dart` | Flutter App source — Connection empty-state and device-name presentation mapping | APP SOURCE — TIER 2 / PRESENTATION STATE CONTRACT | KEEP / VERIFIED (2026-11-26) |
 | `lib/floating_monitor.dart` | Flutter App source — Settings navigation/subpages and Floating Monitor configuration/native projection | APP SOURCE — TIER 2 / SETTINGS + OVERLAY BRIDGE | UPGRADE APPROVED — SPLIT SETTINGS/PREFERENCES FROM FLOATING MONITOR CONFIGURATION/BRIDGE/PRESENTATION (2026-11-26) |
-| `lib/jex_animated_glyph.dart` | Flutter App source | APP SOURCE — CODE AUTHORIZATION | INVENTORIED — CONTENT REVIEW PENDING |
+| `lib/jex_animated_glyph.dart` | Flutter App source | APP SOURCE — CODE AUTHORIZATION | KEEP / VERIFIED — STATELESS STATIC ICON |
 | `lib/main.dart` | Flutter App source | APP SOURCE — CODE AUTHORIZATION | UPGRADE — TARGETED NOTIFICATION ACKNOWLEDGEMENT FIX VALIDATED; FULL-FILE REVIEW PENDING (2026-11-26) |
-| `lib/usage_statistics.dart` | Flutter App source | APP SOURCE — CODE AUTHORIZATION | INVENTORIED — CONTENT REVIEW PENDING (FORMATTER ONLY, `003bccd6`) |
-| `MASTER_PROMPT.md` | Operating governance | CANONICAL GOVERNANCE | INVENTORIED — CONTENT REVIEW PENDING |
-| `MEMORY_INDEX.md` | Operating governance | CANONICAL GOVERNANCE | INVENTORIED — CONTENT REVIEW PENDING |
-| `OTA_PROTECTION.md` | Project/configuration file | REVIEW REQUIRED | INVENTORIED — CONTENT REVIEW PENDING |
-| `OTA_REGRESSION_MEMORY.md` | Project/configuration file | REVIEW REQUIRED | INVENTORIED — CONTENT REVIEW PENDING |
-| `PRODUCT_DESIGN_CONSTITUTION.md` | Project/configuration file | REVIEW REQUIRED | INVENTORIED — CONTENT REVIEW PENDING |
-| `PROJECT_STATE.md` | Operating governance | CANONICAL GOVERNANCE | INVENTORIED — CONTENT REVIEW PENDING |
+| `lib/usage_statistics.dart` | Flutter App source | APP SOURCE — CODE AUTHORIZATION | UPGRADE / CLOSED — CLEAR HISTORY DOES NOT MANUFACTURE HOT FRESHNESS (#82) |
+| `MASTER_PROMPT.md` | Operating governance | CANONICAL GOVERNANCE | UPGRADE / REVIEWED — FULL-CYCLE EKSEKUSI CODE POLICY |
+| `MEMORY_INDEX.md` | Operating governance | CANONICAL GOVERNANCE | UPGRADE / REVIEWED — INVENTORY AND FULL-CYCLE MEMORY RECONCILED |
+| `OTA_PROTECTION.md` | Project/configuration file | REVIEW REQUIRED | PROTECTED / REVIEWED — NO TRANSPORT CHANGES |
+| `OTA_REGRESSION_MEMORY.md` | Project/configuration file | REVIEW REQUIRED | PROTECTED / REVIEWED — HISTORICAL SECURITY TRADE-OFF |
+| `PRODUCT_DESIGN_CONSTITUTION.md` | Project/configuration file | REVIEW REQUIRED | KEEP / VERIFIED — EXISTING BRAND / DESIGN AUTHORITY |
+| `PROJECT_STATE.md` | Operating governance | CANONICAL GOVERNANCE | UPGRADE / REVIEWED — CURRENT CHECKPOINT RECONCILED |
 | `pubspec.lock` | Flutter dependency manifest/lock | DEPENDENCY CONTRACT — REVIEW BEFORE CHANGE | KEEP / VERIFIED (2026-11-26) |
 | `pubspec.yaml` | Flutter dependency manifest/lock | DEPENDENCY CONTRACT — REVIEW BEFORE CHANGE | UPGRADE — CLOSED / READ-BACK VERIFIED (2026-11-26) |
 | `README.md` | Project entrypoint / navigation index | ACTIVE PROJECT INDEX | KEEP / VERIFIED (2026-11-26) |
 | `SKILLS_INDEX.md` | Reusable skill and capability catalogue | ACTIVE CAPABILITY INDEX | UPGRADE — CLOSED / READ-BACK VERIFIED (2026-11-26) |
-| `test/app_protocol_notify_contract_test.dart` | Dart test | TEST / REGRESSION | INVENTORIED — CONTENT REVIEW PENDING |
-| `test/connection_scan_coordinator_test.dart` | Dart test | TEST / REGRESSION | INVENTORIED — CONTENT REVIEW PENDING (FORMATTER ONLY, `003bccd6`) |
-| `test/connection_scan_state_test.dart` | Dart test | TEST / REGRESSION | INVENTORIED — CONTENT REVIEW PENDING |
+| `test/app_protocol_notify_contract_test.dart` | Dart test | TEST / REGRESSION | KEEP / VERIFIED — P1 / NOTIFICATION SOURCE CONTRACT |
+| `test/connection_scan_coordinator_test.dart` | Dart test | TEST / REGRESSION | KEEP / VERIFIED — SCAN LEASE / INVALIDATION REGRESSION |
+| `test/connection_scan_state_test.dart` | Dart test | TEST / REGRESSION | KEEP / VERIFIED — CONNECTION STATE PRIORITY |
 | `test/device_copy_notification_contract_test.dart` | Dart test | TEST / REGRESSION | UPGRADE — CLOSED / READ-BACK VERIFIED (2026-11-26) |
-| `test/firmware_qc_contract_test.dart` | Dart test | TEST / REGRESSION | INVENTORIED — CONTENT REVIEW PENDING (FORMATTER ONLY, `003bccd6`) |
-| `test/firmware_touch_adaptive_sync_test.dart` | Dart test | TEST / REGRESSION | INVENTORIED — CONTENT REVIEW PENDING |
+| `test/firmware_qc_contract_test.dart` | Dart test | TEST / REGRESSION | KEEP / VERIFIED — FIRMWARE CONTRACT SOURCE TESTS ONLY |
+| `test/firmware_touch_adaptive_sync_test.dart` | Dart test | TEST / REGRESSION | KEEP / VERIFIED — TOUCH / ADAPTIVE SOURCE CONTRACT |
 | `test/floating_monitor_layout_contract_test.dart` | Dart test | TEST / REGRESSION | UPGRADE — CLOSED / READ-BACK VERIFIED (2026-11-26) |
 | `test/github_actions_workflow_contract_test.dart` | Dart test | TEST / REGRESSION | UPGRADE — CLOSED / READ-BACK VERIFIED (2026-11-26) |
-| `test/localization_contract_test.dart` | Dart test | TEST / REGRESSION | INVENTORIED — CONTENT REVIEW PENDING (FORMATTER ONLY, `003bccd6`) |
-| `test/support/source_contract_helpers.dart` | Dart test | TEST / REGRESSION | INVENTORIED — CONTENT REVIEW PENDING |
-| `test/usage_statistics_test.dart` | Dart test | TEST / REGRESSION | INVENTORIED — CONTENT REVIEW PENDING (FORMATTER ONLY, `003bccd6`) |
-| `test/widget_test.dart` | Dart test | TEST / REGRESSION | INVENTORIED — CONTENT REVIEW PENDING (FORMATTER ONLY, `003bccd6`) |
-| `VISUAL_QUALITY_GATE.md` | Project/configuration file | REVIEW REQUIRED | INVENTORIED — CONTENT REVIEW PENDING |
-| `VOLTAGE_TRANSITION_MEMORY.md` | Project/configuration file | REVIEW REQUIRED | INVENTORIED — CONTENT REVIEW PENDING |
+| `test/localization_contract_test.dart` | Dart test | TEST / REGRESSION | KEEP / VERIFIED — EN / ID PARITY AND TOKEN CONTRACT |
+| `test/support/source_contract_helpers.dart` | Dart test | TEST / REGRESSION | KEEP / VERIFIED — SOURCE ASSERTION NORMALIZATION |
+| `test/usage_statistics_test.dart` | Dart test | TEST / REGRESSION | UPGRADE / CLOSED — CLEAR HISTORY HOT FRESHNESS REGRESSION (#82) |
+| `test/widget_test.dart` | Dart test | TEST / REGRESSION | KEEP / VERIFIED — WIDGET / SOURCE CONTRACT SUITE (#82) |
+| `VISUAL_QUALITY_GATE.md` | Project/configuration file | REVIEW REQUIRED | KEEP / VERIFIED — ACTUAL SCREENSHOTS STILL REQUIRED |
+| `VOLTAGE_TRANSITION_MEMORY.md` | Project/configuration file | REVIEW REQUIRED | PROTECTED / REVIEWED — FIRMWARE-OWNED RAIL / SAFETY CONTRACT |
 | `REPOSITORY_UPGRADE_PLAN.md` | Repository-wide upgrade register | Canonical per-file audit register | CREATED — inventory snapshot maintained above |
 
 ## Content review records
@@ -580,7 +580,7 @@ The Firmware-safety and hardware/power skills are retained as protected project 
 ## Current disposition
 
 - Inventory coverage: **96/96 tracked blobs** at live main checkpoint before this documentation update: HEAD `123184396b6bc32e3cc05feff3050467a47682d8`; root tree `b7784209e9698c392dcbc8775d55caa466be9aeb`; recursive tree 142 entries / 96 blobs / 46 trees; truncated=false.
-- Content review coverage: **68/96 dispositioned files** in the live 96-blob register. `APP_BUILD_REPORT.md` is retained append-only/read-only; `APP_NOTES.md` supersedes its historical `main.dart` corruption status with the current validated source checkpoint; and `APP_PREBUILD_AUDIT.md` has been reconciled to the full-cycle execution instruction. The audit remains incomplete.
+- File disposition coverage: **96/96 tracked blobs now have an explicit KEEP / UPGRADE / PROTECTED / BLOCKED / IMMUTABLE decision** in the live 96-blob register. The full source audit of `lib/main.dart` remains deliberately OPEN; two protected binary visual assets still have evidence limitations, and BLE App-only authorization is blocked outside the App-only scope. `WORK STATUS` therefore remains IN_PROGRESS; a full register disposition is not a claim that WP0–WP10 or build readiness is complete.
 - Seven formatter-touched Dart/test files remain pending full-file content review: lib/main.dart (targeted notification result fix is validated but whole-file audit is open), lib/usage_statistics.dart, test/connection_scan_coordinator_test.dart, test/firmware_qc_contract_test.dart, test/localization_contract_test.dart, test/usage_statistics_test.dart and test/widget_test.dart. test/device_copy_notification_contract_test.dart is closed after the API-28 and Firmware notification-result assertions passed #77/#79; test/floating_monitor_layout_contract_test.dart is closed after the native overlay ownership contract passed #78.
 - No blanket source/config/workflow/Firmware/BIN/asset update is authorized by this plan.
 - The next unreviewed live inventory path is `APP_BUILD_REPORT.md` (append-only release evidence ledger). The launcher asset's alpha mismatch is documented as protected; no image edit or asset publication occurred. Current-main Android compilation and physical API/OEM evidence have not been obtained.
@@ -609,3 +609,42 @@ The Firmware-safety and hardware/power skills are retained as protected project 
 - **Repair:** updated its active preflight with the owner's full-cycle `Eksekusi Code!` expectation, latest repository checkpoint and current main.dart identity. Replaced the stale register count/next-file pointer with the current live register state. Historical source snapshots and earlier Diskusi-only proposals remain labelled and preserved.
 - **Acceptance:** all planned packages remain explicitly IN_PROGRESS until their outcomes are implemented and evidenced; no plan text is used as a substitute for tests, Android compilation, screenshot/device evidence or separate Build App authorization. Visual status remains VISUAL NOT VERIFIED.
 - **Disposition:** `UPGRADE / REVIEWED`. No executable source, test, workflow, protected Firmware/OTA, asset, APK, Release or signing content changed.
+
+### WP0 — Immutable archive set — IMMUTABLE / HISTORICAL / REVIEWED (2026-11-26)
+
+- `archive/ARTIFACT_REPO_NOTES_PRE_BIN_ONLY_2026-10-14.md` (`10fab755affdbb8e29727390ad187fcb4bf6817d`, 145 lines): historical artifact-repository direction; retain the owner's BIN-only repository boundary. Never use as current work authorization.
+- `archive/CHAT_TRANSFER_PRE_COMPACTION_2026-11-15.md` (`c5bf570e487e805750360215cb75b2c2c6c7fbff`, 723 lines): prior handoff and stale status; retain only as historical record.
+- `archive/LEGACY_NOTES_SNAPSHOT_2026-10-14.md` (`65ece82c5e8a07908accb4a81bd4c80e469b55de`, 1,482 lines): historical source/contract snapshots, includes old Firmware revisions and superseded context; never copy forward without live-source verification.
+- `archive/LEGACY_TRANSFER_HISTORY_2026-10-14.md` (`0438b7006d437d2c24d9e76d6aca7352ad5b0b2b`, 1,057 lines): historical prompt/transfer chronology; no current authority.
+- **Disposition:** all four archives remain byte-untouched and immutable. Their historical status/mode text is never allowed to override `MASTER_PROMPT.md`, current `00_WORK_STATUS.md` or live main.
+
+### WP0 — Flutter usage / test / scan / localization / glyph source set — REVIEWED (2026-11-26)
+
+- `lib/usage_statistics.dart` current blob `6c0bb51f2283e9e0a46851962b951ffd820f6ee9` / 3,640 lines: full store, schema/migration, session coverage, HOT freshness, queue, recorder, analytics, summary, decimation and presentation review completed. The Clear History freshness defect was fixed; see `APP_NOTES.md` and CHANGELOG. `UPGRADE / CLOSED`; no schema-version migration or raw-history rewrite.
+- `test/usage_statistics_test.dart` current blob `aa5bc741760fe67dec06d4e4f272ffe4f598332e` / 1,248 lines: complete review; regression coverage added for no-HOT coverage and no synthetic Clear History baseline. #82 225/225 PASS. `UPGRADE / CLOSED`.
+- `test/widget_test.dart` current blob `b09f0157776997557e30b2ae1d0a8c7c2bf80845` / 4,066 lines: complete review of Home/control/LED/connection/localization/reduced-motion/Floating Monitor/OTA presentation and widget/source contracts. `KEEP / VERIFIED` by #82 Flutter run; not Android screenshot evidence.
+- `test/connection_scan_coordinator_test.dart` `6aa7e823560656d1e2b42b194a8cc7a5e497c3d7` / 246 lines: complete generation/lease/serialization/manual handoff coverage review. `KEEP / VERIFIED`.
+- `test/connection_scan_state_test.dart` `c689e0cd58569ea67fd02670a4559a31305fef0f` / 113 lines: complete connection-state priority and permission/adapter precedence review. `KEEP / VERIFIED`.
+- `test/firmware_qc_contract_test.dart` `adf12de873a15d3adef784037633629e9fe4a849` / 918 lines: complete static source-contract review. It checks Firmware source contracts only; it does not compile/test Firmware or prove physical behavior. `KEEP / VERIFIED`.
+- `test/firmware_touch_adaptive_sync_test.dart` `01185431ec72dde4c14b5e91de396736220707da` / 72 lines: complete Touch/Adaptive/read-only contract review. `KEEP / VERIFIED`.
+- `test/localization_contract_test.dart` `30e87d63efaecedd74abd2a72db7ed813db0e8d4` / 279 lines: complete EN/ID keys, labels, placeholders and token review. `KEEP / VERIFIED`.
+- `test/app_protocol_notify_contract_test.dart` `fca6877915b9db3a7911527d987e18976bd6faaa` / 39 lines: P1 protocol token and notification source-contract review. `KEEP / VERIFIED`.
+- `test/support/source_contract_helpers.dart` `247a9fd6bd811ac84e9878dd81976488ae232bdb` / 27 lines: whitespace-normalizing source contract helper; `KEEP / VERIFIED`.
+- `lib/jex_animated_glyph.dart` `9e4fba0fe15744532cedcaba34645018bb04b451` / 26 lines: stateless Phosphor Icon wrapper and RepaintBoundary, no ticker or animation controller; `KEEP / VERIFIED`.
+- **Validation:** Validation Only #82 / run `45858238070` / job `140042152884` terminal SUCCESS on source/test SHA `b5b11ac0f37c201b51f1cfb0e816ee56813f1d1b`; formatter-only result is persisted in current main follow-up `8b5b662725cfcf5b5b084209ed97989361148d13`. Entire Flutter suite 225/225 passed, analyzer/formatter/deps passed.
+
+### WP0 — Security, build, OTA and design policy documents — REVIEWED / NO CHANGE (2026-11-26)
+
+- `BLE_APP_AUTH.md` remains BLOCKED: Just Works + SYNC_READY does not cryptographically establish official App identity. The proposed design requires Firmware command gating, per-install Android Keystore proof, trusted enrollment/backend-signed grant, nonce, device binding, expiry and replay protection. Firmware and backend are outside this execution scope; no static/shared APK secret or first-peer trust workaround is acceptable.
+- `BUILD_NOTES.md` and Build #167 were reviewed. Build #167 is the latest released package but targets immutable source `0dd96228d33b08c66e736ae91a8a6c3e5c3ddb81`, not current main. Keep the guarded workflow boundary; no Build App was triggered.
+- `CHANGELOG.md` was updated at its head with the Clear History/P1 freshness fix and Validation Only #82 evidence; prior entries were not edited.
+- `MASTER_PROMPT.md` contains the full-cycle execution command and separate Build App boundary. `MEMORY_INDEX.md` is being reconciled to the live 96-blob inventory and current checkpoint.
+- `OTA_PROTECTION.md` and `OTA_REGRESSION_MEMORY.md` were read; transport/trust/certificates/redirects/image validation/recovery remain protected and unchanged. Historical `setInsecure()` trade-off is retained, not endorsed as a new secure design.
+- `PRODUCT_DESIGN_CONSTITUTION.md` and `VISUAL_QUALITY_GATE.md` were reviewed; no new brand, font, palette or Home composition was introduced. Actual screenshot acceptance remains `VISUAL NOT VERIFIED`.
+- `VOLTAGE_TRANSITION_MEMORY.md` was reviewed; it records two separate user-reported restarts without a verified cause. Firmware is authoritative; no Firmware claim or change was made.
+
+### WP0 — Binary visual assets — PROTECTED / EVIDENCE LIMITATION (2026-11-26)
+
+- `assets/jexfyzicon.png` is byte-identical to the Android launcher bitmap, 1254×1254 RGB with no alpha/tRNS transparency. This conflicts with the transparent-asset statement in design notes. It is left protected pending owner design decision; no artwork was changed.
+- `assets/jexfyzcooler.png` is a 2,130,606-byte PNG in the live tree. This Code workspace could not retrieve its binary bytes for direct visual/integrity inspection. The approved product hero is protected; retain unchanged and mark binary visual review BLOCKED rather than infer transparency, silhouette or image quality.
+
