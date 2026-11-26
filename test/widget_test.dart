@@ -23,6 +23,7 @@ import 'package:jexfyz_cooler/main.dart';
 import 'package:jexfyz_cooler/app_settings.dart';
 import 'package:jexfyz_cooler/floating_monitor.dart';
 import 'package:jexfyz_cooler/home_notify.dart';
+import 'package:jexfyz_cooler/led_controls.dart';
 
 void main() {
   test(
@@ -683,11 +684,10 @@ void main() {
     );
     expect(route, contains('EdgeInsets.fromLTRB(24, 4, 24, 4)'));
 
-    final cardStart = source.indexOf('class _JexColorPickerCardState');
-    final cardEnd = source.indexOf('enum JexAnimatedIconKind', cardStart);
+    final ledSource = File('lib/led_controls.dart').readAsStringSync();
+    final cardStart = ledSource.indexOf('class _JexColorPickerCardState');
     expect(cardStart, isNonNegative);
-    expect(cardEnd, greaterThan(cardStart));
-    final card = source.substring(cardStart, cardEnd);
+    final card = ledSource.substring(cardStart);
     expect(card, contains('Expanded('));
     expect(card, contains('Scrollbar('));
     expect(card, contains('thumbVisibility: true'));
@@ -2808,8 +2808,9 @@ void main() {
 
   test('LED UI keeps its own color menu anchored to the display region', () {
     final source = File('lib/main.dart').readAsStringSync();
-    expect(source, contains('widget.modeName.toUpperCase()'));
-    expect(source, isNot(contains('widget.modeNumber')));
+    final ledSource = File('lib/led_controls.dart').readAsStringSync();
+    expect(ledSource, contains('widget.modeName.toUpperCase()'));
+    expect(ledSource, isNot(contains('widget.modeNumber')));
     expect(source, contains('ledColorDisplayName(rgbColor, lang)'));
     expect(
       containsDartFragment(
@@ -2839,14 +2840,9 @@ void main() {
       isTrue,
     );
     expect(colorDialog, contains('onSelect: _setRgbColor'));
-    final colorCardStart = source.indexOf('class _JexColorPickerCard');
-    final colorCardEnd = source.indexOf(
-      'enum JexAnimatedIconKind',
-      colorCardStart,
-    );
+    final colorCardStart = ledSource.indexOf('class JexColorPickerCard');
     expect(colorCardStart, isNonNegative);
-    expect(colorCardEnd, greaterThan(colorCardStart));
-    final colorCard = source.substring(colorCardStart, colorCardEnd);
+    final colorCard = ledSource.substring(colorCardStart);
     // Compact anchored picker: compact heading, readable action labels and 48-dp swatches.
     expect(colorCard, contains('fontSize: 19'));
     expect(colorCard, contains('fontSize: 14'));
@@ -2978,7 +2974,7 @@ void main() {
   test(
     'LED preview re-anchors on sync revision without resetting its clock',
     () {
-      final source = File('lib/main.dart').readAsStringSync();
+      final source = File('lib/led_controls.dart').readAsStringSync();
       final stateStart = source.indexOf('class _JexLedStripPreviewState');
       final updateStart = source.indexOf(
         'void didUpdateWidget(covariant JexLedStripPreview oldWidget)',

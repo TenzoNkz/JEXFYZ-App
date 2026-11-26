@@ -10,6 +10,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:jexfyz_cooler/app_settings.dart';
 import 'package:jexfyz_cooler/floating_monitor.dart';
 import 'package:jexfyz_cooler/main.dart';
+import 'package:jexfyz_cooler/led_controls.dart' show normalizeLedColor;
 
 void main() {
   test('Peltier re-arm target is hotLimit minus one degree', () {
