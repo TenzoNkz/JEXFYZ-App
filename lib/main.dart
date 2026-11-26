@@ -59,7 +59,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math' as math;
-import 'dart:ui' show BlurStyle, ImageFilter, MaskFilter;
+import 'dart:ui' show ImageFilter;
 
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';

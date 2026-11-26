@@ -9,8 +9,6 @@
 
 import 'dart:async';
 import 'dart:math' as math;
-import 'dart:ui' show BlurStyle, MaskFilter;
-
 import 'package:flutter/material.dart';
 
 enum JexAnimatedIconKind {

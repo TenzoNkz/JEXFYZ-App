@@ -1179,9 +1179,6 @@ void main() {
       contains('active: connected && runtimeOutputsKnown && fanOn'),
     );
   });
-ive: connected && runtimeOutputsKnown && fanOn'),
-    );
-  });
 
   testWidgets(
     'tamper screen explains official-build verification failure and opens developer contact',
