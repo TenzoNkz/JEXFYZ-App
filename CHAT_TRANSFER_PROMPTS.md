@@ -70,7 +70,7 @@ CANONICAL BRANCH: main
 WORKSPACE: CODE_FULL
 
 PURPOSE
-Continue the specifically requested code, test, documentation and static-audit workstream. This chat is permanently the Eksekusi Code workspace. Legacy `Eksekusi Code Full!` and `Eksekusi Full!` mean this same mode; use `Eksekusi Code!` in all new requests. Do not switch this chat into Discussion-only or Build App execution.
+Execute the owner-approved App code, test, documentation, configuration and static-audit workstream continuously through completion of the currently authorized scope and a verified build-ready handoff. Each `Eksekusi Code!` command is one full-cycle execution, not permission to stop after a single file, isolated audit tranche or work package and ask the owner to continue. Continue through dependency-ordered work packages in coherent, reviewable increments; pause only at a concrete toolchain/evidence blocker, protected-scope boundary, or genuinely unresolved owner decision. Save durable checkpoints and keep moving without unnecessary owner prompts. This chat is permanently the Eksekusi Code workspace. Legacy `Eksekusi Code Full!` and `Eksekusi Full!` mean this same mode; use `Eksekusi Code!` in all new requests. Do not switch this chat into Discussion-only or Build App execution.
 
 MANDATORY LOAD
 1. Read 00_WORK_STATUS.md first; inspect SESSION STATUS, WORK STATUS, WORKSPACE and EXTERNAL OPERATION state.
