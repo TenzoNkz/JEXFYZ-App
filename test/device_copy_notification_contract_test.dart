@@ -24,6 +24,48 @@ void main() {
   });
 
   test(
+    'Location service check guards the API 28-only method on minSdk 24 devices',
+    () {
+      final activity = File(
+        'android/app/src/main/kotlin/com/horizontalzzz/jexfyz/MainActivity.kt',
+      ).readAsStringSync();
+      final functionStart = activity.indexOf(
+        'private fun isLocationServiceEnabled(): Boolean {',
+      );
+      final functionEnd = activity.indexOf(
+        'private fun openLocationSettings(): Boolean {',
+        functionStart,
+      );
+      expect(functionStart, greaterThanOrEqualTo(0));
+      expect(functionEnd, greaterThan(functionStart));
+
+      final implementation = activity.substring(functionStart, functionEnd);
+      final apiGuard = implementation.indexOf(
+        'if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P)',
+      );
+      final api28Call = implementation.indexOf('manager.isLocationEnabled');
+      final legacyBranch = implementation.indexOf('} else {', apiGuard);
+      expect(apiGuard, greaterThanOrEqualTo(0));
+      expect(api28Call, greaterThan(apiGuard));
+      expect(legacyBranch, greaterThan(apiGuard));
+      expect(
+        implementation.indexOf(
+          'manager.isProviderEnabled(LocationManager.GPS_PROVIDER)',
+          legacyBranch,
+        ),
+        greaterThan(legacyBranch),
+      );
+      expect(
+        implementation.indexOf(
+          'manager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)',
+          legacyBranch,
+        ),
+        greaterThan(legacyBranch),
+      );
+    },
+  );
+
+  test(
     'Transient Android alert IDs do not collide with persistent service IDs',
     () {
       final main = File('lib/main.dart').readAsStringSync();

@@ -142,7 +142,3 @@ flutter {
 }
 
 
-// AOSP Wireless Debugging pairing/shell client. Pin to the Kotlin 2.2-compatible release.
-dependencies {
-
-}

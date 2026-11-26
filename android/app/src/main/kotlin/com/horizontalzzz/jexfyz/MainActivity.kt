@@ -304,7 +304,14 @@ class MainActivity : FlutterActivity() {
     private fun isLocationServiceEnabled(): Boolean {
         return try {
             val manager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
-            manager.isLocationEnabled
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                manager.isLocationEnabled
+            } else {
+                // isLocationEnabled was added in API 28; minSdk 24–27 devices use
+                // provider state so the call cannot fail with a missing-method linkage.
+                manager.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
+                    manager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
+            }
         } catch (_: Exception) {
             false
         }
