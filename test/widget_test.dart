@@ -2865,7 +2865,7 @@ void main() {
       contains('if (applied && mounted) Navigator.of(context).pop()'),
     );
     expect(colorCard, isNot(contains('onTap: () => widget.onSelect(')));
-    expect(source, contains("JexText.of('cancel', lang)"));
+    expect(ledSource, contains("JexText.of('cancel', lang)"));
     expect(source, contains('Future<bool> _setRgbColor(String hex) async'));
     expect(source, contains('colors: ledColorPresets'));
     expect(colorDialog, contains('maxWidth: 312'));
