@@ -302,6 +302,25 @@ void main() {
       );
     });
 
+    test('a cleared session has no coverage until a real HOT receipt arrives', () {
+      const waitingForHot = UsageStatsSession(
+        id: 3,
+        coolerId: 'AA:BB:CC',
+        startedAtMs: 5000,
+        endedAtMs: null,
+        lastSeenAtMs: 5000,
+        lastHotsideSeenAtMs: null,
+        lastBatterySeenAtMs: null,
+      );
+      expect(
+        usageSessionCoverageEndMs(
+          session: waitingForHot,
+          publishedAtMs: 12000,
+        ),
+        5000,
+      );
+    });
+
     test('display interpolation is frame-safe and never overshoots observed values', () {
       expect(usageInterpolate(20, 40, 0), 20);
       expect(usageInterpolate(20, 40, .5), 30);
@@ -804,6 +823,38 @@ void main() {
     expect(usage, contains('CREATE INDEX usage_events_timestamp'));
     expect(usage, contains('const Duration(hours: 24).inMilliseconds'));
     expect(usage, isNot(contains('FirebaseDatabase')));
+  });
+
+  test('Clear History cannot manufacture a fresh temperature or P1 receipt', () {
+    final usage = File('lib/usage_statistics.dart').readAsStringSync();
+    final clearStart = usage.indexOf('Future<void> clearHistory(String coolerId)');
+    final clearEnd = usage.indexOf(
+      '\\n  }\\n}\\n\\nString _usageStatsEventKey',
+      clearStart,
+    );
+    expect(clearStart, isNonNegative);
+    expect(clearEnd, greaterThan(clearStart));
+    final clear = usage.substring(clearStart, clearEnd);
+    expect(clear, contains('batteryC: null'));
+    expect(clear, contains('hotsideC: null'));
+    expect(clear, contains('includeTemperatureBaseline: false'));
+    expect(clear, contains('_lastP1ReceiptAtMs = null;'));
+    expect(clear, contains('_temperatures'));
+    expect(clear, contains('_lastSensorSeenMs.clear();'));
+    expect(clear, isNot(contains("_lastP1ReceiptAtMs = now;")));
+    expect(clear, isNot(contains("..['hotside'] = now")));
+
+    final storeStart = usage.indexOf('Future<int> startSession({');
+    final storeEnd = usage.indexOf('Future<void> recordEvent({', storeStart);
+    expect(storeStart, isNonNegative);
+    expect(storeEnd, greaterThan(storeStart));
+    final store = usage.substring(storeStart, storeEnd);
+    expect(store, contains('bool includeTemperatureBaseline = true'));
+    expect(
+      store,
+      contains("'last_hotside_seen_at_ms': includeTemperatureBaseline"),
+    );
+    expect(store, contains('if (includeTemperatureBaseline)'));
   });
 
   group('Usage Statistics page', () {
