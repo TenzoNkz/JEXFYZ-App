@@ -22,6 +22,7 @@ import 'package:jexfyz_cooler/app_security.dart';
 import 'package:jexfyz_cooler/main.dart';
 import 'package:jexfyz_cooler/app_settings.dart';
 import 'package:jexfyz_cooler/floating_monitor.dart';
+import 'package:jexfyz_cooler/home_notify.dart';
 
 void main() {
   test(

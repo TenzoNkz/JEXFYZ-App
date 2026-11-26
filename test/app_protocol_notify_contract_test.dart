@@ -4,6 +4,8 @@
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:jexfyz_cooler/main.dart';
+import 'package:jexfyz_cooler/home_notify.dart'
+    show shouldClearStaleNotifyError;
 
 void main() {
   test('P1 protocol validation accepts only P1', () {

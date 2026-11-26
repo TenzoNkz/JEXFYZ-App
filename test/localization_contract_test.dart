@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:jexfyz_cooler/app_settings.dart';
-import 'package:jexfyz_cooler/main.dart'
+import 'package:jexfyz_cooler/home_notify.dart'
     show
         formatOtaUploadSizeMismatch,
         homeNotifyForTelemetryChange,
