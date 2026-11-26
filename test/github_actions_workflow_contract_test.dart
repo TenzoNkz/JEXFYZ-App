@@ -25,12 +25,11 @@ void main() {
   setUpAll(() {
     workflow = File('.github/workflows/jexfyz-app-build-trigger.yml')
         .readAsStringSync();
-    pullRequestValidationWorkflow =
-        File('.github/workflows/jexfyz-app-pr-validation.yml')
-            .readAsStringSync();
-    validationOnlyWorkflow =
-        File('.github/workflows/jexfyz-app-validation.yml')
-            .readAsStringSync();
+    pullRequestValidationWorkflow = File(
+      '.github/workflows/jexfyz-app-pr-validation.yml',
+    ).readAsStringSync();
+    validationOnlyWorkflow = File('.github/workflows/jexfyz-app-validation.yml')
+        .readAsStringSync();
   });
 
   test('only the manually guarded issue event can enter the release workflow', () {
@@ -108,10 +107,7 @@ void main() {
         pullRequestValidationWorkflow,
         validationOnlyWorkflow,
       ]) {
-        expect(
-          _namedStep(source, 'Set up Flutter'),
-          contains('cache: false'),
-        );
+        expect(_namedStep(source, 'Set up Flutter'), contains('cache: false'));
       }
     },
   );
@@ -189,42 +185,39 @@ void main() {
     },
   );
 
-  test(
-    'explicit GH_TOKEN env is only in Release steps; job token permission remains job-wide',
-    () {
-      final buildJobStart = workflow.indexOf('\n  build:\n');
-      expect(buildJobStart, greaterThanOrEqualTo(0));
+  test('explicit GH_TOKEN env is only in Release steps; job token permission remains job-wide', () {
+    final buildJobStart = workflow.indexOf('\n  build:\n');
+    expect(buildJobStart, greaterThanOrEqualTo(0));
 
-      // GH_TOKEN is explicit environment wiring, not a step-level permission boundary.
-      // Actions can also read `github.token`; `contents: write` applies to this job.
-      final jobPermissionStart = workflow.indexOf(
-        '\n    permissions:\n      contents: write\n',
-        buildJobStart,
-      );
-      final jobStepsStart = workflow.indexOf(
-        '\n    steps:\n',
-        jobPermissionStart,
-      );
-      expect(jobPermissionStart, greaterThan(buildJobStart));
-      expect(jobStepsStart, greaterThan(jobPermissionStart));
+    // GH_TOKEN is explicit environment wiring, not a step-level permission boundary.
+    // Actions can also read `github.token`; `contents: write` applies to this job.
+    final jobPermissionStart = workflow.indexOf(
+      '\n    permissions:\n      contents: write\n',
+      buildJobStart,
+    );
+    final jobStepsStart = workflow.indexOf(
+      '\n    steps:\n',
+      jobPermissionStart,
+    );
+    expect(jobPermissionStart, greaterThan(buildJobStart));
+    expect(jobStepsStart, greaterThan(jobPermissionStart));
 
-      final publish = _namedStep(
-        workflow,
-        'Publish APK and corresponding source to GitHub Release',
-      );
-      final verify = _namedStep(
-        workflow,
-        'Verify downloaded GitHub Release asset',
-      );
+    final publish = _namedStep(
+      workflow,
+      'Publish APK and corresponding source to GitHub Release',
+    );
+    final verify = _namedStep(
+      workflow,
+      'Verify downloaded GitHub Release asset',
+    );
 
-      expect(publish, contains(r'GH_TOKEN: ${{ github.token }}'));
-      expect(verify, contains(r'GH_TOKEN: ${{ github.token }}'));
-      expect(
-        RegExp(r'^\s*GH_TOKEN:', multiLine: true).allMatches(workflow),
-        hasLength(2),
-      );
-    },
-  );
+    expect(publish, contains(r'GH_TOKEN: ${{ github.token }}'));
+    expect(verify, contains(r'GH_TOKEN: ${{ github.token }}'));
+    expect(
+      RegExp(r'^\s*GH_TOKEN:', multiLine: true).allMatches(workflow),
+      hasLength(2),
+    );
+  });
 
   test(
     'release validation, signing and artifact integrity gates remain present',
