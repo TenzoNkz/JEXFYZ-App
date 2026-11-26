@@ -18,6 +18,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter/material.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
 import 'package:jexfyz_cooler/jex_animated_glyph.dart';
+import 'package:jexfyz_cooler/jex_animated_icon.dart';
 import 'package:jexfyz_cooler/app_security.dart';
 import 'package:jexfyz_cooler/main.dart';
 import 'package:jexfyz_cooler/app_settings.dart';
@@ -86,6 +87,7 @@ void main() {
     () {
       final glyph = File('lib/jex_animated_glyph.dart').readAsStringSync();
       final app = File('lib/main.dart').readAsStringSync();
+      final animation = File('lib/jex_animated_icon.dart').readAsStringSync();
 
       expect(glyph, contains('class JexAnimatedGlyph extends StatelessWidget'));
       expect(glyph, contains('RepaintBoundary'));
@@ -98,8 +100,14 @@ void main() {
       expect(app, isNot(contains('JexAnimatedIcon.glyph(')));
       expect(app, isNot(contains('IconData? glyph;')));
       expect(app, isNot(contains('widget.glyph')));
-      expect(app, contains('class _JexAnimatedIconState'));
-      expect(app, contains('jexIconAnimationPermitted'));
+      expect(app, contains("import 'jex_animated_icon.dart';"));
+      expect(animation, contains('class _JexAnimatedIconState'));
+      expect(animation, contains('jexIconAnimationPermitted'));
+      expect(animation, isNot(contains('FlutterBluePlus')));
+      expect(animation, isNot(contains('BluetoothDevice')));
+      expect(animation, isNot(contains('BluetoothCharacteristic')));
+      expect(animation, isNot(contains('MethodChannel')));
+      expect(animation, isNot(contains('FlutterSecureStorage')));
     },
   );
 
@@ -507,16 +515,16 @@ void main() {
 
   test('Core indicator family shares a luminous core with distinct telemetry motion', () {
     final source = File('lib/main.dart').readAsStringSync();
-    final painterStart = source.indexOf(
+    final animationSource = File(
+      'lib/jex_animated_icon.dart',
+    ).readAsStringSync();
+    final painterStart = animationSource.indexOf(
       'class _JexIconPainter extends CustomPainter {',
     );
-    final painterEnd = source.indexOf(
-      'class TamperApp extends StatelessWidget',
-      painterStart,
-    );
+    final painterEnd = animationSource.length;
     expect(painterStart, isNonNegative);
     expect(painterEnd, greaterThan(painterStart));
-    final painter = source.substring(painterStart, painterEnd);
+    final painter = animationSource.substring(painterStart, painterEnd);
     // Normalize layout so this source-contract test accepts intentional multiline painter calls.
     final normalizedPainter = painter
         .replaceAll(RegExp(r'\(\s+'), '(')
@@ -547,7 +555,7 @@ void main() {
     expect(source, contains('JexAnimatedIconKind.adaptive'));
     expect(source, contains('JexAnimatedIconKind.peltier'));
     expect(source, contains('JexAnimatedIconKind.speed'));
-    expect(source, contains('jexIconAnimationPermitted('));
+    expect(animationSource, contains('jexIconAnimationPermitted('));
     expect(source, contains('valueKnown'));
   });
 
@@ -706,16 +714,19 @@ void main() {
 
   test('Home indicator painter receives Light Mode theme tokens and repaints on changes', () {
     final source = File('lib/main.dart').readAsStringSync();
-    final widgetStart = source.indexOf(
+    final animationSource = File(
+      'lib/jex_animated_icon.dart',
+    ).readAsStringSync();
+    final widgetStart = animationSource.indexOf(
       'class JexAnimatedIcon extends StatefulWidget {',
     );
-    final widgetEnd = source.indexOf(
+    final widgetEnd = animationSource.indexOf(
       'class _JexFanRotationSimulation',
       widgetStart,
     );
     expect(widgetStart, isNonNegative);
     expect(widgetEnd, greaterThan(widgetStart));
-    final widget = source.substring(widgetStart, widgetEnd);
+    final widget = animationSource.substring(widgetStart, widgetEnd);
     expect(widget, contains('final bool lightTheme;'));
     expect(widget, contains('final Color lightSurfaceColor;'));
     expect(widget, contains('final Color lightOutlineColor;'));
@@ -737,14 +748,11 @@ void main() {
       isTrue,
     );
 
-    final painterStart = source.indexOf(
+    final painterStart = animationSource.indexOf(
       'class _JexIconPainter extends CustomPainter {',
     );
-    final painterEnd = source.indexOf(
-      'class TamperApp extends StatelessWidget',
-      painterStart,
-    );
-    final painter = source.substring(painterStart, painterEnd);
+    final painterEnd = animationSource.length;
+    final painter = animationSource.substring(painterStart, painterEnd);
     expect(painter, contains('_depthPaintColor('));
     expect(painter, contains('_cavityPaintColor('));
     expect(
@@ -792,16 +800,16 @@ void main() {
 
   test('Indicator glyphs retain detailed static geometry while disconnected or unknown', () {
     final source = File('lib/main.dart').readAsStringSync();
-    final painterStart = source.indexOf(
+    final animationSource = File(
+      'lib/jex_animated_icon.dart',
+    ).readAsStringSync();
+    final painterStart = animationSource.indexOf(
       'class _JexIconPainter extends CustomPainter {',
     );
-    final painterEnd = source.indexOf(
-      'class TamperApp extends StatelessWidget',
-      painterStart,
-    );
+    final painterEnd = animationSource.length;
     expect(painterStart, isNonNegative);
     expect(painterEnd, greaterThan(painterStart));
-    final painter = source.substring(painterStart, painterEnd);
+    final painter = animationSource.substring(painterStart, painterEnd);
     final normalizedPainter = painter
         .replaceAll(RegExp(r'\(\s+'), '(')
         .replaceAll(RegExp(r'\s+'), ' ');
@@ -865,27 +873,27 @@ void main() {
 
   test('Thermal icons use oval ember bursts, Voltage uses edge pulses, and other icons keep their signatures', () {
     final source = File('lib/main.dart').readAsStringSync();
-    final shellStart = source.indexOf('Path _hotsideSilhouette(double s)');
-    final shellEnd = source.indexOf('void _drawAdaptiveArrowHead', shellStart);
+    final animationSource = File(
+      'lib/jex_animated_icon.dart',
+    ).readAsStringSync();
+    final shellStart = animationSource.indexOf('Path _hotsideSilhouette(double s)');
+    final shellEnd = animationSource.indexOf('void _drawAdaptiveArrowHead', shellStart);
     expect(shellStart, isNonNegative);
     expect(shellEnd, greaterThan(shellStart));
-    final hotsideShell = source.substring(shellStart, shellEnd);
+    final hotsideShell = animationSource.substring(shellStart, shellEnd);
     expect(hotsideShell, contains('..cubicTo('));
     expect(hotsideShell, isNot(contains('..addRRect(')));
     expect(hotsideShell, isNot(contains('..addOval(')));
     expect(
-      source,
+      animationSource,
       contains('Rect.fromLTWH(s * .455, s * .09, s * .09, s * .53)'),
     );
 
-    final painterStart = source.indexOf(
+    final painterStart = animationSource.indexOf(
       'class _JexIconPainter extends CustomPainter {',
     );
-    final painterEnd = source.indexOf(
-      'class TamperApp extends StatelessWidget',
-      painterStart,
-    );
-    final painter = source.substring(painterStart, painterEnd);
+    final painterEnd = animationSource.length;
+    final painter = animationSource.substring(painterStart, painterEnd);
     for (final effect in [
       'final sheenRect',
       'final bulbRadius',
@@ -942,7 +950,7 @@ void main() {
       source,
       contains('_retargetWarningLevel(widget.connected && widget.warning)'),
     );
-    expect(source, contains('TickerFuture _retargetFanRotation('));
+    expect(animationSource, contains('TickerFuture _retargetFanRotation('));
     expect(
       source,
       contains('jexNormalizedFanProgress(fanPhaseController.value)'),
@@ -1171,6 +1179,9 @@ void main() {
       contains('active: connected && runtimeOutputsKnown && fanOn'),
     );
   });
+ive: connected && runtimeOutputsKnown && fanOn'),
+    );
+  });
 
   testWidgets(
     'tamper screen explains official-build verification failure and opens developer contact',
@@ -1281,17 +1292,16 @@ void main() {
   );
 
   test('Dashboard indicators use integrated 2D silhouettes instead of stacked ornaments', () {
-    final source = File('lib/main.dart').readAsStringSync();
-    final start = source.indexOf(
+    final animationSource = File(
+      'lib/jex_animated_icon.dart',
+    ).readAsStringSync();
+    final start = animationSource.indexOf(
       'class _JexIconPainter extends CustomPainter {',
     );
-    final end = source.indexOf(
-      'class TamperApp extends StatelessWidget',
-      start,
-    );
+    final end = animationSource.length;
     expect(start, greaterThanOrEqualTo(0));
     expect(end, greaterThan(start));
-    final painter = source.substring(start, end);
+    final painter = animationSource.substring(start, end);
     expect(painter, contains('Path _batterySilhouette'));
     expect(painter, contains('Path _hotsideSilhouette'));
     expect(painter, contains('void _drawAdaptiveFlow'));
@@ -2600,15 +2610,14 @@ void main() {
   test(
     'Fan Speed needle has no autonomous wobble and follows retargeted PWM',
     () {
-      final source = File('lib/main.dart').readAsStringSync();
-      final painterStart = source.indexOf(
+      final animationSource = File(
+        'lib/jex_animated_icon.dart',
+      ).readAsStringSync();
+      final painterStart = animationSource.indexOf(
         'class _JexIconPainter extends CustomPainter {',
       );
-      final painterEnd = source.indexOf(
-        'class TamperApp extends StatelessWidget',
-        painterStart,
-      );
-      final painter = source.substring(painterStart, painterEnd);
+      final painterEnd = animationSource.length;
+      final painter = animationSource.substring(painterStart, painterEnd);
       final speedStart = painter.indexOf('case JexAnimatedIconKind.speed:');
       final speedEnd = painter.indexOf(
         'case JexAnimatedIconKind.led:',
@@ -2628,17 +2637,16 @@ void main() {
   );
 
   test('Thermal warning repaint tracks warning strength changes', () {
-    final source = File('lib/main.dart').readAsStringSync();
-    final painterStart = source.indexOf(
+    final animationSource = File(
+      'lib/jex_animated_icon.dart',
+    ).readAsStringSync();
+    final painterStart = animationSource.indexOf(
       'class _JexIconPainter extends CustomPainter {',
     );
-    final painterEnd = source.indexOf(
-      'class TamperApp extends StatelessWidget',
-      painterStart,
-    );
+    final painterEnd = animationSource.length;
     expect(painterStart, isNonNegative);
     expect(painterEnd, greaterThan(painterStart));
-    final painter = source.substring(painterStart, painterEnd);
+    final painter = animationSource.substring(painterStart, painterEnd);
     final repaintStart = painter.indexOf(
       'bool shouldRepaint(covariant _JexIconPainter oldDelegate) =>',
     );
@@ -2897,17 +2905,16 @@ void main() {
   test(
     'Voltage and Bluetooth indicators avoid stacked sweeps and ripple rings',
     () {
-      final source = File('lib/main.dart').readAsStringSync();
-      final painterStart = source.indexOf(
+      final animationSource = File(
+        'lib/jex_animated_icon.dart',
+      ).readAsStringSync();
+      final painterStart = animationSource.indexOf(
         'class _JexIconPainter extends CustomPainter {',
       );
-      final painterEnd = source.indexOf(
-        'class TamperApp extends StatelessWidget',
-        painterStart,
-      );
+      final painterEnd = animationSource.length;
       expect(painterStart, isNonNegative);
       expect(painterEnd, greaterThan(painterStart));
-      final painter = source.substring(painterStart, painterEnd);
+      final painter = animationSource.substring(painterStart, painterEnd);
       final voltageStart = painter.indexOf('case JexAnimatedIconKind.voltage:');
       final voltageEnd = painter.indexOf(
         'case JexAnimatedIconKind.adaptive:',
@@ -3051,20 +3058,19 @@ void main() {
   });
 
   test('Fan rotor keeps one integrated silhouette and smooth phase-controlled motion', () {
-    final source = File('lib/main.dart').readAsStringSync();
-    final painterStart = source.indexOf(
+    final animationSource = File(
+      'lib/jex_animated_icon.dart',
+    ).readAsStringSync();
+    final painterStart = animationSource.indexOf(
       'class _JexIconPainter extends CustomPainter {',
     );
-    final painterEnd = source.indexOf(
-      'class TamperApp extends StatelessWidget',
-      painterStart,
-    );
-    final stateStart = source.indexOf('class _JexAnimatedIconState');
-    final stateEnd = source.indexOf('class _JexIconPainter', stateStart);
+    final painterEnd = animationSource.length;
+    final stateStart = animationSource.indexOf('class _JexAnimatedIconState');
+    final stateEnd = animationSource.indexOf('class _JexIconPainter', stateStart);
     expect(painterStart, isNonNegative);
     expect(painterEnd, greaterThan(painterStart));
-    final painter = source.substring(painterStart, painterEnd);
-    final state = source.substring(stateStart, stateEnd);
+    final painter = animationSource.substring(painterStart, painterEnd);
+    final state = animationSource.substring(stateStart, stateEnd);
     expect(painter, contains('final rotor = _fanSilhouette(s, angle);'));
     expect(painter, contains('canvas.drawPath(rotor, _fill('));
     expect(painter, isNot(contains('_drawFanBlade')));
@@ -3074,23 +3080,25 @@ void main() {
   });
 
   test('Fan voltage/PWM retarget integrates angular velocity without a phase reset', () {
-    final source = File('lib/main.dart').readAsStringSync();
-    final stateStart = source.indexOf('class _JexAnimatedIconState');
+    final animationSource = File(
+      'lib/jex_animated_icon.dart',
+    ).readAsStringSync();
+    final stateStart = animationSource.indexOf('class _JexAnimatedIconState');
     // Include the State.build method, where normalized accumulated phase is passed into the painter.
-    final stateEnd = source.indexOf(
+    final stateEnd = animationSource.indexOf(
       'class _JexIconPainter extends CustomPainter {',
       stateStart,
     );
     expect(stateStart, isNonNegative);
     expect(stateEnd, greaterThan(stateStart));
-    final iconState = source.substring(stateStart, stateEnd);
+    final iconState = animationSource.substring(stateStart, stateEnd);
 
     expect(
-      source,
+      animationSource,
       contains('class _JexFanRotationSimulation extends Simulation'),
     );
-    expect(source, contains('double jexIntegratedFanCycles('));
-    expect(source, contains('double jexFanRotationCyclesPerSecondAt('));
+    expect(animationSource, contains('double jexIntegratedFanCycles('));
+    expect(animationSource, contains('double jexFanRotationCyclesPerSecondAt('));
     expect(iconState, contains('TickerFuture _retargetFanRotation('));
     expect(iconState, contains('startPhaseRadians: fanPhaseController.value'));
     expect(iconState, contains('fanPhaseController.animateWith(simulation)'));
@@ -3108,23 +3116,22 @@ void main() {
   });
 
   test('Indicator animations stop on disconnect and OFF glyphs stay fully coloured', () {
-    final source = File('lib/main.dart').readAsStringSync();
-    final stateStart = source.indexOf('class _JexAnimatedIconState');
-    final stateEnd = source.indexOf('class _JexIconPainter', stateStart);
-    final painterStart = source.indexOf(
+    final animationSource = File(
+      'lib/jex_animated_icon.dart',
+    ).readAsStringSync();
+    final stateStart = animationSource.indexOf('class _JexAnimatedIconState');
+    final stateEnd = animationSource.indexOf('class _JexIconPainter', stateStart);
+    final painterStart = animationSource.indexOf(
       'class _JexIconPainter extends CustomPainter {',
     );
-    final painterEnd = source.indexOf(
-      'class TamperApp extends StatelessWidget',
-      painterStart,
-    );
+    final painterEnd = animationSource.length;
     expect(stateStart, isNonNegative);
     expect(stateEnd, greaterThan(stateStart));
     expect(painterStart, isNonNegative);
     expect(painterEnd, greaterThan(painterStart));
 
-    final state = source.substring(stateStart, stateEnd);
-    final painter = source.substring(painterStart, painterEnd);
+    final state = animationSource.substring(stateStart, stateEnd);
+    final painter = animationSource.substring(painterStart, painterEnd);
     expect(state, contains('void _stopAnimationsForDisconnect()'));
     expect(state, contains('frostTransitionController.stop();'));
     expect(state, contains('speedLevelTransitionController.stop();'));
@@ -3180,11 +3187,13 @@ void main() {
   test(
     'Fan Speed gauge retargets smoothly and fades its motion on state changes',
     () {
-      final source = File('lib/main.dart').readAsStringSync();
-      final stateStart = source.indexOf('class _JexAnimatedIconState');
-      final stateEnd = source.indexOf('class _JexIconPainter', stateStart);
-      final speedStart = source.indexOf('case JexAnimatedIconKind.speed:');
-      final speedEnd = source.indexOf(
+      final animationSource = File(
+        'lib/jex_animated_icon.dart',
+      ).readAsStringSync();
+      final stateStart = animationSource.indexOf('class _JexAnimatedIconState');
+      final stateEnd = animationSource.indexOf('class _JexIconPainter', stateStart);
+      final speedStart = animationSource.indexOf('case JexAnimatedIconKind.speed:');
+      final speedEnd = animationSource.indexOf(
         'case JexAnimatedIconKind.led:',
         speedStart,
       );
@@ -3192,8 +3201,8 @@ void main() {
       expect(stateEnd, greaterThan(stateStart));
       expect(speedStart, isNonNegative);
       expect(speedEnd, greaterThan(speedStart));
-      final iconState = source.substring(stateStart, stateEnd);
-      final speed = source.substring(speedStart, speedEnd);
+      final iconState = animationSource.substring(stateStart, stateEnd);
+      final speed = animationSource.substring(speedStart, speedEnd);
       expect(
         iconState,
         contains(
@@ -3222,12 +3231,14 @@ void main() {
   test(
     'Integrated indicator animation preserves seamless phase transitions',
     () {
-      final source = File('lib/main.dart').readAsStringSync();
-      final stateStart = source.indexOf('class _JexAnimatedIconState');
-      final stateEnd = source.indexOf('class _JexIconPainter', stateStart);
+      final animationSource = File(
+        'lib/jex_animated_icon.dart',
+      ).readAsStringSync();
+      final stateStart = animationSource.indexOf('class _JexAnimatedIconState');
+      final stateEnd = animationSource.indexOf('class _JexIconPainter', stateStart);
       expect(stateStart, isNonNegative);
       expect(stateEnd, greaterThan(stateStart));
-      final state = source.substring(stateStart, stateEnd);
+      final state = animationSource.substring(stateStart, stateEnd);
       expect(state, contains('unawaited(_animateActivityTransition(true));'));
       expect(
         state,
