@@ -141,7 +141,7 @@ A failed gate blocks dependent work. Retry only after classifying root cause (so
 | `android/settings.gradle` | Android plugin/bootstrap configuration | BUILD CONFIG — COMPATIBILITY GATED | KEEP / VERIFIED (same blob as Build #167; KGP matrix caveat recorded; 2026-11-26) |
 | `APP_BUILD_REPORT.md` | Append-only evidence ledger | APPEND-ONLY / NO REWRITE | APPEND-ONLY / READ-ONLY / REVIEWED (2026-11-26) |
 | `APP_NOTES.md` | App behavior and UI contract reference | APP NOTES — CURRENT + HISTORICAL SNAPSHOTS | UPGRADE / REVIEWED (2026-11-26; historical corruption note superseded) |
-| `APP_PREBUILD_AUDIT.md` | Project/configuration file | REVIEW REQUIRED | INVENTORIED — CONTENT REVIEW PENDING |
+| `APP_PREBUILD_AUDIT.md` | Current App rework and acceptance plan | APP PREBUILD AUDIT — WP0–WP10 AUTHORITY | UPGRADE / REVIEWED (2026-11-26) |
 | `archive/ARTIFACT_REPO_NOTES_PRE_BIN_ONLY_2026-10-14.md` | Immutable archive | IMMUTABLE / HISTORICAL | INVENTORIED — CONTENT REVIEW PENDING |
 | `archive/CHAT_TRANSFER_PRE_COMPACTION_2026-11-15.md` | Immutable archive | IMMUTABLE / HISTORICAL | INVENTORIED — CONTENT REVIEW PENDING |
 | `archive/LEGACY_NOTES_SNAPSHOT_2026-10-14.md` | Immutable archive | IMMUTABLE / HISTORICAL | INVENTORIED — CONTENT REVIEW PENDING |
@@ -580,7 +580,7 @@ The Firmware-safety and hardware/power skills are retained as protected project 
 ## Current disposition
 
 - Inventory coverage: **96/96 tracked blobs** at live main checkpoint before this documentation update: HEAD `123184396b6bc32e3cc05feff3050467a47682d8`; root tree `b7784209e9698c392dcbc8775d55caa466be9aeb`; recursive tree 142 entries / 96 blobs / 46 trees; truncated=false.
-- Content review coverage: **67/96 dispositioned files** in the live 96-blob register. APP_BUILD_REPORT.md is reviewed as append-only/read-only; APP_NOTES.md now has an explicit 2026-11-26 source reconciliation that supersedes the 2026-11-16 historical main.dart-corruption snapshot. The audit remains incomplete.
+- Content review coverage: **68/96 dispositioned files** in the live 96-blob register. `APP_BUILD_REPORT.md` is retained append-only/read-only; `APP_NOTES.md` supersedes its historical `main.dart` corruption status with the current validated source checkpoint; and `APP_PREBUILD_AUDIT.md` has been reconciled to the full-cycle execution instruction. The audit remains incomplete.
 - Seven formatter-touched Dart/test files remain pending full-file content review: lib/main.dart (targeted notification result fix is validated but whole-file audit is open), lib/usage_statistics.dart, test/connection_scan_coordinator_test.dart, test/firmware_qc_contract_test.dart, test/localization_contract_test.dart, test/usage_statistics_test.dart and test/widget_test.dart. test/device_copy_notification_contract_test.dart is closed after the API-28 and Firmware notification-result assertions passed #77/#79; test/floating_monitor_layout_contract_test.dart is closed after the native overlay ownership contract passed #78.
 - No blanket source/config/workflow/Firmware/BIN/asset update is authorized by this plan.
 - The next unreviewed live inventory path is `APP_BUILD_REPORT.md` (append-only release evidence ledger). The launcher asset's alpha mismatch is documented as protected; no image edit or asset publication occurred. Current-main Android compilation and physical API/OEM evidence have not been obtained.
@@ -602,3 +602,10 @@ The Firmware-safety and hardware/power skills are retained as protected project 
 - **Repair:** added a clearly dated current-main reconciliation at the top of `APP_NOTES.md`, explicitly superseding only the historical corruption status, recording the current source blob, the notification acknowledgement persistence guard and the Validation Only #79 evidence. The old incident details remain intact as historical audit evidence.
 - **Evidence limits:** #79 is Flutter/Dart Validation Only on its exact source/test SHA. It does not prove Android/Kotlin compilation, device/OEM behavior or visual acceptance. The whole main.dart architecture/content audit remains pending; this note does not mark that file complete.
 - **Disposition:** `UPGRADE / REVIEWED`; no App source, test, workflow, Firmware, OTA, Firebase, signing, asset or Release file changed in this documentation update.
+
+### WP0 — `APP_PREBUILD_AUDIT.md` — UPGRADE / REVIEWED (2026-11-26)
+
+- **Reviewed blob before update:** `602d1455647f64daa92aa64acd52af5647efe8a5`; the full 462-line work package was reviewed, including the active owner request, WP0–WP10 sequence, all screen/motion design criteria, architecture and telemetry ownership map, protected exclusions, recovery proposals, quality gates and retained historical planning.
+- **Repair:** updated its active preflight with the owner's full-cycle `Eksekusi Code!` expectation, latest repository checkpoint and current main.dart identity. Replaced the stale register count/next-file pointer with the current live register state. Historical source snapshots and earlier Diskusi-only proposals remain labelled and preserved.
+- **Acceptance:** all planned packages remain explicitly IN_PROGRESS until their outcomes are implemented and evidenced; no plan text is used as a substitute for tests, Android compilation, screenshot/device evidence or separate Build App authorization. Visual status remains VISUAL NOT VERIFIED.
+- **Disposition:** `UPGRADE / REVIEWED`. No executable source, test, workflow, protected Firmware/OTA, asset, APK, Release or signing content changed.
