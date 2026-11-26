@@ -221,14 +221,10 @@ int usageSessionCoverageEndMs({
   if (lastHotReceiptAtMs == null) return session.startedAtMs;
 
   final freshnessEndMs =
-      lastHotReceiptAtMs +
-      const Duration(milliseconds: 1500).inMilliseconds;
+      lastHotReceiptAtMs + const Duration(milliseconds: 1500).inMilliseconds;
   final coverageEndMs = session.endedAtMs ?? publishedAtMs;
   return math
-      .max(
-        session.startedAtMs,
-        math.min(coverageEndMs, freshnessEndMs),
-      )
+      .max(session.startedAtMs, math.min(coverageEndMs, freshnessEndMs))
       .toInt();
 }
 
@@ -1147,10 +1143,7 @@ class UsageStatisticsStore implements UsageStatisticsRepository {
     }
 
     final session = UsageStatsSession.fromMap(sessionRows.first);
-    final end = usageSessionCoverageEndMs(
-      session: session,
-      publishedAtMs: now,
-    );
+    final end = usageSessionCoverageEndMs(session: session, publishedAtMs: now);
 
     final stateRows = await database.query(
       'usage_events',
