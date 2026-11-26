@@ -11,6 +11,7 @@
 - **Register:** 43/96 closed dispositions before hosted validation. The two changed files (`.github/workflows/jexfyz-app-validation.yml` and `test/github_actions_workflow_contract_test.dart`) are IN_PROGRESS pending CI. Nine unrelated formatter-touched Dart/test files remain pending individual review.
 - **Validation:** local Flutter/Dart/Gradle/ADB are absent, so local format/analyzer/tests/Android/device are BLOCKED / NOT RUN. Push includes `.github/workflows/jexfyz-app-validation.yml` and `test/**`, which should trigger the existing non-publishing Validation Only workflow; confirm its actual run id/source SHA/status after commit. Do not trigger Build App.
 - **Visual:** no rendered screenshots were inspected; status remains VISUAL NOT VERIFIED.
-- **Next action:** commit the scoped workflow/test and notes; immediately confirm and monitor the new Validation Only run to terminal state before closing WP1/WP6 dispositions.
+- **Live Validation Only:** run #74 / `45824943829`, job `139926598155`, checks out exact source/test commit `8e8e5bff2b9ab4c8ada53406b026520b194044f6`; currently IN_PROGRESS during Flutter setup. This is non-publishing; it is not Build App.
+- **Next action:** monitor #74 to terminal state and inspect each step/log, test count and exact SHA before closing WP1/WP6 dispositions.
 
 <!-- ACTIVE_CHECKPOINT_END -->

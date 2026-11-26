@@ -53,6 +53,8 @@ The Firmware-safety and hardware/power skills are retained as protected project 
 - **Changed App-side paths:** `.github/workflows/jexfyz-app-validation.yml` changes only Flutter composite cache from `true` to `false`; `test/github_actions_workflow_contract_test.dart` clarifies effective Build job token scope and adds regression assertions for both non-publishing workflows. The protected Build App trigger workflow remains byte-identical.
 - **Evidence boundary:** source blobs `c0b75430a406d6756e301065bb727d84e4e0fea7` and `3adace43dfad6b10aa267f45fbf99d9ccc6ee435` are the proposed changes; hosted Validation Only evidence is pending.
 
+- **Hosted run opened:** Validation Only #74 / run `45824943829` / job `139926598155`, event `push`, exact source SHA `8e8e5bff2b9ab4c8ada53406b026520b194044f6`; live status at 2026-11-26T20:01:38+07:00 (Asia/Jakarta) is `IN_PROGRESS` at Flutter setup. This is non-publishing; no Build App run was started. Terminal formatter/analyzer/test results are pending.
+
 ### Verified opening baseline
 
 - Current `main` HEAD at the start of this plan: `0ff34de66963a193034c3c737ae4dc6d7de886ac`; root tree `eaf84dbb2ea306a82075cea22b0351b976d23ee9`; recursive tree **142 entries / 96 blobs / 46 trees**, `truncated=false`.
