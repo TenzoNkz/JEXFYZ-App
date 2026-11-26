@@ -829,7 +829,7 @@ void main() {
     final usage = File('lib/usage_statistics.dart').readAsStringSync();
     final clearStart = usage.indexOf('Future<void> clearHistory(String coolerId)');
     final clearEnd = usage.indexOf(
-      '\\n  }\\n}\\n\\nString _usageStatsEventKey',
+      '\n  }\n}\n\nString _usageStatsEventKey',
       clearStart,
     );
     expect(clearStart, isNonNegative);
