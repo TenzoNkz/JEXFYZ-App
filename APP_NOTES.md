@@ -1,3 +1,13 @@
+## Current Usage Statistics correction — Clear History and P1 HOT freshness — 2026-11-26
+
+- **Current source:** `lib/usage_statistics.dart` blob `6c0bb51f2283e9e0a46851962b951ffd820f6ee9` (3,640 lines) and `test/usage_statistics_test.dart` blob `aa5bc741760fe67dec06d4e4f272ffe4f598332e` (1,248 lines), after the Validation Only formatter follow-up.
+- **Defect and fix:** Clear History no longer seeds the newly cleared session with cached Battery/Hotside values, records no synthetic temperature baseline, clears per-sensor receipt clocks, and leaves the HOT freshness receipt null. A new HOT frame is required before new P1 coverage can accrue. `usageSessionCoverageEndMs` uses the last real HOT receipt plus the existing 1,500-ms freshness bound, also capped at the session end/published time. A session without HOT receipt has no verified coverage beyond its start.
+- **Preserved data contract:** SQLite schema/version 2 and v1→v2 migration source remain intact; 30-day retention, raw 1-Hz recording, sample timestamps, null gaps, session separation, weighted event summaries, gap-safe 1,600-point decimation and 64+8+1 writer queue are unchanged. No schema migration or stored-history rewrite was introduced by this fix.
+- **Regression:** pure coverage and source-contract tests verify the no-HOT state and Clear History baseline/receipt behavior.
+- **Validation Only #82:** run `45858238070` / job `140042152884`, test source SHA `b5b11ac0f37c201b51f1cfb0e816ee56813f1d1b`, terminal SUCCESS; locked deps, formatter/post-format and analyzer PASS, Flutter tests 225/225 PASS. The CI follow-up at `8b5b662725cfcf5b5b084209ed97989361148d13` only persisted formatter output. Android/Kotlin compile, real SQLite upgrade fixture, device runtime, long-duration soak and screenshot acceptance remain NOT RUN / NOT VERIFIED.
+- **Whole-file review:** the Usage Statistics implementation and its complete test file were reviewed in this cycle, and the focused freshness defect was corrected. The broader proposed WP7 model/store/analytics/presentation extraction and actual performance profile are separate remaining work; do not infer they are complete.
+
+---
 ## Current main-source reconciliation — recovered App behavior and notification acknowledgement — 2026-11-26
 
 - **Live source:** `lib/main.dart` is currently 409,357 bytes / 11,627 lines, blob `346ce5ff6cbdbef24afe2a08b25443e560b9c5eb`. It contains one active `TamperApp`, `DashboardScreen` and `_DashboardScreenState`; the repeated declarations/parser corruption described by the 2026-11-16 recovery snapshot are not present in this current source.
