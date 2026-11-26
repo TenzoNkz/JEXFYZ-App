@@ -509,7 +509,7 @@ void main() {
       'class _JexIconPainter extends CustomPainter {',
     );
     final painterEnd = source.indexOf(
-      'const MethodChannel securityChannel',
+      'class TamperApp extends StatelessWidget',
       painterStart,
     );
     expect(painterStart, isNonNegative);
@@ -740,7 +740,7 @@ void main() {
       'class _JexIconPainter extends CustomPainter {',
     );
     final painterEnd = source.indexOf(
-      'const MethodChannel securityChannel',
+      'class TamperApp extends StatelessWidget',
       painterStart,
     );
     final painter = source.substring(painterStart, painterEnd);
@@ -795,7 +795,7 @@ void main() {
       'class _JexIconPainter extends CustomPainter {',
     );
     final painterEnd = source.indexOf(
-      'const MethodChannel securityChannel',
+      'class TamperApp extends StatelessWidget',
       painterStart,
     );
     expect(painterStart, isNonNegative);
@@ -881,7 +881,7 @@ void main() {
       'class _JexIconPainter extends CustomPainter {',
     );
     final painterEnd = source.indexOf(
-      'const MethodChannel securityChannel',
+      'class TamperApp extends StatelessWidget',
       painterStart,
     );
     final painter = source.substring(painterStart, painterEnd);
@@ -1284,7 +1284,7 @@ void main() {
     final start = source.indexOf(
       'class _JexIconPainter extends CustomPainter {',
     );
-    final end = source.indexOf('const MethodChannel securityChannel', start);
+    final end = source.indexOf('class TamperApp extends StatelessWidget', start);
     expect(start, greaterThanOrEqualTo(0));
     expect(end, greaterThan(start));
     final painter = source.substring(start, end);
@@ -2601,7 +2601,7 @@ void main() {
         'class _JexIconPainter extends CustomPainter {',
       );
       final painterEnd = source.indexOf(
-        'const MethodChannel securityChannel',
+        'class TamperApp extends StatelessWidget',
         painterStart,
       );
       final painter = source.substring(painterStart, painterEnd);
@@ -2629,7 +2629,7 @@ void main() {
       'class _JexIconPainter extends CustomPainter {',
     );
     final painterEnd = source.indexOf(
-      'const MethodChannel securityChannel',
+      'class TamperApp extends StatelessWidget',
       painterStart,
     );
     expect(painterStart, isNonNegative);
@@ -2902,7 +2902,7 @@ void main() {
         'class _JexIconPainter extends CustomPainter {',
       );
       final painterEnd = source.indexOf(
-        'const MethodChannel securityChannel',
+        'class TamperApp extends StatelessWidget',
         painterStart,
       );
       expect(painterStart, isNonNegative);
@@ -3056,7 +3056,7 @@ void main() {
       'class _JexIconPainter extends CustomPainter {',
     );
     final painterEnd = source.indexOf(
-      'const MethodChannel securityChannel',
+      'class TamperApp extends StatelessWidget',
       painterStart,
     );
     final stateStart = source.indexOf('class _JexAnimatedIconState');
@@ -3115,7 +3115,7 @@ void main() {
       'class _JexIconPainter extends CustomPainter {',
     );
     final painterEnd = source.indexOf(
-      'const MethodChannel securityChannel',
+      'class TamperApp extends StatelessWidget',
       painterStart,
     );
     expect(stateStart, isNonNegative);
