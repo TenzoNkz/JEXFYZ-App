@@ -1,3 +1,12 @@
+## Direct-main CI / repository policy update — 2026-11-27
+
+- **Owner decision:** all ordinary changes commit directly to `main`; only `main` remains, no active repository rulesets remain, and the owner confirms this CODE_FULL subchat is the only active execution chat. Do not create feature branches or PRs.
+- **Non-publishing validation:** Validation Only is the single source validator, triggered by relevant pushes to main, with `contents: read`, checkout credentials disabled, locked dependencies, read-only Dart formatting, analyzer and full Flutter tests. It never formats/writes/commits a bot change.
+- **Retired workflow:** `.github/workflows/jexfyz-app-pr-validation.yml` is removed because branch/PR development is no longer the operating model. Its history remains in Git; older references below describe the previous workflow only.
+- **Release boundary:** `.github/workflows/jexfyz-app-build-trigger.yml` stays unchanged. Its issue-open/reopen owner/title/body-token guard, serialized non-cancelling queue, immutable action SHAs, signing/provenance/download checks and release gates remain intact. Only a fresh `Eksekusi Build App!` command authorizes it.
+- **Direct-main safety:** every source/documentation commit re-fetches live `main`, target file SHAs and the full base tree, then advances the ref with an expected-HEAD check. No force-push, branch, PR or auto-merge is used.
+- **Validation Only #96:** formatter/analyzer/test steps succeeded on an earlier SHA, but its overall run failed at the summary because `main` advanced before the formatter-only commit. It does not validate the final Connection extraction.
+
 # CURRENT LIVE MAIN — BUILD #167 RELEASED / APP VALIDATION + RELEASE VERIFIED — 2026-11-24
 
 This is the current App pre-build/packaging snapshot. Build #167 has already completed and published the Home cooler sizing correction. Do not trigger another build merely to repeat successful CI.

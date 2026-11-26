@@ -10,7 +10,7 @@ This file contains **exactly three** copy-ready LOAD + CONTINUE payloads. Each p
 
 ChatGPT/GitHub repository files cannot create or name conversations automatically; the owner creates/selects these three chats manually. Do not switch a conversation to a different workspace by editing only the first command line. If a command is sent to the wrong workspace, do not execute it there.
 
-All three workspaces share the same GitHub `main` and durable project memory. They do **not** share chat transcripts automatically. Use `00_WORK_STATUS.md`'s `WORKSPACE` field and the bounded active checkpoint in `CHAT_TRANSFER.md` to hand off. Follow the single-writer rule: do not perform concurrent writes/build operations from separate chats. Finish the active mutating interaction before another workspace writes or starts an external operation.
+All three workspaces share GitHub `main` and durable project memory; they do **not** share chat transcripts automatically. The owner confirms this CODE_FULL subchat is the only active execution chat. Commit every allowed repository change directly to `main`; do not create secondary branches or PRs. Keep Diskusi read-only for code/config/workflows and keep Build App separately authorized. Use `00_WORK_STATUS.md` and the bounded checkpoint in `CHAT_TRANSFER.md` for handoff.
 
 `Chat Stuck!` is a recovery instruction inside whichever of these three workspaces was selected; it is not a fourth workspace and cannot widen its existing authorization. `Eksekusi Code Full!` and `Eksekusi Full!` are compatibility aliases for **Eksekusi Code!**; use only the shorter command in new chats and prompts.
 
@@ -42,7 +42,7 @@ MANDATORY LOAD
 DISCUSSION BOUNDARY
 - Read-only for executable source, tests, configuration, workflows, Actions/Release operations, Firmware/BIN, Firebase, OTA, flashing and device actions.
 - Do not run builds, tests, formatter writes, analyzers that mutate the project or any external side effect.
-- After a substantive conclusion, canonical documentation/memory may be updated only when it records a real decision, finding or blocker. Serialize such writes with other workspaces.
+- After a substantive conclusion, canonical documentation/memory may be updated only when it records a real decision, finding or blocker. Commit any permitted documentation-only update directly to `main`; do not create a branch or PR.
 - Never turn a discussion into implementation. Any source/test/config/workflow change belongs in the separate Eksekusi Code chat; any App packaging/release belongs in the separate Eksekusi Build App chat.
 - Tanya Gemini! is optional. When a second opinion materially reduces uncertainty, provide a self-contained prompt; Gemini has no repository access and its response is unverified until checked.
 
@@ -94,7 +94,7 @@ OWNER-APPROVED ACTIVE WORK PACKAGE — FULL APP REWORK + PREMIUM UI REDESIGN (20
 This owner request authorizes the App-only source/test/docs/static-audit scope in this dedicated Eksekusi Code chat. Read APP_PREBUILD_AUDIT.md's section “Owner-requested full App rework + premium UI redesign — 2026-11-26” and DESIGN_NOTES.md's “Full App visual redesign brief — owner request 2026-11-26”; they are the detailed execution/design authorities for this work. The plan is incremental, WP0–WP10, not a big-bang rewrite.
 
 STARTUP / PRE-FLIGHT
-- First reconcile 00_WORK_STATUS.md, current main HEAD, recursive tree and single-writer/external-operation state. The plan was opened against HEAD 0ff34de66963a193034c3c737ae4dc6d7de886ac; later documentation-only commits have advanced main, so this is an historical source checkpoint, NOT permission to edit using stale blobs/line numbers.
+- First reconcile 00_WORK_STATUS.md, current `main` HEAD, recursive tree, main-only branch inventory and external-operation state. The plan was opened against HEAD 0ff34de66963a193034c3c737ae4dc6d7de886ac; later documentation-only commits have advanced main, so this is an historical source checkpoint, NOT permission to edit using stale blobs/line numbers.
 - Verify the live recursive tree and `REPOSITORY_UPGRADE_PLAN.md` register. Reconcile the current disposition count and resume at the first unreviewed path in the live inventory; do not rely on a count, path or source SHA embedded in an older handoff. Independently review every formatter-touched Dart file still marked pending, then finish every file-level disposition.
 - Establish and record current behavior/test baseline before extraction or visual changes. Review existing tests for genuine behavior coverage and false-positive/brittle source assertions.
 
@@ -122,7 +122,7 @@ RECOVERY
 Chat Stuck! in this chat inherits only the most recent valid CODE_FULL authorization. Check live branch/status and unfinished external operations before resuming. Do not repeat commits or side effects.
 
 STATUS + MEMORY
-Follow MASTER_PROMPT.md Sections 2A and 5 for every message. Record WORKSPACE = CODE_FULL. Serialize all writes with the other workspaces; do not run concurrent project mutations. Keep independent Actions states separate. Update CHAT_TRANSFER.md and the relevant subject note with durable findings/results/blockers, then verify every write and final main HEAD.
+Follow MASTER_PROMPT.md Sections 2A and 5 for every message. Record WORKSPACE = CODE_FULL. Commit approved changes directly to `main`; do not create secondary branches or PRs. Re-fetch the current HEAD and target-file SHAs before each commit. Keep independent Actions states separate. Update CHAT_TRANSFER.md and the relevant subject note with durable findings/results/blockers, then verify every write and final main HEAD.
 
 REPORT
 List changed files, commit, exact tests/checks actually run or BLOCKED / NOT RUN, residual risks and one next action. Never imply an App package was built. End with Arah berikutnya: Lanjut Diskusi!, Lanjut Eksekusi Code! or Siap Eksekusi Build App! as appropriate; a recommendation is not authorization.

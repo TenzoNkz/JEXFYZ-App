@@ -1,3 +1,10 @@
+## 2026-11-27 — Direct-main-only repository execution and read-only Validation Only
+
+- **Owner decision:** keep only `main`; use direct commits to that branch; no feature branches or PRs. GitHub verified exactly one branch (`main`) and an empty active ruleset list.
+- The unused pull-request validation workflow is retired. Validation Only becomes a read-only push-to-main Flutter/Dart gate: locked dependencies, formatter check, analyzer and full Flutter tests; `contents: read`; no checkout write credential, formatter mutation, artifact preview, bot commit or git push.
+- The guarded Build App workflow remains unchanged. The manual owner/title/body-token trigger, non-cancelling serialized queue, signing, source bundle and artifact-integrity gates remain separate and mandatory.
+- Connection sheet extraction is recorded in the file register; Validation Only #96 is not a terminal PASS for current main because its final summary failed after the branch advanced before the formatter-only commit. No Build App/APK/sign/release, Firmware/BIN, Firebase, OTA or device operation was run.
+
 ## 2026-11-26 — Isolate App official-build gate and handle passive rediscovery errors (source + Validation Only; not released)
 
 - Extracted the existing `je_x_fyz/security` MethodChannel and official-build fail-closed decision to `lib/app_security.dart`. Android accepts only native Boolean true; false/null/channel failure denies. Non-Android behavior remains unchanged. `main.dart` delegates to the adapter; Tamper contact remains.

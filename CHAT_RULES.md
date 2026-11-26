@@ -12,6 +12,6 @@ This file is retained for compatibility with existing links and chat-transfer in
 
 Each command has its own ChatGPT conversation. The owner creates/selects the three chats manually using the three copy-ready blocks in [CHAT_TRANSFER_PROMPTS.md](CHAT_TRANSFER_PROMPTS.md). The chats share GitHub memory but not transcripts. Do not switch modes inside one chat. `Chat Stuck!` is recovery within the active workspace, not another workspace.
 
-All workspaces share `main`, `00_WORK_STATUS.md` and `CHAT_TRANSFER.md`. The `WORKSPACE` field identifies the active chat. Serialize writes and external operations; do not mutate the repository concurrently from multiple chats.
+All project changes go directly to `main`; secondary branches and PRs are not used. The owner confirms this CODE_FULL subchat is the only active execution chat. Re-fetch current main and target-file SHAs before writes; Build App remains a separate explicit operation.
 
 For every JE X FYZ project message, open `SESSION STATUS = IN_PROGRESS` at the start, refresh at meaningful milestones, and close with the actual result. Keep the interaction/work item separate from external Actions state. Follow MASTER_PROMPT.md Section 2A; this is event-driven, not a background heartbeat.

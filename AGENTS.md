@@ -18,7 +18,7 @@ This file is a small interoperability entrypoint for repository-aware coding age
 - Eksekusi Code! is limited to the exact owner-approved App source/tests/docs/config/static-audit work package. Legacy Eksekusi Code Full! and Eksekusi Full! are compatibility aliases. It does not authorize App Build/APK release, Firmware compilation, BIN/Firebase production mutation, OTA, flashing or device operations.
 - Eksekusi Build App! alone authorizes the guarded App Build/QC/release workflow. Preserve its issue/title/token guard and all gates.
 - Use three separate ChatGPT conversations, one per command. The owner creates the chats manually from `CHAT_TRANSFER_PROMPTS.md`; do not switch workspace inside a chat. `Chat Stuck!` inherits only the active workspace's existing authorization.
-- All chats share `main` and canonical memory. Serialize writes and external operations; no concurrent project writers. The `WORKSPACE` status field identifies the active chat but is not a lock.
+- All project mutations are committed directly to `main`; do not create secondary branches or PRs. The owner confirms this CODE_FULL subchat is the only active execution chat. Re-fetch `main` and target file SHAs before each write; use expected-HEAD updates, never force-push. Build App remains separately authorized.
 - Chat Stuck! inherits only an already-authorized in-progress operation and must avoid duplicate side effects.
 - Firmware compilation, BIN/Firebase mutation, OTA, flashing and device operation always require their own explicit authorization; do not infer these from a repository task.
 - Preserve BLE P1, authoritative telemetry, safe-output, NTC/rail/Peltier timing, OTA recovery and Android versionName `Telegram @horizontalzzz`.
