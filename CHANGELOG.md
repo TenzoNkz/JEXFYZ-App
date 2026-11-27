@@ -1,3 +1,12 @@
+## 2026-11-27 — Chat recovery, Home NOTIFY extraction and exact-main verification
+
+- Recovered the CODE_FULL execution from its last verified main SHA rather than repeating completed side effects. Owner-selected direct-main policy remains: one branch (`main`), no PRs/secondary branches, zero repository rulesets.
+- Validation Only was verified read-only and main-only. Exact run `45884911511` / job `140133094930` on `c97a2fdc2698b16339d3f03ff04d992f2a0e7848` passed locked dependencies, formatter, analyzer and **233/233 Flutter tests**.
+- Extracted `HomeNotifyCard` to `lib/home_notify.dart` as a stateless 44-dp presentation component. Dashboard retains localized copy, connection/error/warning classification, theme/foreground contrast and HOT safety-limit decisions. Widget tests cover disconnected and warning rendering.
+- The file inventory was reconciled to 101 unique paths for 101 tracked blobs. `lib/connection_sheet.dart`, `lib/jex_animated_icon.dart`, `lib/led_controls.dart` and Home NOTIFY remain presentation boundaries; Dashboard remains the BLE/GATT/P1/session owner.
+- The guarded Build App workflow is unchanged. Build #167 remains the latest published package; current source is not released. No APK, signing, release, Firmware/BIN, Firebase production, OTA, flash or device operation occurred.
+- Evidence limit: no local Flutter/Dart/Gradle/ADB; no Android/Kotlin compilation, screenshots/OEM/device acceptance, SQLite migration runtime fixture or long-session performance soak. Visual status remains **VISUAL NOT VERIFIED**.
+
 ## 2026-11-27 — Direct-main-only repository execution and read-only Validation Only
 
 - **Owner decision:** keep only `main`; use direct commits to that branch; no feature branches or PRs. GitHub verified exactly one branch (`main`) and an empty active ruleset list.
