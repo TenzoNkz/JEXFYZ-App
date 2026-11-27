@@ -5,11 +5,11 @@ Last reconciled: 2026-11-28 (Asia/Jakarta). Authority: MASTER_PROMPT.md.
 ## Active workspace — CODE_FULL / IN_PROGRESS
 
 - Owner command: “@Thinking Eksekusi Code!” — continue owner-approved App-only WP0–WP10 full rework and premium UI redesign; ChatGPT/Codex alone authors/reviews, direct main commits only. No branch, PR, Copilot or external agent.
-- Canonical repository TenzoNkz/JEXFYZ-App / main. Current source/test commit 1f073f1d3eae067d91b4dc6611a0e3d445892997; WP5 source fix 8b882350d6a3f0af480145110cbb72ef6a81eef5. Validation Only #276 / run 46078113776 / job 140770527587 is IN_PROGRESS on the exact source/test SHA; dependencies and formatter complete, analyzer running, full tests pending. Prior #274 is the last terminal SUCCESS (347/347).
+- Canonical repository TenzoNkz/JEXFYZ-App / main. Current source/test commit e52b167d7162ad156f031cb01dbad4fcab082c61; WP5 production source fix 8b882350d6a3f0af480145110cbb72ef6a81eef5; follow-up test recovery commits 1f073f1d3eae067d91b4dc6611a0e3d445892997, 0cf3050b7152f3c4c8720a9290d36217301b2f1c, e52b167d7162ad156f031cb01dbad4fcab082c61. Validation Only #278 / run 46078589907 / job 140772025714 is IN_PROGRESS on the exact source/test SHA. Prior #274 is the last terminal SUCCESS (347/347).
 - Live tree: 177 recursive entries / 131 tracked blobs, truncated=false; REPOSITORY_UPGRADE_PLAN.md has 131 unique dispositions covering every live tracked path exactly once.
 - WP0 lib/main.dart full static ownership audit completed at blob c2821452079e798bfaaac99acb82af1f6e127c86 (4,567 lines). Dashboard remains sole BLE/GATT/P1/frame/SYNC/SYNC_READY/ACK/telemetry/session/serialized-command owner; scanner generations, manual/passive arbitration, reconnect/disposal, atomic sync and ACK vs telemetry-confirmed state reviewed. OTA/Firebase source protected and unchanged; architectural decomposition remains open.
 - WP4 shared switch-row slice accepted and CI-verified: JexDashboardSwitchRow is value/callback-only; Dashboard continues to own state and command routing. Eleven component-specific tokens preserve rendered values. Widget test covers actual/min row geometry, icon/type, Tristate semantics, accessible action and callback. Validation Only #274 includes 347/347.
-- WP5 Temperature affordance fix: the 5V increase and 12V decrease controls now disable exactly where the existing setter enforces a 2°C gap. Regression suite now covers six EN/ID labels, 48-dp targets, 360/420-dp viewports, Light/Dark and endpoint/cross-zone boundaries. #275 recovery is recorded; #276 is pending.
+- WP5 Temperature affordance fix: 5V increase and 12V decrease controls now match the existing 2°C setter guard. Three widget tests cover six EN/ID labels, 48-dp targets, 360/420-dp viewports, Light/Dark, hard endpoints and the 29/31°C cross-zone boundary; the test waits 250 ms for the 210-ms tab transition. #275–#277 failures are documented; #278 pending.
 - Recovery history #270–#273 and root causes are in the bounded CHAT_TRANSFER.md checkpoint; all repaired, and final #274 run passes.
 - Existing test/widget_test.dart source fragments are lexical, not AST/comment-aware; broader brittleness review remains open. Usage Statistics static review covers schema v2/migration, retention, session/HOT/null/gap/decimation/queue contracts; SQLite runtime migration fixture and 1h/6h/24h profiles NOT RUN.
 - Local Flutter/Dart/Gradle/ADB unavailable: local checks BLOCKED / NOT RUN. Hosted CI only; no Android/Kotlin build, device or Android/OEM screenshot. Whole-App visual status VISUAL NOT VERIFIED.
@@ -17,7 +17,7 @@ Last reconciled: 2026-11-28 (Asia/Jakarta). Authority: MASTER_PROMPT.md.
 
 ## Next action
 
-Inspect Validation Only #276 on exact SHA 1f073f1d3eae067d91b4dc6611a0e3d445892997; after terminal success, continue the next dependency-ordered WP5 App presentation task.
+Inspect Validation Only #278 on exact SHA e52b167d7162ad156f031cb01dbad4fcab082c61; after terminal success, continue the next dependency-ordered WP5 App presentation task.
 ## Historical operation — Build App #170 / COMPLETED SUCCESS
 
 - Workspace: BUILD_APP. Explicit owner command “@Thinking Eksekusi Build App!” has been completed.
