@@ -4,18 +4,15 @@ Last reconciled: 2026-11-27 (Asia/Jakarta). Authority: `MASTER_PROMPT.md`.
 
 ## Active handover — CODE_FULL, then REPO_FULL
 
-- **Owner scope:** finish App-only WP0–WP10 and evidence-backed build-ready handoff; then run one approved REPO_FULL cleanup cycle.
-- **Repository policy:** direct commits to `main` only; no branches/PRs. GitHub verifies exactly one branch (`main`) and zero active rulesets. Owner confirms this is the only active execution chat.
-- **Verified source:** `c97a2fdc2698b16339d3f03ff04d992f2a0e7848`; recursive tree 147 entries / 101 blobs / 46 trees; register complete at 101 unique paths.
-- **CI:** Validation Only run `45884911511` / job `140133094930`, exact main SHA, terminal SUCCESS; 233/233 tests, locked dependencies, formatter and analyzer PASS.
-- **App changes:** Home NOTIFY rendered by stateless 44-dp `HomeNotifyCard`; Dashboard still owns error/warning/HOT safety/locale/foreground decisions. Connection sheet presentation extracted; scanner/BLE/GATT/P1 ownership unchanged.
-- **Latest published package:** Build #167. Current source is not released.
-- **Boundaries:** no Build App/APK/sign/release, Firmware/BIN/P1 protocol, BLE identity/security, OTA, Firebase production, signing secrets, flash or device operation. Visual acceptance is **NOT VERIFIED**.
-
-## Evidence blockers
-
-Flutter/Dart/Gradle/ADB absent locally. Hosted Validation Only cannot compile Android/Kotlin or substitute for screenshots/device/OEM checks. SQLite v1→v2 runtime fixture and 1h/6h/24h performance soak remain NOT RUN.
+- **Owner scope:** finish App-only WP0–WP10 and evidence-backed build-ready handoff; then run the approved REPO_FULL cleanup cycle. Build App remains separate.
+- **Repository policy:** direct commits to `main` only. Prior live check found only branch `main` and an empty rulesets response. No branch/PR workflow.
+- **Verified current source:** `4c5feb51c8777b0576d0ac11f3fafb921db91b38`; root tree `a7474fc394c6b070de0195e82b53127a63e0bf38`; recursive 150 entries / 104 blobs / 46 trees; `truncated=false`. The register is being updated to 104 unique paths.
+- **WP2 source:** bootstrap ordering isolated in `lib/app_bootstrap.dart`; Settings navigation and preference pages in `lib/settings_pages.dart` as a part of `floating_monitor.dart`. BLE/GATT/P1 state remains exclusively in Dashboard.
+- **Latest validation:** #116 passed locked dependencies, analyzer and 239/239 Flutter tests but failed read-only formatter. Current exact-SHA revalidation is #118 / run `45919092056` / job `140245350553`; terminal result pending on `4c5feb51c8777b0576d0ac11f3fafb921db91b38`.
+- **Protected contracts:** P1 UUID/framing/commands/SYNC_READY, single GATT owner, scan serialization/generation, telemetry truth, Usage Statistics v2/v1→v2/30-day/1-Hz/HOT/null-gaps/64+8+1, Android identity, OTA/Firebase/signing and Firmware safeguards remain protected.
+- **Latest package:** Build #167 only; current source is not released. No Build App/APK/sign/release, Firmware/BIN, OTA, Firebase production, flashing or device operation.
+- **Evidence blockers:** Flutter/Dart/Gradle/ADB absent locally. Android/Kotlin compile, screenshot/device/OEM review, SQLite migration fixture and long-session profile remain NOT RUN. Overall visual acceptance is **VISUAL NOT VERIFIED**.
 
 ## Next action
 
-Continue CODE_FULL Dashboard architecture/state ownership review and ordered WP0–WP10. REPO_FULL follows only after CODE_FULL closes. Do not trigger Build App in this workspace.
+Confirm Validation Only #118 against its exact SHA, then continue the App-root/shared-core boundary and WP3 device-session characterization. REPO_FULL follows only after CODE_FULL closes. Do not invoke Build App in this workspace.
