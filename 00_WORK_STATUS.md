@@ -1,4 +1,4 @@
-| Last updated | 2026-11-27T11:53:58.518+07:00 (Asia/Jakarta) |
+| Last updated | 2026-11-27T11:56:27.813+07:00 (Asia/Jakarta) |
 
 > Event-driven project marker. It is not a live heartbeat or a GitHub lock.
 
@@ -7,21 +7,21 @@
 | Field | Value |
 |---|---|
 | **STATUS** | **IN_PROGRESS** |
-| SESSION STATUS | IN_PROGRESS — Owner command at 2026-11-27T11:43:33+07:00: “@Thinking Eksekusi Code!” with the full MASTER PROMPT LOAD + CONTINUE request reproduced in this interaction; continue the approved WP0–WP10 App-only rework through evidence-backed handoff. |
+| SESSION STATUS | IN_PROGRESS — Recovery command “@Thinking Chat Stuck!” received 2026-11-27T11:56:27.813+07:00; resumes the existing CODE_FULL App-only authorization from the immediately preceding Eksekusi Code! session; no scope expansion. |
 | WORK STATUS | IN_PROGRESS — Owner-approved WP0–WP10 App source/test/docs/config/static-audit scope; continue the continuous full-cycle execution, then REPO_FULL only after CODE_FULL closes and under its existing authorization. |
 | WORKSPACE | CODE_FULL |
 | Mode | App Flutter/Dart source, tests, docs, App config and static audit; direct commits to main only. No Build App/APK/sign/release, Firmware/BIN/P1 protocol changes, BLE identity/security, OTA transport/trust/recovery, Firebase production, signing material, flashing or device operation. |
 | Request / work item | “Eksekusi Code!” full-cycle continuation of owner-approved “Full App rework + premium UI redesign” (2026-11-26), WP0–WP10. The repeated command continues this exact CODE_FULL authorization; do not stop after an isolated file/package. |
 | Started | 2026-11-27T11:43:33+07:00 (Asia/Jakarta) |
 | Last updated | 2026-11-27T11:55:00+07:00 (Asia/Jakarta) |
-| Current phase | WP3 command contract extraction — pure P1 classification helper committed; Validation Only #143 running against exact source/test SHA. |
-| Last completed milestone | P1 command classification moved from Dashboard into `lib/p1_command_contract.dart` without changing any command text, ACK labels, response policy or telemetry mapping. Dashboard wrappers retain ownership of write/ACK/session sequencing; comprehensive table-driven contract tests added in `test/p1_command_contract_test.dart`. Commit `6a94513e161cc5751bce3559176b09754a63e4ca`. |
-| Last verified source checkpoint | main HEAD `6a94513e161cc5751bce3559176b09754a63e4ca`; recursive tree 157 entries / 111 blobs / 46 trees, truncated=false. |
-| EXTERNAL OPERATION | Validation Only #143 — run `45942526999`, exact source/test SHA `6a94513e161cc5751bce3559176b09754a63e4ca`. |
-| EXTERNAL OPERATION STATUS | IN_PROGRESS (observed by Actions API). #142 is terminal SUCCESS on prior exact code SHA; #143 checks the extracted P1 command-classification module and new regression tests. |
-| Result / evidence | #142 PASS on `03c6abe7fef1fe785ad57c8d028f0025527511f9`: locked dependencies, formatter (33 Dart files; 0 changed), analyzer, 249/249 Flutter tests. #143 pending; do not infer formatter/test outcome. |
+| Current phase | Recovery pre-flight complete — main-only branch and exact live HEAD confirmed; Validation Only #143 is terminal FAILED. Trace 4 failed tests and the read-only formatter delta before any source/test commit. |
+| Last completed milestone | Recovery verified main HEAD `d8fd607a3d2b504b871b087fb69af2302796b8f5`, recursive tree 157 entries / 111 blobs / 46 trees truncated=false; only branch `main`; run #143 terminal FAILED. Formatter passed only on the post-formatter tree but showed test/p1_command_contract_test.dart needed formatting; analyzer passed; Flutter suite 249 passed / 4 failed. |
+| Last verified source checkpoint | main HEAD `d8fd607a3d2b504b871b087fb69af2302796b8f5`; recursive tree 157 entries / 111 blobs / 46 trees, truncated=false. |
+| EXTERNAL OPERATION | Validation Only #143 — run `45942526999`, job `140319821736`, tested source/test SHA `6a94513e161cc5751bce3559176b09754a63e4ca`. |
+| EXTERNAL OPERATION STATUS | FAILED (terminal). Dependencies PASS, formatter FAIL on one new test file, analyzer PASS, Flutter tests FAIL (249 passed / 4 failed). No active external operation; no Build App/release/device operation. |
+| Result / evidence | #143 logs: P1 decoder tests pass; one new `MapEntry` matcher fails despite matching key/value text; three legacy static source-contract tests still look for moved P1 mappings inline in `main.dart`. The read-only formatter reported test/p1_command_contract_test.dart as changed. #142 prior SHA remains SUCCESS (249/249). |
 | Blocker / remaining evidence | Local Flutter/Dart/Gradle/ADB remain unavailable. Android/Kotlin compilation, screenshots/device/OEM acceptance, SQLite v1→v2 runtime fixture and 1h/6h/24h performance profile are NOT RUN / NOT VERIFIED. Whole-App visual status remains VISUAL NOT VERIFIED. |
-| Next action | Verify #143 terminal formatter/analyzer/full-suite evidence. Repair only root-caused failures; then reconcile all 111 live blob dispositions and continue WP3 with a behavior-tested session boundary. |
+| Next action | Inspect all four exact failing assertions and migrate their source contracts to p1_command_contract.dart, replace MapEntry equality with field/value assertions, apply exact runner formatter output to the new test, then commit with expected-HEAD and validate on fresh exact main SHA. |
 
 ## Status model
 
