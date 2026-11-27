@@ -267,10 +267,9 @@ class JexDashboardToggle extends StatelessWidget {
     );
     final label = semanticLabel?.trim();
     if (label == null || label.isEmpty) {
-      return ExcludeSemantics(key: key, child: target);
+      return ExcludeSemantics(child: target);
     }
     return Semantics(
-      key: key,
       container: true,
       label: label,
       toggled: stateKnown ? displayedValue : null,

@@ -58,6 +58,7 @@ void main() {
       );
 
       final target = find.byKey(toggleKey);
+      expect(target, findsOneWidget);
       expect(tester.getSize(target), const Size(54, 48));
       final visualPill = find.descendant(
         of: target,
@@ -111,6 +112,7 @@ void main() {
       );
 
       final target = find.byKey(toggleKey);
+      expect(target, findsOneWidget);
       final data = tester.getSemantics(target).getSemanticsData();
       expect(data.label, 'Fan');
       expect(data.hasFlag(ui.SemanticsFlag.hasToggledState), isFalse);
@@ -230,14 +232,24 @@ void main() {
                             alignment: renderedTabId == 0
                                 ? Alignment.topLeft
                                 : Alignment.bottomRight,
-                            child: TextButton(
-                              key: ValueKey<String>(
-                                'dashboard-tab-$renderedTabId',
-                              ),
-                              onPressed: renderedTabId == 0
+                            child: Semantics(
+                              container: true,
+                              label: 'Tab $renderedTabId',
+                              button: true,
+                              onTap: renderedTabId == 0
                                   ? () => outgoingTaps++
                                   : () => incomingTaps++,
-                              child: Text('Tab $renderedTabId'),
+                              child: ExcludeSemantics(
+                                child: GestureDetector(
+                                  key: ValueKey<String>(
+                                    'dashboard-tab-$renderedTabId',
+                                  ),
+                                  onTap: renderedTabId == 0
+                                      ? () => outgoingTaps++
+                                      : () => incomingTaps++,
+                                  child: Text('Tab $renderedTabId'),
+                                ),
+                              ),
                             ),
                           ),
                         ),
@@ -260,8 +272,20 @@ void main() {
       expect(find.text('Tab 1'), findsOneWidget);
       expect(find.bySemanticsLabel('Tab 0'), findsNothing);
       expect(find.bySemanticsLabel('Tab 1'), findsOneWidget);
-      expect(find.byType(FadeTransition), findsNWidgets(2));
-      expect(find.byType(SlideTransition), findsNWidgets(2));
+      expect(
+        find.descendant(
+          of: find.byType(JexDashboardTabTransition),
+          matching: find.byType(FadeTransition),
+        ),
+        findsNWidgets(2),
+      );
+      expect(
+        find.descendant(
+          of: find.byType(JexDashboardTabTransition),
+          matching: find.byType(SlideTransition),
+        ),
+        findsNWidgets(2),
+      );
 
       await tester.tap(
         find.byKey(const ValueKey<String>('dashboard-tab-0')),
@@ -326,8 +350,20 @@ void main() {
       await tester.pump();
 
       expect(find.text('Tab 1'), findsOneWidget);
-      expect(find.byType(FadeTransition), findsWidgets);
-      expect(find.byType(SlideTransition), findsNothing);
+      expect(
+        find.descendant(
+          of: find.byType(JexDashboardTabTransition),
+          matching: find.byType(FadeTransition),
+        ),
+        findsWidgets,
+      );
+      expect(
+        find.descendant(
+          of: find.byType(JexDashboardTabTransition),
+          matching: find.byType(SlideTransition),
+        ),
+        findsNothing,
+      );
 
       await tester.pump(const Duration(milliseconds: 90));
       expect(find.text('Tab 0'), findsNothing);

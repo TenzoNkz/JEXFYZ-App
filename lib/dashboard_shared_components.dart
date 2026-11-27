@@ -77,8 +77,10 @@ class JexDashboardTabTransition extends StatelessWidget {
           begin: const Offset(0, .015),
           end: Offset.zero,
         ).animate(animation);
+        // Keep the active tab discoverable even at opacity zero on its first frame.
         return FadeTransition(
           opacity: animation,
+          alwaysIncludeSemantics: true,
           child: reduceMotion
               ? child
               : SlideTransition(position: slide, child: child),
