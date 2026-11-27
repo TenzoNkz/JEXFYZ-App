@@ -2034,6 +2034,61 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
+  testWidgets(
+    'Home fixed-canvas layout remains readable across viewport, locale and theme matrix',
+    (tester) async {
+      final previousLanguage = appLanguageNotifier.value;
+      final previousTheme = appThemeNotifier.value;
+      addTearDown(() {
+        appLanguageNotifier.value = previousLanguage;
+        appThemeNotifier.value = previousTheme;
+        tester.view.resetPhysicalSize();
+        tester.view.resetDevicePixelRatio();
+      });
+
+      for (final width in [350.0, 420.0]) {
+        for (final language in AppLanguage.values) {
+          for (final theme in AppThemePreset.values) {
+            tester.view.physicalSize = Size(width * 3, 3200);
+            tester.view.devicePixelRatio = 3.0;
+            appLanguageNotifier.value = language;
+            appThemeNotifier.value = theme;
+
+            await tester.pumpWidget(
+              const JeCoolerApp(dashboard: DashboardScreen()),
+            );
+            await tester.pump();
+
+            expect(find.text('JE X FYZ'), findsOneWidget);
+            for (final key in [
+              'batteryTemperature',
+              'hotsideTemperature',
+              'voltageIndicator',
+              'adaptiveMode',
+              'peltierSwitch',
+              'fanSwitch',
+              'fanSpeedLabel',
+              'notification',
+            ]) {
+              expect(
+                find.text(JexText.of(key, language)),
+                findsOneWidget,
+                reason:
+                    'Missing Home label "$key" at $width dp / $language / $theme.',
+              );
+            }
+            expect(
+              tester.takeException(),
+              isNull,
+              reason:
+                  'Home must render without layout exceptions at $width dp / $language / $theme.',
+            );
+          }
+        }
+      }
+    },
+  );
+
   test(
     'Localization keeps language names stable and maps power states correctly',
     () {
