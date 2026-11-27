@@ -38,7 +38,6 @@ class JexDashboardCard extends StatelessWidget {
   }
 }
 
-
 /// Animated, keyed Dashboard tab content. Reduced motion keeps a short fade but
 /// removes positional movement; outgoing tabs cannot receive input or semantics.
 class JexDashboardTabTransition extends StatelessWidget {
@@ -72,8 +71,7 @@ class JexDashboardTabTransition extends StatelessWidget {
           child: child,
           builder: (context, child) {
             final outgoing =
-                animation.status == AnimationStatus.reverse ||
-                animation.status == AnimationStatus.dismissed;
+                animation.status == AnimationStatus.reverse;
             final Widget presented = reduceMotion
                 ? FadeTransition(opacity: animation, child: child!)
                 : FadeTransition(
@@ -83,18 +81,12 @@ class JexDashboardTabTransition extends StatelessWidget {
 
             return IgnorePointer(
               ignoring: outgoing,
-              child: ExcludeSemantics(
-                excluding: outgoing,
-                child: presented,
-              ),
+              child: ExcludeSemantics(excluding: outgoing, child: presented),
             );
           },
         );
       },
-      child: KeyedSubtree(
-        key: ValueKey<int>(tabId),
-        child: child,
-      ),
+      child: KeyedSubtree(key: ValueKey<int>(tabId), child: child),
     );
   }
 }

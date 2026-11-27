@@ -92,33 +92,33 @@ extension _DashboardControlComponents on _DashboardScreenState {
           const SizedBox(width: 12),
           Expanded(
             child: ExcludeSemantics(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title.toUpperCase(),
-                  style: TextStyle(
-                    fontSize: 13,
-                    letterSpacing: .35,
-                    fontWeight: FontWeight.w900,
-                    color: scheme.jexForeground,
-                  ),
-                ),
-                if (subtitle.trim().isNotEmpty)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 2),
-                    child: Text(
-                      subtitle,
-                      style: TextStyle(
-                        fontSize: 10.5,
-                        fontWeight: FontWeight.w600,
-                        color: scheme.jexMutedForeground,
-                      ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title.toUpperCase(),
+                    style: TextStyle(
+                      fontSize: 13,
+                      letterSpacing: .35,
+                      fontWeight: FontWeight.w900,
+                      color: scheme.jexForeground,
                     ),
                   ),
-              ],
+                  if (subtitle.trim().isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 2),
+                      child: Text(
+                        subtitle,
+                        style: TextStyle(
+                          fontSize: 10.5,
+                          fontWeight: FontWeight.w600,
+                          color: scheme.jexMutedForeground,
+                        ),
+                      ),
+                    ),
+                ],
+              ),
             ),
-          ),
           ),
           if (showStateLabel) ...[
             const SizedBox(width: 8),
@@ -137,7 +137,9 @@ extension _DashboardControlComponents on _DashboardScreenState {
             const SizedBox(width: 8),
           ],
           JexDashboardToggle(
-          semanticLabel: subtitle.trim().isEmpty ? title : '$title, $subtitle',
+            semanticLabel: subtitle.trim().isEmpty
+                ? title
+                : '$title, $subtitle',
             value: value,
             enabled: enabled,
             stateKnown: stateKnown,
@@ -168,7 +170,6 @@ extension _DashboardControlComponents on _DashboardScreenState {
   }
 }
 
-
 /// Accessible toggle used by Dashboard control rows.
 /// The visible pill remains 54×32 dp; the hit target expands to 54×48 dp.
 class JexDashboardToggle extends StatelessWidget {
@@ -193,11 +194,10 @@ class JexDashboardToggle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     final scheme = Theme.of(context).colorScheme;
     // Offline fallback is a visual default only, not confirmed hardware telemetry.
     final displayedValue = stateKnown && value;
-        final canActivate = enabled && stateKnown;
+    final canActivate = enabled && stateKnown;
     void activate() {
       if (!canActivate) return;
       unawaited(onChanged(!displayedValue));
@@ -209,58 +209,60 @@ class JexDashboardToggle extends StatelessWidget {
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: canActivate ? activate : null,
-        child: Center(child: AnimatedContainer(
-        duration: const Duration(milliseconds: 180),
-        width: jexSubmenuToggleWidth,
-        height: jexSubmenuToggleHeight,
-        padding: const EdgeInsets.all(3),
-        decoration: BoxDecoration(
-          color: displayedValue
-              ? accent.withValues(alpha: .24)
-              : scheme.jexElevatedSurface,
-          borderRadius: BorderRadius.circular(18),
-          border: Border.all(
-            color: displayedValue
-                ? accent.withValues(alpha: .52)
-                : scheme.jexOutline,
-            width: 1.2,
-          ),
-        ),
-        child: AnimatedAlign(
-          duration: const Duration(milliseconds: 180),
-          curve: Curves.easeOutCubic,
-          alignment: displayedValue
-              ? Alignment.centerRight
-              : Alignment.centerLeft,
-          child: Container(
-            width: 24,
-            height: 24,
+        child: Center(
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 180),
+            width: jexSubmenuToggleWidth,
+            height: jexSubmenuToggleHeight,
+            padding: const EdgeInsets.all(3),
             decoration: BoxDecoration(
               color: displayedValue
-                  ? accent
-                  : (enabled
-                        ? scheme.jexMutedForeground
-                        : scheme.jexMutedForeground.withValues(alpha: .32)),
-              shape: BoxShape.circle,
-              boxShadow: [
-                if (displayedValue)
-                  BoxShadow(
-                    color: accent.withValues(alpha: .20),
-                    blurRadius: 7,
-                    offset: const Offset(0, 2),
-                  ),
-              ],
+                  ? accent.withValues(alpha: .24)
+                  : scheme.jexElevatedSurface,
+              borderRadius: BorderRadius.circular(18),
+              border: Border.all(
+                color: displayedValue
+                    ? accent.withValues(alpha: .52)
+                    : scheme.jexOutline,
+                width: 1.2,
+              ),
             ),
-            child: displayedValue && showCheck
-                ? const Icon(
-                    PhosphorIconsBold.check,
-                    size: 15,
-                    color: Colors.white,
-                  )
-                : null,
+            child: AnimatedAlign(
+              duration: const Duration(milliseconds: 180),
+              curve: Curves.easeOutCubic,
+              alignment: displayedValue
+                  ? Alignment.centerRight
+                  : Alignment.centerLeft,
+              child: Container(
+                width: 24,
+                height: 24,
+                decoration: BoxDecoration(
+                  color: displayedValue
+                      ? accent
+                      : (enabled
+                            ? scheme.jexMutedForeground
+                            : scheme.jexMutedForeground.withValues(alpha: .32)),
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    if (displayedValue)
+                      BoxShadow(
+                        color: accent.withValues(alpha: .20),
+                        blurRadius: 7,
+                        offset: const Offset(0, 2),
+                      ),
+                  ],
+                ),
+                child: displayedValue && showCheck
+                    ? const Icon(
+                        PhosphorIconsBold.check,
+                        size: 15,
+                        color: Colors.white,
+                      )
+                    : null,
+              ),
+            ),
           ),
         ),
-      )),
       ),
     );
     final label = semanticLabel?.trim();

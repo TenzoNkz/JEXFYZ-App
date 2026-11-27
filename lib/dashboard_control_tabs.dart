@@ -87,64 +87,70 @@ extension _DashboardControlTabsBuilder on _DashboardScreenState {
       selected: active,
       enabled: !locked,
       onTap: locked ? null : () => _requestVoltage(target),
-      child: ExcludeSemantics(child: InkWell(
-      onTap: locked ? null : () => _requestVoltage(target),
-      borderRadius: BorderRadius.circular(18),
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 180),
-        curve: Curves.easeOutCubic,
-        constraints: const BoxConstraints(minHeight: jexSubmenuRowMinHeight),
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
-        decoration: BoxDecoration(
-          // Geometry intentionally mirrors CONTROL/_switchRow. The row stays neutral;
-          // selection is represented only by the shared toggle on the right.
-          color: scheme.jexElevatedSurface.withValues(alpha: .26),
+      child: ExcludeSemantics(
+        child: InkWell(
+          onTap: locked ? null : () => _requestVoltage(target),
           borderRadius: BorderRadius.circular(18),
-          border: Border.all(color: scheme.jexOutline.withValues(alpha: .68)),
-        ),
-        child: Row(
-          children: [
-            Container(
-              width: 42,
-              height: 42,
-              decoration: BoxDecoration(
-                color: scheme.jexElevatedSurface.withValues(alpha: .72),
-                borderRadius: BorderRadius.circular(14),
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 180),
+            curve: Curves.easeOutCubic,
+            constraints: const BoxConstraints(
+              minHeight: jexSubmenuRowMinHeight,
+            ),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+            decoration: BoxDecoration(
+              // Geometry intentionally mirrors CONTROL/_switchRow. The row stays neutral;
+              // selection is represented only by the shared toggle on the right.
+              color: scheme.jexElevatedSurface.withValues(alpha: .26),
+              borderRadius: BorderRadius.circular(18),
+              border: Border.all(
+                color: scheme.jexOutline.withValues(alpha: .68),
               ),
-              alignment: Alignment.center,
-              child: Text(
-                target,
-                style: TextStyle(
-                  color: jexVoltageIndicatorColor(target),
-                  fontSize: 16,
-                  fontWeight: FontWeight.w900,
+            ),
+            child: Row(
+              children: [
+                Container(
+                  width: 42,
+                  height: 42,
+                  decoration: BoxDecoration(
+                    color: scheme.jexElevatedSurface.withValues(alpha: .72),
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  alignment: Alignment.center,
+                  child: Text(
+                    target,
+                    style: TextStyle(
+                      color: jexVoltageIndicatorColor(target),
+                      fontSize: 16,
+                      fontWeight: FontWeight.w900,
+                    ),
+                  ),
                 ),
-              ),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Text(
-                mode,
-                style: TextStyle(
-                  color: scheme.jexMutedForeground,
-                  fontSize: 12,
-                  fontWeight: FontWeight.w700,
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    mode,
+                    style: TextStyle(
+                      color: scheme.jexMutedForeground,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
                 ),
-              ),
+                const SizedBox(width: 8),
+                JexDashboardToggle(
+                  semanticLabel: null,
+                  value: active,
+                  enabled: !locked,
+                  accent: scheme.jexAccent,
+                  showCheck: false,
+                  onChanged: (_) async => _requestVoltage(target),
+                ),
+              ],
             ),
-            const SizedBox(width: 8),
-            JexDashboardToggle(
-              semanticLabel: null,
-              value: active,
-              enabled: !locked,
-              accent: scheme.jexAccent,
-              showCheck: false,
-              onChanged: (_) async => _requestVoltage(target),
-            ),
-          ],
+          ),
         ),
       ),
-    )),
     );
   }
 

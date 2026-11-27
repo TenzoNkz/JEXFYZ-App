@@ -75,9 +75,7 @@ void main() {
       expect(data.hasAction(ui.SemanticsAction.tap), isTrue);
 
       // Tap the 8 dp hit-area extension above the visual 32 dp pill.
-      await tester.tapAt(
-        tester.getTopLeft(target) + const Offset(27, 2),
-      );
+      await tester.tapAt(tester.getTopLeft(target) + const Offset(27, 2));
       await tester.pump();
       expect(changedValues, <bool>[false]);
     },
@@ -319,9 +317,7 @@ void main() {
       );
 
       await tester.tap(
-        find.byKey(
-          const ValueKey<String>('advance-reduced-motion-tab'),
-        ),
+        find.byKey(const ValueKey<String>('advance-reduced-motion-tab')),
       );
       await tester.pump();
 
@@ -923,7 +919,10 @@ void main() {
     expect(source, contains("part 'dashboard_control_components.dart';"));
     expect(componentSource, contains("part of 'main.dart';"));
     final rowStart = componentSource.indexOf('Widget _switchRow(');
-    final rowEnd = componentSource.indexOf('class JexDashboardToggle extends StatelessWidget {', rowStart);
+    final rowEnd = componentSource.indexOf(
+      'class JexDashboardToggle extends StatelessWidget {',
+      rowStart,
+    );
     expect(rowStart, isNonNegative);
     expect(rowEnd, greaterThan(rowStart));
     final row = componentSource.substring(rowStart, rowEnd);
@@ -2815,7 +2814,7 @@ void main() {
     expect(choice, contains('accent: scheme.jexAccent,'));
     expect(choice, contains('showCheck: false,'));
     expect(choice, contains('JexDashboardToggle('));
-    expect(choice, contains("label: '$target, $mode'"));
+    expect(choice, contains(r"label: '$target, $mode'"));
     expect(choice, contains('selected: active'));
     expect(choice, isNot(contains('accent: accent,')));
 
@@ -2829,7 +2828,7 @@ void main() {
     expect(toggle, contains('displayedValue && showCheck'));
   });
 
-  test('JE X FYZ voltage helper accepts only supported voltages', () {
+voltage helper accepts only supported voltages', () {
     expect(isVoltageCommand('5V'), isTrue);
     expect(isVoltageCommand('9v'), isTrue);
     expect(isVoltageCommand('12V'), isTrue);
@@ -2846,7 +2845,7 @@ void main() {
     expect(isDifferentFirmwareVersion('V1.8', 'V1.8'), isFalse);
   });
 
-  test('JE X FYZ indicator animation policy follows connection and output state', () {
+indicator animation policy follows connection and output state', () {
     expect(
       jexIndicatorAnimationActive(connected: false, stateActive: true),
       isFalse,
@@ -3916,7 +3915,7 @@ void main() {
     expect(dialog, contains('barrierDismissible: true'));
   });
 
-  test('Android notifications use JE X FYZ branding and meaningful foreground text', () {
+branding and meaningful foreground text', () {
     final activity = File(
       'android/app/src/main/kotlin/com/horizontalzzz/jexfyz/MainActivity.kt',
     ).readAsStringSync();
@@ -3981,7 +3980,7 @@ void main() {
     expect(dark.colorScheme.onSurfaceVariant, const Color(0xFF979DA8));
   });
 
-  test('Default JE X FYZ theme is dark outside dashboard', () {
+theme is dark outside dashboard', () {
     final theme = buildJexTheme(AppThemePreset.defaultTheme);
     expect(theme.brightness, Brightness.dark);
     expect(theme.scaffoldBackgroundColor, const Color(0xFF0F1013));
@@ -4691,7 +4690,7 @@ void main() {
     expect(temperatureButton, contains('required String semanticLabel'));
   });
   test(
-    'Connection device row preserves the advertised JE X FYZ Bluetooth name',
+Bluetooth name',
     () {
       final connection = File('lib/connection_sheet.dart').readAsStringSync();
       final start = connection.indexOf('class _ConnectionSheetContentState');
