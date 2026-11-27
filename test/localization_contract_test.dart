@@ -223,13 +223,13 @@ void main() {
       );
 
       final source = File('lib/main.dart').readAsStringSync();
-      final controlSource =
-          File('lib/dashboard_control_tabs.dart').readAsStringSync();
+      final controlSource = File('lib/dashboard_control_tabs.dart')
+          .readAsStringSync();
       expect(source, contains("part 'dashboard_control_tabs.dart';"));
-      final start =
-          controlSource.indexOf('Widget _buildAdaptiveTab({Key? key})');
-      final end =
-          controlSource.indexOf('Widget _adaptiveProfileRow(', start);
+      final start = controlSource.indexOf(
+        'Widget _buildAdaptiveTab({Key? key})',
+      );
+      final end = controlSource.indexOf('Widget _adaptiveProfileRow(', start);
       expect(start, isNonNegative);
       expect(end, greaterThan(start));
       final adaptiveUi = controlSource.substring(start, end);

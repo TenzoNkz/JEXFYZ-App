@@ -64,21 +64,6 @@ jobs:
           set -euo pipefail
           dart format --output=none --set-exit-if-changed lib test
 
-      - name: Diagnose extracted Dashboard Dart formatting (read-only)
-        if: ${{ !cancelled() && steps.formatter.outcome == 'failure' }}
-        continue-on-error: true
-        shell: bash
-        run: |
-          set -euo pipefail
-          for file in lib/main.dart lib/dashboard_control_tabs.dart test/widget_test.dart test/localization_contract_test.dart; do
-            echo "--- formatter check: $file ---"
-            if dart format --output=none --set-exit-if-changed "$file"; then
-              echo "FORMAT_OK: $file"
-            else
-              echo "FORMAT_REQUIRED: $file"
-              dart format --output=show "$file"
-            fi
-          done
       - name: Analyze Flutter and Dart source
         id: analyzer
         if: ${{ !cancelled() && steps.dependencies.outcome == 'success' }}

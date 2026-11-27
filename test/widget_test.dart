@@ -605,8 +605,8 @@ void main() {
 
   test('Peltier Adaptive and LED switches mirror manual Voltage without labels or checkmarks', () {
     final source = File('lib/main.dart').readAsStringSync();
-    final controlSource =
-        File('lib/dashboard_control_tabs.dart').readAsStringSync();
+    final controlSource = File('lib/dashboard_control_tabs.dart')
+        .readAsStringSync();
     expect(source, contains("part 'dashboard_control_tabs.dart';"));
     final rowStart = source.indexOf('Widget _switchRow(');
     final rowEnd = source.indexOf('Widget _jexToggle(', rowStart);
@@ -1001,8 +1001,8 @@ void main() {
 
   test('Thermal icons use oval ember bursts, Voltage uses edge pulses, and other icons keep their signatures', () {
     final source = File('lib/main.dart').readAsStringSync();
-    final controlSource =
-        File('lib/dashboard_control_tabs.dart').readAsStringSync();
+    final controlSource = File('lib/dashboard_control_tabs.dart')
+        .readAsStringSync();
     final animationSource = File('lib/jex_animated_icon.dart')
         .readAsStringSync();
     final shellStart = animationSource.indexOf(
@@ -1287,8 +1287,6 @@ void main() {
     expect(painter, contains('valueKnown'));
     expect(painter, contains('const start = math.pi;'));
     expect(painter, contains('const sweep = math.pi;'));
-    final controlSource =
-        File('lib/dashboard_control_tabs.dart').readAsStringSync();
     expect(
       containsDartFragment(
         controlSource,
@@ -2468,8 +2466,8 @@ void main() {
 
   test('Manual voltage toggles stay theme-colored while labels keep voltage accents', () {
     final source = File('lib/main.dart').readAsStringSync();
-    final controlSource =
-        File('lib/dashboard_control_tabs.dart').readAsStringSync();
+    final controlSource = File('lib/dashboard_control_tabs.dart')
+        .readAsStringSync();
     expect(source, contains("part 'dashboard_control_tabs.dart';"));
     expect(controlSource, contains("part of 'main.dart';"));
     final choiceStart = controlSource.indexOf('Widget _voltageChoiceCustom(');
@@ -3017,8 +3015,8 @@ void main() {
 
   test('LED UI keeps its own color menu anchored to the display region', () {
     final source = File('lib/main.dart').readAsStringSync();
-    final controlSource =
-        File('lib/dashboard_control_tabs.dart').readAsStringSync();
+    final controlSource = File('lib/dashboard_control_tabs.dart')
+        .readAsStringSync();
     final ledSource = File('lib/led_controls.dart').readAsStringSync();
     expect(ledSource, contains('widget.modeName.toUpperCase()'));
     expect(ledSource, isNot(contains('widget.modeNumber')));

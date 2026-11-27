@@ -595,7 +595,9 @@ extension _DashboardControlTabsBuilder on _DashboardScreenState {
                             alpha: .10,
                           ),
                           onChanged: connected
-                              ? (v) => _updateDashboardPresentation(() => brightness = v.round())
+                              ? (v) => _updateDashboardPresentation(
+                                  () => brightness = v.round(),
+                                )
                               : null,
                           onChangeEnd: connected ? _setBrightness : null,
                         ),
