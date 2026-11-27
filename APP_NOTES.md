@@ -1,3 +1,16 @@
+## Current App source checkpoint — WP3 P1 frame + command contracts / Validation Only #148 — 2026-11-27
+
+- **Live main:** `367d65c377abb6b45a907c0bf211c835094b79d8` (documentation-only descendant of validated source/test SHA `0448d03c39536c57ad7e8c2d36718d525d2d60fb`); tree `5bf70519bd284a5481e9cdf63e9f1efa1892c8b8`, 157 entries / 111 blobs / 46 trees, `truncated=false`. `lib/main.dart` blob `d77077aa8e660d97c589a774e6b67fd195516dbb`, 240,508 bytes / 6,573 lines.
+- **Validation Only #148:** run `45943879592` / job `140324041087`, terminal SUCCESS: locked dependencies PASS; formatter PASS (35 files, 0 changed); analyzer PASS; **253/253 Flutter tests PASS**. #145/#147 counted the temporary capture probe; it was removed before #148.
+- **App root / design foundation:** `app_root.dart` composes the injected Dashboard without a second BLE owner. `jex_design_tokens.dart` centralizes approved 360-dp canvas, 420-dp Home height, 45-dp metric rows, 38-dp tab pills / 48-dp hit regions, Settings geometry and semantic ColorScheme roles. This is a base only, not full WP4 or a new palette/brand redesign.
+- **P1 frame boundary:** `p1_frame_decoder.dart` owns bounded receive buffering and line/SYNC frame boundaries only. Dashboard still parses ACKs, commits snapshots, mutates telemetry and gates SYNC/SYNC_READY. The 16,000-character overflow policy and fresh-session clear remain.
+- **P1 command boundary:** `p1_command_contract.dart` maps unchanged command text to ACK item, expected telemetry, GATT write-response requirement and accepted ACK vocabulary. Dashboard still owns GATT, write/transaction queues, ACK waiters, reconnect, SYNC and authoritative telemetry.
+- **Next WP3 seam:** extract only per-item FIFO ACK waiter lifecycle (timeout removal, exact failed-write cancellation, DISCONNECTED/CANCELLED bulk completion); do not move GATT writes, handshake, reconnect or telemetry ownership.
+- **Remaining gates:** full Dashboard/state audit, seven formatter-touched whole-file reviews, WP4 token integration, WP5/WP6 screen redesign, WP7 statistics, WP8 native bridge, WP9 actual visual evidence and WP10 closure remain open. Local Flutter/Dart/Gradle/ADB unavailable; Android/Kotlin, screenshots/OEM, SQLite v1→v2 runtime fixture and 1h/6h/24h profile NOT RUN. Whole-App visual result **VISUAL NOT VERIFIED**.
+- **Release:** Build #167 remains latest package on `0dd96228d33b08c66e736ae91a8a6c3e5c3ddb81`; current main is not packaged. No Build App/APK/sign/Release, Firmware/BIN, Firebase production, OTA, flashing or device operation occurred.
+
+---
+
 ## Current App source checkpoint — WP2 bootstrap + Settings extraction — 2026-11-27
 
 - **Current main:** `4c5feb51c8777b0576d0ac11f3fafb921db91b38`; source tree `a7474fc394c6b070de0195e82b53127a63e0bf38`; 150 entries / 104 blobs / 46 trees, `truncated=false`.
