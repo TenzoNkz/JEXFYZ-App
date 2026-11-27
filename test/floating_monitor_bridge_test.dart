@@ -56,7 +56,9 @@ void main() {
     expect(await FloatingBridge.openPermissionSettings(), isFalse);
   });
 
-  test('start forwards config and the latest localized telemetry snapshot', () async {
+  test(
+    'start forwards config and the latest localized telemetry snapshot',
+    () async {
     appLanguageNotifier.value = AppLanguage.indonesia;
     const config = FloatingConfig(
       enabled: true,
@@ -112,7 +114,9 @@ void main() {
     expect(await FloatingBridge.start(const FloatingConfig()), isFalse);
   });
 
-  test('stop invokes the native service stop command and contains errors', () async {
+  test(
+    'stop invokes the native service stop command and contains errors',
+    () async {
     var calls = 0;
     messenger.setMockMethodCallHandler(channel, (call) async {
       expect(call.method, 'stopFloatingMonitor');
@@ -126,7 +130,9 @@ void main() {
     expect(calls, 2);
   });
 
-  test('updateConfig forwards the versioned presentation configuration', () async {
+  test(
+    'updateConfig forwards the versioned presentation configuration',
+    () async {
     const config = FloatingConfig(
       enabled: true,
       selected: <String>{'B', 'F'},
@@ -146,7 +152,9 @@ void main() {
     await expectLater(FloatingBridge.updateConfig(config), completes);
   });
 
-  test('updateData forwards the latest telemetry and selected app language', () async {
+  test(
+    'updateData forwards the latest telemetry and selected app language',
+    () async {
     appLanguageNotifier.value = AppLanguage.indonesia;
     const telemetry = FloatingTelemetry(
       battery: '40.2',
@@ -186,7 +194,9 @@ void main() {
     );
   });
 
-  test('runtimeState returns diagnostics and fails closed for invalid results', () async {
+  test(
+    'runtimeState returns diagnostics and fails closed for invalid results',
+    () async {
     const state = <String, dynamic>{
       'service_running': true,
       'view_attached_to_window': true,
