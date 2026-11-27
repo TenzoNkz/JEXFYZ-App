@@ -392,4 +392,3 @@ class JexAdaptiveProfileChoice extends StatelessWidget {
     );
   }
 }
-
