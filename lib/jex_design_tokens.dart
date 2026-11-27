@@ -23,9 +23,7 @@ abstract final class JexLayoutTokens {
 /// 210 ms follows the approved control/state motion range; 90 ms is the existing
 /// reduced-motion fallback used by Dashboard tab transitions.
 abstract final class JexMotionTokens {
-  static const Duration dashboardStateTransition = Duration(
-    milliseconds: 210,
-  );
+  static const Duration dashboardStateTransition = Duration(milliseconds: 210);
   static const Duration dashboardReducedMotionTransition = Duration(
     milliseconds: 90,
   );

@@ -295,8 +295,7 @@ extension _DashboardHomeTabBuilder on _DashboardScreenState {
         : const Color(0xFF25282E);
     // Metric accents communicate state changes, so share Dashboard's approved
     // state timing and honor the platform's reduced-animation preference.
-    final colorTransitionDuration =
-        MediaQuery.disableAnimationsOf(context)
+    final colorTransitionDuration = MediaQuery.disableAnimationsOf(context)
         ? JexMotionTokens.dashboardReducedMotionTransition
         : JexMotionTokens.dashboardStateTransition;
     return TweenAnimationBuilder<Color?>(
