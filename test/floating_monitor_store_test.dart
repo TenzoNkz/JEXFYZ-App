@@ -60,7 +60,9 @@ void main() {
     FlutterSecureStorage.setMockInitialValues(<String, String>{});
   });
 
-  test('FloatingStore.load reads and publishes the persisted schema-v2 config', () async {
+  test(
+    'FloatingStore.load reads and publishes the persisted schema-v2 config',
+    () async {
     const config = FloatingConfig(
       enabled: true,
       order: <String>['F', 'B', 'H', 'V', 'A', 'P'],
@@ -82,7 +84,9 @@ void main() {
     expect(storage.readAttempts, 1);
   });
 
-  test('FloatingStore.load restores defaults and notifier after a read failure', () async {
+  test(
+    'FloatingStore.load restores defaults and notifier after a read failure',
+    () async {
     floatingConfigNotifier.value = const FloatingConfig(
       enabled: true,
       size: 1.0,
@@ -94,11 +98,16 @@ void main() {
     final loaded = await FloatingStore.load();
 
     expect(loaded.toMap(), const FloatingConfig().toMap());
-    expect(floatingConfigNotifier.value.toMap(), const FloatingConfig().toMap());
+    expect(
+      floatingConfigNotifier.value.toMap(),
+      const FloatingConfig().toMap(),
+    );
     expect(storage.readAttempts, 1);
   });
 
-  test('FloatingStore.save persists schema-v2 config and updates its notifier', () async {
+  test(
+    'FloatingStore.save persists schema-v2 config and updates its notifier',
+    () async {
     const config = FloatingConfig(
       enabled: true,
       order: <String>['H', 'B', 'V', 'A', 'P', 'F'],
@@ -121,7 +130,9 @@ void main() {
     expect(stored['enabled'], isTrue);
   });
 
-  test('FloatingStore.save keeps the notifier update when storage write fails', () async {
+  test(
+    'FloatingStore.save keeps the notifier update when storage write fails',
+    () async {
     const config = FloatingConfig(
       enabled: true,
       size: 0.9,
