@@ -890,10 +890,7 @@ void main() {
         find.byIcon(PhosphorIconsRegular.info),
       );
       expect(disconnectedIcon.color, const Color(0xFF475467));
-      expect(
-        find.byIcon(PhosphorIconsRegular.shieldCheck),
-        findsNothing,
-      );
+      expect(find.byIcon(PhosphorIconsRegular.shieldCheck), findsNothing);
       expect(tester.getSize(find.byType(HomeNotifyCard)).height, 44);
       expect(find.text('Notification'), findsOneWidget);
       expect(find.text('Bluetooth disconnected.'), findsOneWidget);
