@@ -2951,6 +2951,82 @@ void main() {
     expect(colors.first.blue, 255);
   });
 
+  testWidgets(
+    'LED preview repaints both strip painters when render mode changes',
+    (tester) async {
+      Widget surface(int mode) => MaterialApp(
+        home: Scaffold(
+          body: Center(
+            child: SizedBox(
+              width: 360,
+              child: JexLedStripPreview(
+                mode: mode,
+                colorHex: '#FF1744',
+                active: true,
+                ledPhaseMs: 0,
+                ledCycleMs: 1000,
+                ledSyncRevision: 0,
+                modeName: 'STATIC',
+                previousEnabled: true,
+                nextEnabled: true,
+                onPrevious: () {},
+                onNext: () {},
+              ),
+            ),
+          ),
+        ),
+      );
+
+      List<CustomPainter> stripPainters() => tester
+          .widgetList<CustomPaint>(
+            find.descendant(
+              of: find.byType(JexLedStripPreview),
+              matching: find.byType(CustomPaint),
+            ),
+          )
+          .map((paint) => paint.painter)
+          .whereType<CustomPainter>()
+          .toList();
+
+      await tester.pumpWidget(surface(1));
+      final oldPainters = stripPainters();
+      expect(oldPainters, hasLength(2));
+
+      // Mode 3 is retired and intentionally falls back to Static presentation.
+      // The levels and RGB colors match mode 1; only mode-dependent painter
+      // behavior (glow opacity/radius) differs.
+      expect(
+        ledPreviewLevels(mode: 1, phaseMs: 0),
+        equals(ledPreviewLevels(mode: 3, phaseMs: 0)),
+      );
+      expect(
+        ledPreviewColors(
+          mode: 1,
+          phaseMs: 0,
+          baseColor: '#FF1744',
+        ),
+        equals(
+          ledPreviewColors(
+            mode: 3,
+            phaseMs: 0,
+            baseColor: '#FF1744',
+          ),
+        ),
+      );
+
+      await tester.pumpWidget(surface(3));
+      final newPainters = stripPainters();
+      expect(newPainters, hasLength(2));
+      for (var index = 0; index < newPainters.length; index++) {
+        expect(
+          newPainters[index].shouldRepaint(oldPainters[index]),
+          isTrue,
+          reason: 'Both LED strips must repaint after their render mode changes.',
+        );
+      }
+    },
+  );
+
   test(
     'Voltage and Bluetooth indicators avoid stacked sweeps and ripple rings',
     () {

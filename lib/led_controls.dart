@@ -706,6 +706,7 @@ class _JexLedStripPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant _JexLedStripPainter oldDelegate) =>
+      oldDelegate.mode != mode ||
       oldDelegate.levels != levels ||
       oldDelegate.colors != colors ||
       oldDelegate.active != active ||
