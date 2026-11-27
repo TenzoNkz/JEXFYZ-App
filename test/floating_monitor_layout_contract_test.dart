@@ -11,7 +11,6 @@ import 'package:flutter_test/flutter_test.dart';
 
 import '../lib/floating_monitor.dart';
 import '../lib/app_settings.dart';
-import 'package:jexfyz_cooler/jex_design_tokens.dart';
 
 void main() {
   test('Floating Monitor normalizes and persists compact size, opacity and background', () {

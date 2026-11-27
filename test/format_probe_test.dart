@@ -5,6 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   test('capture exact Dart formatter output for design token tests', () async {
     for (final path in <String>[
+      'lib/led_controls.dart',
       'test/widget_test.dart',
       'test/floating_monitor_layout_contract_test.dart',
     ]) {
