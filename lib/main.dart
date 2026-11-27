@@ -2470,11 +2470,12 @@ class _DashboardScreenState extends State<DashboardScreen>
       }
     } catch (e) {
       debugPrint('Battery temp: $e');
-      if (mounted) {
+      if (updateUi && mounted) {
         setState(() {
           phoneBatteryValid = false;
           phoneBatteryTemp = '--';
         });
+        _publishFloatingTelemetry();
       }
       unawaited(
         UsageStatisticsRecorder.instance.recordTemperature(
@@ -2482,6 +2483,10 @@ class _DashboardScreenState extends State<DashboardScreen>
           value: null,
         ),
       );
+      if (_bleReady) {
+        // Keep Firmware's battery reading unknown after an unavailable platform sample.
+        _queuePhoneBatteryHeartbeat('PHONE:BT=-1.0');
+      }
     } finally {
       batteryReadBusy = false;
     }
