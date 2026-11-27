@@ -4,15 +4,15 @@ Last reconciled: 2026-11-28 (Asia/Jakarta). Authority: MASTER_PROMPT.md.
 
 ## Active workspace — CODE_FULL / IN_PROGRESS
 
-- Owner command: “Eksekusi Code!” — continue authorized App-only WP0–WP10 full rework + premium UI redesign.
-- Canonical repository `TenzoNkz/JEXFYZ-App`, branch `main`; live HEAD `763e4a37ed0334c3019d3aaca194295a2a2d2152` (docs-only checkpoint commit). Exact tested App source/test SHA `fa2dcb976395fade0eb0034db5a83b0f12fe4ed6`.
-- Recursive tree: 174 entries / 128 blobs / 46 trees, `truncated=false`. `REPOSITORY_UPGRADE_PLAN.md` now has 128 unique dispositions, covering every live blob path.
-- **Validation Only #261:** run `46068234248` / job `140738636516`, exact App source/test SHA above, terminal SUCCESS. Dependencies PASS; formatter 52 files / 0 changed; analyzer 139 info-level diagnostics / 0 warnings/errors; full Flutter suite **336/336 PASS**; summary SUCCESS. #260 failed only formatter on the new parser test; #261 verified the owner's canonical formatting follow-up.
-- **WP3:** P1 phone-battery heartbeat eligibility now respects BLE/RX/P1-session readiness. Pure `P1TelemetryContract.parseLine` extracts only existing first-colon telemetry-row parsing. Dashboard remains sole BLE/GATT/P1/SYNC/SYNC_READY/ACK/session/telemetry/command owner; no UUID/framing/command-payload changes.
-- **WP0 review:** major Dashboard ownership/routes, Settings/bootstrap/preferences, Floating Monitor Flutter bridge/config/runtime and full Usage Statistics static source (schema-v2/v1→v2 migration structure, retention, session/HOT freshness, null gaps, decimation, bounded queue, charts) reviewed. `test/widget_test.dart` contains 117 cases (14 widget + 103 regular), 84 source reads in 45 test bodies; source-contract brittleness review remains open. Home OTA/reset copy tests: nine.
-- **Open:** detailed Dashboard decomposition and remaining source/test review; WP4 semantic-token role/consumer map; screen refinement and EN/ID, Light/Dark, width/accessibility matrix; Floating Monitor native lifecycle; actual Android/OEM screenshots/device evidence; Usage Statistics 1h/6h/24h profiles and SQLite runtime migration fixture; WP10 closeout.
-- Local Flutter/Dart/Gradle/ADB toolchain unavailable; local checks BLOCKED / NOT RUN. Hosted Flutter CI is not an Android/Kotlin build or screenshot evidence. Runtime migration/performance profiles NOT RUN. Whole-App status **VISUAL NOT VERIFIED**.
-- No Build App/APK/release/signing, Firmware/BIN, BLE/P1 security/wire, OTA transport/recovery, Firebase production, flashing or device operation in this CODE_FULL work item.
+- Owner command: “@Thinking Eksekusi Code!” — continue authorized App-only WP0–WP10 full rework + premium UI redesign.
+- Canonical repo TenzoNkz/JEXFYZ-App / main. Tested App source/test SHA f69bc4915f946c7e1dfca1c545ded6e102eea3e7. Validation Only #267 / run 46070875101 / job 140747239194, exact-SHA terminal SUCCESS: deps PASS; formatter 53/0; analyzer 139 info, zero warnings/errors; Flutter tests 340/340 PASS.
+- Latest inventory reconciliation: 175 recursive entries / 129 blobs / 46 trees, truncated=false; REPOSITORY_UPGRADE_PLAN.md has 129 unique dispositions covering every tracked blob path.
+- WP4: semantic canvas maps to ThemeData.scaffoldBackgroundColor, distinct from ColorScheme.surface; JexSemanticColors.from(ThemeData) uses ThemeData for canvas and ColorScheme for remaining roles. Five source/test paths updated; tests cover Default/Light/Dark and custom ThemeData. No palette/layout/pixel behavior changed because no production widget reads semantic.canvas.
+- WP3: phone battery heartbeat obeys BLE/RX/P1-session eligibility; pure telemetry-row parser extracted. Dashboard remains sole BLE/GATT/P1/frame/SYNC/SYNC_READY/ACK/session/telemetry/command owner; no UUID/framing/command-payload/wire change.
+- WP0: Dashboard/routes, Settings/bootstrap/preferences, Floating Monitor Flutter/native boundary and Usage Statistics source reviewed. widget_test.dart has 117 cases (14 widget +103 regular), 84 source reads across 45 bodies and 10 whitespace-only fragment checks; source-test false-positive review remains open.
+- Open: WP4 role-based typography/spacing/shape tokens; Dashboard decomposition; WP5–WP9 screen/overlay/dialog presentation; EN/ID, Light/Dark, viewport/accessibility and reduced-motion rendered matrix; Android/OEM screenshots; SQLite v1→v2 runtime fixture; Usage Statistics 1h/6h/24h profiles; WP10 closure.
+- Local Flutter/Dart/Gradle/ADB absent; local checks BLOCKED / NOT RUN. Hosted #267 is Flutter CI only, not an App Build or Android/device evidence. Whole-App visual status **VISUAL NOT VERIFIED**.
+- No Build App/APK/release/signing, Firmware/BIN, BLE/P1 security/wire, OTA transport/recovery, Firebase production, flashing or device operation in this workspace.
 
 ## Historical operation — Build App #170 / COMPLETED SUCCESS
 
