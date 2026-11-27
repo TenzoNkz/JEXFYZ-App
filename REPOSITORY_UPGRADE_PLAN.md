@@ -1,21 +1,17 @@
-## Latest live inventory — Validation Only #223 green; WP1 and Floating Monitor storage/bridge tests verified (2026-11-28)
+## Latest live inventory — Validation Only #247 green; WP5 Dashboard lock-menu extraction — 2026-11-28
 
-- Latest validated App test source: `1cd1843a5fe0b635601b895276e15286919075fa`; recursive main tree 168 entries / 122 blobs / 46 trees, `truncated=false`.
-- Register reconciliation: the File inventory below contains 122 unique rows for 122 tracked blobs, with no duplicate paths. Path coverage is not proof of full content/architecture review or WP0–WP10 completion.
-- Validation Only #223 / run `46042517291` / job `140653549455`, exact test source SHA `1cd1843a5fe0b635601b895276e15286919075fa`, terminal SUCCESS — locked dependencies PASS; formatter **46 files / 0 changed**; analyzer PASS (`--no-fatal-infos`, 129 info-level diagnostics, zero warnings/errors); **306/306 Flutter tests PASS**.
-- Storage/bridge coverage: **18 secure-storage mock tests** are verified (14 AppSettingsStore/KnownCoolerStore cases plus four FloatingStore load/save/failure cases); **10 FloatingBridge MethodChannel tests** verify permission, service commands, config/telemetry payloads, runtime state and channel-error handling. #223 validates the entire suite. Production Flutter/native implementation was not changed; real Android keystore, service/WindowManager and OEM behavior remain unverified.
-- WP2/WP3: ordered bootstrap, App root, Settings presentation, P1 frame decoder, pure command classification and FIFO ACK-waiter lifecycle remain separated. Dashboard remains the only BLE/GATT/P1/session and authoritative telemetry/command owner.
-- WP4: shared geometry, semantic color, typography and shape token foundation exists. Batch 1 compact-control radius and Batch 2 `JexStatisticsTypographyTokens.axisLabel = 10.0` are verified by #213; the latter has three painter call sites and focused source-contract assertions. Similar numeric font sizes on other routes currently map to different component roles; continue classification without globalizing them. One-off telemetry, chart, device and fixed-canvas geometry remains local; screenshot acceptance is open.
-- WP5 Batch 1: `lib/dashboard_shared_components.dart` extracts the established Dashboard Card and section heading as presentation-only widgets; 12 Card and 7 heading call sites in Control/Temperature use them. Validation #194 covered the original source; #205 revalidates current main.
-- WP5 Batch 2: `lib/dashboard_control_components.dart` extracts `_switchRow`, `_jexToggle` and `_smoothList` into a state-bound presentation extension; Control/Temperature callsites use the helpers. No BLE/GATT/P1/session/command owner moved.
-- WP5 Batch 3: `JexDashboardTabTransition` wraps only Dashboard tab content with 210-ms fade + approximately 5.4-dp slide; reduced motion uses a 90-ms fade only. Outgoing subtrees have no pointer/semantics; active subtree remains discoverable during its first frame. A toggle key-ownership bug and related widget tests were corrected. Validation #205 verified the exact source.
-- WP0/WP4/WP5–WP10 remaining: full Dashboard/main.dart ownership/content audit; remaining large-module review; cross-route token role classification and justified tokenization; screen-by-screen refinement and screenshot evidence; WP6 Connection/Settings/dialogs; WP7 Usage Statistics architecture/UI; WP8 Floating Monitor lifecycle recovery decision, native integration and visual/device acceptance; WP9 screenshots/goldens/integration/platform evidence; WP10 final file/diff/governance closure.
-- Evidence limits: local Flutter/Dart/Gradle/ADB unavailable. Android/Kotlin compile, Android/OEM screenshots/device behavior, SQLite v1→v2 runtime fixture and 1h/6h/24h performance profiles remain NOT RUN. Whole-App visual result remains VISUAL NOT VERIFIED. Build #167 remains the latest published package on immutable source `0dd96228d33b08c66e736ae91a8a6c3e5c3ddb81`; current main is not packaged.
-- Scope: no Build App/APK/sign/release, Firmware/BIN/P1 wire/security, OTA, Firebase production, signing material, flashing or device operation occurred.
+- Exact validated App source SHA / current `main` HEAD: `828c42c8c6d7ac17bab0e168ac6fbf063d5abcae`; commit root tree `dfacea99e0d04b38f6f8ebfd2b1ced63c50a95fd`.
+- Live recursive tree: **171 entries / 125 blobs / 46 trees**, `truncated=false`. Register below has **125 unique rows for 125 tracked blobs**; no missing, stale or duplicate path.
+- Validation Only #247 / run `46056210434` / job `140699207905`, exact SHA above, terminal SUCCESS: locked dependencies PASS; formatter **49 files / 0 changed**; analyzer PASS with **135 info-level diagnostics** under `--no-fatal-infos`; full Flutter suite **317/317 PASS**; summary SUCCESS.
+- WP5 source sequence: `900740e1ad85ed71dd6e18780c5153799c12d37a` extracted the lock reason/policy/overlay into `lib/dashboard_display_menu.dart`; `4e7e66b8bf1a78faff9dbfe1ecc92fbbd33a913a` updated integration assertions and formatter output; `2239405b9c616abdbc61d0aa27bc88fd6572c715` removed formatter transcript text from test sources; `828c42c8c6d7ac17bab0e168ac6fbf063d5abcae` corrected the pointer-block test. Full suite verifies the final exact source SHA.
+- The lock overlay remains presentation-only. Dashboard supplies synchronized values and its existing guarded Connect callback; Dashboard retains the only BLE/GATT/P1/session/ACK/telemetry/command ownership. P1 UUID/framing/commands/SYNC/SYNC_READY and device state were not changed.
+- `lib/app_settings.dart` WP0 full-file review and 353-key bilingual/placeholder audit were already closed in the review record below; the stale inventory row is corrected. The live battery telemetry contract test, present before this batch, is now explicitly registered.
+- Remaining work is open: full `main.dart` Dashboard ownership/content audit; screen-by-screen redesign and screenshot acceptance; WP4 token role classification; WP6 Connection/Settings/dialogs; WP7 Usage Statistics; WP8 Floating Monitor lifecycle/native acceptance; WP9 platform/visual/integration evidence; WP10 final closure.
+- Evidence boundary: local Flutter/Dart/Gradle/ADB unavailable. No Android/Kotlin compile, APK/App Build, device/OEM test, actual screenshot, SQLite runtime migration fixture or 1h/6h/24h profile was run. Whole-App visual state remains **VISUAL NOT VERIFIED**. No Build App, Firmware/BIN, P1 wire/security, OTA, Firebase production, signing, flashing or device operation occurred.
 
 # JE X FYZ / JE Cooler — Repository File-by-File Upgrade Register
 
-Last inventory snapshot: 2026-11-27 (Asia/Jakarta). Authority: `MASTER_PROMPT.md`.
+Last inventory snapshot: 2026-11-28 (Asia/Jakarta). Authority: `MASTER_PROMPT.md`.
 
 ## Purpose and completion rule
 
@@ -199,7 +195,7 @@ A failed gate blocks dependent work. Retry only after classifying root cause (so
 | `.github/workflows/jexfyz-app-build-trigger.yml` | Guarded release workflow | WORKFLOW — SECURITY / SCOPE GATED | PROTECTED — NO CHANGE (2026-11-26) |
 | `.github/workflows/jexfyz-app-validation.yml` | Main-only read-only Validation Only workflow | WORKFLOW — LEAST PRIVILEGE / CI GATE | UPGRADE / VERIFIED CI #187 — MAIN-ONLY READ-ONLY VALIDATION; ON-FAILURE FORMAT DIAGNOSTIC |
 | `.gitignore` | Repository ignore policy | REPOSITORY CONFIG | KEEP / VERIFIED (2026-11-26) |
-| `00_WORK_STATUS.md` | Session continuity | ACTIVE STATUS / CHECKPOINT | UPGRADE / CURRENT — THIS CHAT IS CODE_FULL; VALIDATION ONLY #187 SUCCESS |
+| `00_WORK_STATUS.md` | Session continuity | ACTIVE STATUS / CHECKPOINT | UPGRADE / CURRENT — CODE_FULL; WP5 lock-menu extraction; Validation Only #247 SUCCESS; WORK ITEM IN PROGRESS |
 | `AGENTS.md` | Operating governance | CANONICAL GOVERNANCE | KEEP / VERIFIED (2026-11-26) |
 | `analysis_options.yaml` | Dart analyzer policy | QUALITY CONFIG — ANALYZER GATE | KEEP / VERIFIED — 2026-11-26 (WP1) |
 | `android/app/build.gradle` | Android build configuration | BUILD CONFIG — COMPATIBILITY GATED | KEEP / VERIFIED (2026-11-26) |
@@ -216,8 +212,8 @@ A failed gate blocks dependent work. Retry only after classifying root cause (so
 | `android/gradle.properties` | Android Gradle properties | BUILD CONFIG — COMPATIBILITY GATED | KEEP / VERIFIED (same blob as Build #167; 2026-11-26) |
 | `android/settings.gradle` | Android plugin/bootstrap configuration | BUILD CONFIG — COMPATIBILITY GATED | KEEP / VERIFIED (same blob as Build #167; KGP matrix caveat recorded; 2026-11-26) |
 | `APP_BUILD_REPORT.md` | Append-only evidence ledger | APPEND-ONLY / NO REWRITE | APPEND-ONLY / READ-ONLY / REVIEWED (2026-11-26) |
-| `APP_NOTES.md` | App behavior and UI contract reference | APP NOTES — CURRENT + HISTORICAL SNAPSHOTS | UPGRADE / CURRENT — MAIN 1b6b38b; WP1 STORAGE TESTS AND WP5 PRESENTATION PARTS |
-| `APP_PREBUILD_AUDIT.md` | Current App rework and acceptance plan | APP PREBUILD AUDIT — WP0–WP10 AUTHORITY | UPGRADE / CURRENT — SOURCE 727f30a; #198 GREEN; 120/120 PATHS; WP0/WP4/WP5–WP10 OPEN |
+| `APP_NOTES.md` | App behavior and UI contract reference | APP NOTES — CURRENT + HISTORICAL SNAPSHOTS | UPGRADE / CURRENT — main 828c42c; Dashboard lock-menu extraction; #247 GREEN |
+| `APP_PREBUILD_AUDIT.md` | Current App rework and acceptance plan | APP PREBUILD AUDIT — WP0–WP10 AUTHORITY | UPGRADE / CURRENT — main 828c42c; #247 GREEN; 125/125 PATHS; owner WP0–WP10 authority restored |
 | `archive/ARTIFACT_REPO_NOTES_PRE_BIN_ONLY_2026-10-14.md` | Immutable archive | IMMUTABLE / HISTORICAL | IMMUTABLE / HISTORICAL / REVIEWED (2026-11-26) |
 | `archive/CHAT_TRANSFER_PRE_COMPACTION_2026-11-15.md` | Immutable archive | IMMUTABLE / HISTORICAL | IMMUTABLE / HISTORICAL / REVIEWED (2026-11-26; superseded) |
 | `archive/LEGACY_NOTES_SNAPSHOT_2026-10-14.md` | Immutable archive | IMMUTABLE / HISTORICAL | IMMUTABLE / HISTORICAL / REVIEWED (2026-11-26; never current truth) |
@@ -229,38 +225,39 @@ A failed gate blocks dependent work. Retry only after classifying root cause (so
 | `CHANGELOG.md` | Append-only evidence ledger | APPEND-ONLY / NO REWRITE | APPEND-ONLY / UPDATED — CLEAR HISTORY P1 FRESHNESS FIX (#82) |
 | `CHAT_RULES.md` | Compatibility pointer to canonical operating policy | ACTIVE POLICY POINTER | KEEP / VERIFIED (2026-11-26) |
 | `CHAT_TRANSFER_PROMPTS.md` | Three dedicated workspace LOAD + CONTINUE templates | ACTIVE WORKSPACE TEMPLATES | UPGRADE — CLOSED / READ-BACK VERIFIED (2026-11-26) |
-| `CHAT_TRANSFER.md` | Rolling active continuation checkpoint | ACTIVE CODE_FULL CHECKPOINT | UPGRADE / CURRENT — #198 GREEN; ACTIVE CODE_FULL CHECKPOINT READ-BACK VERIFIED |
+| `CHAT_TRANSFER.md` | Rolling active continuation checkpoint | ACTIVE CODE_FULL CHECKPOINT | UPGRADE / CURRENT — exact main 828c42c; Validation Only #247 SUCCESS; active checkpoint read-back |
 | `DESIGN_NOTES.md` | Owner-approved screen-specific visual contracts | ACTIVE DESIGN SUBJECT REFERENCE | UPGRADE — CLOSED / READ-BACK VERIFIED (2026-11-26) |
 | `FIRMWARE_NOTES.md` | Firmware and hardware requirements reference | PROTECTED — OUTSIDE APP-ONLY SCOPE | PROTECTED — NO CHANGE (2026-11-26) |
 | `firmware/FIRMWARE_TECHNICAL_REFERENCE.md` | Firmware source-level architecture and safety reference | PROTECTED — OUTSIDE APP-ONLY SCOPE | PROTECTED — NO CHANGE (2026-11-26) |
 | `firmware/JEXFYZ-V7.2.ino` | Active versioned Firmware source | PROTECTED — EXPLICIT FIRMWARE AUTHORIZATION REQUIRED | PROTECTED — NO CHANGE (2026-11-26) |
-| `HANDOVER.md` | Immediate next-action handover | ACTIVE CURRENT HANDOVER | UPGRADE / CURRENT — MAIN 1b6b38b; #187 GREEN; NEXT DASHBOARD/WP4 AUDIT |
+| `HANDOVER.md` | Immediate next-action handover | ACTIVE CURRENT HANDOVER | UPGRADE / CURRENT — main 828c42c; #247 GREEN; next Dashboard content audit |
 | `lib/app_bootstrap.dart` | Flutter App source — ordered startup/security/Firebase/App Check orchestration | APP SOURCE — WP2 / APP BOOTSTRAP | UPGRADE / VERIFIED CI #142 — FIVE STARTUP ORDER/FAILURE TESTS; OFFICIAL GATE REMAINS FIRST |
 | `lib/app_root.dart` | Flutter App root composition; receives the Dashboard widget from the entry point | APP SOURCE — WP2 / APP ROOT SHELL | UPGRADE / VERIFIED CI #142 — INJECTED DASHBOARD, SHARED THEME/LOCALE; NO SECOND BLE OWNER |
 | `lib/app_security.dart` | Flutter App security/platform adapter | APP SOURCE — CODE AUTHORIZATION | UPGRADE / CLOSED — OFFICIAL-BUILD FAIL-CLOSED ADAPTER (#87) |
-| `lib/app_settings.dart` | Flutter App source — persisted App preferences, localization and shared themes | APP SOURCE — WP4 / THEME + SETTINGS PRESENTATION | UPGRADE / TEST SUPPORT VERIFIED CI #187 — STORE BEHAVIOR COVERED; FAILURE INJECTION AND FULL-FILE REVIEW OPEN |
+| `lib/app_settings.dart` | Flutter App source — persisted App preferences, localization and shared themes | APP SOURCE — WP4 / THEME + SETTINGS PRESENTATION | KEEP / VERIFIED — WP0 FULL-FILE REVIEW + 353 EN/ID LOCALE/PLACEHOLDER AUDIT; 14 STORE MOCK TESTS #217; KEYS/SCHEMA UNCHANGED; ANDROID KEYSTORE NOT VERIFIED |
 | `lib/connection_scan_coordinator.dart` | Flutter App source — process-wide BLE scanner ownership coordinator | APP SOURCE — TIER 1 / CONCURRENCY & LIFECYCLE CONTRACT | KEEP / VERIFIED (2026-11-26) |
 | `lib/connection_scan_state.dart` | Flutter App source — Connection empty-state and device-name presentation mapping | APP SOURCE — TIER 2 / PRESENTATION STATE CONTRACT | KEEP / VERIFIED (2026-11-26) |
 | `lib/connection_sheet.dart` | Flutter App source — manual Connection sheet UI and OS status lifecycle; BLE orchestration injected | APP SOURCE — TIER 2 / CONNECTION PRESENTATION | UPGRADE / CLOSED — PRESENTATION EXTRACTION; INCLUDED IN VALIDATION ONLY #458849 (233/233) |
 | `lib/dashboard_control_tabs.dart` | Flutter App Dart library part — Dashboard Voltage, Control, Adaptive and LED presentation builders | APP SOURCE — WP5 PRESENTATION ONLY; Dashboard retains command/BLE/GATT/P1/session authority | UPGRADE / VERIFIED CI #205 — CONTROL ROW HELPERS + TAB TRANSITION CONSUMER; SCREEN/DESIGN REVIEW OPEN |
 | `lib/dashboard_shared_components.dart` | Flutter App shared presentation widgets — Dashboard Card, section heading and keyed tab-content transition; no device/session state or commands | APP SOURCE — WP5 SHARED PRESENTATION ONLY; NO BLE/GATT/P1/SESSION OWNER | UPGRADE / VERIFIED CI #205 — WIDGET CONTRACT + REDUCED-MOTION TAB TRANSITION; SCREENSHOT REVIEW OPEN |
 | `lib/dashboard_control_components.dart` | Flutter App library part — state-bound Dashboard control-row, toggle and smooth-list presentation extension; no independent device/session owner | APP SOURCE — WP5 PRESENTATION ONLY; Dashboard retains all BLE/GATT/P1/session/telemetry/command state | UPGRADE / VERIFIED CI #205 — HELPER + UNIQUE TOGGLE KEY OWNERSHIP; VISUAL REVIEW OPEN |
+| `lib/dashboard_display_menu.dart` | Stateless Dashboard submenu lock policy and lock-panel renderer; consumes Dashboard-owned values and guarded Connect callback | APP SOURCE — WP5 PRESENTATION ONLY; NO BLE/GATT/P1/SESSION/COMMAND/PERSISTENCE OWNER | UPGRADE / VERIFIED CI #247 — DISCONNECTED/ADAPTIVE/VOLTAGE LOCK COPY, BLOCKED SUBMENU INPUT, BILINGUAL RENDERING, 48-DP CONNECT TARGET; SCREENSHOT REVIEW OPEN |
 | `lib/dashboard_home_tab.dart` | Flutter App Dart library part — Dashboard Home presentation builder | APP SOURCE — WP5 HOME PRESENTATION ONLY; Dashboard retains telemetry/notification/BLE/P1 authority | UPGRADE / VERIFIED CI #187 — PRESENTATION PART; FINAL SCREEN/DESIGN REVIEW OPEN |
 | `lib/dashboard_temperature_tab.dart` | Flutter App Dart library part — Dashboard Temperature presentation builder | APP SOURCE — WP5 TEMPERATURE PRESENTATION ONLY; Dashboard retains command/session authority | UPGRADE / VERIFIED CI #198 — SHARED HELPERS; ACCESSIBILITY/DESIGN REVIEW OPEN |
 | `lib/floating_monitor.dart` | Flutter App source — Floating Monitor config/store/bridge/runtime and native telemetry projection | APP SOURCE — TIER 2 / FLOATING MONITOR BRIDGE + PRESENTATION | UPGRADE IN PROGRESS — SETTINGS PAGES EXTRACTED; CONFIG/BRIDGE/NATIVE LIFECYCLE SEPARATION OPEN |
 | `lib/home_notify.dart` | Flutter App source — localized Home/OTA copy helpers and stateless fixed 44-dp HomeNotifyCard | APP SOURCE — TIER 2 / PRESENTATION CONTRACT | UPGRADE / CLOSED — DASHBOARD-OWNED STATUS ADAPTER; VALIDATION ONLY #458849 (233/233) |
 | `lib/jex_animated_glyph.dart` | Flutter App source | APP SOURCE — CODE AUTHORIZATION | KEEP / VERIFIED — STATELESS STATIC ICON |
-| `lib/jex_animated_icon.dart` | Flutter App source — animated state indicators and glyph painters | APP SOURCE — TIER 2 / PRESENTATION CONTRACT | UPGRADE / CLOSED — PRESENTATION-ONLY MODULE; CURRENT MAIN VALIDATED IN #458849 (233/233) |
+| `lib/jex_animated_icon.dart` | Flutter App source — animated state indicators and glyph painters | APP SOURCE — TIER 2 / PRESENTATION CONTRACT | UPGRADE / VERIFIED CI #247 — ICON/GLYPH PRESENTATION ONLY; LOCK REASON POLICY MOVED TO DASHBOARD_DISPLAY_MENU.DART |
 | `lib/jex_design_tokens.dart` | Flutter App shared layout, semantic color, typography and shape tokens | APP SOURCE — WP4 / DESIGN SYSTEM FOUNDATION | UPGRADE / AUDIT IN PROGRESS — FOUNDATION + COMPACT-CONTROL RADIUS + STATISTICS AXIS TOKEN VERIFIED BY #213; CROSS-ROUTE ROLE CLASSIFICATION OPEN |
 | `lib/led_controls.dart` | Flutter App source — LED mode/color/phase preview and picker presentation | APP SOURCE — TIER 2 / LED PRESENTATION CONTRACT | UPGRADE / CLOSED / READ-BACK VERIFIED — EXTRACTED FROM `main.dart`; VALIDATION ONLY #91 (2026-11-27) |
-| `lib/main.dart` | Flutter App source — App entry and Dashboard sole BLE/GATT/P1/session owner | APP SOURCE — TIER 1 / SESSION OWNERSHIP | UPGRADE IN PROGRESS — HOME/CONTROL/TEMPERATURE PARTS + SHARED HELPERS + WP5 TAB TRANSITION WRAPPER; SOLE BLE/GATT/P1/SESSION/TELEMETRY OWNER; FULL CONTENT AUDIT OPEN |
+| `lib/main.dart` | Flutter App source — App entry and Dashboard sole BLE/GATT/P1/session owner | APP SOURCE — TIER 1 / SESSION OWNERSHIP | UPGRADE IN PROGRESS — PRESENTATION PARTS + TAB TRANSITION + LOCK-MENU DELEGATION; SOLE BLE/GATT/P1/SESSION/TELEMETRY/COMMAND OWNER; FULL CONTENT AUDIT OPEN; #247 GREEN |
 | `lib/p1_ack_waiters.dart` | Pure per-item FIFO P1 ACK waiter coordinator; registration, timeout, exact cancellation and bulk completion only | APP SOURCE — WP3 / ACK WAITER LIFECYCLE; NO BLE/GATT OR SESSION OWNER | UPGRADE / VERIFIED CI #155 + #158 — FIVE LIFECYCLE TESTS; DASHBOARD RETAINS TRANSPORT/ACK DISPATCH/SESSION AUTHORITY |
 | `lib/p1_command_contract.dart` | Pure P1 command classification — ACK item, expected telemetry, write-response policy and ACK success vocabulary | APP SOURCE — WP3 / PURE COMMAND CONTRACT; NO TRANSPORT OR SESSION OWNER | UPGRADE / VERIFIED CI #158 — DASHBOARD RETAINS WRITE/ACK/TELEMETRY SEQUENCING |
 | `lib/p1_frame_decoder.dart` | Pure P1 stream framing and bounded partial-buffer decoder | APP SOURCE — WP3 / FRAME DECODER ONLY | UPGRADE / VERIFIED CI #142 — FRAME ORDER, SPLIT SYNC, OVERFLOW AND SESSION CLEAR TESTS PASS |
 | `lib/settings_pages.dart` | Flutter App library part — Settings root, navigation and preference subpages | APP SOURCE — WP2 / WP4 SETTINGS PRESENTATION | UPGRADE / VERIFIED CI #158 — SEMANTIC SURFACE/FOREGROUND/OUTLINE TOKENS; STORAGE KEYS UNCHANGED; VISUAL ACCEPTANCE OPEN |
 | `lib/usage_statistics.dart` | Usage Statistics storage/analytics/chart presentation; HOT freshness and queue ownership | APP SOURCE — WP4/WP7 / USAGE STATISTICS | UPGRADE / IN PROGRESS — CLEAR-HISTORY HOT-FRESHNESS FIX RETAINED; WP4 AXIS TOKEN VERIFIED BY #213; CURRENT FULL-FILE/PERFORMANCE EVIDENCE OPEN |
 | `MASTER_PROMPT.md` | Operating governance | CANONICAL GOVERNANCE | UPGRADE / REVIEWED — FULL-CYCLE EKSEKUSI CODE POLICY |
-| `MEMORY_INDEX.md` | Operating governance | CANONICAL GOVERNANCE | UPGRADE / CURRENT — 119-PATH INVENTORY AND #194 EVIDENCE RECONCILED |
+| `MEMORY_INDEX.md` | Operating governance | CANONICAL GOVERNANCE | UPGRADE / CURRENT — 125-PATH LIVE INVENTORY + WP5/#247 EVIDENCE RECONCILED |
 | `OTA_PROTECTION.md` | Project/configuration file | REVIEW REQUIRED | PROTECTED / REVIEWED — NO TRANSPORT CHANGES |
 | `OTA_REGRESSION_MEMORY.md` | Project/configuration file | REVIEW REQUIRED | PROTECTED / REVIEWED — HISTORICAL SECURITY TRADE-OFF |
 | `PRODUCT_DESIGN_CONSTITUTION.md` | Project/configuration file | REVIEW REQUIRED | KEEP / VERIFIED — EXISTING BRAND / DESIGN AUTHORITY |
@@ -268,7 +265,7 @@ A failed gate blocks dependent work. Retry only after classifying root cause (so
 | `pubspec.lock` | Flutter dependency manifest/lock | DEPENDENCY CONTRACT — REVIEW BEFORE CHANGE | KEEP / VERIFIED (2026-11-26) |
 | `pubspec.yaml` | Flutter dependency manifest/lock | DEPENDENCY CONTRACT — REVIEW BEFORE CHANGE | UPGRADE — CLOSED / READ-BACK VERIFIED (2026-11-26) |
 | `README.md` | Project entrypoint / navigation index | ACTIVE PROJECT INDEX | KEEP / VERIFIED (2026-11-26) |
-| `REPOSITORY_UPGRADE_PLAN.md` | Repository-wide upgrade register | Canonical per-file audit register | UPGRADE / CURRENT — 118/118 LIVE PATHS; CONTENT REVIEW REMAINS WP-BASED |
+| `REPOSITORY_UPGRADE_PLAN.md` | Repository-wide upgrade register | Canonical per-file audit register | UPGRADE / CURRENT — 125/125 LIVE PATHS; WP0–WP10 CONTENT/QUALITY REVIEW REMAINS OPEN |
 | `SKILLS_INDEX.md` | Reusable skill and capability catalogue | ACTIVE CAPABILITY INDEX | UPGRADE — CLOSED / READ-BACK VERIFIED (2026-11-26) |
 | `test/app_bootstrap_test.dart` | Dart test | TEST / REGRESSION | UPGRADE / VERIFIED CI #142 — OFFICIAL GATE, STARTUP ORDER AND CLOUD-FAILURE BEHAVIOR |
 | `test/app_protocol_notify_contract_test.dart` | Dart test | TEST / REGRESSION | KEEP / VERIFIED — P1 / NOTIFICATION SOURCE CONTRACT |
@@ -277,8 +274,10 @@ A failed gate blocks dependent work. Retry only after classifying root cause (so
 | `test/app_settings_store_test.dart` | Flutter plugin-mock behavioral regression tests for AppSettingsStore and KnownCoolerStore | TEST / WP1 PERSISTENCE REGRESSION | UPGRADE / VERIFIED CI #217 — 14 MOCK-STORAGE TESTS (7 NORMAL + 7 FAILURE-INJECTION) |
 | `test/connection_scan_coordinator_test.dart` | Dart test | TEST / REGRESSION | UPGRADE / CLOSED — PASSIVE REDISCOVERY ERROR CONSUMPTION TEST (#85) |
 | `test/connection_scan_state_test.dart` | Dart unit tests for Connection scan-state precedence and advertised/platform name trimming | TEST / WP1 CONNECTION REGRESSION | UPGRADE / VERIFIED CI #166 — PRIORITY + NAME NORMALIZATION |
-| `test/device_copy_notification_contract_test.dart` | Dart test | TEST / REGRESSION | UPGRADE — CLOSED / READ-BACK VERIFIED (2026-11-26) |
-| `test/firmware_qc_contract_test.dart` | Dart test | TEST / REGRESSION | UPGRADE / PENDING VALIDATION ONLY #148 — LOCK VOLTAGE CONTRACT TARGETS SETTINGS MODULE; P1 EXPECTATIONS FOLLOW COMMAND CONTRACT |
+| `test/dashboard_battery_telemetry_contract_test.dart` | Dashboard phone-battery telemetry unavailable-state source contract | TEST / WP5 DASHBOARD TELEMETRY REGRESSION | KEEP / VERIFIED CI #247 — PLATFORM READ ERROR PUBLISHES UNKNOWN UI, NULL HISTORY SAMPLE AND `PHONE:BT=-1.0`; SOURCE CONTRACT ONLY, NO DEVICE READ EXECUTED |
+| `test/dashboard_display_menu_test.dart` | Widget tests for Dashboard disconnected/Adaptive/Lock Voltage submenu overlays and guarded Connect action | TEST / WP5 PRESENTATION REGRESSION | UPGRADE / VERIFIED CI #247 — 5 WIDGET TESTS: INPUT BLOCK, CONNECT CALLBACK/48-DP, 5V CONFIRMATION, ADAPTIVE COPY, EN/ID |
+| `test/device_copy_notification_contract_test.dart` | Dart test | TEST / REGRESSION | UPGRADE / VERIFIED CI #247 — DEVICE COPY CONTRACT READS THE EXTRACTED LOCK MENU MODULE; WHOLE-FILE REVIEW OPEN |
+| `test/firmware_qc_contract_test.dart` | Dart test | TEST / REGRESSION | UPGRADE / VERIFIED CI #247 — LOCK VOLTAGE CONTRACT TARGETS SETTINGS MODULE; P1 EXPECTATIONS FOLLOW COMMAND CONTRACT |
 | `test/firmware_touch_adaptive_sync_test.dart` | Dart test | TEST / REGRESSION | KEEP / VERIFIED — TOUCH / ADAPTIVE SOURCE CONTRACT |
 | `test/floating_monitor_layout_contract_test.dart` | Dart test | TEST / REGRESSION | UPGRADE / VERIFIED CI #158 — SETTINGS TOKEN/SOURCE CONTRACT UPDATED; FULL-FILE REVIEW OPEN |
 | `test/floating_monitor_store_test.dart` | FloatingStore schema-v2 round-trip/default/read-failure/write-failure regression | TEST / WP8 PERSISTENCE | UPGRADE / VERIFIED CI #220 — 4 SECURE-STORAGE MOCK TESTS |
@@ -291,9 +290,21 @@ A failed gate blocks dependent work. Retry only after classifying root cause (so
 | `test/support/source_contract_helpers.dart` | Dart test | TEST / REGRESSION | KEEP / VERIFIED — SOURCE ASSERTION NORMALIZATION |
 | `test/temperature_accessibility_test.dart` | Flutter semantics/widget test for Temperature limit action labels and handles | TEST / ACCESSIBILITY REGRESSION | UPGRADE / VERIFIED CI #205 — ACTIVE TAB SEMANTICS DURING FADE; FULL SUITE 285/285 |
 | `test/usage_statistics_test.dart` | Usage Statistics unit/widget/source-contract coverage | TEST / REGRESSION | UPGRADE / VERIFIED CI #213 — AXIS TOKEN THREE-CALLOUT CONTRACT + HOT-FRESHNESS REGRESSION; FULL-CURRENT-FILE REVIEW OPEN |
-| `test/widget_test.dart` | Dart widget/source-contract tests | TEST / REGRESSION | UPGRADE / VERIFIED CI #213 — DESIGN TOKEN/SCREEN REGRESSIONS INCLUDED IN 285/285 SUITE; FULL-FILE REVIEW OPEN |
+| `test/widget_test.dart` | Dart widget/source-contract tests | TEST / REGRESSION | UPGRADE / VERIFIED CI #247 — DASHBOARD LOCK-REASON DELEGATION CONTRACT + CURRENT SCREEN REGRESSIONS; FULL-FILE REVIEW OPEN |
 | `VISUAL_QUALITY_GATE.md` | Project/configuration file | REVIEW REQUIRED | KEEP / VERIFIED — ACTUAL SCREENSHOTS STILL REQUIRED |
 | `VOLTAGE_TRANSITION_MEMORY.md` | Project/configuration file | REVIEW REQUIRED | PROTECTED / REVIEWED — FIRMWARE-OWNED RAIL / SAFETY CONTRACT |
+
+### WP5 — Dashboard lock submenu presentation boundary — 2026-11-28
+
+- **Exact live base and resulting source:** parent `f44f185103ea1d3a88baa49fe71574b61239ae5d`; implementation/test commits `900740e1ad85ed71dd6e18780c5153799c12d37a`, `4e7e66b8bf1a78faff9dbfe1ecc92fbbd33a913a`, `2239405b9c616abdbc61d0aa27bc88fd6572c715`, `828c42c8c6d7ac17bab0e168ac6fbf063d5abcae`; resulting `main` HEAD `828c42c8c6d7ac17bab0e168ac6fbf063d5abcae`. All commits were direct to main after exact branch/blob preflight; every changed file was read back.
+- **Files:** new `lib/dashboard_display_menu.dart`; updated `lib/main.dart`, `lib/jex_animated_icon.dart`, `test/widget_test.dart`; new `test/dashboard_display_menu_test.dart`; updated `test/device_copy_notification_contract_test.dart`.
+- **Ownership:** `DashboardScreen` remains the sole BLE/GATT/P1/session/ACK/telemetry/command owner. Dashboard supplies current status and existing guarded Connect callback. The extracted widget is stateless presentation; it does not issue BLE commands or own persistence.
+- **Behavior contracts:** disconnection > Adaptive gate > Lock Voltage gate precedence remains; existing tab scope is preserved. Covered submenu input is blocked. Disconnected Connect callback remains Dashboard-owned and button min-height is 48 dp. “Locked at 5V” appears only after 5V telemetry confirmation; otherwise the panel reports return/wait state. EN/ID copy covered.
+- **Test correction history:** #244 / run `46055080425` failed with two stale source/format expectations (315 pass / 2 fail); #245 / run `46055568472` failed because formatter transcript text was copied into test files; #246 / run `46055930195` exposed a broad IgnorePointer finder (316 pass / 1 fail). All causes were corrected; no CI gate was weakened.
+- **Acceptance:** Validation Only #247 / run `46056210434` / job `140699207905`, exact SHA `828c42c8c6d7ac17bab0e168ac6fbf063d5abcae`, terminal SUCCESS. Locked dependencies PASS; formatter 49 files / 0 changed; analyzer PASS (135 info diagnostics, `--no-fatal-infos`); Flutter suite **317/317 PASS**; summary SUCCESS.
+- **Static review:** complete change diff and all affected file read-backs inspected. No P1 UUID/framing/commands/SYNC, BLE scanner ownership, ACK/telemetry truth, storage key/schema, OTA transport, Firebase production, native renderer or release workflow changes.
+- **Evidence limits:** widget tests verify Flutter presentation and injected callback semantics, not physical device connection or Android/OEM rendering. No App Build/APK, Android/Kotlin build, physical device operation or visual PASS was performed. UI remains **VISUAL NOT VERIFIED**.
+- **Next action:** continue the live `lib/main.dart` Dashboard content/ownership audit. WP0–WP10 remain IN_PROGRESS.
 
 ## Content review records
 
