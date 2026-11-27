@@ -682,7 +682,7 @@ void main() {
     expect(painter, contains('for (var i = 0; i < 3; i++)'));
     expect(homeSource, contains('JexAnimatedIconKind.adaptive'));
     expect(controlSource, contains('JexAnimatedIconKind.peltier'));
-    expect(source, contains('JexAnimatedIconKind.speed'));
+    expect(homeSource, contains('JexAnimatedIconKind.speed'));
     expect(animationSource, contains('jexIconAnimationPermitted('));
     expect(animationSource, contains('valueKnown'));
   });
@@ -935,7 +935,7 @@ void main() {
   });
 
   test('Indicator glyphs retain detailed static geometry while disconnected or unknown', () {
-    final source = File('lib/main.dart').readAsStringSync();
+    final homeSource = File('lib/dashboard_home_tab.dart').readAsStringSync();
     final animationSource = File('lib/jex_animated_icon.dart')
         .readAsStringSync();
     final painterStart = animationSource.indexOf(
@@ -1003,11 +1003,10 @@ void main() {
       contains('quiet thermal emblem completes the unknown-state battery'),
     );
     expect(battery, isNot(contains('final breath')));
-    expect(source, contains('size: 26,'));
+    expect(homeSource, contains('size: 26,'));
   });
 
   test('Thermal icons use oval ember bursts, Voltage uses edge pulses, and other icons keep their signatures', () {
-    final source = File('lib/main.dart').readAsStringSync();
     final controlSource = File('lib/dashboard_control_tabs.dart')
         .readAsStringSync();
     final homeSource = File('lib/dashboard_home_tab.dart').readAsStringSync();
@@ -1297,12 +1296,12 @@ void main() {
     expect(painter, contains('const sweep = math.pi;'));
     expect(
       containsDartFragment(
-        source,
+        homeSource,
         'active: connected && (animationActive ?? active)',
       ),
       isTrue,
     );
-    expect(source, contains('continuousLoop: continuousLoop'));
+    expect(homeSource, contains('continuousLoop: continuousLoop'));
     final homeStart = homeSource.lastIndexOf(
       'Widget _buildHomeArea(double height)',
     );

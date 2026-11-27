@@ -479,5 +479,4 @@ extension _DashboardHomeTabBuilder on _DashboardScreenState {
       animationValueKnown: connected && runtimeOutputsKnown,
     );
   }
-
 }
