@@ -770,4 +770,13 @@ The Firmware-safety and hardware/power skills are retained as protected project 
 - **Gaps closed:** assert that explicit Bluetooth/legacy-location unavailability outranks a simultaneous scan error, and assert that non-empty advertisement/platform display names are trimmed before presentation.
 - **Files:** `test/connection_scan_state_test.dart`; source remains unchanged.
 - **Acceptance:** Validation Only on the exact commit must pass locked dependency resolution, read-only Dart formatting, Flutter analyzer and the complete Flutter suite. This unit coverage does not prove Android permission behavior or real BLE discovery.
-- **Disposition:** UPGRADE / CI PENDING at commit creation; update with the observed exact run outcome before closing.
+- **CI evidence:** Validation Only #166 / run `45956791122` / job `140365017067`, exact commit `b61614a170e6c741fa0280adcc75cf9e7504d075`, terminal SUCCESS: locked dependency resolution PASS, Dart formatter PASS (37 files / 0 changed), analyzer PASS, full Flutter suite **262/262 PASS**.
+- **Disposition:** UPGRADE / VALIDATED / READ-BACK PENDING (the test and plan update are committed; exact final read-back follows).
+
+### WP1 — AppSettings preference-model serialization and fallback tests — 2026-11-27
+
+- **Scope:** pure immutable `AppSettings` value-model characterization only. Storage APIs, secure-storage key names, notifier side effects, KnownCooler identity persistence and firmware-notice persistence are not changed or mocked in this test slice.
+- **Coverage:** default language/theme/notification/Auto Connect values; complete JSON round-trip; malformed JSON and non-map roots; unknown enum fallback without discarding valid booleans; wrong-typed/missing booleans restoring safe model defaults; `copyWith` preserving explicit `false` values and unspecified fields; default/light/dark Home-vs-Dashboard palette semantics.
+- **Files:** new `test/app_settings_model_test.dart`; no production source changes.
+- **Acceptance:** exact-commit Validation Only must pass dependency lock, read-only format, analyzer and the full Flutter suite. This does not close the separate plugin-backed `AppSettingsStore` / `KnownCoolerStore` storage-failure integration gap; keys and failure semantics remain protected.
+- **Disposition:** UPGRADE / CI PENDING.
