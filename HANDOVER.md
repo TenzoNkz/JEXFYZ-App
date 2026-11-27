@@ -4,14 +4,15 @@ Last reconciled: 2026-11-28 (Asia/Jakarta). Authority: MASTER_PROMPT.md.
 
 ## Active CODE_FULL work item — IN_PROGRESS
 
-- Owner command: “Eksekusi Code!”; authorized scope is App-only source/tests/docs/static audit for WP0–WP10, direct commits on `main`.
-- Live main HEAD: `7f69be593f00aa9704d62cf4307701dae2fd1715` (docs-only state update). Latest tested App source SHA: `fa2dcb976395fade0eb0034db5a83b0f12fe4ed6`.
-- Validation Only #261 / run `46068234248` / job `140738636516` / exact source SHA above terminal SUCCESS: deps PASS; formatter 52/0 changed; analyzer 139 info, 0 warnings/errors; Flutter tests **336/336 PASS**; summary PASS. #260 was formatter-only failure, corrected by the owner's canonical-format commit.
-- WP3: P1 heartbeat gate respects session readiness; pure telemetry-line parser extracted; Dashboard retains BLE/GATT/P1/session/ACK/telemetry/command ownership. No protocol/wire changes.
-- WP0: tree has 128 blobs and register now contains 128 unique dispositions. New parser source/test recorded separately; Home OTA/reset presentation suite has nine tests.
-- Source reviews: Dashboard major ownership/routes and Usage Statistics source contracts reviewed. `widget_test.dart` has 117 tests with 84 source reads in 45 test bodies; source-assertion brittleness review remains open. Usage Statistics 1h/6h/24h profiles and SQLite runtime migration fixture NOT RUN.
-- Local Flutter/Dart/Gradle/ADB checks BLOCKED / NOT RUN. No Android/OEM screenshot/device test; whole-App result **VISUAL NOT VERIFIED**. No App package build or protected Firmware/P1 wire/OTA/Firebase/signing/device operations.
-- Next: continue WP4 semantic design-token role/consumer audit, then move into screen refinements only after semantic roles and affected-route coverage are explicit.
+- Owner command: “@Thinking Eksekusi Code!”; approved scope is App-only source/tests/docs/static audit WP0–WP10, direct commits on main.
+- Current source/test SHA: f69bc4915f946c7e1dfca1c545ded6e102eea3e7. Validation Only #267 / run 46070875101 / job 140747239194, exact-SHA terminal SUCCESS: dependencies PASS; formatter 53/0; analyzer 139 info with zero warnings/errors; Flutter tests 340/340 PASS.
+- Live path inventory at latest reconciliation: 175 tree entries / 129 tracked blobs / 46 tree nodes, truncated=false; REPOSITORY_UPGRADE_PLAN.md covers 129/129 tracked paths exactly once.
+- WP4 semantic canvas: jexCanvas maps to ThemeData.scaffoldBackgroundColor, distinct from ColorScheme.surface. JexSemanticColors.from(ThemeData) derives canvas from theme and remaining roles from ColorScheme. Five source/test paths changed; canonical formatter follow-up is separately committed. No palette, screen composition, layout geometry or touch dimension changed.
+- WP3: queued heartbeat session gate and pure telemetry parser verified by #261; Dashboard retains sole BLE/GATT/P1/session/ACK/telemetry/command authority. No wire change.
+- WP0: Dashboard/major routes, Settings/bootstrap/preferences, Floating Monitor boundary and Usage Statistics source reviewed. widget_test.dart has 117 tests, 84 source reads across 45 test bodies and 10 whitespace-only fragment checks; source-contract assertion brittleness remains open.
+- Open: role-based type/spacing/shape token classification; remaining Dashboard decomposition; WP5–WP9 screen presentation; EN/ID, Light/Dark, viewport/accessibility rendered matrix; Android/OEM screenshots; SQLite migration runtime fixture; Usage Statistics 1h/6h/24h profiles; WP10 closure.
+- Local Flutter/Dart/Gradle/ADB checks BLOCKED / NOT RUN. No Android/Kotlin build, device/screenshot evidence; whole-App visual **VISUAL NOT VERIFIED**. No App package build or protected Firmware/BIN/P1-wire/security/OTA/Firebase/signing/device operation.
+- Next: complete WP4 semantic role classification and proceed with a bounded WP5 feature-screen slice, with exact-head/blob preflight and exact-SHA Validation Only evidence.
 
 ## Historical Build App work item — COMPLETED SUCCESS
 
