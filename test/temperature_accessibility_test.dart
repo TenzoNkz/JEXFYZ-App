@@ -197,7 +197,8 @@ Future<dynamic> _pumpTemperatureTab(
   });
   tester.view.physicalSize = Size(logicalWidth * 3, 2400);
   appLanguageNotifier.value = language;
-  await tester.pump(const Duration(milliseconds: 200));
+  // Let the 210-ms Dashboard tab transition finish before asserting layout.
+  await tester.pump(const Duration(milliseconds: 250));
   return dashboardState;
 }
 
