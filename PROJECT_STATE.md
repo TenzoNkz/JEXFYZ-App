@@ -12,13 +12,15 @@ Last reconciled: 2026-11-27 (Asia/Jakarta). Authority: `MASTER_PROMPT.md`.
 
 ## Current source checkpoint
 
-- **main:** `4c5feb51c8777b0576d0ac11f3fafb921db91b38`; root tree `a7474fc394c6b070de0195e82b53127a63e0bf38`; recursive tree 150 entries / 104 blobs / 46 trees, `truncated=false`.
-- **Register:** 104 unique path dispositions are being reconciled against the 104 live blobs; no source path is missing from the live tree.
-- **WP2 bootstrap:** `lib/app_bootstrap.dart` owns ordered official-install verification, secure preference restore, best-effort Firebase/App Check, portrait setup and root launch. Startup behavior and failure policy have five targeted regression cases.
-- **WP2 Settings:** `lib/settings_pages.dart` is a part of `floating_monitor.dart`; Settings root/subpages were moved without changing storage keys, FloatingConfig, bridge, native renderer or telemetry.
-- **Device authority:** `main.dart` / Dashboard remains the single BLE/GATT/P1 session owner; no protocol/command/session behavior was changed by these extractions.
-- **CI:** Validation Only #116 on SHA `65d324f0a96ae6815a873413f49926017908bf49` passed locked dependencies, analyzer and 239/239 tests; read-only formatter failed. Validation Only #118 is pending/in progress on exact source SHA `4c5feb51c8777b0576d0ac11f3fafb921db91b38`.
-- **Latest published package:** Build #167 / immutable source `0dd96228d33b08c66e736ae91a8a6c3e5c3ddb81`; current main remains unreleased.
+- **main:** `3cd16490c3f9b0b73c86fc1df1ad78d0fa24ed17`; root tree `5bf70519bd284a5481e9cdf63e9f1efa1892c8b8`; recursive tree 157 entries / 111 blobs / 46 trees, `truncated=false`.
+- **Validated App source/test SHA:** `0448d03c39536c57ad7e8c2d36718d525d2d60fb` (current main is a documentation-only descendant); register 111/111 unique path dispositions.
+- **Validation Only #148:** run `45943879592` / job `140324041087`, terminal SUCCESS on exact source/test SHA: dependencies PASS; formatter PASS (35 files / 0 changed); analyzer PASS; Flutter tests **253/253 PASS**.
+- **WP2:** ordered bootstrap in `app_bootstrap.dart`; Settings presentation in `settings_pages.dart`; injected root in `app_root.dart`. Existing verifier, preferences and Floating Monitor bridge/native renderer remain unchanged.
+- **WP3:** `p1_frame_decoder.dart` pure framing; `p1_command_contract.dart` pure command classification. Dashboard remains sole BLE/GATT/P1/session owner and retains writes, transaction sequencing, ACK waiters, SYNC/SYNC_READY, reconnect and authoritative telemetry.
+- **WP4 foundation:** `jex_design_tokens.dart` centralizes approved dimensions and semantic ColorScheme roles; screen integration and visual acceptance remain open.
+- **Release:** Build #167 remains latest package on immutable source `0dd96228d33b08c66e736ae91a8a6c3e5c3ddb81`; current main is not packaged.
+- **Evidence limits:** Flutter/Dart/Gradle/ADB unavailable locally. Android/Kotlin, screenshots/OEM/device, SQLite runtime fixture and 1h/6h/24h profiling NOT RUN. Visual outcome **VISUAL NOT VERIFIED**.
+
 
 ## Protected contracts and evidence
 
