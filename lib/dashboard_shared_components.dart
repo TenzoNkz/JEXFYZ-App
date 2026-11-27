@@ -44,9 +44,9 @@ class JexDashboardCard extends StatelessWidget {
 
 /// Shared Dashboard section heading using the active semantic theme roles.
 class JexDashboardSectionTitle extends StatelessWidget {
-  const JexDashboardSectionTitle({
+  const JexDashboardSectionTitle(
+    this.title, {
     super.key,
-    required this.title,
     this.subtitle,
   });
 

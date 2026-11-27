@@ -45,7 +45,7 @@ void main() {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: const [
                   JexDashboardSectionTitle(
-                    title: 'Voltage',
+                    'Voltage',
                     subtitle: 'Select a level',
                   ),
                   JexDashboardCard(
