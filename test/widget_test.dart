@@ -33,52 +33,55 @@ void main() {
     'Dashboard toggle keeps its visual pill and exposes a 48dp accessible target',
     (tester) async {
       final semantics = tester.ensureSemantics();
-      addTearDown(semantics.dispose);
-      final changedValues = <bool>[];
-      const toggleKey = ValueKey<String>('dashboard-toggle-accessibility');
+      try {
+        final changedValues = <bool>[];
+        const toggleKey = ValueKey<String>('dashboard-toggle-accessibility');
 
-      await tester.pumpWidget(
-        MaterialApp(
-          theme: ThemeData.dark(),
-          home: Scaffold(
-            body: Center(
-              child: JexDashboardToggle(
-                key: toggleKey,
-                semanticLabel: 'Peltier',
-                value: true,
-                enabled: true,
-                accent: Color(0xFF16A8D5),
-                onChanged: (next) async {
-                  changedValues.add(next);
-                },
+        await tester.pumpWidget(
+          MaterialApp(
+            theme: ThemeData.dark(),
+            home: Scaffold(
+              body: Center(
+                child: JexDashboardToggle(
+                  key: toggleKey,
+                  semanticLabel: 'Peltier',
+                  value: true,
+                  enabled: true,
+                  accent: Color(0xFF16A8D5),
+                  onChanged: (next) async {
+                    changedValues.add(next);
+                  },
+                ),
               ),
             ),
           ),
-        ),
-      );
+        );
 
-      final target = find.byKey(toggleKey);
-      expect(target, findsOneWidget);
-      expect(tester.getSize(target), const Size(54, 48));
-      final visualPill = find.descendant(
-        of: target,
-        matching: find.byType(AnimatedContainer),
-      );
-      expect(visualPill, findsOneWidget);
-      expect(tester.getSize(visualPill), const Size(54, 32));
+        final target = find.byKey(toggleKey);
+        expect(target, findsOneWidget);
+        expect(tester.getSize(target), const Size(54, 48));
+        final visualPill = find.descendant(
+          of: target,
+          matching: find.byType(AnimatedContainer),
+        );
+        expect(visualPill, findsOneWidget);
+        expect(tester.getSize(visualPill), const Size(54, 32));
 
-      final data = tester.getSemantics(target).getSemanticsData();
-      expect(data.label, 'Peltier');
-      expect(data.hasFlag(ui.SemanticsFlag.hasToggledState), isTrue);
-      expect(data.hasFlag(ui.SemanticsFlag.isToggled), isTrue);
-      expect(data.hasFlag(ui.SemanticsFlag.hasEnabledState), isTrue);
-      expect(data.hasFlag(ui.SemanticsFlag.isEnabled), isTrue);
-      expect(data.hasAction(ui.SemanticsAction.tap), isTrue);
+        final data = tester.getSemantics(target).getSemanticsData();
+        expect(data.label, 'Peltier');
+        expect(data.hasFlag(ui.SemanticsFlag.hasToggledState), isTrue);
+        expect(data.hasFlag(ui.SemanticsFlag.isToggled), isTrue);
+        expect(data.hasFlag(ui.SemanticsFlag.hasEnabledState), isTrue);
+        expect(data.hasFlag(ui.SemanticsFlag.isEnabled), isTrue);
+        expect(data.hasAction(ui.SemanticsAction.tap), isTrue);
 
-      // Tap the 8 dp hit-area extension above the visual 32 dp pill.
-      await tester.tapAt(tester.getTopLeft(target) + const Offset(27, 2));
-      await tester.pump();
-      expect(changedValues, <bool>[false]);
+        // Tap the 8 dp hit-area extension above the visual 32 dp pill.
+        await tester.tapAt(tester.getTopLeft(target) + const Offset(27, 2));
+        await tester.pump();
+        expect(changedValues, <bool>[false]);
+      } finally {
+        semantics.dispose();
+      }
     },
   );
 
@@ -86,43 +89,46 @@ void main() {
     'Dashboard toggle keeps unavailable hardware state unknown and disabled',
     (tester) async {
       final semantics = tester.ensureSemantics();
-      addTearDown(semantics.dispose);
-      final changedValues = <bool>[];
-      const toggleKey = ValueKey<String>('dashboard-toggle-unknown');
+      try {
+        final changedValues = <bool>[];
+        const toggleKey = ValueKey<String>('dashboard-toggle-unknown');
 
-      await tester.pumpWidget(
-        MaterialApp(
-          theme: ThemeData.dark(),
-          home: Scaffold(
-            body: Center(
-              child: JexDashboardToggle(
-                key: toggleKey,
-                semanticLabel: 'Fan',
-                value: true,
-                enabled: true,
-                stateKnown: false,
-                accent: Color(0xFF16A8D5),
-                onChanged: (next) async {
-                  changedValues.add(next);
-                },
+        await tester.pumpWidget(
+          MaterialApp(
+            theme: ThemeData.dark(),
+            home: Scaffold(
+              body: Center(
+                child: JexDashboardToggle(
+                  key: toggleKey,
+                  semanticLabel: 'Fan',
+                  value: true,
+                  enabled: true,
+                  stateKnown: false,
+                  accent: Color(0xFF16A8D5),
+                  onChanged: (next) async {
+                    changedValues.add(next);
+                  },
+                ),
               ),
             ),
           ),
-        ),
-      );
+        );
 
-      final target = find.byKey(toggleKey);
-      expect(target, findsOneWidget);
-      final data = tester.getSemantics(target).getSemanticsData();
-      expect(data.label, 'Fan');
-      expect(data.hasFlag(ui.SemanticsFlag.hasToggledState), isFalse);
-      expect(data.hasFlag(ui.SemanticsFlag.hasEnabledState), isTrue);
-      expect(data.hasFlag(ui.SemanticsFlag.isEnabled), isFalse);
-      expect(data.hasAction(ui.SemanticsAction.tap), isFalse);
+        final target = find.byKey(toggleKey);
+        expect(target, findsOneWidget);
+        final data = tester.getSemantics(target).getSemanticsData();
+        expect(data.label, 'Fan');
+        expect(data.hasFlag(ui.SemanticsFlag.hasToggledState), isFalse);
+        expect(data.hasFlag(ui.SemanticsFlag.hasEnabledState), isTrue);
+        expect(data.hasFlag(ui.SemanticsFlag.isEnabled), isFalse);
+        expect(data.hasAction(ui.SemanticsAction.tap), isFalse);
 
-      await tester.tapAt(tester.getCenter(target));
-      await tester.pump();
-      expect(changedValues, isEmpty);
+        await tester.tapAt(tester.getCenter(target));
+        await tester.pump();
+        expect(changedValues, isEmpty);
+      } finally {
+        semantics.dispose();
+      }
     },
   );
 
@@ -209,98 +215,100 @@ void main() {
       var outgoingTaps = 0;
       var incomingTaps = 0;
       final semantics = tester.ensureSemantics();
-      addTearDown(semantics.dispose);
-
-      await tester.pumpWidget(
-        MaterialApp(
-          home: StatefulBuilder(
-            builder: (context, setState) {
-              final renderedTabId = tabId;
-              return Scaffold(
-                body: Column(
-                  children: [
-                    TextButton(
-                      key: const ValueKey<String>('advance-dashboard-tab'),
-                      onPressed: () => setState(() => tabId = 1),
-                      child: const Text('Advance'),
-                    ),
-                    Expanded(
-                      child: JexDashboardTabTransition(
-                        tabId: tabId,
-                        child: SizedBox.expand(
-                          child: Align(
-                            alignment: renderedTabId == 0
-                                ? Alignment.topLeft
-                                : Alignment.bottomRight,
-                            child: Semantics(
-                              container: true,
-                              label: 'Tab $renderedTabId',
-                              button: true,
-                              onTap: renderedTabId == 0
-                                  ? () => outgoingTaps++
-                                  : () => incomingTaps++,
-                              child: ExcludeSemantics(
-                                child: GestureDetector(
-                                  key: ValueKey<String>(
-                                    'dashboard-tab-$renderedTabId',
+      try {
+        await tester.pumpWidget(
+          MaterialApp(
+            home: StatefulBuilder(
+              builder: (context, setState) {
+                final renderedTabId = tabId;
+                return Scaffold(
+                  body: Column(
+                    children: [
+                      TextButton(
+                        key: const ValueKey<String>('advance-dashboard-tab'),
+                        onPressed: () => setState(() => tabId = 1),
+                        child: const Text('Advance'),
+                      ),
+                      Expanded(
+                        child: JexDashboardTabTransition(
+                          tabId: tabId,
+                          child: SizedBox.expand(
+                            child: Align(
+                              alignment: renderedTabId == 0
+                                  ? Alignment.topLeft
+                                  : Alignment.bottomRight,
+                              child: Semantics(
+                                container: true,
+                                label: 'Tab $renderedTabId',
+                                button: true,
+                                onTap: renderedTabId == 0
+                                    ? () => outgoingTaps++
+                                    : () => incomingTaps++,
+                                child: ExcludeSemantics(
+                                  child: GestureDetector(
+                                    key: ValueKey<String>(
+                                      'dashboard-tab-$renderedTabId',
+                                    ),
+                                    onTap: renderedTabId == 0
+                                        ? () => outgoingTaps++
+                                        : () => incomingTaps++,
+                                    child: Text('Tab $renderedTabId'),
                                   ),
-                                  onTap: renderedTabId == 0
-                                      ? () => outgoingTaps++
-                                      : () => incomingTaps++,
-                                  child: Text('Tab $renderedTabId'),
                                 ),
                               ),
                             ),
                           ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-              );
-            },
+                    ],
+                  ),
+                );
+              },
+            ),
           ),
-        ),
-      );
+        );
 
-      await tester.tap(
-        find.byKey(const ValueKey<String>('advance-dashboard-tab')),
-      );
-      await tester.pump();
+        await tester.tap(
+          find.byKey(const ValueKey<String>('advance-dashboard-tab')),
+        );
+        await tester.pump();
 
-      expect(find.text('Tab 0'), findsOneWidget);
-      expect(find.text('Tab 1'), findsOneWidget);
-      expect(find.bySemanticsLabel('Tab 0'), findsNothing);
-      expect(find.bySemanticsLabel('Tab 1'), findsOneWidget);
-      expect(
-        find.descendant(
-          of: find.byType(JexDashboardTabTransition),
-          matching: find.byType(FadeTransition),
-        ),
-        findsNWidgets(2),
-      );
-      expect(
-        find.descendant(
-          of: find.byType(JexDashboardTabTransition),
-          matching: find.byType(SlideTransition),
-        ),
-        findsNWidgets(2),
-      );
+        expect(find.text('Tab 0'), findsOneWidget);
+        expect(find.text('Tab 1'), findsOneWidget);
+        expect(find.bySemanticsLabel('Tab 0'), findsNothing);
+        expect(find.bySemanticsLabel('Tab 1'), findsOneWidget);
+        expect(
+          find.descendant(
+            of: find.byType(JexDashboardTabTransition),
+            matching: find.byType(FadeTransition),
+          ),
+          findsNWidgets(2),
+        );
+        expect(
+          find.descendant(
+            of: find.byType(JexDashboardTabTransition),
+            matching: find.byType(SlideTransition),
+          ),
+          findsNWidgets(2),
+        );
 
-      await tester.tap(
-        find.byKey(const ValueKey<String>('dashboard-tab-0')),
-        warnIfMissed: false,
-      );
-      await tester.pump();
-      expect(outgoingTaps, 0);
+        await tester.tap(
+          find.byKey(const ValueKey<String>('dashboard-tab-0')),
+          warnIfMissed: false,
+        );
+        await tester.pump();
+        expect(outgoingTaps, 0);
 
-      await tester.tap(find.byKey(const ValueKey<String>('dashboard-tab-1')));
-      await tester.pump();
-      expect(incomingTaps, 1);
+        await tester.tap(find.byKey(const ValueKey<String>('dashboard-tab-1')));
+        await tester.pump();
+        expect(incomingTaps, 1);
 
-      await tester.pumpAndSettle();
-      expect(find.text('Tab 0'), findsNothing);
-      expect(find.text('Tab 1'), findsOneWidget);
+        await tester.pumpAndSettle();
+        expect(find.text('Tab 0'), findsNothing);
+        expect(find.text('Tab 1'), findsOneWidget);
+      } finally {
+        semantics.dispose();
+      }
     },
   );
 
@@ -365,7 +373,7 @@ void main() {
         findsNothing,
       );
 
-      await tester.pump(const Duration(milliseconds: 90));
+      await tester.pumpAndSettle();
       expect(find.text('Tab 0'), findsNothing);
       expect(find.text('Tab 1'), findsOneWidget);
     },
