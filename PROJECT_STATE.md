@@ -2,38 +2,42 @@
 
 Last reconciled: 2026-11-28 (Asia/Jakarta). Authority: MASTER_PROMPT.md.
 
-## Owner scope and repository policy
+## Active workspace and operation
 
-- Workspace CODE_FULL — owner-approved incremental App-only WP0–WP10 rework and premium UI redesign. REPO_FULL follows only after CODE_FULL closes.
-- Repository TenzoNkz/JEXFYZ-App; `main` is the sole active/integration branch.
-- ChatGPT/Codex is the sole implementation author and reviewer, committing scoped App source/tests/docs/config directly to main. No Copilot, external coding agents, branches or PR handoffs.
-- Included: Flutter/Dart App source/tests/docs/config/static audit and non-publishing Validation Only.
-- Excluded: Build App/APK/sign/release unless a fresh explicit command; Firmware/BIN/P1 wire/security/behavior; OTA transport/trust/recovery; Firebase production/backend mutation; signing material; flashing or physical device operation.
+- Active workspace: BUILD_APP. Explicit owner command received: “@Thinking Eksekusi Build App!”.
+- Repository TenzoNkz/JEXFYZ-App; main is the canonical branch. Connected GitHub account and repository owner are both TenzoNkz; current integration has admin/push permission.
+- **Build App attempt #168 is IN_PROGRESS:** Issue #46; GitHub Actions workflow run #169 / ID 46060632706 / workflow 374946166 / attempt 1; immutable source SHA 3ccc6528adddeb547a3ff770718b72f0e2aa8824; job build / 140713746680. Steps 1–2 SUCCESS, step 3 Set up Java 17 IN_PROGRESS; later required gates pending.
+- The attempt is bound to one freshly created exact owner/title/body-token Issue #46. No duplicate trigger, issue reopen or retry was performed. Continue only the current run/job.
+- Active main HEAD after documentation checkpointing: 5a35056cf3cff84069fb6e6dd1373f0de721b37f (operational docs only); the Actions checkout is immutable at 3ccc6528adddeb547a3ff770718b72f0e2aa8824. Do not conflate the two.
+- A prior workflow run #168 / ID 46037111406 came from CODE_FULL Issue #45 and was terminal SKIPPED by the title guard. It is not a Build attempt and is not to be retried.
 
-## Current implementation and validation
+## App source validation and package baseline
 
-- Last tested App source SHA: `828c42c8c6d7ac17bab0e168ac6fbf063d5abcae`; source tree `dfacea99e0d04b38f6f8ebfd2b1ced63c50a95fd`, 171 entries / 125 blobs / 46 trees, `truncated=false`.
-- Validation Only #247 / run `46056210434` / job `140699207905`, exact SHA above, terminal SUCCESS: dependencies PASS; formatter 49 files / 0 changed; analyzer PASS with 135 information diagnostics under `--no-fatal-infos`; **317/317 Flutter tests PASS**.
-- WP5 lock-menu extraction commits: `900740e1ad85ed71dd6e18780c5153799c12d37a` → `4e7e66b8bf1a78faff9dbfe1ecc92fbbd33a913a` → `2239405b9c616abdbc61d0aa27bc88fd6572c715` → `828c42c8c6d7ac17bab0e168ac6fbf063d5abcae`. New `lib/dashboard_display_menu.dart` owns lock reason selection and stateless rendering only. Dashboard supplies live values and existing guarded Connect callback; it remains the single BLE/GATT/P1/session/ACK/telemetry/command owner.
-- Changed code/test paths: new `lib/dashboard_display_menu.dart`; updated `lib/main.dart`, `lib/jex_animated_icon.dart`, `test/widget_test.dart`, `test/device_copy_notification_contract_test.dart`; new `test/dashboard_display_menu_test.dart`.
-- No UUID/framing/command/SYNC changes, no scanner/ACK ownership movement, no storage identity/schema, OTA, Firebase production, native service or build/release path changes.
-- WP1: AppSettingsStore/KnownCoolerStore have 14 plugin-mock tests (7 normal + 7 failure injection); preference/identity keys and defaults/schema unchanged. The prior WP0 full review of `lib/app_settings.dart` and 353 bilingual localization/placeholder audit is recorded KEEP/VERIFIED. Actual Android keystore remains unverified.
-- WP8 Flutter mock tests: 4 FloatingStore schema-v2 persistence cases (#220) + 10 FloatingBridge MethodChannel tests (#223). Kotlin service/WindowManager/Canvas/OEM behavior unverified; same-session native service recovery remains an owner product decision.
+- Latest pre-Build source validation: Validation Only #253 / run 46059017532 / job 140708450872; exact source a60444f555038c90ea16ac3d6ea878de13d414a1; terminal SUCCESS. Flutter 3.47.2 / Dart 3.13.2; locked dependency resolution PASS; formatter 50 files / 0 changed; analyzer 139 info diagnostics / zero warnings-errors; Flutter tests 326/326 PASS. This was Flutter-only Validation Only, not Android Gradle or APK evidence.
+- Commits from validated source through Build source SHA only update 00_WORK_STATUS.md and do not change App source, tests, dependencies or build configuration.
+- Latest published package before this attempt remains Build #167 / run 44510421466 / job 135512909555 / source 0dd96228d33b08c66e736ae91a8a6c3e5c3ddb81. Release ID 403010611 / tag jexfyz-latest points to that old source until the current Build passes publication and downloaded-asset checks.
+- Baseline APK asset ID 767350299: 56,180,827 bytes; SHA-256 d7c461478e033b4598d1744e2ea7ec969eea8046bf5e4a3d6caaf511bc461691. Baseline corresponding-source ZIP asset ID 767350301: 3,259,558 bytes; SHA-256 58711342358639695624bbe05cc598220c9f20710bb04deaa785b93b85ca1546. Exactly two old baseline assets; do not report them as new Build output.
 
-## Current work and remaining acceptance
+## Build procedure and evidence requirements
 
-- Full `lib/main.dart` Dashboard ownership/content audit is still open; map state variables, mutation sites, callers, lifecycle, external effects, tests and source contracts before a further extraction.
-- WP4 semantic token role classification and WP5 screen refinements for Home, Voltage, Control, Adaptive, LED and Temperature remain open.
-- WP6 Connection/Settings/subpages/dialogs/sheets; WP7 Usage Statistics; WP8 Floating Monitor configuration/store/bridge/native boundary; WP9 visual/golden/integration/platform evidence; WP10 final file/diff/governance closure remain open.
-- Usage Statistics invariants: schema v2/v1→v2 migration, 30-day retention, raw 1-Hz samples, session/timestamp semantics, HOT-only freshness, explicit null gaps, gap-safe decimation, bounded 64+8+1 queue; profile 1h/6h/24h before optimization.
-- Visual constraints: Quiet Luxury / Precision Instrument, existing brand/assets/font/palette, seven Home metric rows, 360-dp canvas/DPI scaling, EN/ID, semantic Light/Dark, accessibility/focus/reduced motion. No VISUAL PASS without actual Android/OEM screenshots.
+- BUILD_NOTES.md (355 lines), full .github/workflows/jexfyz-app-build-trigger.yml (562 lines), ota-and-release-integrity and github-actions-triage canonical skills were read. Workflow blob 28281db3118e36fd1658cdaef2e30c78e6c4977b.
+- Guard is issue-only (opened/reopened), owner + exact title + body token; no push/PR release trigger. Serialized queue has cancel-in-progress false. Direct actions are pinned to verified immutable SHAs. Required audit/dependency/analyzer/Flutter/Android Gradle/obfuscation/V1-V3/certificate/source ZIP/Release/tag/count/fresh-download identity gates remain unchanged.
+- android/app/build.gradle has exact protected versionName "Telegram @horizontalzzz".
+- APP_BUILD_REPORT.md has the append-only Build #168 trigger/run/job/source and initial step-state record. CHAT_TRANSFER.md has a bounded active BUILD_APP checkpoint. Continue appending actual gate results, warnings, failures/repairs, asset IDs/sizes/digests, and tag/source identity only when observed.
 
-## Evidence limits and release boundary
+## Remaining project work and limits
 
-Local Flutter/Dart/Gradle/ADB unavailable. Hosted Validation Only does not compile Android/Kotlin or prove device behavior. Android/Kotlin compile, physical secure storage, native overlay, Android/OEM screenshots, SQLite v1→v2 runtime fixture and 1h/6h/24h profile remain NOT RUN. Overall result **VISUAL NOT VERIFIED**.
+- Complete the active Build attempt and reconcile exact source SHA, all gates, one APK plus one source ZIP, V1/V2/V3 signatures and pinned certificate, tag/Release parity, fresh downloads and SHA-256 identity.
+- Native Android test tasks must be reported as actually observed (they may be NO-SOURCE). Hosted CI does not prove physical install, OEM visual behavior, BLE runtime, Firmware, OTA, cooling or electrical/thermal safety.
+- Visual acceptance remains VISUAL NOT VERIFIED absent actual representative Android screenshots. Firmware/BIN, Firebase production metadata, OTA, flashing and device operations are outside this workspace and were not performed.
+- Prior CODE_FULL WP0–WP10 work remains parked as historical/incomplete continuation context; it is not active authorization in this BUILD_APP chat.
 
-Build #167 remains latest published App package on immutable source `0dd96228d33b08c66e736ae91a8a6c3e5c3ddb81`; current main is not packaged. No Build App/APK/sign/release, Firmware/BIN, P1 wire/security, OTA, Firebase production, signing, flash or device operation occurred.
+## Protected contracts
 
-## Next action
+- Preserve BLE P1 UUID/framing/commands/SYNC/SYNC_READY, Dashboard single-radio/session/ACK/telemetry ownership, reconnect semantics, unknown/disconnected handling and persisted-data contracts.
+- Preserve safe outputs, NTC, rail/Peltier/selector timing, cooperative Firmware scheduling, OTA protection/recovery semantics and the Android Gradle versionName exactly "Telegram @horizontalzzz".
+- This workspace does not authorize Firmware compilation/BIN, Firebase/production metadata changes, OTA, flashing, physical-device operations, or unrelated release work.
 
-Continue complete live `lib/main.dart` Dashboard state, caller, side-effect and test-coverage audit from source SHA `828c42c8c6d7ac17bab0e168ac6fbf063d5abcae`. Keep Dashboard the single BLE/GATT/P1/session/telemetry/command owner.
+## Immediate next action
+
+Continue only Actions run 46060632706 / job 140713746680 / source 3ccc6528adddeb547a3ff770718b72f0e2aa8824. Inspect live job steps and terminal logs; if a gate fails, identify the exact cause and repair only justified App-scope code without weakening gates. Never create a duplicate trigger or blindly retry.
