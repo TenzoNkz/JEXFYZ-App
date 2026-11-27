@@ -6,8 +6,8 @@
   State authority: firmware telemetry is authoritative for physical Fan/Peltier/Adaptive/LED state.
   Presentation boundaries: connection_sheet.dart owns the manual Connection sheet; home_notify.dart
   owns the stateless Home NOTIFY card and localized copy; led_controls.dart owns LED controls/preview;
-  jex_animated_icon.dart
-  owns status-indicator animation and glyph painting.
+  dashboard_display_menu.dart owns the value-driven Dashboard submenu lock overlay;
+  jex_animated_icon.dart owns status-indicator animation and glyph painting.
   These modules receive App values and must not own BLE/GATT, P1 writes or persisted device state.
   Localization: every user-facing string must use JexText or JexText.phrase().
   English UI uses ON/OFF; Indonesia UI uses HIDUP/MATI.
@@ -61,7 +61,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math' as math;
-import 'dart:ui' show ImageFilter;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -83,6 +82,7 @@ import 'app_settings.dart';
 import 'connection_scan_coordinator.dart';
 import 'connection_sheet.dart';
 import 'dashboard_shared_components.dart';
+import 'dashboard_display_menu.dart';
 import 'floating_monitor.dart';
 import 'home_notify.dart';
 import 'led_controls.dart';
@@ -4126,163 +4126,15 @@ class _DashboardScreenState extends State<DashboardScreen>
     );
     final tabContent = lockReason == DisplayMenuLockReason.none
         ? content
-        : _lockedDisplayMenu(content, lockReason);
+        : JexDashboardLockedMenu(
+            content: content,
+            reason: lockReason,
+            tabIndex: tabIndex,
+            voltage: voltage,
+            language: appLanguageNotifier.value,
+            onConnect: _showBluetoothMenu,
+          );
     return JexDashboardTabTransition(tabId: tabIndex, child: tabContent);
-  }
-
-  /// Blurs the complete submenu, then centers one lock panel above all of its content.
-  /// Navigation tabs and the Bluetooth Home control live outside this Stack and remain usable.
-  Widget _lockedDisplayMenu(Widget content, DisplayMenuLockReason reason) {
-    final disconnected = reason == DisplayMenuLockReason.bluetoothDisconnected;
-    final adaptiveLocked = reason == DisplayMenuLockReason.adaptiveActive;
-    final voltageConfirmedAtFive = voltage == '5V';
-    final scheme = Theme.of(context).colorScheme;
-    final title = disconnected
-        ? JexText.phrase(
-            'CONNECT YOUR DEVICE FIRST',
-            'HUBUNGKAN PERANGKAT TERLEBIH DAHULU',
-          )
-        : adaptiveLocked
-        ? JexText.phrase(
-            'LOCKED BY ADAPTIVE MODE',
-            'TERKUNCI OLEH MODE ADAPTIF',
-          )
-        : tabIndex == 0
-        ? (voltageConfirmedAtFive
-              ? JexText.phrase(
-                  'VOLTAGE LOCKED AT 5V',
-                  'TEGANGAN TERKUNCI DI 5V',
-                )
-              : JexText.phrase('RETURNING TO 5V', 'SEDANG KEMBALI KE 5V'))
-        : JexText.phrase(
-            'ADAPTIVE MODE DISABLED',
-            'MODE ADAPTIF DINONAKTIFKAN',
-          );
-    final detail = disconnected
-        ? JexText.phrase(
-            'Connect your device to use this menu.',
-            'Hubungkan perangkat untuk menggunakan menu ini.',
-          )
-        : adaptiveLocked
-        ? JexText.phrase(
-            'Turn Adaptive Mode off to edit these settings.',
-            'Matikan Mode Adaptif untuk mengubah pengaturan ini.',
-          )
-        : tabIndex == 0
-        ? (voltageConfirmedAtFive
-              ? JexText.phrase(
-                  'The device confirms the 5V rail. Higher voltage selections are locked.',
-                  'Perangkat mengonfirmasi tegangan 5V. Pilihan tegangan yang lebih tinggi dikunci.',
-                )
-              : JexText.phrase(
-                  voltage == '--'
-                      ? 'Waiting for confirmed 5V telemetry. The voltage lock remains active.'
-                      : 'The voltage lock is active. The device is safely returning from $voltage to 5V.',
-                  voltage == '--'
-                      ? 'Menunggu telemetri 5V yang terkonfirmasi. Kunci tegangan tetap aktif.'
-                      : 'Kunci tegangan aktif. Perangkat sedang kembali dengan aman dari $voltage ke 5V.',
-                ))
-        : JexText.phrase(
-            'Adaptive Mode is forced OFF while Lock Voltage is active.',
-            'Mode Adaptif dipaksa MATI selama Kunci Tegangan aktif.',
-          );
-    final accent = disconnected
-        ? const Color(0xFF4D8CFF)
-        : adaptiveLocked
-        ? const Color(0xFFC05BFF)
-        : const Color(0xFFD69A38);
-    return ClipRect(
-      child: Stack(
-        fit: StackFit.expand,
-        children: [
-          ImageFiltered(
-            imageFilter: ImageFilter.blur(sigmaX: 4.8, sigmaY: 4.8),
-            child: IgnorePointer(child: content),
-          ),
-          Positioned.fill(
-            child: ColoredBox(color: scheme.jexSurface.withValues(alpha: .46)),
-          ),
-          Positioned.fill(
-            child: Center(
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 270),
-                child: Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 14),
-                  padding: const EdgeInsets.fromLTRB(18, 20, 18, 18),
-                  decoration: BoxDecoration(
-                    color: scheme.jexSurface.withValues(alpha: .96),
-                    borderRadius: BorderRadius.circular(22),
-                    border: Border.all(
-                      color: scheme.jexOutline.withValues(alpha: .92),
-                      width: 1.1,
-                    ),
-                    boxShadow: <BoxShadow>[
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: .12),
-                        blurRadius: 20,
-                        offset: const Offset(0, 7),
-                      ),
-                    ],
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(PhosphorIconsBold.lock, size: 38, color: accent),
-                      const SizedBox(height: 12),
-                      Text(
-                        title,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: scheme.jexForeground,
-                          fontSize: 14,
-                          height: 1.2,
-                          fontWeight: FontWeight.w900,
-                          letterSpacing: .25,
-                        ),
-                      ),
-                      const SizedBox(height: 7),
-                      Text(
-                        detail,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: scheme.jexMutedForeground,
-                          fontSize: 11.5,
-                          height: 1.3,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      if (disconnected) ...[
-                        const SizedBox(height: 14),
-                        SizedBox(
-                          width: double.infinity,
-                          child: TextButton.icon(
-                            // Reuse the established Bluetooth sheet and its serialized scan owner.
-                            onPressed: _showBluetoothMenu,
-                            icon: const Icon(
-                              PhosphorIconsRegular.bluetooth,
-                              size: 18,
-                            ),
-                            label: Text(JexText.phrase('Connect', 'Hubungkan')),
-                            style: TextButton.styleFrom(
-                              minimumSize: const Size.fromHeight(48),
-                              foregroundColor: accent,
-                              backgroundColor: accent.withValues(alpha: .10),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(14),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
   }
 
   Widget _tab(String title, int index) {

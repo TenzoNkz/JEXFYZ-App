@@ -61,35 +61,6 @@ bool jexIconAnimationPermitted({
   return stateActive;
 }
 
-enum DisplayMenuLockReason {
-  none,
-  bluetoothDisconnected,
-  adaptiveActive,
-  voltageLocked,
-}
-
-/// Applies one centered lock overlay to the selected submenu.
-/// Disconnection has highest priority, followed by the existing Adaptive gate.
-DisplayMenuLockReason displayMenuLockReason({
-  required bool connected,
-  required bool adaptiveActive,
-  required bool adaptiveTransitioning,
-  required int tabIndex,
-  bool voltageLockKnown = false,
-  bool voltageLockActive = false,
-}) {
-  if (!connected) return DisplayMenuLockReason.bluetoothDisconnected;
-  final adaptiveLocksTab = tabIndex == 0 || tabIndex == 1 || tabIndex == 4;
-  if ((adaptiveActive || adaptiveTransitioning) && adaptiveLocksTab) {
-    return DisplayMenuLockReason.adaptiveActive;
-  }
-  final voltageLockLocksTab = tabIndex == 0 || tabIndex == 2;
-  if (voltageLockKnown && voltageLockActive && voltageLockLocksTab) {
-    return DisplayMenuLockReason.voltageLocked;
-  }
-  return DisplayMenuLockReason.none;
-}
-
 int jexVoltageAnimationLevel(String voltage) {
   return switch (voltage.trim().toUpperCase()) {
     '5V' => 5,

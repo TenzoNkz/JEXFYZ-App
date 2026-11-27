@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:jexfyz_cooler/app_security.dart';
 import 'package:jexfyz_cooler/app_settings.dart';
+import 'package:jexfyz_cooler/dashboard_display_menu.dart';
 import 'package:jexfyz_cooler/dashboard_shared_components.dart';
 import 'package:jexfyz_cooler/floating_monitor.dart';
 import 'package:jexfyz_cooler/home_notify.dart';
@@ -1003,7 +1004,7 @@ void main() {
   });
 
   test(
-    'Display lock overlays blur one complete submenu and center one lock panel',
+    'Dashboard derives lock policy before delegating to the keyed tab presentation',
     () {
       final source = File('lib/main.dart').readAsStringSync();
       final tabsStart = source.indexOf('Widget _buildTabContent()');
@@ -1013,26 +1014,12 @@ void main() {
       );
       expect(tabsStart, isNonNegative);
       expect(tabsEnd, greaterThan(tabsStart));
-      final lockSource = source.substring(tabsStart, tabsEnd);
-      expect(lockSource, contains('_lockedDisplayMenu(content, lockReason)'));
-      expect(lockSource, contains('ImageFiltered('));
-      expect(
-        lockSource,
-        contains('ImageFilter.blur(sigmaX: 4.8, sigmaY: 4.8)'),
-      );
-      expect(lockSource, contains('IgnorePointer(child: content)'));
-      expect(lockSource, contains('Positioned.fill('));
-      expect(lockSource, contains('child: Center('));
-      expect(lockSource, contains('CONNECT YOUR DEVICE FIRST'));
-      expect(lockSource, contains('LOCKED BY ADAPTIVE MODE'));
-      expect(lockSource, contains('RETURNING TO 5V'));
-      expect(lockSource, contains('VOLTAGE LOCKED AT 5V'));
-      expect(lockSource, contains('ADAPTIVE MODE DISABLED'));
-      expect(
-        lockSource,
-        contains("final voltageConfirmedAtFive = voltage == '5V';"),
-      );
-      expect(lockSource, isNot(contains('_tab(')));
+      final composition = source.substring(tabsStart, tabsEnd);
+      expect(composition, contains('displayMenuLockReason('));
+      expect(composition, contains('JexDashboardLockedMenu('));
+      expect(composition, contains('reason: lockReason'));
+      expect(composition, contains('onConnect: _showBluetoothMenu'));
+      expect(composition, contains('return JexDashboardTabTransition('));
 
       final buildStart = source.indexOf(
         'Widget build(BuildContext context) {',
@@ -2691,22 +2678,6 @@ void main() {
       greaterThanOrEqualTo(4.5),
     );
   });
-
-  test(
-    'Disconnected submenu lock opens the existing Bluetooth connection flow',
-    () {
-      final source = File('lib/main.dart').readAsStringSync();
-      final start = source.indexOf('Widget _lockedDisplayMenu(');
-      final end = source.indexOf('Widget _tab(String title, int index)', start);
-      expect(start, isNonNegative);
-      expect(end, greaterThan(start));
-      final lockedMenu = source.substring(start, end);
-      expect(lockedMenu, contains('if (disconnected) ...['));
-      expect(lockedMenu, contains('onPressed: _showBluetoothMenu'));
-      expect(lockedMenu, contains("JexText.phrase('Connect', 'Hubungkan')"));
-      expect(lockedMenu, contains('minimumSize: const Size.fromHeight(48)'));
-    },
-  );
 
   test('Home Notify keeps a fixed-height left Row and scales wrapped copy to two lines', () {
     final source = File('lib/main.dart').readAsStringSync();
