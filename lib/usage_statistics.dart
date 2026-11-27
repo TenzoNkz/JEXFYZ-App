@@ -855,10 +855,11 @@ class UsageStatisticsStore implements UsageStatisticsRepository {
     DatabaseExecutor database,
     int cutoff,
   ) {
-    return database.rawDelete(
-      _usageSampleRetentionDeleteSql,
-      [cutoff, cutoff, cutoff],
-    );
+    return database.rawDelete(_usageSampleRetentionDeleteSql, [
+      cutoff,
+      cutoff,
+      cutoff,
+    ]);
   }
 
   Future<void> _createUsageSamplesTable(DatabaseExecutor database) async {
