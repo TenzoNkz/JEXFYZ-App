@@ -1,4 +1,4 @@
-| Last updated | 2026-11-27T11:56:27.813+07:00 (Asia/Jakarta) |
+| Last updated | 2026-11-27T11:58:23.815+07:00 (Asia/Jakarta) |
 
 > Event-driven project marker. It is not a live heartbeat or a GitHub lock.
 
@@ -7,21 +7,21 @@
 | Field | Value |
 |---|---|
 | **STATUS** | **IN_PROGRESS** |
-| SESSION STATUS | IN_PROGRESS — Recovery command “@Thinking Chat Stuck!” received 2026-11-27T11:56:27.813+07:00; resumes the existing CODE_FULL App-only authorization from the immediately preceding Eksekusi Code! session; no scope expansion. |
+| SESSION STATUS | IN_PROGRESS — Recovery command “@Thinking Chat Stuck!” received 2026-11-27T11:58:23.815+07:00; continue the existing authorized CODE_FULL WP0–WP10 App-only work, no scope expansion. |
 | WORK STATUS | IN_PROGRESS — Owner-approved WP0–WP10 App source/test/docs/config/static-audit scope; continue the continuous full-cycle execution, then REPO_FULL only after CODE_FULL closes and under its existing authorization. |
 | WORKSPACE | CODE_FULL |
 | Mode | App Flutter/Dart source, tests, docs, App config and static audit; direct commits to main only. No Build App/APK/sign/release, Firmware/BIN/P1 protocol changes, BLE identity/security, OTA transport/trust/recovery, Firebase production, signing material, flashing or device operation. |
 | Request / work item | “Eksekusi Code!” full-cycle continuation of owner-approved “Full App rework + premium UI redesign” (2026-11-26), WP0–WP10. The repeated command continues this exact CODE_FULL authorization; do not stop after an isolated file/package. |
 | Started | 2026-11-27T11:43:33+07:00 (Asia/Jakarta) |
 | Last updated | 2026-11-27T11:55:00+07:00 (Asia/Jakarta) |
-| Current phase | Recovery pre-flight complete — main-only branch and exact live HEAD confirmed; Validation Only #143 is terminal FAILED. Trace 4 failed tests and the read-only formatter delta before any source/test commit. |
-| Last completed milestone | Recovery verified main HEAD `d8fd607a3d2b504b871b087fb69af2302796b8f5`, recursive tree 157 entries / 111 blobs / 46 trees truncated=false; only branch `main`; run #143 terminal FAILED. Formatter passed only on the post-formatter tree but showed test/p1_command_contract_test.dart needed formatting; analyzer passed; Flutter suite 249 passed / 4 failed. |
-| Last verified source checkpoint | main HEAD `d8fd607a3d2b504b871b087fb69af2302796b8f5`; recursive tree 157 entries / 111 blobs / 46 trees, truncated=false. |
-| EXTERNAL OPERATION | Validation Only #143 — run `45942526999`, job `140319821736`, tested source/test SHA `6a94513e161cc5751bce3559176b09754a63e4ca`. |
-| EXTERNAL OPERATION STATUS | FAILED (terminal). Dependencies PASS, formatter FAIL on one new test file, analyzer PASS, Flutter tests FAIL (249 passed / 4 failed). No active external operation; no Build App/release/device operation. |
-| Result / evidence | #143 logs: P1 decoder tests pass; one new `MapEntry` matcher fails despite matching key/value text; three legacy static source-contract tests still look for moved P1 mappings inline in `main.dart`. The read-only formatter reported test/p1_command_contract_test.dart as changed. #142 prior SHA remains SUCCESS (249/249). |
+| Current phase | Recovery pre-flight reconciled at main HEAD; failure repair commit `344eab5` is live and Validation Only #144 is IN_PROGRESS on its exact SHA. |
+| Last completed milestone | Repaired the four #143 test failures: P1 command-contract source checks now follow the extracted module, and telemetry MapEntry tests compare key/value instead of identity. Temporary Dart formatter capture probe added solely to retrieve exact formatter output. Commit `344eab583e01e0074847ec8995c3ed2c950b72ca`; tree 158 entries / 112 blobs, truncated=false. |
+| Last verified source checkpoint | main HEAD `344eab583e01e0074847ec8995c3ed2c950b72ca`; recursive tree 158 entries / 112 blobs / 46 trees, truncated=false. |
+| EXTERNAL OPERATION | Validation Only #144 — run `45942973021`, exact source/test SHA `344eab583e01e0074847ec8995c3ed2c950b72ca`. |
+| EXTERNAL OPERATION STATUS | IN_PROGRESS (observed by Actions API). #143 terminal FAILED and fully diagnosed; #144 validates the corrective test changes. |
+| Result / evidence | #143: dependencies PASS, analyzer PASS, formatter failed only for the new test file; 249 pass / 4 fail. Three failures were stale inline-source assertions after extraction; one MapEntry equality false-positive. #144 pending. |
 | Blocker / remaining evidence | Local Flutter/Dart/Gradle/ADB remain unavailable. Android/Kotlin compilation, screenshots/device/OEM acceptance, SQLite v1→v2 runtime fixture and 1h/6h/24h performance profile are NOT RUN / NOT VERIFIED. Whole-App visual status remains VISUAL NOT VERIFIED. |
-| Next action | Inspect all four exact failing assertions and migrate their source contracts to p1_command_contract.dart, replace MapEntry equality with field/value assertions, apply exact runner formatter output to the new test, then commit with expected-HEAD and validate on fresh exact main SHA. |
+| Next action | Read #144 terminal formatter output and test outcomes. Apply exact formatter result and remove probe, then rerun Validation Only on fresh main SHA; continue WP3 only when full suite is green. |
 
 ## Status model
 
