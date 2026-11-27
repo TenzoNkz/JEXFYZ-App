@@ -72,6 +72,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
 
 import 'p1_frame_decoder.dart';
+import 'p1_command_contract.dart';
 import 'jex_design_tokens.dart';
 
 import 'app_bootstrap.dart';
@@ -1846,32 +1847,8 @@ class _DashboardScreenState extends State<DashboardScreen>
     return completer.future;
   }
 
-  String? _ackItemForCommand(String command) {
-    final c = command.trim().toUpperCase();
-    if (c == 'SYNC_READY') return 'SYNC_READY';
-    if (c == 'OTAENTER') return 'OTAENTER';
-    if (c == 'CLOUDOTA') return 'CLOUDOTA';
-    if (c == 'RGB:ON' || c == 'RGB:OFF') return 'RGB';
-    if (c.startsWith('MODE:')) return 'MODE';
-    if (c.startsWith('BRIGHTNESS:')) return 'BRIGHTNESS';
-    if (c.startsWith('COLOR:')) return 'COLOR';
-    if (c.startsWith('HOTLIMIT:')) return 'HOTLIMIT';
-    if (c.startsWith('BATT5:')) return 'BATT5';
-    if (c.startsWith('BATT12:')) return 'BATT12';
-    if (c.startsWith('VOLTAGE_LOCK:')) return 'VOLTAGE_LOCK';
-    if (c.startsWith('VOLTAGE:')) return 'VOLTAGE';
-    if (c == 'FAN:ON' || c == 'FAN:OFF') return 'FAN';
-    if (c == 'PELTIER:ON' || c == 'PELTIER:OFF') return 'PELTIER';
-    if (c == 'ADAPTIVE:ON' || c == 'ADAPTIVE:OFF') return 'ADAPTIVE';
-    if (c.startsWith('ADAPTIVE_PROFILE:')) return 'ADAPTIVE_PROFILE';
-    if (c.startsWith('FANSPEED:')) return 'FANSPEED';
-    if (c == 'RESET:TEMPERATURE') return 'RESET_TEMPERATURE';
-    if (c.startsWith('SSID:')) return 'SSID';
-    if (c.startsWith('PASS:')) return 'PASS';
-    if (c.startsWith('URL:')) return 'URL';
-    if (c.startsWith('VERSION:')) return 'VERSION';
-    return null;
-  }
+  String? _ackItemForCommand(String command) =>
+      P1CommandContract.ackItemForCommand(command);
 
   Future<String> _waitForAck(
     String item, {
@@ -1949,33 +1926,8 @@ class _DashboardScreenState extends State<DashboardScreen>
     return next;
   }
 
-  MapEntry<String, String>? _expectedTelemetryForCommand(String command) {
-    final c = command.trim().toUpperCase();
-    if (c == 'FAN:ON') return const MapEntry('FAN', 'ON');
-    if (c == 'FAN:OFF') return const MapEntry('FAN', 'OFF');
-    if (c == 'PELTIER:ON') return const MapEntry('PELTIER', 'ON');
-    if (c == 'PELTIER:OFF') return const MapEntry('PELTIER', 'OFF');
-    if (c == 'ADAPTIVE:ON') return const MapEntry('ADAPTIVE', 'ON');
-    if (c == 'ADAPTIVE:OFF') return const MapEntry('ADAPTIVE', 'OFF');
-    if (c.startsWith('VOLTAGE_LOCK:'))
-      return MapEntry('VOLTAGE_LOCK', c.substring(13));
-    if (c.startsWith('VOLTAGE:')) return MapEntry('VOLTAGE', c.substring(8));
-    if (c == 'RGB:ON') return const MapEntry('RGB', 'ON');
-    if (c == 'RGB:OFF') return const MapEntry('RGB', 'OFF');
-    if (c.startsWith('MODE:')) return MapEntry('MODE', c.substring(5));
-    if (c.startsWith('BRIGHTNESS:'))
-      return MapEntry('BRIGHTNESS', c.substring(11));
-    if (c.startsWith('COLOR:')) return MapEntry('RGB_COLOR', c.substring(6));
-    if (c.startsWith('FANSPEED:')) return MapEntry('FAN_SPEED', c.substring(9));
-    if (c.startsWith('HOTLIMIT:'))
-      return MapEntry('TEMP_HOT_LIMIT', c.substring(9));
-    if (c.startsWith('BATT5:')) return MapEntry('BATT_5', c.substring(6));
-    if (c.startsWith('BATT12:')) return MapEntry('BATT_12', c.substring(7));
-    if (c.startsWith('ADAPTIVE_PROFILE:')) {
-      return MapEntry('ADAPTIVE_PROFILE', c.substring(17));
-    }
-    return null;
-  }
+  MapEntry<String, String>? _expectedTelemetryForCommand(String command) =>
+      P1CommandContract.expectedTelemetryForCommand(command);
 
   bool _telemetryValueMatches(String key, String expected) {
     switch (key) {
@@ -2025,29 +1977,8 @@ class _DashboardScreenState extends State<DashboardScreen>
     return predicate();
   }
 
-  bool _requiresResponse(String command) {
-    final c = command.trim().toUpperCase();
-    return c == 'SYNC' ||
-        c == 'SYNC_READY' ||
-        c == 'CLOUDOTA' ||
-        c == 'OTAENTER' ||
-        c.startsWith('VOLTAGE_LOCK:') ||
-        c.startsWith('VOLTAGE:') ||
-        c.startsWith('SSID:') ||
-        c.startsWith('PASS:') ||
-        c.startsWith('URL:') ||
-        c.startsWith('VERSION:') ||
-        c.startsWith('FAN:') ||
-        c.startsWith('PELTIER:') ||
-        c.startsWith('ADAPTIVE_PROFILE:') ||
-        c.startsWith('ADAPTIVE:') ||
-        c.startsWith('FANSPEED:') ||
-        c.startsWith('HOTLIMIT:') ||
-        c.startsWith('BATT5:') ||
-        c.startsWith('BATT12:') ||
-        c.startsWith('RESET:') ||
-        c.startsWith('PHONE:BT=');
-  }
+  bool _requiresResponse(String command) =>
+      P1CommandContract.requiresResponse(command);
 
   // AI-METHOD: _parseIncoming — Dispatch decoded P1 frames to Dashboard-owned ACK and telemetry state.
   void _parseIncoming(String incoming) {
@@ -2078,14 +2009,8 @@ class _DashboardScreenState extends State<DashboardScreen>
     }
   }
 
-  bool _isAckSuccessReason(String reason) {
-    return reason == 'OK' ||
-        reason == 'ACCEPTED' ||
-        reason == 'READY' ||
-        reason == 'STARTING' ||
-        reason == 'ON' ||
-        reason == 'OFF';
-  }
+  bool _isAckSuccessReason(String reason) =>
+      P1CommandContract.isAckSuccessReason(reason);
 
   String? _friendlyAckSuccess(String item, String reason) {
     if (item == 'TOUCH_COOLING') {
