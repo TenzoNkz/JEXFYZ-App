@@ -19,7 +19,7 @@ extension _DashboardControlTabsBuilder on _DashboardScreenState {
 
     return KeyedSubtree(
       key: key,
-      child: _smoothList(
+      child: this._smoothList(
         storageKey: 'voltage',
         padding: const EdgeInsets.fromLTRB(2, 0, 2, 18),
         children: [
@@ -126,7 +126,7 @@ extension _DashboardControlTabsBuilder on _DashboardScreenState {
               ),
             ),
             const SizedBox(width: 8),
-            _jexToggle(
+            this._jexToggle(
               value: active,
               enabled: !locked,
               accent: scheme.jexAccent,
@@ -152,7 +152,7 @@ extension _DashboardControlTabsBuilder on _DashboardScreenState {
 
     return KeyedSubtree(
       key: key,
-      child: _smoothList(
+      child: this._smoothList(
         storageKey: 'control',
         padding: const EdgeInsets.fromLTRB(2, 0, 2, 18),
         children: [
@@ -161,7 +161,7 @@ extension _DashboardControlTabsBuilder on _DashboardScreenState {
             padding: const EdgeInsets.all(9),
             child: Column(
               children: [
-                _switchRow(
+                this._switchRow(
                   title: JexText.of('peltier', lang),
                   showStateLabel: false,
                   showCheck: false,
@@ -178,7 +178,7 @@ extension _DashboardControlTabsBuilder on _DashboardScreenState {
                   onChanged: _togglePeltier,
                 ),
                 const SizedBox(height: 8),
-                _switchRow(
+                this._switchRow(
                   title: JexText.of('fan', lang),
                   showStateLabel: false,
                   showCheck: false,
@@ -297,14 +297,14 @@ extension _DashboardControlTabsBuilder on _DashboardScreenState {
 
     return KeyedSubtree(
       key: key,
-      child: _smoothList(
+      child: this._smoothList(
         storageKey: 'adaptive',
         padding: const EdgeInsets.fromLTRB(2, 0, 2, 18),
         children: [
           JexDashboardSectionTitle(JexText.of('adaptive', lang)),
           JexDashboardCard(
             padding: const EdgeInsets.all(9),
-            child: _switchRow(
+            child: this._switchRow(
               title: JexText.of('adaptiveSwitch', lang),
               showStateLabel: false,
               showCheck: false,
@@ -510,7 +510,7 @@ extension _DashboardControlTabsBuilder on _DashboardScreenState {
 
     return KeyedSubtree(
       key: key,
-      child: _smoothList(
+      child: this._smoothList(
         storageKey: 'led',
         padding: const EdgeInsets.fromLTRB(2, 0, 2, 18),
         children: [
@@ -519,7 +519,7 @@ extension _DashboardControlTabsBuilder on _DashboardScreenState {
             padding: const EdgeInsets.all(9),
             child: Column(
               children: [
-                _switchRow(
+                this._switchRow(
                   title: JexText.of('power', lang),
                   showStateLabel: false,
                   showCheck: false,

@@ -687,12 +687,16 @@ void main() {
     final source = File('lib/main.dart').readAsStringSync();
     final controlSource = File('lib/dashboard_control_tabs.dart')
         .readAsStringSync();
+    final componentSource = File('lib/dashboard_control_components.dart')
+        .readAsStringSync();
     expect(source, contains("part 'dashboard_control_tabs.dart';"));
-    final rowStart = source.indexOf('Widget _switchRow(');
-    final rowEnd = source.indexOf('Widget _jexToggle(', rowStart);
+    expect(source, contains("part 'dashboard_control_components.dart';"));
+    expect(componentSource, contains("part of 'main.dart';"));
+    final rowStart = componentSource.indexOf('Widget _switchRow(');
+    final rowEnd = componentSource.indexOf('Widget _jexToggle(', rowStart);
     expect(rowStart, isNonNegative);
     expect(rowEnd, greaterThan(rowStart));
-    final row = source.substring(rowStart, rowEnd);
+    final row = componentSource.substring(rowStart, rowEnd);
     expect(row, contains('bool showStateLabel = true'));
     expect(row, contains('bool showCheck = true'));
     expect(row, contains('bool neutralRow = false'));
@@ -2331,7 +2335,7 @@ void main() {
     expect(cardStart, isNonNegative);
     final card = notifySource.substring(cardStart);
     final adapterStart = source.indexOf('Widget _homeNotify() {');
-    final adapterEnd = source.indexOf('Widget _switchRow(', adapterStart);
+    final adapterEnd = source.indexOf('void _updateDashboardPresentation(', adapterStart);
     expect(adapterStart, isNonNegative);
     expect(adapterEnd, greaterThan(adapterStart));
     final adapter = source.substring(adapterStart, adapterEnd);
@@ -2562,9 +2566,11 @@ void main() {
     expect(choice, contains('showCheck: false,'));
     expect(choice, isNot(contains('accent: accent,')));
 
-    final toggleStart = source.indexOf('Widget _jexToggle(');
-    final toggleEnd = source.indexOf('Widget _smoothList(', toggleStart);
-    final toggle = source.substring(toggleStart, toggleEnd);
+    final componentSource = File('lib/dashboard_control_components.dart')
+        .readAsStringSync();
+    final toggleStart = componentSource.indexOf('Widget _jexToggle(');
+    final toggleEnd = componentSource.indexOf('Widget _smoothList(', toggleStart);
+    final toggle = componentSource.substring(toggleStart, toggleEnd);
     expect(toggle, contains('bool showCheck = true'));
     expect(toggle, contains('displayedValue && showCheck'));
   });

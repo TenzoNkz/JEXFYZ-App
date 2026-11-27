@@ -15,7 +15,7 @@ extension _DashboardTemperatureTabBuilder on _DashboardScreenState {
 
     return KeyedSubtree(
       key: key,
-      child: _smoothList(
+      child: this._smoothList(
         storageKey: 'temperature',
         padding: const EdgeInsets.fromLTRB(2, 0, 2, 18),
         children: [
