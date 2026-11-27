@@ -880,11 +880,19 @@ void main() {
             hasError: false,
             warning: false,
             connected: false,
-            foregroundColor: Color(0xFF7C8797),
+            foregroundColor: Color(0xFF475467),
             label: 'Notification',
             message: 'Bluetooth disconnected.',
           ),
         ),
+      );
+      final disconnectedIcon = tester.widget<Icon>(
+        find.byIcon(PhosphorIconsRegular.info),
+      );
+      expect(disconnectedIcon.color, const Color(0xFF475467));
+      expect(
+        find.byIcon(PhosphorIconsRegular.shieldCheck),
+        findsNothing,
       );
       expect(tester.getSize(find.byType(HomeNotifyCard)).height, 44);
       expect(find.text('Notification'), findsOneWidget);
