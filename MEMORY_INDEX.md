@@ -1,5 +1,14 @@
 # JE X FYZ / JE Cooler — Documentation Map & Retention Policy
 
+## Reconciliation — 2026-11-28 — WP3 command gate + telemetry parser / Validation Only #261
+
+- Live `main` HEAD: `7b618eff062914c83f5566791263f2be89de3965` (documentation-only handover update). Exact App source/test SHA `fa2dcb976395fade0eb0034db5a83b0f12fe4ed6`; tree 174 entries / 128 blobs / 46 trees, `truncated=false`.
+- Validation Only #261 / run `46068234248` / job `140738636516`, exact source SHA above, terminal SUCCESS: dependencies PASS; formatter 52 files / 0 changed; analyzer 139 info-level diagnostics and zero warnings/errors; **336/336 Flutter tests PASS**. #260 failed only the read-only formatter on one test file; owner commit `fa2dcb9` applied canonical formatting without assertion changes; #261 passed.
+- WP3 command gate commit `fa8a74a` ensures queued battery heartbeat waits for BLE/RX/P1 session readiness. Pure telemetry parser commit `9e74fe9` extracts existing first-colon key/value parsing; ACK routing and telemetry/session mutation remain Dashboard-owned.
+- `REPOSITORY_UPGRADE_PLAN.md` now reconciles 128 unique dispositions to 128 live blob paths. Added separate rows for `lib/p1_telemetry_contract.dart` and `test/p1_telemetry_contract_test.dart`; Home OTA/reset presentation suite corrected to nine tests.
+- `lib/usage_statistics.dart` static source audit covers schema-v2/v1→v2 migration structure, retention, session semantics, HOT-only freshness, null gaps, decimation, bounded queue and chart code. Runtime SQLite fixture and 1h/6h/24h profiles remain NOT RUN. `test/widget_test.dart`: 117 tests, 84 source reads in 45 test bodies; architectural assertion brittleness review remains open.
+- Local Flutter/Dart/Gradle/ADB unavailable; local checks BLOCKED / NOT RUN. No Android build/screenshot/device evidence; whole-App visual status VISUAL NOT VERIFIED. Build App and protected scopes remain excluded.
+
 ## Reconciliation — 2026-11-28 — WP5 Dashboard lock menu / Validation Only #247
 
 - Last tested App source SHA: `828c42c8c6d7ac17bab0e168ac6fbf063d5abcae`; code root tree `dfacea99e0d04b38f6f8ebfd2b1ced63c50a95fd`; 171 entries / 125 blobs / 46 trees; `truncated=false`. `REPOSITORY_UPGRADE_PLAN.md` now covers 125/125 unique live blobs.
