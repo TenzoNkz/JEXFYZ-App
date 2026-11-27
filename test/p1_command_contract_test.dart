@@ -211,6 +211,15 @@ void main() {
         ),
         isTrue,
       );
+      expect(
+        containsDartFragment(
+          mainSource,
+          'P1CommandContract.canSendCommand(bleReady: _bleReady, '
+          'hasWriteCharacteristic: rx != null, '
+          'sessionReady: _bleSessionReady, command: pending,)',
+        ),
+        isTrue,
+      );
     });
 
     test('blocks command writes until the BLE link and RX characteristic are ready', () {

@@ -2435,7 +2435,17 @@ class _DashboardScreenState extends State<DashboardScreen>
           final pending = _pendingPhoneBatteryCommand;
           _pendingPhoneBatteryCommand = null;
           try {
-            if (pending == null || !_bleReady || rx == null) return;
+            // A coalesced 1 Hz heartbeat must not bypass the same P1 session gate
+            // as user commands while a replacement BLE session is handshaking.
+            if (pending == null ||
+                !P1CommandContract.canSendCommand(
+                  bleReady: _bleReady,
+                  hasWriteCharacteristic: rx != null,
+                  sessionReady: _bleSessionReady,
+                  command: pending,
+                )) {
+              return;
+            }
             final payload = utf8.encode('$pending\n');
             final withoutResponse = P1CommandContract.usesWriteWithoutResponse(
               pending,
