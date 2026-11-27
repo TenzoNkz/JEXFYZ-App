@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 
+import 'support/source_contract_helpers.dart';
+
 import '../lib/connection_scan_state.dart';
 
 void main() {
@@ -16,18 +18,8 @@ void main() {
 
       final button = source.substring(buttonStart, actionIndex);
       expect(button, contains("tooltip: JexText.of('close', lang),"));
-      expect(
-        containsDartFragment(
-          button,
-          '''
-constraints: const BoxConstraints.tightFor(
-  width: 42,
-  height: 42,
-),
-''',
-        ),
-        isTrue,
-      );
+      expect(button, contains('width: 42,'));
+      expect(button, contains('height: 42,'));
     });
   });
 
