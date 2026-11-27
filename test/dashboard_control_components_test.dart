@@ -83,9 +83,9 @@ void main() {
         final target = find.bySemanticsLabel('Fan, Cooling output');
         expect(target, findsOneWidget);
         final data = tester.getSemantics(target).getSemanticsData();
-        expect(data.flagsCollection.hasToggledState, isTrue);
-        expect(data.flagsCollection.isToggled, isTrue);
-        expect(data.flagsCollection.isEnabled, isTrue);
+        expect(data.flagsCollection.isToggled, isNot(ui.Tristate.none));
+        expect(data.flagsCollection.isToggled, ui.Tristate.isTrue);
+        expect(data.flagsCollection.isEnabled, ui.Tristate.isTrue);
         expect(data.hasAction(ui.SemanticsAction.tap), isTrue);
 
         await tester.tap(target);
