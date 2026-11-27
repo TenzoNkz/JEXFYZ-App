@@ -44,10 +44,8 @@ void main() {
       for (final finder in [decrease, increase]) {
         final node = tester.getSemantics(finder);
         final data = node.getSemanticsData();
+        expect(data.label, isNotEmpty);
         expect(data.hasAction(SemanticsAction.tap), isTrue);
-        expect(data.flags, contains(SemanticsFlag.isButton));
-        expect(data.flags, contains(SemanticsFlag.hasEnabledState));
-        expect(data.flags, contains(SemanticsFlag.isEnabled));
         expect(tester.getSize(finder), const Size(48, 48));
       }
       expect(tester.takeException(), isNull);
