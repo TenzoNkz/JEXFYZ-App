@@ -3450,3 +3450,49 @@
 - **Step16 `Enforce V1/V2/V3 APK signing` is IN_PROGRESS.** Step17 APK signature/pinned certificate, step18 stable filename, step19 corresponding source archive, step20 Release publication and step21 fresh download identity/integrity verification remain PENDING.
 - **Evidence boundary:** successful APK build step does not itself prove the required signature schemes/certificate, asset identity/checksum or Release parity. Active job logs still unavailable until GitHub finishes/log blob becomes accessible; exact package size, SHA and signing evidence remain pending terminal logs and subsequent gates.
 - **Disposition:** IN_PROGRESS — continue only run `46062114759` / job `140718609861`; no duplicate trigger/retry.
+
+
+---
+
+## BUILD #169 — FINAL SUCCESS / RELEASE AND FRESH-DOWNLOAD INTEGRITY VERIFIED — 2026-11-28 03:20 (Asia/Jakarta)
+
+### Immutable build identity and execution
+
+- **Owner authorization:** original explicit command “@Thinking Eksekusi Build App!”; guarded retry justified by the concrete App Gradle fix and Validation Only #255 terminal SUCCESS.
+- **Trigger:** exactly one fresh owner-authored Issue #47, exact title `JE X FYZ — EKSEKUSI BUILD APP TRIGGER`, body token `JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1`, created 2026-11-28 03:13:10 WIB. No stale issue reopened/reused and no duplicate trigger.
+- **Build attempt / Actions run / job:** Build App attempt #169 / global workflow run #170 / run ID `46062114759` / workflow `374946166` / attempt 1 / event `issues`; job `build` ID `140718609861`. Run and job terminal `completed / success` (Actions run updated 2026-11-28 03:20:13 WIB). All workflow steps 1–21 SUCCESS and cleanup steps39–43 SUCCESS.
+- **Exact source:** `67ff49fdb566a2fa7748e32e5207217c8e4b98b7`; matched Issue #47 body, live main at trigger creation, run `head_sha`, tag ref and Release body/source marker. The latest validated App-source ancestor was `3e915538904e6b841be7faad21764564364c8a87`; changes after validation through Build source were operational docs-only. Android Gradle protected versionName remains exactly `Telegram @horizontalzzz`.
+
+### Actual toolchain, test and Android results
+
+- **Toolchain:** Flutter 3.47.2 / Dart 3.13.2 / Java 17.0.21 / Gradle 9.3.1.
+- **Dependencies:** locked dependency install PASS. 31 packages advertise newer versions incompatible with current constraints; lockfile was not upgraded.
+- **Dart analyzer:** 139 info diagnostics; zero warnings and zero errors. Flutter tests: `327/327 PASS`.
+- **Android Gradle step14:** `./gradlew --no-daemon :app:testDebugUnitTest` completed `BUILD SUCCESSFUL in 2m 38s`; 162 actionable tasks (161 executed, 1 up-to-date). **Native app unit-test sources were absent:** `:app:compileDebugUnitTestKotlin`, `:app:compileDebugUnitTestJavaWithJavac`, `:app:processDebugUnitTestJavaRes`, and `:app:testDebugUnitTest` each reported `NO-SOURCE`. Thus the repaired Gradle configuration/Android gate passed, but this job executed no native Android unit-test cases; do not claim Android test coverage.
+- **APK build step15:** successful command `flutter build apk --release --obfuscate --split-debug-info=build/symbols`; one output copied to `JEXFYZ-release.apk`; runner reported 56.2 MB.
+- **V1/V2/V3 signature enforcement step16 and signature/certificate step17:** SUCCESS. `apksigner` confirmed V1=true, V2=true and V3=true; one signer; DN `CN=JE X FYZ, OU=JE X FYZ, O=JE X FYZ, L=Indonesia, ST=Central Java, C=ID`; RSA 4096; pinned certificate SHA-256 `dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0`. Step reported: “Production APK signature verified: v1/v2/v3 + official JE X FYZ certificate.” V3.1, V3.2, V4 and SourceStamp report false; these were not required workflow schemes.
+- **Corresponding source ZIP step19:** built and checked; embedded README contains exact App source commit `67ff49fdb566a2fa7748e32e5207217c8e4b98b7`; `unzip -t` reported no errors.
+
+### Release, tag, assets and downloaded-file integrity
+
+- **Release:** existing Release ID `403010611`, title `JE X FYZ — Latest App`, tag `jexfyz-latest`, updated 2026-11-28 03:20:04 WIB; version `1.0.0+3`. Release body `Source commit` and corresponding-source marker both equal `67ff49fdb566a2fa7748e32e5207217c8e4b98b7`.
+- **Git tag:** `refs/tags/jexfyz-latest` directly targets commit `67ff49fdb566a2fa7748e32e5207217c8e4b98b7`. Both the workflow's release check and separate Git ref/API recheck confirmed exact parity.
+- **Exactly two Release assets:**
+  - APK — asset ID `801924560`; `JEXFYZ-release.apk`; `56,213,595` bytes; SHA-256 `24f8d5a2fa2d6af663cffdd5fb91036d930a54cc75349bc6d28c0cb94ae45ec0`.
+  - Source ZIP — asset ID `801924561`; `JEXFYZ-corresponding-source.zip`; `3,317,758` bytes; SHA-256 `5a1e8b05426106e4eb19c30658e04e2096f03a1c179e5841844853c98766465a`.
+- **Fresh re-download step21:** SUCCESS. Workflow downloaded both Release assets again; asserted local-vs-downloaded SHA equality; independently checked the tag ref; checked source ZIP integrity and embedded source SHA; verified downloaded APK JAR/V1 and APK V1/V2/V3 signatures, exact signer count, pinned certificate DN and SHA-256. Downloaded APK SHA printed `24f8d5a2fa2d6af663cffdd5fb91036d930a54cc75349bc6d28c0cb94ae45ec0`; downloaded source ZIP SHA printed `5a1e8b05426106e4eb19c30658e04e2096f03a1c179e5841844853c98766465a`. Both values independently match the GitHub Release API asset digests. Workflow final message: “Published GitHub Release asset re-download verification passed.”
+- **Release/API result:** Release API reports exactly the same two asset IDs, names, sizes, `state=uploaded` and `sha256:` digests above; API `target_commitish`, tag target and release body source are all `67ff49f...`. Workflow step20 and step21 both SUCCESS.
+
+### Warnings / open risks — non-fatal but retained
+
+- APK is Flutter-obfuscated using `--obfuscate` and split debug info, but Flutter emitted three warnings that generated ELF libraries contain **unobfuscated DWARF debugging information** and recommended `--strip`; the APK gate still passed. Do not describe native ELF symbols as fully stripped.
+- APK signature tooling emitted repeated warnings for 40 distinct `META-INF` entries not protected by JAR/V1 signing, plus JAR verifier warnings: certificate chain is self-signed / PKIX path building failed and signatures have no timestamp (certificate expiry shown as 2054-02-05). Required apksigner V1/V2/V3 checks and exact pinned certificate identity all passed; the self-signed chain/no-timestamp condition remains a documented caveat.
+- Android build log warned that `android.builtInKotlin=false`, `android.newDsl=false` and `android.enableJetifier=true` are deprecated; Flutter warns Kotlin Gradle Plugin 2.2.20 and the `firebase_app_check` / `firebase_core` KGP usage will require migration for future Flutter releases. Gradle 9.3.1 also emitted deprecation/out-of-date guidance.
+- Flutter dependency resolution reported 31 newer versions incompatible with locked constraints. A Flutter test tap() diagnostic warning appeared, but all 327 Flutter tests passed. A benign “Already watching path” message appeared during APK build.
+- **Native Android test coverage remains absent (NO-SOURCE)** despite successful Gradle gate. Device/OEM visual acceptance, physical installation, BLE runtime, Firmware correctness, thermal/electrical performance and OTA remain outside hosted CI and NOT VERIFIED.
+
+### Final disposition
+
+- **BUILD APP / QC / RELEASE: SUCCESS.** Exact-source parity, all required hosted gates, one APK + one corresponding source ZIP, V1/V2/V3 with pinned signer, Release/tag parity and fresh downloaded-asset SHA/ZIP/signature verification all PASS.
+- No Firmware compilation/BIN generation/publication/replacement, Firebase/production metadata changes, OTA, flashing or physical-device operations were performed.
+- No further trigger or retry is authorized/needed from this completed request. Continue only if a new explicit owner request initiates another work item.
