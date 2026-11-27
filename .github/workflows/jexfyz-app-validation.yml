@@ -64,6 +64,35 @@ jobs:
           set -euo pipefail
           dart format --output=none --set-exit-if-changed lib test
 
+      # Print canonical formatter output after a failed read-only check.
+      # This makes whitespace fixes evidence-based instead of guesswork.
+      - name: Show canonical Dart formatting when the read-only check fails
+        id: formatter_diagnostic
+        if: ${{ !cancelled() && steps.dependencies.outcome == 'success' && steps.formatter.outcome == 'failure' }}
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -euo pipefail
+          set +e
+          formatter_report="$(dart format --output=none --set-exit-if-changed lib test 2>&1)"
+          formatter_status=$?
+          set -e
+          printf '%s\\n' "$formatter_report"
+
+          mapfile -t changed_paths < <(
+            printf '%s\\n' "$formatter_report" | sed -n 's/^Changed //p'
+          )
+          if [[ "$formatter_status" -eq 0 || "${#changed_paths[@]}" -eq 0 ]]; then
+            echo "No changed Dart paths were reported for formatter diagnostics."
+            exit 0
+          fi
+
+          for path in "${changed_paths[@]}"; do
+            echo "===== CANONICAL_FORMAT_BEGIN:$path ====="
+            dart format --output=show "$path"
+            echo "===== CANONICAL_FORMAT_END:$path ====="
+          done
+
       - name: Analyze Flutter and Dart source
         id: analyzer
         if: ${{ !cancelled() && steps.dependencies.outcome == 'success' }}
