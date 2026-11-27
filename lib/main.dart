@@ -1806,21 +1806,21 @@ class _DashboardScreenState extends State<DashboardScreen>
     final completer = Completer<bool>();
     _writeQueue = _writeQueue
         .then((_) async {
-          if (!_bleReady || rx == null) {
-            if (showError && mounted) {
+          final linkReady = _bleReady && rx != null;
+          if (!P1CommandContract.canSendCommand(
+            bleReady: _bleReady,
+            hasWriteCharacteristic: rx != null,
+            sessionReady: _bleSessionReady,
+            command: command,
+          )) {
+            // Link failures retain their existing user-facing warning; a closed
+            // P1 session remains a silent gate until synchronization completes.
+            if (!linkReady && showError && mounted) {
               _showSnackBar(
                 JexText.of('bluetoothNotReady'),
                 color: Colors.orangeAccent,
               );
             }
-            if (!completer.isCompleted) completer.complete(false);
-            return;
-          }
-
-          final normalized = command.trim().toUpperCase();
-          if (!_bleSessionReady &&
-              normalized != 'SYNC' &&
-              normalized != 'SYNC_READY') {
             if (!completer.isCompleted) completer.complete(false);
             return;
           }

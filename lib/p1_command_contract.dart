@@ -32,6 +32,24 @@ abstract final class P1CommandContract {
     return null;
   }
 
+  /// Enforces the pre-session P1 write gate without owning BLE or GATT state.
+  ///
+  /// Dashboard supplies the link/session facts and retains ownership of queueing
+  /// and executing the write. Before SYNC_READY, only bootstrap commands pass;
+  /// a ready session retains the existing command acceptance behavior.
+  static bool canSendCommand({
+    required bool bleReady,
+    required bool hasWriteCharacteristic,
+    required bool sessionReady,
+    required String command,
+  }) {
+    if (!bleReady || !hasWriteCharacteristic) return false;
+    if (sessionReady) return true;
+
+    final normalized = command.trim().toUpperCase();
+    return normalized == 'SYNC' || normalized == 'SYNC_READY';
+  }
+
   /// Describes the telemetry value required after an accepted output-control ACK.
   static MapEntry<String, String>? expectedTelemetryForCommand(String command) {
     final c = command.trim().toUpperCase();
