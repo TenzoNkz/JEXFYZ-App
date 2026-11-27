@@ -93,6 +93,7 @@ void main() {
     'Floating Monitor settings show live numeric values and opacity marks',
     () {
       final floating = File('lib/floating_monitor.dart').readAsStringSync();
+      final settingsPages = File('lib/settings_pages.dart').readAsStringSync();
       final settings = File('lib/app_settings.dart').readAsStringSync();
 
       expect(
@@ -145,44 +146,44 @@ void main() {
       expect(
         RegExp(
           r'JexFixedScalePage\(\s*compactUi:\s*true,\s*child:\s*LanguageSettingsPage\(\)\s*,?\s*\)',
-        ).hasMatch(floating),
+        ).hasMatch(settingsPages),
         isTrue,
       );
       expect(
         RegExp(
           r'JexFixedScalePage\(\s*compactUi:\s*true,\s*child:\s*AppearanceSettingsPage\(\)\s*,?\s*\)',
-        ).hasMatch(floating),
+        ).hasMatch(settingsPages),
         isTrue,
       );
       expect(
         RegExp(
           r'JexFixedScalePage\(\s*compactUi:\s*true,\s*child:\s*NotificationsSettingsPage\(\)\s*,?\s*\)',
-        ).hasMatch(floating),
+        ).hasMatch(settingsPages),
         isTrue,
       );
       expect(
         RegExp(
           r'JexFixedScalePage\(\s*compactUi:\s*true,\s*child:\s*BluetoothSettingsPage\(\)\s*,?\s*\)',
-        ).hasMatch(floating),
+        ).hasMatch(settingsPages),
         isTrue,
       );
       expect(
         RegExp(
           r'JexFixedScalePage\(\s*compactUi:\s*true,\s*child:\s*FloatingSettingsPage\(\)\s*,?\s*\)',
-        ).hasMatch(floating),
+        ).hasMatch(settingsPages),
         isTrue,
       );
       expect(
         RegExp(
           r"JexText\.phrase\s*\(\s*'Usage Statistics'\s*,\s*'Statistik Penggunaan'\s*,\s*language\s*,\s*\)",
-        ).hasMatch(floating),
+        ).hasMatch(settingsPages),
         isTrue,
       );
-      expect(floating, contains('UsageStatisticsPage('));
+      expect(settingsPages, contains('UsageStatisticsPage('));
       expect(
         RegExp(
           r'JexFixedScalePage\(\s*compactUi:\s*true,\s*child:\s*UsageStatisticsPage\(',
-        ).hasMatch(floating),
+        ).hasMatch(settingsPages),
         isTrue,
       );
       expect(floating, contains('telemetry: floatingTelemetryNotifier.value'));
@@ -213,19 +214,20 @@ void main() {
 
   test('Settings and Connection use compact visual tokens without changing the DPI canvas', () {
     final floating = File('lib/floating_monitor.dart').readAsStringSync();
+    final settingsPages = File('lib/settings_pages.dart').readAsStringSync();
     final appSettings = File('lib/app_settings.dart').readAsStringSync();
     final main = File('lib/main.dart').readAsStringSync();
 
-    final settingsStart = floating.indexOf(
+    final settingsStart = settingsPages.indexOf(
       'class SettingsPage extends StatelessWidget',
     );
-    final settingsEnd = floating.indexOf(
+    final settingsEnd = settingsPages.indexOf(
       '// AI-MEMORY / LANGUAGE-PAGE-CONTRACT',
       settingsStart,
     );
     expect(settingsStart, isNonNegative);
     expect(settingsEnd, greaterThan(settingsStart));
-    final settings = floating.substring(settingsStart, settingsEnd);
+    final settings = settingsPages.substring(settingsStart, settingsEnd);
     expect(settings, contains('data: buildJexCompactUiTheme(preset)'));
     expect(settings, contains('EdgeInsets.fromLTRB(8, 10, 8, 5)'));
     expect(
@@ -287,7 +289,7 @@ void main() {
         'JexFixedScalePage\\s*\\(\\s*compactUi:\\s*true,\\s*child:\\s*${RegExp.escape(page)}\\s*\\(\\s*\\)\\s*,?\\s*\\)',
       );
       expect(
-        routePattern.hasMatch(floating),
+        routePattern.hasMatch(settingsPages),
         isTrue,
         reason: 'Missing fixed-scale route for $page',
       );
@@ -697,7 +699,7 @@ void main() {
   });
 
   test('Settings uses concise horizontal rows and meaningful values', () {
-    final settingsSource = File('lib/floating_monitor.dart').readAsStringSync();
+    final settingsSource = File('lib/settings_pages.dart').readAsStringSync();
     final localizationSource = File('lib/app_settings.dart').readAsStringSync();
     final settingsStart = settingsSource.indexOf(
       'class SettingsPage extends StatelessWidget',
