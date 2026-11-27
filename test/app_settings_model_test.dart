@@ -137,12 +137,13 @@ void main() {
     test(
       'default preset keeps the dark Home header and light Dashboard body',
       () {
-      expect(jexHomeHeaderUsesDarkPalette(AppThemePreset.defaultTheme), isTrue);
-      expect(
-        jexDashboardContentUsesDarkPalette(AppThemePreset.defaultTheme),
-        isFalse,
-      );
-    });
+        expect(jexHomeHeaderUsesDarkPalette(AppThemePreset.defaultTheme), isTrue);
+        expect(
+          jexDashboardContentUsesDarkPalette(AppThemePreset.defaultTheme),
+          isFalse,
+        );
+      },
+    );
 
     test('light preset uses light palettes for both surfaces', () {
       expect(jexHomeHeaderUsesDarkPalette(AppThemePreset.light), isFalse);
