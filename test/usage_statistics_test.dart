@@ -622,10 +622,7 @@ void main() {
     expect(usage, contains('usageTemperatureChartHeight('));
     expect(usage, contains('height: chartHeight,'));
     expect(usage, contains(': 160.0;'));
-    expect(
-      usage,
-      contains('JexStatisticsTypographyTokens.axisLabel'),
-    );
+    expect(usage, contains('JexStatisticsTypographyTokens.axisLabel'));
     expect(
       usage.split('JexStatisticsTypographyTokens.axisLabel').length - 1,
       3,
