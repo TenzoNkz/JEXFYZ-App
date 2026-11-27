@@ -1003,6 +1003,7 @@ void main() {
     final source = File('lib/main.dart').readAsStringSync();
     final controlSource = File('lib/dashboard_control_tabs.dart')
         .readAsStringSync();
+    final homeSource = File('lib/dashboard_home_tab.dart').readAsStringSync();
     final animationSource = File('lib/jex_animated_icon.dart')
         .readAsStringSync();
     final shellStart = animationSource.indexOf(
@@ -1295,10 +1296,10 @@ void main() {
       isTrue,
     );
     expect(source, contains('continuousLoop: continuousLoop'));
-    final homeStart = source.lastIndexOf(
+    final homeStart = homeSource.lastIndexOf(
       'Widget _buildHomeArea(double height)',
     );
-    final home = source.substring(homeStart);
+    final home = homeSource.substring(homeStart);
     for (final kind in ['battery', 'hotside', 'voltage']) {
       expect(
         home,
@@ -2245,6 +2246,7 @@ void main() {
 
   test('Home Notify keeps a fixed-height left Row and scales wrapped copy to two lines', () {
     final source = File('lib/main.dart').readAsStringSync();
+    final homeSource = File('lib/dashboard_home_tab.dart').readAsStringSync();
     final notifySource = File('lib/home_notify.dart').readAsStringSync();
     final cardStart = notifySource.indexOf(
       'class HomeNotifyCard extends StatelessWidget',
@@ -2289,14 +2291,14 @@ void main() {
       source,
       isNot(contains('height: 56,\n              child: _homeNotify(),')),
     );
-    final homeStart = source.lastIndexOf(
+    final homeStart = homeSource.lastIndexOf(
       'Widget _buildHomeArea(double height)',
     );
-    final notifySlot = source.indexOf('_homeNotify(),', homeStart);
+    final notifySlot = homeSource.indexOf('_homeNotify(),', homeStart);
     expect(homeStart, isNonNegative);
     expect(notifySlot, greaterThan(homeStart));
     expect(
-      source
+      homeSource
               .substring(homeStart, notifySlot)
               .split('const SizedBox(height: 2),')
               .length -
@@ -2304,16 +2306,16 @@ void main() {
       2,
     );
     expect(
-      source.substring(homeStart, notifySlot),
+      homeSource.substring(homeStart, notifySlot),
       isNot(contains('const SizedBox(height: 3),')),
     );
     expect(
-      source.substring(homeStart, notifySlot),
+      homeSource.substring(homeStart, notifySlot),
       contains(
         "Image.asset(\n                                'assets/jexfyzcooler.png'",
       ),
     );
-    final homeCooler = source.substring(homeStart, notifySlot);
+    final homeCooler = homeSource.substring(homeStart, notifySlot);
     expect(
       homeCooler,
       contains(
@@ -2326,11 +2328,11 @@ void main() {
     expect(homeCooler, contains('fit: BoxFit.contain,'));
     expect(homeCooler, isNot(contains('BoxFit.cover')));
     expect(
-      source.substring(homeStart, notifySlot),
+      homeSource.substring(homeStart, notifySlot),
       contains('height: imageHeight'),
     );
     expect(
-      source.substring(homeStart, notifySlot),
+      homeSource.substring(homeStart, notifySlot),
       isNot(contains('height: 56,')),
     );
 
@@ -4250,14 +4252,12 @@ void main() {
 
   test('Home tabs keep compact 38-dp pills inside 48-dp touch targets without a divider', () {
     final source = File('lib/main.dart').readAsStringSync();
-    final homeStart = source.indexOf('Widget _buildHomeArea(double height) {');
-    final homeEnd = source.indexOf(
-      'Widget _tab(String title, int index) {',
-      homeStart,
-    );
+    final homeSource = File('lib/dashboard_home_tab.dart').readAsStringSync();
+    expect(source, contains("part 'dashboard_home_tab.dart';"));
+    expect(homeSource, contains("part of 'main.dart';"));
+    final homeStart = homeSource.indexOf('Widget _buildHomeArea(double height) {');
     expect(homeStart, isNonNegative);
-    expect(homeEnd, greaterThan(homeStart));
-    final home = source.substring(homeStart, homeEnd);
+    final home = homeSource.substring(homeStart);
     final headerHeight = home.indexOf('height: 48,');
     final headerStart = home.lastIndexOf('SizedBox(', headerHeight);
     final headerEnd = home.indexOf('const SizedBox(height: 2),', headerHeight);
