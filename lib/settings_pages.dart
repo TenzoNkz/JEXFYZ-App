@@ -200,6 +200,7 @@ class SettingsPage extends StatelessWidget {
     VoltageLockSettingsState state,
   ) {
     final scheme = Theme.of(context).colorScheme;
+    final semantic = JexSemanticColors.from(scheme);
     final unavailableMessage = !state.sessionReady
         ? JexText.phrase('Not synchronized', 'Belum tersinkron', language)
         : JexText.phrase(
@@ -217,7 +218,7 @@ class SettingsPage extends StatelessWidget {
               ? PhosphorIconsRegular.info
               : PhosphorIconsRegular.bluetooth,
           size: 19,
-          color: scheme.onSurfaceVariant,
+          color: semantic.mutedForeground,
         ),
       );
     } else {
@@ -250,9 +251,9 @@ class SettingsPage extends StatelessWidget {
       key: const ValueKey<String>('voltage-lock-card'),
       padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 7),
       decoration: BoxDecoration(
-        color: scheme.surface,
+        color: semantic.surface,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: scheme.outlineVariant.withValues(alpha: .82)),
+        border: Border.all(color: semantic.outline.withValues(alpha: .82)),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -277,7 +278,7 @@ class SettingsPage extends StatelessWidget {
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
-                color: scheme.onSurface,
+                color: semantic.foreground,
                 fontSize: 12.5,
                 fontWeight: FontWeight.w800,
               ),
@@ -332,6 +333,7 @@ class SettingsPage extends StatelessWidget {
     VoidCallback onTap,
   ) {
     final scheme = Theme.of(context).colorScheme;
+    final semantic = JexSemanticColors.from(scheme);
     return Material(
       color: Colors.transparent,
       child: InkWell(
@@ -346,7 +348,7 @@ class SettingsPage extends StatelessWidget {
                 JexAnimatedGlyph(
                   icon: icon,
                   size: 19,
-                  color: scheme.onSurfaceVariant,
+                  color: semantic.mutedForeground,
                 ),
                 const SizedBox(width: 12),
                 Expanded(
@@ -355,7 +357,7 @@ class SettingsPage extends StatelessWidget {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
-                      color: scheme.onSurface,
+                      color: semantic.foreground,
                       fontSize: 13,
                       fontWeight: FontWeight.w700,
                     ),
@@ -405,6 +407,7 @@ class AboutSettingsPage extends StatelessWidget {
     required bool last,
   }) {
     final scheme = Theme.of(context).colorScheme;
+    final semantic = JexSemanticColors.from(scheme);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
       child: Column(
@@ -413,7 +416,7 @@ class AboutSettingsPage extends StatelessWidget {
           Text(
             role,
             style: TextStyle(
-              color: scheme.onSurfaceVariant,
+              color: semantic.mutedForeground,
               fontSize: 10,
               fontWeight: FontWeight.w600,
             ),
@@ -422,7 +425,7 @@ class AboutSettingsPage extends StatelessWidget {
           Text(
             name,
             style: TextStyle(
-              color: scheme.onSurface,
+              color: semantic.foreground,
               fontSize: 14,
               fontWeight: FontWeight.w700,
             ),
@@ -451,6 +454,7 @@ class AboutSettingsPage extends StatelessWidget {
       valueListenable: appLanguageNotifier,
       builder: (context, language, _) {
         final scheme = Theme.of(context).colorScheme;
+        final semantic = JexSemanticColors.from(scheme);
         return Scaffold(
           appBar: AppBar(title: Text(JexText.of('about', language))),
           body: ListView(
@@ -463,7 +467,7 @@ class AboutSettingsPage extends StatelessWidget {
                   language,
                 ),
                 style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  color: scheme.onSurface,
+                  color: semantic.foreground,
                   fontWeight: FontWeight.w800,
                   letterSpacing: -.2,
                 ),

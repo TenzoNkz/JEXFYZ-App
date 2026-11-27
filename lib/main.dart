@@ -72,6 +72,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
 
 import 'p1_frame_decoder.dart';
+import 'jex_design_tokens.dart';
 
 import 'app_bootstrap.dart';
 import 'app_root.dart';
@@ -109,9 +110,9 @@ bool isSupportedP1Protocol(String value) => value.trim().toUpperCase() == 'P1';
 int peltierRearmTarget(int hotLimit) => hotLimit - 1;
 
 // AI-UI-GEOMETRY: Shared submenu dimensions keep VOLTAGE, CONTROL, ADAPTIVE, and LED aligned.
-const double jexSubmenuRowMinHeight = 62.0;
-const double jexSubmenuToggleWidth = 54.0;
-const double jexSubmenuToggleHeight = 32.0;
+const double jexSubmenuRowMinHeight = JexLayoutTokens.submenuRowMinHeight;
+const double jexSubmenuToggleWidth = JexLayoutTokens.submenuToggleWidth;
+const double jexSubmenuToggleHeight = JexLayoutTokens.submenuToggleHeight;
 
 // Curated hue-first presets; the Brightness slider remains the only intensity control.
 // AI-METHOD: isVoltageCommand — Accept only 5V, 9V, or 12V.
@@ -3824,8 +3825,8 @@ class _DashboardScreenState extends State<DashboardScreen>
     }
     _manualConnectionSheetPreparation = _prepareManualConnectionSheet();
     final media = MediaQuery.of(context);
-    const designWidth = 360.0;
-    const homeHeight = 420.0;
+    const designWidth = JexLayoutTokens.masterCanvasWidth;
+    const homeHeight = JexLayoutTokens.homeCanvasHeight;
     final scale = media.size.width / designWidth;
     final top = media.padding.top + homeHeight * scale;
     final sheetHeight = (media.size.height - top)
@@ -3968,7 +3969,7 @@ class _DashboardScreenState extends State<DashboardScreen>
           child: SizedBox(
             width: double.infinity,
             // Keep all seven Home indicator rows at the same 45 dp height.
-            height: 45,
+            height: JexLayoutTokens.homeMetricRowHeight,
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
               child: Row(
@@ -6100,7 +6101,7 @@ class _DashboardScreenState extends State<DashboardScreen>
             child: Center(
               child: Container(
                 width: double.infinity,
-                height: 38,
+                height: JexLayoutTokens.homeTabPillHeight,
                 alignment: Alignment.center,
                 padding: const EdgeInsets.symmetric(horizontal: 3),
                 decoration: BoxDecoration(
@@ -6153,8 +6154,8 @@ class _DashboardScreenState extends State<DashboardScreen>
   @override
   Widget build(BuildContext context) {
     final media = MediaQuery.of(context);
-    const designWidth = 360.0;
-    const homeHeight = 420.0;
+    const designWidth = JexLayoutTokens.masterCanvasWidth;
+    const homeHeight = JexLayoutTokens.homeCanvasHeight;
     return MediaQuery(
       data: media.copyWith(textScaler: TextScaler.noScaling),
       child: Scaffold(

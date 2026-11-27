@@ -23,6 +23,7 @@ import 'package:phosphor_icons/phosphor_icons.dart';
 import 'app_settings.dart';
 import 'jex_animated_glyph.dart';
 import 'usage_statistics.dart';
+import 'jex_design_tokens.dart';
 
 part 'settings_pages.dart';
 
@@ -1108,7 +1109,7 @@ class JexFixedScalePage extends StatelessWidget {
       data: media.copyWith(textScaler: TextScaler.noScaling),
       child: LayoutBuilder(
         builder: (context, constraints) {
-          const designWidth = 360.0;
+          const designWidth = JexLayoutTokens.masterCanvasWidth;
           if (constraints.maxWidth <= 0 || constraints.maxHeight <= 0)
             return child;
 

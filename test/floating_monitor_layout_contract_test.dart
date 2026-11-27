@@ -11,6 +11,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 import '../lib/floating_monitor.dart';
 import '../lib/app_settings.dart';
+import '../lib/jex_design_tokens.dart';
 
 void main() {
   test('Floating Monitor normalizes and persists compact size, opacity and background', () {
@@ -93,6 +94,7 @@ void main() {
     'Floating Monitor settings show live numeric values and opacity marks',
     () {
       final floating = File('lib/floating_monitor.dart').readAsStringSync();
+      final designTokens = File('lib/jex_design_tokens.dart').readAsStringSync();
       final settingsPages = File('lib/settings_pages.dart').readAsStringSync();
       final settings = File('lib/app_settings.dart').readAsStringSync();
 
@@ -734,7 +736,7 @@ void main() {
     expect(lockLayout, contains("ValueKey<String>('voltage-lock-card')"));
     expect(lockLayout, isNot(contains('subtitle')));
     expect(lockLayout, isNot(contains('CircularProgressIndicator')));
-    expect(lockLayout, contains('color: scheme.onSurfaceVariant'));
+    expect(lockLayout, contains('color: semantic.mutedForeground'));
 
     final compactSettingsPage = compactDartSource(settingsPage);
     final firmwareSection = compactSettingsPage.indexOf(

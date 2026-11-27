@@ -18,6 +18,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter/material.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
 import 'package:jexfyz_cooler/jex_animated_glyph.dart';
+import 'package:jexfyz_cooler/jex_design_tokens.dart';
 import 'package:jexfyz_cooler/jex_animated_icon.dart';
 import 'package:jexfyz_cooler/app_security.dart';
 import 'package:jexfyz_cooler/main.dart';
@@ -2260,6 +2261,37 @@ void main() {
     );
   });
 
+
+  test('Shared layout tokens retain the owner-approved canvas and control geometry', () {
+    expect(JexLayoutTokens.masterCanvasWidth, 360.0);
+    expect(JexLayoutTokens.homeCanvasHeight, 420.0);
+    expect(JexLayoutTokens.homeMetricRowHeight, 45.0);
+    expect(JexLayoutTokens.homeTabPillHeight, 38.0);
+    expect(JexLayoutTokens.homeTabTouchHeight, 48.0);
+    expect(JexLayoutTokens.minimumTouchTarget, 48.0);
+    expect(JexLayoutTokens.submenuRowMinHeight, 62.0);
+    expect(JexLayoutTokens.submenuToggleWidth, 54.0);
+    expect(JexLayoutTokens.submenuToggleHeight, 32.0);
+  });
+
+  test('Semantic design colors follow the current Light and Dark ColorSchemes', () {
+    for (final scheme in [
+      ColorScheme.light(),
+      ColorScheme.dark(),
+    ]) {
+      final roles = JexSemanticColors.from(scheme);
+      expect(roles.canvas, scheme.surface);
+      expect(roles.surface, scheme.surface);
+      expect(roles.elevatedSurface, scheme.surfaceContainerHighest);
+      expect(roles.foreground, scheme.onSurface);
+      expect(roles.mutedForeground, scheme.onSurfaceVariant);
+      expect(roles.outline, scheme.outlineVariant);
+      expect(roles.accent, scheme.primary);
+      expect(roles.error, scheme.error);
+      expect(roles.onError, scheme.onError);
+    }
+  });
+
   test('All seven Home indicator rows use uniform 45 dp vertical spacing', () {
     final source = File('lib/main.dart').readAsStringSync();
     final metricStart = source.indexOf('Widget _homeMetric(');
@@ -2268,7 +2300,8 @@ void main() {
     expect(metricEnd, greaterThan(metricStart));
     final metric = source.substring(metricStart, metricEnd);
 
-    expect(metric, contains('height: 45,'));
+    expect(JexLayoutTokens.homeMetricRowHeight, 45.0);
+    expect(metric, contains('height: JexLayoutTokens.homeMetricRowHeight,'));
     expect(
       containsDartFragment(metric, 'width: 41,\n                height: 41,'),
       isTrue,
@@ -4140,11 +4173,12 @@ void main() {
     final tab = source.substring(tabStart, tabEnd);
     expect(tab, contains('return Expanded('));
     expect(tab, contains('SizedBox.expand('));
-    expect(tab, contains('height: 38'));
+    expect(JexLayoutTokens.homeTabPillHeight, 38.0);
+    expect(tab, contains('height: JexLayoutTokens.homeTabPillHeight'));
     expect(tab, contains('width: double.infinity'));
     expect(tab, contains('onTap: () => setState(() => tabIndex = index)'));
 
-    final dashboardStart = source.indexOf('const homeHeight = 420.0;');
+    final dashboardStart = source.indexOf('const homeHeight = JexLayoutTokens.homeCanvasHeight;');
     final menuStart = source.indexOf('height: 48,', dashboardStart);
     final contentCall = source.indexOf('child: _buildTabContent()', menuStart);
     final contentStart = source.lastIndexOf('Expanded(', contentCall);
