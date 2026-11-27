@@ -5,9 +5,17 @@ Last reconciled: 2026-11-27 (Asia/Jakarta). Authority: MASTER_PROMPT.md.
 ## Owner scope and repository policy
 
 - Workspace: CODE_FULL — complete owner-approved App-only WP0–WP10 and evidence-backed build-ready handoff; then execute approved REPO_FULL.
-- Repository: TenzoNkz/JEXFYZ-App, branch main; direct commits only, no branches/PRs. Re-fetch HEAD/tree/target SHAs and use expected-HEAD updates before writes.
+- Repository: TenzoNkz/JEXFYZ-App, integration branch `main`; owner-approved App source/test implementation uses GitHub Copilot `copilot/*` branches and PRs. Diskusi documentation-only status/checkpoint updates may commit directly to `main`.
 - Included: Flutter/Dart App source/tests/docs/configuration/static audit and non-publishing Validation Only CI.
 - Excluded: Build App/APK/sign/release until a fresh Eksekusi Build App!; Firmware/BIN/P1 wire/behavior, BLE identity/security, OTA transport/trust/recovery, Firebase production, signing material, flashing and device operations.
+
+## GitHub agent execution decision — 2026-11-27
+
+- Owner superseded the earlier direct-main-only policy and granted standing authorization for routine App-only WP0–WP10 work through GitHub Copilot cloud agent, without requesting permission for each in-scope task.
+- Target path: ChatGPT prepares a detailed Agent Work Order → GitHub Issue assigned to Copilot → Copilot branch/PR → independent ChatGPT diff/evidence review → required validation → auto-merge only when configured requirements pass. No code agent session has been delegated or started in this Diskusi session.
+- Live repository facts: visibility is public; GitHub reports admin access for the connected identity and `allow_auto_merge=false`. Validation Only currently runs only on `push` to `main`, not PRs. Build App remains issue/title/token guarded and separate.
+- Copilot cloud-agent issue assignment requires an eligible paid Copilot plan and is public preview through the issue API. Copilot Automations are unavailable to public repositories. The connected GitHub tools expose issue creation/assignee actions but not the dedicated Agent Tasks API or optional agent-assignment fields; successful agent start must be proven by a returned Copilot assignment/session/PR.
+- GitHub Actions approval remains enabled by default for Copilot PRs. Do not remove it or expose privileged secrets/write tokens merely to eliminate prompts; first audit a least-privilege PR validation design. No repository visibility change is authorized or implied.
 
 ## Clarification of rework scope
 
@@ -36,4 +44,4 @@ Build #167 remains the latest published App package on immutable source 0dd96228
 
 ## Next action
 
-Continue the WP4 cross-route design-token audit alongside the full Dashboard owner/content review. The current static search did not establish another shared typography role: similar 10/11/12-dp values occur in different component roles, so do not globalize them. Preserve unique plot/telemetry/canvas geometry; continue only with evidence-backed batches.
+First configure the approved Copilot branch/PR execution path in CODE_FULL: repository-specific Copilot instructions, deterministic agent setup, PR validation that preserves least privilege, and reviewed auto-merge/branch protections. Verify Copilot plan/assignment availability before claiming the agent is running. Then resume the still-open WP0–WP10 App work, beginning with the full Dashboard owner/content audit and WP4 cross-route semantic-token classification; preserve unique plot/telemetry/canvas geometry.
