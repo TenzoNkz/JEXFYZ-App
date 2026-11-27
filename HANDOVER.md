@@ -1,20 +1,18 @@
 # JE X FYZ / JE Cooler — Current Handover
 
-Last reconciled: 2026-11-27 (Asia/Jakarta). Authority: MASTER_PROMPT.md.
+Last reconciled: 2026-11-28 (Asia/Jakarta). Authority: MASTER_PROMPT.md.
 
-## Immediate next action — WP1 secure-storage failure tests
+## Immediate next action — resume WP0 repository file audit
 
-- Owner instruction 2026-11-27: stop using Copilot; return to full ChatGPT/Codex-only CODE_FULL execution. ChatGPT/Codex is the sole implementation author and reviewer, writing scoped App changes directly to `main` with the connected GitHub integration. No Copilot assignments, external agents, feature branches or PR handoffs.
-- Pre-write gate: re-fetch exact `main` HEAD and target file blob SHA; verify only the approved WP1 paths will change; preserve current source behavior unless a test demonstrates a defect; inspect complete diff before commit; read back changed files and commit afterward.
-- Live repo facts at last check: `TenzoNkz/JEXFYZ-App` public; connected identity has admin permission; only `main` branch; branch API reports `protected=false`; `allow_auto_merge=false`. Recheck live state before consequential writes.
-- Validation Only workflow: `.github/workflows/jexfyz-app-validation.yml`. It triggers on push to `main` for selected App/config/assets paths and runs read-only dependency, formatter, analyzer and full Flutter tests. Inspect the actual workflow and every run/job on the exact changed SHA. Build App remains separately issue/title/token guarded and is not authorized here.
-- WP1 allowed modifications: `lib/app_settings.dart` and `test/app_settings_store_test.dart` only. Inspect `app_bootstrap.dart`, `main.dart`, `settings_pages.dart`, `app_settings_model_test.dart` and `pubspec.lock` without modifying them absent a demonstrated dependency.
-- Current WP1 source preserves keys `jexfyz_app_settings_v2`, `jexfyz_last_firmware_notice`, `jexfyz_known_cooler_remote_id_v1`; defaults, JSON schema, notifier update order, bootstrap sequencing and GATT discovery + SYNC + SYNC_READY gate before KnownCooler save.
-- Resolved `flutter_secure_storage` is 11.2.0. `FlutterSecureStorage.setMockInitialValues(values)` installs its in-memory platform using the supplied backing Map. A test-only `MapBase<String,String>` can deterministically throw on map read/write/remove and inject plugin storage failures without a new package or production test seam.
-- Required tests: AppSettingsStore.load read failure→defaults + all notifiers; save write failure→does not escape + notifiers published before write; shouldNotifyFirmware blank→false and read failure→true; markFirmwareNotified write failure→does not escape; KnownCoolerStore.load read failure→null + notifier cleared; KnownCoolerStore.save write failure→does not escape + notifier semantics; KnownCoolerStore.clear delete failure→does not escape + notifier semantics.
-- Last validated App source `d0ab20533c2bf27be18dbb25c3ad9c762663d7e0`; Validation Only #213 / run `46012060878` / job `140549796007`, exact SHA, terminal SUCCESS (formatter 44 files unchanged, analyzer PASS, 285/285 tests PASS). This does not validate later commits.
-- Local Flutter/Dart/Gradle/ADB were unavailable previously; check the current runtime. Android/Kotlin/device/OEM/screenshots/SQLite runtime migration/performance soak remain unverified. Build #167 remains latest published package; current main is not packaged.
+- Owner decision 2026-11-27: CODE_FULL is ChatGPT/Codex-only. ChatGPT/Codex authors and reviews scoped App changes directly on `main` using the connected GitHub integration. No Copilot assignments, external agents, feature branches or PR handoffs.
+- WP1 secure-storage failure characterization is complete. Only `test/app_settings_store_test.dart` changed for the work; seven test-only cases cover settings load/read errors, save/write errors and notifier ordering, firmware notice blank/read/write errors, and KnownCoolerStore load/save/clear failures. `lib/app_settings.dart`, all production keys/defaults/schema, bootstrap and BLE/P1 sources remained unchanged.
+- Exact WP1 test-source commit: `c11800e867bee2e8fb1426f865a28f2fb00cabf4`. Validation Only #217 / run `46039843488` / job `140644469587` completed SUCCESS on the exact SHA: locked dependency resolution PASS; formatter **44 files / 0 changed**; analyzer PASS (`--no-fatal-infos`, 127 info-level diagnostics, zero warnings/errors); full Flutter suite **292/292 PASS**. <https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/46039843488>
+- Issue #45 `[CODE_FULL WP1] Characterize secure-storage failure behavior — ChatGPT Codex` was rewritten to reflect Codex direct-main execution and closed after the verified run.
+- Caller invariant confirmed: the only production `KnownCoolerStore.save()` caller is in `main.dart`, after `_discoverServices(target)` returns; that path requires successful GATT discovery, complete P1 SYNC and SYNC_READY acknowledgement. No BLE/P1 ownership or protocol behavior changed.
+- Next inventory path per `REPOSITORY_UPGRADE_PLAN.md`: `lib/connection_scan_coordinator.dart`. Continue the existing one-file-at-a-time WP0 audit and then the dependency-ordered WP0–WP10 App sequence; do not restart completed WP1 work.
+- Validation boundary: local Flutter/Dart/Gradle/ADB remain unavailable in the current ChatGPT runtime; hosted CI supplied the successful Flutter validation. Android/Kotlin build, actual screenshots/OEM/device behavior, SQLite v1→v2 runtime fixture and 1h/6h/24h performance profile remain unverified. Whole-App visual status remains **VISUAL NOT VERIFIED**.
+- Latest published package remains Build #167 on immutable source `0dd96228d33b08c66e736ae91a8a6c3e5c3ddb81`; current main is not packaged.
 
 ## Protected scope
 
-No Build App/APK/sign/release, Firmware/BIN, BLE/P1 wire/security, OTA transport/trust/recovery, Firebase production, signing secrets, flashing or device operations. Visual outcome remains NOT VERIFIED until actual rendered Android evidence exists.
+No Build App/APK/sign/release, Firmware/BIN, BLE/P1 wire/security changes, OTA transport/trust/recovery, Firebase production, signing secrets, flashing or device operations.
