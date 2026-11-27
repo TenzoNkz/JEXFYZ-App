@@ -55,15 +55,15 @@ void main() {
     test(
       'missing settings restore and publish established defaults',
       () async {
-      final loaded = await AppSettingsStore.load();
+        final loaded = await AppSettingsStore.load();
 
-      expect(loaded.toJson(), const AppSettings().toJson());
-      expect(appLanguageNotifier.value, AppLanguage.english);
-      expect(appThemeNotifier.value, AppThemePreset.defaultTheme);
-      expect(appNotifySafetyNotifier.value, isTrue);
-      expect(appNotifyFirmwareNotifier.value, isTrue);
-      expect(appNotifyBluetoothNotifier.value, isTrue);
-      expect(appAutoConnectNotifier.value, isFalse);
+        expect(loaded.toJson(), const AppSettings().toJson());
+        expect(appLanguageNotifier.value, AppLanguage.english);
+        expect(appThemeNotifier.value, AppThemePreset.defaultTheme);
+        expect(appNotifySafetyNotifier.value, isTrue);
+        expect(appNotifyFirmwareNotifier.value, isTrue);
+        expect(appNotifyBluetoothNotifier.value, isTrue);
+        expect(appAutoConnectNotifier.value, isFalse);
       },
     );
 
