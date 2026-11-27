@@ -213,41 +213,36 @@ void main() {
       );
     });
 
-    test(
-      'blocks command writes until the BLE link and RX characteristic are ready',
-      () {
-        expect(
-          P1CommandContract.canSendCommand(
-            bleReady: false,
-            hasWriteCharacteristic: true,
-            sessionReady: true,
-            command: 'SYNC',
-          ),
-          isFalse,
-        );
-        expect(
-          P1CommandContract.canSendCommand(
-            bleReady: true,
-            hasWriteCharacteristic: false,
-            sessionReady: true,
-            command: 'FAN:ON',
-          ),
-          isFalse,
-        );
-      },
-    );
+    test('blocks command writes until the BLE link and RX characteristic are ready', () {
+      expect(
+        P1CommandContract.canSendCommand(
+          bleReady: false,
+          hasWriteCharacteristic: true,
+          sessionReady: true,
+          command: 'SYNC',
+        ),
+        isFalse,
+      );
+      expect(
+        P1CommandContract.canSendCommand(
+          bleReady: true,
+          hasWriteCharacteristic: false,
+          sessionReady: true,
+          command: 'FAN:ON',
+        ),
+        isFalse,
+      );
+    });
 
     test(
       'allows only SYNC bootstrap commands before the P1 session is ready',
       () {
-        for (
-          final command in [
-            'SYNC',
-            'SYNC_READY',
-            ' sync ',
-            ' sync_ready ',
-          ]
-        ) {
+        for (final command in [
+          'SYNC',
+          'SYNC_READY',
+          ' sync ',
+          ' sync_ready ',
+        ]) {
           expect(
             P1CommandContract.canSendCommand(
               bleReady: true,
@@ -274,23 +269,20 @@ void main() {
       },
     );
 
-    test(
-      'does not add a second command allowlist after session readiness',
-      () {
-        for (final command in ['FAN:ON', 'VOLTAGE:9V', 'OTAENTER', 'UNKNOWN']) {
-          expect(
-            P1CommandContract.canSendCommand(
-              bleReady: true,
-              hasWriteCharacteristic: true,
-              sessionReady: true,
-              command: command,
-            ),
-            isTrue,
-            reason: command,
-          );
-        }
-      },
-    );
+    test('does not add a second command allowlist after session readiness', () {
+      for (final command in ['FAN:ON', 'VOLTAGE:9V', 'OTAENTER', 'UNKNOWN']) {
+        expect(
+          P1CommandContract.canSendCommand(
+            bleReady: true,
+            hasWriteCharacteristic: true,
+            sessionReady: true,
+            command: command,
+          ),
+          isTrue,
+          reason: command,
+        );
+      }
+    });
 
     test('accepts only the established ACK success vocabulary', () {
       for (final reason in [
