@@ -1,3 +1,14 @@
+## Current App source checkpoint — WP5 Dashboard tab transition / Validation Only #205 — 2026-11-27
+
+- **Current main:** `a2f4c4f467ece3bfd37981f8e9176a71d7419c28`; recursive tree 166 entries / 120 blobs / 46 trees, `truncated=false`.
+- **Validation Only #205:** run `45994605388` / job `140490735361`, exact source SHA above, terminal SUCCESS. Locked dependencies PASS; formatter **44 files / 0 changed**; analyzer PASS; Flutter tests **285/285 PASS**.
+- **Dashboard transition:** `JexDashboardTabTransition` wraps active tab content after the existing lock gate. Standard motion uses 210-ms fade + about 5.4-dp slide; reduced motion uses a 90-ms fade without slide. Outgoing children are pointer-inert and excluded from semantics; current-child semantics remain included on the first animation frame.
+- **Toggle semantics:** `JexDashboardToggle` owns the public key at its root only; child Semantics/ExcludeSemantics wrappers no longer duplicate it. Widget regressions cover hit geometry, enabled/unknown hardware semantics, tab transition, reduced-motion behavior and outgoing-tab exclusion.
+- **State/protocol boundary:** only Dashboard presentation is wrapped. BLE/GATT/P1/session/telemetry/command ownership, state keys, device behavior and Firmware contracts remain with their existing owners. No protocol or Firmware changes.
+- **Remaining scope:** WP4 cross-route semantic token consumer audit; full Dashboard content/owner review; remaining screen-level refinement and screenshot acceptance; WP6 Connection/Settings/dialogs; WP7 Usage Statistics; WP8 Floating Monitor; WP9 device/screenshot/golden/integration evidence; WP10 repository closure.
+- **Release/evidence:** Build #167 remains latest package on immutable source `0dd96228d33b08c66e736ae91a8a6c3e5c3ddb81`; current main is not packaged. Android/Kotlin/OEM/device, SQLite runtime migration and long-session performance remain NOT RUN; whole-App visual result **VISUAL NOT VERIFIED**. No Build App/APK/sign/release, Firmware/BIN, OTA, Firebase production, signing or device operation occurred.
+---
+
 ## Current App source checkpoint — WP1 storage tests + WP5 Dashboard presentation parts / Validation Only #187 — 2026-11-27
 
 - **Current main:** `1b6b38bddf902a251a385f48f921dad523ae036b`; tree `75dd8dcc790d34f7fb479f46c8307a2490d17ed9`; 164 entries / 118 blobs / 46 trees, `truncated=false`.
