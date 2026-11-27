@@ -763,3 +763,11 @@ The Firmware-safety and hardware/power skills are retained as protected project 
 - **Validation Only #91:** run `45873143183` / job `140093397714`, exact source/test SHA `a91ce73d6e7cafbc5a6b04af95fa9d4455c04407`, terminal SUCCESS. Locked dependency resolution, formatter precheck/post-format, analyzer and **230/230 Flutter tests PASS**. Analyzer emitted 107 information-level diagnostics under `--no-fatal-infos`; formatter apply/commit was skipped because formatting was already clean.
 - **Read-back source blobs:** `lib/main.dart` `71b06b5537ef2f36d1355a2767cbad8141a4c874` (9,735 lines); `lib/led_controls.dart` `e795122f61ca31fc814a9b4b04840332a33c980f` (965 lines); `test/widget_test.dart` `bbb327323abb7d782f4fcf3c847e045acc4d1ebd`; `test/firmware_qc_contract_test.dart` `212424531b0ca0e49b4389985187246eb0cb0cb8`; `test/localization_contract_test.dart` `30e87d63efaecedd74abd2a72db7ed813db0e8d4`.
 - **Evidence boundary:** #89/#91 are Flutter/Dart hosted CI only. No Kotlin/Android compilation, APK build/sign/release, Android screenshot/OEM/device verification, Firmware/BIN, OTA, Firebase production, flash or physical-device operation. Whole-App visual acceptance remains `VISUAL NOT VERIFIED`.
+
+### WP1 — Connection scan state priority and display-name regression — 2026-11-27
+
+- **Scope:** characterization-only regression coverage for the pure connection-scan presentation mapper; no BLE scanner, permission, transport, connection/session or P1 behavior changed.
+- **Gaps closed:** assert that explicit Bluetooth/legacy-location unavailability outranks a simultaneous scan error, and assert that non-empty advertisement/platform display names are trimmed before presentation.
+- **Files:** `test/connection_scan_state_test.dart`; source remains unchanged.
+- **Acceptance:** Validation Only on the exact commit must pass locked dependency resolution, read-only Dart formatting, Flutter analyzer and the complete Flutter suite. This unit coverage does not prove Android permission behavior or real BLE discovery.
+- **Disposition:** UPGRADE / CI PENDING at commit creation; update with the observed exact run outcome before closing.

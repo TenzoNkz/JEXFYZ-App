@@ -26,6 +26,18 @@ void main() {
       );
     });
 
+    test('Bluetooth unavailability takes priority over a scan error', () {
+      expect(
+        connectionScanEmptyStateMessageKey(
+          permissionRequired: false,
+          bluetoothUnavailable: true,
+          scanning: true,
+          errorKey: 'scanFailed',
+        ),
+        'connectionUnavailable',
+      );
+    });
+
     test('scan errors are shown instead of a perpetual scanning message', () {
       expect(
         connectionScanEmptyStateMessageKey(
@@ -78,6 +90,28 @@ void main() {
         connectionDeviceDisplayName(
           advertisedName: 'JE X FYZ',
           platformName: 'Perangkat',
+          fallback: 'Device',
+        ),
+        'JE X FYZ',
+      );
+    });
+
+    test('trims a non-empty advertised name before displaying it', () {
+      expect(
+        connectionDeviceDisplayName(
+          advertisedName: '  JE X FYZ  ',
+          platformName: 'Perangkat',
+          fallback: 'Device',
+        ),
+        'JE X FYZ',
+      );
+    });
+
+    test('trims a non-empty platform name when using it as fallback', () {
+      expect(
+        connectionDeviceDisplayName(
+          advertisedName: '  ',
+          platformName: ' JE X FYZ ',
           fallback: 'Device',
         ),
         'JE X FYZ',
