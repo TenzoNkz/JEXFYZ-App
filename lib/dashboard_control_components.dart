@@ -21,134 +21,23 @@ extension _DashboardControlComponents on _DashboardScreenState {
     bool showCheck = true,
     bool neutralRow = false,
   }) {
-    final scheme = Theme.of(context).colorScheme;
-    final accent = scheme.jexAccent;
-    final lang = appLanguageNotifier.value;
-    final lightTheme = Theme.of(context).brightness == Brightness.light;
-    final rowFill = lightTheme
-        ? const Color(0xFFF5F6F8)
-        : (neutralRow
-              ? scheme.jexElevatedSurface.withValues(alpha: .26)
-              : (value
-                    ? accent.withValues(alpha: .075)
-                    : scheme.jexElevatedSurface.withValues(alpha: .34)));
-    final rowBorder = lightTheme
-        ? const Color(0xFFDDE1E7)
-        : (neutralRow
-              ? scheme.jexOutline.withValues(alpha: .68)
-              : (value
-                    ? accent.withValues(alpha: .28)
-                    : scheme.jexOutline.withValues(alpha: .72)));
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 180),
-      curve: Curves.easeOutCubic,
-      constraints: const BoxConstraints(minHeight: jexSubmenuRowMinHeight),
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
-      decoration: BoxDecoration(
-        color: rowFill,
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: rowBorder),
-      ),
-      child: Row(
-        children: [
-          AnimatedContainer(
-            duration: const Duration(milliseconds: 180),
-            width: 42,
-            height: 42,
-            decoration: BoxDecoration(
-              color: lightTheme
-                  ? const Color(0xFFE9EBEF)
-                  : (neutralRow
-                        ? scheme.jexElevatedSurface.withValues(alpha: .72)
-                        : (value
-                              ? accent.withValues(alpha: .12)
-                              : scheme.jexElevatedSurface.withValues(
-                                  alpha: .72,
-                                ))),
-              borderRadius: BorderRadius.circular(14),
-            ),
-            child: Center(
-              child: animatedKind == null
-                  ? Icon(
-                      icon,
-                      size: 21,
-                      color: value ? accent : scheme.jexMutedForeground,
-                    )
-                  : JexAnimatedIcon(
-                      kind: animatedKind,
-                      size: 22,
-                      color: animationColor ?? accent,
-                      connected: connected,
-                      active: jexIconAnimationPermitted(
-                        connected: connected,
-                        kind: animatedKind,
-                        stateActive: stateKnown && value,
-                      ),
-                      level: animationLevel,
-                      voltageLevel: voltageLevel,
-                    ),
-            ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: ExcludeSemantics(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title.toUpperCase(),
-                    style: TextStyle(
-                      fontSize: 13,
-                      letterSpacing: .35,
-                      fontWeight: FontWeight.w900,
-                      color: scheme.jexForeground,
-                    ),
-                  ),
-                  if (subtitle.trim().isNotEmpty)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 2),
-                      child: Text(
-                        subtitle,
-                        style: TextStyle(
-                          fontSize: 10.5,
-                          fontWeight: FontWeight.w600,
-                          color: scheme.jexMutedForeground,
-                        ),
-                      ),
-                    ),
-                ],
-              ),
-            ),
-          ),
-          if (showStateLabel) ...[
-            const SizedBox(width: 8),
-            ExcludeSemantics(
-              child: Text(
-                stateKnown
-                    ? JexText.of(value ? 'on' : 'off', lang)
-                    : JexText.of('off', lang),
-                style: TextStyle(
-                  fontSize: 10,
-                  fontWeight: FontWeight.w900,
-                  color: value ? accent : scheme.jexMutedForeground,
-                ),
-              ),
-            ),
-            const SizedBox(width: 8),
-          ],
-          JexDashboardToggle(
-            semanticLabel: subtitle.trim().isEmpty
-                ? title
-                : '$title, $subtitle',
-            value: value,
-            enabled: enabled,
-            stateKnown: stateKnown,
-            accent: accent,
-            showCheck: showCheck,
-            onChanged: onChanged,
-          ),
-        ],
-      ),
+    return JexDashboardSwitchRow(
+      title: title,
+      subtitle: subtitle,
+      icon: icon,
+      value: value,
+      enabled: enabled,
+      onChanged: onChanged,
+      stateKnown: stateKnown,
+      animatedKind: animatedKind,
+      voltageLevel: voltageLevel,
+      animationLevel: animationLevel,
+      animationColor: animationColor,
+      showStateLabel: showStateLabel,
+      showCheck: showCheck,
+      neutralRow: neutralRow,
+      connected: connected,
+      language: appLanguageNotifier.value,
     );
   }
 
@@ -166,6 +55,198 @@ extension _DashboardControlComponents on _DashboardScreenState {
       scrollCacheExtent: const ScrollCacheExtent.pixels(480),
       padding: padding,
       children: children,
+    );
+  }
+}
+
+
+/// Shared presentation for the Dashboard's Fan, Peltier, Adaptive and LED power rows.
+/// Hardware/session ownership remains in Dashboard; this widget receives a state snapshot
+/// and a guarded callback, and never reads telemetry or sends commands itself.
+class JexDashboardSwitchRow extends StatelessWidget {
+  const JexDashboardSwitchRow({
+    super.key,
+    required this.title,
+    required this.subtitle,
+    required this.icon,
+    required this.value,
+    required this.enabled,
+    required this.onChanged,
+    required this.connected,
+    required this.language,
+    this.stateKnown = true,
+    this.animatedKind,
+    this.voltageLevel = 5,
+    this.animationLevel = 1.0,
+    this.animationColor,
+    this.showStateLabel = true,
+    this.showCheck = true,
+    this.neutralRow = false,
+  });
+
+  final String title;
+  final String subtitle;
+  final IconData icon;
+  final bool value;
+  final bool enabled;
+  final Future<void> Function(bool) onChanged;
+  final bool connected;
+  final AppLanguage language;
+  final bool stateKnown;
+  final JexAnimatedIconKind? animatedKind;
+  final int voltageLevel;
+  final double animationLevel;
+  final Color? animationColor;
+  final bool showStateLabel;
+  final bool showCheck;
+  final bool neutralRow;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final accent = scheme.jexAccent;
+    final lightTheme = Theme.of(context).brightness == Brightness.light;
+    final rowFill = lightTheme
+        ? const Color(0xFFF5F6F8)
+        : (neutralRow
+              ? scheme.jexElevatedSurface.withValues(alpha: .26)
+              : (value
+                    ? accent.withValues(alpha: .075)
+                    : scheme.jexElevatedSurface.withValues(alpha: .34)));
+    final rowBorder = lightTheme
+        ? const Color(0xFFDDE1E7)
+        : (neutralRow
+              ? scheme.jexOutline.withValues(alpha: .68)
+              : (value
+                    ? accent.withValues(alpha: .28)
+                    : scheme.jexOutline.withValues(alpha: .72)));
+
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 180),
+      curve: Curves.easeOutCubic,
+      constraints: const BoxConstraints(minHeight: jexSubmenuRowMinHeight),
+      padding: const EdgeInsets.symmetric(
+        horizontal: JexSpacingTokens.dashboardSwitchRowHorizontalInset,
+        vertical: JexSpacingTokens.dashboardSwitchRowVerticalInset,
+      ),
+      decoration: BoxDecoration(
+        color: rowFill,
+        borderRadius: BorderRadius.circular(
+          JexShapeTokens.dashboardSwitchRowRadius,
+        ),
+        border: Border.all(color: rowBorder),
+      ),
+      child: Row(
+        children: [
+          AnimatedContainer(
+            duration: const Duration(milliseconds: 180),
+            width: JexLayoutTokens.dashboardSwitchRowIconSize,
+            height: JexLayoutTokens.dashboardSwitchRowIconSize,
+            decoration: BoxDecoration(
+              color: lightTheme
+                  ? const Color(0xFFE9EBEF)
+                  : (neutralRow
+                        ? scheme.jexElevatedSurface.withValues(alpha: .72)
+                        : (value
+                              ? accent.withValues(alpha: .12)
+                              : scheme.jexElevatedSurface.withValues(
+                                  alpha: .72,
+                                ))),
+              borderRadius: BorderRadius.circular(
+                JexShapeTokens.dashboardSwitchRowIconRadius,
+              ),
+            ),
+            child: Center(
+              child: animatedKind == null
+                  ? Icon(
+                      icon,
+                      size: 21,
+                      color: value ? accent : scheme.jexMutedForeground,
+                    )
+                  : JexAnimatedIcon(
+                      kind: animatedKind!,
+                      size: 22,
+                      color: animationColor ?? accent,
+                      connected: connected,
+                      active: jexIconAnimationPermitted(
+                        connected: connected,
+                        kind: animatedKind!,
+                        stateActive: stateKnown && value,
+                      ),
+                      level: animationLevel,
+                      voltageLevel: voltageLevel,
+                    ),
+            ),
+          ),
+          const SizedBox(
+            width: JexSpacingTokens.dashboardSwitchRowIconLabelGap,
+          ),
+          Expanded(
+            child: ExcludeSemantics(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title.toUpperCase(),
+                    style: TextStyle(
+                      fontSize: JexTypographyTokens.dashboardSwitchRowTitle,
+                      letterSpacing: .35,
+                      fontWeight: FontWeight.w900,
+                      color: scheme.jexForeground,
+                    ),
+                  ),
+                  if (subtitle.trim().isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        top: JexSpacingTokens.dashboardSwitchRowSubtitleTopGap,
+                      ),
+                      child: Text(
+                        subtitle,
+                        style: TextStyle(
+                          fontSize:
+                              JexTypographyTokens.dashboardSwitchRowSubtitle,
+                          fontWeight: FontWeight.w600,
+                          color: scheme.jexMutedForeground,
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          ),
+          if (showStateLabel) ...[
+            const SizedBox(
+              width: JexSpacingTokens.dashboardSwitchRowStateGap,
+            ),
+            ExcludeSemantics(
+              child: Text(
+                stateKnown
+                    ? JexText.of(value ? 'on' : 'off', language)
+                    : JexText.of('off', language),
+                style: TextStyle(
+                  fontSize: JexTypographyTokens.dashboardSwitchRowState,
+                  fontWeight: FontWeight.w900,
+                  color: value ? accent : scheme.jexMutedForeground,
+                ),
+              ),
+            ),
+            const SizedBox(
+              width: JexSpacingTokens.dashboardSwitchRowStateGap,
+            ),
+          ],
+          JexDashboardToggle(
+            semanticLabel: subtitle.trim().isEmpty
+                ? title
+                : '$title, $subtitle',
+            value: value,
+            enabled: enabled,
+            stateKnown: stateKnown,
+            accent: accent,
+            showCheck: showCheck,
+            onChanged: onChanged,
+          ),
+        ],
+      ),
     );
   }
 }

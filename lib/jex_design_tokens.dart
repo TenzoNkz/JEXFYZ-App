@@ -10,6 +10,7 @@ abstract final class JexLayoutTokens {
   static const double masterCanvasWidth = 360.0;
   static const double homeCanvasHeight = 420.0;
   static const double homeMetricRowHeight = 45.0;
+  static const double dashboardSwitchRowIconSize = 42.0;
   static const double homeTabPillHeight = 38.0;
   static const double minimumTouchTarget = 48.0;
   static const double homeTabTouchHeight = 48.0;
@@ -26,6 +27,11 @@ abstract final class JexSpacingTokens {
   static const double dashboardSectionTitleTopInset = 6.0;
   static const double dashboardSectionTitleBottomInset = 5.0;
   static const double dashboardSectionSubtitleGap = 3.0;
+  static const double dashboardSwitchRowHorizontalInset = 12.0;
+  static const double dashboardSwitchRowVerticalInset = 7.0;
+  static const double dashboardSwitchRowIconLabelGap = 12.0;
+  static const double dashboardSwitchRowSubtitleTopGap = 2.0;
+  static const double dashboardSwitchRowStateGap = 8.0;
 }
 
 /// Semantic aliases for the existing Material ColorScheme roles.
@@ -103,6 +109,9 @@ abstract final class JexTypographyTokens {
   static const double appBarTitle = 20.0;
   static const double dashboardSectionTitle = 16.0;
   static const double dashboardSectionSubtitle = 11.0;
+  static const double dashboardSwitchRowTitle = 13.0;
+  static const double dashboardSwitchRowSubtitle = 10.5;
+  static const double dashboardSwitchRowState = 10.0;
   static const double compactAppBarTitle = 18.0;
   static const double compactAppBarIcon = 22.0;
   static const double compactTitleLarge = 18.0;
@@ -127,6 +136,8 @@ abstract final class JexStatisticsTypographyTokens {
 abstract final class JexShapeTokens {
   static const double inputBorderRadius = 14.0;
   static const double dashboardCardBorderRadius = 19.0;
+  static const double dashboardSwitchRowRadius = 18.0;
+  static const double dashboardSwitchRowIconRadius = 14.0;
   static const double compactControlRadius = 11.0;
   static const double focusedInputBorderWidth = 1.5;
 }

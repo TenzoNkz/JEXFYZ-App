@@ -96,5 +96,19 @@ void main() {
       expect(JexTypographyTokens.dashboardSectionSubtitle, 11.0);
       expect(JexShapeTokens.dashboardCardBorderRadius, 19.0);
     });
+
+    test('Dashboard switch-row roles preserve the established component geometry', () {
+      expect(JexLayoutTokens.dashboardSwitchRowIconSize, 42.0);
+      expect(JexSpacingTokens.dashboardSwitchRowHorizontalInset, 12.0);
+      expect(JexSpacingTokens.dashboardSwitchRowVerticalInset, 7.0);
+      expect(JexSpacingTokens.dashboardSwitchRowIconLabelGap, 12.0);
+      expect(JexSpacingTokens.dashboardSwitchRowSubtitleTopGap, 2.0);
+      expect(JexSpacingTokens.dashboardSwitchRowStateGap, 8.0);
+      expect(JexTypographyTokens.dashboardSwitchRowTitle, 13.0);
+      expect(JexTypographyTokens.dashboardSwitchRowSubtitle, 10.5);
+      expect(JexTypographyTokens.dashboardSwitchRowState, 10.0);
+      expect(JexShapeTokens.dashboardSwitchRowRadius, 18.0);
+      expect(JexShapeTokens.dashboardSwitchRowIconRadius, 14.0);
+    });
   });
 }
