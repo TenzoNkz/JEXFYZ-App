@@ -1283,6 +1283,7 @@ void main() {
       }
 
       final screenSource = File('lib/main.dart').readAsStringSync();
+      final appRootSource = File('lib/app_root.dart').readAsStringSync();
       final tamperAppStart = screenSource.indexOf(
         'class TamperApp extends StatelessWidget {',
       );
@@ -1290,7 +1291,7 @@ void main() {
         'class TamperScreen extends StatelessWidget {',
       );
       final screenEnd = screenSource.indexOf(
-        '\nclass JeCoolerApp extends StatelessWidget {',
+        '\n/// Backwards-compatible alias for simple widget tests.',
         screenStart,
       );
       expect(tamperAppStart, isNonNegative);
@@ -1315,6 +1316,18 @@ void main() {
       expect(screenContract, contains('verifikasi build resmi gagal'));
       expect(screenContract, contains('opendevelopercontact'));
       expect(screenContract, isNot(contains('_insult(')));
+
+      // The App shell accepts Dashboard as an injected child and listens to the existing
+      // theme/language authorities; it must not construct a second Dashboard/BLE owner.
+      expect(
+        appRootSource,
+        contains('class JeCoolerApp extends StatelessWidget'),
+      );
+      expect(appRootSource, contains('required this.dashboard'));
+      expect(appRootSource, contains('valueListenable: appThemeNotifier'));
+      expect(appRootSource, contains('valueListenable: appLanguageNotifier'));
+      expect(appRootSource, contains('child: dashboard'));
+      expect(appRootSource, isNot(contains('DashboardScreen(')));
 
       final nativeSource = File(
         'android/app/src/main/kotlin/com/horizontalzzz/jexfyz/MainActivity.kt',
@@ -1418,7 +1431,9 @@ void main() {
     final priorLanguage = appLanguageNotifier.value;
     appLanguageNotifier.value = AppLanguage.english;
     addTearDown(() => appLanguageNotifier.value = priorLanguage);
-    await tester.pumpWidget(const JeCoolerApp());
+    await tester.pumpWidget(
+      const JeCoolerApp(dashboard: DashboardScreen()),
+    );
     await tester.pump();
 
     expect(find.text('JE X FYZ'), findsOneWidget);

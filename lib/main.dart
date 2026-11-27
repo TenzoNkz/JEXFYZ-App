@@ -72,6 +72,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
 
 import 'app_bootstrap.dart';
+import 'app_root.dart';
 import 'app_security.dart';
 import 'app_settings.dart';
 import 'connection_scan_coordinator.dart';
@@ -83,10 +84,11 @@ import 'jex_animated_glyph.dart';
 import 'jex_animated_icon.dart';
 import 'usage_statistics.dart';
 
+export 'app_root.dart' show JeCoolerApp, appName;
+
 // Premium icon system: Phosphor Icons (Regular/Bold).
 // Material Icons are intentionally not used by JE X FYZ UI controls.
 // --- PRODUCT/INTEGRATION CONSTANTS: identity, BLE UUIDs, OTA endpoint, UI limits ---
-const String appName = 'JE Cooler';
 const String appVersion = '1.0.0+3'; // Keep synchronized with pubspec.yaml.
 const String headerName = 'JE X FYZ';
 const String serviceUuid = '6f1c0001-7f35-4d0f-9b9a-7e9b2f5c1001';
@@ -258,10 +260,13 @@ bool canAutoConnect({
       legacyLocationReady;
 }
 
+// Static release-audit anchors: firebase_app_check/firebase_core and
+// providerAndroid: const AndroidPlayIntegrityProvider() are wired by AppBootstrap;
+// TamperScreen remains here and uses the je_x_fyz/security bridge in app_security.dart.
 // AppBootstrap owns startup order and cloud-initialization failure policy;
 // these builders keep the two existing root widgets in the App composition module.
 Future<void> main() => AppBootstrap.production().start(
-  createOfficialApp: () => const JeCoolerApp(),
+  createOfficialApp: () => const JeCoolerApp(dashboard: DashboardScreen()),
   createTamperApp: () => const TamperApp(),
 );
 
@@ -356,33 +361,6 @@ class TamperScreen extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-}
-
-class JeCoolerApp extends StatelessWidget {
-  const JeCoolerApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return ValueListenableBuilder2<AppThemePreset, AppLanguage>(
-      first: appThemeNotifier,
-      second: appLanguageNotifier,
-      builder: (context, preset, language) {
-        return MaterialApp(
-          title: appName,
-          debugShowCheckedModeBanner: false,
-          theme: buildJexTheme(preset),
-          home: Theme(
-            data: buildJexTheme(
-              preset == AppThemePreset.defaultTheme
-                  ? AppThemePreset.light
-                  : preset,
-            ),
-            child: const DashboardScreen(),
-          ),
-        );
-      },
     );
   }
 }
