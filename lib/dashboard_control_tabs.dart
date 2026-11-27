@@ -425,79 +425,13 @@ extension _DashboardControlTabsBuilder on _DashboardScreenState {
     required bool selected,
     required bool locked,
   }) {
-    final scheme = Theme.of(context).colorScheme;
-    final accent = scheme.jexAccent;
-    return InkWell(
-      onTap: locked ? null : () => unawaited(_setAdaptiveProfile(value)),
-      borderRadius: BorderRadius.circular(17),
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 180),
-        curve: Curves.easeOutCubic,
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-        decoration: BoxDecoration(
-          color: selected
-              ? accent.withValues(alpha: .07)
-              : scheme.jexElevatedSurface.withValues(alpha: .24),
-          borderRadius: BorderRadius.circular(17),
-          border: Border.all(
-            color: selected
-                ? accent.withValues(alpha: .30)
-                : scheme.jexOutline.withValues(alpha: .68),
-          ),
-        ),
-        child: Row(
-          children: [
-            Container(
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(
-                color: selected
-                    ? accent.withValues(alpha: .11)
-                    : scheme.jexElevatedSurface.withValues(alpha: .62),
-                borderRadius: BorderRadius.circular(13),
-              ),
-              child: Icon(
-                icon,
-                size: 21,
-                color: locked
-                    ? scheme.jexMutedForeground.withValues(alpha: .35)
-                    : (selected ? accent : scheme.jexMutedForeground),
-              ),
-            ),
-            const SizedBox(width: 11),
-            Expanded(
-              child: Text(
-                title,
-                style: TextStyle(
-                  color: locked
-                      ? scheme.jexMutedForeground.withValues(alpha: .45)
-                      : scheme.jexForeground,
-                  fontSize: 12.5,
-                  fontWeight: FontWeight.w900,
-                ),
-              ),
-            ),
-            AnimatedContainer(
-              duration: const Duration(milliseconds: 180),
-              width: 30,
-              height: 30,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: selected
-                    ? accent.withValues(alpha: .14)
-                    : scheme.jexElevatedSurface,
-                border: Border.all(
-                  color: selected ? accent : scheme.jexOutline,
-                  width: selected ? 2 : 1,
-                ),
-              ),
-              child: selected
-                  ? Icon(PhosphorIconsBold.check, size: 17, color: accent)
-                  : null,
-            ),
-          ],
-        ),
-      ),
+    return JexAdaptiveProfileChoice(
+      title: title,
+      icon: icon,
+      selected: selected,
+      locked: locked,
+      enabled: connected && !locked,
+      onTap: () => unawaited(_setAdaptiveProfile(value)),
     );
   }
 

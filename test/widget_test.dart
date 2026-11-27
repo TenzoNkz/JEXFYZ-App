@@ -133,6 +133,79 @@ void main() {
   );
 
   testWidgets(
+    'Adaptive profile choice exposes selected and disabled states to semantics',
+    (tester) async {
+      final semantics = tester.ensureSemantics();
+      var tapCount = 0;
+      const choiceKey = ValueKey<String>('adaptive-profile-choice');
+
+      try {
+        await tester.pumpWidget(
+          MaterialApp(
+            theme: ThemeData.dark(),
+            home: Scaffold(
+              body: Center(
+                child: JexAdaptiveProfileChoice(
+                  key: choiceKey,
+                  title: 'Hotside Protection',
+                  icon: PhosphorIconsRegular.thermometer,
+                  selected: true,
+                  locked: false,
+                  enabled: true,
+                  onTap: () => tapCount++,
+                ),
+              ),
+            ),
+          ),
+        );
+
+        final target = find.byKey(choiceKey);
+        expect(target, findsOneWidget);
+        var data = tester.getSemantics(target).getSemanticsData();
+        expect(data.label, 'Hotside Protection');
+        expect(data.hasFlag(ui.SemanticsFlag.isButton), isTrue);
+        expect(data.hasFlag(ui.SemanticsFlag.isSelected), isTrue);
+        expect(data.hasFlag(ui.SemanticsFlag.hasEnabledState), isTrue);
+        expect(data.hasFlag(ui.SemanticsFlag.isEnabled), isTrue);
+        expect(data.hasAction(ui.SemanticsAction.tap), isTrue);
+
+        await tester.tap(target);
+        expect(tapCount, 1);
+
+        await tester.pumpWidget(
+          MaterialApp(
+            theme: ThemeData.dark(),
+            home: Scaffold(
+              body: Center(
+                child: JexAdaptiveProfileChoice(
+                  key: choiceKey,
+                  title: 'Hotside Protection',
+                  icon: PhosphorIconsRegular.thermometer,
+                  selected: false,
+                  locked: true,
+                  enabled: false,
+                  onTap: () => tapCount++,
+                ),
+              ),
+            ),
+          ),
+        );
+
+        data = tester.getSemantics(target).getSemanticsData();
+        expect(data.label, 'Hotside Protection');
+        expect(data.hasFlag(ui.SemanticsFlag.isSelected), isFalse);
+        expect(data.hasFlag(ui.SemanticsFlag.hasEnabledState), isTrue);
+        expect(data.hasFlag(ui.SemanticsFlag.isEnabled), isFalse);
+        expect(data.hasAction(ui.SemanticsAction.tap), isFalse);
+        await tester.tap(target);
+        expect(tapCount, 1);
+      } finally {
+        semantics.dispose();
+      }
+    },
+  );
+
+  testWidgets(
     'Dashboard shared presentation components preserve their established visual contract',
     (tester) async {
       final theme = buildJexTheme(AppThemePreset.dark);

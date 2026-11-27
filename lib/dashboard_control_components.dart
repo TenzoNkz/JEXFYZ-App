@@ -280,3 +280,116 @@ class JexDashboardToggle extends StatelessWidget {
     );
   }
 }
+
+/// Presentation-only Adaptive profile choice. Dashboard owns the profile value
+/// and supplies the guarded callback; this widget only exposes its selected state.
+class JexAdaptiveProfileChoice extends StatelessWidget {
+  const JexAdaptiveProfileChoice({
+    super.key,
+    required this.title,
+    required this.icon,
+    required this.selected,
+    required this.locked,
+    required this.enabled,
+    required this.onTap,
+  });
+
+  final String title;
+  final IconData icon;
+  final bool selected;
+  final bool locked;
+  final bool enabled;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final accent = scheme.jexAccent;
+    final effectiveTap = enabled ? onTap : null;
+
+    // Screen readers need the selected profile state, not only the visual tick.
+    return Semantics(
+      container: true,
+      label: title,
+      button: true,
+      selected: selected,
+      enabled: enabled,
+      onTap: effectiveTap,
+      child: ExcludeSemantics(
+        child: InkWell(
+          onTap: effectiveTap,
+          borderRadius: BorderRadius.circular(17),
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 180),
+            curve: Curves.easeOutCubic,
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+            decoration: BoxDecoration(
+              color: selected
+                  ? accent.withValues(alpha: .07)
+                  : scheme.jexElevatedSurface.withValues(alpha: .24),
+              borderRadius: BorderRadius.circular(17),
+              border: Border.all(
+                color: selected
+                    ? accent.withValues(alpha: .30)
+                    : scheme.jexOutline.withValues(alpha: .68),
+              ),
+            ),
+            child: Row(
+              children: [
+                Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: selected
+                        ? accent.withValues(alpha: .11)
+                        : scheme.jexElevatedSurface.withValues(alpha: .62),
+                    borderRadius: BorderRadius.circular(13),
+                  ),
+                  child: Icon(
+                    icon,
+                    size: 21,
+                    color: locked
+                        ? scheme.jexMutedForeground.withValues(alpha: .35)
+                        : (selected ? accent : scheme.jexMutedForeground),
+                  ),
+                ),
+                const SizedBox(width: 11),
+                Expanded(
+                  child: Text(
+                    title,
+                    style: TextStyle(
+                      color: locked
+                          ? scheme.jexMutedForeground.withValues(alpha: .45)
+                          : scheme.jexForeground,
+                      fontSize: 12.5,
+                      fontWeight: FontWeight.w900,
+                    ),
+                  ),
+                ),
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 180),
+                  width: 30,
+                  height: 30,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: selected
+                        ? accent.withValues(alpha: .14)
+                        : scheme.jexElevatedSurface,
+                    border: Border.all(
+                      color: selected ? accent : scheme.jexOutline,
+                      width: selected ? 2 : 1,
+                    ),
+                  ),
+                  child: selected
+                      ? Icon(PhosphorIconsBold.check, size: 17, color: accent)
+                      : null,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
