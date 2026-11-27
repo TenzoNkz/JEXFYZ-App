@@ -51,7 +51,9 @@ void main() {
       expect(launchedApp, isNot(same(officialApp)));
     });
 
-    test('verified installation restores local state before cloud and launch', () async {
+    test(
+      'verified installation restores local state before cloud and launch',
+      () async {
       final events = <String>[];
       Widget? launchedApp;
       final officialApp = SizedBox(key: const ValueKey<String>('official'));
@@ -101,7 +103,9 @@ void main() {
       expect(launchedApp, isNot(same(tamperApp)));
     });
 
-    test('Firebase initialization failure skips App Check but still launches', () async {
+    test(
+      'Firebase initialization failure skips App Check but still launches',
+      () async {
       final events = <String>[];
       Widget? launchedApp;
       final officialApp = SizedBox(key: const ValueKey<String>('official'));
@@ -149,7 +153,9 @@ void main() {
       expect(launchedApp, same(officialApp));
     });
 
-    test('App Check failure is reported without blocking the verified UI', () async {
+    test(
+      'App Check failure is reported without blocking the verified UI',
+      () async {
       final events = <String>[];
       Widget? launchedApp;
       final officialApp = SizedBox(key: const ValueKey<String>('official'));
@@ -198,7 +204,9 @@ void main() {
       expect(launchedApp, same(officialApp));
     });
 
-    test('verification exceptions prevent preference restore and either launch', () async {
+    test(
+      'verification exceptions prevent preference restore and either launch',
+      () async {
       final events = <String>[];
       final bootstrap = AppBootstrap(
         verifyOfficialBuild: () async {
