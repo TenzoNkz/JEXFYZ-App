@@ -11,11 +11,11 @@ Last reconciled: 2026-11-27 (Asia/Jakarta). Authority: MASTER_PROMPT.md.
 
 ## Current source and validation
 
-- Validated source: `a2f4c4f467ece3bfd37981f8e9176a71d7419c28`; recursive tree 166 entries / 120 blobs / 46 trees, `truncated=false`.
-- Validation Only #205: run `45994605388` / job `140490735361`, exact source SHA above, terminal SUCCESS: locked dependencies PASS; formatter 44 files / 0 changed; analyzer PASS; Flutter tests **285/285 PASS**.
+- Validated source: `d0ab20533c2bf27be18dbb25c3ad9c762663d7e0`; recursive tree 166 entries / 120 blobs / 46 trees, `truncated=false`.
+- Validation Only #213 / run `46012060878` / job `140549796007`, exact source SHA above, terminal SUCCESS — locked dependencies PASS; formatter 44 files / 0 changed; analyzer PASS; **285/285 Flutter tests PASS**.
 - WP1 storage: test/app_settings_store_test.dart adds seven mock-storage behavior tests. Production keys/defaults/schema unchanged. Plugin error injection and real Android storage behavior remain open/not verified.
 - WP2/WP3: ordered bootstrap, App root, Settings presentation, pure P1 frame decoder, pure command contract and FIFO ACK-waiter lifecycle are separated. Dashboard remains the only BLE/GATT/P1/session/telemetry/command authority.
-- WP4: shared layout/semantic color/typography/shape token foundation exists; static consumer audit is underway across Dashboard, Settings, Statistics, LED/Floating Monitor and Home notification. Preserve screen-specific density and measured plot geometry; visual acceptance remains open.
+- WP4: shared layout/semantic color/typography/shape token foundation exists. Batch 1 compact-control radius and Batch 2 Statistics axis-label typography (`JexStatisticsTypographyTokens.axisLabel = 10.0`, three painter uses) are covered and revalidated by #213. Cross-route role classification remains open; preserve screen-specific density and measured plot geometry. Visual acceptance remains open.
 - WP5 Batch 1: lib/dashboard_shared_components.dart contains reusable JexDashboardCard and JexDashboardSectionTitle. Twelve Card and seven heading call sites moved from main.dart to Control/Temperature presentation parts. Widget contract test verifies established geometry, theme surface/border/shadow and title typography; exact source passed #194. No Dashboard state/command/telemetry ownership moved.
 - WP5 Batch 2: lib/dashboard_control_components.dart extracts _switchRow, _jexToggle and _smoothList into a state-bound presentation extension. Control and Temperature callsites use the extension; widget and Firmware QC source-contract tests follow the new part location. Exact source passed #198, 281/281 tests. Runtime BLE/GATT/P1/session/command ownership remains in Dashboard.
 - WP5 Batch 3: keyed Dashboard content transition (210-ms fade + approximately 5.4-dp slide; 90-ms fade under reduced motion), outgoing tab pointer/semantics isolation, active-tab semantics at the first frame, unique toggle key ownership and regression tests. Validation Only #205 passed on exact source above.
@@ -32,4 +32,4 @@ Build #167 remains the latest published App package on immutable source 0dd96228
 
 ## Next action
 
-Continue WP4 cross-route design-token audit. Classify repeated values by semantic role, promote only demonstrably equivalent constants, preserve one-off chart/telemetry/canvas geometry, add targeted tests and validate the next source batch with exact-SHA Validation Only.
+Continue the WP4 cross-route design-token audit alongside the full Dashboard owner/content review. The current static search did not establish another shared typography role: similar 10/11/12-dp values occur in different component roles, so do not globalize them. Preserve unique plot/telemetry/canvas geometry; continue only with evidence-backed batches.
