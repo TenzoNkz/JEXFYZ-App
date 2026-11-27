@@ -11,7 +11,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 import '../lib/floating_monitor.dart';
 import '../lib/app_settings.dart';
-import '../lib/jex_design_tokens.dart';
+import 'package:jexfyz_cooler/jex_design_tokens.dart';
 
 void main() {
   test('Floating Monitor normalizes and persists compact size, opacity and background', () {
@@ -115,6 +115,11 @@ void main() {
       expect(
         floating,
         contains('class JexFixedScalePage extends StatelessWidget'),
+      );
+      expect(designTokens, contains('masterCanvasWidth = 360.0'));
+      expect(
+        floating,
+        contains('const designWidth = JexLayoutTokens.masterCanvasWidth;'),
       );
       expect(
         floating,
