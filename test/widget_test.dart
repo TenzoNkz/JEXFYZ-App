@@ -2261,7 +2261,6 @@ void main() {
     );
   });
 
-
   test('Shared layout tokens retain the owner-approved canvas and control geometry', () {
     expect(JexLayoutTokens.masterCanvasWidth, 360.0);
     expect(JexLayoutTokens.homeCanvasHeight, 420.0);
@@ -2274,23 +2273,23 @@ void main() {
     expect(JexLayoutTokens.submenuToggleHeight, 32.0);
   });
 
-  test('Semantic design colors follow the current Light and Dark ColorSchemes', () {
-    for (final scheme in [
-      ColorScheme.light(),
-      ColorScheme.dark(),
-    ]) {
-      final roles = JexSemanticColors.from(scheme);
-      expect(roles.canvas, scheme.surface);
-      expect(roles.surface, scheme.surface);
-      expect(roles.elevatedSurface, scheme.surfaceContainerHighest);
-      expect(roles.foreground, scheme.onSurface);
-      expect(roles.mutedForeground, scheme.onSurfaceVariant);
-      expect(roles.outline, scheme.outlineVariant);
-      expect(roles.accent, scheme.primary);
-      expect(roles.error, scheme.error);
-      expect(roles.onError, scheme.onError);
-    }
-  });
+  test(
+    'Semantic design colors follow the current Light and Dark ColorSchemes',
+    () {
+      for (final scheme in [ColorScheme.light(), ColorScheme.dark()]) {
+        final roles = JexSemanticColors.from(scheme);
+        expect(roles.canvas, scheme.surface);
+        expect(roles.surface, scheme.surface);
+        expect(roles.elevatedSurface, scheme.surfaceContainerHighest);
+        expect(roles.foreground, scheme.onSurface);
+        expect(roles.mutedForeground, scheme.onSurfaceVariant);
+        expect(roles.outline, scheme.outlineVariant);
+        expect(roles.accent, scheme.primary);
+        expect(roles.error, scheme.error);
+        expect(roles.onError, scheme.onError);
+      }
+    },
+  );
 
   test('All seven Home indicator rows use uniform 45 dp vertical spacing', () {
     final source = File('lib/main.dart').readAsStringSync();
@@ -4178,7 +4177,9 @@ void main() {
     expect(tab, contains('width: double.infinity'));
     expect(tab, contains('onTap: () => setState(() => tabIndex = index)'));
 
-    final dashboardStart = source.indexOf('const homeHeight = JexLayoutTokens.homeCanvasHeight;');
+    final dashboardStart = source.indexOf(
+      'const homeHeight = JexLayoutTokens.homeCanvasHeight;',
+    );
     final menuStart = source.indexOf('height: 48,', dashboardStart);
     final contentCall = source.indexOf('child: _buildTabContent()', menuStart);
     final contentStart = source.lastIndexOf('Expanded(', contentCall);

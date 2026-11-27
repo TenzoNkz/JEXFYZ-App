@@ -303,7 +303,9 @@ double displayMenuOverlayTop({
   required double screenWidth,
   required double availableHeight,
 }) {
-  final scale = (screenWidth / JexLayoutTokens.masterCanvasWidth).clamp(.85, 1.4).toDouble();
+  final scale = (screenWidth / JexLayoutTokens.masterCanvasWidth)
+      .clamp(.85, 1.4)
+      .toDouble();
   final desired = 492.0 * scale;
   return math.min(desired, math.max(12.0, availableHeight * .64)).toDouble();
 }

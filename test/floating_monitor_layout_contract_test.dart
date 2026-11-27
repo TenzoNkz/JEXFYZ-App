@@ -93,7 +93,8 @@ void main() {
     'Floating Monitor settings show live numeric values and opacity marks',
     () {
       final floating = File('lib/floating_monitor.dart').readAsStringSync();
-      final designTokens = File('lib/jex_design_tokens.dart').readAsStringSync();
+      final designTokens = File('lib/jex_design_tokens.dart')
+          .readAsStringSync();
       final settingsPages = File('lib/settings_pages.dart').readAsStringSync();
       final settings = File('lib/app_settings.dart').readAsStringSync();
 
