@@ -6,25 +6,20 @@ void main() {
     test('emits complete newline lines and retains an unfinished suffix', () {
       final decoder = P1FrameDecoder();
 
-      expect(
-        decoder.addChunk('VOLTAGE:5V\nFAN:'),
-        <P1FrameEvent>[const P1LineFrame('VOLTAGE:5V')],
-      );
+      expect(decoder.addChunk('VOLTAGE:5V\nFAN:'), <P1FrameEvent>[
+        const P1LineFrame('VOLTAGE:5V'),
+      ]);
       expect(decoder.pendingCharacters, 'FAN:'.length);
-      expect(
-        decoder.addChunk('ON\n'),
-        <P1FrameEvent>[const P1LineFrame('FAN:ON')],
-      );
+      expect(decoder.addChunk('ON\n'), <P1FrameEvent>[
+        const P1LineFrame('FAN:ON'),
+      ]);
       expect(decoder.pendingCharacters, 0);
     });
 
     test('holds leading lines until a split SYNC frame is complete', () {
       final decoder = P1FrameDecoder();
 
-      expect(
-        decoder.addChunk('VOLTAGE:5V\n<SYNC_START>PROTOCOL:P1'),
-        isEmpty,
-      );
+      expect(decoder.addChunk('VOLTAGE:5V\n<SYNC_START>PROTOCOL:P1'), isEmpty);
       expect(decoder.pendingCharacters, greaterThan(0));
 
       expect(
@@ -63,18 +58,12 @@ void main() {
     test('does not leak newline records out of an incomplete SYNC frame', () {
       final decoder = P1FrameDecoder();
 
-      expect(
-        decoder.addChunk('VOLTAGE:5V\n<SYNC_START>FAN:ON\n'),
-        isEmpty,
-      );
+      expect(decoder.addChunk('VOLTAGE:5V\n<SYNC_START>FAN:ON\n'), isEmpty);
       expect(decoder.pendingCharacters, greaterThan(0));
-      expect(
-        decoder.addChunk('PELTIER:OFF<SYNC_END>'),
-        <P1FrameEvent>[
-          const P1LineFrame('VOLTAGE:5V'),
-          const P1SyncFrame('FAN:ON\nPELTIER:OFF'),
-        ],
-      );
+      expect(decoder.addChunk('PELTIER:OFF<SYNC_END>'), <P1FrameEvent>[
+        const P1LineFrame('VOLTAGE:5V'),
+        const P1SyncFrame('FAN:ON\nPELTIER:OFF'),
+      ]);
     });
 
     test('discards oversized noise when no recoverable SYNC start exists', () {
@@ -101,9 +90,7 @@ void main() {
         ).join();
 
         expect(
-          decoder.addChunk(
-            '$oversizedPrefix<SYNC_START>PROTOCOL:P1<SYNC_END>',
-          ),
+          decoder.addChunk('$oversizedPrefix<SYNC_START>PROTOCOL:P1<SYNC_END>'),
           <P1FrameEvent>[const P1SyncFrame('PROTOCOL:P1')],
         );
         expect(decoder.pendingCharacters, 0);
