@@ -846,7 +846,12 @@ void main() {
       expect(usage, contains('latest_battery'));
       expect(usage, contains('latest_hotside'));
       expect(usage, contains('UNION'));
-      expect(usage, contains('[cutoff, cutoff, cutoff]'));
+      expect(
+        RegExp(
+          r'_usageSampleRetentionDeleteSql,\\s*\\[\\s*cutoff,\\s*cutoff,\\s*cutoff,\\s*\\]',
+        ).hasMatch(usage),
+        isTrue,
+      );
       expect(
         usage.split('_deleteExpiredUsageSamples(database, cutoff)').length - 1,
         2,
