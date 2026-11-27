@@ -472,7 +472,7 @@ class _JexLedStripPreviewState extends State<JexLedStripPreview>
     final scheme = Theme.of(context).colorScheme;
     return InkWell(
       onTap: enabled ? (left ? widget.onPrevious : widget.onNext) : null,
-      borderRadius: BorderRadius.circular(11),
+      borderRadius: BorderRadius.circular(JexShapeTokens.compactControlRadius),
       child: Container(
         width: 29,
         height: 34,
@@ -480,7 +480,7 @@ class _JexLedStripPreviewState extends State<JexLedStripPreview>
           color: enabled
               ? scheme.jexSurface
               : scheme.jexElevatedSurface.withValues(alpha: .45),
-          borderRadius: BorderRadius.circular(11),
+          borderRadius: BorderRadius.circular(JexShapeTokens.compactControlRadius),
           border: Border.all(color: scheme.jexOutline),
         ),
         child: Icon(

@@ -397,6 +397,16 @@ void main() {
       (focusedBorder! as OutlineInputBorder).borderSide.width,
       JexShapeTokens.focusedInputBorderWidth,
     );
+    expect(JexShapeTokens.compactControlRadius, 11.0);
+
+    final settingsSource = File('lib/settings_pages.dart').readAsStringSync();
+    final ledSource = File('lib/led_controls.dart').readAsStringSync();
+    const sharedControlRadius =
+        'BorderRadius.circular(JexShapeTokens.compactControlRadius)';
+    expect(settingsSource.split(sharedControlRadius).length - 1, 1);
+    expect(ledSource.split(sharedControlRadius).length - 1, 2);
+    expect(settingsSource, isNot(contains('BorderRadius.circular(11)')));
+    expect(ledSource, isNot(contains('BorderRadius.circular(11)')));
 
     final compact = buildJexCompactUiTheme(AppThemePreset.dark);
     expect(
