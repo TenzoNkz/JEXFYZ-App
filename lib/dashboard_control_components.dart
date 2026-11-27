@@ -231,6 +231,4 @@ extension _DashboardControlComponents on _DashboardScreenState {
       children: children,
     );
   }
-
-
 }

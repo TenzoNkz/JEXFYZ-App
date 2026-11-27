@@ -606,6 +606,9 @@ void main() {
     'App waits for voltage telemetry and marks disconnected outputs unknown',
     () {
       final source = File('lib/main.dart').readAsStringSync();
+      final componentSource = File(
+        'lib/dashboard_control_components.dart',
+      ).readAsStringSync();
       final commandContract = File('lib/p1_command_contract.dart')
           .readAsStringSync();
       expect(
@@ -623,16 +626,19 @@ void main() {
       expect(source, contains('runtimeOutputsKnown = false;'));
       expect(
         containsDartFragment(
-          source,
+          componentSource,
           "stateKnown ? JexText.of(value ? 'on' : 'off', lang) : JexText.of('off', lang)",
         ),
         isTrue,
       );
-      expect(source, contains('final displayedValue = stateKnown && value;'));
+      expect(
+        componentSource,
+        contains('final displayedValue = stateKnown && value;'),
+      );
       expect(
         RegExp(
           r'alignment:\s*displayedValue\s*\?\s*Alignment\.centerRight\s*:\s*Alignment\.centerLeft',
-        ).hasMatch(source),
+        ).hasMatch(componentSource),
         isTrue,
       );
     },
