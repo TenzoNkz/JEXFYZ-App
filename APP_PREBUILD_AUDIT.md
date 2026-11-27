@@ -1,3 +1,15 @@
+## Latest CODE_FULL checkpoint — WP1 characterization + WP4 design-token audit; Validation Only #168 pending — 2026-11-27
+
+- **Live main:** `d5228516e825a3e7b9ae72bcea8239bb90b32d38`; root tree `5260bcbc9bb520975c5d4cfc551938c750c7aafb`; recursive tree 160 entries / 114 blobs / 46 trees, `truncated=false`; file register 114/114 tracked-path dispositions.
+- **Latest green Validation Only #166:** run `45956791122` / job `140365017067`, exact SHA `b61614a170e6c741fa0280adcc75cf9e7504d075`, terminal SUCCESS — locked dependency resolution, formatter 37 files / 0 changed, analyzer and **262/262 Flutter tests PASS**.
+- **#166 WP1 update:** three pure Connection scan-state regressions verify Bluetooth-unavailable/error precedence and trim advertised/platform device names. No BLE scan, permission, connection, GATT or P1 implementation changed.
+- **Validation Only #167:** run `45957071431` / job `140365909777`, source `e2504ad49d298f76fb6e2184580716ac2b06fead`; dependency resolution, analyzer and **273/273 tests PASS**, but formatter gate failed because one test declaration required reflow (38 files / 1 changed). The line has been corrected in `d522851...`.
+- **Validation Only #168:** run `45957362284` targets exact live main `d522851...`; status pending at this checkpoint. It is the required rerun for the 11 pure AppSettings value-model/palette tests in `test/app_settings_model_test.dart`. The model test does not exercise secure storage APIs or change storage contracts.
+- **WP3:** `lib/p1_frame_decoder.dart`, `lib/p1_command_contract.dart` and `lib/p1_ack_waiters.dart` remain narrow pure modules. Dashboard remains sole BLE/GATT/P1/session owner and retains writes, ACK dispatch, SYNC/SYNC_READY, reconnect and authoritative output confirmation.
+- **WP4:** existing geometry, semantic ColorScheme, typography and input-shape tokens are consumed by base/compact themes, Settings and existing route surfaces. Cross-route consumer audit and actual visual evidence remain open; no new palette/font/asset was introduced.
+- **Still open:** full `lib/main.dart`/Dashboard ownership/content audit; large module reviews; plugin-backed Settings/KnownCooler storage tests; WP4 remaining audit; WP5 Home/control surfaces; WP6–WP10 implementation/validation. Path disposition coverage is not full content review.
+- **Evidence boundaries:** Flutter/Dart/Gradle/ADB unavailable locally. Android/Kotlin build, actual screenshots/OEM/device, SQLite v1→v2 fixture and 1h/6h/24h performance profile NOT RUN; whole-App visual acceptance remains **VISUAL NOT VERIFIED**. Build #167 is still latest published package at `0dd96228d33b08c66e736ae91a8a6c3e5c3ddb81`; current main is un-packaged. No Build App, Firmware/BIN, OTA, Firebase production, signing or device operation.
+
 ## Latest CODE_FULL checkpoint — WP3 ACK waiter + WP4 theme-token integration; Validation Only #158 green — 2026-11-27
 
 - **Live main:** `f78d6b1294c88cb359b694041ea70dde0042bcd8`; root tree `3aa34e8f5c153d4979b120f7a5ae87c7c9c78596`; recursive tree 159 entries / 113 blobs / 46 trees, `truncated=false`. Register coverage: 113/113 unique tracked paths.

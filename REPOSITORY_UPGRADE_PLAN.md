@@ -16,15 +16,18 @@ This is the single file-level inventory and rolling review register for the cano
 - Extensions: 53 Markdown, 19 Dart, 3 workflow YML, 2 YAML, 1 Gitignore, 3 Gradle, 1 JSON, 1 ProGuard, 2 XML, 4 Kotlin, 3 PNG, 1 properties, 1 Firmware INO and 1 lockfile.
 - This inventory is **path-complete, not content-audited**. Except for files explicitly reviewed in a linked work-package note, all rows begin with CONTENT REVIEW PENDING.
 
-## Latest live inventory — WP3 ACK waiter + WP4 design tokens; Validation Only #158 SUCCESS (2026-11-27)
+## Latest live inventory — WP1 characterization / WP4–WP5 open; Validation Only #168 pending (2026-11-27)
 
-- **Live main:** `f78d6b1294c88cb359b694041ea70dde0042bcd8`; root tree `3aa34e8f5c153d4979b120f7a5ae87c7c9c78596`; recursive tree **159 entries / 113 blobs / 46 trees**, `truncated=false`.
-- **Register reconciliation:** the File inventory contains **113 unique rows for 113 tracked blobs**, with no missing/stale/duplicate paths. The two newly added rows are `lib/p1_ack_waiters.dart` and `test/p1_ack_waiters_test.dart`.
-- **Validation Only #158:** run `45951691490` / job `140348775364`, exact source/test SHA above, terminal SUCCESS — locked dependencies, read-only formatter (37 files / 0 changed), analyzer and **259/259 Flutter tests** PASS.
-- **WP3:** frame decoder, command classification and per-item FIFO ACK waiter lifecycle are separate narrow modules; Dashboard remains sole BLE/GATT/P1/session owner. Five focused tests cover FIFO isolation, exact cancellation, timeout cleanup, disconnect and disposal.
-- **WP4:** shared tokens include current base/compact typography and input-shape/focus metrics; theme builders and Settings use semantic token references without changing current palette or numeric values. Cross-route adoption and screenshot acceptance remain open.
-- **Outstanding content review:** full Dashboard/`main.dart` owner audit and review of large touched source/test modules remain open. Full 113/113 path disposition is not completed source review or WP0–WP10 closure.
-- Build #167 remains the latest published package on immutable source `0dd96228d33b08c66e736ae91a8a6c3e5c3ddb81`; current main is not packaged. Android/Kotlin, screenshot/OEM/device, SQLite v1→v2 runtime fixture and 1h/6h/24h profile remain NOT RUN; visual acceptance remains VISUAL NOT VERIFIED. No Build App/release, Firmware/BIN, P1 wire, OTA, Firebase production, signing or device operation occurred.
+- **Live main:** `d5228516e825a3e7b9ae72bcea8239bb90b32d38`; root tree `5260bcbc9bb520975c5d4cfc551938c750c7aafb`; recursive tree **160 entries / 114 blobs / 46 trees**, `truncated=false`.
+- **Register reconciliation:** the File inventory contains **114 unique rows for 114 tracked blobs**, with no missing/stale/duplicate paths. The latest path addition is `test/app_settings_model_test.dart`; a path disposition is not a complete content review.
+- **Validation Only #166:** run `45956791122` / job `140365017067`, exact SHA `b61614a170e6c741fa0280adcc75cf9e7504d075`, terminal SUCCESS — locked dependency resolution PASS, formatter PASS (37 files / 0 changed), analyzer PASS, **262/262 Flutter tests PASS**. It includes the Connection scan-state priority and trimming regressions.
+- **Validation Only #167:** run `45957071431` / job `140365909777`, exact SHA `e2504ad49d298f76fb6e2184580716ac2b06fead`, terminal FAILURE due only to read-only formatter: 38 Dart files / 1 changed. Locked dependencies, analyzer and **273/273 tests PASS**. The single overlong test declaration was wrapped in `d522851...`; no production source or workflow change was made.
+- **Validation Only #168:** run `45957362284`, exact live SHA `d5228516e825a3e7b9ae72bcea8239bb90b32d38`; status IN_PROGRESS at this checkpoint. It revalidates the formatter fix and the AppSettings model tests before they can be marked VERIFIED CI.
+- **WP1:** Connection scan mapper tests cover permission/Bluetooth/error/scanning/not-found priority and trim both advertisement/platform names; verified by #166. `test/app_settings_model_test.dart` adds 11 pure model/palette tests; plugin-backed secure-storage/KnownCoolerStore failure-path tests remain open.
+- **WP3:** P1 frame decoder, command classification and per-item FIFO ACK waiter lifecycle are separate narrow modules; Dashboard remains the sole BLE/GATT/P1/session owner and retains write sequencing, ACK dispatch, SYNC/SYNC_READY, reconnect, snapshot mutation and physical-output confirmation.
+- **WP4:** existing geometry/semantic ColorScheme roles are extended with existing typography and input-shape tokens. Base/compact themes, Settings and several route consumers use them without changing palette/numeric values. Whole consumer review and actual Android visual acceptance remain open.
+- **Outstanding review and implementation:** full Dashboard/`main.dart` owner audit and reviews of large touched modules remain open; WP4 cross-route token audit, WP5 Home/control surfaces and WP6–WP10 remain in progress. File path coverage 114/114 is not WP0–WP10 completion or source content audit completion.
+- Build #167 remains the latest published App package on immutable source `0dd96228d33b08c66e736ae91a8a6c3e5c3ddb81`; current main is not packaged. Android/Kotlin compilation, actual screenshots/OEM/device behavior, SQLite v1→v2 runtime fixture and 1h/6h/24h profile remain NOT RUN; visual acceptance remains **VISUAL NOT VERIFIED**. No Build App/release, Firmware/BIN, P1 wire, OTA, Firebase production, signing or device operation occurred.
 
 ## HISTORICAL — inventory checkpoint after Validation Only #91 (superseded 2026-11-27)
 
@@ -249,10 +252,11 @@ A failed gate blocks dependent work. Retry only after classifying root cause (so
 | `pubspec.lock` | Flutter dependency manifest/lock | DEPENDENCY CONTRACT — REVIEW BEFORE CHANGE | KEEP / VERIFIED (2026-11-26) |
 | `pubspec.yaml` | Flutter dependency manifest/lock | DEPENDENCY CONTRACT — REVIEW BEFORE CHANGE | UPGRADE — CLOSED / READ-BACK VERIFIED (2026-11-26) |
 | `test/app_bootstrap_test.dart` | Dart test | TEST / REGRESSION | UPGRADE / VERIFIED CI #142 — OFFICIAL GATE, STARTUP ORDER AND CLOUD-FAILURE BEHAVIOR |
+| `test/app_settings_model_test.dart` | Pure AppSettings value-model JSON/default/fallback/copy regression tests | TEST / WP1 PREFERENCES MODEL | UPGRADE / CI #168 PENDING — NO SECURE-STORAGE SIDE EFFECTS |
 | `test/app_protocol_notify_contract_test.dart` | Dart test | TEST / REGRESSION | KEEP / VERIFIED — P1 / NOTIFICATION SOURCE CONTRACT |
 | `test/app_security_test.dart` | Dart test | TEST / REGRESSION | UPGRADE / CLOSED — TRUE/FALSE/NULL/EXCEPTION CHANNEL CONTRACT (#87) |
 | `test/connection_scan_coordinator_test.dart` | Dart test | TEST / REGRESSION | UPGRADE / CLOSED — PASSIVE REDISCOVERY ERROR CONSUMPTION TEST (#85) |
-| `test/connection_scan_state_test.dart` | Dart test | TEST / REGRESSION | KEEP / VERIFIED — CONNECTION STATE PRIORITY |
+| `test/connection_scan_state_test.dart` | Dart unit tests for Connection scan-state precedence and advertised/platform name trimming | TEST / WP1 CONNECTION REGRESSION | UPGRADE / VERIFIED CI #166 — PRIORITY + NAME NORMALIZATION |
 | `test/device_copy_notification_contract_test.dart` | Dart test | TEST / REGRESSION | UPGRADE — CLOSED / READ-BACK VERIFIED (2026-11-26) |
 | `test/firmware_qc_contract_test.dart` | Dart test | TEST / REGRESSION | UPGRADE / PENDING VALIDATION ONLY #148 — LOCK VOLTAGE CONTRACT TARGETS SETTINGS MODULE; P1 EXPECTATIONS FOLLOW COMMAND CONTRACT |
 | `test/firmware_touch_adaptive_sync_test.dart` | Dart test | TEST / REGRESSION | KEEP / VERIFIED — TOUCH / ADAPTIVE SOURCE CONTRACT |
@@ -670,8 +674,8 @@ The Firmware-safety and hardware/power skills are retained as protected project 
 
 ## Current disposition
 
-- Inventory coverage: **113/113 tracked blobs** at live main `f78d6b1294c88cb359b694041ea70dde0042bcd8`; root tree `3aa34e8f5c153d4979b120f7a5ae87c7c9c78596`; recursive tree **159 entries / 113 blobs / 46 trees**, `truncated=false`. The File inventory has 113 unique rows, no missing/stale/duplicate paths.
-- File disposition coverage: **113/113 tracked blobs have explicit KEEP / UPGRADE / PROTECTED / BLOCKED / IMMUTABLE decisions.** This is path coverage only. The full `lib/main.dart`/Dashboard owner and architecture audit remains deliberately OPEN; WP0–WP10 and build readiness are not complete.
+- Inventory coverage: **114/114 tracked blobs** at live main `d5228516e825a3e7b9ae72bcea8239bb90b32d38`; root tree `5260bcbc9bb520975c5d4cfc551938c750c7aafb`; recursive tree **160 entries / 114 blobs / 46 trees**, `truncated=false`. The File inventory has 114 unique rows, no missing/stale/duplicate paths.
+- File disposition coverage: **114/114 tracked blobs have explicit KEEP / UPGRADE / PROTECTED / BLOCKED / IMMUTABLE decisions.** This is path coverage only. The full `lib/main.dart`/Dashboard owner and architecture audit remains deliberately OPEN; WP0–WP10 and build readiness are not complete.
 - Large-file/source review remains open for `lib/main.dart`, `lib/app_settings.dart`, `lib/settings_pages.dart`, `lib/usage_statistics.dart`, `test/connection_scan_coordinator_test.dart`, `test/firmware_qc_contract_test.dart`, `test/floating_monitor_layout_contract_test.dart`, `test/localization_contract_test.dart`, `test/usage_statistics_test.dart` and `test/widget_test.dart`. Focused edits/tests and a green full suite do not replace full content/owner review.
 - `APP_BUILD_REPORT.md` is APPEND-ONLY / READ-ONLY / REVIEWED (2026-11-26); it is not the next unreviewed path. Continue the open `main.dart` Dashboard owner audit and cross-check current consumers against the live tree. The launcher asset's alpha mismatch remains documented/protected; no image edit or asset publication occurred.
 - Hosted Validation Only #158 is terminal SUCCESS on exact source/test SHA `f78d6b1294c88cb359b694041ea70dde0042bcd8`: dependencies, formatter (37/0), analyzer and 259/259 tests PASS. Current-main Android/Kotlin compilation, physical API/OEM, screenshot matrix, SQLite v1→v2 runtime fixture and 1h/6h/24h profile remain NOT RUN / NOT VERIFIED. Whole-App visual result remains VISUAL NOT VERIFIED.
@@ -716,7 +720,7 @@ The Firmware-safety and hardware/power skills are retained as protected project 
 - `test/usage_statistics_test.dart` current blob `aa5bc741760fe67dec06d4e4f272ffe4f598332e` / 1,248 lines: complete review; regression coverage added for no-HOT coverage and no synthetic Clear History baseline. #82 225/225 PASS. `UPGRADE / CLOSED`.
 - `test/widget_test.dart` current blob `b09f0157776997557e30b2ae1d0a8c7c2bf80845` / 4,066 lines: complete review of Home/control/LED/connection/localization/reduced-motion/Floating Monitor/OTA presentation and widget/source contracts. `KEEP / VERIFIED` by #82 Flutter run; not Android screenshot evidence.
 - `test/connection_scan_coordinator_test.dart` `6aa7e823560656d1e2b42b194a8cc7a5e497c3d7` / 246 lines: complete generation/lease/serialization/manual handoff coverage review. `KEEP / VERIFIED`.
-- `test/connection_scan_state_test.dart` `c689e0cd58569ea67fd02670a4559a31305fef0f` / 113 lines: complete connection-state priority and permission/adapter precedence review. `KEEP / VERIFIED`.
+- `test/connection_scan_state_test.dart` now includes regression coverage for permission/Bluetooth/error precedence and trimmed advertised/platform display names. Validation Only #166 / run `45956791122` / job `140365017067`, exact SHA `b61614a170e6c741fa0280adcc75cf9e7504d075`, terminal SUCCESS; **262/262 tests PASS**. Disposition: UPGRADE / VERIFIED CI.
 - `test/firmware_qc_contract_test.dart` `adf12de873a15d3adef784037633629e9fe4a849` / 918 lines: complete static source-contract review. It checks Firmware source contracts only; it does not compile/test Firmware or prove physical behavior. `KEEP / VERIFIED`.
 - `test/firmware_touch_adaptive_sync_test.dart` `01185431ec72dde4c14b5e91de396736220707da` / 72 lines: complete Touch/Adaptive/read-only contract review. `KEEP / VERIFIED`.
 - `test/localization_contract_test.dart` `30e87d63efaecedd74abd2a72db7ed813db0e8d4` / 279 lines: complete EN/ID keys, labels, placeholders and token review. `KEEP / VERIFIED`.
@@ -781,3 +785,9 @@ The Firmware-safety and hardware/power skills are retained as protected project 
 - **Validation Only #167:** run `45957071431` / job `140365909777`, exact SHA `e2504ad49d298f76fb6e2184580716ac2b06fead`. Locked dependency resolution, analyzer and the full Flutter suite **273/273 PASS**; overall workflow **FAIL** because read-only formatter reported `38 files (1 changed)`. Inspection found the new test's 83-character test declaration as the sole line beyond the formatter's 80-column layout; correcting that one declaration before re-run. No production source or storage API changed.
 - **Acceptance:** exact-commit Validation Only must pass dependency lock, read-only format, analyzer and the full Flutter suite. This does not close the separate plugin-backed `AppSettingsStore` / `KnownCoolerStore` storage-failure integration gap; keys and failure semantics remain protected.
 - **Disposition:** UPGRADE / FIX APPLIED — REVALIDATION PENDING.
+
+### WP1 — Connection scan state priority and display-name regression — CI closure
+
+- Three added pure regression tests verify that Bluetooth/legacy-location unavailability wins over a simultaneous scan error and that valid advertisement/platform names are trimmed before presentation.
+- Exact evidence: Validation Only #166 / run `45956791122` / job `140365017067` / source SHA `b61614a170e6c741fa0280adcc75cf9e7504d075`, terminal SUCCESS; locked dependencies, formatter (37/0), analyzer and 262/262 Flutter tests PASS.
+- No scanner command, Android permission, BLE connection, GATT, P1, or Dashboard ownership behavior changed.

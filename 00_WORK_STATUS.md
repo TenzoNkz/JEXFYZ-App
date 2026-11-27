@@ -1,4 +1,4 @@
-| Last updated | 2026-11-27T14:08:00+07:00 (Asia/Jakarta) |
+| Last updated | 2026-11-27T14:20:00+07:00 (Asia/Jakarta) |
 
 > Event-driven project marker. It is not a live heartbeat or a GitHub lock.
 
@@ -7,21 +7,21 @@
 | Field | Value |
 |---|---|
 | **STATUS** | **IN_PROGRESS** |
-| SESSION STATUS | IN_PROGRESS — new CODE_FULL execution interaction opened; live main reconciled at `6f4c226d55d657e29409d95025af70217cfbfaa4`; continuing the owner-approved WP0–WP10 App workstream without declaring prior checkpoints current CI evidence. |
-| WORK STATUS | IN_PROGRESS — complete owner-approved App Flutter/Dart source, tests, docs, config and static-audit WP0–WP10 scope; then perform the authorized REPO_FULL cleanup cycle. |
+| SESSION STATUS | IN_PROGRESS — owner CODE_FULL work continues against live main `d5228516e825a3e7b9ae72bcea8239bb90b32d38`; WP1 regression work is in exact-SHA validation and WP4/WP5 execution remains open. |
+| WORK STATUS | IN_PROGRESS — owner-approved App-only WP0–WP10 source, tests, docs, configuration and static audit; REPO_FULL follows only after CODE_FULL closes. |
 | WORKSPACE | CODE_FULL |
-| Mode | App Flutter/Dart source, tests, docs, config and static audit; direct commits to main only. No Build App/APK/sign/release, Firmware/BIN/P1 wire or behavior changes, BLE identity/security, OTA transport/trust/recovery, Firebase production, signing material, flashing or physical device operations. |
-| Request / work item | “Eksekusi Code!” — continue the owner-approved “Full App rework + premium UI redesign” WP0–WP10, then REPO_FULL. Existing CODE_FULL authorization applies; complete dependency-ordered work and do not stop at an isolated file/package. |
+| Mode | Flutter/Dart App source, tests, docs, configuration and static audit; direct commits to main only. No Build App/APK/sign/release, Firmware/BIN/P1 wire or behavior changes, BLE identity/security, OTA transport/trust/recovery, Firebase production, signing material, flashing or physical device operations. |
+| Request / work item | “Eksekusi Code!” — complete the owner-approved Full App rework + premium UI redesign WP0–WP10, then REPO_FULL. Existing CODE_FULL authorization applies; do not stop after an isolated file/package. |
 | Started | 2026-11-27T14:08:00+07:00 (Asia/Jakarta) |
-| Last updated | 2026-11-27T14:08:00+07:00 (Asia/Jakarta) |
-| Current phase | Reconcile current main, active checkpoint, WP4 shared design-system consumers and the complete WP0–WP10 dependency map; then continue sequential implementation and exact-SHA validation. |
-| Last completed milestone | Prior verified App milestone: WP4 theme-token slice at `f78d6b1294c88cb359b694041ea70dde0042bcd8`; Validation Only #158 / run `45951691490` / job `140348775364` reported terminal SUCCESS on that exact older SHA (locked dependencies, formatter 37 files / 0 changes, analyzer, Flutter tests 259/259). This does not validate later main commits. |
-| Last verified source checkpoint | Live main `6f4c226d55d657e29409d95025af70217cfbfaa4`; root tree `b15c5c5f51800c30dae55d68dfab65a25ff06027`; recursive tree was 159 entries / 113 blobs / 46 trees, `truncated=false`. |
-| EXTERNAL OPERATION | Last recorded: Validation Only #158 — run `45951691490`, job `140348775364`, source SHA `f78d6b1294c88cb359b694041ea70dde0042bcd8`; re-check latest Actions before relying on it. |
-| EXTERNAL OPERATION STATUS | Last recorded operation COMPLETED / SUCCESS; latest run state pending live reconciliation. |
-| Result / evidence | #158 PASS applies only to source SHA `f78d6b1294c88cb359b694041ea70dde0042bcd8`. Later main HEAD `6f4c226d55d657e29409d95025af70217cfbfaa4` is not yet claimed validated. |
-| Blocker / remaining evidence | Local Flutter/Dart/Gradle/ADB availability not yet re-probed in this session. Android/Kotlin compilation, screenshots/OEM/device behavior, SQLite v1→v2 runtime fixture and 1h/6h/24h performance profile remain NOT RUN / NOT VERIFIED unless fresh evidence is collected. Visual acceptance must remain VISUAL NOT VERIFIED without actual Android screenshots. |
-| Next action | Read the bounded active CHAT_TRANSFER checkpoint and WP0–WP10 plan; inspect current Actions/source and continue WP4→WP10 in dependency order. Preserve all protected BLE/P1, telemetry, Usage Statistics, native service, versionName and Firmware invariants. |
+| Last updated | 2026-11-27T14:20:00+07:00 (Asia/Jakarta) |
+| Current phase | WP1 test characterization and exact-SHA validation; continue WP4 shared-token consumer audit and WP5 Dashboard control-surface decomposition in small, behavior-preserving packages. |
+| Last completed milestone | Validation Only #166 / run `45956791122` / job `140365017067`, exact source/test SHA `b61614a170e6c741fa0280adcc75cf9e7504d075`, terminal SUCCESS: locked dependencies, formatter (37 files / 0 changed), analyzer and **262/262 Flutter tests** PASS. Three Connection scan-state regressions are VERIFIED CI. |
+| Last verified source checkpoint | `b61614a170e6c741fa0280adcc75cf9e7504d075` is the latest fully green validation checkpoint. Live main is `d5228516e825a3e7b9ae72bcea8239bb90b32d38`; root tree `5260bcbc9bb520975c5d4cfc551938c750c7aafb`; recursive tree 160 entries / 114 blobs / 46 trees, `truncated=false`. Inventory register updated to 114/114 path dispositions. |
+| EXTERNAL OPERATION | Validation Only #168 — run `45957362284`, source SHA `d5228516e825a3e7b9ae72bcea8239bb90b32d38`. |
+| EXTERNAL OPERATION STATUS | IN_PROGRESS at checkpoint time. |
+| Result / evidence | #166 PASS on `b61614a...`, 262/262 tests. #167 / run `45957071431` on `e2504ad...` failed only the formatter gate (38 files / 1 changed); locked dependencies, analyzer and **273/273 tests** passed. The one formatter discrepancy in the new AppSettings model test was corrected in `d522851...`; #168 is the exact-source rerun and must reach terminal SUCCESS before the model-test entry is closed. |
+| Blocker / remaining evidence | Flutter/Dart/Gradle/ADB are absent from the execution container; hosted CI is the available Dart/Flutter gate. Android/Kotlin compilation, actual Android/OEM screenshots, device behavior, SQLite v1→v2 runtime fixture and 1h/6h/24h performance profile remain NOT RUN / NOT VERIFIED. Whole-App visual result remains **VISUAL NOT VERIFIED**. Plugin-backed secure-storage failure/round-trip tests remain a separate WP1 gap. |
+| Next action | Verify terminal outcome of #168 and update the exact-SHA register; continue WP4 semantic-token consumer audit, then WP5 Home and control surfaces incrementally. Keep Dashboard as BLE/P1/telemetry/session owner and preserve 360-dp geometry, seven Home metric rows and all protected contracts. |
 
 ## Status model
 
