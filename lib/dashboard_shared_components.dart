@@ -59,7 +59,9 @@ class JexDashboardTabTransition extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final reduceMotion = MediaQuery.disableAnimationsOf(context);
-    final duration = Duration(milliseconds: reduceMotion ? 90 : 210);
+    final duration = reduceMotion
+        ? JexMotionTokens.dashboardReducedMotionTransition
+        : JexMotionTokens.dashboardStateTransition;
 
     return AnimatedSwitcher(
       duration: duration,

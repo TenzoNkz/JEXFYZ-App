@@ -2107,6 +2107,62 @@ void main() {
     },
   );
 
+  testWidgets(
+    'Home metric color transitions use shared timing and respect reduced motion',
+    (tester) async {
+      tester.view.physicalSize = const Size(1080, 3200);
+      tester.view.devicePixelRatio = 3.0;
+      final previousLanguage = appLanguageNotifier.value;
+      final previousTheme = appThemeNotifier.value;
+      final dispatcher = tester.binding.platformDispatcher;
+      addTearDown(() {
+        appLanguageNotifier.value = previousLanguage;
+        appThemeNotifier.value = previousTheme;
+        dispatcher.clearAccessibilityFeaturesTestValue();
+        tester.view.resetPhysicalSize();
+        tester.view.resetDevicePixelRatio();
+      });
+
+      dispatcher.accessibilityFeaturesTestValue =
+          const FakeAccessibilityFeatures();
+      tester.binding.handleAccessibilityFeaturesChanged();
+      appLanguageNotifier.value = AppLanguage.english;
+      appThemeNotifier.value = AppThemePreset.dark;
+
+      Future<void> pumpDashboard() async {
+        await tester.pumpWidget(
+          const JeCoolerApp(dashboard: DashboardScreen()),
+        );
+        await tester.pump();
+      }
+
+      List<Duration> metricColorDurations() => tester
+          .widgetList<TweenAnimationBuilder<Color?>>(
+            find.byType(TweenAnimationBuilder<Color?>),
+          )
+          .map((animation) => animation.duration)
+          .toList();
+
+      await pumpDashboard();
+      expect(metricColorDurations(), hasLength(7));
+      expect(
+        metricColorDurations(),
+        everyElement(JexMotionTokens.dashboardStateTransition),
+      );
+
+      // Android's disableAnimations flag feeds MediaQuery.disableAnimations.
+      dispatcher.accessibilityFeaturesTestValue =
+          const FakeAccessibilityFeatures(disableAnimations: true);
+      tester.binding.handleAccessibilityFeaturesChanged();
+      await pumpDashboard();
+      expect(
+        metricColorDurations(),
+        everyElement(JexMotionTokens.dashboardReducedMotionTransition),
+      );
+      expect(tester.takeException(), isNull);
+    },
+  );
+
   test(
     'Localization keeps language names stable and maps power states correctly',
     () {

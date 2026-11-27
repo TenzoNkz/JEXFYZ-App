@@ -19,6 +19,18 @@ abstract final class JexLayoutTokens {
   static const double submenuToggleHeight = 32.0;
 }
 
+/// Dashboard state feedback timings shared by animated presentation components.
+/// 210 ms follows the approved control/state motion range; 90 ms is the existing
+/// reduced-motion fallback used by Dashboard tab transitions.
+abstract final class JexMotionTokens {
+  static const Duration dashboardStateTransition = Duration(
+    milliseconds: 210,
+  );
+  static const Duration dashboardReducedMotionTransition = Duration(
+    milliseconds: 90,
+  );
+}
+
 /// Spacing roles for shared Dashboard primitives; not a global scale.
 abstract final class JexSpacingTokens {
   static const double dashboardCardVerticalMargin = 4.0;

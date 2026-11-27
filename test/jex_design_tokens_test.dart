@@ -70,6 +70,17 @@ void main() {
       },
     );
 
+    test('Dashboard state motion and reduced-motion timings remain explicit', () {
+      expect(
+        JexMotionTokens.dashboardStateTransition,
+        const Duration(milliseconds: 210),
+      );
+      expect(
+        JexMotionTokens.dashboardReducedMotionTransition,
+        const Duration(milliseconds: 90),
+      );
+    });
+
     test('type, chart-axis and shape values remain explicit tokens', () {
       expect(JexTypographyTokens.appBarTitle, 20.0);
       expect(JexTypographyTokens.compactAppBarTitle, 18.0);

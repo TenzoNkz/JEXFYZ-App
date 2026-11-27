@@ -293,9 +293,15 @@ extension _DashboardHomeTabBuilder on _DashboardScreenState {
     final mutedText = homeDark
         ? const Color(0xFFD4D7E0)
         : const Color(0xFF25282E);
+    // Metric accents communicate state changes, so share Dashboard's approved
+    // state timing and honor the platform's reduced-animation preference.
+    final colorTransitionDuration =
+        MediaQuery.disableAnimationsOf(context)
+        ? JexMotionTokens.dashboardReducedMotionTransition
+        : JexMotionTokens.dashboardStateTransition;
     return TweenAnimationBuilder<Color?>(
       tween: ColorTween(end: color),
-      duration: const Duration(milliseconds: 560),
+      duration: colorTransitionDuration,
       curve: Curves.easeInOutCubic,
       builder: (context, animatedColor, child) {
         final indicatorColor = animatedColor ?? color;
