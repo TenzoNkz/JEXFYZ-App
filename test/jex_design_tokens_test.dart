@@ -16,9 +16,8 @@ void main() {
       error: const Color(0xFF90A0B0),
       onError: const Color(0xFFA0B0C0),
     );
-    final theme = ThemeData.from(colorScheme: scheme).copyWith(
-      scaffoldBackgroundColor: const Color(0xFF0A0B0C),
-    );
+    final theme = ThemeData.from(colorScheme: scheme)
+        .copyWith(scaffoldBackgroundColor: const Color(0xFF0A0B0C));
 
     test('aliases retain the exact Material ColorScheme source roles', () {
       expect(scheme.jexSurface, scheme.surface);
@@ -56,17 +55,20 @@ void main() {
   });
 
   group('JEX geometry and typography tokens', () {
-    test('fixed Dashboard canvas and touch dimensions retain their contract', () {
-      expect(JexLayoutTokens.masterCanvasWidth, 360.0);
-      expect(JexLayoutTokens.homeCanvasHeight, 420.0);
-      expect(JexLayoutTokens.homeMetricRowHeight, 45.0);
-      expect(JexLayoutTokens.homeTabPillHeight, 38.0);
-      expect(JexLayoutTokens.minimumTouchTarget, 48.0);
-      expect(JexLayoutTokens.homeTabTouchHeight, 48.0);
-      expect(JexLayoutTokens.submenuRowMinHeight, 62.0);
-      expect(JexLayoutTokens.submenuToggleWidth, 54.0);
-      expect(JexLayoutTokens.submenuToggleHeight, 32.0);
-    });
+    test(
+      'fixed Dashboard canvas and touch dimensions retain their contract',
+      () {
+        expect(JexLayoutTokens.masterCanvasWidth, 360.0);
+        expect(JexLayoutTokens.homeCanvasHeight, 420.0);
+        expect(JexLayoutTokens.homeMetricRowHeight, 45.0);
+        expect(JexLayoutTokens.homeTabPillHeight, 38.0);
+        expect(JexLayoutTokens.minimumTouchTarget, 48.0);
+        expect(JexLayoutTokens.homeTabTouchHeight, 48.0);
+        expect(JexLayoutTokens.submenuRowMinHeight, 62.0);
+        expect(JexLayoutTokens.submenuToggleWidth, 54.0);
+        expect(JexLayoutTokens.submenuToggleHeight, 32.0);
+      },
+    );
 
     test('type, chart-axis and shape values remain explicit tokens', () {
       expect(JexTypographyTokens.appBarTitle, 20.0);
