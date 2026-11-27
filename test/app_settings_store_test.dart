@@ -52,7 +52,9 @@ void main() {
       },
     );
 
-    test('missing settings restore and publish established defaults', () async {
+    test(
+      'missing settings restore and publish established defaults',
+      () async {
       final loaded = await AppSettingsStore.load();
 
       expect(loaded.toJson(), const AppSettings().toJson());
@@ -62,7 +64,8 @@ void main() {
       expect(appNotifyFirmwareNotifier.value, isTrue);
       expect(appNotifyBluetoothNotifier.value, isTrue);
       expect(appAutoConnectNotifier.value, isFalse);
-    });
+      },
+    );
 
     test(
       'save publishes and persists one complete settings record',
