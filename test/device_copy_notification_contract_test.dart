@@ -146,10 +146,7 @@ void main() {
     final telemetryStart = main.indexOf(
       'void _commitTelemetry(Map<String, String> values)',
     );
-    final bufferStart = main.indexOf(
-      'if (!dashboardReady) {',
-      telemetryStart,
-    );
+    final bufferStart = main.indexOf('if (!dashboardReady) {', telemetryStart);
     final deferredWrite = main.indexOf(
       'pendingOtaResult = otaResult;',
       bufferStart,
