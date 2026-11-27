@@ -73,6 +73,7 @@ import 'package:phosphor_icons/phosphor_icons.dart';
 
 import 'p1_frame_decoder.dart';
 import 'p1_command_contract.dart';
+import 'p1_ack_waiters.dart';
 import 'jex_design_tokens.dart';
 
 import 'app_bootstrap.dart';
@@ -424,7 +425,7 @@ class _DashboardScreenState extends State<DashboardScreen>
   bool otaExpectedDisconnect = false;
   bool otaRecoveryActive = false;
   bool otaRecoveryScanInProgress = false;
-  final Map<String, List<Completer<String>>> _ackWaiters = {};
+  final P1AckWaiterCoordinator _ackWaiters = P1AckWaiterCoordinator();
   final Map<String, String> _syncSnapshot = {};
   String _lastCommandAckReason = '';
   String _lastPeltierAckFailureReason = '';
@@ -520,12 +521,7 @@ class _DashboardScreenState extends State<DashboardScreen>
     disconnectRediscoverySub = null;
     _connectionScanCoordinator.invalidatePassiveAttempts();
     device?.disconnect();
-    for (final waiters in _ackWaiters.values) {
-      for (final waiter in waiters) {
-        if (!waiter.isCompleted) waiter.complete('CANCELLED');
-      }
-    }
-    _ackWaiters.clear();
+    _ackWaiters.completeAll('CANCELLED');
     super.dispose();
   }
 
@@ -1511,12 +1507,7 @@ class _DashboardScreenState extends State<DashboardScreen>
     }
     batteryTimer?.cancel();
 
-    for (final waiters in _ackWaiters.values) {
-      for (final waiter in waiters) {
-        if (!waiter.isCompleted) waiter.complete('DISCONNECTED');
-      }
-    }
-    _ackWaiters.clear();
+    _ackWaiters.completeAll('DISCONNECTED');
     if (_bleConnecting) return;
     if (!mounted) return;
     setState(() {
@@ -1850,21 +1841,7 @@ class _DashboardScreenState extends State<DashboardScreen>
   String? _ackItemForCommand(String command) =>
       P1CommandContract.ackItemForCommand(command);
 
-  Future<String> _waitForAck(
-    String item, {
-    Duration timeout = const Duration(seconds: 3),
-  }) async {
-    final completer = Completer<String>();
-    (_ackWaiters[item] ??= <Completer<String>>[]).add(completer);
-    try {
-      return await completer.future.timeout(timeout);
-    } catch (_) {
-      final list = _ackWaiters[item];
-      list?.remove(completer);
-      if (list != null && list.isEmpty) _ackWaiters.remove(item);
-      return 'TIMEOUT';
-    }
-  }
+
 
   // AI-METHOD: _sendAndWaitAck — Send a command and await its firmware acknowledgement.
   Future<bool> _sendAndWaitAckInternal(
@@ -1878,15 +1855,12 @@ class _DashboardScreenState extends State<DashboardScreen>
       _lastPeltierAckFailureReason = '';
     }
     if (item == null) return sendCommand(command, showError: showError);
-    final ackFuture = _waitForAck(item, timeout: timeout);
+    final ackWaiter = _ackWaiters.register(item);
+    final ackFuture = _ackWaiters.waitFor(ackWaiter, timeout: timeout);
     final sent = await sendCommand(command, showError: showError);
     if (!sent) {
       _lastCommandAckReason = 'WRITE_FAILED';
-      final waiters = _ackWaiters[item];
-      if (waiters != null && waiters.isNotEmpty) {
-        waiters.removeLast();
-        if (waiters.isEmpty) _ackWaiters.remove(item);
-      }
+      _ackWaiters.cancel(ackWaiter, reason: 'WRITE_FAILED');
       return false;
     }
     final reason = await ackFuture;
@@ -2039,13 +2013,7 @@ class _DashboardScreenState extends State<DashboardScreen>
         : 'UNKNOWN';
     final reason = rawReason.trim().toUpperCase();
 
-    final waiters = _ackWaiters[item];
-    final hadWaiter = waiters != null && waiters.isNotEmpty;
-    if (hadWaiter) {
-      final waiter = waiters.removeAt(0);
-      if (!waiter.isCompleted) waiter.complete(reason);
-      if (waiters.isEmpty) _ackWaiters.remove(item);
-    }
+    final hadWaiter = _ackWaiters.completeNext(item, reason);
 
     if (item == 'SYNC_READY' && _isAckSuccessReason(reason)) {
       _syncReadyAck = true;
