@@ -19,7 +19,9 @@ void main() {
       expect(coordinator.completeNext('FAN', 'LATE'), isFalse);
     });
 
-    test('cancels the exact failed-write waiter and preserves peer order', () async {
+    test(
+      'cancels the exact failed-write waiter and preserves peer order',
+      () async {
       final coordinator = P1AckWaiterCoordinator();
       final first = coordinator.register('VOLTAGE');
       final failedWrite = coordinator.register('VOLTAGE');
@@ -43,8 +45,9 @@ void main() {
       expect(coordinator.completeNext('VOLTAGE', 'LATE'), isFalse);
     });
 
-    test('timeout removes only its waiter and preserves the next FIFO token',
-        () async {
+    test(
+      'timeout removes only its waiter and preserves the next FIFO token',
+      () async {
       final coordinator = P1AckWaiterCoordinator();
       final timedOut = coordinator.register('PELTIER');
       final next = coordinator.register('PELTIER');
@@ -59,8 +62,9 @@ void main() {
       expect(coordinator.completeNext('PELTIER', 'LATE'), isFalse);
     });
 
-    test('disconnect resolves all outstanding items with DISCONNECTED',
-        () async {
+    test(
+      'disconnect resolves all outstanding items with DISCONNECTED',
+      () async {
       final coordinator = P1AckWaiterCoordinator();
       final waiters = <P1AckWaiter>[
         coordinator.register('FAN'),

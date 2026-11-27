@@ -1841,8 +1841,6 @@ class _DashboardScreenState extends State<DashboardScreen>
   String? _ackItemForCommand(String command) =>
       P1CommandContract.ackItemForCommand(command);
 
-
-
   // AI-METHOD: _sendAndWaitAck — Send a command and await its firmware acknowledgement.
   Future<bool> _sendAndWaitAckInternal(
     String command, {
