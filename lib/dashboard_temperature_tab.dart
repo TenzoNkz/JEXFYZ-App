@@ -41,10 +41,12 @@ extension _DashboardTemperatureTabBuilder on _DashboardScreenState {
                   value: battery5Draft,
                   min: 20,
                   max: 30,
-                  enabled:
-                      connected && !locked && battery5Draft < battery12Limit,
+                  enabled: connected && !locked,
+                  // Keep the visible affordance aligned with the setter's 2°C
+                  // minimum separation; otherwise an enabled tap is a no-op.
+                  canIncrease: battery5Draft < battery12Limit - 2,
                   onChanged: (v) {
-                    if (v < battery12Limit) _setBattery5(v);
+                    if (v < battery12Limit - 1) _setBattery5(v);
                   },
                 ),
                 const SizedBox(height: 8),
@@ -62,10 +64,10 @@ extension _DashboardTemperatureTabBuilder on _DashboardScreenState {
                   value: battery12Draft,
                   min: 30,
                   max: 40,
-                  enabled:
-                      connected && !locked && battery12Draft > battery5Limit,
+                  enabled: connected && !locked,
+                  canDecrease: battery12Draft > battery5Limit + 2,
                   onChanged: (v) {
-                    if (v > battery5Limit) _setBattery12(v);
+                    if (v > battery5Limit + 1) _setBattery12(v);
                   },
                 ),
               ],
@@ -107,6 +109,8 @@ extension _DashboardTemperatureTabBuilder on _DashboardScreenState {
     required int max,
     required bool enabled,
     required ValueChanged<int> onChanged,
+    bool canDecrease = true,
+    bool canIncrease = true,
   }) {
     final scheme = Theme.of(context).colorScheme;
     final accent = scheme.jexAccent;
@@ -148,7 +152,7 @@ extension _DashboardTemperatureTabBuilder on _DashboardScreenState {
           _temperatureButton(
             icon: PhosphorIconsRegular.minus,
             semanticLabel: JexText.phrase('Decrease $title', 'Kurangi $title'),
-            enabled: enabled && value > min,
+            enabled: enabled && canDecrease && value > min,
             onPressed: () => onChanged(value - 1),
           ),
           const SizedBox(width: 5),
@@ -175,7 +179,7 @@ extension _DashboardTemperatureTabBuilder on _DashboardScreenState {
           _temperatureButton(
             icon: PhosphorIconsRegular.plus,
             semanticLabel: JexText.phrase('Increase $title', 'Tambah $title'),
-            enabled: enabled && value < max,
+            enabled: enabled && canIncrease && value < max,
             onPressed: () => onChanged(value + 1),
           ),
         ],
