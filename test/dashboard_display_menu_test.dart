@@ -39,73 +39,78 @@ void main() {
     'Disconnected lock blocks submenu input and uses the Dashboard Connect action',
     (tester) async {
       final semantics = tester.ensureSemantics();
-      addTearDown(semantics.dispose);
       var connectCalls = 0;
       var contentTapCalls = 0;
 
-      await tester.pumpWidget(
-        host(
-          menu(
-            reason: DisplayMenuLockReason.bluetoothDisconnected,
-            content: Align(
-              alignment: Alignment.topLeft,
-              child: GestureDetector(
-                onTap: () => contentTapCalls++,
-                child: const Text('Submenu content'),
+      try {
+        await tester.pumpWidget(
+          host(
+            menu(
+              reason: DisplayMenuLockReason.bluetoothDisconnected,
+              content: Align(
+                alignment: Alignment.topLeft,
+                child: GestureDetector(
+                  onTap: () => contentTapCalls++,
+                  child: const Text('Submenu content'),
+                ),
               ),
+              onConnect: () => connectCalls++,
             ),
-            onConnect: () => connectCalls++,
           ),
-        ),
-      );
+        );
 
-      expect(find.text('CONNECT YOUR DEVICE FIRST'), findsOneWidget);
-      expect(
-        find.text('Connect your device to use this menu.'),
-        findsOneWidget,
-      );
-      expect(find.byType(ClipRect), findsOneWidget);
-      expect(find.byType(ImageFiltered), findsOneWidget);
-      // The blurred submenu must remain visible but disappear from the
-      // accessibility tree; only the active lock panel and Connect action
-      // are announced while the submenu is unavailable.
-      expect(find.text('Submenu content'), findsOneWidget);
-      expect(find.bySemanticsLabel('Submenu content'), findsNothing);
-      expect(
-        find.bySemanticsLabel('CONNECT YOUR DEVICE FIRST'),
-        findsOneWidget,
-      );
-      final connectSemantics = find.bySemanticsLabel('Connect');
-      expect(connectSemantics, findsOneWidget);
-      final connectData = tester.getSemantics(connectSemantics).getSemanticsData();
-      expect(connectData.hasFlag(ui.SemanticsFlag.isButton), isTrue);
-      expect(connectData.hasFlag(ui.SemanticsFlag.isEnabled), isTrue);
-      expect(connectData.hasAction(ui.SemanticsAction.tap), isTrue);
+        expect(find.text('CONNECT YOUR DEVICE FIRST'), findsOneWidget);
+        expect(
+          find.text('Connect your device to use this menu.'),
+          findsOneWidget,
+        );
+        expect(find.byType(ClipRect), findsOneWidget);
+        expect(find.byType(ImageFiltered), findsOneWidget);
+        // The blurred submenu must remain visible but disappear from the
+        // accessibility tree; only the active lock panel and Connect action
+        // are announced while the submenu is unavailable.
+        expect(find.text('Submenu content'), findsOneWidget);
+        expect(find.bySemanticsLabel('Submenu content'), findsNothing);
+        expect(
+          find.bySemanticsLabel('CONNECT YOUR DEVICE FIRST'),
+          findsOneWidget,
+        );
+        final connectSemantics = find.bySemanticsLabel('Connect');
+        expect(connectSemantics, findsOneWidget);
+        final connectData = tester
+            .getSemantics(connectSemantics)
+            .getSemanticsData();
+        expect(connectData.hasFlag(ui.SemanticsFlag.isButton), isTrue);
+        expect(connectData.hasFlag(ui.SemanticsFlag.isEnabled), isTrue);
+        expect(connectData.hasAction(ui.SemanticsAction.tap), isTrue);
 
-      final blockingAncestors = find
-          .ancestor(
-            of: find.text('Submenu content'),
-            matching: find.byType(IgnorePointer),
-          )
-          .evaluate()
-          .where((element) => (element.widget as IgnorePointer).ignoring)
-          .toList();
-      expect(blockingAncestors, hasLength(1));
+        final blockingAncestors = find
+            .ancestor(
+              of: find.text('Submenu content'),
+              matching: find.byType(IgnorePointer),
+            )
+            .evaluate()
+            .where((element) => (element.widget as IgnorePointer).ignoring)
+            .toList();
+        expect(blockingAncestors, hasLength(1));
 
-      final connectButton = find.ancestor(
-        of: find.text('Connect'),
-        matching: find.byType(TextButton),
-      );
-      expect(connectButton, findsOneWidget);
-      expect(tester.getSize(connectButton).height, greaterThanOrEqualTo(48));
+        final connectButton = find.ancestor(
+          of: find.text('Connect'),
+          matching: find.byType(TextButton),
+        );
+        expect(connectButton, findsOneWidget);
+        expect(tester.getSize(connectButton).height, greaterThanOrEqualTo(48));
 
-      await tester.tap(find.text('Submenu content'));
-      await tester.pump();
-      expect(contentTapCalls, 0);
+        await tester.tap(find.text('Submenu content'), warnIfMissed: false);
+        await tester.pump();
+        expect(contentTapCalls, 0);
 
-      await tester.tap(find.text('Connect'));
-      await tester.pump();
+        await tester.tap(find.text('Connect'));
+        await tester.pump();
       expect(connectCalls, 1);
+      } finally {
+        semantics.dispose();
+      }
     },
   );
 

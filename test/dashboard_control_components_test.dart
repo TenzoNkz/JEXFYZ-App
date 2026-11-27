@@ -12,43 +12,46 @@ void main() {
     (tester) async {
       final semantics = tester.ensureSemantics();
       final attemptedValues = <bool>[];
-      addTearDown(semantics.dispose);
 
-      await tester.pumpWidget(
-        MaterialApp(
-          theme: ThemeData.dark(),
-          home: Scaffold(
-            body: Center(
-              child: JexDashboardSwitchRow(
-                title: 'Fan',
-                subtitle: 'Cooling output',
-                icon: PhosphorIconsRegular.fan,
-                // A stale ON value is deliberately supplied to prove that the
-                // state-known gate, not the cached value, controls semantics.
-                value: true,
-                enabled: false,
-                stateKnown: false,
-                connected: false,
-                language: AppLanguage.english,
-                onChanged: (next) async => attemptedValues.add(next),
+      try {
+        await tester.pumpWidget(
+          MaterialApp(
+            theme: ThemeData.dark(),
+            home: Scaffold(
+              body: Center(
+                child: JexDashboardSwitchRow(
+                  title: 'Fan',
+                  subtitle: 'Cooling output',
+                  icon: PhosphorIconsRegular.fan,
+                  // A stale ON value is deliberately supplied to prove that the
+                  // state-known gate, not the cached value, controls semantics.
+                  value: true,
+                  enabled: false,
+                  stateKnown: false,
+                  connected: false,
+                  language: AppLanguage.english,
+                  onChanged: (next) async => attemptedValues.add(next),
+                ),
               ),
             ),
           ),
-        ),
-      );
+        );
 
-      final target = find.bySemanticsLabel('Fan, Cooling output');
-      expect(target, findsOneWidget);
-      final data = tester.getSemantics(target).getSemanticsData();
-      expect(data.flagsCollection.isToggled, ui.Tristate.none);
-      expect(data.flagsCollection.isEnabled, ui.Tristate.isFalse);
-      expect(data.hasAction(ui.SemanticsAction.tap), isFalse);
-      expect(find.text('OFF'), findsOneWidget);
+        final target = find.bySemanticsLabel('Fan, Cooling output');
+        expect(target, findsOneWidget);
+        final data = tester.getSemantics(target).getSemanticsData();
+        expect(data.flagsCollection.isToggled, ui.Tristate.none);
+        expect(data.flagsCollection.isEnabled, ui.Tristate.isFalse);
+        expect(data.hasAction(ui.SemanticsAction.tap), isFalse);
+        expect(find.text('OFF'), findsOneWidget);
 
-      await tester.tap(target);
-      await tester.pump();
-      expect(attemptedValues, isEmpty);
+        await tester.tap(target);
+        await tester.pump();
+        expect(attemptedValues, isEmpty);
       expect(tester.takeException(), isNull);
+      } finally {
+        semantics.dispose();
+      }
     },
   );
 
@@ -58,59 +61,62 @@ void main() {
       final semantics = tester.ensureSemantics();
       var lockedCalls = 0;
       var enabledCalls = 0;
-      addTearDown(semantics.dispose);
 
-      await tester.pumpWidget(
-        MaterialApp(
-          theme: ThemeData.dark(),
-          home: Scaffold(
-            body: Column(
-              children: [
-                JexAdaptiveProfileChoice(
-                  title: 'Hotside',
-                  icon: Icons.thermostat,
-                  selected: true,
-                  locked: true,
-                  enabled: false,
-                  onTap: () => lockedCalls++,
-                ),
-                JexAdaptiveProfileChoice(
-                  title: 'Hotside + Battery',
-                  icon: Icons.battery_full,
-                  selected: false,
-                  locked: false,
-                  enabled: true,
-                  onTap: () => enabledCalls++,
-                ),
-              ],
+      try {
+        await tester.pumpWidget(
+          MaterialApp(
+            theme: ThemeData.dark(),
+            home: Scaffold(
+              body: Column(
+                children: [
+                  JexAdaptiveProfileChoice(
+                    title: 'Hotside',
+                    icon: Icons.thermostat,
+                    selected: true,
+                    locked: true,
+                    enabled: false,
+                    onTap: () => lockedCalls++,
+                  ),
+                  JexAdaptiveProfileChoice(
+                    title: 'Hotside + Battery',
+                    icon: Icons.battery_full,
+                    selected: false,
+                    locked: false,
+                    enabled: true,
+                    onTap: () => enabledCalls++,
+                  ),
+                ],
+              ),
             ),
           ),
-        ),
-      );
+        );
 
-      final locked = find.bySemanticsLabel('Hotside');
-      expect(locked, findsOneWidget);
-      final lockedData = tester.getSemantics(locked).getSemanticsData();
-      expect(lockedData.hasFlag(ui.SemanticsFlag.isButton), isTrue);
-      expect(lockedData.hasFlag(ui.SemanticsFlag.isSelected), isTrue);
-      expect(lockedData.hasFlag(ui.SemanticsFlag.isEnabled), isFalse);
-      expect(lockedData.hasAction(ui.SemanticsAction.tap), isFalse);
+        final locked = find.bySemanticsLabel('Hotside');
+        expect(locked, findsOneWidget);
+        final lockedData = tester.getSemantics(locked).getSemanticsData();
+        expect(lockedData.hasFlag(ui.SemanticsFlag.isButton), isTrue);
+        expect(lockedData.hasFlag(ui.SemanticsFlag.isSelected), isTrue);
+        expect(lockedData.hasFlag(ui.SemanticsFlag.isEnabled), isFalse);
+        expect(lockedData.hasAction(ui.SemanticsAction.tap), isFalse);
 
-      final enabled = find.bySemanticsLabel('Hotside + Battery');
-      expect(enabled, findsOneWidget);
-      final enabledData = tester.getSemantics(enabled).getSemanticsData();
-      expect(enabledData.hasFlag(ui.SemanticsFlag.isButton), isTrue);
-      expect(enabledData.hasFlag(ui.SemanticsFlag.isSelected), isFalse);
-      expect(enabledData.hasFlag(ui.SemanticsFlag.isEnabled), isTrue);
-      expect(enabledData.hasAction(ui.SemanticsAction.tap), isTrue);
+        final enabled = find.bySemanticsLabel('Hotside + Battery');
+        expect(enabled, findsOneWidget);
+        final enabledData = tester.getSemantics(enabled).getSemanticsData();
+        expect(enabledData.hasFlag(ui.SemanticsFlag.isButton), isTrue);
+        expect(enabledData.hasFlag(ui.SemanticsFlag.isSelected), isFalse);
+        expect(enabledData.hasFlag(ui.SemanticsFlag.isEnabled), isTrue);
+        expect(enabledData.hasAction(ui.SemanticsAction.tap), isTrue);
 
-      await tester.tap(locked);
-      await tester.pump();
-      await tester.tap(enabled);
-      await tester.pump();
-      expect(lockedCalls, 0);
-      expect(enabledCalls, 1);
+        await tester.tap(locked);
+        await tester.pump();
+        await tester.tap(enabled);
+        await tester.pump();
+        expect(lockedCalls, 0);
+        expect(enabledCalls, 1);
       expect(tester.takeException(), isNull);
+      } finally {
+        semantics.dispose();
+      }
     },
   );
 
