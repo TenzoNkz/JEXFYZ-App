@@ -41,12 +41,7 @@ void main() {
         },
       );
 
-      expect(events, <String>[
-        'verify',
-        'portrait',
-        'build-tamper',
-        'launch',
-      ]);
+      expect(events, <String>['verify', 'portrait', 'build-tamper', 'launch']);
       expect(launchedApp, same(tamperApp));
       expect(launchedApp, isNot(same(officialApp)));
     });
