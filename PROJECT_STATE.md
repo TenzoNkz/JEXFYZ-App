@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — Current Project State
 
-Last reconciled: 2026-11-27 (Asia/Jakarta). Authority: MASTER_PROMPT.md.
+Last reconciled: 2026-11-28 (Asia/Jakarta). Authority: MASTER_PROMPT.md.
 
 ## Owner scope and repository policy
 
@@ -13,7 +13,7 @@ Last reconciled: 2026-11-27 (Asia/Jakarta). Authority: MASTER_PROMPT.md.
 ## Current execution state
 
 - GitHub connected identity has repository admin permission. The active execution model is ChatGPT/Codex direct-to-main; latest branch, protection and run state must be re-fetched before further writes. The branch API last reported `protected=false`; repo metadata reported `allow_auto_merge=false`.
-- Issue #45 was rewritten to ChatGPT/Codex-only direct-main WP1 instructions and closed as completed after the exact-SHA Validation Only #217 result.
+- Issue #45 was rewritten to ChatGPT/Codex-only direct-main WP1 instructions and closed as completed after Validation Only #217. CODE_FULL remains direct-main ChatGPT/Codex; no Copilot or PR flow is active.
 - Validation Only workflow: `.github/workflows/jexfyz-app-validation.yml`; push-to-main only, path-filtered to App source/tests/config/assets/workflow paths, least-privilege `contents: read`, checkout credential persistence disabled. Inspect the live workflow and Actions run for each exact changed SHA. Build App remains a separately guarded issue/title/token release workflow.
 - The connected GitHub integration supports repository reads/writes, commits, Actions inspection and issue operations. Do not create redundant integrations or hand work to Copilot.
 
@@ -23,9 +23,10 @@ Last reconciled: 2026-11-27 (Asia/Jakarta). Authority: MASTER_PROMPT.md.
 
 ## Current source and validation
 
-- Last historically validated source checkpoint: `d0ab20533c2bf27be18dbb25c3ad9c762663d7e0`. Latest WP1 test source: `c11800e867bee2e8fb1426f865a28f2fb00cabf4`; repository tree last measured 166 entries / 120 blobs / 46 trees, `truncated=false`.
-- Validation Only #217 / run `46039843488` / job `140644469587`, exact WP1 test source SHA `c11800e867bee2e8fb1426f865a28f2fb00cabf4`, terminal SUCCESS — dependencies PASS; formatter 44 files / 0 changed; analyzer gate PASS (`--no-fatal-infos`, 127 info-level diagnostics, zero warnings/errors); **292/292 Flutter tests PASS**.
-- WP1 storage: seven original normal-path plus seven new test-only read/write/delete failure-injection tests cover AppSettingsStore/KnownCoolerStore; all 292 Flutter tests pass on #217. Production keys/defaults/schema and `lib/app_settings.dart` remain unchanged. Real Android secure-storage behavior remains unverified.
+- Last historically validated App source checkpoint: `d0ab20533c2bf27be18dbb25c3ad9c762663d7e0`. Latest validated App test source: `1cd1843a5fe0b635601b895276e15286919075fa`; main tree 168 entries / 122 blobs / 46 trees, `truncated=false`.
+- Validation Only #223 / run `46042517291` / job `140653549455`, exact App test source SHA `1cd1843a5fe0b635601b895276e15286919075fa`, terminal SUCCESS — dependencies PASS; formatter 46 files / 0 changed; analyzer PASS (`--no-fatal-infos`, 129 info-level diagnostics, zero warnings/errors); **306/306 Flutter tests PASS**. The immediately prior FloatingStore-only validation #220 / run `46041661617` also passed on exact SHA `975ec00f06ed69563985e3bbb81b0cd02cebba23`.
+- WP1 storage: seven original normal-path plus seven test-only read/write/delete failure-injection tests cover AppSettingsStore/KnownCoolerStore; production keys/defaults/schema and `lib/app_settings.dart` remain unchanged. Real Android secure-storage behavior remains unverified.
+- WP8 Floating Monitor test coverage: four `FloatingStore` schema-v2 storage/load/default/error tests passed on #220, plus ten `FloatingBridge` MethodChannel permission/start/stop/config/telemetry/runtime/error tests passed as part of #223. These are Flutter mock tests only; no Kotlin service, WindowManager, Android overlay or OEM behavior was run. Automatic recovery after unexpected native service death remains unresolved product policy.
 - WP2/WP3: ordered bootstrap, App root, Settings presentation, pure P1 frame decoder, pure command contract and FIFO ACK-waiter lifecycle are separated. Dashboard remains the only BLE/GATT/P1/session/telemetry/command authority.
 - WP4: shared layout/semantic color/typography/shape tokens exist. Compact-control radius and Statistics axis-label typography are covered; cross-route role classification remains open. Preserve screen-specific density and measured plot geometry. Visual acceptance remains open.
 - WP5: shared dashboard card/section components, state-bound control presentation helpers, and reduced-motion-aware tab transitions are in place. No BLE/GATT/P1/session/command ownership moved. Screen-level visual refinement and screenshot acceptance remain open.
@@ -41,4 +42,4 @@ Build #167 remains the latest published App package on immutable source `0dd9622
 
 ## Next action
 
-Resume the dependency-ordered WP0 file audit at `lib/connection_scan_coordinator.dart`, the next live inventory path. Continue the WP0–WP10 App workstream with bounded direct-main ChatGPT/Codex commits and exact-SHA Validation Only checks. No Build App, Firmware/BIN, OTA, Firebase production, signing, flash or device operation is authorized by CODE_FULL.
+Continue the full `lib/main.dart` Dashboard ownership/content audit, then progress through the dependency-ordered WP0–WP10 plan. `lib/connection_scan_coordinator.dart` and `lib/connection_scan_state.dart` have been reviewed as KEEP / VERIFIED. `lib/floating_monitor.dart` remains UPGRADE APPROVED for further safe modularization; same-session native service recovery is not to be changed until the product decision in `APP_PREBUILD_AUDIT.md` is made. No Build App, Firmware/BIN, OTA, Firebase production, signing, flash or device operation is authorized by CODE_FULL.
