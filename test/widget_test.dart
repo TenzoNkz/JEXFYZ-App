@@ -57,11 +57,7 @@ void main() {
                   ),
                   JexDashboardCard(
                     padding: EdgeInsets.all(11),
-                    child: SizedBox(
-                      key: customChildKey,
-                      width: 12,
-                      height: 12,
-                    ),
+                    child: SizedBox(key: customChildKey, width: 12, height: 12),
                   ),
                 ],
               ),
@@ -70,14 +66,21 @@ void main() {
         ),
       );
 
-      Container cardContainer(Key childKey) => tester.widget<Container>(
-        find
-            .ancestor(of: find.byKey(childKey), matching: find.byType(Container))
-            .first,
-      );
+      Finder cardFinder(Key childKey) => find
+          .ancestor(
+            of: find.byKey(childKey),
+            matching: find.byType(Container),
+          )
+          .first;
+      Container cardContainer(Key childKey) =>
+          tester.widget<Container>(cardFinder(childKey));
 
+      final defaultCardFinder = cardFinder(defaultChildKey);
       final defaultCard = cardContainer(defaultChildKey);
-      expect(defaultCard.width, double.infinity);
+      expect(
+        tester.getSize(defaultCardFinder).width,
+        tester.getSize(find.byType(Scaffold)).width,
+      );
       expect(defaultCard.margin, const EdgeInsets.symmetric(vertical: 4));
       expect(defaultCard.padding, const EdgeInsets.all(14));
 

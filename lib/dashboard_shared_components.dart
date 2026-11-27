@@ -6,11 +6,7 @@ import 'jex_design_tokens.dart';
 
 /// The established Dashboard surface treatment shared by control and temperature tabs.
 class JexDashboardCard extends StatelessWidget {
-  const JexDashboardCard({
-    super.key,
-    required this.child,
-    this.padding,
-  });
+  const JexDashboardCard({super.key, required this.child, this.padding});
 
   final Widget child;
   final EdgeInsetsGeometry? padding;
@@ -44,11 +40,7 @@ class JexDashboardCard extends StatelessWidget {
 
 /// Shared Dashboard section heading using the active semantic theme roles.
 class JexDashboardSectionTitle extends StatelessWidget {
-  const JexDashboardSectionTitle(
-    this.title, {
-    super.key,
-    this.subtitle,
-  });
+  const JexDashboardSectionTitle(this.title, {super.key, this.subtitle});
 
   final String title;
   final String? subtitle;
