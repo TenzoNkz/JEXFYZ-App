@@ -1,23 +1,16 @@
 # JE X FYZ / JE Cooler — Documentation Map & Retention Policy
 
-## Reconciliation — 2026-11-27 — WP1 storage coverage, WP5 presentation parts, exact-SHA CI
+## Reconciliation — 2026-11-27 — WP5 shared Dashboard presentation components + Validation Only #194
 
-- **Current source:** `main` `1b6b38bddf902a251a385f48f921dad523ae036b`; tree `75dd8dcc790d34f7fb479f46c8307a2490d17ed9`; 164 entries / 118 blobs / 46 trees, not truncated. The register has 118/118 unique path dispositions; this is path coverage, not complete content review.
-- **Latest exact-SHA evidence:** Validation Only #187 / run `45968056100` / job `140401426317`, exact SHA above, terminal SUCCESS; locked dependencies, formatter 42/0, analyzer and **280/280 Flutter tests PASS**. Analyzer emitted 109 information-level diagnostics under `--no-fatal-infos`.
-- **WP1 persistence:** `test/app_settings_store_test.dart` adds seven plugin-mock tests: AppSettings load/notifier projection, missing defaults, save/read-back, firmware-notice version gate, KnownCoolerStore trim, blank identity and normalization/save/clear. Production keys/defaults/schema/code unchanged. Plugin failure injection and real Android secure-storage behavior remain open/not verified.
-- **WP5 presentation extraction:** `dashboard_home_tab.dart`, `dashboard_control_tabs.dart` and `dashboard_temperature_tab.dart` are presentation-only parts of `main.dart`. They consume Dashboard state/callbacks; no second BLE/GATT/P1/session/command owner is introduced. Dashboard remains authoritative. #187 covers the extraction in the full suite.
-- **Current App scope:** WP0 full Dashboard/main owner and content audit, WP4 remaining cross-route token consumers, WP5 final screen/design review, and WP6–WP10 remain open. Source splits and path dispositions are not visual acceptance or full WP completion.
+- **Current source:** `main` `ca98699bd8404b12a082d21e1a74727c468dd3ce`; tree `cdd314967d8e15356fdd3f9f723e624b59648a5c`; 165 entries / 119 blobs / 46 trees, not truncated. Register reconciled to 119/119 unique path dispositions; path coverage is not complete content review.
+- **Latest exact-SHA evidence:** Validation Only #194 / run `45983828867` / job `140454219639`, exact SHA above, terminal SUCCESS; locked dependencies PASS; formatter 43 files / 0 changed; analyzer PASS (110 information-level diagnostics, zero warnings/errors); **281/281 Flutter tests PASS**.
+- **WP5 Batch 1:** added `lib/dashboard_shared_components.dart` with reusable `JexDashboardCard` and `JexDashboardSectionTitle`; migrated 12 Card and 7 heading call sites in Control/Temperature. The widget test verifies existing geometry, semantic theme colors, border/shadow and title typography. No device state, BLE/GATT/P1/session or command ownership moved.
+- **WP1 persistence:** seven AppSettingsStore/KnownCoolerStore plugin-mock tests pass; production keys/defaults/schema unchanged. Plugin failure injection and real Android secure-storage behavior remain open.
+- **WP2/WP3:** ordered bootstrap, App root, Settings presentation, P1 frame decoder, pure command classification and FIFO ACK waiters are separated. Dashboard remains sole BLE/GATT/P1/session/telemetry/command owner.
+- **Still open:** WP0 full Dashboard/main content/ownership audit; WP4 cross-route token audit; WP5 row/toggle/list extraction and final screen/design review; WP6–WP10 implementation and evidence.
 - **Evidence limits:** local Flutter/Dart/Gradle/ADB unavailable. Android/Kotlin compile, Android/OEM screenshots/device, SQLite v1→v2 runtime fixture, 1h/6h/24h performance soak and whole-App visual acceptance remain NOT RUN; visual status **VISUAL NOT VERIFIED**.
-- **Authorization:** App-only CODE_FULL WP0–WP10 followed by REPO_FULL; direct `main` with expected-HEAD protection. Build App/APK/sign/release needs fresh explicit authorization. Firmware/BIN/P1 wire/security, OTA, Firebase production, signing secrets, flashing and device operations remain excluded. Archives immutable; APP_BUILD_REPORT and CHANGELOG append-only.
+- **Authorization:** App-only CODE_FULL WP0–WP10 followed by REPO_FULL; direct `main` with expected-HEAD protection. Build App/APK/sign/release needs fresh explicit authorization. Firmware/BIN/P1 wire/security, OTA, Firebase production, signing secrets, flashing and device operations remain excluded; archives immutable.
 - **Package boundary:** Build #167 remains latest published App package on immutable source `0dd96228d33b08c66e736ae91a8a6c3e5c3ddb81`; current main is not packaged.
----
-
-- **Execution meaning:** every `Eksekusi Code!` is one continuous end-to-end cycle through the currently authorized App-only WP0–WP10 scope and build-ready handoff. It is not a one-file tranche. Continue in dependency order and stop only at real evidence/toolchain/protected-scope/owner-decision gates; never treat a blocker as PASS. This policy is canonical in `MASTER_PROMPT.md`.
-- **Latest full Flutter validation:** Validation Only #87 / run `45865736407` / job `140067960188`, tested source/test SHA `59fb624120b01ba505d23691df0928e55eefed3b`, terminal SUCCESS; 230/230 tests, analyzer, formatter/post-format and locked dependencies passed. Current code/test HEAD is `16b9f78f384011ca59def5e0ac32bb6bc33e4178` after formatter-only persistence.
-- **Current AppSecurity files:** `lib/app_security.dart` owns the existing official-build native channel and fail-closed App-side decision; `test/app_security_test.dart` covers non-Android/true/false/null/exception outcomes. Validation Only #87 includes the complete 230/230 suite.\n- **Usage Statistics correction:** Clear History no longer writes cached Battery/Hotside values as fresh samples or advances HOT P1 receipt time. No verified coverage accrues until a new HOT telemetry frame. See `APP_NOTES.md` and the dated top entry in `CHANGELOG.md`.
-
-Last reconciled: 2026-11-27 (Asia/Jakarta). This file is the navigation and retention index, not an alternate operating ruleset or current-state ledger. Read MASTER_PROMPT.md for all operating instructions. Verify current implementation against live main/source/tests and current Actions/Release evidence.
-
 ## Authority order
 
 1. Owner's explicit requirements and decisions determine intent and authorization.
