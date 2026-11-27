@@ -56,6 +56,7 @@ UsageStatisticsRecorder.instance.recordTemperature(
           failurePath,
           '''
 if (_bleReady) {
+  // Keep Firmware's battery reading unknown after an unavailable platform sample.
   _queuePhoneBatteryHeartbeat('PHONE:BT=-1.0');
 }
 ''',
