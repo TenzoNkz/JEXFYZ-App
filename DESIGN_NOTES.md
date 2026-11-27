@@ -332,3 +332,17 @@ The latest published App package is Build #167 / Actions run `44510421466` / job
 - **Acceptance:** same tab widths and order at 350-dp/420-dp; visible pill 38 dp; interactive bounds 48 dp; no divider line; existing 8-dp gap retained; selection/tap behavior and disconnected/Adaptive/Lock Voltage overlays unchanged; EN/ID and Light/Dark; actual Android screenshot review required.
 - **Status:** INCLUDED IN BUILD #162 / 188 OF 188 FLUTTER TESTS PASSED. `test/widget_test.dart` includes 38-dp pill / 48-dp row / no-divider / 8-dp spacer source contracts. Actual Android/OEM screenshots remain NOT VERIFIED.
 
+
+## WP4 semantic-token contract — 2026-11-28
+
+**Verified implementation:** Validation Only #267 / run 46070875101 / job 140747239194; exact source/test SHA f69bc4915f946c7e1dfca1c545ded6e102eea3e7; terminal SUCCESS (dependencies PASS, formatter 53 files/0 changed, analyzer 139 info-level diagnostics with zero warnings/errors, 340/340 Flutter tests PASS).
+
+**Evidence and decision.** The Default, Light and Dark App theme presets define ThemeData.scaffoldBackgroundColor separately from ColorScheme.surface. The previous jexCanvas => surface alias collapsed two independent roles, duplicating jexSurface. Static consumer search found no production widget reading semantic.canvas. Retaining the alias was rejected because it concealed the actual page-canvas role; creating a new palette color was rejected because it would invent or change the approved palette; mapping canvas to the existing ThemeData scaffold background was selected.
+
+**Contract now in source.** JexThemeSemanticRoles.jexCanvas maps to ThemeData.scaffoldBackgroundColor. ColorScheme keeps content, elevated and raised surfaces, foreground/muted foreground, outline, accent and error roles. JexSemanticColors.from(ThemeData) derives canvas from the theme and all other roles from its ColorScheme. The compact App theme and Settings callers pass ThemeData. Runtime tests verify a custom theme with distinct canvas/surface and all Default/Light/Dark presets.
+
+**Protected design effects.** No palette HEX/preset, font family/brand asset, Home composition, fixed 360-dp canvas/DPI formula, control geometry/touch size, hardware metric/status color, locale, semantics/focus behavior, motion or native Floating Monitor Canvas/WindowManager rendering changed. Since no production widget consumes semantic.canvas, this corrects the design-system contract without claiming a pixel-level visual redesign or screenshot result. Native Floating Monitor remains a separate renderer.
+
+**Accessibility/localization/evidence.** The token test exercises existing theme presets but introduces no new text or interaction. The broader EN/ID, 350/420-dp, narrow/constrained, enlarged-text, reduced-motion and screen-reader matrix remains open. There is no Android/OEM screenshot or device evidence; whole-App visual acceptance remains **VISUAL NOT VERIFIED**.
+
+**Next design-system work.** Continue role-based typography, spacing, shape and control geometry inventory. Promote values only when callers share an actual semantic component role; repeated numeric sizes alone do not justify a common token.
