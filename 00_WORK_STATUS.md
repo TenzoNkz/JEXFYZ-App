@@ -1,4 +1,4 @@
-| Last updated | 2026-11-28T04:12:00+07:00 (Asia/Jakarta) |
+| Last updated | 2026-11-28T04:34:22+07:00 (Asia/Jakarta) |
 
 > Event-driven project marker. It is not a live heartbeat or a GitHub lock.
 
@@ -7,23 +7,23 @@
 | Field | Value |
 |---|---|
 | **STATUS** | **IN_PROGRESS** |
-| SESSION STATUS | IN_PROGRESS — owner command “Eksekusi Code!” active; CODE_FULL source, test, documentation and static-audit cycle continues. |
-| WORK STATUS | IN_PROGRESS — owner-approved App-only WP0–WP10 full rework + premium UI redesign (2026-11-26); WP0 register reconciled to 128/128 live blobs; WP3 P1 contracts validated by Validation Only #261; continue dependency-ordered work. |
+| SESSION STATUS | IN_PROGRESS — owner command “@Thinking Eksekusi Code!”; CODE_FULL session remains active. |
+| WORK STATUS | IN_PROGRESS — owner-approved App-only WP0–WP10 full rework + premium UI redesign (2026-11-26). WP0 live inventory reconciled; WP3 parser/heartbeat contracts verified; WP4 semantic canvas role corrected and verified; continue dependency-ordered App work. |
 | WORKSPACE | CODE_FULL |
 | Mode | ChatGPT/Codex-only direct-main implementation. App source/tests/docs/static-audit only. No feature branches, PRs, Copilot or external agents. No Build App/APK/release/signing, Firmware/BIN, BLE/P1 identity/security/wire change, OTA transport/recovery, Firebase production, flashing or device operations. |
-| Request / work item | “Eksekusi Code!” — MASTER PROMPT LOAD + CONTINUE for JE X FYZ / JE Cooler; repository TenzoNkz/JEXFYZ-App, branch main, workspace CODE_FULL. Reconcile live main/Actions and documentation, cover every tracked blob in the file register, preserve source/test evidence, continue WP0–WP10 through bounded implementation and exact-SHA Validation Only. |
+| Request / work item | “@Thinking Eksekusi Code!” — MASTER PROMPT LOAD + CONTINUE for JE X FYZ / JE Cooler; canonical repository TenzoNkz/JEXFYZ-App, branch main, CODE_FULL. Reconcile live status/tree/Actions; complete WP0 disposition; continue bounded App source/test/docs/static-audit packages with exact-SHA Validation Only and durable handoff. |
 | Started | 2026-11-28T04:07:00+07:00 (Asia/Jakarta) |
-| Completed / last updated | IN_PROGRESS — 2026-11-28T04:12:00+07:00 (Asia/Jakarta) |
-| Current phase | WP0 REGISTER RECONCILED; WP3 VERIFIED — main HEAD `e00226e75d678619637d94fb3579cca6475d7d99` is a docs-only register correction atop tested App source SHA `fa2dcb976395fade0eb0034db5a83b0f12fe4ed6`; live tree 174 entries / 128 blobs / 46 trees, truncated=false; register 128/128 with no missing/stale/duplicate paths. |
-| Verified checkpoint | Repository TenzoNkz/JEXFYZ-App / main; HEAD `e00226e75d678619637d94fb3579cca6475d7d99`; latest App source/test SHA `fa2dcb976395fade0eb0034db5a83b0f12fe4ed6`; Validation Only #261 terminal SUCCESS on exact source SHA; recursive tree 174/128/46, truncated=false; register 128 unique paths complete. |
-| Owner authorization | Standing authorization from owner’s 2026-11-26 App-only WP0–WP10 full rework request, reaffirmed by “@Thinking Eksekusi Code!”. No per-file approval required inside the authorized scope. |
-| Latest external operation | Validation Only #261 / ID `46068234248` / job `140738636516`, terminal SUCCESS on exact App source/test SHA `fa2dcb976395fade0eb0034db5a83b0f12fe4ed6`: dependencies PASS; formatter 52 files / 0 changed; analyzer 139 info-level diagnostics / 0 warnings/errors; Flutter tests 336/336 PASS. #260 on `9e74fe9...` failed only formatter; #261 verifies the canonical formatting fix. |
-| EXTERNAL OPERATION | COMPLETED — Validation Only #261 terminal SUCCESS on SHA `fa2dcb976395fade0eb0034db5a83b0f12fe4ed6`; current main HEAD contains documentation-only changes after this validated source. |
-| EXTERNAL OPERATION STATUS | COMPLETED_SUCCESS — #261 validates App source/test SHA `fa2dcb976395fade0eb0034db5a83b0f12fe4ed6`; later commits `33e2107` and `e00226e` are docs-only. |
-| Last verified milestone | WP0 register now covers 128/128 live blobs. WP3: session-ready phone battery heartbeat gate and pure telemetry-line parser are covered by #261; Dashboard remains sole BLE/GATT/RX/SYNC/SYNC_READY/ACK/telemetry/session/command owner. No P1 UUID/framing/command-payload/wire change. |
-| Blockers / caveats | Local Flutter/Dart/Gradle/ADB unavailable: local formatter/analyzer/tests/Gradle BLOCKED / NOT RUN. Hosted #261 is Flutter CI only. Android/Kotlin/device/screenshot/OEM evidence and SQLite v1→v2 runtime fixture NOT RUN; Usage Statistics 1h/6h/24h profiles NOT RUN. Whole-App visual status VISUAL NOT VERIFIED. |
-| Next action | Update bounded subject checkpoints to #261 / live HEAD and continue WP4 semantic-token role/consumer audit before further screen redesign; preserve fixed canvas/palette/assets, accessibility, localization and all BLE/P1 ownership guards. |
+| Completed / last updated | IN_PROGRESS — 2026-11-28T04:34:22+07:00 (Asia/Jakarta) |
+| Current phase | WP4 — semantic design tokens: canvas now derives from ThemeData.scaffoldBackgroundColor and is distinct from ColorScheme.surface; tests cover all three AppThemePreset values. Latest tested source/test SHA f69bc4915f946c7e1dfca1c545ded6e102eea3e7. |
+| Verified checkpoint | Repository TenzoNkz/JEXFYZ-App / main; exact tested SHA f69bc4915f946c7e1dfca1c545ded6e102eea3e7; Validation Only #267 / run 46070875101 / job 140747239194, terminal SUCCESS. Recursive tree: 175 entries / 129 blobs / 46 trees, truncated=false. Upgrade register: 129 unique tracked-path dispositions, no missing or duplicate tracked paths; 12 skill metadata entries are not repository blobs. |
+| Owner authorization | Standing approval from the owner’s 2026-11-26 App-only WP0–WP10 rework request, reaffirmed by “@Thinking Eksekusi Code!”. No per-file prompt required inside that scope. |
+| Latest external operation | Validation Only #267 / ID 46070875101 / job 140747239194 — push-triggered terminal SUCCESS on exact SHA f69bc4915f946c7e1dfca1c545ded6e102eea3e7: locked dependencies PASS; formatter 53 files / 0 changed; analyzer 139 info-level diagnostics / 0 warnings / 0 errors; full Flutter suite 340/340 PASS; summary SUCCESS. |
+| EXTERNAL OPERATION | COMPLETED — Validation Only #267 completed successfully on f69bc4915f946c7e1dfca1c545ded6e102eea3e7. |
+| EXTERNAL OPERATION STATUS | COMPLETED_SUCCESS — #267 verifies the exact current App source/test SHA. This is hosted Flutter validation only, not an App package build or device test. |
+| Last verified milestone | WP4 semantic-token contract: JexThemeSemanticRoles.jexCanvas maps to ThemeData.scaffoldBackgroundColor; JexSemanticColors.from receives ThemeData and maps remaining roles from its ColorScheme; five callsites updated; tests distinguish canvas from surface for Default/Light/Dark and a custom ThemeData. No palette HEX, screen composition, 360×420 geometry, touch dimensions, status colors, BLE/P1 or native Floating Monitor behavior changed. |
+| Blockers / caveats | Local Flutter/Dart/Gradle/ADB are unavailable: local format/analyze/test/Gradle BLOCKED / NOT RUN. No Android/Kotlin build, Android/OEM screenshot, device/physical BLE test, SQLite v1→v2 runtime fixture or Usage Statistics 1h/6h/24h profile. Whole-App visual status VISUAL NOT VERIFIED. Dashboard full decomposition, source-contract brittleness review and broader WP4 token classification remain open. |
+| Next action | Continue WP4 role-based typography/spacing/shape token audit and classify only proven shared consumers; then proceed with WP5 screen refinements under the fixed palette/composition and screenshot-evidence limits. |
 
 ## Historical workspace context
 
-The preceding Build App interaction is complete; its release evidence remains historical and does not authorize another build or release. Prior CODE_FULL WP0–WP10/WP1/WP5 work must be reconciled against live main and the file-level register rather than assumed current.
+The preceding Build App interaction is complete; its release evidence remains historical and does not authorize another build or release. Prior CODE_FULL work must be reconciled against the live repository rather than assumed current.
