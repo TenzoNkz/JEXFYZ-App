@@ -912,7 +912,7 @@ void main() {
       // The Bluetooth subpage persists through the same store as the Settings summary.
       await tester.tap(find.text('Bluetooth'));
       await tester.pumpAndSettle();
-      expect(find.text('Auto Connect'), findsOneWidget);
+      expect(find.text('Automatic Connection'), findsOneWidget);
       expect(find.byType(Switch), findsOneWidget);
       await tester.tap(find.byType(Switch));
       await tester.pumpAndSettle();
