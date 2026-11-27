@@ -3439,9 +3439,8 @@ void main() {
     expect(settings, isNot(contains("'resetTemperature'")));
 
     // Command ACK classification is separate from the removed Temperature UI action.
-    final commandContract = File(
-      'lib/p1_command_contract.dart',
-    ).readAsStringSync();
+    final commandContract = File('lib/p1_command_contract.dart')
+        .readAsStringSync();
     expect(
       commandContract,
       contains("if (c == 'RESET:TEMPERATURE') return 'RESET_TEMPERATURE';"),

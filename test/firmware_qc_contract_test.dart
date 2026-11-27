@@ -606,9 +606,8 @@ void main() {
     'App waits for voltage telemetry and marks disconnected outputs unknown',
     () {
       final source = File('lib/main.dart').readAsStringSync();
-      final commandContract = File(
-        'lib/p1_command_contract.dart',
-      ).readAsStringSync();
+      final commandContract = File('lib/p1_command_contract.dart')
+          .readAsStringSync();
       expect(
         commandContract,
         contains(
@@ -898,9 +897,8 @@ void main() {
 
   test('App treats Lock Voltage as synchronized Firmware state, not Android preference', () {
     final source = File('lib/main.dart').readAsStringSync();
-    final commandContract = File(
-      'lib/p1_command_contract.dart',
-    ).readAsStringSync();
+    final commandContract = File('lib/p1_command_contract.dart')
+        .readAsStringSync();
     final settings = File('lib/settings_pages.dart').readAsStringSync();
     expect(
       commandContract,
