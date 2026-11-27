@@ -317,7 +317,10 @@ void main() {
     expect(appSettings, contains('JexTypographyTokens.compactLabelMedium'));
     expect(appSettings, contains('JexTypographyTokens.compactLabelSmall'));
     expect(appSettings, contains('JexTypographyTokens.compactListTileTitle'));
-    expect(appSettings, contains('JexTypographyTokens.compactListTileSubtitle'));
+    expect(
+      appSettings,
+      contains('JexTypographyTokens.compactListTileSubtitle'),
+    );
     expect(designTokens, contains('compactAppBarTitle = 18.0'));
     expect(designTokens, contains('compactTitleLarge = 18.0'));
     expect(designTokens, contains('compactTitleMedium = 13.0'));

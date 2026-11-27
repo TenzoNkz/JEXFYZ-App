@@ -58,7 +58,6 @@ class JexSemanticColors {
   );
 }
 
-
 /// Typography sizes already used by the App's established Light/Dark themes.
 abstract final class JexTypographyTokens {
   static const double appBarTitle = 20.0;

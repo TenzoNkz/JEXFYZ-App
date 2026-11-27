@@ -1804,7 +1804,10 @@ ThemeData buildJexTheme(AppThemePreset preset) {
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(JexShapeTokens.inputBorderRadius),
-        borderSide: BorderSide(color: primary, width: JexShapeTokens.focusedInputBorderWidth),
+        borderSide: BorderSide(
+          color: primary,
+          width: JexShapeTokens.focusedInputBorderWidth,
+        ),
       ),
     ),
     switchTheme: SwitchThemeData(
@@ -1866,19 +1869,41 @@ ThemeData buildJexCompactUiTheme(
 
   return base.copyWith(
     appBarTheme: base.appBarTheme.copyWith(
-      titleTextStyle: base.appBarTheme.titleTextStyle?.copyWith(fontSize: JexTypographyTokens.compactAppBarTitle),
-      iconTheme: base.appBarTheme.iconTheme?.copyWith(size: JexTypographyTokens.compactAppBarIcon),
+      titleTextStyle: base.appBarTheme.titleTextStyle?.copyWith(
+        fontSize: JexTypographyTokens.compactAppBarTitle,
+      ),
+      iconTheme: base.appBarTheme.iconTheme?.copyWith(
+        size: JexTypographyTokens.compactAppBarIcon,
+      ),
     ),
     textTheme: text.copyWith(
-      titleLarge: text.titleLarge?.copyWith(fontSize: JexTypographyTokens.compactTitleLarge),
-      titleMedium: text.titleMedium?.copyWith(fontSize: JexTypographyTokens.compactTitleMedium),
-      titleSmall: text.titleSmall?.copyWith(fontSize: JexTypographyTokens.compactTitleSmall),
-      bodyLarge: text.bodyLarge?.copyWith(fontSize: JexTypographyTokens.compactBodyLarge),
-      bodyMedium: text.bodyMedium?.copyWith(fontSize: JexTypographyTokens.compactBodyMedium),
-      bodySmall: text.bodySmall?.copyWith(fontSize: JexTypographyTokens.compactBodySmall),
-      labelLarge: text.labelLarge?.copyWith(fontSize: JexTypographyTokens.compactLabelLarge),
-      labelMedium: text.labelMedium?.copyWith(fontSize: JexTypographyTokens.compactLabelMedium),
-      labelSmall: text.labelSmall?.copyWith(fontSize: JexTypographyTokens.compactLabelSmall),
+      titleLarge: text.titleLarge?.copyWith(
+        fontSize: JexTypographyTokens.compactTitleLarge,
+      ),
+      titleMedium: text.titleMedium?.copyWith(
+        fontSize: JexTypographyTokens.compactTitleMedium,
+      ),
+      titleSmall: text.titleSmall?.copyWith(
+        fontSize: JexTypographyTokens.compactTitleSmall,
+      ),
+      bodyLarge: text.bodyLarge?.copyWith(
+        fontSize: JexTypographyTokens.compactBodyLarge,
+      ),
+      bodyMedium: text.bodyMedium?.copyWith(
+        fontSize: JexTypographyTokens.compactBodyMedium,
+      ),
+      bodySmall: text.bodySmall?.copyWith(
+        fontSize: JexTypographyTokens.compactBodySmall,
+      ),
+      labelLarge: text.labelLarge?.copyWith(
+        fontSize: JexTypographyTokens.compactLabelLarge,
+      ),
+      labelMedium: text.labelMedium?.copyWith(
+        fontSize: JexTypographyTokens.compactLabelMedium,
+      ),
+      labelSmall: text.labelSmall?.copyWith(
+        fontSize: JexTypographyTokens.compactLabelSmall,
+      ),
     ),
     listTileTheme: base.listTileTheme.copyWith(
       dense: true,
@@ -1889,7 +1914,10 @@ ThemeData buildJexCompactUiTheme(
         fontSize: JexTypographyTokens.compactListTileTitle,
         fontWeight: FontWeight.w700,
       ),
-      subtitleTextStyle: text.bodySmall?.copyWith(color: muted, fontSize: JexTypographyTokens.compactListTileSubtitle),
+      subtitleTextStyle: text.bodySmall?.copyWith(
+        color: muted,
+        fontSize: JexTypographyTokens.compactListTileSubtitle,
+      ),
     ),
   );
 }

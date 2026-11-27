@@ -102,7 +102,6 @@ void main() {
     );
   });
 
-
   test(
     'Firmware Update Wi-Fi password visibility is toggleable and localized',
     () {
