@@ -119,8 +119,7 @@ class JexDashboardSwitchRow extends StatelessWidget {
         ? const Color(0xFFDDE1E7)
         : (neutralRow
               ? scheme.jexOutline.withValues(alpha: .68)
-              : (value
-                    ? accent.withValues(alpha: .28)
+              : (displayedValue ? accent.withValues(alpha: .28)
                     : scheme.jexOutline.withValues(alpha: .72)));
 
     return AnimatedContainer(
@@ -149,8 +148,7 @@ class JexDashboardSwitchRow extends StatelessWidget {
                   ? const Color(0xFFE9EBEF)
                   : (neutralRow
                         ? scheme.jexElevatedSurface.withValues(alpha: .72)
-                        : (value
-                              ? accent.withValues(alpha: .12)
+                        : (displayedValue ? accent.withValues(alpha: .12)
                               : scheme.jexElevatedSurface.withValues(
                                   alpha: .72,
                                 ))),
@@ -163,7 +161,9 @@ class JexDashboardSwitchRow extends StatelessWidget {
                   ? Icon(
                       icon,
                       size: 21,
-                      color: displayedValue ? accent : scheme.jexMutedForeground,
+                      color: displayedValue
+                          ? accent
+                          : scheme.jexMutedForeground,
                     )
                   : JexAnimatedIcon(
                       kind: animatedKind!,
