@@ -1,3 +1,13 @@
+## 2026-11-27 — WP3 ACK waiter extraction, WP4 shared design tokens and Validation Only #158
+
+- Extracted the per-item FIFO P1 ACK waiter lifecycle to `lib/p1_ack_waiters.dart`, with focused tests for per-item FIFO isolation, exact cancellation after a failed write, timeout cleanup, disconnect completion and disposal cancellation. Dashboard remains the only BLE/GATT/P1/session owner; no P1 wire or Firmware behavior was changed.
+- Extended `jex_design_tokens.dart` with existing base/compact typography, input border radius and focused-border width. Base/compact theme builders and Settings consume shared semantic roles while preserving existing values/palette. Added token regression checks and updated the compact visual source contract to assert token use instead of old literal font-size values.
+- **Validation Only #155:** run `45950450111` / job `140344815722`, exact source SHA `ddd3eab41b106ebadae998bb4741b4cbfe17f761`, terminal SUCCESS — dependencies, formatter (37 files / 0 changed), analyzer and 258/258 tests PASS.
+- **Validation Only #156/#157:** retained as terminal failures during the WP4 transition; #157 passed 259/259 tests and analyzer but failed the formatter gate on four files. Exact Dart 3.47.2 formatter output was captured from the CI runner and applied; all temporary diagnostic workflow steps were removed.
+- **Validation Only #158:** run `45951691490` / job `140348775364`, exact source SHA `f78d6b1294c88cb359b694041ea70dde0042bcd8`, terminal SUCCESS — locked dependencies PASS; formatter PASS (37 files / 0 changed); analyzer PASS; **259/259 Flutter tests PASS**.
+- Reconciled the active checkpoint and file register to 113 tracked blobs, including the new ACK waiter source/test. Build #167 remains the latest published package; current main is not packaged.
+- No Build App/APK/sign/release, Firmware/BIN, P1 wire change, BLE identity/security, OTA, Firebase production, signing, flash or physical-device operation occurred. Android/Kotlin compilation, screenshot/OEM acceptance, SQLite runtime migration fixture and 1h/6h/24h profile remain NOT RUN; Whole-App visual status remains VISUAL NOT VERIFIED.
+
 ## 2026-11-27 — Chat recovery, Home NOTIFY extraction and exact-main verification
 
 - Recovered the CODE_FULL execution from its last verified main SHA rather than repeating completed side effects. Owner-selected direct-main policy remains: one branch (`main`), no PRs/secondary branches, zero repository rulesets.
