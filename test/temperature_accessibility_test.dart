@@ -37,38 +37,37 @@ void main() {
     },
   );
 
-  testWidgets(
-    'Temperature control action labels are localized in Indonesian',
-    (tester) async {
-      _resetViewAfterTest(tester);
-      final previousLanguage = appLanguageNotifier.value;
-      addTearDown(() => appLanguageNotifier.value = previousLanguage);
+  testWidgets('Temperature control action labels are localized in Indonesian', (
+    tester,
+  ) async {
+    _resetViewAfterTest(tester);
+    final previousLanguage = appLanguageNotifier.value;
+    addTearDown(() => appLanguageNotifier.value = previousLanguage);
 
-      await _pumpTemperatureTab(
-        tester,
-        language: AppLanguage.indonesia,
-        brightness: Brightness.light,
-        logicalWidth: 420,
-      );
+    await _pumpTemperatureTab(
+      tester,
+      language: AppLanguage.indonesia,
+      brightness: Brightness.light,
+      logicalWidth: 420,
+    );
 
-      final semantics = tester.ensureSemantics();
-      try {
-        for (final label in [
-          'Kurangi Batas Suhu Sisi Panas',
-          'Tambah Batas Suhu Sisi Panas',
-          'Kurangi Batas atas suhu baterai pada 5 V',
-          'Tambah Batas atas suhu baterai pada 5 V',
-          'Kurangi Batas bawah suhu baterai pada 12 V',
-          'Tambah Batas bawah suhu baterai pada 12 V',
-        ]) {
-          _expectTemperatureAction(tester, label, enabled: true);
-        }
-        expect(tester.takeException(), isNull);
-      } finally {
-        semantics.dispose();
+    final semantics = tester.ensureSemantics();
+    try {
+      for (final label in [
+        'Kurangi Batas Suhu Sisi Panas',
+        'Tambah Batas Suhu Sisi Panas',
+        'Kurangi Batas atas suhu baterai pada 5 V',
+        'Tambah Batas atas suhu baterai pada 5 V',
+        'Kurangi Batas bawah suhu baterai pada 12 V',
+        'Tambah Batas bawah suhu baterai pada 12 V',
+      ]) {
+        _expectTemperatureAction(tester, label, enabled: true);
       }
-    },
-  );
+      expect(tester.takeException(), isNull);
+    } finally {
+      semantics.dispose();
+    }
+  });
 
   testWidgets(
     'Temperature actions disable at range endpoints and the 2 degree zone gap',
@@ -179,9 +178,9 @@ Future<dynamic> _pumpTemperatureTab(
   required Brightness brightness,
   double logicalWidth = 360,
 }) async {
-  tester.view.physicalSize = Size(logicalWidth * 3, 2400);
+  tester.view.physicalSize = const Size(1080, 2400);
   tester.view.devicePixelRatio = 3;
-  appLanguageNotifier.value = language;
+  appLanguageNotifier.value = AppLanguage.english;
 
   await tester.pumpWidget(
     MaterialApp(
@@ -196,6 +195,8 @@ Future<dynamic> _pumpTemperatureTab(
     dashboardState.connected = true;
     dashboardState.tabIndex = 4;
   });
+  tester.view.physicalSize = Size(logicalWidth * 3, 2400);
+  appLanguageNotifier.value = language;
   await tester.pump(const Duration(milliseconds: 200));
   return dashboardState;
 }
@@ -225,3 +226,4 @@ void _expectTemperatureAction(
     reason: 'Temperature action must retain its 48 × 48 dp hitbox: $label',
   );
 }
+Formatted 1 file (1 changed) in 0.01 seconds.
