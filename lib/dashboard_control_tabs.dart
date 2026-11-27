@@ -262,7 +262,7 @@ extension _DashboardControlTabsBuilder on _DashboardScreenState {
                             alpha: .10,
                           ),
                           onChanged: speedEnabled
-                              ? (v) => setState(
+                              ? (v) => _updateDashboardPresentation(
                                   () => fanSpeedDraft = ((v / 10).round() * 10)
                                       .clamp(50, 100)
                                       .toInt(),
@@ -595,7 +595,7 @@ extension _DashboardControlTabsBuilder on _DashboardScreenState {
                             alpha: .10,
                           ),
                           onChanged: connected
-                              ? (v) => setState(() => brightness = v.round())
+                              ? (v) => _updateDashboardPresentation(() => brightness = v.round())
                               : null,
                           onChangeEnd: connected ? _setBrightness : null,
                         ),

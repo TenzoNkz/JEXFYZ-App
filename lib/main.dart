@@ -4592,13 +4592,15 @@ class _DashboardScreenState extends State<DashboardScreen>
     );
   }
 
+  void _updateDashboardPresentation(VoidCallback update) => setState(update);
+
   // AI-METHOD: _buildTabContent — Select submenu content by tab index.
   Widget _buildTabContent() {
     final content = switch (tabIndex) {
-      0 => this._buildVoltageTab(key: const ValueKey('voltage-tab')),
-      1 => this._buildControlTab(key: const ValueKey('control-tab')),
-      2 => this._buildAdaptiveTab(key: const ValueKey('adaptive-tab')),
-      3 => this._buildLedTab(key: const ValueKey('led-tab')),
+      0 => _buildVoltageTab(key: const ValueKey('voltage-tab')),
+      1 => _buildControlTab(key: const ValueKey('control-tab')),
+      2 => _buildAdaptiveTab(key: const ValueKey('adaptive-tab')),
+      3 => _buildLedTab(key: const ValueKey('led-tab')),
       4 => this._buildTemperatureTab(key: const ValueKey('temperature-tab')),
       _ => const SizedBox.shrink(),
     };

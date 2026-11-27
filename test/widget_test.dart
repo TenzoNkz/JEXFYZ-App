@@ -605,6 +605,9 @@ void main() {
 
   test('Peltier Adaptive and LED switches mirror manual Voltage without labels or checkmarks', () {
     final source = File('lib/main.dart').readAsStringSync();
+    final controlSource =
+        File('lib/dashboard_control_tabs.dart').readAsStringSync();
+    expect(source, contains("part 'dashboard_control_tabs.dart';"));
     final rowStart = source.indexOf('Widget _switchRow(');
     final rowEnd = source.indexOf('Widget _jexToggle(', rowStart);
     expect(rowStart, isNonNegative);
@@ -622,11 +625,11 @@ void main() {
       "title: JexText.of('adaptiveSwitch', lang)",
       "title: JexText.of('power', lang)",
     ]) {
-      final start = source.indexOf(marker);
-      final end = source.indexOf('onChanged:', start);
+      final start = controlSource.indexOf(marker);
+      final end = controlSource.indexOf('onChanged:', start);
       expect(start, isNonNegative, reason: 'Missing switch row: $marker');
       expect(end, greaterThan(start));
-      final call = source.substring(start, end);
+      final call = controlSource.substring(start, end);
       expect(call, contains('showStateLabel: false'));
       expect(call, contains('showCheck: false'));
       expect(call, contains('neutralRow: true'));
@@ -1282,14 +1285,16 @@ void main() {
     expect(painter, contains('valueKnown'));
     expect(painter, contains('const start = math.pi;'));
     expect(painter, contains('const sweep = math.pi;'));
+    final controlSource =
+        File('lib/dashboard_control_tabs.dart').readAsStringSync();
     expect(
       containsDartFragment(
-        source,
+        controlSource,
         'active: connected && (animationActive ?? active)',
       ),
       isTrue,
     );
-    expect(source, contains('continuousLoop: continuousLoop'));
+    expect(controlSource, contains('continuousLoop: continuousLoop'));
     final homeStart = source.lastIndexOf(
       'Widget _buildHomeArea(double height)',
     );
@@ -3010,18 +3015,20 @@ void main() {
 
   test('LED UI keeps its own color menu anchored to the display region', () {
     final source = File('lib/main.dart').readAsStringSync();
+    final controlSource =
+        File('lib/dashboard_control_tabs.dart').readAsStringSync();
     final ledSource = File('lib/led_controls.dart').readAsStringSync();
     expect(ledSource, contains('widget.modeName.toUpperCase()'));
     expect(ledSource, isNot(contains('widget.modeNumber')));
-    expect(source, contains('ledColorDisplayName(rgbColor, lang)'));
+    expect(controlSource, contains('ledColorDisplayName(rgbColor, lang)'));
     expect(
       containsDartFragment(
-        source,
+        controlSource,
         "stateKnown ? JexText.of(value ? 'on' : 'off', lang) : JexText.of('off', lang)",
       ),
       isTrue,
     );
-    expect(source, contains('final displayedValue = stateKnown && value;'));
+    expect(controlSource, contains('final displayedValue = stateKnown && value;'));
     final colorDialogStart = source.indexOf(
       'Future<void> _showLedColorPicker() async {',
     );
