@@ -44,6 +44,13 @@ This is the single file-level inventory and rolling review register for the cano
 - **Other presentation boundaries:** `lib/connection_sheet.dart`, `lib/jex_animated_icon.dart` and `lib/led_controls.dart` are present. Dashboard retains scanner/GATT/P1/session authority.
 - Build #167 remains latest published App package on immutable source `0dd96228d33b08c66e736ae91a8a6c3e5c3ddb81`. Current main source is not released. No Build App/APK/sign/release, Firmware/BIN, Firebase production, OTA, flashing or device operation occurred.
 
+## Latest live inventory — CODE_FULL WP2 bootstrap and Settings extraction (2026-11-27)
+
+- **main:** `56445f0919672e34a7cabb069066228de0c3ac23`; root tree `f602e0f29bc6fccc0e9c62d1bcdd01478961e03d`; recursive tree 150 entries / 104 blobs / 46 trees; `truncated=false`.
+- **Path reconciliation:** 104 unique rows cover all 104 tracked blobs; no missing, duplicate or stale paths after the three additions.
+- **Added paths:** `lib/app_bootstrap.dart` isolates startup orchestration; `lib/settings_pages.dart` contains Settings presentation as a part of `floating_monitor.dart`; `test/app_bootstrap_test.dart` covers five startup gate/order/failure paths.
+- **Validation Only:** #116 passed locked dependencies, analyzer and 239/239 Flutter tests but failed only the read-only formatter gate. Current #118 / run `45919092056` / job `140245350553` validates the exact current code source `4c5feb51c8777b0576d0ac11f3fafb921db91b38`; terminal result pending.
+
 ## File state model
 
 `INVENTORIED — CONTENT REVIEW PENDING` → `REVIEWED — DECISION RECORDED` → one of:
@@ -187,17 +194,19 @@ A failed gate blocks dependent work. Retry only after classifying root cause (so
 | `firmware/FIRMWARE_TECHNICAL_REFERENCE.md` | Firmware source-level architecture and safety reference | PROTECTED — OUTSIDE APP-ONLY SCOPE | PROTECTED — NO CHANGE (2026-11-26) |
 | `firmware/JEXFYZ-V7.2.ino` | Active versioned Firmware source | PROTECTED — EXPLICIT FIRMWARE AUTHORIZATION REQUIRED | PROTECTED — NO CHANGE (2026-11-26) |
 | `HANDOVER.md` | Immediate next-action handover | ACTIVE CURRENT HANDOVER | UPGRADE / CURRENT — CODE_FULL THEN REPO_FULL; MAIN SHA #458849 VERIFIED |
+| `lib/app_bootstrap.dart` | Flutter App source — ordered startup/security/Firebase/App Check orchestration | APP SOURCE — WP2 / APP BOOTSTRAP | UPGRADE / PENDING VALIDATION ONLY #118 — FIVE STARTUP ORDER/FAILURE TESTS |
 | `lib/app_settings.dart` | Flutter App source — persisted App preferences, localization and shared themes | APP SOURCE — TIER 2 / STATE & PRESENTATION CONTRACT | KEEP / VERIFIED (2026-11-26) |
 | `lib/app_security.dart` | Flutter App security/platform adapter | APP SOURCE — CODE AUTHORIZATION | UPGRADE / CLOSED — OFFICIAL-BUILD FAIL-CLOSED ADAPTER (#87) |
 | `lib/connection_sheet.dart` | Flutter App source — manual Connection sheet UI and OS status lifecycle; BLE orchestration injected | APP SOURCE — TIER 2 / CONNECTION PRESENTATION | UPGRADE / CLOSED — PRESENTATION EXTRACTION; INCLUDED IN VALIDATION ONLY #458849 (233/233) |
 | `lib/jex_animated_icon.dart` | Flutter App source — animated state indicators and glyph painters | APP SOURCE — TIER 2 / PRESENTATION CONTRACT | UPGRADE / CLOSED — PRESENTATION-ONLY MODULE; CURRENT MAIN VALIDATED IN #458849 (233/233) |
 | `lib/connection_scan_coordinator.dart` | Flutter App source — process-wide BLE scanner ownership coordinator | APP SOURCE — TIER 1 / CONCURRENCY & LIFECYCLE CONTRACT | KEEP / VERIFIED (2026-11-26) |
 | `lib/connection_scan_state.dart` | Flutter App source — Connection empty-state and device-name presentation mapping | APP SOURCE — TIER 2 / PRESENTATION STATE CONTRACT | KEEP / VERIFIED (2026-11-26) |
-| `lib/floating_monitor.dart` | Flutter App source — Settings navigation/subpages and Floating Monitor configuration/native projection | APP SOURCE — TIER 2 / SETTINGS + OVERLAY BRIDGE | UPGRADE APPROVED — SPLIT SETTINGS/PREFERENCES FROM FLOATING MONITOR CONFIGURATION/BRIDGE/PRESENTATION (2026-11-26) |
+| `lib/floating_monitor.dart` | Flutter App source — Floating Monitor config/store/bridge/runtime and native telemetry projection | APP SOURCE — TIER 2 / FLOATING MONITOR BRIDGE + PRESENTATION | UPGRADE IN PROGRESS — SETTINGS PAGES EXTRACTED; CONFIG/BRIDGE/NATIVE LIFECYCLE SEPARATION OPEN |
 | `lib/home_notify.dart` | Flutter App source — localized Home/OTA copy helpers and stateless fixed 44-dp HomeNotifyCard | APP SOURCE — TIER 2 / PRESENTATION CONTRACT | UPGRADE / CLOSED — DASHBOARD-OWNED STATUS ADAPTER; VALIDATION ONLY #458849 (233/233) |
 | `lib/jex_animated_glyph.dart` | Flutter App source | APP SOURCE — CODE AUTHORIZATION | KEEP / VERIFIED — STATELESS STATIC ICON |
 | `lib/led_controls.dart` | Flutter App source — LED mode/color/phase preview and picker presentation | APP SOURCE — TIER 2 / LED PRESENTATION CONTRACT | UPGRADE / CLOSED / READ-BACK VERIFIED — EXTRACTED FROM `main.dart`; VALIDATION ONLY #91 (2026-11-27) |
-| `lib/main.dart` | Flutter App source — bootstrap, Dashboard and sole BLE/GATT/P1 state owner | APP SOURCE — TIER 1 / SESSION OWNERSHIP | UPGRADE IN PROGRESS — SECURITY, HOME NOTIFY, LED, CONNECTION SHEET AND ANIMATED PRESENTATION EXTRACTED; DASHBOARD ARCHITECTURE AUDIT OPEN |
+| `lib/main.dart` | Flutter App source — App entry and Dashboard sole BLE/GATT/P1/session owner | APP SOURCE — TIER 1 / SESSION OWNERSHIP | UPGRADE IN PROGRESS — BOOTSTRAP/SECURITY/HOME/LED/CONNECTION/PRESENTATION EXTRACTED; APP ROOT + DASHBOARD SESSION AUDIT OPEN |
+| `lib/settings_pages.dart` | Flutter App library part — Settings root, navigation and preference subpages | APP SOURCE — WP2 / SETTINGS PRESENTATION | UPGRADE / PENDING VALIDATION ONLY #118 — EXTRACTED FROM FLOATING MONITOR LIBRARY; SETTINGS KEYS UNCHANGED |
 | `lib/usage_statistics.dart` | Flutter App source | APP SOURCE — CODE AUTHORIZATION | UPGRADE / CLOSED — CLEAR HISTORY DOES NOT MANUFACTURE HOT FRESHNESS (#82) |
 | `MASTER_PROMPT.md` | Operating governance | CANONICAL GOVERNANCE | UPGRADE / REVIEWED — FULL-CYCLE EKSEKUSI CODE POLICY |
 | `MEMORY_INDEX.md` | Operating governance | CANONICAL GOVERNANCE | UPGRADE / CURRENT — DIRECT-MAIN POLICY AND 101-PATH INVENTORY RECONCILED (2026-11-27) |
@@ -209,14 +218,15 @@ A failed gate blocks dependent work. Retry only after classifying root cause (so
 | `pubspec.yaml` | Flutter dependency manifest/lock | DEPENDENCY CONTRACT — REVIEW BEFORE CHANGE | UPGRADE — CLOSED / READ-BACK VERIFIED (2026-11-26) |
 | `README.md` | Project entrypoint / navigation index | ACTIVE PROJECT INDEX | KEEP / VERIFIED (2026-11-26) |
 | `SKILLS_INDEX.md` | Reusable skill and capability catalogue | ACTIVE CAPABILITY INDEX | UPGRADE — CLOSED / READ-BACK VERIFIED (2026-11-26) |
+| `test/app_bootstrap_test.dart` | Dart test | TEST / REGRESSION | UPGRADE / PENDING VALIDATION ONLY #118 — OFFICIAL GATE, STARTUP ORDER AND CLOUD-FAILURE BEHAVIOR |
 | `test/app_protocol_notify_contract_test.dart` | Dart test | TEST / REGRESSION | KEEP / VERIFIED — P1 / NOTIFICATION SOURCE CONTRACT |
 | `test/app_security_test.dart` | Dart test | TEST / REGRESSION | UPGRADE / CLOSED — TRUE/FALSE/NULL/EXCEPTION CHANNEL CONTRACT (#87) |
 | `test/connection_scan_coordinator_test.dart` | Dart test | TEST / REGRESSION | UPGRADE / CLOSED — PASSIVE REDISCOVERY ERROR CONSUMPTION TEST (#85) |
 | `test/connection_scan_state_test.dart` | Dart test | TEST / REGRESSION | KEEP / VERIFIED — CONNECTION STATE PRIORITY |
 | `test/device_copy_notification_contract_test.dart` | Dart test | TEST / REGRESSION | UPGRADE — CLOSED / READ-BACK VERIFIED (2026-11-26) |
-| `test/firmware_qc_contract_test.dart` | Dart test | TEST / REGRESSION | UPGRADE / VERIFIED CI #91 — LED color normalizer assertion imports presentation module; Firmware source checks remain static only |
+| `test/firmware_qc_contract_test.dart` | Dart test | TEST / REGRESSION | UPGRADE / VERIFIED CI #116 — LOCK VOLTAGE CONTRACT READS EXTRACTED SETTINGS MODULE; 239/239 TESTS PASS |
 | `test/firmware_touch_adaptive_sync_test.dart` | Dart test | TEST / REGRESSION | KEEP / VERIFIED — TOUCH / ADAPTIVE SOURCE CONTRACT |
-| `test/floating_monitor_layout_contract_test.dart` | Dart test | TEST / REGRESSION | UPGRADE — CLOSED / READ-BACK VERIFIED (2026-11-26) |
+| `test/floating_monitor_layout_contract_test.dart` | Dart test | TEST / REGRESSION | UPGRADE / VERIFIED CI #116 — SETTINGS CONTRACTS FOLLOW EXTRACTED MODULE; 239/239 TESTS PASS |
 | `test/github_actions_workflow_contract_test.dart` | Dart test — guarded release and main-only CI contracts | TEST / REGRESSION | UPGRADE / VERIFIED CI #458849 — 233/233; main-only read-only validation and guarded release contracts PASS |
 | `test/localization_contract_test.dart` | Dart test | TEST / REGRESSION | UPGRADE / VERIFIED CI #89 — bilingual phrase scan includes extracted `home_notify.dart`; threshold retained |
 | `test/support/source_contract_helpers.dart` | Dart test | TEST / REGRESSION | KEEP / VERIFIED — SOURCE ASSERTION NORMALIZATION |
