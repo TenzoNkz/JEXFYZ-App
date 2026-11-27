@@ -622,7 +622,8 @@ void main() {
     expect(usage, contains('usageTemperatureChartHeight('));
     expect(usage, contains('height: chartHeight,'));
     expect(usage, contains(': 160.0;'));
-    expect(usage, contains('fontSize: 10);'));
+    expect(usage, contains('fontSize: JexStatisticsTypographyTokens.axisLabel;'));
+    expect(usage.split('JexStatisticsTypographyTokens.axisLabel').length - 1, 3);
     expect(usage, isNot(contains('height: 170,')));
     expect(usage, isNot(contains('mergedEvents.any(')));
     expect(usage, isNot(contains('Duration(milliseconds: 16)')));

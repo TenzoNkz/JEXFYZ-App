@@ -408,7 +408,8 @@ void main() {
     expect(ledSource, isNot(contains('BorderRadius.circular(11)')));
 
     expect(JexStatisticsTypographyTokens.axisLabel, 10.0);
-    final statisticsSource = File('lib/usage_statistics.dart').readAsStringSync();
+    final statisticsSource = File('lib/usage_statistics.dart')
+        .readAsStringSync();
     const statisticsAxisToken = 'JexStatisticsTypographyTokens.axisLabel';
     expect(statisticsSource.split(statisticsAxisToken).length - 1, 3);
     expect(statisticsSource, isNot(contains('fontSize: 10')));
