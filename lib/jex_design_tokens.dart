@@ -24,7 +24,6 @@ abstract final class JexLayoutTokens {
 /// defined here: Light/Dark values remain owned by buildJexTheme and
 /// buildJexCompactUiTheme in app_settings.dart.
 extension JexColorSchemeSemanticRoles on ColorScheme {
-  Color get jexCanvas => surface;
   Color get jexSurface => surface;
   Color get jexElevatedSurface => surfaceContainerHighest;
   Color get jexRaisedSurface => surfaceContainerHigh;
@@ -37,8 +36,13 @@ extension JexColorSchemeSemanticRoles on ColorScheme {
   Color get jexErrorForeground => onError;
 }
 
+/// Theme canvas remains distinct from content surfaces in the active App theme.
+extension JexThemeSemanticRoles on ThemeData {
+  Color get jexCanvas => scaffoldBackgroundColor;
+}
+
 /// Value object for widgets that need several semantic roles at once.
-/// Every property maps one-to-one to the active Material ColorScheme.
+/// The canvas maps to ThemeData; all other roles map to its ColorScheme.
 class JexSemanticColors {
   const JexSemanticColors({
     required this.canvas,
@@ -66,19 +70,22 @@ class JexSemanticColors {
   final Color error;
   final Color onError;
 
-  factory JexSemanticColors.from(ColorScheme scheme) => JexSemanticColors(
-    canvas: scheme.jexCanvas,
-    surface: scheme.jexSurface,
-    elevatedSurface: scheme.jexElevatedSurface,
-    raisedSurface: scheme.jexRaisedSurface,
-    foreground: scheme.jexForeground,
-    mutedForeground: scheme.jexMutedForeground,
-    outline: scheme.jexOutline,
-    accent: scheme.jexAccent,
-    accentForeground: scheme.jexAccentForeground,
-    error: scheme.jexError,
-    onError: scheme.jexErrorForeground,
-  );
+  factory JexSemanticColors.from(ThemeData theme) {
+    final scheme = theme.colorScheme;
+    return JexSemanticColors(
+      canvas: theme.jexCanvas,
+      surface: scheme.jexSurface,
+      elevatedSurface: scheme.jexElevatedSurface,
+      raisedSurface: scheme.jexRaisedSurface,
+      foreground: scheme.jexForeground,
+      mutedForeground: scheme.jexMutedForeground,
+      outline: scheme.jexOutline,
+      accent: scheme.jexAccent,
+      accentForeground: scheme.jexAccentForeground,
+      error: scheme.jexError,
+      onError: scheme.jexErrorForeground,
+    );
+  }
 }
 
 /// Typography sizes already used by the App's established Light/Dark themes.

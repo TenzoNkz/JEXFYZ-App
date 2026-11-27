@@ -205,8 +205,7 @@ class SettingsPage extends StatelessWidget {
     AppLanguage language,
     VoltageLockSettingsState state,
   ) {
-    final scheme = Theme.of(context).colorScheme;
-    final semantic = JexSemanticColors.from(scheme);
+    final semantic = JexSemanticColors.from(Theme.of(context));
     final unavailableMessage = !state.sessionReady
         ? JexText.phrase('Not synchronized', 'Belum tersinkron', language)
         : JexText.phrase(
@@ -300,7 +299,7 @@ class SettingsPage extends StatelessWidget {
   }
 
   Widget _section(BuildContext context, String title, List<Widget> children) {
-    final semantic = JexSemanticColors.from(Theme.of(context).colorScheme);
+    final semantic = JexSemanticColors.from(Theme.of(context));
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -341,8 +340,7 @@ class SettingsPage extends StatelessWidget {
     String summary,
     VoidCallback onTap,
   ) {
-    final scheme = Theme.of(context).colorScheme;
-    final semantic = JexSemanticColors.from(scheme);
+    final semantic = JexSemanticColors.from(Theme.of(context));
     return Material(
       color: Colors.transparent,
       child: InkWell(
@@ -415,8 +413,7 @@ class AboutSettingsPage extends StatelessWidget {
     required String handle,
     required bool last,
   }) {
-    final scheme = Theme.of(context).colorScheme;
-    final semantic = JexSemanticColors.from(scheme);
+    final semantic = JexSemanticColors.from(Theme.of(context));
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
       child: Column(
@@ -462,8 +459,7 @@ class AboutSettingsPage extends StatelessWidget {
     return ValueListenableBuilder<AppLanguage>(
       valueListenable: appLanguageNotifier,
       builder: (context, language, _) {
-        final scheme = Theme.of(context).colorScheme;
-        final semantic = JexSemanticColors.from(scheme);
+        final semantic = JexSemanticColors.from(Theme.of(context));
         return Scaffold(
           appBar: AppBar(title: Text(JexText.of('about', language))),
           body: ListView(

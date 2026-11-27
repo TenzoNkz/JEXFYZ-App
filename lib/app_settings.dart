@@ -1864,7 +1864,7 @@ ThemeData buildJexCompactUiTheme(
 }) {
   final base = baseTheme ?? buildJexTheme(preset);
   final text = base.textTheme;
-  final semantic = JexSemanticColors.from(base.colorScheme);
+  final semantic = JexSemanticColors.from(base);
   final foreground = semantic.foreground;
   final muted = semantic.mutedForeground;
 

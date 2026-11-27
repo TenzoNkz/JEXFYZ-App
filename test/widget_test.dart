@@ -2800,11 +2800,15 @@ void main() {
   });
 
   test(
-    'Semantic design colors follow the current Light and Dark ColorSchemes',
+    'Semantic design colors distinguish canvas from surface across App themes',
     () {
-      for (final scheme in [ColorScheme.light(), ColorScheme.dark()]) {
-        final roles = JexSemanticColors.from(scheme);
-        expect(roles.canvas, scheme.surface);
+      for (final preset in AppThemePreset.values) {
+        final theme = buildJexTheme(preset);
+        final scheme = theme.colorScheme;
+        final roles = JexSemanticColors.from(theme);
+        expect(theme.jexCanvas, theme.scaffoldBackgroundColor);
+        expect(roles.canvas, theme.scaffoldBackgroundColor);
+        expect(roles.canvas, isNot(roles.surface));
         expect(roles.surface, scheme.surface);
         expect(roles.elevatedSurface, scheme.surfaceContainerHighest);
         expect(roles.raisedSurface, scheme.surfaceContainerHigh);
@@ -2816,7 +2820,6 @@ void main() {
         expect(roles.error, scheme.error);
         expect(roles.onError, scheme.onError);
 
-        expect(scheme.jexCanvas, scheme.surface);
         expect(scheme.jexSurface, scheme.surface);
         expect(scheme.jexElevatedSurface, scheme.surfaceContainerHighest);
         expect(scheme.jexRaisedSurface, scheme.surfaceContainerHigh);
