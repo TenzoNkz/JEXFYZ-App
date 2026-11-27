@@ -25,9 +25,7 @@ void main() {
 
       final failurePath = method.substring(catchStart, finallyStart);
       expect(
-        containsDartFragment(
-          failurePath,
-          '''
+        containsDartFragment(failurePath, '''
 if (updateUi && mounted) {
   setState(() {
     phoneBatteryValid = false;
@@ -35,32 +33,25 @@ if (updateUi && mounted) {
   });
   _publishFloatingTelemetry();
 }
-''',
-        ),
+'''),
         isTrue,
       );
       expect(
-        containsDartFragment(
-          failurePath,
-          '''
+        containsDartFragment(failurePath, '''
 UsageStatisticsRecorder.instance.recordTemperature(
   metric: 'battery',
   value: null,
 )
-''',
-        ),
+'''),
         isTrue,
       );
       expect(
-        containsDartFragment(
-          failurePath,
-          '''
+        containsDartFragment(failurePath, '''
 if (_bleReady) {
   // Keep Firmware's battery reading unknown after an unavailable platform sample.
   _queuePhoneBatteryHeartbeat('PHONE:BT=-1.0');
 }
-''',
-        ),
+'''),
         isTrue,
       );
       expect(
@@ -70,10 +61,7 @@ if (_bleReady) {
         ),
         isTrue,
       );
-      expect(
-        containsDartFragment(method, 'batteryReadBusy = false;'),
-        isTrue,
-      );
+      expect(containsDartFragment(method, 'batteryReadBusy = false;'), isTrue);
     });
   });
 }
