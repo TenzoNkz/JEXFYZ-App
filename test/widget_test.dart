@@ -567,7 +567,10 @@ void main() {
     () {
       final source = File('lib/main.dart').readAsStringSync();
       final tabsStart = source.indexOf('Widget _buildTabContent()');
-      final tabsEnd = source.indexOf('Widget _tab(String title, int index)', tabsStart);
+      final tabsEnd = source.indexOf(
+        'Widget _tab(String title, int index)',
+        tabsStart,
+      );
       expect(tabsStart, isNonNegative);
       expect(tabsEnd, greaterThan(tabsStart));
       final lockSource = source.substring(tabsStart, tabsEnd);
@@ -639,7 +642,8 @@ void main() {
   test('Core indicator family shares a luminous core with distinct telemetry motion', () {
     final source = File('lib/main.dart').readAsStringSync();
     final homeSource = File('lib/dashboard_home_tab.dart').readAsStringSync();
-    final controlSource = File('lib/dashboard_control_tabs.dart').readAsStringSync();
+    final controlSource = File('lib/dashboard_control_tabs.dart')
+        .readAsStringSync();
     final animationSource = File('lib/jex_animated_icon.dart')
         .readAsStringSync();
     final painterStart = animationSource.indexOf(
@@ -4257,7 +4261,9 @@ void main() {
     final homeSource = File('lib/dashboard_home_tab.dart').readAsStringSync();
     expect(source, contains("part 'dashboard_home_tab.dart';"));
     expect(homeSource, contains("part of 'main.dart';"));
-    final homeStart = homeSource.indexOf('Widget _buildHomeArea(double height) {');
+    final homeStart = homeSource.indexOf(
+      'Widget _buildHomeArea(double height) {',
+    );
     expect(homeStart, isNonNegative);
     final home = homeSource.substring(homeStart);
     final headerHeight = home.indexOf('height: 48,');
