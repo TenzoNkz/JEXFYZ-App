@@ -13,6 +13,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
+import 'jex_design_tokens.dart';
+
 // All user-facing application strings are resolved through JexText for full language coverage.
 enum AppLanguage { english, indonesia }
 
@@ -1772,7 +1774,7 @@ ThemeData buildJexTheme(AppThemePreset preset) {
       surfaceTintColor: Colors.transparent,
       titleTextStyle: TextStyle(
         color: foreground,
-        fontSize: 20,
+        fontSize: JexTypographyTokens.appBarTitle,
         fontWeight: FontWeight.w900,
       ),
       iconTheme: IconThemeData(color: foreground),
@@ -1789,20 +1791,20 @@ ThemeData buildJexTheme(AppThemePreset preset) {
       labelStyle: TextStyle(color: muted),
       hintStyle: TextStyle(color: muted),
       border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(JexShapeTokens.inputBorderRadius),
         borderSide: BorderSide(
           color: isDark ? const Color(0xFF343944) : const Color(0xFFD4D8DF),
         ),
       ),
       enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(JexShapeTokens.inputBorderRadius),
         borderSide: BorderSide(
           color: isDark ? const Color(0xFF343944) : const Color(0xFFDDE0E6),
         ),
       ),
       focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(14),
-        borderSide: BorderSide(color: primary, width: 1.5),
+        borderRadius: BorderRadius.circular(JexShapeTokens.inputBorderRadius),
+        borderSide: BorderSide(color: primary, width: JexShapeTokens.focusedInputBorderWidth),
       ),
     ),
     switchTheme: SwitchThemeData(
@@ -1864,19 +1866,19 @@ ThemeData buildJexCompactUiTheme(
 
   return base.copyWith(
     appBarTheme: base.appBarTheme.copyWith(
-      titleTextStyle: base.appBarTheme.titleTextStyle?.copyWith(fontSize: 18),
-      iconTheme: base.appBarTheme.iconTheme?.copyWith(size: 22),
+      titleTextStyle: base.appBarTheme.titleTextStyle?.copyWith(fontSize: JexTypographyTokens.compactAppBarTitle),
+      iconTheme: base.appBarTheme.iconTheme?.copyWith(size: JexTypographyTokens.compactAppBarIcon),
     ),
     textTheme: text.copyWith(
-      titleLarge: text.titleLarge?.copyWith(fontSize: 18),
-      titleMedium: text.titleMedium?.copyWith(fontSize: 13),
-      titleSmall: text.titleSmall?.copyWith(fontSize: 12),
-      bodyLarge: text.bodyLarge?.copyWith(fontSize: 13),
-      bodyMedium: text.bodyMedium?.copyWith(fontSize: 12),
-      bodySmall: text.bodySmall?.copyWith(fontSize: 11),
-      labelLarge: text.labelLarge?.copyWith(fontSize: 12),
-      labelMedium: text.labelMedium?.copyWith(fontSize: 11),
-      labelSmall: text.labelSmall?.copyWith(fontSize: 10),
+      titleLarge: text.titleLarge?.copyWith(fontSize: JexTypographyTokens.compactTitleLarge),
+      titleMedium: text.titleMedium?.copyWith(fontSize: JexTypographyTokens.compactTitleMedium),
+      titleSmall: text.titleSmall?.copyWith(fontSize: JexTypographyTokens.compactTitleSmall),
+      bodyLarge: text.bodyLarge?.copyWith(fontSize: JexTypographyTokens.compactBodyLarge),
+      bodyMedium: text.bodyMedium?.copyWith(fontSize: JexTypographyTokens.compactBodyMedium),
+      bodySmall: text.bodySmall?.copyWith(fontSize: JexTypographyTokens.compactBodySmall),
+      labelLarge: text.labelLarge?.copyWith(fontSize: JexTypographyTokens.compactLabelLarge),
+      labelMedium: text.labelMedium?.copyWith(fontSize: JexTypographyTokens.compactLabelMedium),
+      labelSmall: text.labelSmall?.copyWith(fontSize: JexTypographyTokens.compactLabelSmall),
     ),
     listTileTheme: base.listTileTheme.copyWith(
       dense: true,
@@ -1884,10 +1886,10 @@ ThemeData buildJexCompactUiTheme(
       minVerticalPadding: 6,
       titleTextStyle: text.titleMedium?.copyWith(
         color: foreground,
-        fontSize: 13,
+        fontSize: JexTypographyTokens.compactListTileTitle,
         fontWeight: FontWeight.w700,
       ),
-      subtitleTextStyle: text.bodySmall?.copyWith(color: muted, fontSize: 11),
+      subtitleTextStyle: text.bodySmall?.copyWith(color: muted, fontSize: JexTypographyTokens.compactListTileSubtitle),
     ),
   );
 }

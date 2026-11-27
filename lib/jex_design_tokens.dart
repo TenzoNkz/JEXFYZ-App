@@ -57,3 +57,28 @@ class JexSemanticColors {
     onError: scheme.onError,
   );
 }
+
+
+/// Typography sizes already used by the App's established Light/Dark themes.
+abstract final class JexTypographyTokens {
+  static const double appBarTitle = 20.0;
+  static const double compactAppBarTitle = 18.0;
+  static const double compactAppBarIcon = 22.0;
+  static const double compactTitleLarge = 18.0;
+  static const double compactTitleMedium = 13.0;
+  static const double compactTitleSmall = 12.0;
+  static const double compactBodyLarge = 13.0;
+  static const double compactBodyMedium = 12.0;
+  static const double compactBodySmall = 11.0;
+  static const double compactLabelLarge = 12.0;
+  static const double compactLabelMedium = 11.0;
+  static const double compactLabelSmall = 10.0;
+  static const double compactListTileTitle = 13.0;
+  static const double compactListTileSubtitle = 11.0;
+}
+
+/// Shape and focus metrics retained from the existing App theme.
+abstract final class JexShapeTokens {
+  static const double inputBorderRadius = 14.0;
+  static const double focusedInputBorderWidth = 1.5;
+}

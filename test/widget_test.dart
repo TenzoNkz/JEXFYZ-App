@@ -28,6 +28,81 @@ import 'package:jexfyz_cooler/home_notify.dart';
 import 'package:jexfyz_cooler/led_controls.dart';
 
 void main() {
+  test('Theme typography and input geometry use shared design tokens', () {
+    final theme = buildJexTheme(AppThemePreset.dark);
+    expect(
+      theme.appBarTheme.titleTextStyle?.fontSize,
+      JexTypographyTokens.appBarTitle,
+    );
+    final inputBorder = theme.inputDecorationTheme.border;
+    expect(inputBorder, isA<OutlineInputBorder>());
+    expect(
+      (inputBorder! as OutlineInputBorder).borderRadius.topLeft.x,
+      JexShapeTokens.inputBorderRadius,
+    );
+    final focusedBorder = theme.inputDecorationTheme.focusedBorder;
+    expect(focusedBorder, isA<OutlineInputBorder>());
+    expect(
+      (focusedBorder! as OutlineInputBorder).borderSide.width,
+      JexShapeTokens.focusedInputBorderWidth,
+    );
+
+    final compact = buildJexCompactUiTheme(AppThemePreset.dark);
+    expect(
+      compact.appBarTheme.titleTextStyle?.fontSize,
+      JexTypographyTokens.compactAppBarTitle,
+    );
+    expect(
+      compact.appBarTheme.iconTheme?.size,
+      JexTypographyTokens.compactAppBarIcon,
+    );
+    expect(
+      compact.textTheme.titleLarge?.fontSize,
+      JexTypographyTokens.compactTitleLarge,
+    );
+    expect(
+      compact.textTheme.titleMedium?.fontSize,
+      JexTypographyTokens.compactTitleMedium,
+    );
+    expect(
+      compact.textTheme.titleSmall?.fontSize,
+      JexTypographyTokens.compactTitleSmall,
+    );
+    expect(
+      compact.textTheme.bodyLarge?.fontSize,
+      JexTypographyTokens.compactBodyLarge,
+    );
+    expect(
+      compact.textTheme.bodyMedium?.fontSize,
+      JexTypographyTokens.compactBodyMedium,
+    );
+    expect(
+      compact.textTheme.bodySmall?.fontSize,
+      JexTypographyTokens.compactBodySmall,
+    );
+    expect(
+      compact.textTheme.labelLarge?.fontSize,
+      JexTypographyTokens.compactLabelLarge,
+    );
+    expect(
+      compact.textTheme.labelMedium?.fontSize,
+      JexTypographyTokens.compactLabelMedium,
+    );
+    expect(
+      compact.textTheme.labelSmall?.fontSize,
+      JexTypographyTokens.compactLabelSmall,
+    );
+    expect(
+      compact.listTileTheme.titleTextStyle?.fontSize,
+      JexTypographyTokens.compactListTileTitle,
+    );
+    expect(
+      compact.listTileTheme.subtitleTextStyle?.fontSize,
+      JexTypographyTokens.compactListTileSubtitle,
+    );
+  });
+
+
   test(
     'Firmware Update Wi-Fi password visibility is toggleable and localized',
     () {

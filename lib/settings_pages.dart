@@ -262,13 +262,13 @@ class SettingsPage extends StatelessWidget {
             width: 34,
             height: 34,
             decoration: BoxDecoration(
-              color: scheme.surfaceContainerHighest.withValues(alpha: .72),
+              color: semantic.elevatedSurface.withValues(alpha: .72),
               borderRadius: BorderRadius.circular(11),
             ),
             child: Icon(
               PhosphorIconsRegular.lock,
               size: 18,
-              color: scheme.onSurfaceVariant,
+              color: semantic.mutedForeground,
             ),
           ),
           const SizedBox(width: 8),
@@ -292,6 +292,7 @@ class SettingsPage extends StatelessWidget {
   }
 
   Widget _section(BuildContext context, String title, List<Widget> children) {
+    final semantic = JexSemanticColors.from(Theme.of(context).colorScheme);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -303,7 +304,7 @@ class SettingsPage extends StatelessWidget {
               fontSize: 9,
               fontWeight: FontWeight.w900,
               letterSpacing: 0.9,
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
+              color: semantic.mutedForeground,
             ),
           ),
         ),
@@ -373,7 +374,7 @@ class SettingsPage extends StatelessWidget {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
-                        color: scheme.onSurfaceVariant,
+                        color: semantic.mutedForeground,
                         fontSize: 11,
                         fontWeight: FontWeight.w500,
                       ),
@@ -384,7 +385,7 @@ class SettingsPage extends StatelessWidget {
                 JexAnimatedGlyph(
                   icon: PhosphorIconsRegular.caretRight,
                   size: 16,
-                  color: scheme.onSurfaceVariant,
+                  color: semantic.mutedForeground,
                 ),
               ],
             ),
@@ -434,14 +435,14 @@ class AboutSettingsPage extends StatelessWidget {
           Text(
             handle,
             style: TextStyle(
-              color: scheme.onSurfaceVariant,
+              color: semantic.mutedForeground,
               fontSize: 11,
               fontWeight: FontWeight.w500,
             ),
           ),
           if (!last) ...[
             const SizedBox(height: 9),
-            Divider(height: 1, color: scheme.outlineVariant),
+            Divider(height: 1, color: semantic.outline),
           ],
         ],
       ),
