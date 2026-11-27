@@ -223,11 +223,16 @@ void main() {
       );
 
       final source = File('lib/main.dart').readAsStringSync();
-      final start = source.indexOf('Widget _buildAdaptiveTab({Key? key})');
-      final end = source.indexOf('Widget _adaptiveProfileRow(', start);
+      final controlSource =
+          File('lib/dashboard_control_tabs.dart').readAsStringSync();
+      expect(source, contains("part 'dashboard_control_tabs.dart';"));
+      final start =
+          controlSource.indexOf('Widget _buildAdaptiveTab({Key? key})');
+      final end =
+          controlSource.indexOf('Widget _adaptiveProfileRow(', start);
       expect(start, isNonNegative);
       expect(end, greaterThan(start));
-      final adaptiveUi = source.substring(start, end);
+      final adaptiveUi = controlSource.substring(start, end);
       expect(adaptiveUi, isNot(contains("JexText.of('adaptiveCeiling'")));
       expect(adaptiveUi, isNot(contains('adaptiveCeiling')));
       expect(source, contains("case 'ADAPTIVE_CEILING':"));

@@ -2461,14 +2461,18 @@ void main() {
 
   test('Manual voltage toggles stay theme-colored while labels keep voltage accents', () {
     final source = File('lib/main.dart').readAsStringSync();
-    final choiceStart = source.indexOf('Widget _voltageChoiceCustom(');
-    final choiceEnd = source.indexOf(
+    final controlSource =
+        File('lib/dashboard_control_tabs.dart').readAsStringSync();
+    expect(source, contains("part 'dashboard_control_tabs.dart';"));
+    expect(controlSource, contains("part of 'main.dart';"));
+    final choiceStart = controlSource.indexOf('Widget _voltageChoiceCustom(');
+    final choiceEnd = controlSource.indexOf(
       '// AI-METHOD / CONTROL-TAB CONTRACT',
       choiceStart,
     );
     expect(choiceStart, isNonNegative);
     expect(choiceEnd, greaterThan(choiceStart));
-    final choice = source.substring(choiceStart, choiceEnd);
+    final choice = controlSource.substring(choiceStart, choiceEnd);
     expect(choice, contains('color: jexVoltageIndicatorColor(target)'));
     expect(choice, contains('accent: scheme.jexAccent,'));
     expect(choice, contains('showCheck: false,'));
