@@ -142,7 +142,11 @@ class JexDashboardLockedMenu extends StatelessWidget {
         children: [
           ImageFiltered(
             imageFilter: ImageFilter.blur(sigmaX: 4.8, sigmaY: 4.8),
-            child: IgnorePointer(child: content),
+            // The submenu is visible as a blurred background only. Remove it
+            // from screen-reader navigation while the lock panel is active.
+            child: ExcludeSemantics(
+              child: IgnorePointer(child: content),
+            ),
           ),
           Positioned.fill(
             child: ColoredBox(color: scheme.jexSurface.withValues(alpha: .46)),

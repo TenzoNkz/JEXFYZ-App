@@ -1,3 +1,5 @@
+import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -36,6 +38,8 @@ void main() {
   testWidgets(
     'Disconnected lock blocks submenu input and uses the Dashboard Connect action',
     (tester) async {
+      final semantics = tester.ensureSemantics();
+      addTearDown(semantics.dispose);
       var connectCalls = 0;
       var contentTapCalls = 0;
 
@@ -62,6 +66,22 @@ void main() {
       );
       expect(find.byType(ClipRect), findsOneWidget);
       expect(find.byType(ImageFiltered), findsOneWidget);
+      // The blurred submenu must remain visible but disappear from the
+      // accessibility tree; only the active lock panel and Connect action
+      // are announced while the submenu is unavailable.
+      expect(find.text('Submenu content'), findsOneWidget);
+      expect(find.bySemanticsLabel('Submenu content'), findsNothing);
+      expect(
+        find.bySemanticsLabel('CONNECT YOUR DEVICE FIRST'),
+        findsOneWidget,
+      );
+      final connectSemantics = find.bySemanticsLabel('Connect');
+      expect(connectSemantics, findsOneWidget);
+      final connectData = tester.getSemantics(connectSemantics).getSemanticsData();
+      expect(connectData.hasFlag(ui.SemanticsFlag.isButton), isTrue);
+      expect(connectData.hasFlag(ui.SemanticsFlag.isEnabled), isTrue);
+      expect(connectData.hasAction(ui.SemanticsAction.tap), isTrue);
+
       final blockingAncestors = find
           .ancestor(
             of: find.text('Submenu content'),
