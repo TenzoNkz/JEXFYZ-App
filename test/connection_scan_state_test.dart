@@ -1,8 +1,36 @@
+import 'dart:io';
+
 import 'package:flutter_test/flutter_test.dart';
 
 import '../lib/connection_scan_state.dart';
 
 void main() {
+  group('Connection accessibility contracts', () {
+    test('close action exposes its localized tooltip and preserves target size', () {
+      final source = File('lib/connection_sheet.dart').readAsStringSync();
+      const closeAction = "onPressed: () => Navigator.pop(context)";
+      final actionIndex = source.indexOf(closeAction);
+      final buttonStart = source.lastIndexOf('IconButton(', actionIndex);
+      expect(actionIndex, isNonNegative);
+      expect(buttonStart, isNonNegative);
+
+      final button = source.substring(buttonStart, actionIndex);
+      expect(button, contains("tooltip: JexText.of('close', lang),"));
+      expect(
+        containsDartFragment(
+          button,
+          '''
+constraints: const BoxConstraints.tightFor(
+  width: 42,
+  height: 42,
+),
+''',
+        ),
+        isTrue,
+      );
+    });
+  });
+
   group('Connection scan empty-state messaging', () {
     test('permission denial takes priority over other states', () {
       expect(

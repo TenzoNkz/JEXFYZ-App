@@ -288,6 +288,7 @@ class _ConnectionSheetContentState extends State<ConnectionSheetContent>
                     width: 42,
                     height: 42,
                   ),
+                  tooltip: JexText.of('close', lang),
                   onPressed: () => Navigator.pop(context),
                   icon: JexAnimatedGlyph(
                     icon: PhosphorIconsRegular.x,
