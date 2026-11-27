@@ -22,7 +22,8 @@ class JexDashboardCard extends StatelessWidget {
       margin: const EdgeInsets.symmetric(
         vertical: JexSpacingTokens.dashboardCardVerticalMargin,
       ),
-      padding: padding ??
+      padding:
+          padding ??
           const EdgeInsets.all(JexSpacingTokens.dashboardCardDefaultPadding),
       decoration: BoxDecoration(
         color: scheme.jexSurface,
