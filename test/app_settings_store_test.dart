@@ -202,7 +202,9 @@ void main() {
     });
   });
   group('secure-storage failure handling', () {
-    test('AppSettingsStore.load publishes defaults when storage read fails', () async {
+    test(
+      'AppSettingsStore.load publishes defaults when storage read fails',
+      () async {
       appLanguageNotifier.value = AppLanguage.indonesia;
       appThemeNotifier.value = AppThemePreset.dark;
       appNotifySafetyNotifier.value = false;
@@ -225,7 +227,9 @@ void main() {
       expect(failingStorage.readAttempts, 1);
     });
 
-    test('AppSettingsStore.save publishes before a failed storage write', () async {
+    test(
+      'AppSettingsStore.save publishes before a failed storage write',
+      () async {
       const settings = AppSettings(
         language: AppLanguage.indonesia,
         theme: AppThemePreset.dark,
@@ -261,7 +265,9 @@ void main() {
       expect(appAutoConnectNotifier.value, isTrue);
     });
 
-    test('firmware notice skips blank versions and fails open on read errors', () async {
+    test(
+      'firmware notice skips blank versions and fails open on read errors',
+      () async {
       final failingStorage = _FailureInjectingStorageMap(failReads: true);
       FlutterSecureStorage.setMockInitialValues(failingStorage);
 
@@ -283,7 +289,9 @@ void main() {
       expect(failingStorage.writeAttempts, 1);
     });
 
-    test('KnownCoolerStore.load clears the notifier when storage read fails', () async {
+    test(
+      'KnownCoolerStore.load clears the notifier when storage read fails',
+      () async {
       knownCoolerRemoteIdNotifier.value = 'stale-cooler';
       final failingStorage = _FailureInjectingStorageMap(failReads: true);
       FlutterSecureStorage.setMockInitialValues(failingStorage);
@@ -293,7 +301,9 @@ void main() {
       expect(failingStorage.readAttempts, 1);
     });
 
-    test('KnownCoolerStore.save publishes normalized identity despite write failure', () async {
+    test(
+      'KnownCoolerStore.save publishes normalized identity despite write failure',
+      () async {
       final failingStorage = _FailureInjectingStorageMap(failWrites: true);
       FlutterSecureStorage.setMockInitialValues(failingStorage);
 
@@ -303,7 +313,9 @@ void main() {
       expect(knownCoolerRemoteIdNotifier.value, 'cooler-03');
     });
 
-    test('KnownCoolerStore.clear clears notifier despite delete failure', () async {
+    test(
+      'KnownCoolerStore.clear clears notifier despite delete failure',
+      () async {
       const key = 'jexfyz_known_cooler_remote_id_v1';
       knownCoolerRemoteIdNotifier.value = 'cooler-04';
       final failingStorage = _FailureInjectingStorageMap(
