@@ -240,7 +240,14 @@ void main() {
     test(
       'allows only SYNC bootstrap commands before the P1 session is ready',
       () {
-        for (final command in ['SYNC', 'SYNC_READY', ' sync ', ' sync_ready ']) {
+        for (
+          final command in [
+            'SYNC',
+            'SYNC_READY',
+            ' sync ',
+            ' sync_ready ',
+          ]
+        ) {
           expect(
             P1CommandContract.canSendCommand(
               bleReady: true,
