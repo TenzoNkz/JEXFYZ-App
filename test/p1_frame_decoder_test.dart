@@ -18,28 +18,25 @@ void main() {
       expect(decoder.pendingCharacters, 0);
     });
 
-    test(
-      'holds leading lines until a split SYNC frame is complete',
-      () {
-        final decoder = P1FrameDecoder();
+    test('holds leading lines until a split SYNC frame is complete', () {
+      final decoder = P1FrameDecoder();
 
-        expect(
-          decoder.addChunk('VOLTAGE:5V\n<SYNC_START>PROTOCOL:P1'),
-          isEmpty,
-        );
-        expect(decoder.pendingCharacters, greaterThan(0));
+      expect(
+        decoder.addChunk('VOLTAGE:5V\n<SYNC_START>PROTOCOL:P1'),
+        isEmpty,
+      );
+      expect(decoder.pendingCharacters, greaterThan(0));
 
-        expect(
-          decoder.addChunk('\nBLE_SESSION:READY<SYNC_END>\nFAN:ON\n'),
-          <P1FrameEvent>[
-            const P1LineFrame('VOLTAGE:5V'),
-            const P1SyncFrame('PROTOCOL:P1\nBLE_SESSION:READY'),
-            const P1LineFrame('FAN:ON'),
-          ],
-        );
-        expect(decoder.pendingCharacters, 0);
-      },
-    );
+      expect(
+        decoder.addChunk('\nBLE_SESSION:READY<SYNC_END>\nFAN:ON\n'),
+        <P1FrameEvent>[
+          const P1LineFrame('VOLTAGE:5V'),
+          const P1SyncFrame('PROTOCOL:P1\nBLE_SESSION:READY'),
+          const P1LineFrame('FAN:ON'),
+        ],
+      );
+      expect(decoder.pendingCharacters, 0);
+    });
 
     test(
       'emits multiple atomic SYNC frames and surrounding lines in wire order',
