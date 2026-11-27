@@ -4120,9 +4120,10 @@ class _DashboardScreenState extends State<DashboardScreen>
       voltageLockKnown: voltageLockKnown,
       voltageLockActive: voltageLockActive,
     );
-    return lockReason == DisplayMenuLockReason.none
+    final tabContent = lockReason == DisplayMenuLockReason.none
         ? content
         : _lockedDisplayMenu(content, lockReason);
+    return JexDashboardTabTransition(tabId: tabIndex, child: tabContent);
   }
 
   /// Blurs the complete submenu, then centers one lock panel above all of its content.

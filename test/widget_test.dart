@@ -202,6 +202,139 @@ void main() {
     },
   );
 
+  testWidgets(
+    'Dashboard tab transition animates keyed content and disables outgoing tabs',
+    (tester) async {
+      var tabId = 0;
+      var outgoingTaps = 0;
+      var incomingTaps = 0;
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: StatefulBuilder(
+            builder: (context, setState) {
+              final renderedTabId = tabId;
+              return Scaffold(
+                body: Column(
+                  children: [
+                    TextButton(
+                      key: const ValueKey<String>('advance-dashboard-tab'),
+                      onPressed: () => setState(() => tabId = 1),
+                      child: const Text('Advance'),
+                    ),
+                    Expanded(
+                      child: JexDashboardTabTransition(
+                        tabId: tabId,
+                        child: SizedBox.expand(
+                          child: Align(
+                            alignment: renderedTabId == 0
+                                ? Alignment.topLeft
+                                : Alignment.bottomRight,
+                            child: TextButton(
+                              key: ValueKey<String>(
+                                'dashboard-tab-$renderedTabId',
+                              ),
+                              onPressed: renderedTabId == 0
+                                  ? () => outgoingTaps++
+                                  : () => incomingTaps++,
+                              child: Text('Tab $renderedTabId'),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        ),
+      );
+
+      await tester.tap(
+        find.byKey(const ValueKey<String>('advance-dashboard-tab')),
+      );
+      await tester.pump();
+
+      expect(find.text('Tab 0'), findsOneWidget);
+      expect(find.text('Tab 1'), findsOneWidget);
+      expect(find.byType(FadeTransition), findsNWidgets(2));
+      expect(find.byType(SlideTransition), findsNWidgets(2));
+
+      await tester.tap(
+        find.byKey(const ValueKey<String>('dashboard-tab-0')),
+        warnIfMissed: false,
+      );
+      await tester.pump();
+      expect(outgoingTaps, 0);
+
+      await tester.tap(find.byKey(const ValueKey<String>('dashboard-tab-1')));
+      await tester.pump();
+      expect(incomingTaps, 1);
+
+      await tester.pumpAndSettle();
+      expect(find.text('Tab 0'), findsNothing);
+      expect(find.text('Tab 1'), findsOneWidget);
+    },
+  );
+
+  testWidgets(
+    'Dashboard tab transition uses a short fade without sliding under reduced motion',
+    (tester) async {
+      var tabId = 0;
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: MediaQuery(
+            data: const MediaQueryData(
+              size: Size(360, 640),
+              disableAnimations: true,
+            ),
+            child: StatefulBuilder(
+              builder: (context, setState) {
+                final renderedTabId = tabId;
+                return Scaffold(
+                  body: Column(
+                    children: [
+                      TextButton(
+                        key: const ValueKey<String>(
+                          'advance-reduced-motion-tab',
+                        ),
+                        onPressed: () => setState(() => tabId = 1),
+                        child: const Text('Advance'),
+                      ),
+                      Expanded(
+                        child: JexDashboardTabTransition(
+                          tabId: tabId,
+                          child: Center(child: Text('Tab $renderedTabId')),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+          ),
+        ),
+      );
+
+      await tester.tap(
+        find.byKey(
+          const ValueKey<String>('advance-reduced-motion-tab'),
+        ),
+      );
+      await tester.pump();
+
+      expect(find.text('Tab 1'), findsOneWidget);
+      expect(find.byType(FadeTransition), findsWidgets);
+      expect(find.byType(SlideTransition), findsNothing);
+
+      await tester.pump(const Duration(milliseconds: 90));
+      expect(find.text('Tab 0'), findsNothing);
+      expect(find.text('Tab 1'), findsOneWidget);
+    },
+  );
+
   test('Theme typography and input geometry use shared design tokens', () {
     final theme = buildJexTheme(AppThemePreset.dark);
     expect(

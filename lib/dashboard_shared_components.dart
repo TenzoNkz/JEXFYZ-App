@@ -38,6 +38,67 @@ class JexDashboardCard extends StatelessWidget {
   }
 }
 
+
+/// Animated, keyed Dashboard tab content. Reduced motion keeps a short fade but
+/// removes positional movement; outgoing tabs cannot receive input or semantics.
+class JexDashboardTabTransition extends StatelessWidget {
+  const JexDashboardTabTransition({
+    super.key,
+    required this.tabId,
+    required this.child,
+  });
+
+  final int tabId;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    final reduceMotion = MediaQuery.disableAnimationsOf(context);
+    final duration = Duration(milliseconds: reduceMotion ? 90 : 210);
+
+    return AnimatedSwitcher(
+      duration: duration,
+      reverseDuration: duration,
+      switchInCurve: Curves.easeOutCubic,
+      switchOutCurve: Curves.easeInCubic,
+      transitionBuilder: (child, animation) {
+        final slide = Tween<Offset>(
+          begin: const Offset(0, .015),
+          end: Offset.zero,
+        ).animate(animation);
+
+        return AnimatedBuilder(
+          animation: animation,
+          child: child,
+          builder: (context, child) {
+            final outgoing =
+                animation.status == AnimationStatus.reverse ||
+                animation.status == AnimationStatus.dismissed;
+            final Widget presented = reduceMotion
+                ? FadeTransition(opacity: animation, child: child!)
+                : FadeTransition(
+                    opacity: animation,
+                    child: SlideTransition(position: slide, child: child!),
+                  );
+
+            return IgnorePointer(
+              ignoring: outgoing,
+              child: ExcludeSemantics(
+                excluding: outgoing,
+                child: presented,
+              ),
+            );
+          },
+        );
+      },
+      child: KeyedSubtree(
+        key: ValueKey<int>(tabId),
+        child: child,
+      ),
+    );
+  }
+}
+
 /// Shared Dashboard section heading using the active semantic theme roles.
 class JexDashboardSectionTitle extends StatelessWidget {
   const JexDashboardSectionTitle(this.title, {super.key, this.subtitle});
