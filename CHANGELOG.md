@@ -1398,3 +1398,10 @@ Detailed V4.x/V5.0–V5.3 changes are retained in earlier commit history and the
 - Added a widget contract test for the shared component styling. Dashboard remains the sole BLE/GATT/P1/session/telemetry/command owner; no runtime device or protocol behavior was changed.
 - Exact source: `ca98699bd8404b12a082d21e1a74727c468dd3ce`. Validation Only #194 / run `45983828867` / job `140454219639`: dependencies PASS; formatter 43 files / 0 changed; analyzer PASS (110 info-level diagnostics, zero warnings/errors); Flutter tests **281/281 PASS**.
 - Visual screenshot/OEM/device acceptance remains **NOT VERIFIED**. No App build/release, Firmware/BIN, OTA, Firebase production or device operation was performed.
+
+## CODE_FULL — WP5 shared Dashboard control helpers (2026-11-27)
+
+- Extracted _switchRow, _jexToggle and _smoothList from the Dashboard state class into lib/dashboard_control_components.dart as a presentation extension. Control and Temperature callsites use the extension; Dashboard continues to own state, BLE/GATT/P1/session/telemetry and command behavior.
+- Updated widget and Firmware QC source-contract tests to inspect the extracted helper source. The production extraction changed presentation code location only; no P1 wire, Firmware, persistence, or BLE runtime behavior was changed.
+- Exact source: 727f30a0f0cb6bbb14921b4a9ded77b668cc0183. Validation Only #198 / run 45986589466 / job 140463697552: dependencies PASS; formatter 44 files / 0 changed; analyzer PASS (121 info-level diagnostics, zero warnings/errors); Flutter tests 281/281 PASS.
+- Visual screenshot/OEM/device acceptance remains NOT VERIFIED. No App build/release, Firmware/BIN, OTA, Firebase production or device operation was performed.

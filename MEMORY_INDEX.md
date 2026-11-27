@@ -1,16 +1,18 @@
 # JE X FYZ / JE Cooler — Documentation Map & Retention Policy
 
-## Reconciliation — 2026-11-27 — WP5 shared Dashboard presentation components + Validation Only #194
+## Reconciliation — 2026-11-27 — WP5 Dashboard shared components/control helpers + Validation Only #198
 
-- **Current source:** `main` `ca98699bd8404b12a082d21e1a74727c468dd3ce`; tree `cdd314967d8e15356fdd3f9f723e624b59648a5c`; 165 entries / 119 blobs / 46 trees, not truncated. Register reconciled to 119/119 unique path dispositions; path coverage is not complete content review.
-- **Latest exact-SHA evidence:** Validation Only #194 / run `45983828867` / job `140454219639`, exact SHA above, terminal SUCCESS; locked dependencies PASS; formatter 43 files / 0 changed; analyzer PASS (110 information-level diagnostics, zero warnings/errors); **281/281 Flutter tests PASS**.
-- **WP5 Batch 1:** added `lib/dashboard_shared_components.dart` with reusable `JexDashboardCard` and `JexDashboardSectionTitle`; migrated 12 Card and 7 heading call sites in Control/Temperature. The widget test verifies existing geometry, semantic theme colors, border/shadow and title typography. No device state, BLE/GATT/P1/session or command ownership moved.
-- **WP1 persistence:** seven AppSettingsStore/KnownCoolerStore plugin-mock tests pass; production keys/defaults/schema unchanged. Plugin failure injection and real Android secure-storage behavior remain open.
-- **WP2/WP3:** ordered bootstrap, App root, Settings presentation, P1 frame decoder, pure command classification and FIFO ACK waiters are separated. Dashboard remains sole BLE/GATT/P1/session/telemetry/command owner.
-- **Still open:** WP0 full Dashboard/main content/ownership audit; WP4 cross-route token audit; WP5 row/toggle/list extraction and final screen/design review; WP6–WP10 implementation and evidence.
-- **Evidence limits:** local Flutter/Dart/Gradle/ADB unavailable. Android/Kotlin compile, Android/OEM screenshots/device, SQLite v1→v2 runtime fixture, 1h/6h/24h performance soak and whole-App visual acceptance remain NOT RUN; visual status **VISUAL NOT VERIFIED**.
-- **Authorization:** App-only CODE_FULL WP0–WP10 followed by REPO_FULL; direct `main` with expected-HEAD protection. Build App/APK/sign/release needs fresh explicit authorization. Firmware/BIN/P1 wire/security, OTA, Firebase production, signing secrets, flashing and device operations remain excluded; archives immutable.
-- **Package boundary:** Build #167 remains latest published App package on immutable source `0dd96228d33b08c66e736ae91a8a6c3e5c3ddb81`; current main is not packaged.
+- Validated App source: main source checkpoint 727f30a0f0cb6bbb14921b4a9ded77b668cc0183; tree 2408f2e0c1f0a430ec6d548081fd209c86452a3c; 166 entries / 120 blobs / 46 trees, not truncated. Register now covers 120 unique path dispositions; path coverage is not a complete content review.
+- Latest exact-SHA evidence: Validation Only #198 / run 45986589466 / job 140463697552, exact source SHA above, terminal SUCCESS; locked dependencies PASS; formatter 44 files / 0 changed; analyzer PASS (121 information-level diagnostics, zero warnings/errors); 281/281 Flutter tests PASS.
+- WP5 Batch 1: lib/dashboard_shared_components.dart supplies JexDashboardCard and JexDashboardSectionTitle; 12 Card and 7 heading callsites moved into Control/Temperature parts. Widget contract test verifies geometry, theme roles, border/shadow and title typography.
+- WP5 Batch 2: lib/dashboard_control_components.dart supplies the state-bound presentation extension for _switchRow, _jexToggle and _smoothList. Control/Temperature callsites use the extension; widget and Firmware QC source-contract tests follow the helper location. No BLE/GATT/P1/session/command ownership or protocol behavior moved.
+- WP1 persistence: seven AppSettingsStore/KnownCoolerStore mock tests pass; production keys/defaults/schema unchanged. Plugin failure injection and real Android storage remain open.
+- WP2/WP3: ordered bootstrap, App root, Settings presentation, P1 frame decoder, pure command classification and FIFO ACK waiters remain separated. Dashboard remains sole BLE/GATT/P1/session/telemetry/command owner.
+- Still open: WP0 full Dashboard/main audit; WP4 cross-route token audit; WP5 actual screen refinement and visual acceptance; WP6–WP10 implementation/evidence.
+- Evidence limits: local Flutter/Dart/Gradle/ADB unavailable. Android/Kotlin compilation, OEM/device screenshots, SQLite v1→v2 runtime fixture, 1h/6h/24h performance soak and overall visual acceptance remain NOT RUN; VISUAL NOT VERIFIED.
+- Authorization: App-only CODE_FULL WP0–WP10 followed by REPO_FULL; direct main with expected-HEAD protection. Build App/APK/sign/release needs fresh explicit authorization. Firmware/BIN/P1 wire/security, OTA, Firebase production, signing secrets, flashing and device operations remain excluded.
+- Package boundary: Build #167 remains latest published App package on immutable source 0dd96228d33b08c66e736ae91a8a6c3e5c3ddb81; current main is not packaged.
+
 ## Authority order
 
 1. Owner's explicit requirements and decisions determine intent and authorization.
