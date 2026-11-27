@@ -5,15 +5,15 @@ Last reconciled: 2026-11-28 (Asia/Jakarta). Authority: MASTER_PROMPT.md.
 ## Active CODE_FULL work item — IN_PROGRESS
 
 - Owner command: “@Thinking Eksekusi Code!”; approved scope remains App-only WP0–WP10 source/tests/docs/config/static audit, direct commits on main by ChatGPT/Codex alone.
-- Current App source/test commit e52b167d7162ad156f031cb01dbad4fcab082c61; WP5 production source fix 8b882350d6a3f0af480145110cbb72ef6a81eef5; test recovery commits 1f073f1d3eae067d91b4dc6611a0e3d445892997, 0cf3050b7152f3c4c8720a9290d36217301b2f1c, e52b167d7162ad156f031cb01dbad4fcab082c61. Validation Only #278 / run 46078589907 / job 140772025714 is IN_PROGRESS on exact SHA e52b167d7162ad156f031cb01dbad4fcab082c61; prior #274 remains the last terminal SUCCESS (347/347).
+- Current App source/test commit f322b675aec6c46170d9be9f9dcb8e7f82460418; WP5 production source fix 8b882350d6a3f0af480145110cbb72ef6a81eef5; test recovery commits 1f073f1d3eae067d91b4dc6611a0e3d445892997, 0cf3050b7152f3c4c8720a9290d36217301b2f1c, f322b675aec6c46170d9be9f9dcb8e7f82460418. Validation Only #279 / run 46078817188 / job 140772751134 terminal SUCCESS on exact SHA f322b675aec6c46170d9be9f9dcb8e7f82460418: dependencies PASS, formatter 55/0, analyzer 140 info / 0 warnings/errors, 349/349 tests PASS.
 - WP0 lib/main.dart audit completed at blob c2821452079e798bfaaac99acb82af1f6e127c86; Dashboard remains sole BLE/GATT/P1/session/ACK/telemetry/command owner. Protected OTA/Firebase code untouched.
 - WP4 shared Dashboard switch-row/token slice closed with rendered widget and token tests. Value-only widget; no protocol/session/command changes; preserved 62-dp minimum, observed 64-dp natural height, 42-dp icon, existing type/radii/spacing, Tristate semantics and 54×48-dp touch target. Full suite #274 green.
-- WP5 Temperature: 5V increase and 12V decrease enabled states match the existing 2°C setter guard; three tests cover EN/ID semantics, 48-dp targets, Light/Dark, 360/420-dp viewports, endpoints and cross-zone gap. The test waits 250 ms for the 210-ms tab transition. #275–#277 failures are documented; #278 pending.
+- WP5 Temperature: 5V increase and 12V decrease enabled states match the existing 2°C setter guard; tests cover EN/ID semantics, 48-dp targets, Light/Dark, 360/420-dp viewports, endpoints and cross-zone gap. The test settles the outgoing 210-ms tab transition before viewport changes. #279 accepted (349/349).
 - Failures #270–#273 and actual root causes are retained in the active CHAT_TRANSFER checkpoint; all repaired before #274.
 - Inventory is 131 blobs / 131 unique dispositions, truncated=false. widget_test.dart source fragments are lexical static assertions, not AST guarantees; broader brittleness review OPEN.
 - Local toolchain BLOCKED / NOT RUN; no Android/Kotlin build, screenshots or physical device tests. Whole-App visual NOT VERIFIED.
 - No Build App/APK/sign/release, Firmware/BIN, BLE/P1 wire/security, OTA transport/recovery, Firebase production, flashing or device operation.
-- Next: inspect #278 terminal validation on exact SHA e52b167d7162ad156f031cb01dbad4fcab082c61; then continue the next bounded WP5 App presentation task.
+- Next: begin a bounded WP5 Home presentation/static-layout review; preserve Dashboard state/command ownership and require hosted validation for code/test changes.
 
 
 ## Historical Build App work item — COMPLETED SUCCESS
