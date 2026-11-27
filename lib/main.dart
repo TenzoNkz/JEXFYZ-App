@@ -4020,15 +4020,28 @@ class _DashboardScreenState extends State<DashboardScreen>
   Widget _tab(String title, int index) {
     final selected = tabIndex == index;
     final dark = _dashboardDark;
+    final selectTab = () => setState(() => tabIndex = index);
     return Expanded(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 2),
-        child: InkWell(
-          borderRadius: BorderRadius.circular(12),
-          onTap: () => setState(() => tabIndex = index),
-          child: SizedBox.expand(
-            child: Center(
-              child: Container(
+        // Keep one explicit selected-button node for assistive technology.
+        // The visual InkWell remains the pointer target without duplicating its
+        // implicit semantics label or tap action.
+        child: Semantics(
+          key: ValueKey<String>('dashboard-tab-semantics-$index'),
+          container: true,
+          button: true,
+          selected: selected,
+          inMutuallyExclusiveGroup: true,
+          label: title,
+          onTap: selectTab,
+          child: ExcludeSemantics(
+            child: InkWell(
+              borderRadius: BorderRadius.circular(12),
+              onTap: selectTab,
+              child: SizedBox.expand(
+                child: Center(
+                  child: Container(
                 width: double.infinity,
                 height: JexLayoutTokens.homeTabPillHeight,
                 alignment: Alignment.center,
@@ -4061,6 +4074,8 @@ class _DashboardScreenState extends State<DashboardScreen>
                       fontSize: 9,
                       letterSpacing: 0.05,
                     ),
+                  ),
+                ),
                   ),
                 ),
               ),

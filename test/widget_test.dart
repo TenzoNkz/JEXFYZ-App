@@ -2163,6 +2163,76 @@ void main() {
     },
   );
 
+  testWidgets(
+    'Dashboard tabs expose localized selected-button semantics at narrow widths',
+    (tester) async {
+      final semantics = tester.ensureSemantics();
+      final previousLanguage = appLanguageNotifier.value;
+      final previousTheme = appThemeNotifier.value;
+      addTearDown(() {
+        appLanguageNotifier.value = previousLanguage;
+        appThemeNotifier.value = previousTheme;
+        tester.view.resetPhysicalSize();
+        tester.view.resetDevicePixelRatio();
+      });
+
+      const tabKeys = [
+        'voltage',
+        'control',
+        'adaptive',
+        'led',
+        'temperature',
+      ];
+      final scenarios = [
+        (AppLanguage.english, 350.0, AppThemePreset.light),
+        (AppLanguage.indonesia, 420.0, AppThemePreset.dark),
+      ];
+
+      try {
+        for (final (language, width, theme) in scenarios) {
+          tester.view.physicalSize = Size(width * 3, 3200);
+          tester.view.devicePixelRatio = 3.0;
+          appLanguageNotifier.value = language;
+          appThemeNotifier.value = theme;
+
+          await tester.pumpWidget(
+            const JeCoolerApp(dashboard: DashboardScreen()),
+          );
+          await tester.pump();
+
+          for (var selectedIndex = 0;
+              selectedIndex < tabKeys.length;
+              selectedIndex++) {
+            final selectedTab = find.byKey(
+              ValueKey<String>('dashboard-tab-semantics-$selectedIndex'),
+            );
+            await tester.tap(selectedTab);
+            await tester.pump();
+            await tester.pump(const Duration(milliseconds: 250));
+
+            for (var index = 0; index < tabKeys.length; index++) {
+              final tab = find.byKey(
+                ValueKey<String>('dashboard-tab-semantics-$index'),
+              );
+              expect(tab, findsOneWidget);
+              final data = tester.getSemantics(tab).getSemanticsData();
+              expect(data.label, JexText.of(tabKeys[index], language));
+              expect(data.hasFlag(ui.SemanticsFlag.isButton), isTrue);
+              expect(
+                data.hasFlag(ui.SemanticsFlag.isSelected),
+                index == selectedIndex,
+              );
+              expect(data.hasAction(ui.SemanticsAction.tap), isTrue);
+            }
+          }
+        }
+        expect(tester.takeException(), isNull);
+      } finally {
+        semantics.dispose();
+      }
+    },
+  );
+
   test(
     'Localization keeps language names stable and maps power states correctly',
     () {
