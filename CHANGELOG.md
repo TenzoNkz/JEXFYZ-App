@@ -1390,3 +1390,11 @@ Detailed V4.x/V5.0–V5.3 changes are retained in earlier commit history and the
 - **Canonical prompt/pointer updates:** renamed the second workspace in `CHAT_TRANSFER_PROMPTS.md`; updated `README.md`, `AGENTS.md`, `CHAT_RULES.md`, `MEMORY_INDEX.md`, `SKILLS_INDEX.md`, `PROJECT_STATE.md`, `HANDOVER.md`, `APP_PREBUILD_AUDIT.md` and protected-operation guidance. Relevant canonical skills and their Copilot mirrors were updated and read back byte-identical.
 - **Boundaries:** this was a DISKUSI governance/documentation change only. No App/Firmware source, tests, configuration, workflow, Build App, Release, Firebase, OTA, BIN, flashing or device operation was executed. The previously open WP1 source work remains IN_PROGRESS in the separate CODE_FULL workstream. Archives and historical evidence were not rewritten.
 - **Reliability statement:** zero failures cannot be guaranteed. The new process aims to minimize preventable failures through scope isolation, explicit acceptance gates, exact evidence and safe recovery; external runner/network/tool/device failures remain possible.
+
+## CODE_FULL — WP5 shared Dashboard presentation extraction (2026-11-27)
+
+- Added `lib/dashboard_shared_components.dart` with shared `JexDashboardCard` and `JexDashboardSectionTitle` presentation widgets.
+- Migrated 12 Card and 7 section-heading usages from Dashboard state helpers to the Control and Temperature presentation parts. Existing layout, semantic color, border, shadow and typography values are preserved.
+- Added a widget contract test for the shared component styling. Dashboard remains the sole BLE/GATT/P1/session/telemetry/command owner; no runtime device or protocol behavior was changed.
+- Exact source: `ca98699bd8404b12a082d21e1a74727c468dd3ce`. Validation Only #194 / run `45983828867` / job `140454219639`: dependencies PASS; formatter 43 files / 0 changed; analyzer PASS (110 info-level diagnostics, zero warnings/errors); Flutter tests **281/281 PASS**.
+- Visual screenshot/OEM/device acceptance remains **NOT VERIFIED**. No App build/release, Firmware/BIN, OTA, Firebase production or device operation was performed.
