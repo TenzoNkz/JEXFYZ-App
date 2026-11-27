@@ -401,8 +401,7 @@ void main() {
 
     final settingsSource = File('lib/settings_pages.dart').readAsStringSync();
     final ledSource = File('lib/led_controls.dart').readAsStringSync();
-    const sharedControlRadius =
-        'BorderRadius.circular(JexShapeTokens.compactControlRadius)';
+    const sharedControlRadius = 'JexShapeTokens.compactControlRadius';
     expect(settingsSource.split(sharedControlRadius).length - 1, 1);
     expect(ledSource.split(sharedControlRadius).length - 1, 2);
     expect(settingsSource, isNot(contains('BorderRadius.circular(11)')));
