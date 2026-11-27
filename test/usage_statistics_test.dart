@@ -833,6 +833,30 @@ void main() {
   });
 
   test(
+    '30-day sample retention preserves each independent sensor baseline',
+    () {
+      final usage = File('lib/usage_statistics.dart').readAsStringSync();
+
+      // Each 1-Hz collector has its own timestamps; a session-wide MAX(id)
+      // would discard one sensor's baseline at the 30-day cutoff.
+      expect(usage, contains('const String _usageSampleRetentionDeleteSql'));
+      expect(usage, contains('MAX(timestamp_ms) AS latest_timestamp_ms'));
+      expect(usage, contains('battery_seen = 1'));
+      expect(usage, contains('hotside_seen = 1'));
+      expect(usage, contains('latest_battery'));
+      expect(usage, contains('latest_hotside'));
+      expect(usage, contains('UNION'));
+      expect(usage, contains('[cutoff, cutoff, cutoff]'));
+      expect(
+        usage.split('_deleteExpiredUsageSamples(database, cutoff)').length - 1,
+        2,
+      );
+      expect(usage, contains('static const int retentionDays = 30;'));
+      expect(usage, contains('version: 2'));
+    },
+  );
+
+  test(
     'Clear History cannot manufacture a fresh temperature or P1 receipt',
     () {
       final usage = File('lib/usage_statistics.dart').readAsStringSync();

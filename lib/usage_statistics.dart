@@ -23,6 +23,38 @@ const double _usageChartPlotLeftInset = 34.0;
 const double _usageChartPlotRightInset = 8.0;
 const double _usageTimelineStateBarHeight = 18.0;
 
+/// Keeps each independent sensor's last pre-cutoff sample. The seen flags also
+/// retain explicit null gaps; Battery and Firmware HOT have separate timestamps.
+const String _usageSampleRetentionDeleteSql = '''
+DELETE FROM usage_samples
+WHERE timestamp_ms < ?
+  AND id NOT IN (
+    SELECT sample.id
+    FROM usage_samples AS sample
+    INNER JOIN (
+      SELECT session_id, MAX(timestamp_ms) AS latest_timestamp_ms
+      FROM usage_samples
+      WHERE timestamp_ms < ? AND battery_seen = 1
+      GROUP BY session_id
+    ) AS latest_battery
+      ON latest_battery.session_id = sample.session_id
+      AND latest_battery.latest_timestamp_ms = sample.timestamp_ms
+    WHERE sample.battery_seen = 1
+    UNION
+    SELECT sample.id
+    FROM usage_samples AS sample
+    INNER JOIN (
+      SELECT session_id, MAX(timestamp_ms) AS latest_timestamp_ms
+      FROM usage_samples
+      WHERE timestamp_ms < ? AND hotside_seen = 1
+      GROUP BY session_id
+    ) AS latest_hotside
+      ON latest_hotside.session_id = sample.session_id
+      AND latest_hotside.latest_timestamp_ms = sample.timestamp_ms
+    WHERE sample.hotside_seen = 1
+  )
+''';
+
 /// Physical output telemetry, not a BLE connection or selected mode, defines operation.
 bool usageCoolerIsActive({required bool fanOn, required bool peltierOn}) =>
     fanOn || peltierOn;
@@ -810,18 +842,23 @@ class UsageStatisticsStore implements UsageStatisticsRepository {
       'WHERE timestamp_ms < ? GROUP BY session_id, metric)',
       [cutoff, cutoff],
     );
-    await database.rawDelete(
-      'DELETE FROM usage_samples WHERE timestamp_ms < ? '
-      'AND id NOT IN (SELECT MAX(id) FROM usage_samples '
-      'WHERE timestamp_ms < ? GROUP BY session_id)',
-      [cutoff, cutoff],
-    );
+    await _deleteExpiredUsageSamples(database, cutoff);
     await database.delete(
       'usage_sessions',
       where: 'COALESCE(ended_at_ms, last_seen_at_ms) < ?',
       whereArgs: [cutoff],
     );
     _lastPrunedAtMs = timestampMs;
+  }
+
+  Future<int> _deleteExpiredUsageSamples(
+    DatabaseExecutor database,
+    int cutoff,
+  ) {
+    return database.rawDelete(
+      _usageSampleRetentionDeleteSql,
+      [cutoff, cutoff, cutoff],
+    );
   }
 
   Future<void> _createUsageSamplesTable(DatabaseExecutor database) async {
@@ -939,12 +976,7 @@ class UsageStatisticsStore implements UsageStatisticsRepository {
           'WHERE timestamp_ms < ? GROUP BY session_id, metric)',
           [cutoff, cutoff],
         );
-        await database.rawDelete(
-          'DELETE FROM usage_samples WHERE timestamp_ms < ? '
-          'AND id NOT IN (SELECT MAX(id) FROM usage_samples '
-          'WHERE timestamp_ms < ? GROUP BY session_id)',
-          [cutoff, cutoff],
-        );
+        await _deleteExpiredUsageSamples(database, cutoff);
         await database.delete(
           'usage_sessions',
           where: 'COALESCE(ended_at_ms, last_seen_at_ms) < ?',
