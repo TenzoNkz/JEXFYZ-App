@@ -67,10 +67,7 @@ void main() {
       );
 
       Finder cardFinder(Key childKey) => find
-          .ancestor(
-            of: find.byKey(childKey),
-            matching: find.byType(Container),
-          )
+          .ancestor(of: find.byKey(childKey), matching: find.byType(Container))
           .first;
       Container cardContainer(Key childKey) =>
           tester.widget<Container>(cardFinder(childKey));
