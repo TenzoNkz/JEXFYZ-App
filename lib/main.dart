@@ -73,6 +73,7 @@ import 'package:phosphor_icons/phosphor_icons.dart';
 
 import 'app_bootstrap.dart';
 import 'app_root.dart';
+import 'p1_frame_decoder.dart';
 import 'app_security.dart';
 import 'app_settings.dart';
 import 'connection_scan_coordinator.dart';
@@ -433,7 +434,8 @@ class _DashboardScreenState extends State<DashboardScreen>
   int hotLimitDraft = 45;
   int battery5Draft = 25;
   int battery12Draft = 35;
-  String incomingBuffer = '';
+  // One P1 stream decoder belongs to this Dashboard session; it does not own BLE or telemetry state.
+  final P1FrameDecoder _p1FrameDecoder = P1FrameDecoder();
   String notice = '';
   String pendingOtaResult = '';
   int _homeNotifyRevision = 0;
@@ -1108,7 +1110,7 @@ class _DashboardScreenState extends State<DashboardScreen>
     _syncReadyAck = false;
     fullSyncReceived = false;
     _lastPeltierAckFailureReason = '';
-    incomingBuffer = '';
+    _p1FrameDecoder.clear();
     _syncSnapshot.clear();
     _pendingTelemetry.clear();
 
@@ -1611,492 +1613,32 @@ class _DashboardScreenState extends State<DashboardScreen>
     await notificationSub?.cancel();
     notificationSub = discoveredTx.lastValueStream.listen((bytes) {
       if (bytes.isNotEmpty) {
-        // AI-METHOD: _parseIncoming — Parse framed full-sync data and newline telemetry/ACK messages.
-        _parseIncoming(utf8.decode(bytes, allowMalformed: true));
-      }
-    });
-    target.cancelWhenDisconnected(notificationSub!);
-
-    await discoveredTx.setNotifyValue(true).timeout(const Duration(seconds: 5));
-    await Future<void>.delayed(const Duration(milliseconds: 220));
-
-    _bleReady = true;
-
-    // V3.2 keeps the V3.1 atomic SYNC -> SYNC_READY protocol. Give the device
-    // several opportunities to drain its automatic connect-time sync and then
-    // request a clean snapshot ourselves.
-    for (
-      var attempt = 0;
-      attempt < 5 && !fullSyncReceived && mounted;
-      attempt++
-    ) {
-      // AI-METHOD: sendCommand — Serialize GATT writes and enforce the pre-session command gate.
-      await sendCommand('SYNC', showError: false);
-      final deadline = DateTime.now().add(const Duration(milliseconds: 1500));
-      while (mounted &&
-          !fullSyncReceived &&
-          DateTime.now().isBefore(deadline)) {
-        await Future<void>.delayed(const Duration(milliseconds: 40));
-      }
-    }
-
-    if (!fullSyncReceived) {
-      // If the first GATT session did not deliver notifications, re-subscribe
-      // once before failing. The service cache was already validated above.
-      await Future<void>.delayed(const Duration(milliseconds: 250));
-      await discoveredTx.setNotifyValue(false);
-      await discoveredTx.setNotifyValue(true);
-
-      for (
-        var attempt = 0;
-        attempt < 3 && !fullSyncReceived && mounted;
-        attempt++
-      ) {
-        // AI-METHOD: sendCommand — Serialize GATT writes and enforce the pre-session command gate.
-        await sendCommand('SYNC', showError: false);
-        final deadline = DateTime.now().add(const Duration(milliseconds: 1000));
-        while (mounted &&
-            !fullSyncReceived &&
-            DateTime.now().isBefore(deadline)) {
-          await Future<void>.delayed(const Duration(milliseconds: 35));
-        }
-      }
-    }
-
-    if (!fullSyncReceived) {
-      throw StateError(JexText.of('bleSyncFailed', appLanguageNotifier.value));
-    }
-
-    // Phase 2: open the firmware command gate. No runtime state is written by
-    // the App before the firmware confirms this handshake.
-    _bleSessionReady = false;
-    protocolValid = false;
-    _syncReadyAck = false;
-    fullSyncReceived = false;
-    final readyAccepted = await sendCommand('SYNC_READY', showError: false);
-    if (!readyAccepted) {
-      throw StateError(
-        JexText.of('bleHandshakeWriteFailed', appLanguageNotifier.value),
-      );
-    }
-
-    final readyDeadline = DateTime.now().add(
-      const Duration(milliseconds: 3500),
-    );
-    while (mounted &&
-        !(_syncReadyAck &&
-            fullSyncReceived &&
-            _bleSessionReady &&
-            protocolValid) &&
-        DateTime.now().isBefore(readyDeadline)) {
-      await Future<void>.delayed(const Duration(milliseconds: 40));
-    }
-
-    if (!_syncReadyAck ||
-        !fullSyncReceived ||
-        !_bleSessionReady ||
-        !protocolValid) {
-      throw StateError(
-        JexText.of('bleSessionNotReady', appLanguageNotifier.value),
-      );
-    }
-
-    // Final synchronized snapshot includes the phone battery temperature.
-    // AI-METHOD: _readBatteryTemperatureOnce — Read phone battery temperature through Android.
-    await _readBatteryTemperatureOnce(updateUi: false);
-    fullSyncReceived = false;
-    // AI-METHOD: sendCommand — Serialize GATT writes and enforce the pre-session command gate.
-    await sendCommand('SYNC', showError: false);
-    final finalSyncDeadline = DateTime.now().add(
-      const Duration(milliseconds: 2500),
-    );
-    while (mounted &&
-        !fullSyncReceived &&
-        DateTime.now().isBefore(finalSyncDeadline)) {
-      await Future<void>.delayed(const Duration(milliseconds: 40));
-    }
-
-    if (!fullSyncReceived) {
-      throw StateError(JexText.of('fullSyncFailed', appLanguageNotifier.value));
-    }
-
-    if (!mounted) return;
-
-    final wasOtaRecovery = otaRecoveryActive || otaExpectedDisconnect;
-    final readySnapshot = Map<String, String>.from(_pendingTelemetry);
-    _pendingTelemetry.clear();
-    final syncedOtaResult = readySnapshot['LAST_OTA_RESULT'] ?? '';
-    final resultEvent = pendingOtaResult.isNotEmpty
-        ? pendingOtaResult
-        : syncedOtaResult;
-    // Format only when displayed so a language change during synchronization uses the current locale.
-    final syncedOtaNotice = isTransientOtaResultEvent(resultEvent)
-        ? _friendlyOtaResult(resultEvent)
-        : '';
-    pendingOtaResult = '';
-
-    setState(() {
-      for (final entry in readySnapshot.entries) {
-        // AI-METHOD: _applyTelemetryValue — Map firmware telemetry keys into typed Flutter state.
-        _applyTelemetryValue(entry.key, entry.value);
-      }
-      connected = true;
-      runtimeOutputsKnown = true;
-      syncing = false;
-      dashboardReady = true;
-      notice = syncedOtaNotice.isNotEmpty
-          ? syncedOtaNotice
-          : JexText.of('systemReady', appLanguageNotifier.value);
-    });
-    _publishVoltageLockSettings();
-    _publishFloatingTelemetry();
-    _startUsageStatisticsSession();
-
-    if (wasOtaRecovery) {
-      reconnectTimer?.cancel();
-      reconnectTimer = null;
-      otaRecoveryActive = false;
-      otaExpectedDisconnect = false;
-      otaRecoveryScanInProgress = false;
-      if (appNotifyBluetoothNotifier.value && syncedOtaNotice.isNotEmpty) {
-        unawaited(
-          _postNotification(
-            JexText.of('device', appLanguageNotifier.value),
-            syncedOtaNotice,
-            2102,
-          ),
-        );
-      }
-    } else if (appNotifyBluetoothNotifier.value) {
-      unawaited(
-        _postNotification(
-          JexText.of('device', appLanguageNotifier.value),
-          JexText.of('bluetoothConnected', appLanguageNotifier.value),
-          2102,
-        ),
-      );
-    }
-    // AI-METHOD: _startBatteryTelemetry — Start the 1 Hz phone-battery heartbeat.
-    _startBatteryTelemetry();
-    unawaited(_setBackgroundService(true));
-
-    if (isUserVisibleResetReason(resetReason)) {
-      _showSnackBar(_friendlyReset(resetReason), color: Colors.orangeAccent);
-    }
-  }
-
-  Future<void> _disconnect() async {
-    try {
-      await device?.disconnect();
-    } catch (e) {
-      debugPrint('disconnect: $e');
-    }
-  }
-
-  // AI-METHOD: sendCommand — Serialize GATT writes and enforce the pre-session command gate.
-  Future<bool> sendCommand(String command, {bool showError = true}) {
-    final completer = Completer<bool>();
-    _writeQueue = _writeQueue
-        .then((_) async {
-          if (!_bleReady || rx == null) {
-            if (showError && mounted) {
-              _showSnackBar(
-                JexText.of('bluetoothNotReady'),
-                color: Colors.orangeAccent,
-              );
-            }
-            if (!completer.isCompleted) completer.complete(false);
-            return;
-          }
-
-          final normalized = command.trim().toUpperCase();
-          if (!_bleSessionReady &&
-              normalized != 'SYNC' &&
-              normalized != 'SYNC_READY') {
-            if (!completer.isCompleted) completer.complete(false);
-            return;
-          }
-
-          final payload = utf8.encode('$command\n');
-          final canNoResponse = rx!.properties.writeWithoutResponse;
-          final requiresResponse = _requiresResponse(command);
-
-          try {
-            await rx!
-                .write(
-                  payload,
-                  withoutResponse: !requiresResponse && canNoResponse,
-                )
-                .timeout(const Duration(seconds: 4));
-            if (!completer.isCompleted) completer.complete(true);
-          } catch (e) {
-            debugPrint('BLE write $command: $e');
-
-            if (!completer.isCompleted) completer.complete(false);
-          }
-        })
-        .catchError((_) {
-          if (!completer.isCompleted) completer.complete(false);
-        });
-    return completer.future;
-  }
-
-  String? _ackItemForCommand(String command) {
-    final c = command.trim().toUpperCase();
-    if (c == 'SYNC_READY') return 'SYNC_READY';
-    if (c == 'OTAENTER') return 'OTAENTER';
-    if (c == 'CLOUDOTA') return 'CLOUDOTA';
-    if (c == 'RGB:ON' || c == 'RGB:OFF') return 'RGB';
-    if (c.startsWith('MODE:')) return 'MODE';
-    if (c.startsWith('BRIGHTNESS:')) return 'BRIGHTNESS';
-    if (c.startsWith('COLOR:')) return 'COLOR';
-    if (c.startsWith('HOTLIMIT:')) return 'HOTLIMIT';
-    if (c.startsWith('BATT5:')) return 'BATT5';
-    if (c.startsWith('BATT12:')) return 'BATT12';
-    if (c.startsWith('VOLTAGE_LOCK:')) return 'VOLTAGE_LOCK';
-    if (c.startsWith('VOLTAGE:')) return 'VOLTAGE';
-    if (c == 'FAN:ON' || c == 'FAN:OFF') return 'FAN';
-    if (c == 'PELTIER:ON' || c == 'PELTIER:OFF') return 'PELTIER';
-    if (c == 'ADAPTIVE:ON' || c == 'ADAPTIVE:OFF') return 'ADAPTIVE';
-    if (c.startsWith('ADAPTIVE_PROFILE:')) return 'ADAPTIVE_PROFILE';
-    if (c.startsWith('FANSPEED:')) return 'FANSPEED';
-    if (c == 'RESET:TEMPERATURE') return 'RESET_TEMPERATURE';
-    if (c.startsWith('SSID:')) return 'SSID';
-    if (c.startsWith('PASS:')) return 'PASS';
-    if (c.startsWith('URL:')) return 'URL';
-    if (c.startsWith('VERSION:')) return 'VERSION';
-    return null;
-  }
-
-  Future<String> _waitForAck(
-    String item, {
-    Duration timeout = const Duration(seconds: 3),
-  }) async {
-    final completer = Completer<String>();
-    (_ackWaiters[item] ??= <Completer<String>>[]).add(completer);
-    try {
-      return await completer.future.timeout(timeout);
-    } catch (_) {
-      final list = _ackWaiters[item];
-      list?.remove(completer);
-      if (list != null && list.isEmpty) _ackWaiters.remove(item);
-      return 'TIMEOUT';
-    }
-  }
-
-  // AI-METHOD: _sendAndWaitAck — Send a command and await its firmware acknowledgement.
-  Future<bool> _sendAndWaitAckInternal(
-    String command, {
-    bool showError = true,
-    Duration timeout = const Duration(seconds: 3),
-  }) async {
-    _lastCommandAckReason = '';
-    final item = _ackItemForCommand(command);
-    if (item == 'PELTIER') {
-      _lastPeltierAckFailureReason = '';
-    }
-    if (item == null) return sendCommand(command, showError: showError);
-    final ackFuture = _waitForAck(item, timeout: timeout);
-    final sent = await sendCommand(command, showError: showError);
-    if (!sent) {
-      _lastCommandAckReason = 'WRITE_FAILED';
-      final waiters = _ackWaiters[item];
-      if (waiters != null && waiters.isNotEmpty) {
-        waiters.removeLast();
-        if (waiters.isEmpty) _ackWaiters.remove(item);
-      }
-      return false;
-    }
-    final reason = await ackFuture;
-    _lastCommandAckReason = reason;
-    final accepted = _isAckSuccessReason(reason);
-    if (!accepted) return false;
-
-    final expected = _expectedTelemetryForCommand(command);
-    if (expected == null) return true;
-    final confirmed = await _waitUntil(
-      () => _telemetryValueMatches(expected.key, expected.value),
-      timeout: timeout,
-    );
-    if (confirmed) return true;
-
-    // A delta can be lost during a transient BLE notification gap. Reconcile
-    // once from the firmware snapshot rather than trusting stale local state.
-    final reconciled = await _requestFreshSync(
-      timeout: const Duration(seconds: 2),
-    );
-    return reconciled && _telemetryValueMatches(expected.key, expected.value);
-  }
-
-  Future<bool> _sendAndWaitAck(
-    String command, {
-    bool showError = true,
-    Duration timeout = const Duration(seconds: 3),
-  }) {
-    final next = _commandTransactionQueue.then<bool>(
-      (_) => _sendAndWaitAckInternal(
-        command,
-        showError: showError,
-        timeout: timeout,
-      ),
-    );
-    _commandTransactionQueue = next.then<void>((_) {}, onError: (_) {});
-    return next;
-  }
-
-  MapEntry<String, String>? _expectedTelemetryForCommand(String command) {
-    final c = command.trim().toUpperCase();
-    if (c == 'FAN:ON') return const MapEntry('FAN', 'ON');
-    if (c == 'FAN:OFF') return const MapEntry('FAN', 'OFF');
-    if (c == 'PELTIER:ON') return const MapEntry('PELTIER', 'ON');
-    if (c == 'PELTIER:OFF') return const MapEntry('PELTIER', 'OFF');
-    if (c == 'ADAPTIVE:ON') return const MapEntry('ADAPTIVE', 'ON');
-    if (c == 'ADAPTIVE:OFF') return const MapEntry('ADAPTIVE', 'OFF');
-    if (c.startsWith('VOLTAGE_LOCK:'))
-      return MapEntry('VOLTAGE_LOCK', c.substring(13));
-    if (c.startsWith('VOLTAGE:')) return MapEntry('VOLTAGE', c.substring(8));
-    if (c == 'RGB:ON') return const MapEntry('RGB', 'ON');
-    if (c == 'RGB:OFF') return const MapEntry('RGB', 'OFF');
-    if (c.startsWith('MODE:')) return MapEntry('MODE', c.substring(5));
-    if (c.startsWith('BRIGHTNESS:'))
-      return MapEntry('BRIGHTNESS', c.substring(11));
-    if (c.startsWith('COLOR:')) return MapEntry('RGB_COLOR', c.substring(6));
-    if (c.startsWith('FANSPEED:')) return MapEntry('FAN_SPEED', c.substring(9));
-    if (c.startsWith('HOTLIMIT:'))
-      return MapEntry('TEMP_HOT_LIMIT', c.substring(9));
-    if (c.startsWith('BATT5:')) return MapEntry('BATT_5', c.substring(6));
-    if (c.startsWith('BATT12:')) return MapEntry('BATT_12', c.substring(7));
-    if (c.startsWith('ADAPTIVE_PROFILE:')) {
-      return MapEntry('ADAPTIVE_PROFILE', c.substring(17));
-    }
-    return null;
-  }
-
-  bool _telemetryValueMatches(String key, String expected) {
-    switch (key) {
-      case 'FAN':
-        return fanOn == (expected == 'ON');
-      case 'PELTIER':
-        return peltierOn == (expected == 'ON');
-      case 'ADAPTIVE':
-        return adaptiveOn == (expected == 'ON');
-      case 'VOLTAGE_LOCK':
-        return voltageLockKnown &&
-            voltageLockActive == (expected.toUpperCase() == 'ON');
-      case 'VOLTAGE':
-        return voltage.toUpperCase() == expected.toUpperCase();
-      case 'RGB':
-        return rgbOn == (expected == 'ON');
-      case 'MODE':
-        return rgbMode == (int.tryParse(expected) ?? -1);
-      case 'BRIGHTNESS':
-        return brightness == (int.tryParse(expected) ?? -1);
-      case 'RGB_COLOR':
-        return normalizeLedColor(rgbColor) == normalizeLedColor(expected);
-      case 'FAN_SPEED':
-        return fanSpeed == (int.tryParse(expected) ?? -1);
-      case 'TEMP_HOT_LIMIT':
-        return hotLimit == (int.tryParse(expected) ?? -1);
-      case 'BATT_5':
-        return battery5Limit == (int.tryParse(expected) ?? -1);
-      case 'BATT_12':
-        return battery12Limit == (int.tryParse(expected) ?? -1);
-      case 'ADAPTIVE_PROFILE':
-        return adaptiveProfile.toUpperCase() == expected.toUpperCase();
-      default:
-        return false;
-    }
-  }
-
-  Future<bool> _waitUntil(
-    bool Function() predicate, {
-    Duration timeout = const Duration(seconds: 3),
-  }) async {
-    final deadline = DateTime.now().add(timeout);
-    while (mounted && DateTime.now().isBefore(deadline)) {
-      if (predicate()) return true;
-      await Future<void>.delayed(const Duration(milliseconds: 35));
-    }
-    return predicate();
-  }
-
-  bool _requiresResponse(String command) {
-    final c = command.trim().toUpperCase();
-    return c == 'SYNC' ||
-        c == 'SYNC_READY' ||
-        c == 'CLOUDOTA' ||
-        c == 'OTAENTER' ||
-        c.startsWith('VOLTAGE_LOCK:') ||
-        c.startsWith('VOLTAGE:') ||
-        c.startsWith('SSID:') ||
-        c.startsWith('PASS:') ||
-        c.startsWith('URL:') ||
-        c.startsWith('VERSION:') ||
-        c.startsWith('FAN:') ||
-        c.startsWith('PELTIER:') ||
-        c.startsWith('ADAPTIVE_PROFILE:') ||
-        c.startsWith('ADAPTIVE:') ||
-        c.startsWith('FANSPEED:') ||
-        c.startsWith('HOTLIMIT:') ||
-        c.startsWith('BATT5:') ||
-        c.startsWith('BATT12:') ||
-        c.startsWith('RESET:') ||
-        c.startsWith('PHONE:BT=');
-  }
-
-  // AI-METHOD: _parseIncoming — Parse framed full-sync data and newline telemetry/ACK messages.
+        // AI-METHOD: _parseIncoming — Dispatch newline lines and complete SYNC frames to the Dashboard session owner.
   void _parseIncoming(String incoming) {
-    incomingBuffer += incoming;
-    if (incomingBuffer.length > 16000) {
-      final marker = incomingBuffer.lastIndexOf('<SYNC_START>');
-      incomingBuffer = marker >= 0 ? incomingBuffer.substring(marker) : '';
-    }
-
-    while (true) {
-      final start = incomingBuffer.indexOf('<SYNC_START>');
-      if (start < 0) break;
-      final end = incomingBuffer.indexOf('<SYNC_END>', start);
-      if (end < 0) break;
-
-      final before = incomingBuffer.substring(0, start);
-      if (before.isNotEmpty) {
-        for (final line in before.split('\n')) {
-          final trimmed = line.trim();
-          if (trimmed.isNotEmpty) _applyLine(trimmed);
-        }
+    for (final event in _p1FrameDecoder.addChunk(incoming)) {
+      if (event is P1LineFrame) {
+        _applyLine(event.line);
+        continue;
       }
-
-      final payload = incomingBuffer.substring(
-        start + '<SYNC_START>'.length,
-        end,
-      );
-      incomingBuffer = incomingBuffer.substring(end + '<SYNC_END>'.length);
-
-      _syncSnapshot.clear();
-      for (final rawLine in payload.split('\n')) {
-        final line = rawLine.trim();
-        if (line.isEmpty) continue;
-        if (line.startsWith('ACK:')) {
-          _handleAckLine(line);
-          continue;
+      if (event is P1SyncFrame) {
+        _syncSnapshot.clear();
+        for (final rawLine in event.payload.split('\n')) {
+          final line = rawLine.trim();
+          if (line.isEmpty) continue;
+          if (line.startsWith('ACK:')) {
+            _handleAckLine(line);
+            continue;
+          }
+          final separator = line.indexOf(':');
+          if (separator <= 0) continue;
+          final key = line.substring(0, separator).trim();
+          final value = line.substring(separator + 1).trim();
+          _syncSnapshot[key] = value;
         }
-        final separator = line.indexOf(':');
-        if (separator <= 0) continue;
-        final key = line.substring(0, separator).trim();
-        final value = line.substring(separator + 1).trim();
-        _syncSnapshot[key] = value;
+        // Only Dashboard may commit the complete atomic snapshot or advance readiness.
+        _commitTelemetry(_syncSnapshot);
+        fullSyncReceived = true;
       }
-      // AI-METHOD: _commitTelemetry — Buffer setup telemetry until dashboard readiness; otherwise update UI state.
-      _commitTelemetry(_syncSnapshot);
-      fullSyncReceived = true;
-    }
-
-    while (incomingBuffer.contains('\n') &&
-        !incomingBuffer.contains('<SYNC_START>')) {
-      final nl = incomingBuffer.indexOf('\n');
-      final line = incomingBuffer.substring(0, nl).trim();
-      incomingBuffer = incomingBuffer.substring(nl + 1);
-      if (line.isNotEmpty) _applyLine(line);
     }
   }
 
