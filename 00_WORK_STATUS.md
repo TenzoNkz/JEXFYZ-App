@@ -1,4 +1,4 @@
-| Last updated | 2026-11-27T16:04:35+07:00 (Asia/Jakarta) |
+| Last updated | 2026-11-27T16:06:45+07:00 (Asia/Jakarta) |
 
 > Event-driven project marker. It is not a live heartbeat or a GitHub lock.
 
@@ -8,20 +8,20 @@
 |---|---|
 | **STATUS** | **IN_PROGRESS** |
 | SESSION STATUS | IN_PROGRESS — this conversation is the active Eksekusi Code workspace. |
-| WORK STATUS | IN_PROGRESS — owner-approved App-only WP0–WP10 full rework + premium UI redesign; REPO_FULL follows only after CODE_FULL closes. |
+| WORK STATUS | IN_PROGRESS — owner-approved App-only WP0–WP10 full rework + premium UI redesign; REPO_FULL follows after CODE_FULL closes. |
 | WORKSPACE | CODE_FULL |
 | Mode | Flutter/Dart App source, tests, docs, App config and static audit; direct commits to main. No Build App/APK/sign/release, Firmware/BIN/P1 wire or behavior, BLE identity/security, OTA transport/trust/recovery, Firebase production, signing material, flashing or device operations. |
-| Request / work item | Continue approved App rework in this conversation. Group related edits; validate coherently; avoid repeated formatter/test cycles. |
+| Request / work item | Continue approved App rework here. Group related changes; validate before commit; avoid repeated formatter/test cycles. |
 | Started | 2026-11-27T15:24:50+07:00 (Asia/Jakarta) |
-| Last updated | 2026-11-27T16:04:35+07:00 (Asia/Jakarta) |
-| Current phase | WP5 Home presentation ownership — moved three Home builders, aligned tests and formatter output; exact-SHA Validation Only #189 is running. |
-| Last completed milestone | Commit 874624556c1c6abd056aebeb38296288d8c2ef84 applies exact Dart formatter output to dashboard_home_tab.dart and redirects three remaining Home source-contract checks. #188 had dependencies/analyzer PASS but failed formatter and three tests because test assertions still referenced main.dart. |
-| Last verified source checkpoint | 1b6b38bddf902a251a385f48f921dad523ae036b — Validation Only #187 terminal SUCCESS, 280/280. |
-| EXTERNAL OPERATION | Validation Only #189 — run 45970664166 / job 140410021354; exact source SHA 874624556c1c6abd056aebeb38296288d8c2ef84. |
-| EXTERNAL OPERATION STATUS | IN_PROGRESS (GitHub Actions confirms the runner active). |
-| Result / evidence | #188 terminal FAILURE: dependencies PASS, analyzer PASS, formatter failed (one file changed), tests 277/280 PASS. The three failing source-contract tests have now been redirected to the correct Home presentation source. |
-| Blocker / remaining evidence | Local Flutter/Dart/Gradle/ADB unavailable. Android/Kotlin, actual screenshots/OEM/device behavior, SQLite runtime migration, performance soak and whole-App visual acceptance remain NOT RUN / NOT VERIFIED. |
-| Next action | Inspect #189 terminal formatter, analyzer and full-suite outcomes for exact SHA 8746245; then update register/checkpoint once with observed results. |
+| Last updated | 2026-11-27T16:06:45+07:00 (Asia/Jakarta) |
+| Current phase | WP5 Home source-contract cleanup — remove only the unused local in the Core indicator family test and run final exact-SHA validation. |
+| Last completed milestone | #189 / run 45970664166 / job 140410021354 tested exact source 874624556c1c6abd056aebeb38296288d8c2ef84. Dependencies PASS, formatter 42/0 PASS, tests **280/280 PASS**; analyzer FAILED only on the unused local at test/widget_test.dart:643. |
+| Last verified source checkpoint | 1b6b38bddf902a251a385f48f921dad523ae036b — Validation Only #187 terminal SUCCESS, 280/280. Home presentation refactor awaits analyzer-clean exact-SHA validation. |
+| EXTERNAL OPERATION | Validation Only #189 — run 45970664166 / job 140410021354; exact SHA 874624556c1c6abd056aebeb38296288d8c2ef84; terminal FAILURE due one unused local. |
+| EXTERNAL OPERATION STATUS | FAILED / TERMINAL. No Actions run is currently queued or in progress. |
+| Result / evidence | #189: locked dependencies PASS; formatter 42 files / 0 changed PASS; analyzer FAILED due one `unused_local_variable` warning; Flutter tests 280/280 PASS. The exact unused declaration has now been isolated to one source-contract test block; identically named locals in other tests remain necessary. |
+| Blocker / remaining evidence | Local Flutter/Dart/Gradle/ADB unavailable. Android/Kotlin, screenshots/OEM/device, SQLite runtime migration, performance soak and whole-App visual acceptance remain NOT RUN / NOT VERIFIED. |
+| Next action | Commit the one-line scoped cleanup and status; run Validation Only #190 on the exact SHA; reconcile the Home refactor to #190 terminal evidence. |
 
 ## Status model
 

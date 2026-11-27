@@ -640,7 +640,6 @@ void main() {
   });
 
   test('Core indicator family shares a luminous core with distinct telemetry motion', () {
-    final source = File('lib/main.dart').readAsStringSync();
     final homeSource = File('lib/dashboard_home_tab.dart').readAsStringSync();
     final controlSource = File('lib/dashboard_control_tabs.dart')
         .readAsStringSync();
