@@ -60,30 +60,28 @@ class JexDashboardTabTransition extends StatelessWidget {
       reverseDuration: duration,
       switchInCurve: Curves.easeOutCubic,
       switchOutCurve: Curves.easeInCubic,
+      layoutBuilder: (currentChild, previousChildren) => Stack(
+        alignment: Alignment.topCenter,
+        children: [
+          for (final previousChild in previousChildren)
+            Positioned.fill(
+              child: IgnorePointer(
+                child: ExcludeSemantics(child: previousChild),
+              ),
+            ),
+          if (currentChild != null) currentChild,
+        ],
+      ),
       transitionBuilder: (child, animation) {
         final slide = Tween<Offset>(
           begin: const Offset(0, .015),
           end: Offset.zero,
         ).animate(animation);
-
-        return AnimatedBuilder(
-          animation: animation,
-          child: child,
-          builder: (context, child) {
-            final outgoing =
-                animation.status == AnimationStatus.reverse;
-            final Widget presented = reduceMotion
-                ? FadeTransition(opacity: animation, child: child!)
-                : FadeTransition(
-                    opacity: animation,
-                    child: SlideTransition(position: slide, child: child!),
-                  );
-
-            return IgnorePointer(
-              ignoring: outgoing,
-              child: ExcludeSemantics(excluding: outgoing, child: presented),
-            );
-          },
+        return FadeTransition(
+          opacity: animation,
+          child: reduceMotion
+              ? child
+              : SlideTransition(position: slide, child: child),
         );
       },
       child: KeyedSubtree(key: ValueKey<int>(tabId), child: child),

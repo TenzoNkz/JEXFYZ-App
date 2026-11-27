@@ -206,6 +206,8 @@ void main() {
       var tabId = 0;
       var outgoingTaps = 0;
       var incomingTaps = 0;
+      final semantics = tester.ensureSemantics();
+      addTearDown(semantics.dispose);
 
       await tester.pumpWidget(
         MaterialApp(
@@ -256,6 +258,8 @@ void main() {
 
       expect(find.text('Tab 0'), findsOneWidget);
       expect(find.text('Tab 1'), findsOneWidget);
+      expect(find.bySemanticsLabel('Tab 0'), findsNothing);
+      expect(find.bySemanticsLabel('Tab 1'), findsOneWidget);
       expect(find.byType(FadeTransition), findsNWidgets(2));
       expect(find.byType(SlideTransition), findsNWidgets(2));
 
@@ -2828,7 +2832,7 @@ void main() {
     expect(toggle, contains('displayedValue && showCheck'));
   });
 
-voltage helper accepts only supported voltages', () {
+  test('JE X FYZ voltage helper accepts only supported voltages', () {
     expect(isVoltageCommand('5V'), isTrue);
     expect(isVoltageCommand('9v'), isTrue);
     expect(isVoltageCommand('12V'), isTrue);
@@ -2845,7 +2849,7 @@ voltage helper accepts only supported voltages', () {
     expect(isDifferentFirmwareVersion('V1.8', 'V1.8'), isFalse);
   });
 
-indicator animation policy follows connection and output state', () {
+  test('JE X FYZ indicator animation policy follows connection and output state', () {
     expect(
       jexIndicatorAnimationActive(connected: false, stateActive: true),
       isFalse,
@@ -3915,7 +3919,7 @@ indicator animation policy follows connection and output state', () {
     expect(dialog, contains('barrierDismissible: true'));
   });
 
-branding and meaningful foreground text', () {
+  test('Android notifications use JE X FYZ branding and meaningful foreground text', () {
     final activity = File(
       'android/app/src/main/kotlin/com/horizontalzzz/jexfyz/MainActivity.kt',
     ).readAsStringSync();
@@ -3980,7 +3984,7 @@ branding and meaningful foreground text', () {
     expect(dark.colorScheme.onSurfaceVariant, const Color(0xFF979DA8));
   });
 
-theme is dark outside dashboard', () {
+  test('Default JE X FYZ theme is dark outside dashboard', () {
     final theme = buildJexTheme(AppThemePreset.defaultTheme);
     expect(theme.brightness, Brightness.dark);
     expect(theme.scaffoldBackgroundColor, const Color(0xFF0F1013));
@@ -4690,7 +4694,7 @@ theme is dark outside dashboard', () {
     expect(temperatureButton, contains('required String semanticLabel'));
   });
   test(
-Bluetooth name',
+    'Connection device row preserves the advertised JE X FYZ Bluetooth name',
     () {
       final connection = File('lib/connection_sheet.dart').readAsStringSync();
       final start = connection.indexOf('class _ConnectionSheetContentState');
