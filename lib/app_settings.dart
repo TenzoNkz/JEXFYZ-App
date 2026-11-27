@@ -1864,8 +1864,9 @@ ThemeData buildJexCompactUiTheme(
 }) {
   final base = baseTheme ?? buildJexTheme(preset);
   final text = base.textTheme;
-  final foreground = base.colorScheme.onSurface;
-  final muted = base.colorScheme.onSurfaceVariant;
+  final semantic = JexSemanticColors.from(base.colorScheme);
+  final foreground = semantic.foreground;
+  final muted = semantic.mutedForeground;
 
   return base.copyWith(
     appBarTheme: base.appBarTheme.copyWith(

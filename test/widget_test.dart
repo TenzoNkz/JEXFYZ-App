@@ -2355,12 +2355,26 @@ void main() {
         expect(roles.canvas, scheme.surface);
         expect(roles.surface, scheme.surface);
         expect(roles.elevatedSurface, scheme.surfaceContainerHighest);
+        expect(roles.raisedSurface, scheme.surfaceContainerHigh);
         expect(roles.foreground, scheme.onSurface);
         expect(roles.mutedForeground, scheme.onSurfaceVariant);
         expect(roles.outline, scheme.outlineVariant);
         expect(roles.accent, scheme.primary);
+        expect(roles.accentForeground, scheme.onPrimary);
         expect(roles.error, scheme.error);
         expect(roles.onError, scheme.onError);
+
+        expect(scheme.jexCanvas, scheme.surface);
+        expect(scheme.jexSurface, scheme.surface);
+        expect(scheme.jexElevatedSurface, scheme.surfaceContainerHighest);
+        expect(scheme.jexRaisedSurface, scheme.surfaceContainerHigh);
+        expect(scheme.jexForeground, scheme.onSurface);
+        expect(scheme.jexMutedForeground, scheme.onSurfaceVariant);
+        expect(scheme.jexOutline, scheme.outlineVariant);
+        expect(scheme.jexAccent, scheme.primary);
+        expect(scheme.jexAccentForeground, scheme.onPrimary);
+        expect(scheme.jexError, scheme.error);
+        expect(scheme.jexErrorForeground, scheme.onError);
       }
     },
   );

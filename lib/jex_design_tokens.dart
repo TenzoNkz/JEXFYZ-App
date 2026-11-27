@@ -18,19 +18,38 @@ abstract final class JexLayoutTokens {
   static const double submenuToggleHeight = 32.0;
 }
 
-/// Semantic Material roles mapped from the active app ColorScheme.
+/// Semantic aliases for the existing Material ColorScheme roles.
 ///
-/// No palette is defined here: Light/Dark values remain owned by buildJexTheme and
+/// These getters deliberately return the original ColorScheme values. No palette is
+/// defined here: Light/Dark values remain owned by buildJexTheme and
 /// buildJexCompactUiTheme in app_settings.dart.
+extension JexColorSchemeSemanticRoles on ColorScheme {
+  Color get jexCanvas => surface;
+  Color get jexSurface => surface;
+  Color get jexElevatedSurface => surfaceContainerHighest;
+  Color get jexRaisedSurface => surfaceContainerHigh;
+  Color get jexForeground => onSurface;
+  Color get jexMutedForeground => onSurfaceVariant;
+  Color get jexOutline => outlineVariant;
+  Color get jexAccent => primary;
+  Color get jexAccentForeground => onPrimary;
+  Color get jexError => error;
+  Color get jexErrorForeground => onError;
+}
+
+/// Value object for widgets that need several semantic roles at once.
+/// Every property maps one-to-one to the active Material ColorScheme.
 class JexSemanticColors {
   const JexSemanticColors({
     required this.canvas,
     required this.surface,
     required this.elevatedSurface,
+    required this.raisedSurface,
     required this.foreground,
     required this.mutedForeground,
     required this.outline,
     required this.accent,
+    required this.accentForeground,
     required this.error,
     required this.onError,
   });
@@ -38,23 +57,27 @@ class JexSemanticColors {
   final Color canvas;
   final Color surface;
   final Color elevatedSurface;
+  final Color raisedSurface;
   final Color foreground;
   final Color mutedForeground;
   final Color outline;
   final Color accent;
+  final Color accentForeground;
   final Color error;
   final Color onError;
 
   factory JexSemanticColors.from(ColorScheme scheme) => JexSemanticColors(
-    canvas: scheme.surface,
-    surface: scheme.surface,
-    elevatedSurface: scheme.surfaceContainerHighest,
-    foreground: scheme.onSurface,
-    mutedForeground: scheme.onSurfaceVariant,
-    outline: scheme.outlineVariant,
-    accent: scheme.primary,
-    error: scheme.error,
-    onError: scheme.onError,
+    canvas: scheme.jexCanvas,
+    surface: scheme.jexSurface,
+    elevatedSurface: scheme.jexElevatedSurface,
+    raisedSurface: scheme.jexRaisedSurface,
+    foreground: scheme.jexForeground,
+    mutedForeground: scheme.jexMutedForeground,
+    outline: scheme.jexOutline,
+    accent: scheme.jexAccent,
+    accentForeground: scheme.jexAccentForeground,
+    error: scheme.jexError,
+    onError: scheme.jexErrorForeground,
   );
 }
 

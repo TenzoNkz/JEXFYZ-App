@@ -13,6 +13,7 @@ import 'package:path/path.dart' as p;
 import 'package:sqflite/sqflite.dart';
 
 import 'app_settings.dart';
+import 'jex_design_tokens.dart';
 
 /// Refresh cadence for the Statistics diagrams; collection and persistence are independent.
 const Duration usageStatisticsDiagramRefreshInterval = Duration(seconds: 1);
@@ -2227,7 +2228,7 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
                 padding: const EdgeInsets.fromLTRB(14, 0, 14, 8),
                 child: Material(
                   key: const ValueKey<String>('usage-selected-time-dock'),
-                  color: scheme.surfaceContainerHigh,
+                  color: scheme.jexRaisedSurface,
                   elevation: 2,
                   borderRadius: BorderRadius.circular(14),
                   child: Padding(
@@ -2321,7 +2322,7 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
                   language,
                 ),
                 summary: summary.battery,
-                color: scheme.primary,
+                color: scheme.jexAccent,
                 language: language,
                 metricKey: 'battery',
               ),
@@ -2372,7 +2373,7 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
               language,
             ),
             style: Theme.of(dialogContext).textTheme.bodyMedium
-                ?.copyWith(color: scheme.onSurfaceVariant, height: 1.4),
+                ?.copyWith(color: scheme.jexMutedForeground, height: 1.4),
           ),
           actions: [
             TextButton(
@@ -2421,7 +2422,7 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: Theme.of(context).textTheme.bodySmall
-                ?.copyWith(color: scheme.onSurfaceVariant),
+                ?.copyWith(color: scheme.jexMutedForeground),
           ),
         ],
       );
@@ -2467,7 +2468,7 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
         children: [
           Icon(
             PhosphorIconsRegular.clockCounterClockwise,
-            color: active ? scheme.primary : scheme.onSurfaceVariant,
+            color: active ? scheme.jexAccent : scheme.jexMutedForeground,
             size: 20,
           ),
           const SizedBox(width: 8),
@@ -2515,7 +2516,7 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
           Icon(
             PhosphorIconsRegular.chartLineUp,
             size: 36,
-            color: scheme.onSurfaceVariant,
+            color: scheme.jexMutedForeground,
           ),
           const SizedBox(height: 14),
           Text(
@@ -2528,7 +2529,7 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
             message,
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.bodyMedium
-                ?.copyWith(color: scheme.onSurfaceVariant),
+                ?.copyWith(color: scheme.jexMutedForeground),
           ),
           if (action != null) ...[const SizedBox(height: 8), action],
         ],
@@ -2604,7 +2605,7 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: Theme.of(context).textTheme.labelSmall
-                  ?.copyWith(color: scheme.onSurfaceVariant),
+                  ?.copyWith(color: scheme.jexMutedForeground),
             ),
             const SizedBox(height: 2),
             Text(
@@ -2776,7 +2777,7 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
                 JexText.formatNumber(referenceValue, language) +
                 ' °C',
             style: Theme.of(context).textTheme.labelSmall
-                ?.copyWith(color: scheme.onSurfaceVariant),
+                ?.copyWith(color: scheme.jexMutedForeground),
           ),
         ],
         const SizedBox(height: 7),
@@ -2811,8 +2812,8 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
                         fromMs: _snapshot!.fromMs,
                         toMs: _snapshot!.toMs,
                         color: color,
-                        gridColor: scheme.outlineVariant,
-                        labelColor: scheme.onSurfaceVariant,
+                        gridColor: scheme.jexOutline,
+                        labelColor: scheme.jexMutedForeground,
                         referenceValue: referenceValue,
                         cursorTimestampMs: _selectedTimestampMs,
                       ),
@@ -2827,7 +2828,7 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
                       language,
                     ),
                     style: Theme.of(context).textTheme.bodySmall
-                        ?.copyWith(color: scheme.onSurfaceVariant),
+                        ?.copyWith(color: scheme.jexMutedForeground),
                   ),
                 ),
         ),
@@ -2933,7 +2934,7 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
                 _axisTime(_snapshot!.fromMs, _snapshot!.fromMs),
                 key: const ValueKey<String>('usage-profile-time-axis-start'),
                 style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                  color: scheme.onSurfaceVariant,
+                  color: scheme.jexMutedForeground,
                   fontFeatures: const [FontFeature.tabularFigures()],
                 ),
               ),
@@ -2941,7 +2942,7 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
                 _axisTime(_snapshot!.toMs, _snapshot!.fromMs),
                 key: const ValueKey<String>('usage-profile-time-axis-end'),
                 style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                  color: scheme.onSurfaceVariant,
+                  color: scheme.jexMutedForeground,
                   fontFeatures: const [FontFeature.tabularFigures()],
                 ),
               ),
@@ -3030,7 +3031,7 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
           label,
           textAlign: TextAlign.center,
           style: Theme.of(context).textTheme.labelSmall
-              ?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
+              ?.copyWith(color: Theme.of(context).colorScheme.jexMutedForeground),
         ),
         const SizedBox(height: 2),
         Text(
@@ -3466,7 +3467,7 @@ class _UsageTimelinePainter extends CustomPainter {
     if (toMs <= fromMs) return;
 
     final baseline = Paint()
-      ..color = scheme.outlineVariant.withValues(alpha: 0.65)
+      ..color = scheme.jexOutline.withValues(alpha: 0.65)
       ..strokeWidth = 0.8;
     const left = _usageChartPlotLeftInset;
     const right = _usageChartPlotRightInset;
@@ -3484,7 +3485,7 @@ class _UsageTimelinePainter extends CustomPainter {
 
     if (lane == 'fan_speed') {
       final grid = Paint()
-        ..color = scheme.outlineVariant.withValues(alpha: .55)
+        ..color = scheme.jexOutline.withValues(alpha: .55)
         ..strokeWidth = .7;
       for (final fraction in [0.0, .5, 1.0]) {
         final y = 2 + (size.height - 5) * (1 - fraction);
@@ -3530,12 +3531,12 @@ class _UsageTimelinePainter extends CustomPainter {
         area.close();
         canvas.drawPath(
           area,
-          Paint()..color = scheme.primary.withValues(alpha: .12),
+          Paint()..color = scheme.jexAccent.withValues(alpha: .12),
         );
         canvas.drawPath(
           line,
           Paint()
-            ..color = scheme.primary
+            ..color = scheme.jexAccent
             ..strokeWidth = 2
             ..strokeCap = StrokeCap.round
             ..strokeJoin = StrokeJoin.round
@@ -3576,12 +3577,12 @@ class _UsageTimelinePainter extends CustomPainter {
         case 'peltier':
           color = segment.textValue?.toUpperCase() == 'ON'
               ? const Color(0xFF26966D)
-              : scheme.outlineVariant;
+              : scheme.jexOutline;
           top = (size.height - _usageTimelineStateBarHeight) / 2;
           bottom = top + _usageTimelineStateBarHeight;
           break;
         default:
-          color = scheme.primary;
+          color = scheme.jexAccent;
           final speed = (segment.numberValue ?? 0).clamp(0, 100).toDouble();
           final height = math
               .max(2.0, (size.height - 5) * speed / 100)
@@ -3607,7 +3608,7 @@ class _UsageTimelinePainter extends CustomPainter {
     if (cursorTimestampMs != null && toMs > fromMs) {
       final x = xFor(cursorTimestampMs!);
       final cursorPaint = Paint()
-        ..color = scheme.onSurface.withValues(alpha: .7)
+        ..color = scheme.jexForeground.withValues(alpha: .7)
         ..strokeWidth = 1;
       for (var y = 1.0; y < size.height; y += 7) {
         canvas.drawLine(

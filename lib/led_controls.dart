@@ -478,17 +478,17 @@ class _JexLedStripPreviewState extends State<JexLedStripPreview>
         height: 34,
         decoration: BoxDecoration(
           color: enabled
-              ? scheme.surface
-              : scheme.surfaceContainerHighest.withValues(alpha: .45),
+              ? scheme.jexSurface
+              : scheme.jexElevatedSurface.withValues(alpha: .45),
           borderRadius: BorderRadius.circular(11),
-          border: Border.all(color: scheme.outlineVariant),
+          border: Border.all(color: scheme.jexOutline),
         ),
         child: Icon(
           left ? PhosphorIconsBold.caretLeft : PhosphorIconsBold.caretRight,
           size: 18,
           color: enabled
-              ? scheme.onSurface
-              : scheme.onSurfaceVariant.withValues(alpha: .30),
+              ? scheme.jexForeground
+              : scheme.jexMutedForeground.withValues(alpha: .30),
         ),
       ),
     );
@@ -536,9 +536,9 @@ class _JexLedStripPreviewState extends State<JexLedStripPreview>
           alignment: Alignment.center,
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
           decoration: BoxDecoration(
-            color: scheme.surface,
+            color: scheme.jexSurface,
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: scheme.outlineVariant),
+            border: Border.all(color: scheme.jexOutline),
           ),
           child: Text(
             widget.modeName.toUpperCase(),
@@ -546,7 +546,7 @@ class _JexLedStripPreviewState extends State<JexLedStripPreview>
             overflow: TextOverflow.ellipsis,
             textAlign: TextAlign.center,
             style: TextStyle(
-              color: scheme.onSurface,
+              color: scheme.jexForeground,
               fontSize: 11.5,
               height: 1.0,
               fontWeight: FontWeight.w900,
@@ -778,10 +778,10 @@ class _JexColorPickerCardState extends State<JexColorPickerCard> {
     final selectedColor =
         normalizedSelected.startsWith('#') && normalizedSelected.length == 7
         ? ledPaletteColor(normalizedSelected)
-        : scheme.surfaceContainerHighest;
+        : scheme.jexElevatedSurface;
 
     return Material(
-      color: scheme.surface,
+      color: scheme.jexSurface,
       elevation: 12,
       shadowColor: Colors.black.withValues(alpha: .24),
       borderRadius: BorderRadius.circular(18),
@@ -801,7 +801,7 @@ class _JexColorPickerCardState extends State<JexColorPickerCard> {
                     JexText.of('color', lang),
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      color: scheme.onSurface,
+                      color: scheme.jexForeground,
                       fontSize: 19,
                       fontWeight: FontWeight.w800,
                     ),
@@ -818,7 +818,7 @@ class _JexColorPickerCardState extends State<JexColorPickerCard> {
                       child: Text(
                         JexText.of('cancel', lang),
                         style: TextStyle(
-                          color: scheme.primary,
+                          color: scheme.jexAccent,
                           fontSize: 14,
                           fontWeight: FontWeight.w700,
                         ),
@@ -837,7 +837,7 @@ class _JexColorPickerCardState extends State<JexColorPickerCard> {
                       child: Text(
                         JexText.of('select', lang),
                         style: TextStyle(
-                          color: scheme.primary,
+                          color: scheme.jexAccent,
                           fontSize: 14,
                           fontWeight: FontWeight.w700,
                         ),
@@ -857,7 +857,7 @@ class _JexColorPickerCardState extends State<JexColorPickerCard> {
                   decoration: BoxDecoration(
                     color: selectedColor,
                     shape: BoxShape.circle,
-                    border: Border.all(color: scheme.outlineVariant),
+                    border: Border.all(color: scheme.jexOutline),
                   ),
                 ),
                 const SizedBox(width: 8),
@@ -868,7 +868,7 @@ class _JexColorPickerCardState extends State<JexColorPickerCard> {
                     overflow: TextOverflow.ellipsis,
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      color: scheme.primary,
+                      color: scheme.jexAccent,
                       fontSize: 14,
                       fontWeight: FontWeight.w700,
                     ),
@@ -923,7 +923,7 @@ class _JexColorPickerCardState extends State<JexColorPickerCard> {
                                   borderRadius: BorderRadius.circular(9),
                                   border: Border.all(
                                     color: isSelected
-                                        ? scheme.onSurface
+                                        ? scheme.jexForeground
                                         : (isWhite
                                               ? scheme.outline
                                               : Colors.transparent),
@@ -932,7 +932,7 @@ class _JexColorPickerCardState extends State<JexColorPickerCard> {
                                   boxShadow: isSelected
                                       ? [
                                           BoxShadow(
-                                            color: scheme.primary.withValues(
+                                            color: scheme.jexAccent.withValues(
                                               alpha: .22,
                                             ),
                                             blurRadius: 4,

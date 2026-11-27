@@ -1016,7 +1016,7 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage>
         minLabel,
         style: TextStyle(
           fontSize: 10,
-          color: Theme.of(context).colorScheme.onSurfaceVariant,
+          color: Theme.of(context).colorScheme.jexMutedForeground,
         ),
       ),
       if (midLabel != null)
@@ -1024,14 +1024,14 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage>
           midLabel,
           style: TextStyle(
             fontSize: 10,
-            color: Theme.of(context).colorScheme.onSurfaceVariant,
+            color: Theme.of(context).colorScheme.jexMutedForeground,
           ),
         ),
       Text(
         maxLabel,
         style: TextStyle(
           fontSize: 10,
-          color: Theme.of(context).colorScheme.onSurfaceVariant,
+          color: Theme.of(context).colorScheme.jexMutedForeground,
         ),
       ),
     ];
@@ -1053,7 +1053,7 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage>
               ),
               DecoratedBox(
                 decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                  color: Theme.of(context).colorScheme.jexElevatedSurface,
                   borderRadius: BorderRadius.circular(7),
                 ),
                 child: Padding(

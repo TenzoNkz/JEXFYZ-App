@@ -15,6 +15,7 @@ import 'package:phosphor_icons/phosphor_icons.dart';
 import 'app_settings.dart' show JexText, appLanguageNotifier;
 import 'connection_scan_state.dart';
 import 'jex_animated_glyph.dart';
+import 'jex_design_tokens.dart';
 
 class ConnectionSheetContent extends StatefulWidget {
   final Future<bool> Function() onScan;
@@ -258,15 +259,15 @@ class _ConnectionSheetContentState extends State<ConnectionSheetContent>
     final locationRequired = _androidSdk > 0 && _androidSdk <= 30;
 
     return Material(
-      color: scheme.surface,
+      color: scheme.jexSurface,
       child: Column(
         children: [
           Container(
             height: 60,
             padding: const EdgeInsets.fromLTRB(16, 6, 6, 4),
             decoration: BoxDecoration(
-              color: scheme.surfaceContainerHighest,
-              border: Border(bottom: BorderSide(color: scheme.outlineVariant)),
+              color: scheme.jexElevatedSurface,
+              border: Border(bottom: BorderSide(color: scheme.jexOutline)),
             ),
             child: Row(
               children: [
@@ -274,7 +275,7 @@ class _ConnectionSheetContentState extends State<ConnectionSheetContent>
                   child: Text(
                     JexText.of('connection', lang),
                     style: TextStyle(
-                      color: scheme.onSurface,
+                      color: scheme.jexForeground,
                       fontSize: 16,
                       fontWeight: FontWeight.w900,
                       letterSpacing: -0.15,
@@ -290,7 +291,7 @@ class _ConnectionSheetContentState extends State<ConnectionSheetContent>
                   onPressed: () => Navigator.pop(context),
                   icon: JexAnimatedGlyph(
                     icon: PhosphorIconsRegular.x,
-                    color: scheme.onSurfaceVariant,
+                    color: scheme.jexMutedForeground,
                     size: 22,
                   ),
                 ),
@@ -333,7 +334,7 @@ class _ConnectionSheetContentState extends State<ConnectionSheetContent>
                   child: Text(
                     JexText.of('devices', lang),
                     style: TextStyle(
-                      color: scheme.onSurfaceVariant,
+                      color: scheme.jexMutedForeground,
                       fontSize: 13,
                       fontWeight: FontWeight.w800,
                     ),
@@ -433,7 +434,7 @@ class _ConnectionSheetContentState extends State<ConnectionSheetContent>
                               style: TextStyle(
                                 color: failed
                                     ? scheme.error
-                                    : scheme.onSurfaceVariant,
+                                    : scheme.jexMutedForeground,
                                 fontSize: 12,
                                 fontWeight: FontWeight.w600,
                               ),
@@ -445,7 +446,7 @@ class _ConnectionSheetContentState extends State<ConnectionSheetContent>
                                   : _requestScan,
                               icon: JexAnimatedGlyph(
                                 icon: PhosphorIconsRegular.arrowClockwise,
-                                color: Theme.of(context).colorScheme.onPrimary,
+                                color: Theme.of(context).colorScheme.jexAccentForeground,
                                 size: 16,
                               ),
                               label: Text(JexText.of('scan', lang)),
@@ -459,7 +460,7 @@ class _ConnectionSheetContentState extends State<ConnectionSheetContent>
                       padding: const EdgeInsets.fromLTRB(8, 2, 8, 12),
                       itemCount: filtered.length,
                       separatorBuilder: (_, __) => Divider(
-                        color: scheme.outlineVariant.withValues(alpha: .55),
+                        color: scheme.jexOutline.withValues(alpha: .55),
                         height: 1,
                       ),
                       itemBuilder: (_, index) {
@@ -479,7 +480,7 @@ class _ConnectionSheetContentState extends State<ConnectionSheetContent>
                           title: Text(
                             displayName,
                             style: TextStyle(
-                              color: scheme.onSurface,
+                              color: scheme.jexForeground,
                               fontWeight: FontWeight.w800,
                             ),
                           ),
