@@ -3415,3 +3415,11 @@
 - **Release baseline before retry:** Release ID `403010611` / tag `jexfyz-latest` still targets Build #167 source `0dd96228d33b08c66e736ae91a8a6c3e5c3ddb81`; two baseline assets remain APK ID `767350299` 56,180,827 bytes SHA-256 `d7c461478e033b4598d1744e2ea7ec969eea8046bf5e4a3d6caaf511bc461691`; source ZIP ID `767350301` 3,259,558 bytes SHA-256 `58711342358639695624bbe05cc598220c9f20710bb04deaa785b93b85ca1546`. These are not outputs of current Build #169.
 - **Artifacts / release:** no new artifact or Release mutation has yet been observed. All Android build/signing/publish/download steps remain pending until actual job step evidence arrives.
 - **Disposition:** IN_PROGRESS — continue only run `46062114759` / job `140718609861` / source `67ff49fdb566a2fa7748e32e5207217c8e4b98b7`. No retry/duplicate trigger while active.
+
+
+### BUILD #169 progress — setup/toolchain/signing prep/security audit passed — 2026-11-28 03:14 (Asia/Jakarta)
+
+- **Run/job/source:** Actions run #170 / `46062114759` / job `140718609861` / attempt1 / source `67ff49fdb566a2fa7748e32e5207217c8e4b98b7`.
+- **Observed SUCCESS:** steps1–10: Set up job; Checkout repository; Set up Java17; Set up Flutter; Set up Gradle; Verify toolchain; Prepare Flutter local.properties; Prepare production release signing; Restore Gradle wrapper if missing; JE X FYZ security and architecture audit.
+- **Current state:** step11 `Install dependencies` is IN_PROGRESS. Steps12–21 (analyzer, Flutter tests, Android unit-test gate, APK build, V1/V2/V3 enforcement, signature/certificate verification, APK name, source ZIP, Release publication, fresh downloaded-asset verification) remain PENDING. Cleanup steps39–42 pending. Run and job remain IN_PROGRESS; no failure observed.
+- **Disposition:** continue only run `46062114759` / job `140718609861`; no duplicate trigger/retry. Current pre-retry Validation Only #255 is terminal SUCCESS as recorded above.
