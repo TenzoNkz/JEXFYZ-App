@@ -1,4 +1,4 @@
-| Last updated | 2026-11-28T03:58:12.487+07:00 (Asia/Jakarta) |
+| Last updated | 2026-11-28T03:59:34.587+07:00 (Asia/Jakarta) |
 
 > Event-driven project marker. It is not a live heartbeat or a GitHub lock.
 
@@ -15,7 +15,7 @@
 | Started | 2026-11-28T03:53:00+07:00 (Asia/Jakarta) |
 | Completed / last updated | IN_PROGRESS — 2026-11-28T03:58:12.487+07:00 (Asia/Jakarta) |
 | Current phase | WP0 FILE-LEVEL REVIEW + WP3 BATCH 1 ACCEPTED — source review of Home, Temperature, Control/Adaptive/LED, shared controls, lock menu, Floating Monitor, Settings and key tests; preparing live register/checkpoint reconciliation. |
-| Verified checkpoint | Repository TenzoNkz/JEXFYZ-App / main. Latest live HEAD 1b157a7b60102fd472f64b26317bb93dd3b8b8f7. App source/test package validated at exact SHA 29fff74a9f95658be47369ce0c86013ab40fddbc; subsequent commit 1b157a7b60102fd472f64b26317bb93dd3b8b8f7 changes only 00_WORK_STATUS.md. Recursive tree 172 entries / 126 blobs / 46 trees, truncated=false. |
+| Verified checkpoint | Repository TenzoNkz/JEXFYZ-App / main. Latest live HEAD 437e8cab350f98d8b3693aa4e53430e01e24aa2b. App source/test package validated at exact SHA 29fff74a9f95658be47369ce0c86013ab40fddbc; subsequent commit 437e8cab350f98d8b3693aa4e53430e01e24aa2b changes only 00_WORK_STATUS.md. Recursive tree 172 entries / 126 blobs / 46 trees, truncated=false. |
 | Owner authorization | Standing authorization from owner’s 2026-11-26 App-only WP0–WP10 full rework request, reaffirmed by “@Thinking Eksekusi Code!”. No per-file approval required within authorized scope. |
 | Latest external operation | Validation Only #258 / ID 46066693702 / workflow 417906156 / job 140733610643 — terminal SUCCESS on App source SHA 29fff74a9f95658be47369ce0c86013ab40fddbc. Locked dependencies PASS; formatter 50 files / 0 changed; analyzer 139 info-level diagnostics / 0 warnings / 0 errors; Flutter tests 330/330 PASS; summary PASS. Prior Build App #170 / ID 46062114759 remains historical SUCCESS on a different source SHA and is not part of this work. |
 | EXTERNAL OPERATION | COMPLETED — Validation Only #258 terminal SUCCESS; latest Actions listing has no active run on current main. |

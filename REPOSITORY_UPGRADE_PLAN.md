@@ -1,6 +1,6 @@
 ## Latest live inventory — Validation Only #258 SUCCESS; WP3 P1 write gate — 2026-11-28
 
-- Current live `main` HEAD: `1b157a7b60102fd472f64b26317bb93dd3b8b8f7`. App source/test commit validated at `29fff74a9f95658be47369ce0c86013ab40fddbc`; the subsequent HEAD commit is documentation-only (`00_WORK_STATUS.md`).
+- Current live `main` HEAD: `437e8cab350f98d8b3693aa4e53430e01e24aa2b`. App source/test commit validated at `29fff74a9f95658be47369ce0c86013ab40fddbc`; the subsequent HEAD commit is documentation-only (`00_WORK_STATUS.md`).
 - Live recursive tree: **172 entries / 126 blobs / 46 trees**, `truncated=false`. The reconciled register below contains **126 unique rows for 126 tracked blobs**, with zero missing, stale or duplicate paths.
 - Validation Only #258 / run `46066693702` / job `140733610643`, exact App source SHA `29fff74a9f95658be47369ce0c86013ab40fddbc`, terminal SUCCESS: locked dependencies PASS; formatter **50 files / 0 changed**; analyzer PASS with **139 info-level diagnostics and zero warnings/errors**; full Flutter suite **330/330 PASS**; summary SUCCESS.
 - WP3 batch: `3c49ceb86cfa168aca1444cd1c9e5a218891955d` extracts the pure pre-session P1 command write gate; Dashboard remains the only GATT/session/ACK/telemetry/command owner. `d0b1e63b28d073c720d7860fda6c7a5aa8c7bd65` was not clean under formatting; `29fff74a` applies canonical Dart formatting and is the validated source.

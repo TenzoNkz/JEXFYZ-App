@@ -5,7 +5,7 @@ Last reconciled: 2026-11-28 (Asia/Jakarta). Authority: MASTER_PROMPT.md.
 ## Active workspace — CODE_FULL / IN_PROGRESS
 
 - Current owner command: “@Thinking Eksekusi Code!” — continue the authorized App-only WP0–WP10 full rework + premium UI redesign.
-- Canonical repository `TenzoNkz/JEXFYZ-App`, branch `main`; live HEAD `1b157a7b60102fd472f64b26317bb93dd3b8b8f7`. The immediately preceding App source/test SHA `29fff74a9f95658be47369ce0c86013ab40fddbc` passed Validation Only #258. This HEAD advancement is documentation-only (`00_WORK_STATUS.md`); no App source/test changes occurred after that validation.
+- Canonical repository `TenzoNkz/JEXFYZ-App`, branch `main`; live HEAD `437e8cab350f98d8b3693aa4e53430e01e24aa2b`. The immediately preceding App source/test SHA `29fff74a9f95658be47369ce0c86013ab40fddbc` passed Validation Only #258. This HEAD advancement is documentation-only (`00_WORK_STATUS.md`); no App source/test changes occurred after that validation.
 - Recursive tree: 172 entries / 126 blobs / 46 trees, `truncated=false`.
 - **Validation Only #258:** run `46066693702` / job `140733610643`, exact source SHA `29fff74a9f95658be47369ce0c86013ab40fddbc`, terminal SUCCESS. Dependencies PASS; formatter 50 files / 0 changed; analyzer 139 info-level diagnostics / 0 warnings / 0 errors; Flutter tests **330/330 PASS**; summary SUCCESS.
 - **WP3 source batch:** commit `3c49ceb86cfa168aca1444cd1c9e5a218891955d` centralizes the existing P1 pre-session write gate in a pure helper; canonical formatting commit `29fff74a9f95658be47369ce0c86013ab40fddbc` is the validated exact source. Dashboard remains the sole BLE/GATT/P1/session/ACK/telemetry/command owner. No wire/protocol/security/OTA implementation changed.

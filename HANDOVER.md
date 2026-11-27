@@ -5,7 +5,7 @@ Last reconciled: 2026-11-28 (Asia/Jakarta). Authority: MASTER_PROMPT.md.
 ## Active CODE_FULL work item — IN_PROGRESS
 
 - Owner command: “@Thinking Eksekusi Code!”; authorized scope is App-only source/tests/docs/static audit for WP0–WP10, direct commits on `main`.
-- Live main HEAD: `1b157a7b60102fd472f64b26317bb93dd3b8b8f7`. Latest tested App source SHA: `29fff74a9f95658be47369ce0c86013ab40fddbc`; subsequent main commit only updates `00_WORK_STATUS.md`.
+- Live main HEAD: `437e8cab350f98d8b3693aa4e53430e01e24aa2b`. Latest tested App source SHA: `29fff74a9f95658be47369ce0c86013ab40fddbc`; subsequent main commit only updates `00_WORK_STATUS.md`.
 - Validation Only #258 / run `46066693702` / job `140733610643` / exact source SHA `29fff74a9f95658be47369ce0c86013ab40fddbc` terminal SUCCESS: deps PASS; formatter 50/0 changed; analyzer 139 info, 0 warnings/errors; Flutter tests **330/330 PASS**; summary PASS.
 - WP3 source change: pure P1 pre-session write eligibility gate; Dashboard still owns the BLE/GATT session, RX characteristic, serialized writes, ACK, telemetry and commands. No P1 wire/protocol change.
 - WP0 remains in progress. Screen source reviews are not visual acceptance. Full `main.dart` audit, test-by-test review and live inventory register reconciliation remain open. `test/home_notify_ota_copy_test.dart` (8 safe bilingual presentation-copy tests) is being added to the register.
