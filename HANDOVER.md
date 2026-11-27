@@ -4,21 +4,18 @@ Last reconciled: 2026-11-27 (Asia/Jakarta). Authority: `MASTER_PROMPT.md`.
 
 ## Active handover — CODE_FULL, then REPO_FULL
 
-- **Owner scope:** complete approved App-only WP0–WP10 and evidence-backed build-ready handoff; then execute approved REPO_FULL cleanup. Build App still requires fresh `Eksekusi Build App!`.
-- **Repository:** `TenzoNkz/JEXFYZ-App`, direct `main` only; no secondary branches/PRs. Re-fetch HEAD, target blobs and recursive tree before every write; expected-HEAD protection.
-- **Current main:** `d5228516e825a3e7b9ae72bcea8239bb90b32d38`; root tree `5260bcbc9bb520975c5d4cfc551938c750c7aafb`; 160 entries / 114 blobs / 46 trees, `truncated=false`. Upgrade register: 114/114 unique path dispositions.
-- **Latest validated source/test:** exact SHA `b61614a170e6c741fa0280adcc75cf9e7504d075`; Validation Only #166 / run `45956791122` / job `140365017067`, terminal SUCCESS — locked dependencies, formatter (37 files / 0 changed), analyzer and **262/262 Flutter tests** PASS.
-- **WP3:** pure P1 frame decoder, pure command classifier and per-item FIFO ACK waiter coordinator are separated. ACK waiter tests cover FIFO isolation, exact failed-write cancellation, timeout cleanup, disconnect and disposal. Dashboard remains sole BLE/GATT/P1/session owner; do not move writes, SYNC, reconnect or authoritative telemetry.
-- **WP4:** shared geometry/semantic tokens extended with existing typography and input-shape values; base/compact theme and Settings semantic surface/foreground/outline roles now use tokens. No palette or existing numeric visual change was intended. Cross-route adoption and screenshot evidence remain open.
-- **Next:** continue WP4 remaining-route token audit, then WP5 Home and five control surfaces. Preserve the 360-dp master canvas, seven metric rows, control/telemetry semantics and existing navigation behavior.
-- **Protected:** P1 UUID/framing/commands/SYNC; one BLE owner; scan generations; ACK vs telemetry-confirmed state; Usage Statistics v2/v1→v2/30-day/raw 1-Hz/HOT/null-gap/64+8+1; native Canvas/WindowManager and OTA/Firmware boundaries.
+- **Active writer:** this conversation is the owner's chosen Eksekusi Code workspace. Continue existing App-only WP0–WP10 authorization.
+- **Repository:** `TenzoNkz/JEXFYZ-App`, direct `main` only. Re-fetch HEAD/tree/target SHAs before every write and use expected-HEAD protection.
+- **Current main:** `1b6b38bddf902a251a385f48f921dad523ae036b`; tree `75dd8dcc790d34f7fb479f46c8307a2490d17ed9`; 164 entries / 118 blobs / 46 trees, not truncated.
+- **Latest validation:** Validation Only #187 / run `45968056100` / job `140401426317`, exact source SHA above, terminal SUCCESS — dependencies, formatter (42/0), analyzer and **280/280 Flutter tests** PASS.
+- **WP1:** seven AppSettingsStore/KnownCoolerStore mock-storage tests pass; production keys/defaults/schema unchanged. Plugin error injection remains open.
+- **WP3:** pure P1 frame decoder, command classifier and FIFO ACK waiters are separated. Dashboard remains sole BLE/GATT/P1/session/telemetry owner.
+- **WP5:** Home, Control and Temperature presentation builders are split into `dashboard_home_tab.dart`, `dashboard_control_tabs.dart` and `dashboard_temperature_tab.dart`. All remain parts of `main.dart`; no second BLE/P1/command owner. #187 passes the full suite. Final screen/design acceptance remains open.
+- **Next:** complete full Dashboard/main ownership and consumer audit; continue WP4 remaining semantic-token adoption, then WP5 refinements and WP6–WP10 in dependency order.
+- **Protected:** BLE/P1 protocol/session, ACK vs telemetry confirmation, persistence schemas, Usage Statistics freshness/retention/queue, native Canvas/WindowManager, Firmware/OTA and existing product/design contracts.
 - **Latest package:** Build #167 only, source `0dd96228d33b08c66e736ae91a8a6c3e5c3ddb81`. Current main is not released. No Build App/APK/sign/Release, Firmware/BIN, OTA, Firebase production, flashing or device operations.
-- **Evidence blockers:** local Flutter/Dart/Gradle/ADB absent. Current-main Android/Kotlin, screenshots/OEM, SQLite migration fixture and long-session performance profile NOT RUN. Whole-App visual acceptance **VISUAL NOT VERIFIED**.
+- **Evidence limits:** local Flutter/Dart/Gradle/ADB absent. Android/Kotlin, screenshots/OEM/device, SQLite migration runtime, performance soak and overall visual acceptance remain NOT RUN; **VISUAL NOT VERIFIED**.
 
-## Latest source validation
+## Immediate next action
 
-Live main is `d5228516e825a3e7b9ae72bcea8239bb90b32d38`; Validation Only #168 / run `45957362284` is the pending exact-source rerun. The parent run #167 failed only formatter (38 files / 1 changed) while analyzer and 273/273 tests passed; the test declaration was corrected in the live source. Do not mark the new AppSettings model tests verified until #168 is terminal SUCCESS.
-
-## Next action
-
-Continue the shared design-system route audit and WP5 screen implementation in dependency order. Maintain exact-source CI and regression checks; keep screenshot/device evidence separate from hosted Flutter PASS.
+Complete the Dashboard/main ownership graph and remaining WP4 token-consumer audit from live main, close the corresponding WP0 content-review decisions with source/caller/test evidence, then continue the next grouped screen batch without repeating already-green #187 tests except at the next exact-SHA acceptance gate.

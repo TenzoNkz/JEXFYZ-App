@@ -16,18 +16,17 @@ This is the single file-level inventory and rolling review register for the cano
 - Extensions: 53 Markdown, 19 Dart, 3 workflow YML, 2 YAML, 1 Gitignore, 3 Gradle, 1 JSON, 1 ProGuard, 2 XML, 4 Kotlin, 3 PNG, 1 properties, 1 Firmware INO and 1 lockfile.
 - This inventory is **path-complete, not content-audited**. Except for files explicitly reviewed in a linked work-package note, all rows begin with CONTENT REVIEW PENDING.
 
-## Latest live inventory — WP1 characterization / WP4–WP5 open; Validation Only #168 pending (2026-11-27)
+## Latest live inventory — Validation Only #187 green; WP0/WP4/WP5–WP10 remain open (2026-11-27)
 
-- **Live main:** `d5228516e825a3e7b9ae72bcea8239bb90b32d38`; root tree `5260bcbc9bb520975c5d4cfc551938c750c7aafb`; recursive tree **160 entries / 114 blobs / 46 trees**, `truncated=false`.
-- **Register reconciliation:** the File inventory contains **114 unique rows for 114 tracked blobs**, with no missing/stale/duplicate paths. The latest path addition is `test/app_settings_model_test.dart`; a path disposition is not a complete content review.
-- **Validation Only #166:** run `45956791122` / job `140365017067`, exact SHA `b61614a170e6c741fa0280adcc75cf9e7504d075`, terminal SUCCESS — locked dependency resolution PASS, formatter PASS (37 files / 0 changed), analyzer PASS, **262/262 Flutter tests PASS**. It includes the Connection scan-state priority and trimming regressions.
-- **Validation Only #167:** run `45957071431` / job `140365909777`, exact SHA `e2504ad49d298f76fb6e2184580716ac2b06fead`, terminal FAILURE due only to read-only formatter: 38 Dart files / 1 changed. Locked dependencies, analyzer and **273/273 tests PASS**. The single overlong test declaration was wrapped in `d522851...`; no production source or workflow change was made.
-- **Validation Only #168:** run `45957362284` / job `140366824442`, exact SHA `d5228516e825a3e7b9ae72bcea8239bb90b32d38`, terminal FAILURE at formatter: 38 Dart files / 1 changed. Dependencies and analyzer PASS; the complete suite **273/273 PASS**. The first manual reflow fixed the call header but left the long test body/closure indentation incompatible with Dart formatter. This is being corrected in the next commit; no source behavior changed.
-- **WP1:** Connection scan mapper tests cover permission/Bluetooth/error/scanning/not-found priority and trim both advertisement/platform names; verified by #166. `test/app_settings_model_test.dart` adds 11 pure model/palette tests; plugin-backed secure-storage/KnownCoolerStore failure-path tests remain open.
-- **WP3:** P1 frame decoder, command classification and per-item FIFO ACK waiter lifecycle are separate narrow modules; Dashboard remains the sole BLE/GATT/P1/session owner and retains write sequencing, ACK dispatch, SYNC/SYNC_READY, reconnect, snapshot mutation and physical-output confirmation.
-- **WP4:** existing geometry/semantic ColorScheme roles are extended with existing typography and input-shape tokens. Base/compact themes, Settings and several route consumers use them without changing palette/numeric values. Whole consumer review and actual Android visual acceptance remain open.
-- **Outstanding review and implementation:** full Dashboard/`main.dart` owner audit and reviews of large touched modules remain open; WP4 cross-route token audit, WP5 Home/control surfaces and WP6–WP10 remain in progress. File path coverage 114/114 is not WP0–WP10 completion or source content audit completion.
-- Build #167 remains the latest published App package on immutable source `0dd96228d33b08c66e736ae91a8a6c3e5c3ddb81`; current main is not packaged. Android/Kotlin compilation, actual screenshots/OEM/device behavior, SQLite v1→v2 runtime fixture and 1h/6h/24h profile remain NOT RUN; visual acceptance remains **VISUAL NOT VERIFIED**. No Build App/release, Firmware/BIN, P1 wire, OTA, Firebase production, signing or device operation occurred.
+- **Live main:** `1b6b38bddf902a251a385f48f921dad523ae036b`; root tree `75dd8dcc790d34f7fb479f46c8307a2490d17ed9`; recursive tree **164 entries / 118 blobs / 46 trees**, `truncated=false`.
+- **Register reconciliation:** the File inventory below covers **118 unique rows for 118 tracked blobs**. This is path coverage, not proof of a full content/architecture review or WP0–WP10 completion.
+- **Validation Only #187:** run `45968056100` / job `140401426317`, exact source SHA `1b6b38bddf902a251a385f48f921dad523ae036b`, terminal **SUCCESS** — locked dependencies PASS; formatter PASS (**42 Dart files / 0 changed**); analyzer PASS (109 information-level diagnostics under `--no-fatal-infos`); full Flutter tests **280/280 PASS**.
+- **WP1 storage coverage:** `test/app_settings_store_test.dart` adds seven plugin-mock behavior tests for AppSettingsStore load/defaults/save/firmware-notice gating and KnownCoolerStore trim/blank/save/clear. All seven pass in #187. Production storage keys, defaults, schema and persistence behavior were not changed. Secure-storage error/failure injection remains open.
+- **WP2/WP3:** ordered bootstrap, App root, Settings presentation, P1 frame decoder, pure command contract and FIFO ACK-waiter lifecycle remain separated. Dashboard remains the only BLE/GATT/P1/session and authoritative telemetry owner.
+- **WP5 presentation boundary:** `dashboard_home_tab.dart`, `dashboard_control_tabs.dart` and `dashboard_temperature_tab.dart` are presentation parts of `main.dart`; they reuse Dashboard state/callbacks and do not create another BLE/P1/command owner. They are covered by the #187 full suite. Extraction is not proof that every screen meets the final redesign or visual gate.
+- **WP0/WP4/WP5–WP10 remaining:** full Dashboard/`main.dart` owner and content audit; remaining large-module review; cross-route semantic-token audit; completion/refinement of Home and five controls; Connection/Settings/dialogs; Usage Statistics architecture/UI; Floating Monitor Flutter/native split; deterministic visual/integration/platform evidence; final register/diff/governance closure.
+- **Evidence limits:** local Flutter/Dart/Gradle/ADB remain unavailable. Android/Kotlin compile, Android/OEM screenshots/device behavior, SQLite v1→v2 runtime fixture and 1h/6h/24h performance profiles remain NOT RUN. Whole-App visual result remains **VISUAL NOT VERIFIED**. Build #167 remains the latest published package on immutable source `0dd96228d33b08c66e736ae91a8a6c3e5c3ddb81`; current main is not packaged.
+- **Scope:** no Build App/APK/sign/Release, Firmware/BIN/P1 wire/security, OTA, Firebase production, signing material, flashing or device operation occurred.
 
 ## HISTORICAL — inventory checkpoint after Validation Only #91 (superseded 2026-11-27)
 
@@ -152,8 +151,6 @@ A failed gate blocks dependent work. Retry only after classifying root cause (so
 - At the 2026-11-26 Diskusi handoff: **17/96 blob dispositions** are recorded. `lib/floating_monitor.dart` is now UPGRADE APPROVED after a full static source/caller/bridge/test review; source implementation remains in the separate Eksekusi Code workspace. Eleven of the 12 formatter-touched Dart/test files still require individual content review. The next unreviewed inventory path is `lib/jex_animated_glyph.dart`.
 - In the Code workspace, first reconcile live HEAD/tree/status, then resume WP0 and WP1. Keep the App-only scope and protected path exclusions in the active plan; Firmware/BIN, BLE protocol/security changes, OTA, Firebase production, signing, package/release, flashing and device operation are not authorized by this register or owner UI request.
 
-## File inventory
-
 | Path | File class | Guard / authority | Current review state |
 |---|---|---|---|
 | `.agents/skills/ble-p1-protocol-audit/SKILL.md` | Canonical agent skill | CANONICAL SKILL | KEEP / VERIFIED (2026-11-26) |
@@ -181,33 +178,10 @@ A failed gate blocks dependent work. Retry only after classifying root cause (so
 | `.github/skills/repository-forensics/SKILL.md` | Copilot skill mirror | MIRROR — MUST MATCH CANONICAL | KEEP / VERIFIED (2026-11-26) |
 | `.github/skills/technical-research-and-second-opinion/SKILL.md` | Copilot skill mirror | MIRROR — MUST MATCH CANONICAL | KEEP / VERIFIED (2026-11-26) |
 | `.github/workflows/jexfyz-app-build-trigger.yml` | Guarded release workflow | WORKFLOW — SECURITY / SCOPE GATED | PROTECTED — NO CHANGE (2026-11-26) |
-| `.github/workflows/jexfyz-app-validation.yml` | Main-only read-only Validation Only workflow | WORKFLOW — LEAST PRIVILEGE / CI GATE | UPGRADE / CLOSED — VALIDATION ONLY #458849 PASS ON EXACT MAIN SHA (2026-11-27) |
+| `.github/workflows/jexfyz-app-validation.yml` | Main-only read-only Validation Only workflow | WORKFLOW — LEAST PRIVILEGE / CI GATE | UPGRADE / VERIFIED CI #187 — MAIN-ONLY READ-ONLY VALIDATION; ON-FAILURE FORMAT DIAGNOSTIC |
 | `.gitignore` | Repository ignore policy | REPOSITORY CONFIG | KEEP / VERIFIED (2026-11-26) |
-| `00_WORK_STATUS.md` | Session continuity | ACTIVE STATUS / CHECKPOINT | UPGRADE / CURRENT — CHAT STUCK RECOVERY; VALIDATION ONLY #458849 SUCCESS (2026-11-27) |
+| `00_WORK_STATUS.md` | Session continuity | ACTIVE STATUS / CHECKPOINT | UPGRADE / CURRENT — THIS CHAT IS CODE_FULL; VALIDATION ONLY #187 SUCCESS |
 | `AGENTS.md` | Operating governance | CANONICAL GOVERNANCE | KEEP / VERIFIED (2026-11-26) |
-| `APP_BUILD_REPORT.md` | Append-only evidence ledger | APPEND-ONLY / NO REWRITE | APPEND-ONLY / READ-ONLY / REVIEWED (2026-11-26) |
-| `APP_NOTES.md` | App behavior and UI contract reference | APP NOTES — CURRENT + HISTORICAL SNAPSHOTS | UPGRADE / REVIEWED (2026-11-26; historical corruption note superseded) |
-| `APP_PREBUILD_AUDIT.md` | Current App rework and acceptance plan | APP PREBUILD AUDIT — WP0–WP10 AUTHORITY | UPGRADE / REVIEWED (2026-11-26) |
-| `BLE_APP_AUTH.md` | Project/configuration file | REVIEW REQUIRED | BLOCKED / PROTECTED — REQUIRES FIRMWARE + TRUSTED BACKEND SECURITY WORK |
-| `BUILD_NOTES.md` | Project/configuration file | REVIEW REQUIRED | KEEP / VERIFIED — BUILD #167 HISTORICAL; NO CURRENT BUILD |
-| `CHANGELOG.md` | Append-only evidence ledger | APPEND-ONLY / NO REWRITE | APPEND-ONLY / UPDATED — CLEAR HISTORY P1 FRESHNESS FIX (#82) |
-| `CHAT_RULES.md` | Compatibility pointer to canonical operating policy | ACTIVE POLICY POINTER | KEEP / VERIFIED (2026-11-26) |
-| `CHAT_TRANSFER.md` | Rolling active continuation checkpoint | ACTIVE CODE_FULL CHECKPOINT | UPGRADE / CURRENT — RECOVERY CHECKPOINT READ-BACK VERIFIED (2026-11-27) |
-| `CHAT_TRANSFER_PROMPTS.md` | Three dedicated workspace LOAD + CONTINUE templates | ACTIVE WORKSPACE TEMPLATES | UPGRADE — CLOSED / READ-BACK VERIFIED (2026-11-26) |
-| `DESIGN_NOTES.md` | Owner-approved screen-specific visual contracts | ACTIVE DESIGN SUBJECT REFERENCE | UPGRADE — CLOSED / READ-BACK VERIFIED (2026-11-26) |
-| `FIRMWARE_NOTES.md` | Firmware and hardware requirements reference | PROTECTED — OUTSIDE APP-ONLY SCOPE | PROTECTED — NO CHANGE (2026-11-26) |
-| `HANDOVER.md` | Immediate next-action handover | ACTIVE CURRENT HANDOVER | UPGRADE / CURRENT — CODE_FULL THEN REPO_FULL; MAIN SHA #458849 VERIFIED |
-| `MASTER_PROMPT.md` | Operating governance | CANONICAL GOVERNANCE | UPGRADE / REVIEWED — FULL-CYCLE EKSEKUSI CODE POLICY |
-| `MEMORY_INDEX.md` | Operating governance | CANONICAL GOVERNANCE | UPGRADE / CURRENT — DIRECT-MAIN POLICY AND 101-PATH INVENTORY RECONCILED (2026-11-27) |
-| `OTA_PROTECTION.md` | Project/configuration file | REVIEW REQUIRED | PROTECTED / REVIEWED — NO TRANSPORT CHANGES |
-| `OTA_REGRESSION_MEMORY.md` | Project/configuration file | REVIEW REQUIRED | PROTECTED / REVIEWED — HISTORICAL SECURITY TRADE-OFF |
-| `PRODUCT_DESIGN_CONSTITUTION.md` | Project/configuration file | REVIEW REQUIRED | KEEP / VERIFIED — EXISTING BRAND / DESIGN AUTHORITY |
-| `PROJECT_STATE.md` | Current-only product/source/release/validation truth | CANONICAL CURRENT STATE | UPGRADE / CURRENT — VALIDATION ONLY #458849, 233/233; MAIN SHA READ-BACK VERIFIED |
-| `README.md` | Project entrypoint / navigation index | ACTIVE PROJECT INDEX | KEEP / VERIFIED (2026-11-26) |
-| `REPOSITORY_UPGRADE_PLAN.md` | Repository-wide upgrade register | Canonical per-file audit register | CREATED — inventory snapshot maintained above |
-| `SKILLS_INDEX.md` | Reusable skill and capability catalogue | ACTIVE CAPABILITY INDEX | UPGRADE — CLOSED / READ-BACK VERIFIED (2026-11-26) |
-| `VISUAL_QUALITY_GATE.md` | Project/configuration file | REVIEW REQUIRED | KEEP / VERIFIED — ACTUAL SCREENSHOTS STILL REQUIRED |
-| `VOLTAGE_TRANSITION_MEMORY.md` | Project/configuration file | REVIEW REQUIRED | PROTECTED / REVIEWED — FIRMWARE-OWNED RAIL / SAFETY CONTRACT |
 | `analysis_options.yaml` | Dart analyzer policy | QUALITY CONFIG — ANALYZER GATE | KEEP / VERIFIED — 2026-11-26 (WP1) |
 | `android/app/build.gradle` | Android build configuration | BUILD CONFIG — COMPATIBILITY GATED | KEEP / VERIFIED (2026-11-26) |
 | `android/app/google-services.json` | Firebase Android config | PROTECTED — SENSITIVE CONFIGURATION | PROTECTED — NO CHANGE (METADATA ONLY; CONTENT NOT OPENED) |
@@ -222,39 +196,64 @@ A failed gate blocks dependent work. Retry only after classifying root cause (so
 | `android/build.gradle` | Android root build configuration | BUILD CONFIG — COMPATIBILITY GATED | KEEP / VERIFIED (same blob as Build #167; 2026-11-26) |
 | `android/gradle.properties` | Android Gradle properties | BUILD CONFIG — COMPATIBILITY GATED | KEEP / VERIFIED (same blob as Build #167; 2026-11-26) |
 | `android/settings.gradle` | Android plugin/bootstrap configuration | BUILD CONFIG — COMPATIBILITY GATED | KEEP / VERIFIED (same blob as Build #167; KGP matrix caveat recorded; 2026-11-26) |
+| `APP_BUILD_REPORT.md` | Append-only evidence ledger | APPEND-ONLY / NO REWRITE | APPEND-ONLY / READ-ONLY / REVIEWED (2026-11-26) |
+| `APP_NOTES.md` | App behavior and UI contract reference | APP NOTES — CURRENT + HISTORICAL SNAPSHOTS | UPGRADE / CURRENT — MAIN 1b6b38b; WP1 STORAGE TESTS AND WP5 PRESENTATION PARTS |
+| `APP_PREBUILD_AUDIT.md` | Current App rework and acceptance plan | APP PREBUILD AUDIT — WP0–WP10 AUTHORITY | UPGRADE / CURRENT — MAIN 1b6b38b; #187 GREEN; WP0/WP4/WP5–WP10 OPEN |
 | `archive/ARTIFACT_REPO_NOTES_PRE_BIN_ONLY_2026-10-14.md` | Immutable archive | IMMUTABLE / HISTORICAL | IMMUTABLE / HISTORICAL / REVIEWED (2026-11-26) |
 | `archive/CHAT_TRANSFER_PRE_COMPACTION_2026-11-15.md` | Immutable archive | IMMUTABLE / HISTORICAL | IMMUTABLE / HISTORICAL / REVIEWED (2026-11-26; superseded) |
 | `archive/LEGACY_NOTES_SNAPSHOT_2026-10-14.md` | Immutable archive | IMMUTABLE / HISTORICAL | IMMUTABLE / HISTORICAL / REVIEWED (2026-11-26; never current truth) |
 | `archive/LEGACY_TRANSFER_HISTORY_2026-10-14.md` | Immutable archive | IMMUTABLE / HISTORICAL | IMMUTABLE / HISTORICAL / REVIEWED (2026-11-26; never current truth) |
 | `assets/jexfyzcooler.png` | Binary visual asset | BINARY ASSET — VISUAL / INTEGRITY REVIEW | PROTECTED / NO CHANGE — BINARY VISUAL REVIEW BLOCKED (bytes unavailable in Code workspace) |
 | `assets/jexfyzicon.png` | Binary visual asset | BINARY ASSET — VISUAL / INTEGRITY REVIEW | PROTECTED / NO CHANGE — OPAQUE RGB / TRANSPARENCY MISMATCH; OWNER REVIEW |
+| `BLE_APP_AUTH.md` | Project/configuration file | REVIEW REQUIRED | BLOCKED / PROTECTED — REQUIRES FIRMWARE + TRUSTED BACKEND SECURITY WORK |
+| `BUILD_NOTES.md` | Project/configuration file | REVIEW REQUIRED | KEEP / VERIFIED — BUILD #167 HISTORICAL; NO CURRENT BUILD |
+| `CHANGELOG.md` | Append-only evidence ledger | APPEND-ONLY / NO REWRITE | APPEND-ONLY / UPDATED — CLEAR HISTORY P1 FRESHNESS FIX (#82) |
+| `CHAT_RULES.md` | Compatibility pointer to canonical operating policy | ACTIVE POLICY POINTER | KEEP / VERIFIED (2026-11-26) |
+| `CHAT_TRANSFER_PROMPTS.md` | Three dedicated workspace LOAD + CONTINUE templates | ACTIVE WORKSPACE TEMPLATES | UPGRADE — CLOSED / READ-BACK VERIFIED (2026-11-26) |
+| `CHAT_TRANSFER.md` | Rolling active continuation checkpoint | ACTIVE CODE_FULL CHECKPOINT | UPGRADE / CURRENT — #187 GREEN; ACTIVE CODE_FULL CHECKPOINT READ-BACK VERIFIED |
+| `DESIGN_NOTES.md` | Owner-approved screen-specific visual contracts | ACTIVE DESIGN SUBJECT REFERENCE | UPGRADE — CLOSED / READ-BACK VERIFIED (2026-11-26) |
+| `FIRMWARE_NOTES.md` | Firmware and hardware requirements reference | PROTECTED — OUTSIDE APP-ONLY SCOPE | PROTECTED — NO CHANGE (2026-11-26) |
 | `firmware/FIRMWARE_TECHNICAL_REFERENCE.md` | Firmware source-level architecture and safety reference | PROTECTED — OUTSIDE APP-ONLY SCOPE | PROTECTED — NO CHANGE (2026-11-26) |
 | `firmware/JEXFYZ-V7.2.ino` | Active versioned Firmware source | PROTECTED — EXPLICIT FIRMWARE AUTHORIZATION REQUIRED | PROTECTED — NO CHANGE (2026-11-26) |
+| `HANDOVER.md` | Immediate next-action handover | ACTIVE CURRENT HANDOVER | UPGRADE / CURRENT — MAIN 1b6b38b; #187 GREEN; NEXT DASHBOARD/WP4 AUDIT |
 | `lib/app_bootstrap.dart` | Flutter App source — ordered startup/security/Firebase/App Check orchestration | APP SOURCE — WP2 / APP BOOTSTRAP | UPGRADE / VERIFIED CI #142 — FIVE STARTUP ORDER/FAILURE TESTS; OFFICIAL GATE REMAINS FIRST |
 | `lib/app_root.dart` | Flutter App root composition; receives the Dashboard widget from the entry point | APP SOURCE — WP2 / APP ROOT SHELL | UPGRADE / VERIFIED CI #142 — INJECTED DASHBOARD, SHARED THEME/LOCALE; NO SECOND BLE OWNER |
 | `lib/app_security.dart` | Flutter App security/platform adapter | APP SOURCE — CODE AUTHORIZATION | UPGRADE / CLOSED — OFFICIAL-BUILD FAIL-CLOSED ADAPTER (#87) |
-| `lib/app_settings.dart` | Flutter App source — persisted App preferences, localization and shared themes | APP SOURCE — WP4 / THEME + SETTINGS PRESENTATION | UPGRADE / VERIFIED CI #158 — BASE/COMPACT TYPOGRAPHY AND INPUT-SHAPE TOKENS; FULL-FILE REVIEW OPEN |
+| `lib/app_settings.dart` | Flutter App source — persisted App preferences, localization and shared themes | APP SOURCE — WP4 / THEME + SETTINGS PRESENTATION | UPGRADE / TEST SUPPORT VERIFIED CI #187 — STORE BEHAVIOR COVERED; FAILURE INJECTION AND FULL-FILE REVIEW OPEN |
 | `lib/connection_scan_coordinator.dart` | Flutter App source — process-wide BLE scanner ownership coordinator | APP SOURCE — TIER 1 / CONCURRENCY & LIFECYCLE CONTRACT | KEEP / VERIFIED (2026-11-26) |
 | `lib/connection_scan_state.dart` | Flutter App source — Connection empty-state and device-name presentation mapping | APP SOURCE — TIER 2 / PRESENTATION STATE CONTRACT | KEEP / VERIFIED (2026-11-26) |
 | `lib/connection_sheet.dart` | Flutter App source — manual Connection sheet UI and OS status lifecycle; BLE orchestration injected | APP SOURCE — TIER 2 / CONNECTION PRESENTATION | UPGRADE / CLOSED — PRESENTATION EXTRACTION; INCLUDED IN VALIDATION ONLY #458849 (233/233) |
+| `lib/dashboard_control_tabs.dart` | Flutter App Dart library part — Dashboard Voltage, Control, Adaptive and LED presentation builders | APP SOURCE — WP5 PRESENTATION ONLY; Dashboard retains command/BLE/GATT/P1/session authority | UPGRADE / VERIFIED CI #187 — PRESENTATION PART; FINAL SCREEN/DESIGN REVIEW OPEN |
+| `lib/dashboard_home_tab.dart` | Flutter App Dart library part — Dashboard Home presentation builder | APP SOURCE — WP5 HOME PRESENTATION ONLY; Dashboard retains telemetry/notification/BLE/P1 authority | UPGRADE / VERIFIED CI #187 — PRESENTATION PART; FINAL SCREEN/DESIGN REVIEW OPEN |
+| `lib/dashboard_temperature_tab.dart` | Flutter App Dart library part — Dashboard Temperature presentation builder | APP SOURCE — WP5 TEMPERATURE PRESENTATION ONLY; Dashboard retains command/session authority | UPGRADE / VERIFIED CI #187 — PRESENTATION PART; ACCESSIBILITY/DESIGN REVIEW OPEN |
 | `lib/floating_monitor.dart` | Flutter App source — Floating Monitor config/store/bridge/runtime and native telemetry projection | APP SOURCE — TIER 2 / FLOATING MONITOR BRIDGE + PRESENTATION | UPGRADE IN PROGRESS — SETTINGS PAGES EXTRACTED; CONFIG/BRIDGE/NATIVE LIFECYCLE SEPARATION OPEN |
 | `lib/home_notify.dart` | Flutter App source — localized Home/OTA copy helpers and stateless fixed 44-dp HomeNotifyCard | APP SOURCE — TIER 2 / PRESENTATION CONTRACT | UPGRADE / CLOSED — DASHBOARD-OWNED STATUS ADAPTER; VALIDATION ONLY #458849 (233/233) |
 | `lib/jex_animated_glyph.dart` | Flutter App source | APP SOURCE — CODE AUTHORIZATION | KEEP / VERIFIED — STATELESS STATIC ICON |
 | `lib/jex_animated_icon.dart` | Flutter App source — animated state indicators and glyph painters | APP SOURCE — TIER 2 / PRESENTATION CONTRACT | UPGRADE / CLOSED — PRESENTATION-ONLY MODULE; CURRENT MAIN VALIDATED IN #458849 (233/233) |
-| `lib/jex_design_tokens.dart` | Flutter App shared layout, semantic color, typography and shape tokens | APP SOURCE — WP4 / DESIGN SYSTEM FOUNDATION | UPGRADE / VERIFIED CI #158 — GEOMETRY, SEMANTIC ROLES, BASE/COMPACT TYPOGRAPHY AND INPUT-SHAPE TOKENS; ROUTE ADOPTION OPEN |
+| `lib/jex_design_tokens.dart` | Flutter App shared layout, semantic color, typography and shape tokens | APP SOURCE — WP4 / DESIGN SYSTEM FOUNDATION | UPGRADE / PARTIALLY VERIFIED CI #187 — TOKEN FOUNDATION PRESENT; CROSS-ROUTE AUDIT OPEN |
 | `lib/led_controls.dart` | Flutter App source — LED mode/color/phase preview and picker presentation | APP SOURCE — TIER 2 / LED PRESENTATION CONTRACT | UPGRADE / CLOSED / READ-BACK VERIFIED — EXTRACTED FROM `main.dart`; VALIDATION ONLY #91 (2026-11-27) |
-| `lib/main.dart` | Flutter App source — App entry and Dashboard sole BLE/GATT/P1/session owner | APP SOURCE — TIER 1 / SESSION OWNERSHIP | UPGRADE IN PROGRESS — BOOTSTRAP/SECURITY/ROOT/SETTINGS/HOME/LED/CONNECTION/FRAMING/COMMAND CLASSIFICATION/ACK WAITER LIFECYCLE EXTRACTED; DASHBOARD REMAINS SOLE BLE/GATT/P1/SESSION/TELEMETRY AUTHORITY; FULL OWNER AUDIT OPEN |
+| `lib/main.dart` | Flutter App source — App entry and Dashboard sole BLE/GATT/P1/session owner | APP SOURCE — TIER 1 / SESSION OWNERSHIP | UPGRADE IN PROGRESS — HOME/CONTROL/TEMPERATURE PRESENTATION PARTS EXTRACTED; SOLE BLE/GATT/P1/SESSION/TELEMETRY OWNER; FULL CONTENT AUDIT OPEN |
 | `lib/p1_ack_waiters.dart` | Pure per-item FIFO P1 ACK waiter coordinator; registration, timeout, exact cancellation and bulk completion only | APP SOURCE — WP3 / ACK WAITER LIFECYCLE; NO BLE/GATT OR SESSION OWNER | UPGRADE / VERIFIED CI #155 + #158 — FIVE LIFECYCLE TESTS; DASHBOARD RETAINS TRANSPORT/ACK DISPATCH/SESSION AUTHORITY |
 | `lib/p1_command_contract.dart` | Pure P1 command classification — ACK item, expected telemetry, write-response policy and ACK success vocabulary | APP SOURCE — WP3 / PURE COMMAND CONTRACT; NO TRANSPORT OR SESSION OWNER | UPGRADE / VERIFIED CI #158 — DASHBOARD RETAINS WRITE/ACK/TELEMETRY SEQUENCING |
 | `lib/p1_frame_decoder.dart` | Pure P1 stream framing and bounded partial-buffer decoder | APP SOURCE — WP3 / FRAME DECODER ONLY | UPGRADE / VERIFIED CI #142 — FRAME ORDER, SPLIT SYNC, OVERFLOW AND SESSION CLEAR TESTS PASS |
 | `lib/settings_pages.dart` | Flutter App library part — Settings root, navigation and preference subpages | APP SOURCE — WP2 / WP4 SETTINGS PRESENTATION | UPGRADE / VERIFIED CI #158 — SEMANTIC SURFACE/FOREGROUND/OUTLINE TOKENS; STORAGE KEYS UNCHANGED; VISUAL ACCEPTANCE OPEN |
 | `lib/usage_statistics.dart` | Flutter App source | APP SOURCE — CODE AUTHORIZATION | UPGRADE / CLOSED — CLEAR HISTORY DOES NOT MANUFACTURE HOT FRESHNESS (#82) |
+| `MASTER_PROMPT.md` | Operating governance | CANONICAL GOVERNANCE | UPGRADE / REVIEWED — FULL-CYCLE EKSEKUSI CODE POLICY |
+| `MEMORY_INDEX.md` | Operating governance | CANONICAL GOVERNANCE | UPGRADE / CURRENT — 118-PATH INVENTORY AND #187 EVIDENCE RECONCILED |
+| `OTA_PROTECTION.md` | Project/configuration file | REVIEW REQUIRED | PROTECTED / REVIEWED — NO TRANSPORT CHANGES |
+| `OTA_REGRESSION_MEMORY.md` | Project/configuration file | REVIEW REQUIRED | PROTECTED / REVIEWED — HISTORICAL SECURITY TRADE-OFF |
+| `PRODUCT_DESIGN_CONSTITUTION.md` | Project/configuration file | REVIEW REQUIRED | KEEP / VERIFIED — EXISTING BRAND / DESIGN AUTHORITY |
+| `PROJECT_STATE.md` | Current-only product/source/release/validation truth | CANONICAL CURRENT STATE | UPGRADE / CURRENT — MAIN 1b6b38b; VALIDATION ONLY #187 280/280 |
 | `pubspec.lock` | Flutter dependency manifest/lock | DEPENDENCY CONTRACT — REVIEW BEFORE CHANGE | KEEP / VERIFIED (2026-11-26) |
 | `pubspec.yaml` | Flutter dependency manifest/lock | DEPENDENCY CONTRACT — REVIEW BEFORE CHANGE | UPGRADE — CLOSED / READ-BACK VERIFIED (2026-11-26) |
+| `README.md` | Project entrypoint / navigation index | ACTIVE PROJECT INDEX | KEEP / VERIFIED (2026-11-26) |
+| `REPOSITORY_UPGRADE_PLAN.md` | Repository-wide upgrade register | Canonical per-file audit register | UPGRADE / CURRENT — 118/118 LIVE PATHS; CONTENT REVIEW REMAINS WP-BASED |
+| `SKILLS_INDEX.md` | Reusable skill and capability catalogue | ACTIVE CAPABILITY INDEX | UPGRADE — CLOSED / READ-BACK VERIFIED (2026-11-26) |
 | `test/app_bootstrap_test.dart` | Dart test | TEST / REGRESSION | UPGRADE / VERIFIED CI #142 — OFFICIAL GATE, STARTUP ORDER AND CLOUD-FAILURE BEHAVIOR |
-| `test/app_settings_model_test.dart` | Pure AppSettings value-model JSON/default/fallback/copy regression tests | TEST / WP1 PREFERENCES MODEL | UPGRADE / CI #169 PENDING — NO SECURE-STORAGE SIDE EFFECTS |
 | `test/app_protocol_notify_contract_test.dart` | Dart test | TEST / REGRESSION | KEEP / VERIFIED — P1 / NOTIFICATION SOURCE CONTRACT |
 | `test/app_security_test.dart` | Dart test | TEST / REGRESSION | UPGRADE / CLOSED — TRUE/FALSE/NULL/EXCEPTION CHANNEL CONTRACT (#87) |
+| `test/app_settings_model_test.dart` | Pure AppSettings value-model JSON/default/fallback/copy regression tests | TEST / WP1 PREFERENCES MODEL | UPGRADE / VERIFIED CI #187 — 11 PURE MODEL/JSON/FALLBACK/PALETTE TESTS |
+| `test/app_settings_store_test.dart` | Flutter plugin-mock behavioral regression tests for AppSettingsStore and KnownCoolerStore | TEST / WP1 PERSISTENCE REGRESSION | UPGRADE / VERIFIED CI #187 — SEVEN MOCK-STORAGE TESTS; FAILURE INJECTION OPEN |
 | `test/connection_scan_coordinator_test.dart` | Dart test | TEST / REGRESSION | UPGRADE / CLOSED — PASSIVE REDISCOVERY ERROR CONSUMPTION TEST (#85) |
 | `test/connection_scan_state_test.dart` | Dart unit tests for Connection scan-state precedence and advertised/platform name trimming | TEST / WP1 CONNECTION REGRESSION | UPGRADE / VERIFIED CI #166 — PRIORITY + NAME NORMALIZATION |
 | `test/device_copy_notification_contract_test.dart` | Dart test | TEST / REGRESSION | UPGRADE — CLOSED / READ-BACK VERIFIED (2026-11-26) |
@@ -270,6 +269,9 @@ A failed gate blocks dependent work. Retry only after classifying root cause (so
 | `test/temperature_accessibility_test.dart` | Flutter semantics/widget test for Temperature limit action labels and handles | TEST / ACCESSIBILITY REGRESSION | UPGRADE / VERIFIED CI #142 — SEMANTIC LABELS, HANDLE DISPOSAL AND FULL TEST SUITE |
 | `test/usage_statistics_test.dart` | Dart test | TEST / REGRESSION | UPGRADE / CLOSED — CLEAR HISTORY HOT FRESHNESS REGRESSION (#82) |
 | `test/widget_test.dart` | Dart widget/source-contract tests | TEST / REGRESSION | UPGRADE / VERIFIED CI #158 — THEME TYPOGRAPHY/INPUT-SHAPE REGRESSION; FULL-FILE REVIEW OPEN |
+| `VISUAL_QUALITY_GATE.md` | Project/configuration file | REVIEW REQUIRED | KEEP / VERIFIED — ACTUAL SCREENSHOTS STILL REQUIRED |
+| `VOLTAGE_TRANSITION_MEMORY.md` | Project/configuration file | REVIEW REQUIRED | PROTECTED / REVIEWED — FIRMWARE-OWNED RAIL / SAFETY CONTRACT |
+
 ## Content review records
 
 ### WP0/WP6 — direct-main recovery and read-only Validation Only — 2026-11-27
@@ -791,3 +793,16 @@ The Firmware-safety and hardware/power skills are retained as protected project 
 - Three added pure regression tests verify that Bluetooth/legacy-location unavailability wins over a simultaneous scan error and that valid advertisement/platform names are trimmed before presentation.
 - Exact evidence: Validation Only #166 / run `45956791122` / job `140365017067` / source SHA `b61614a170e6c741fa0280adcc75cf9e7504d075`, terminal SUCCESS; locked dependencies, formatter (37/0), analyzer and 262/262 Flutter tests PASS.
 - No scanner command, Android permission, BLE connection, GATT, P1, or Dashboard ownership behavior changed.
+
+
+### WP1 — AppSettingsStore and KnownCoolerStore behavioral tests — VERIFIED CI #187 (2026-11-27)
+
+- Added `test/app_settings_store_test.dart`. Seven Flutter tests exercise persisted-settings load/notifier projection; missing-setting defaults; save/read-back and notifier projection; firmware-notice suppression by exact version; known-cooler identity trimming; blank identity as unknown; and normalized save/blank-save/clear semantics.
+- Tests use `FlutterSecureStorage.setMockInitialValues()` from the pinned plugin test API. Production storage code, keys, defaults and persisted schema were not changed. Plugin failure/error injection and real Android secure-storage behavior remain open/not verified.
+- Validation Only #187 / run `45968056100` / job `140401426317`, exact SHA `1b6b38bddf902a251a385f48f921dad523ae036b`, terminal SUCCESS: locked dependencies PASS; formatter 42/0; analyzer PASS (109 info-level diagnostics under `--no-fatal-infos`); full suite **280/280 PASS**.
+
+### WP5 — Dashboard Home, Control and Temperature presentation parts — VERIFIED CI #187 (2026-11-27)
+
+- `lib/dashboard_home_tab.dart`, `lib/dashboard_control_tabs.dart` and `lib/dashboard_temperature_tab.dart` are Dart library parts of `main.dart`, extracting Home, Voltage/Control/Adaptive/LED and Temperature widget builders. They reuse enclosing Dashboard state and callbacks.
+- Static source review found no additional BLE/GATT client, P1 parser/session, MethodChannel, persistence adapter or independent command owner in these parts. Dashboard remains the sole BLE/GATT/P1/session and authoritative telemetry owner.
+- The extraction is included in Validation Only #187 and the 280/280 suite passed. This closes source/test compatibility for the split, not final redesign quality, visual acceptance or device behavior. Complete the full Dashboard owner/content audit and screen-specific design contract review before further decomposition.
