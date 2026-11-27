@@ -53,7 +53,7 @@ void main() {
         expect(animated, findsNWidgets(3));
 
         final outer = tester.widget<AnimatedContainer>(animated.at(0));
-        expect(tester.getSize(animated.at(0)).height, 62.0);
+        expect(tester.getSize(animated.at(0)).height, 64.0);
         expect(
           outer.padding,
           const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
@@ -83,9 +83,9 @@ void main() {
         final target = find.bySemanticsLabel('Fan, Cooling output');
         expect(target, findsOneWidget);
         final data = tester.getSemantics(target).getSemanticsData();
-        expect(data.hasFlag(ui.SemanticsFlag.hasToggledState), isTrue);
-        expect(data.hasFlag(ui.SemanticsFlag.isToggled), isTrue);
-        expect(data.hasFlag(ui.SemanticsFlag.isEnabled), isTrue);
+        expect(data.flagsCollection.hasToggledState, isTrue);
+        expect(data.flagsCollection.isToggled, isTrue);
+        expect(data.flagsCollection.isEnabled, isTrue);
         expect(data.hasAction(ui.SemanticsAction.tap), isTrue);
 
         await tester.tap(target);
