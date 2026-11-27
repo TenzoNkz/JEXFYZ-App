@@ -567,7 +567,7 @@ void main() {
     () {
       final source = File('lib/main.dart').readAsStringSync();
       final tabsStart = source.indexOf('Widget _buildTabContent()');
-      final tabsEnd = source.indexOf('// AI-METHOD / HOME-CONTRACT', tabsStart);
+      final tabsEnd = source.indexOf('Widget _tab(String title, int index)', tabsStart);
       expect(tabsStart, isNonNegative);
       expect(tabsEnd, greaterThan(tabsStart));
       final lockSource = source.substring(tabsStart, tabsEnd);
@@ -638,6 +638,8 @@ void main() {
 
   test('Core indicator family shares a luminous core with distinct telemetry motion', () {
     final source = File('lib/main.dart').readAsStringSync();
+    final homeSource = File('lib/dashboard_home_tab.dart').readAsStringSync();
+    final controlSource = File('lib/dashboard_control_tabs.dart').readAsStringSync();
     final animationSource = File('lib/jex_animated_icon.dart')
         .readAsStringSync();
     final painterStart = animationSource.indexOf(
@@ -674,8 +676,8 @@ void main() {
     expect(painter, isNot(contains('void _drawFallingFlameParticles(')));
     expect(painter, isNot(contains('Path _fallingFlameDropPath(')));
     expect(painter, contains('for (var i = 0; i < 3; i++)'));
-    expect(source, contains('JexAnimatedIconKind.adaptive'));
-    expect(source, contains('JexAnimatedIconKind.peltier'));
+    expect(homeSource, contains('JexAnimatedIconKind.adaptive'));
+    expect(controlSource, contains('JexAnimatedIconKind.peltier'));
     expect(source, contains('JexAnimatedIconKind.speed'));
     expect(animationSource, contains('jexIconAnimationPermitted('));
     expect(animationSource, contains('valueKnown'));
@@ -2233,7 +2235,7 @@ void main() {
     () {
       final source = File('lib/main.dart').readAsStringSync();
       final start = source.indexOf('Widget _lockedDisplayMenu(');
-      final end = source.indexOf('// AI-METHOD / HOME-CONTRACT', start);
+      final end = source.indexOf('Widget _tab(String title, int index)', start);
       expect(start, isNonNegative);
       expect(end, greaterThan(start));
       final lockedMenu = source.substring(start, end);
