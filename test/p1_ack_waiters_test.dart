@@ -22,63 +22,66 @@ void main() {
     test(
       'cancels the exact failed-write waiter and preserves peer order',
       () async {
-      final coordinator = P1AckWaiterCoordinator();
-      final first = coordinator.register('VOLTAGE');
-      final failedWrite = coordinator.register('VOLTAGE');
-      final third = coordinator.register('VOLTAGE');
-      final failedFuture = coordinator.waitFor(failedWrite);
+        final coordinator = P1AckWaiterCoordinator();
+        final first = coordinator.register('VOLTAGE');
+        final failedWrite = coordinator.register('VOLTAGE');
+        final third = coordinator.register('VOLTAGE');
+        final failedFuture = coordinator.waitFor(failedWrite);
 
-      expect(
-        coordinator.cancel(failedWrite, reason: 'WRITE_FAILED'),
-        isTrue,
-      );
-      expect(
-        coordinator.cancel(failedWrite, reason: 'WRITE_FAILED'),
-        isFalse,
-      );
-      expect(await failedFuture, 'WRITE_FAILED');
+        expect(
+          coordinator.cancel(failedWrite, reason: 'WRITE_FAILED'),
+          isTrue,
+        );
+        expect(
+          coordinator.cancel(failedWrite, reason: 'WRITE_FAILED'),
+          isFalse,
+        );
+        expect(await failedFuture, 'WRITE_FAILED');
 
-      expect(coordinator.completeNext('VOLTAGE', '9V'), isTrue);
-      expect(await first.future, '9V');
-      expect(coordinator.completeNext('VOLTAGE', '12V'), isTrue);
-      expect(await third.future, '12V');
-      expect(coordinator.completeNext('VOLTAGE', 'LATE'), isFalse);
-    });
+        expect(coordinator.completeNext('VOLTAGE', '9V'), isTrue);
+        expect(await first.future, '9V');
+        expect(coordinator.completeNext('VOLTAGE', '12V'), isTrue);
+        expect(await third.future, '12V');
+        expect(coordinator.completeNext('VOLTAGE', 'LATE'), isFalse);
+      },
+    );
 
     test(
       'timeout removes only its waiter and preserves the next FIFO token',
       () async {
-      final coordinator = P1AckWaiterCoordinator();
-      final timedOut = coordinator.register('PELTIER');
-      final next = coordinator.register('PELTIER');
+        final coordinator = P1AckWaiterCoordinator();
+        final timedOut = coordinator.register('PELTIER');
+        final next = coordinator.register('PELTIER');
 
-      expect(
-        await coordinator.waitFor(timedOut, timeout: Duration.zero),
-        'TIMEOUT',
-      );
-      expect(await timedOut.future, 'TIMEOUT');
-      expect(coordinator.completeNext('PELTIER', 'OFF'), isTrue);
-      expect(await next.future, 'OFF');
-      expect(coordinator.completeNext('PELTIER', 'LATE'), isFalse);
-    });
+        expect(
+          await coordinator.waitFor(timedOut, timeout: Duration.zero),
+          'TIMEOUT',
+        );
+        expect(await timedOut.future, 'TIMEOUT');
+        expect(coordinator.completeNext('PELTIER', 'OFF'), isTrue);
+        expect(await next.future, 'OFF');
+        expect(coordinator.completeNext('PELTIER', 'LATE'), isFalse);
+      },
+    );
 
     test(
       'disconnect resolves all outstanding items with DISCONNECTED',
       () async {
-      final coordinator = P1AckWaiterCoordinator();
-      final waiters = <P1AckWaiter>[
-        coordinator.register('FAN'),
-        coordinator.register('PELTIER'),
-        coordinator.register('FAN'),
-      ];
+        final coordinator = P1AckWaiterCoordinator();
+        final waiters = <P1AckWaiter>[
+          coordinator.register('FAN'),
+          coordinator.register('PELTIER'),
+          coordinator.register('FAN'),
+        ];
 
-      expect(coordinator.completeAll('DISCONNECTED'), 3);
-      expect(
-        await Future.wait(waiters.map((waiter) => waiter.future)),
-        <String>['DISCONNECTED', 'DISCONNECTED', 'DISCONNECTED'],
-      );
-      expect(coordinator.completeAll('DISCONNECTED'), 0);
-    });
+        expect(coordinator.completeAll('DISCONNECTED'), 3);
+        expect(
+          await Future.wait(waiters.map((waiter) => waiter.future)),
+          <String>['DISCONNECTED', 'DISCONNECTED', 'DISCONNECTED'],
+        );
+        expect(coordinator.completeAll('DISCONNECTED'), 0);
+      },
+    );
 
     test('dispose resolves remaining waiters with CANCELLED', () async {
       final coordinator = P1AckWaiterCoordinator();
