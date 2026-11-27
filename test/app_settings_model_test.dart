@@ -24,17 +24,14 @@ void main() {
         autoConnect: true,
       );
 
-      expect(
-        settings.toJson(),
-        <String, dynamic>{
-          'language': 'indonesia',
-          'theme': 'dark',
-          'notifySafety': false,
-          'notifyFirmware': true,
-          'notifyBluetooth': false,
-          'autoConnect': true,
-        },
-      );
+      expect(settings.toJson(), <String, dynamic>{
+        'language': 'indonesia',
+        'theme': 'dark',
+        'notifySafety': false,
+        'notifyFirmware': true,
+        'notifyBluetooth': false,
+        'autoConnect': true,
+      });
 
       final restored = AppSettings.fromJson(
         '{"language":"indonesia","theme":"dark","notifySafety":false,'
@@ -137,7 +134,10 @@ void main() {
     test(
       'default preset keeps the dark Home header and light Dashboard body',
       () {
-        expect(jexHomeHeaderUsesDarkPalette(AppThemePreset.defaultTheme), isTrue);
+        expect(
+          jexHomeHeaderUsesDarkPalette(AppThemePreset.defaultTheme),
+          isTrue,
+        );
         expect(
           jexDashboardContentUsesDarkPalette(AppThemePreset.defaultTheme),
           isFalse,
@@ -147,18 +147,12 @@ void main() {
 
     test('light preset uses light palettes for both surfaces', () {
       expect(jexHomeHeaderUsesDarkPalette(AppThemePreset.light), isFalse);
-      expect(
-        jexDashboardContentUsesDarkPalette(AppThemePreset.light),
-        isFalse,
-      );
+      expect(jexDashboardContentUsesDarkPalette(AppThemePreset.light), isFalse);
     });
 
     test('dark preset uses dark palettes for both surfaces', () {
       expect(jexHomeHeaderUsesDarkPalette(AppThemePreset.dark), isTrue);
-      expect(
-        jexDashboardContentUsesDarkPalette(AppThemePreset.dark),
-        isTrue,
-      );
+      expect(jexDashboardContentUsesDarkPalette(AppThemePreset.dark), isTrue);
     });
   });
 }

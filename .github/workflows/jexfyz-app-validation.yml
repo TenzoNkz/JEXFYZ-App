@@ -64,14 +64,6 @@ jobs:
           set -euo pipefail
           dart format --output=none --set-exit-if-changed lib test
 
-      - name: Diagnose AppSettings model formatter output (read-only)
-        id: formatter_diagnostic
-        if: ${{ !cancelled() && steps.formatter.outcome == 'failure' }}
-        continue-on-error: true
-        shell: bash
-        run: |
-          set -euo pipefail
-          dart format --output=show test/app_settings_model_test.dart
       - name: Analyze Flutter and Dart source
         id: analyzer
         if: ${{ !cancelled() && steps.dependencies.outcome == 'success' }}
