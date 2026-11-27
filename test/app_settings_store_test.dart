@@ -52,45 +52,39 @@ void main() {
       },
     );
 
-    test(
-      'missing settings restore and publish established defaults',
-      () async {
-        final loaded = await AppSettingsStore.load();
+    test('missing settings restore and publish established defaults', () async {
+      final loaded = await AppSettingsStore.load();
 
-        expect(loaded.toJson(), const AppSettings().toJson());
-        expect(appLanguageNotifier.value, AppLanguage.english);
-        expect(appThemeNotifier.value, AppThemePreset.defaultTheme);
-        expect(appNotifySafetyNotifier.value, isTrue);
-        expect(appNotifyFirmwareNotifier.value, isTrue);
-        expect(appNotifyBluetoothNotifier.value, isTrue);
-        expect(appAutoConnectNotifier.value, isFalse);
-      },
-    );
+      expect(loaded.toJson(), const AppSettings().toJson());
+      expect(appLanguageNotifier.value, AppLanguage.english);
+      expect(appThemeNotifier.value, AppThemePreset.defaultTheme);
+      expect(appNotifySafetyNotifier.value, isTrue);
+      expect(appNotifyFirmwareNotifier.value, isTrue);
+      expect(appNotifyBluetoothNotifier.value, isTrue);
+      expect(appAutoConnectNotifier.value, isFalse);
+    });
 
-    test(
-      'save publishes and persists one complete settings record',
-      () async {
-        const settings = AppSettings(
-          language: AppLanguage.indonesia,
-          theme: AppThemePreset.light,
-          notifySafety: false,
-          notifyFirmware: false,
-          notifyBluetooth: true,
-          autoConnect: true,
-        );
+    test('save publishes and persists one complete settings record', () async {
+      const settings = AppSettings(
+        language: AppLanguage.indonesia,
+        theme: AppThemePreset.light,
+        notifySafety: false,
+        notifyFirmware: false,
+        notifyBluetooth: true,
+        autoConnect: true,
+      );
 
-        await AppSettingsStore.save(settings);
+      await AppSettingsStore.save(settings);
 
-        final stored = await storage.read(key: 'jexfyz_app_settings_v2');
-        expect(jsonDecode(stored!), settings.toJson());
-        expect(appLanguageNotifier.value, AppLanguage.indonesia);
-        expect(appThemeNotifier.value, AppThemePreset.light);
-        expect(appNotifySafetyNotifier.value, isFalse);
-        expect(appNotifyFirmwareNotifier.value, isFalse);
-        expect(appNotifyBluetoothNotifier.value, isTrue);
-        expect(appAutoConnectNotifier.value, isTrue);
-      },
-    );
+      final stored = await storage.read(key: 'jexfyz_app_settings_v2');
+      expect(jsonDecode(stored!), settings.toJson());
+      expect(appLanguageNotifier.value, AppLanguage.indonesia);
+      expect(appThemeNotifier.value, AppThemePreset.light);
+      expect(appNotifySafetyNotifier.value, isFalse);
+      expect(appNotifyFirmwareNotifier.value, isFalse);
+      expect(appNotifyBluetoothNotifier.value, isTrue);
+      expect(appAutoConnectNotifier.value, isTrue);
+    });
 
     test(
       'firmware notice gate suppresses only the persisted version',
@@ -128,32 +122,29 @@ void main() {
       expect(knownCoolerRemoteIdNotifier.value, isNull);
     });
 
-    test(
-      'save normalizes identity and clear removes it',
-      () async {
-        await KnownCoolerStore.save('  cooler-02  ');
+    test('save normalizes identity and clear removes it', () async {
+      await KnownCoolerStore.save('  cooler-02  ');
 
-        expect(
-          await storage.read(key: 'jexfyz_known_cooler_remote_id_v1'),
-          'cooler-02',
-        );
-        expect(knownCoolerRemoteIdNotifier.value, 'cooler-02');
+      expect(
+        await storage.read(key: 'jexfyz_known_cooler_remote_id_v1'),
+        'cooler-02',
+      );
+      expect(knownCoolerRemoteIdNotifier.value, 'cooler-02');
 
-        await KnownCoolerStore.save('   ');
+      await KnownCoolerStore.save('   ');
 
-        expect(
-          await storage.read(key: 'jexfyz_known_cooler_remote_id_v1'),
-          'cooler-02',
-        );
+      expect(
+        await storage.read(key: 'jexfyz_known_cooler_remote_id_v1'),
+        'cooler-02',
+      );
 
-        await KnownCoolerStore.clear();
+      await KnownCoolerStore.clear();
 
-        expect(
-          await storage.read(key: 'jexfyz_known_cooler_remote_id_v1'),
-          isNull,
-        );
-        expect(knownCoolerRemoteIdNotifier.value, isNull);
-      },
-    );
+      expect(
+        await storage.read(key: 'jexfyz_known_cooler_remote_id_v1'),
+        isNull,
+      );
+      expect(knownCoolerRemoteIdNotifier.value, isNull);
+    });
   });
 }
