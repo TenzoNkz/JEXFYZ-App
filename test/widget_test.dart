@@ -2470,7 +2470,7 @@ void main() {
     expect(choiceEnd, greaterThan(choiceStart));
     final choice = source.substring(choiceStart, choiceEnd);
     expect(choice, contains('color: jexVoltageIndicatorColor(target)'));
-    expect(choice, contains('accent: scheme.primary,'));
+    expect(choice, contains('accent: scheme.jexAccent,'));
     expect(choice, contains('showCheck: false,'));
     expect(choice, isNot(contains('accent: accent,')));
 
