@@ -847,9 +847,16 @@ void main() {
       expect(usage, contains('latest_hotside'));
       expect(usage, contains('UNION'));
       expect(
-        RegExp(
-          r'_usageSampleRetentionDeleteSql,\\s*\\[\\s*cutoff,\\s*cutoff,\\s*cutoff,\\s*\\]',
-        ).hasMatch(usage),
+        containsDartFragment(
+          usage,
+          '''
+_usageSampleRetentionDeleteSql, [
+  cutoff,
+  cutoff,
+  cutoff,
+]
+''',
+        ),
         isTrue,
       );
       expect(
