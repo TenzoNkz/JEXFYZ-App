@@ -9,17 +9,17 @@ void main() {
     test(
       'close action exposes its localized tooltip and preserves target size',
       () {
-      final source = File('lib/connection_sheet.dart').readAsStringSync();
-      const closeAction = "onPressed: () => Navigator.pop(context)";
-      final actionIndex = source.indexOf(closeAction);
-      final buttonStart = source.lastIndexOf('IconButton(', actionIndex);
-      expect(actionIndex, isNonNegative);
-      expect(buttonStart, isNonNegative);
+        final source = File('lib/connection_sheet.dart').readAsStringSync();
+        const closeAction = "onPressed: () => Navigator.pop(context)";
+        final actionIndex = source.indexOf(closeAction);
+        final buttonStart = source.lastIndexOf('IconButton(', actionIndex);
+        expect(actionIndex, isNonNegative);
+        expect(buttonStart, isNonNegative);
 
-      final button = source.substring(buttonStart, actionIndex);
-      expect(button, contains("tooltip: JexText.of('close', lang),"));
-      expect(button, contains('width: 42,'));
-      expect(button, contains('height: 42,'));
+        final button = source.substring(buttonStart, actionIndex);
+        expect(button, contains("tooltip: JexText.of('close', lang),"));
+        expect(button, contains('width: 42,'));
+        expect(button, contains('height: 42,'));
       },
     );
   });
