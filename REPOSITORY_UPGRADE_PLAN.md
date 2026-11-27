@@ -151,6 +151,8 @@ A failed gate blocks dependent work. Retry only after classifying root cause (so
 - At the 2026-11-26 Diskusi handoff: **17/96 blob dispositions** are recorded. `lib/floating_monitor.dart` is now UPGRADE APPROVED after a full static source/caller/bridge/test review; source implementation remains in the separate Eksekusi Code workspace. Eleven of the 12 formatter-touched Dart/test files still require individual content review. The next unreviewed inventory path is `lib/jex_animated_glyph.dart`.
 - In the Code workspace, first reconcile live HEAD/tree/status, then resume WP0 and WP1. Keep the App-only scope and protected path exclusions in the active plan; Firmware/BIN, BLE protocol/security changes, OTA, Firebase production, signing, package/release, flashing and device operation are not authorized by this register or owner UI request.
 
+## File inventory
+
 | Path | File class | Guard / authority | Current review state |
 |---|---|---|---|
 | `.agents/skills/ble-p1-protocol-audit/SKILL.md` | Canonical agent skill | CANONICAL SKILL | KEEP / VERIFIED (2026-11-26) |
