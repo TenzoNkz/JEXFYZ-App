@@ -12,9 +12,8 @@ void main() {
     final copy = File('lib/app_settings.dart').readAsStringSync();
 
     expect(main, contains("const String headerName = 'JE X FYZ';"));
-    final displayMenu = File(
-      'lib/dashboard_display_menu.dart',
-    ).readAsStringSync();
+    final displayMenu = File('lib/dashboard_display_menu.dart')
+        .readAsStringSync();
 
     expect(main, contains('JexDashboardLockedMenu('));
     expect(displayMenu, contains('CONNECT YOUR DEVICE FIRST'));
