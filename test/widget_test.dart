@@ -1289,12 +1289,12 @@ void main() {
     expect(painter, contains('const sweep = math.pi;'));
     expect(
       containsDartFragment(
-        controlSource,
+        source,
         'active: connected && (animationActive ?? active)',
       ),
       isTrue,
     );
-    expect(controlSource, contains('continuousLoop: continuousLoop'));
+    expect(source, contains('continuousLoop: continuousLoop'));
     final homeStart = source.lastIndexOf(
       'Widget _buildHomeArea(double height)',
     );
