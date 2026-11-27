@@ -2,13 +2,13 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 
-import 'support/source_contract_helpers.dart';
-
-import '../lib/connection_scan_state.dart';
+import 'package:jexfyz_cooler/connection_scan_state.dart';
 
 void main() {
   group('Connection accessibility contracts', () {
-    test('close action exposes its localized tooltip and preserves target size', () {
+    test(
+      'close action exposes its localized tooltip and preserves target size',
+      () {
       final source = File('lib/connection_sheet.dart').readAsStringSync();
       const closeAction = "onPressed: () => Navigator.pop(context)";
       final actionIndex = source.indexOf(closeAction);
@@ -20,7 +20,8 @@ void main() {
       expect(button, contains("tooltip: JexText.of('close', lang),"));
       expect(button, contains('width: 42,'));
       expect(button, contains('height: 42,'));
-    });
+      },
+    );
   });
 
   group('Connection scan empty-state messaging', () {
