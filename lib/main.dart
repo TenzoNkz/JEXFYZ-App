@@ -71,6 +71,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
 
 import 'p1_frame_decoder.dart';
+import 'p1_telemetry_contract.dart';
 import 'p1_command_contract.dart';
 import 'p1_ack_waiters.dart';
 import 'jex_design_tokens.dart';
@@ -1975,11 +1976,9 @@ class _DashboardScreenState extends State<DashboardScreen>
             _handleAckLine(line);
             continue;
           }
-          final separator = line.indexOf(':');
-          if (separator <= 0) continue;
-          final key = line.substring(0, separator).trim();
-          final value = line.substring(separator + 1).trim();
-          _syncSnapshot[key] = value;
+          final entry = P1TelemetryContract.parseLine(line);
+          if (entry == null) continue;
+          _syncSnapshot[entry.key] = entry.value;
         }
         // Only Dashboard may commit the complete atomic snapshot or advance readiness.
         _commitTelemetry(_syncSnapshot);
@@ -2054,12 +2053,10 @@ class _DashboardScreenState extends State<DashboardScreen>
       _handleAckLine(line);
       return;
     }
-    final separator = line.indexOf(':');
-    if (separator <= 0) return;
-    final key = line.substring(0, separator).trim();
-    final value = line.substring(separator + 1).trim();
+    final entry = P1TelemetryContract.parseLine(line);
+    if (entry == null) return;
     // AI-METHOD: _commitTelemetry — Buffer setup telemetry until dashboard readiness; otherwise update UI state.
-    _commitTelemetry(<String, String>{key: value});
+    _commitTelemetry(<String, String>{entry.key: entry.value});
   }
 
   // AI-METHOD: _commitTelemetry — Buffer setup telemetry until dashboard readiness; otherwise update UI state.
