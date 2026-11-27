@@ -5,7 +5,6 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:jexfyz_cooler/app_settings.dart';
 
-
 /// A deterministic backing map for exercising the plugin's existing test platform.
 /// flutter_secure_storage delegates its mock read/write/delete operations to this Map.
 class _FailureInjectingStorageMap extends MapBase<String, String> {
@@ -205,77 +204,80 @@ void main() {
     test(
       'AppSettingsStore.load publishes defaults when storage read fails',
       () async {
-      appLanguageNotifier.value = AppLanguage.indonesia;
-      appThemeNotifier.value = AppThemePreset.dark;
-      appNotifySafetyNotifier.value = false;
-      appNotifyFirmwareNotifier.value = false;
-      appNotifyBluetoothNotifier.value = false;
-      appAutoConnectNotifier.value = true;
+        appLanguageNotifier.value = AppLanguage.indonesia;
+        appThemeNotifier.value = AppThemePreset.dark;
+        appNotifySafetyNotifier.value = false;
+        appNotifyFirmwareNotifier.value = false;
+        appNotifyBluetoothNotifier.value = false;
+        appAutoConnectNotifier.value = true;
 
-      final failingStorage = _FailureInjectingStorageMap(failReads: true);
-      FlutterSecureStorage.setMockInitialValues(failingStorage);
+        final failingStorage = _FailureInjectingStorageMap(failReads: true);
+        FlutterSecureStorage.setMockInitialValues(failingStorage);
 
-      final loaded = await AppSettingsStore.load();
+        final loaded = await AppSettingsStore.load();
 
-      expect(loaded.toJson(), const AppSettings().toJson());
-      expect(appLanguageNotifier.value, AppLanguage.english);
-      expect(appThemeNotifier.value, AppThemePreset.defaultTheme);
-      expect(appNotifySafetyNotifier.value, isTrue);
-      expect(appNotifyFirmwareNotifier.value, isTrue);
-      expect(appNotifyBluetoothNotifier.value, isTrue);
-      expect(appAutoConnectNotifier.value, isFalse);
-      expect(failingStorage.readAttempts, 1);
-    });
+        expect(loaded.toJson(), const AppSettings().toJson());
+        expect(appLanguageNotifier.value, AppLanguage.english);
+        expect(appThemeNotifier.value, AppThemePreset.defaultTheme);
+        expect(appNotifySafetyNotifier.value, isTrue);
+        expect(appNotifyFirmwareNotifier.value, isTrue);
+        expect(appNotifyBluetoothNotifier.value, isTrue);
+        expect(appAutoConnectNotifier.value, isFalse);
+        expect(failingStorage.readAttempts, 1);
+      },
+    );
 
     test(
       'AppSettingsStore.save publishes before a failed storage write',
       () async {
-      const settings = AppSettings(
-        language: AppLanguage.indonesia,
-        theme: AppThemePreset.dark,
-        notifySafety: false,
-        notifyFirmware: false,
-        notifyBluetooth: false,
-        autoConnect: true,
-      );
-      var notifiersWerePublishedBeforeWrite = false;
-      final failingStorage = _FailureInjectingStorageMap(
-        failWrites: true,
-        onWriteAttempt: () {
-          notifiersWerePublishedBeforeWrite =
-              appLanguageNotifier.value == AppLanguage.indonesia &&
-              appThemeNotifier.value == AppThemePreset.dark &&
-              !appNotifySafetyNotifier.value &&
-              !appNotifyFirmwareNotifier.value &&
-              !appNotifyBluetoothNotifier.value &&
-              appAutoConnectNotifier.value;
-        },
-      );
-      FlutterSecureStorage.setMockInitialValues(failingStorage);
+        const settings = AppSettings(
+          language: AppLanguage.indonesia,
+          theme: AppThemePreset.dark,
+          notifySafety: false,
+          notifyFirmware: false,
+          notifyBluetooth: false,
+          autoConnect: true,
+        );
+        var notifiersWerePublishedBeforeWrite = false;
+        final failingStorage = _FailureInjectingStorageMap(
+          failWrites: true,
+          onWriteAttempt: () {
+            notifiersWerePublishedBeforeWrite =
+                appLanguageNotifier.value == AppLanguage.indonesia &&
+                appThemeNotifier.value == AppThemePreset.dark &&
+                !appNotifySafetyNotifier.value &&
+                !appNotifyFirmwareNotifier.value &&
+                !appNotifyBluetoothNotifier.value &&
+                appAutoConnectNotifier.value;
+          },
+        );
+        FlutterSecureStorage.setMockInitialValues(failingStorage);
 
-      await expectLater(AppSettingsStore.save(settings), completes);
+        await expectLater(AppSettingsStore.save(settings), completes);
 
-      expect(failingStorage.writeAttempts, 1);
-      expect(notifiersWerePublishedBeforeWrite, isTrue);
-      expect(appLanguageNotifier.value, AppLanguage.indonesia);
-      expect(appThemeNotifier.value, AppThemePreset.dark);
-      expect(appNotifySafetyNotifier.value, isFalse);
-      expect(appNotifyFirmwareNotifier.value, isFalse);
-      expect(appNotifyBluetoothNotifier.value, isFalse);
-      expect(appAutoConnectNotifier.value, isTrue);
-    });
+        expect(failingStorage.writeAttempts, 1);
+        expect(notifiersWerePublishedBeforeWrite, isTrue);
+        expect(appLanguageNotifier.value, AppLanguage.indonesia);
+        expect(appThemeNotifier.value, AppThemePreset.dark);
+        expect(appNotifySafetyNotifier.value, isFalse);
+        expect(appNotifyFirmwareNotifier.value, isFalse);
+        expect(appNotifyBluetoothNotifier.value, isFalse);
+        expect(appAutoConnectNotifier.value, isTrue);
+      },
+    );
 
     test(
       'firmware notice skips blank versions and fails open on read errors',
       () async {
-      final failingStorage = _FailureInjectingStorageMap(failReads: true);
-      FlutterSecureStorage.setMockInitialValues(failingStorage);
+        final failingStorage = _FailureInjectingStorageMap(failReads: true);
+        FlutterSecureStorage.setMockInitialValues(failingStorage);
 
-      expect(await AppSettingsStore.shouldNotifyFirmware('  '), isFalse);
-      expect(failingStorage.readAttempts, 0);
-      expect(await AppSettingsStore.shouldNotifyFirmware('V9.9'), isTrue);
-      expect(failingStorage.readAttempts, 1);
-    });
+        expect(await AppSettingsStore.shouldNotifyFirmware('  '), isFalse);
+        expect(failingStorage.readAttempts, 0);
+        expect(await AppSettingsStore.shouldNotifyFirmware('V9.9'), isTrue);
+        expect(failingStorage.readAttempts, 1);
+      },
+    );
 
     test('markFirmwareNotified contains storage write failures', () async {
       final failingStorage = _FailureInjectingStorageMap(failWrites: true);
@@ -292,18 +294,17 @@ void main() {
     test(
       'KnownCoolerStore.load clears the notifier when storage read fails',
       () async {
-      knownCoolerRemoteIdNotifier.value = 'stale-cooler';
-      final failingStorage = _FailureInjectingStorageMap(failReads: true);
-      FlutterSecureStorage.setMockInitialValues(failingStorage);
+        knownCoolerRemoteIdNotifier.value = 'stale-cooler';
+        final failingStorage = _FailureInjectingStorageMap(failReads: true);
+        FlutterSecureStorage.setMockInitialValues(failingStorage);
 
-      expect(await KnownCoolerStore.load(), isNull);
-      expect(knownCoolerRemoteIdNotifier.value, isNull);
-      expect(failingStorage.readAttempts, 1);
-    });
+        expect(await KnownCoolerStore.load(), isNull);
+        expect(knownCoolerRemoteIdNotifier.value, isNull);
+        expect(failingStorage.readAttempts, 1);
+      },
+    );
 
-    test(
-      'KnownCoolerStore.save publishes normalized identity despite write failure',
-      () async {
+    test('KnownCoolerStore.save publishes normalized identity despite write failure', () async {
       final failingStorage = _FailureInjectingStorageMap(failWrites: true);
       FlutterSecureStorage.setMockInitialValues(failingStorage);
 
@@ -316,20 +317,21 @@ void main() {
     test(
       'KnownCoolerStore.clear clears notifier despite delete failure',
       () async {
-      const key = 'jexfyz_known_cooler_remote_id_v1';
-      knownCoolerRemoteIdNotifier.value = 'cooler-04';
-      final failingStorage = _FailureInjectingStorageMap(
-        failDeletes: true,
-        initialValues: const <String, String>{key: 'cooler-04'},
-      );
-      FlutterSecureStorage.setMockInitialValues(failingStorage);
+        const key = 'jexfyz_known_cooler_remote_id_v1';
+        knownCoolerRemoteIdNotifier.value = 'cooler-04';
+        final failingStorage = _FailureInjectingStorageMap(
+          failDeletes: true,
+          initialValues: const <String, String>{key: 'cooler-04'},
+        );
+        FlutterSecureStorage.setMockInitialValues(failingStorage);
 
-      await expectLater(KnownCoolerStore.clear(), completes);
+        await expectLater(KnownCoolerStore.clear(), completes);
 
-      expect(failingStorage.deleteAttempts, 1);
-      expect(knownCoolerRemoteIdNotifier.value, isNull);
-      expect(failingStorage.valueWithoutFailure(key), 'cooler-04');
-    });
+        expect(failingStorage.deleteAttempts, 1);
+        expect(knownCoolerRemoteIdNotifier.value, isNull);
+        expect(failingStorage.valueWithoutFailure(key), 'cooler-04');
+      },
+    );
   });
-
 }
+Formatted 1 file (1 changed) in 0.01 seconds.
