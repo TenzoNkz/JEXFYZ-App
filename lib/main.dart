@@ -5532,6 +5532,10 @@ class _DashboardScreenState extends State<DashboardScreen>
           ),
           _temperatureButton(
             icon: PhosphorIconsRegular.minus,
+            semanticLabel: JexText.phrase(
+              'Decrease $title',
+              'Kurangi $title',
+            ),
             enabled: enabled && value > min,
             onPressed: () => onChanged(value - 1),
           ),
@@ -5558,6 +5562,10 @@ class _DashboardScreenState extends State<DashboardScreen>
           const SizedBox(width: 5),
           _temperatureButton(
             icon: PhosphorIconsRegular.plus,
+            semanticLabel: JexText.phrase(
+              'Increase $title',
+              'Tambah $title',
+            ),
             enabled: enabled && value < max,
             onPressed: () => onChanged(value + 1),
           ),
@@ -5568,35 +5576,43 @@ class _DashboardScreenState extends State<DashboardScreen>
 
   Widget _temperatureButton({
     required IconData icon,
+    required String semanticLabel,
     required bool enabled,
     required VoidCallback onPressed,
   }) {
     final scheme = Theme.of(context).colorScheme;
     return SizedBox(
-      width: 48,
-      height: 48,
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: enabled ? onPressed : null,
-          borderRadius: BorderRadius.circular(12),
-          child: Center(
-            child: Container(
-              width: 34,
-              height: 34,
-              decoration: BoxDecoration(
-                color: enabled
-                    ? scheme.surfaceContainerHighest
-                    : scheme.surfaceContainerHighest.withValues(alpha: .48),
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: scheme.outlineVariant),
-              ),
-              child: Icon(
-                icon,
-                size: 19,
-                color: enabled
-                    ? scheme.onSurfaceVariant
-                    : scheme.onSurfaceVariant.withValues(alpha: .28),
+      width: JexLayoutTokens.minimumTouchTarget,
+      height: JexLayoutTokens.minimumTouchTarget,
+      child: MergeSemantics(
+        child: Semantics(
+          label: semanticLabel,
+          button: true,
+          enabled: enabled,
+          child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: enabled ? onPressed : null,
+              borderRadius: BorderRadius.circular(12),
+              child: Center(
+                child: Container(
+                  width: 34,
+                  height: 34,
+                  decoration: BoxDecoration(
+                    color: enabled
+                        ? scheme.surfaceContainerHighest
+                        : scheme.surfaceContainerHighest.withValues(alpha: .48),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: scheme.outlineVariant),
+                  ),
+                  child: Icon(
+                    icon,
+                    size: 19,
+                    color: enabled
+                        ? scheme.onSurfaceVariant
+                        : scheme.onSurfaceVariant.withValues(alpha: .28),
+                  ),
+                ),
               ),
             ),
           ),

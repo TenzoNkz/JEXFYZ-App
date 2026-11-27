@@ -4210,10 +4210,24 @@ void main() {
       temperatureStart,
       temperatureEnd,
     );
-    expect(temperatureButton, contains('width: 48'));
-    expect(temperatureButton, contains('height: 48'));
+    expect(
+      temperatureButton,
+      contains('width: JexLayoutTokens.minimumTouchTarget'),
+    );
+    expect(
+      temperatureButton,
+      contains('height: JexLayoutTokens.minimumTouchTarget'),
+    );
+    expect(temperatureButton, contains('MergeSemantics('));
+    expect(temperatureButton, contains('label: semanticLabel'));
+    expect(temperatureButton, contains('button: true'));
+    expect(temperatureButton, contains('enabled: enabled'));
     expect(temperatureButton, contains('width: 34'));
     expect(temperatureButton, contains('height: 34'));
+    expect(
+      temperatureButton,
+      contains('required String semanticLabel'),
+    );
   });
   test(
     'Connection device row preserves the advertised JE X FYZ Bluetooth name',
