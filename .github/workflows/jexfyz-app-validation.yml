@@ -64,6 +64,18 @@ jobs:
           set -euo pipefail
           dart format --output=none --set-exit-if-changed lib test
 
+      # TEMPORARY: print canonical formatting output for the WP4 refactor files.
+      - name: Diagnose canonical Dart formatter output (temporary)
+        if: ${{ !cancelled() && steps.dependencies.outcome == 'success' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          for path in lib/app_settings.dart lib/jex_design_tokens.dart test/widget_test.dart test/floating_monitor_layout_contract_test.dart; do
+            echo "<<<BEGIN:$path>>>"
+            dart format --output=show "$path"
+            echo "<<<END:$path>>>"
+          done
+
       - name: Analyze Flutter and Dart source
         id: analyzer
         if: ${{ !cancelled() && steps.dependencies.outcome == 'success' }}

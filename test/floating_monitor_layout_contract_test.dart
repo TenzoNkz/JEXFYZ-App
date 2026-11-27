@@ -223,6 +223,7 @@ void main() {
     final floating = File('lib/floating_monitor.dart').readAsStringSync();
     final settingsPages = File('lib/settings_pages.dart').readAsStringSync();
     final appSettings = File('lib/app_settings.dart').readAsStringSync();
+    final designTokens = File('lib/jex_design_tokens.dart').readAsStringSync();
     final main = File('lib/main.dart').readAsStringSync();
 
     final settingsStart = settingsPages.indexOf(
@@ -305,10 +306,25 @@ void main() {
     expect(appSettings, contains('ThemeData buildJexCompactUiTheme('));
     expect(appSettings, contains('AppThemePreset preset'));
     expect(appSettings, contains('ThemeData? baseTheme'));
-    expect(appSettings, contains('fontSize: 18'));
-    expect(appSettings, contains('fontSize: 13'));
-    expect(appSettings, contains('fontSize: 12'));
-    expect(appSettings, contains('fontSize: 11'));
+    expect(appSettings, contains('JexTypographyTokens.compactAppBarTitle'));
+    expect(appSettings, contains('JexTypographyTokens.compactTitleLarge'));
+    expect(appSettings, contains('JexTypographyTokens.compactTitleMedium'));
+    expect(appSettings, contains('JexTypographyTokens.compactTitleSmall'));
+    expect(appSettings, contains('JexTypographyTokens.compactBodyLarge'));
+    expect(appSettings, contains('JexTypographyTokens.compactBodyMedium'));
+    expect(appSettings, contains('JexTypographyTokens.compactBodySmall'));
+    expect(appSettings, contains('JexTypographyTokens.compactLabelLarge'));
+    expect(appSettings, contains('JexTypographyTokens.compactLabelMedium'));
+    expect(appSettings, contains('JexTypographyTokens.compactLabelSmall'));
+    expect(appSettings, contains('JexTypographyTokens.compactListTileTitle'));
+    expect(appSettings, contains('JexTypographyTokens.compactListTileSubtitle'));
+    expect(designTokens, contains('compactAppBarTitle = 18.0'));
+    expect(designTokens, contains('compactTitleLarge = 18.0'));
+    expect(designTokens, contains('compactTitleMedium = 13.0'));
+    expect(designTokens, contains('compactTitleSmall = 12.0'));
+    expect(designTokens, contains('compactBodyLarge = 13.0'));
+    expect(designTokens, contains('compactBodyMedium = 12.0'));
+    expect(designTokens, contains('compactBodySmall = 11.0'));
     expect(
       appSettings,
       contains('VisualDensity(horizontal: -0.5, vertical: -0.5)'),
