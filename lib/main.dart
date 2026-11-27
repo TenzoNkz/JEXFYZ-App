@@ -4042,40 +4042,42 @@ class _DashboardScreenState extends State<DashboardScreen>
               child: SizedBox.expand(
                 child: Center(
                   child: Container(
-                width: double.infinity,
-                height: JexLayoutTokens.homeTabPillHeight,
-                alignment: Alignment.center,
-                padding: const EdgeInsets.symmetric(horizontal: 3),
-                decoration: BoxDecoration(
-                  color: selected
-                      ? const Color(0xFF17181C)
-                      : (dark
-                            ? const Color(0xFF22242A)
-                            : const Color(0xFFE4E7EC)),
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(
-                    color: selected
-                        ? const Color(0xFF17181C)
-                        : (dark
-                              ? const Color(0xFF30323A)
-                              : const Color(0xFFD6DAE1)),
-                  ),
-                ),
-                child: FittedBox(
-                  fit: BoxFit.scaleDown,
-                  child: Text(
-                    title.toUpperCase(),
-                    maxLines: 1,
-                    style: TextStyle(
+                    width: double.infinity,
+                    height: JexLayoutTokens.homeTabPillHeight,
+                    alignment: Alignment.center,
+                    padding: const EdgeInsets.symmetric(horizontal: 3),
+                    decoration: BoxDecoration(
                       color: selected
-                          ? Colors.white
-                          : (dark ? Colors.white70 : const Color(0xFF16181D)),
-                      fontWeight: FontWeight.w900,
-                      fontSize: 9,
-                      letterSpacing: 0.05,
+                          ? const Color(0xFF17181C)
+                          : (dark
+                                ? const Color(0xFF22242A)
+                                : const Color(0xFFE4E7EC)),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: selected
+                            ? const Color(0xFF17181C)
+                            : (dark
+                                  ? const Color(0xFF30323A)
+                                  : const Color(0xFFD6DAE1)),
+                      ),
                     ),
-                  ),
-                ),
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        title.toUpperCase(),
+                        maxLines: 1,
+                        style: TextStyle(
+                          color: selected
+                              ? Colors.white
+                              : (dark
+                                    ? Colors.white70
+                                    : const Color(0xFF16181D)),
+                          fontWeight: FontWeight.w900,
+                          fontSize: 9,
+                          letterSpacing: 0.05,
+                        ),
+                      ),
+                    ),
                   ),
                 ),
               ),

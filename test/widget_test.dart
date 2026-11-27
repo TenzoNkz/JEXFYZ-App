@@ -2176,13 +2176,7 @@ void main() {
         tester.view.resetDevicePixelRatio();
       });
 
-      const tabKeys = [
-        'voltage',
-        'control',
-        'adaptive',
-        'led',
-        'temperature',
-      ];
+      const tabKeys = ['voltage', 'control', 'adaptive', 'led', 'temperature'];
       final scenarios = [
         (AppLanguage.english, 350.0, AppThemePreset.light),
         (AppLanguage.indonesia, 420.0, AppThemePreset.dark),
@@ -2200,9 +2194,11 @@ void main() {
           );
           await tester.pump();
 
-          for (var selectedIndex = 0;
-              selectedIndex < tabKeys.length;
-              selectedIndex++) {
+          for (
+            var selectedIndex = 0;
+            selectedIndex < tabKeys.length;
+            selectedIndex++
+          ) {
             final selectedTab = find.byKey(
               ValueKey<String>('dashboard-tab-semantics-$selectedIndex'),
             );
@@ -4945,7 +4941,17 @@ void main() {
     expect(JexLayoutTokens.homeTabPillHeight, 38.0);
     expect(tab, contains('height: JexLayoutTokens.homeTabPillHeight'));
     expect(tab, contains('width: double.infinity'));
-    expect(tab, contains('onTap: () => setState(() => tabIndex = index)'));
+    expect(
+      tab,
+      contains('final selectTab = () => setState(() => tabIndex = index);'),
+    );
+    expect(
+      RegExp(r'onTap: selectTab').allMatches(tab).length,
+      2,
+      reason: 'Semantics and InkWell must share the same tab selection callback.',
+    );
+    expect(tab, contains('button: true,'));
+    expect(tab, contains('selected: selected,'));
 
     final dashboardStart = source.indexOf(
       'const homeHeight = JexLayoutTokens.homeCanvasHeight;',
