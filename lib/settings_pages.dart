@@ -95,34 +95,40 @@ class SettingsPage extends StatelessWidget {
                   ),
                 ]),
                 _section(context, JexText.of('device', language), [
-                  _item(
-                    context,
-                    PhosphorIconsRegular.bluetooth,
-                    JexText.of('bluetooth', language),
-                    appAutoConnectNotifier.value
-                        ? JexText.of('auto', language)
-                        : JexText.of('manual', language),
-                    () => Navigator.of(context).push(
-                      MaterialPageRoute<void>(
-                        builder: (_) => const JexFixedScalePage(
-                          compactUi: true,
-                          child: BluetoothSettingsPage(),
+                  ValueListenableBuilder<bool>(
+                    valueListenable: appAutoConnectNotifier,
+                    builder: (context, autoConnect, _) => _item(
+                      context,
+                      PhosphorIconsRegular.bluetooth,
+                      JexText.of('bluetooth', language),
+                      autoConnect
+                          ? JexText.of('auto', language)
+                          : JexText.of('manual', language),
+                      () => Navigator.of(context).push(
+                        MaterialPageRoute<void>(
+                          builder: (_) => const JexFixedScalePage(
+                            compactUi: true,
+                            child: BluetoothSettingsPage(),
+                          ),
                         ),
                       ),
                     ),
                   ),
-                  _item(
-                    context,
-                    PhosphorIconsRegular.stack,
-                    JexText.of('floatingMonitor', language),
-                    floatingConfigNotifier.value.enabled
-                        ? JexText.of('on', language)
-                        : JexText.of('off', language),
-                    () => Navigator.of(context).push(
-                      MaterialPageRoute<void>(
-                        builder: (_) => const JexFixedScalePage(
-                          compactUi: true,
-                          child: FloatingSettingsPage(),
+                  ValueListenableBuilder<FloatingConfig>(
+                    valueListenable: floatingConfigNotifier,
+                    builder: (context, config, _) => _item(
+                      context,
+                      PhosphorIconsRegular.stack,
+                      JexText.of('floatingMonitor', language),
+                      config.enabled
+                          ? JexText.of('on', language)
+                          : JexText.of('off', language),
+                      () => Navigator.of(context).push(
+                        MaterialPageRoute<void>(
+                          builder: (_) => const JexFixedScalePage(
+                            compactUi: true,
+                            child: FloatingSettingsPage(),
+                          ),
                         ),
                       ),
                     ),

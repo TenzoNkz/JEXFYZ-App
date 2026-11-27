@@ -8,6 +8,7 @@ import 'support/source_contract_helpers.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import '../lib/floating_monitor.dart';
 import '../lib/app_settings.dart';
@@ -868,6 +869,68 @@ void main() {
       expect(find.text('@Horizontalzzz'), findsNothing);
       expect(find.text('@FYZ737'), findsOneWidget);
       expect(find.text('@Logos3dMichael'), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  testWidgets(
+    'Settings summaries follow Auto Connect and Floating Monitor preference changes',
+    (tester) async {
+      final previousLanguage = appLanguageNotifier.value;
+      final previousAutoConnect = appAutoConnectNotifier.value;
+      final previousFloating = floatingConfigNotifier.value;
+      final previousLock = voltageLockSettingsNotifier.value;
+      addTearDown(() {
+        appLanguageNotifier.value = previousLanguage;
+        appAutoConnectNotifier.value = previousAutoConnect;
+        floatingConfigNotifier.value = previousFloating;
+        voltageLockSettingsNotifier.value = previousLock;
+        FlutterSecureStorage.setMockInitialValues(<String, String>{});
+      });
+
+      FlutterSecureStorage.setMockInitialValues(<String, String>{});
+      appLanguageNotifier.value = AppLanguage.english;
+      appAutoConnectNotifier.value = false;
+      floatingConfigNotifier.value = const FloatingConfig();
+      voltageLockSettingsNotifier.value = const VoltageLockSettingsState();
+
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: ThemeData.dark(useMaterial3: true),
+          home: SettingsPage(
+            currentFirmwareVersion: 'V7.2',
+            onOpenFirmwareUpdate: () async {},
+            onVoltageLockChanged: (_) async {},
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('Manual'), findsOneWidget);
+      expect(find.text('OFF'), findsOneWidget);
+
+      // The Bluetooth subpage persists through the same store as the Settings summary.
+      await tester.tap(find.text('Bluetooth'));
+      await tester.pumpAndSettle();
+      expect(find.text('Auto Connect'), findsOneWidget);
+      expect(find.byType(Switch), findsOneWidget);
+      await tester.tap(find.byType(Switch));
+      await tester.pumpAndSettle();
+      expect(appAutoConnectNotifier.value, isTrue);
+
+      await tester.pageBack();
+      await tester.pumpAndSettle();
+      expect(find.text('Auto'), findsOneWidget);
+      expect(find.text('Manual'), findsNothing);
+
+      // FloatingSettingsPage publishes through this notifier after native confirmation.
+      // Its parent summary must observe that publication without owning native state.
+      floatingConfigNotifier.value = floatingConfigNotifier.value.copyWith(
+        enabled: true,
+      );
+      await tester.pump();
+      expect(find.text('ON'), findsOneWidget);
+      expect(find.text('OFF'), findsNothing);
       expect(tester.takeException(), isNull);
     },
   );
