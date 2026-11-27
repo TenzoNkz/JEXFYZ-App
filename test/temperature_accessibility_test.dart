@@ -27,7 +27,9 @@ void main() {
         );
         await tester.pump();
 
-        final dynamic dashboardState = tester.state(find.byType(DashboardScreen));
+        final dynamic dashboardState = tester.state(
+          find.byType(DashboardScreen),
+        );
         dashboardState.setState(() {
           dashboardState.connected = true;
           dashboardState.tabIndex = 4;
