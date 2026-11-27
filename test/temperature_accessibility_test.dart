@@ -195,10 +195,13 @@ Future<dynamic> _pumpTemperatureTab(
     dashboardState.connected = true;
     dashboardState.tabIndex = 4;
   });
+  // Build and finish the outgoing lock-overlay transition while its original
+  // English 360-dp viewport is still active; resize only the Temperature tab.
+  await tester.pump();
+  await tester.pump(const Duration(milliseconds: 250));
   tester.view.physicalSize = Size(logicalWidth * 3, 2400);
   appLanguageNotifier.value = language;
-  // Let the 210-ms Dashboard tab transition finish before asserting layout.
-  await tester.pump(const Duration(milliseconds: 250));
+  await tester.pump();
   return dashboardState;
 }
 
