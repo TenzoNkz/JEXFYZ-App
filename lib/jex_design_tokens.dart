@@ -18,6 +18,16 @@ abstract final class JexLayoutTokens {
   static const double submenuToggleHeight = 32.0;
 }
 
+/// Spacing roles for shared Dashboard primitives; not a global scale.
+abstract final class JexSpacingTokens {
+  static const double dashboardCardVerticalMargin = 4.0;
+  static const double dashboardCardDefaultPadding = 14.0;
+  static const double dashboardSectionTitleHorizontalInset = 4.0;
+  static const double dashboardSectionTitleTopInset = 6.0;
+  static const double dashboardSectionTitleBottomInset = 5.0;
+  static const double dashboardSectionSubtitleGap = 3.0;
+}
+
 /// Semantic aliases for the existing Material ColorScheme roles.
 ///
 /// These getters deliberately return the original ColorScheme values. No palette is
@@ -91,6 +101,8 @@ class JexSemanticColors {
 /// Typography sizes already used by the App's established Light/Dark themes.
 abstract final class JexTypographyTokens {
   static const double appBarTitle = 20.0;
+  static const double dashboardSectionTitle = 16.0;
+  static const double dashboardSectionSubtitle = 11.0;
   static const double compactAppBarTitle = 18.0;
   static const double compactAppBarIcon = 22.0;
   static const double compactTitleLarge = 18.0;
@@ -114,6 +126,7 @@ abstract final class JexStatisticsTypographyTokens {
 /// Shape and focus metrics retained from the existing App theme.
 abstract final class JexShapeTokens {
   static const double inputBorderRadius = 14.0;
+  static const double dashboardCardBorderRadius = 19.0;
   static const double compactControlRadius = 11.0;
   static const double focusedInputBorderWidth = 1.5;
 }

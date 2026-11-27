@@ -80,4 +80,21 @@ void main() {
       expect(JexShapeTokens.focusedInputBorderWidth, 1.5);
     });
   });
+
+  group('Shared Dashboard primitive tokens', () {
+    test('card and section spacing roles retain established dimensions', () {
+      expect(JexSpacingTokens.dashboardCardVerticalMargin, 4.0);
+      expect(JexSpacingTokens.dashboardCardDefaultPadding, 14.0);
+      expect(JexSpacingTokens.dashboardSectionTitleHorizontalInset, 4.0);
+      expect(JexSpacingTokens.dashboardSectionTitleTopInset, 6.0);
+      expect(JexSpacingTokens.dashboardSectionTitleBottomInset, 5.0);
+      expect(JexSpacingTokens.dashboardSectionSubtitleGap, 3.0);
+    });
+
+    test('card, section typography and shape roles remain explicit', () {
+      expect(JexTypographyTokens.dashboardSectionTitle, 16.0);
+      expect(JexTypographyTokens.dashboardSectionSubtitle, 11.0);
+      expect(JexShapeTokens.dashboardCardBorderRadius, 19.0);
+    });
+  });
 }

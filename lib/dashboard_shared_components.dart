@@ -19,11 +19,16 @@ class JexDashboardCard extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      margin: const EdgeInsets.symmetric(vertical: 4),
-      padding: padding ?? const EdgeInsets.all(14),
+      margin: const EdgeInsets.symmetric(
+        vertical: JexSpacingTokens.dashboardCardVerticalMargin,
+      ),
+      padding: padding ??
+          const EdgeInsets.all(JexSpacingTokens.dashboardCardDefaultPadding),
       decoration: BoxDecoration(
         color: scheme.jexSurface,
-        borderRadius: BorderRadius.circular(19),
+        borderRadius: BorderRadius.circular(
+          JexShapeTokens.dashboardCardBorderRadius,
+        ),
         border: Border.all(color: scheme.jexOutline.withValues(alpha: .78)),
         boxShadow: [
           BoxShadow(
@@ -103,26 +108,33 @@ class JexDashboardSectionTitle extends StatelessWidget {
     final scheme = Theme.of(context).colorScheme;
 
     return Padding(
-      padding: const EdgeInsets.fromLTRB(4, 6, 4, 5),
+      padding: const EdgeInsets.fromLTRB(
+        JexSpacingTokens.dashboardSectionTitleHorizontalInset,
+        JexSpacingTokens.dashboardSectionTitleTopInset,
+        JexSpacingTokens.dashboardSectionTitleHorizontalInset,
+        JexSpacingTokens.dashboardSectionTitleBottomInset,
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             title.toUpperCase(),
             style: TextStyle(
-              fontSize: 16,
+              fontSize: JexTypographyTokens.dashboardSectionTitle,
               fontWeight: FontWeight.w900,
               letterSpacing: .60,
               color: scheme.jexForeground,
             ),
           ),
           if (subtitle != null && subtitle!.trim().isNotEmpty) ...[
-            const SizedBox(height: 3),
+            const SizedBox(
+              height: JexSpacingTokens.dashboardSectionSubtitleGap,
+            ),
             Text(
               subtitle!,
               style: TextStyle(
                 color: scheme.jexMutedForeground,
-                fontSize: 11,
+                fontSize: JexTypographyTokens.dashboardSectionSubtitle,
                 fontWeight: FontWeight.w600,
               ),
             ),
