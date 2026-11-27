@@ -35,8 +35,10 @@ void main() {
       expect(decoder.pendingCharacters, 0);
     });
 
-    test('emits multiple atomic SYNC frames and surrounding lines in wire order', () {
-      final decoder = P1FrameDecoder();
+    test(
+      'emits multiple atomic SYNC frames and surrounding lines in wire order',
+      () {
+        final decoder = P1FrameDecoder();
 
       expect(
         decoder.addChunk(
@@ -52,7 +54,9 @@ void main() {
           const P1LineFrame('HOT:30'),
         ],
       );
-    });
+
+      },
+    );
 
     test('does not leak newline records out of an incomplete SYNC frame', () {
       final decoder = P1FrameDecoder();
@@ -85,8 +89,10 @@ void main() {
       ]);
     });
 
-    test('retains the newest SYNC frame candidate after an oversized buffer', () {
-      final decoder = P1FrameDecoder();
+    test(
+      'retains the newest SYNC frame candidate after an oversized buffer',
+      () {
+        final decoder = P1FrameDecoder();
 
       final oversizedPrefix = List<String>.filled(
         P1FrameDecoder.maxBufferLength + 1,
@@ -99,7 +105,9 @@ void main() {
         <P1FrameEvent>[const P1SyncFrame('PROTOCOL:P1')],
       );
       expect(decoder.pendingCharacters, 0);
-    });
+
+      },
+    );
 
     test('clear removes an incomplete frame before the next session', () {
       final decoder = P1FrameDecoder();
