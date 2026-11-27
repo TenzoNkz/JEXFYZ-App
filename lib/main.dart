@@ -1786,7 +1786,10 @@ class _DashboardScreenState extends State<DashboardScreen>
     unawaited(_setBackgroundService(true));
 
     if (isUserVisibleResetReason(resetReason)) {
-      _showSnackBar(localizedResetReason(resetReason, appLanguageNotifier.value), color: Colors.orangeAccent);
+      _showSnackBar(
+        localizedResetReason(resetReason, appLanguageNotifier.value),
+        color: Colors.orangeAccent,
+      );
     }
   }
 
@@ -2027,7 +2030,14 @@ class _DashboardScreenState extends State<DashboardScreen>
         _lastPeltierAckFailureReason = reason;
       }
       if (!hadWaiter) {
-        _showSnackBar(localizedNotifyReason(reason, hotLimit: hotLimit, language: appLanguageNotifier.value), color: Colors.orangeAccent);
+        _showSnackBar(
+          localizedNotifyReason(
+            reason,
+            hotLimit: hotLimit,
+            language: appLanguageNotifier.value,
+          ),
+          color: Colors.orangeAccent,
+        );
       }
       return;
     }
@@ -2149,7 +2159,11 @@ class _DashboardScreenState extends State<DashboardScreen>
         }
       } else if (isActiveHomeSafetyReason(safetyReason)) {
         if (latestTelemetryNotice != null || latestSafetyReason != null) {
-          notice = localizedNotifyReason(safetyReason, hotLimit: hotLimit, language: appLanguageNotifier.value);
+          notice = localizedNotifyReason(
+            safetyReason,
+            hotLimit: hotLimit,
+            language: appLanguageNotifier.value,
+          );
           _homeNotifyRevision++;
         }
       } else if (latestTelemetryNotice != null) {
@@ -2164,7 +2178,11 @@ class _DashboardScreenState extends State<DashboardScreen>
                 'Kondisi keselamatan kembali normal.',
                 appLanguageNotifier.value,
               )
-            : localizedNotifyReason(safetyReason, hotLimit: hotLimit, language: appLanguageNotifier.value);
+            : localizedNotifyReason(
+                safetyReason,
+                hotLimit: hotLimit,
+                language: appLanguageNotifier.value,
+              );
         _homeNotifyRevision++;
       }
     });
@@ -2520,7 +2538,11 @@ class _DashboardScreenState extends State<DashboardScreen>
     if (voltageLockKnown && voltageLockActive && target != '5V') {
       if (mounted)
         _showSnackBar(
-          localizedNotifyReason('VOLTAGE_LOCKED', hotLimit: hotLimit, language: appLanguageNotifier.value),
+          localizedNotifyReason(
+            'VOLTAGE_LOCKED',
+            hotLimit: hotLimit,
+            language: appLanguageNotifier.value,
+          ),
           color: Colors.orangeAccent,
         );
       return;
@@ -2958,7 +2980,11 @@ class _DashboardScreenState extends State<DashboardScreen>
     if (!connected) return;
     if (enabled && voltageLockKnown && voltageLockActive) {
       _showSnackBar(
-        localizedNotifyReason('VOLTAGE_LOCKED', hotLimit: hotLimit, language: appLanguageNotifier.value),
+        localizedNotifyReason(
+          'VOLTAGE_LOCKED',
+          hotLimit: hotLimit,
+          language: appLanguageNotifier.value,
+        ),
         color: Colors.orangeAccent,
       );
       return;
@@ -3270,7 +3296,14 @@ class _DashboardScreenState extends State<DashboardScreen>
       );
       if (!accepted && mounted) {
         final reason = _lastCommandAckReason;
-        _showSnackBar(localizedNotifyReason(reason, hotLimit: hotLimit, language: appLanguageNotifier.value), color: Colors.orangeAccent);
+        _showSnackBar(
+          localizedNotifyReason(
+            reason,
+            hotLimit: hotLimit,
+            language: appLanguageNotifier.value,
+          ),
+          color: Colors.orangeAccent,
+        );
       }
     } finally {
       if (mounted) {
@@ -3782,7 +3815,11 @@ class _DashboardScreenState extends State<DashboardScreen>
             safetyReason.trim().toUpperCase() == 'WAITING_FOR_NTC' ||
             safetyReason.trim().toUpperCase() ==
                 'WAITING_FOR_SENSOR_VALIDATION')) {
-      return localizedNotifyReason(safetyReason, hotLimit: hotLimit, language: appLanguageNotifier.value);
+      return localizedNotifyReason(
+        safetyReason,
+        hotLimit: hotLimit,
+        language: appLanguageNotifier.value,
+      );
     }
 
     if (custom.isNotEmpty) return custom;
@@ -3792,7 +3829,11 @@ class _DashboardScreenState extends State<DashboardScreen>
     if (syncing && !dashboardReady)
       return JexText.of('synchronizingDevice', appLanguageNotifier.value);
 
-    return localizedNotifyReason(safetyReason, hotLimit: hotLimit, language: appLanguageNotifier.value);
+    return localizedNotifyReason(
+      safetyReason,
+      hotLimit: hotLimit,
+      language: appLanguageNotifier.value,
+    );
   }
 
   void _notifyCommandAccepted(

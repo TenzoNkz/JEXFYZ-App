@@ -15,6 +15,7 @@ String otaStageLocalizationKey(String stage) {
   };
   return special[stage.trim().toUpperCase()] ?? '';
 }
+
 Map<String, String> _otaEventFields(String raw) {
   final fields = <String, String>{};
   for (final part in raw.split('|')) {
@@ -172,7 +173,6 @@ String localizedResetReason(String value, AppLanguage language) {
       return JexText.of('deviceStatusUpdate', language);
   }
 }
-
 
 /// Concise, localized Home NOTIFY presentation for OTA outcomes.
 /// Raw firmware error tokens/codes are intentionally excluded from user-facing copy.

@@ -2552,10 +2552,7 @@ void main() {
       expect(copy, contains('localizedOtaSuccessSummary('));
       expect(copy, isNot(contains("fields['ERROR']")));
       expect(copy, isNot(contains('code \$code')));
-      expect(
-        copy,
-        isNot(contains("raw.replaceAll('_', ' ').toLowerCase()")),
-      );
+      expect(copy, isNot(contains("raw.replaceAll('_', ' ').toLowerCase()")));
       expect(source, isNot(contains('String _friendlyOtaResult(')));
       expect(source, isNot(contains('String _friendlyReset(')));
 

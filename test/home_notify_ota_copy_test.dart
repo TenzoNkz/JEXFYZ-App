@@ -91,19 +91,16 @@ void main() {
 
   test('progress result clamps percent and omits unknown stage', () {
     const language = AppLanguage.english;
-    final progressBase = JexText.of('otaProgress', language).replaceAll(
-      RegExp(r'\s*•\s*$'),
-      '',
-    );
+    final progressBase = JexText.of(
+      'otaProgress',
+      language,
+    ).replaceAll(RegExp(r'\s*•\s*$'), '');
     expect(
       localizedOtaResultNotice(
         'IN_PROGRESS|MODE=ONLINE|STAGE=UNKNOWN|PROGRESS=135',
         language,
       ),
-      progressBase +
-          ' • ' +
-          JexText.of('otaModeOnline', language) +
-          ' • 100%',
+      progressBase + ' • ' + JexText.of('otaModeOnline', language) + ' • 100%',
     );
     expect(
       localizedOtaResultNotice('IN_PROGRESS', language),
@@ -142,19 +139,22 @@ void main() {
     );
   });
 
-  test('unknown event identifiers remain generic rather than leaking tokens', () {
-    expect(
-      localizedOtaResultNotice(
-        'UNRECOGNIZED_INTERNAL_EVENT',
-        AppLanguage.english,
-      ),
-      JexText.of('deviceStatusUpdate', AppLanguage.english),
-    );
-    expect(
-      localizedOtaResultNotice('Plain message', AppLanguage.english),
-      'Plain message',
-    );
-  });
+  test(
+    'unknown event identifiers remain generic rather than leaking tokens',
+    () {
+      expect(
+        localizedOtaResultNotice(
+          'UNRECOGNIZED_INTERNAL_EVENT',
+          AppLanguage.english,
+        ),
+        JexText.of('deviceStatusUpdate', AppLanguage.english),
+      );
+      expect(
+        localizedOtaResultNotice('Plain message', AppLanguage.english),
+        'Plain message',
+      );
+    },
+  );
 
   test('reset reasons remain localized and unknown values stay generic', () {
     expect(
@@ -190,10 +190,7 @@ void main() {
       );
     }
     expect(
-      localizedResetReason(
-        'FUTURE_RESET_TOKEN',
-        AppLanguage.indonesia,
-      ),
+      localizedResetReason('FUTURE_RESET_TOKEN', AppLanguage.indonesia),
       JexText.of('deviceStatusUpdate', AppLanguage.indonesia),
     );
   });
