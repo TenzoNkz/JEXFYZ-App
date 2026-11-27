@@ -59,7 +59,6 @@ extension _DashboardControlComponents on _DashboardScreenState {
   }
 }
 
-
 /// Shared presentation for the Dashboard's Fan, Peltier, Adaptive and LED power rows.
 /// Hardware/session ownership remains in Dashboard; this widget receives a state snapshot
 /// and a guarded callback, and never reads telemetry or sends commands itself.
@@ -215,9 +214,7 @@ class JexDashboardSwitchRow extends StatelessWidget {
             ),
           ),
           if (showStateLabel) ...[
-            const SizedBox(
-              width: JexSpacingTokens.dashboardSwitchRowStateGap,
-            ),
+            const SizedBox(width: JexSpacingTokens.dashboardSwitchRowStateGap),
             ExcludeSemantics(
               child: Text(
                 stateKnown
@@ -230,9 +227,7 @@ class JexDashboardSwitchRow extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(
-              width: JexSpacingTokens.dashboardSwitchRowStateGap,
-            ),
+            const SizedBox(width: JexSpacingTokens.dashboardSwitchRowStateGap),
           ],
           JexDashboardToggle(
             semanticLabel: subtitle.trim().isEmpty
@@ -473,3 +468,4 @@ class JexAdaptiveProfileChoice extends StatelessWidget {
     );
   }
 }
+Formatted 1 file (1 changed) in 0.02 seconds.

@@ -626,7 +626,7 @@ void main() {
       expect(
         containsDartFragment(
           componentSource,
-          "stateKnown ? JexText.of(value ? 'on' : 'off', lang) : JexText.of('off', lang)",
+          "stateKnown ? JexText.of(value ? 'on' : 'off', language) : JexText.of('off', language)",
         ),
         isTrue,
       );

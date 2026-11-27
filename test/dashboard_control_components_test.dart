@@ -20,19 +20,24 @@ void main() {
             theme: ThemeData.dark(),
             home: Scaffold(
               body: Center(
-                child: JexDashboardSwitchRow(
-                  key: rowKey,
-                  title: 'Fan',
-                  subtitle: 'Cooling output',
-                  icon: PhosphorIconsRegular.fan,
-                  value: true,
-                  enabled: true,
-                  stateKnown: true,
-                  connected: true,
-                  language: AppLanguage.english,
-                  onChanged: (next) async {
-                    changedValues.add(next);
-                  },
+                child: UnconstrainedBox(
+                  child: SizedBox(
+                    width: 340,
+                    child: JexDashboardSwitchRow(
+                      key: rowKey,
+                      title: 'Fan',
+                      subtitle: 'Cooling output',
+                      icon: PhosphorIconsRegular.fan,
+                      value: true,
+                      enabled: true,
+                      stateKnown: true,
+                      connected: true,
+                      language: AppLanguage.english,
+                      onChanged: (next) async {
+                        changedValues.add(next);
+                      },
+                    ),
+                  ),
                 ),
               ),
             ),

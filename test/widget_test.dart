@@ -1041,6 +1041,7 @@ void main() {
         .readAsStringSync();
     final componentSource = File('lib/dashboard_control_components.dart')
         .readAsStringSync();
+    final tokenSource = File('lib/jex_design_tokens.dart').readAsStringSync();
     expect(source, contains("part 'dashboard_control_tabs.dart';"));
     expect(source, contains("part 'dashboard_control_components.dart';"));
     expect(componentSource, contains("part of 'main.dart';"));
@@ -1059,7 +1060,11 @@ void main() {
     expect(row, contains('showCheck: showCheck,'));
     expect(row, contains('semanticLabel:'));
     expect(row, contains('ExcludeSemantics('));
-    expect(row, contains('vertical: 7'));
+    expect(
+      row,
+      contains('vertical: JexSpacingTokens.dashboardSwitchRowVerticalInset'),
+    );
+    expect(tokenSource, contains('dashboardSwitchRowVerticalInset = 7.0'));
 
     for (final marker in [
       "title: JexText.of('peltier', lang)",
@@ -2013,12 +2018,17 @@ void main() {
     final source = File('lib/main.dart').readAsStringSync();
     final componentSource = File('lib/dashboard_control_components.dart')
         .readAsStringSync();
+    final tokenSource = File('lib/jex_design_tokens.dart').readAsStringSync();
     final notifyLabelStart = indexOfDartFragment(
       source,
       "String _notifyStateLabel() => JexText.of('notification', appLanguageNotifier.value);",
     );
     expect(notifyLabelStart, isNonNegative);
-    expect(componentSource, contains('padding: const EdgeInsets.only(top: 2)'));
+    expect(
+      componentSource,
+      contains('JexSpacingTokens.dashboardSwitchRowSubtitleTopGap'),
+    );
+    expect(tokenSource, contains('dashboardSwitchRowSubtitleTopGap = 2.0'));
 
     // The dashboard must render without a test-time layout exception.
     expect(tester.takeException(), isNull);
@@ -3474,7 +3484,7 @@ void main() {
     expect(
       containsDartFragment(
         componentSource,
-        "stateKnown ? JexText.of(value ? 'on' : 'off', lang) : JexText.of('off', lang)",
+        "stateKnown ? JexText.of(value ? 'on' : 'off', language) : JexText.of('off', language)",
       ),
       isTrue,
     );
