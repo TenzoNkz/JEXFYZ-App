@@ -12,14 +12,14 @@ Last reconciled: 2026-11-27 (Asia/Jakarta). Authority: `MASTER_PROMPT.md`.
 
 ## Current source checkpoint
 
-- **main:** `3cd16490c3f9b0b73c86fc1df1ad78d0fa24ed17`; root tree `5bf70519bd284a5481e9cdf63e9f1efa1892c8b8`; recursive tree 157 entries / 111 blobs / 46 trees, `truncated=false`.
-- **Validated App source/test SHA:** `0448d03c39536c57ad7e8c2d36718d525d2d60fb` (current main is a documentation-only descendant); register 111/111 unique path dispositions.
-- **Validation Only #148:** run `45943879592` / job `140324041087`, terminal SUCCESS on exact source/test SHA: dependencies PASS; formatter PASS (35 files / 0 changed); analyzer PASS; Flutter tests **253/253 PASS**.
-- **WP2:** ordered bootstrap in `app_bootstrap.dart`; Settings presentation in `settings_pages.dart`; injected root in `app_root.dart`. Existing verifier, preferences and Floating Monitor bridge/native renderer remain unchanged.
-- **WP3:** `p1_frame_decoder.dart` pure framing; `p1_command_contract.dart` pure command classification. Dashboard remains sole BLE/GATT/P1/session owner and retains writes, transaction sequencing, ACK waiters, SYNC/SYNC_READY, reconnect and authoritative telemetry.
-- **WP4 foundation:** `jex_design_tokens.dart` centralizes approved dimensions and semantic ColorScheme roles; screen integration and visual acceptance remain open.
+- **main:** `f78d6b1294c88cb359b694041ea70dde0042bcd8`; root tree `3aa34e8f5c153d4979b120f7a5ae87c7c9c78596`; recursive tree 159 entries / 113 blobs / 46 trees, `truncated=false`.
+- **File register:** 113/113 unique tracked blob dispositions; the two ACK-waiter module/test paths are now included. A complete disposition is not proof of complete WP0–WP10 content review.
+- **Validation Only #158:** run `45951691490` / job `140348775364`, terminal SUCCESS on exact source/test SHA `f78d6b1294c88cb359b694041ea70dde0042bcd8`: locked dependencies PASS; formatter PASS (37 files / 0 changed); analyzer PASS; Flutter tests **259/259 PASS**.
+- **WP2:** ordered bootstrap in `app_bootstrap.dart`; Settings presentation in `settings_pages.dart`; injected root in `app_root.dart`. Official-build verification, preference identity/defaults and Floating Monitor bridge/native renderer remain separate and unchanged.
+- **WP3:** `p1_frame_decoder.dart` owns framing; `p1_command_contract.dart` owns pure command classification; `p1_ack_waiters.dart` owns per-item FIFO waiter registration/completion/cancellation/timeouts/bulk cancellation. Dashboard remains sole BLE/GATT/P1/session owner and retains writes, transaction sequencing, SYNC/SYNC_READY, reconnect and authoritative telemetry.
+- **WP4:** `jex_design_tokens.dart` now covers approved layout/semantic roles plus existing typography and input-shape values. Base/compact themes and Settings semantic foreground/surface/outline roles consume those tokens; regression tests preserve existing numeric appearance. Cross-route reusable-component adoption and actual visual acceptance remain open.
 - **Release:** Build #167 remains latest package on immutable source `0dd96228d33b08c66e736ae91a8a6c3e5c3ddb81`; current main is not packaged.
-- **Evidence limits:** Flutter/Dart/Gradle/ADB unavailable locally. Android/Kotlin, screenshots/OEM/device, SQLite runtime fixture and 1h/6h/24h profiling NOT RUN. Visual outcome **VISUAL NOT VERIFIED**.
+- **Evidence limits:** Flutter/Dart/Gradle/ADB unavailable locally. Android/Kotlin compilation, screenshots/OEM/device, SQLite runtime fixture and 1h/6h/24h profiling NOT RUN. Visual outcome **VISUAL NOT VERIFIED**.
 
 
 ## Protected contracts and evidence
@@ -30,4 +30,4 @@ Flutter/Dart/Gradle/ADB unavailable locally. Hosted Validation Only does not com
 
 ## Next action
 
-Reconcile Validation Only #118 on exact `4c5feb51c8777b0576d0ac11f3fafb921db91b38`; continue WP2 App root/shared-core extraction and WP3 Dashboard/device-session characterization. After CODE_FULL closes, execute the approved REPO_FULL cycle. Do not invoke Build App.
+Continue WP4 by auditing and adopting shared semantic typography/shape/surface tokens across remaining Flutter routes without changing approved values or hardware semantics. Then implement WP5 Home and Voltage/Control/Adaptive/LED/Temperature screen refinements with per-tab behavioral regression tests. Keep Dashboard as the only BLE/P1 session owner, preserve the 360-dp composition and all cooler/telemetry contracts, and leave screenshot acceptance explicitly VISUAL NOT VERIFIED until actual Android evidence exists. After CODE_FULL closes, execute the approved REPO_FULL cycle; do not invoke Build App.
