@@ -922,9 +922,8 @@ void main() {
 
   test('Home indicator painter receives Light Mode theme tokens and repaints on changes', () {
     final source = File('lib/main.dart').readAsStringSync();
-    final componentSource = File(
-      'lib/dashboard_control_components.dart',
-    ).readAsStringSync();
+    final componentSource = File('lib/dashboard_control_components.dart')
+        .readAsStringSync();
     final dashboardPresentationSource = '$source\n$componentSource';
     final homeSource = File('lib/dashboard_home_tab.dart').readAsStringSync();
     final animationSource = File('lib/jex_animated_icon.dart')
@@ -957,9 +956,18 @@ void main() {
     expect(dashboardPresentationSource, contains('scheme.jexElevatedSurface'));
     expect(dashboardPresentationSource, contains('scheme.jexOutline'));
     expect(dashboardPresentationSource, contains('scheme.jexAccent'));
-    expect(dashboardPresentationSource, isNot(contains('scheme.surfaceContainerHighest')));
-    expect(dashboardPresentationSource, isNot(contains('scheme.onSurfaceVariant')));
-    expect(dashboardPresentationSource, isNot(contains('scheme.outlineVariant')));
+    expect(
+      dashboardPresentationSource,
+      isNot(contains('scheme.surfaceContainerHighest')),
+    );
+    expect(
+      dashboardPresentationSource,
+      isNot(contains('scheme.onSurfaceVariant')),
+    );
+    expect(
+      dashboardPresentationSource,
+      isNot(contains('scheme.outlineVariant')),
+    );
     expect(
       containsDartFragment(
         metric,
@@ -1645,18 +1653,14 @@ void main() {
       findsNothing,
     );
     final source = File('lib/main.dart').readAsStringSync();
-    final componentSource = File(
-      'lib/dashboard_control_components.dart',
-    ).readAsStringSync();
+    final componentSource = File('lib/dashboard_control_components.dart')
+        .readAsStringSync();
     final notifyLabelStart = indexOfDartFragment(
       source,
       "String _notifyStateLabel() => JexText.of('notification', appLanguageNotifier.value);",
     );
     expect(notifyLabelStart, isNonNegative);
-    expect(
-      componentSource,
-      contains('padding: const EdgeInsets.only(top: 2)'),
-    );
+    expect(componentSource, contains('padding: const EdgeInsets.only(top: 2)'));
 
     // The dashboard must render without a test-time layout exception.
     expect(tester.takeException(), isNull);
@@ -3116,9 +3120,8 @@ void main() {
 
   test('LED UI keeps its own color menu anchored to the display region', () {
     final source = File('lib/main.dart').readAsStringSync();
-    final componentSource = File(
-      'lib/dashboard_control_components.dart',
-    ).readAsStringSync();
+    final componentSource = File('lib/dashboard_control_components.dart')
+        .readAsStringSync();
     final controlSource = File('lib/dashboard_control_tabs.dart')
         .readAsStringSync();
     final ledSource = File('lib/led_controls.dart').readAsStringSync();
@@ -3132,7 +3135,10 @@ void main() {
       ),
       isTrue,
     );
-    expect(componentSource, contains('final displayedValue = stateKnown && value;'));
+    expect(
+      componentSource,
+      contains('final displayedValue = stateKnown && value;'),
+    );
     final colorDialogStart = source.indexOf(
       'Future<void> _showLedColorPicker() async {',
     );
