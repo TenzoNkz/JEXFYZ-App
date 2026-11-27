@@ -6,53 +6,50 @@ void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   group('AppBootstrap', () {
-    test(
-      'unverified installation launches only the tamper surface',
-      () async {
-        final events = <String>[];
-        Widget? launchedApp;
-        final tamperApp = SizedBox(key: const ValueKey<String>('tamper'));
-        final officialApp = SizedBox(key: const ValueKey<String>('official'));
+    test('unverified installation launches only the tamper surface', () async {
+      final events = <String>[];
+      Widget? launchedApp;
+      final tamperApp = SizedBox(key: const ValueKey<String>('tamper'));
+      final officialApp = SizedBox(key: const ValueKey<String>('official'));
 
-        final bootstrap = AppBootstrap(
-          verifyOfficialBuild: () async {
-            events.add('verify');
-            return false;
-          },
-          loadAppSettings: () async => events.add('settings'),
-          loadKnownCooler: () async => events.add('known-cooler'),
-          loadFloatingMonitor: () async => events.add('floating'),
-          initializeFirebase: () async => events.add('firebase'),
-          activateAppCheck: () async => events.add('app-check'),
-          setPortraitOrientation: () async => events.add('portrait'),
-          launchApp: (app) {
-            events.add('launch');
-            launchedApp = app;
-          },
-          logError: (phase, error) => events.add('error:$phase'),
-        );
+      final bootstrap = AppBootstrap(
+        verifyOfficialBuild: () async {
+          events.add('verify');
+          return false;
+        },
+        loadAppSettings: () async => events.add('settings'),
+        loadKnownCooler: () async => events.add('known-cooler'),
+        loadFloatingMonitor: () async => events.add('floating'),
+        initializeFirebase: () async => events.add('firebase'),
+        activateAppCheck: () async => events.add('app-check'),
+        setPortraitOrientation: () async => events.add('portrait'),
+        launchApp: (app) {
+          events.add('launch');
+          launchedApp = app;
+        },
+        logError: (phase, error) => events.add('error:$phase'),
+      );
 
-        await bootstrap.start(
-          createOfficialApp: () {
-            events.add('build-official');
-            return officialApp;
-          },
-          createTamperApp: () {
-            events.add('build-tamper');
-            return tamperApp;
-          },
-        );
+      await bootstrap.start(
+        createOfficialApp: () {
+          events.add('build-official');
+          return officialApp;
+        },
+        createTamperApp: () {
+          events.add('build-tamper');
+          return tamperApp;
+        },
+      );
 
-        expect(events, <String>[
-          'verify',
-          'portrait',
-          'build-tamper',
-          'launch',
-        ]);
-        expect(launchedApp, same(tamperApp));
-        expect(launchedApp, isNot(same(officialApp)));
-      },
-    );
+      expect(events, <String>[
+        'verify',
+        'portrait',
+        'build-tamper',
+        'launch',
+      ]);
+      expect(launchedApp, same(tamperApp));
+      expect(launchedApp, isNot(same(officialApp)));
+    });
 
     test(
       'verified installation restores local state before cloud and launch',
