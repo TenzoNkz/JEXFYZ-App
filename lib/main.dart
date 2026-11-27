@@ -1,7 +1,7 @@
 /*
   AI-MEMORY / FILE CONTRACT
   File: main.dart
-  Owns: JE Cooler App entry/bootstrap, Dashboard composition and the single BLE/P1 session,
+  Owns: JE Cooler App root and Dashboard composition plus the single BLE/P1 session,
         firmware telemetry mapping, command confirmation and OTA coordination.
   State authority: firmware telemetry is authoritative for physical Fan/Peltier/Adaptive/LED state.
   Presentation boundaries: connection_sheet.dart owns the manual Connection sheet; home_notify.dart
@@ -63,8 +63,6 @@ import 'dart:io';
 import 'dart:math' as math;
 import 'dart:ui' show ImageFilter;
 
-import 'package:firebase_app_check/firebase_app_check.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -73,6 +71,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
 
+import 'app_bootstrap.dart';
 import 'app_security.dart';
 import 'app_settings.dart';
 import 'connection_scan_coordinator.dart';
@@ -259,43 +258,12 @@ bool canAutoConnect({
       legacyLocationReady;
 }
 
-// AI-METHOD: main — Flutter entry point; initialize security/Firebase then mount production UI.
-Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-
-  final officialBuild = await isOfficialBuild();
-  if (!officialBuild) {
-    await SystemChrome.setPreferredOrientations(const [
-      DeviceOrientation.portraitUp,
-    ]);
-    runApp(const TamperApp());
-    return;
-  }
-
-  await AppSettingsStore.load();
-  await KnownCoolerStore.load();
-  await FloatingStore.load();
-
-  try {
-    await Firebase.initializeApp();
-    try {
-      await FirebaseAppCheck.instance.activate(
-        providerAndroid: const AndroidPlayIntegrityProvider(),
-      );
-    } catch (e) {
-      // App Check can be rolled out from monitoring to enforcement in Firebase
-      // without breaking the official UI when the backend is not yet enforced.
-      debugPrint('Firebase App Check init: $e');
-    }
-  } catch (e) {
-    debugPrint('Firebase init: $e');
-  }
-
-  await SystemChrome.setPreferredOrientations(const [
-    DeviceOrientation.portraitUp,
-  ]);
-  runApp(const JeCoolerApp());
-}
+// AppBootstrap owns startup order and cloud-initialization failure policy;
+// these builders keep the two existing root widgets in the App composition module.
+Future<void> main() => AppBootstrap.production().start(
+  createOfficialApp: () => const JeCoolerApp(),
+  createTamperApp: () => const TamperApp(),
+);
 
 class TamperApp extends StatelessWidget {
   const TamperApp({super.key});
