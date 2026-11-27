@@ -143,19 +143,45 @@ void main() {
 
   test('Deferred OTA result is translated only when it is shown', () {
     final main = File('lib/main.dart').readAsStringSync();
-    final deferredWrite = main.indexOf('pendingOtaResult = otaResult;');
-    final syncFormatter = main.indexOf(
-      'final syncedOtaNotice = isTransientOtaResultEvent(resultEvent)',
+    final telemetryStart = main.indexOf(
+      'void _commitTelemetry(Map<String, String> values)',
+    );
+    final bufferStart = main.indexOf(
+      'if (!dashboardReady) {',
+      telemetryStart,
+    );
+    final deferredWrite = main.indexOf(
+      'pendingOtaResult = otaResult;',
+      bufferStart,
+    );
+    final bufferEnd = main.indexOf(
+      '_pendingTelemetry.addAll(values);',
+      deferredWrite,
+    );
+    final syncStart = main.indexOf(
+      'final readySnapshot = Map<String, String>.from(_pendingTelemetry);',
+    );
+    final resultEvent = main.indexOf(
+      'final resultEvent = pendingOtaResult.isNotEmpty',
+      syncStart,
     );
     final localizedFormatter = main.indexOf(
       'localizedOtaResultNotice(resultEvent, appLanguageNotifier.value)',
-      syncFormatter,
+      resultEvent,
     );
 
-    // Retain the raw event across the SYNC gate; translate only its displayed copy.
-    expect(deferredWrite, greaterThanOrEqualTo(0));
-    expect(syncFormatter, greaterThan(deferredWrite));
-    expect(localizedFormatter, greaterThan(syncFormatter));
+    // Buffer raw OTA state before readiness; localize only the later display copy.
+    expect(telemetryStart, greaterThanOrEqualTo(0));
+    expect(bufferStart, greaterThan(telemetryStart));
+    expect(deferredWrite, greaterThan(bufferStart));
+    expect(bufferEnd, greaterThan(deferredWrite));
+    expect(
+      main.substring(bufferStart, bufferEnd),
+      isNot(contains('localizedOtaResultNotice(')),
+    );
+    expect(syncStart, greaterThanOrEqualTo(0));
+    expect(resultEvent, greaterThan(syncStart));
+    expect(localizedFormatter, greaterThan(resultEvent));
     expect(
       main,
       isNot(contains('pendingOtaResult = localizedOtaResultNotice(otaResult')),
