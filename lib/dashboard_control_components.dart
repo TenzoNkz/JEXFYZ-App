@@ -43,7 +43,7 @@ extension _DashboardControlComponents on _DashboardScreenState {
       duration: const Duration(milliseconds: 180),
       curve: Curves.easeOutCubic,
       constraints: const BoxConstraints(minHeight: jexSubmenuRowMinHeight),
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
       decoration: BoxDecoration(
         color: rowFill,
         borderRadius: BorderRadius.circular(18),
@@ -91,6 +91,7 @@ extension _DashboardControlComponents on _DashboardScreenState {
           ),
           const SizedBox(width: 12),
           Expanded(
+            child: ExcludeSemantics(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -118,21 +119,25 @@ extension _DashboardControlComponents on _DashboardScreenState {
               ],
             ),
           ),
+          ),
           if (showStateLabel) ...[
             const SizedBox(width: 8),
-            Text(
-              stateKnown
-                  ? JexText.of(value ? 'on' : 'off', lang)
-                  : JexText.of('off', lang),
-              style: TextStyle(
-                fontSize: 10,
-                fontWeight: FontWeight.w900,
-                color: value ? accent : scheme.jexMutedForeground,
+            ExcludeSemantics(
+              child: Text(
+                stateKnown
+                    ? JexText.of(value ? 'on' : 'off', lang)
+                    : JexText.of('off', lang),
+                style: TextStyle(
+                  fontSize: 10,
+                  fontWeight: FontWeight.w900,
+                  color: value ? accent : scheme.jexMutedForeground,
+                ),
               ),
             ),
             const SizedBox(width: 8),
           ],
-          this._jexToggle(
+          JexDashboardToggle(
+          semanticLabel: subtitle.trim().isEmpty ? title : '$title, $subtitle',
             value: value,
             enabled: enabled,
             stateKnown: stateKnown,
@@ -145,22 +150,66 @@ extension _DashboardControlComponents on _DashboardScreenState {
     );
   }
 
-  Widget _jexToggle({
-    required bool value,
-    required bool enabled,
-    required Color accent,
-    required Future<void> Function(bool) onChanged,
-    bool stateKnown = true,
-    bool showCheck = true,
+  Widget _smoothList({
+    required List<Widget> children,
+    required String storageKey,
+    EdgeInsetsGeometry padding = const EdgeInsets.fromLTRB(2, 2, 2, 20),
   }) {
+    return ListView(
+      key: PageStorageKey<String>(storageKey),
+      physics: const ClampingScrollPhysics(
+        parent: AlwaysScrollableScrollPhysics(),
+      ),
+      keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+      scrollCacheExtent: const ScrollCacheExtent.pixels(480),
+      padding: padding,
+      children: children,
+    );
+  }
+}
+
+
+/// Accessible toggle used by Dashboard control rows.
+/// The visible pill remains 54×32 dp; the hit target expands to 54×48 dp.
+class JexDashboardToggle extends StatelessWidget {
+  const JexDashboardToggle({
+    super.key,
+    this.semanticLabel,
+    required this.value,
+    required this.enabled,
+    required this.accent,
+    required this.onChanged,
+    this.stateKnown = true,
+    this.showCheck = true,
+  });
+
+  final String? semanticLabel;
+  final bool value;
+  final bool enabled;
+  final Color accent;
+  final Future<void> Function(bool value) onChanged;
+  final bool stateKnown;
+  final bool showCheck;
+
+  @override
+  Widget build(BuildContext context) {
+
     final scheme = Theme.of(context).colorScheme;
     // Offline fallback is a visual default only, not confirmed hardware telemetry.
     final displayedValue = stateKnown && value;
-    return GestureDetector(
-      onTap: enabled && stateKnown
-          ? () => unawaited(onChanged(!displayedValue))
-          : null,
-      child: AnimatedContainer(
+        final canActivate = enabled && stateKnown;
+    void activate() {
+      if (!canActivate) return;
+      unawaited(onChanged(!displayedValue));
+    }
+
+    final target = SizedBox(
+      width: jexSubmenuToggleWidth,
+      height: JexLayoutTokens.minimumTouchTarget,
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: canActivate ? activate : null,
+        child: Center(child: AnimatedContainer(
         duration: const Duration(milliseconds: 180),
         width: jexSubmenuToggleWidth,
         height: jexSubmenuToggleHeight,
@@ -211,24 +260,22 @@ extension _DashboardControlComponents on _DashboardScreenState {
                 : null,
           ),
         ),
+      )),
       ),
     );
-  }
-
-  Widget _smoothList({
-    required List<Widget> children,
-    required String storageKey,
-    EdgeInsetsGeometry padding = const EdgeInsets.fromLTRB(2, 2, 2, 20),
-  }) {
-    return ListView(
-      key: PageStorageKey<String>(storageKey),
-      physics: const ClampingScrollPhysics(
-        parent: AlwaysScrollableScrollPhysics(),
-      ),
-      keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-      scrollCacheExtent: const ScrollCacheExtent.pixels(480),
-      padding: padding,
-      children: children,
+    final label = semanticLabel?.trim();
+    if (label == null || label.isEmpty) {
+      return ExcludeSemantics(key: key, child: target);
+    }
+    return Semantics(
+      key: key,
+      container: true,
+      label: label,
+      toggled: stateKnown ? displayedValue : null,
+      enabled: canActivate,
+      onTap: canActivate ? activate : null,
+      excludeSemantics: true,
+      child: target,
     );
   }
 }

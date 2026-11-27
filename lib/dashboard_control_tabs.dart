@@ -80,14 +80,21 @@ extension _DashboardControlTabsBuilder on _DashboardScreenState {
   Widget _voltageChoiceCustom(String target, String mode, bool locked) {
     final active = voltage == target;
     final scheme = Theme.of(context).colorScheme;
-    return InkWell(
+    return Semantics(
+      container: true,
+      label: '$target, $mode',
+      button: true,
+      selected: active,
+      enabled: !locked,
+      onTap: locked ? null : () => _requestVoltage(target),
+      child: ExcludeSemantics(child: InkWell(
       onTap: locked ? null : () => _requestVoltage(target),
       borderRadius: BorderRadius.circular(18),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 180),
         curve: Curves.easeOutCubic,
         constraints: const BoxConstraints(minHeight: jexSubmenuRowMinHeight),
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
         decoration: BoxDecoration(
           // Geometry intentionally mirrors CONTROL/_switchRow. The row stays neutral;
           // selection is represented only by the shared toggle on the right.
@@ -126,7 +133,8 @@ extension _DashboardControlTabsBuilder on _DashboardScreenState {
               ),
             ),
             const SizedBox(width: 8),
-            this._jexToggle(
+            JexDashboardToggle(
+              semanticLabel: null,
               value: active,
               enabled: !locked,
               accent: scheme.jexAccent,
@@ -136,6 +144,7 @@ extension _DashboardControlTabsBuilder on _DashboardScreenState {
           ],
         ),
       ),
+    )),
     );
   }
 

@@ -1,34 +1,131 @@
 import 'dart:io';
+import 'dart:math' as math;
+import 'dart:ui' as ui;
+
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:jexfyz_cooler/app_security.dart';
+import 'package:jexfyz_cooler/app_settings.dart';
+import 'package:jexfyz_cooler/dashboard_shared_components.dart';
+import 'package:jexfyz_cooler/floating_monitor.dart';
+import 'package:jexfyz_cooler/home_notify.dart';
+import 'package:jexfyz_cooler/jex_animated_glyph.dart';
+import 'package:jexfyz_cooler/jex_animated_icon.dart';
+import 'package:jexfyz_cooler/jex_design_tokens.dart';
+import 'package:jexfyz_cooler/led_controls.dart';
+import 'package:jexfyz_cooler/main.dart';
+import 'package:phosphor_icons/phosphor_icons.dart';
 
 import 'support/source_contract_helpers.dart';
 
-import 'dart:math' as math;
 // AI-MEMORY / TEST CONTRACT
 // This file validates deterministic UI helpers, localization contracts, and pure parsing rules.
 // It does not prove BLE, Android OEM permission behavior, overlay compositing, OTA transport,
 // or physical firmware behavior.
 // Localization contract under test: English/Indonesia names stay stable; ON/OFF becomes
 // HIDUP/MATI only in Indonesia. BLE protocol tokens remain English machine identifiers.
-
 // AI TEST MEMORY:
 // These tests validate UI rendering and pure helper/parsing rules only.
 // They do not prove BLE, OTA, or physical hardware runtime.
 
-import 'package:flutter_test/flutter_test.dart';
-import 'package:flutter/material.dart';
-import 'package:phosphor_icons/phosphor_icons.dart';
-import 'package:jexfyz_cooler/jex_animated_glyph.dart';
-import 'package:jexfyz_cooler/jex_design_tokens.dart';
-import 'package:jexfyz_cooler/jex_animated_icon.dart';
-import 'package:jexfyz_cooler/app_security.dart';
-import 'package:jexfyz_cooler/main.dart';
-import 'package:jexfyz_cooler/app_settings.dart';
-import 'package:jexfyz_cooler/floating_monitor.dart';
-import 'package:jexfyz_cooler/home_notify.dart';
-import 'package:jexfyz_cooler/dashboard_shared_components.dart';
-import 'package:jexfyz_cooler/led_controls.dart';
-
 void main() {
+  testWidgets(
+    'Dashboard toggle keeps its visual pill and exposes a 48dp accessible target',
+    (tester) async {
+      final semantics = tester.ensureSemantics();
+      addTearDown(semantics.dispose);
+      final changedValues = <bool>[];
+      const toggleKey = ValueKey<String>('dashboard-toggle-accessibility');
+
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: ThemeData.dark(),
+          home: Scaffold(
+            body: Center(
+              child: JexDashboardToggle(
+                key: toggleKey,
+                semanticLabel: 'Peltier',
+                value: true,
+                enabled: true,
+                accent: Color(0xFF16A8D5),
+                onChanged: (next) async {
+                  changedValues.add(next);
+                },
+              ),
+            ),
+          ),
+        ),
+      );
+
+      final target = find.byKey(toggleKey);
+      expect(tester.getSize(target), const Size(54, 48));
+      final visualPill = find.descendant(
+        of: target,
+        matching: find.byType(AnimatedContainer),
+      );
+      expect(visualPill, findsOneWidget);
+      expect(tester.getSize(visualPill), const Size(54, 32));
+
+      final data = tester.getSemantics(target).getSemanticsData();
+      expect(data.label, 'Peltier');
+      expect(data.hasFlag(ui.SemanticsFlag.hasToggledState), isTrue);
+      expect(data.hasFlag(ui.SemanticsFlag.isToggled), isTrue);
+      expect(data.hasFlag(ui.SemanticsFlag.hasEnabledState), isTrue);
+      expect(data.hasFlag(ui.SemanticsFlag.isEnabled), isTrue);
+      expect(data.hasAction(ui.SemanticsAction.tap), isTrue);
+
+      // Tap the 8 dp hit-area extension above the visual 32 dp pill.
+      await tester.tapAt(
+        tester.getTopLeft(target) + const Offset(27, 2),
+      );
+      await tester.pump();
+      expect(changedValues, <bool>[false]);
+    },
+  );
+
+  testWidgets(
+    'Dashboard toggle keeps unavailable hardware state unknown and disabled',
+    (tester) async {
+      final semantics = tester.ensureSemantics();
+      addTearDown(semantics.dispose);
+      final changedValues = <bool>[];
+      const toggleKey = ValueKey<String>('dashboard-toggle-unknown');
+
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: ThemeData.dark(),
+          home: Scaffold(
+            body: Center(
+              child: JexDashboardToggle(
+                key: toggleKey,
+                semanticLabel: 'Fan',
+                value: true,
+                enabled: true,
+                stateKnown: false,
+                accent: Color(0xFF16A8D5),
+                onChanged: (next) async {
+                  changedValues.add(next);
+                },
+              ),
+            ),
+          ),
+        ),
+      );
+
+      final target = find.byKey(toggleKey);
+      final data = tester.getSemantics(target).getSemanticsData();
+      expect(data.label, 'Fan');
+      expect(data.hasFlag(ui.SemanticsFlag.hasToggledState), isFalse);
+      expect(data.hasFlag(ui.SemanticsFlag.hasEnabledState), isTrue);
+      expect(data.hasFlag(ui.SemanticsFlag.isEnabled), isFalse);
+      expect(data.hasAction(ui.SemanticsAction.tap), isFalse);
+
+      await tester.tapAt(tester.getCenter(target));
+      await tester.pump();
+      expect(changedValues, isEmpty);
+    },
+  );
+
   testWidgets(
     'Dashboard shared presentation components preserve their established visual contract',
     (tester) async {
@@ -693,7 +790,7 @@ void main() {
     expect(source, contains("part 'dashboard_control_components.dart';"));
     expect(componentSource, contains("part of 'main.dart';"));
     final rowStart = componentSource.indexOf('Widget _switchRow(');
-    final rowEnd = componentSource.indexOf('Widget _jexToggle(', rowStart);
+    final rowEnd = componentSource.indexOf('class JexDashboardToggle extends StatelessWidget {', rowStart);
     expect(rowStart, isNonNegative);
     expect(rowEnd, greaterThan(rowStart));
     final row = componentSource.substring(rowStart, rowEnd);
@@ -702,6 +799,9 @@ void main() {
     expect(row, contains('bool neutralRow = false'));
     expect(row, contains('if (showStateLabel) ...['));
     expect(row, contains('showCheck: showCheck,'));
+    expect(row, contains('semanticLabel:'));
+    expect(row, contains('ExcludeSemantics('));
+    expect(row, contains('vertical: 7'));
 
     for (final marker in [
       "title: JexText.of('peltier', lang)",
@@ -2581,17 +2681,18 @@ void main() {
     expect(choice, contains('color: jexVoltageIndicatorColor(target)'));
     expect(choice, contains('accent: scheme.jexAccent,'));
     expect(choice, contains('showCheck: false,'));
+    expect(choice, contains('JexDashboardToggle('));
+    expect(choice, contains("label: '$target, $mode'"));
+    expect(choice, contains('selected: active'));
     expect(choice, isNot(contains('accent: accent,')));
 
     final componentSource = File('lib/dashboard_control_components.dart')
         .readAsStringSync();
-    final toggleStart = componentSource.indexOf('Widget _jexToggle(');
-    final toggleEnd = componentSource.indexOf(
-      'Widget _smoothList(',
-      toggleStart,
+    final toggleStart = componentSource.indexOf(
+      'class JexDashboardToggle extends StatelessWidget {',
     );
-    final toggle = componentSource.substring(toggleStart, toggleEnd);
-    expect(toggle, contains('bool showCheck = true'));
+    final toggle = componentSource.substring(toggleStart);
+    expect(toggle, contains('this.showCheck = true'));
     expect(toggle, contains('displayedValue && showCheck'));
   });
 
