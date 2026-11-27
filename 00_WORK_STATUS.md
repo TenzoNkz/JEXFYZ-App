@@ -1,4 +1,4 @@
-| Last updated | 2026-11-27T16:06:45+07:00 (Asia/Jakarta) |
+| Last updated | 2026-11-27T16:07:10+07:00 (Asia/Jakarta) |
 
 > Event-driven project marker. It is not a live heartbeat or a GitHub lock.
 
@@ -11,17 +11,17 @@
 | WORK STATUS | IN_PROGRESS — owner-approved App-only WP0–WP10 full rework + premium UI redesign; REPO_FULL follows after CODE_FULL closes. |
 | WORKSPACE | CODE_FULL |
 | Mode | Flutter/Dart App source, tests, docs, App config and static audit; direct commits to main. No Build App/APK/sign/release, Firmware/BIN/P1 wire or behavior, BLE identity/security, OTA transport/trust/recovery, Firebase production, signing material, flashing or device operations. |
-| Request / work item | Continue approved App rework here. Group related changes; validate before commit; avoid repeated formatter/test cycles. |
+| Request / work item | Continue the approved App rework here. Group related changes; validate before commit; avoid repeated formatter/test cycles. |
 | Started | 2026-11-27T15:24:50+07:00 (Asia/Jakarta) |
-| Last updated | 2026-11-27T16:06:45+07:00 (Asia/Jakarta) |
-| Current phase | WP5 Home source-contract cleanup — remove only the unused local in the Core indicator family test and run final exact-SHA validation. |
-| Last completed milestone | #189 / run 45970664166 / job 140410021354 tested exact source 874624556c1c6abd056aebeb38296288d8c2ef84. Dependencies PASS, formatter 42/0 PASS, tests **280/280 PASS**; analyzer FAILED only on the unused local at test/widget_test.dart:643. |
-| Last verified source checkpoint | 1b6b38bddf902a251a385f48f921dad523ae036b — Validation Only #187 terminal SUCCESS, 280/280. Home presentation refactor awaits analyzer-clean exact-SHA validation. |
-| EXTERNAL OPERATION | Validation Only #189 — run 45970664166 / job 140410021354; exact SHA 874624556c1c6abd056aebeb38296288d8c2ef84; terminal FAILURE due one unused local. |
-| EXTERNAL OPERATION STATUS | FAILED / TERMINAL. No Actions run is currently queued or in progress. |
-| Result / evidence | #189: locked dependencies PASS; formatter 42 files / 0 changed PASS; analyzer FAILED due one `unused_local_variable` warning; Flutter tests 280/280 PASS. The exact unused declaration has now been isolated to one source-contract test block; identically named locals in other tests remain necessary. |
+| Last updated | 2026-11-27T16:07:10+07:00 (Asia/Jakarta) |
+| Current phase | WP5 Home presentation ownership — warning-only analyzer fix committed; exact-SHA Validation Only #190 is running on ffcdfd6b48aa28786867291ae01556ca7023afba. |
+| Last completed milestone | Commit ffcdfd6b48aa28786867291ae01556ca7023afba removes only the unused `source` local in the Core indicator family source-contract test. All Home helpers remain presentation-only in dashboard_home_tab.dart. |
+| Last verified source checkpoint | 1b6b38bddf902a251a385f48f921dad523ae036b — Validation Only #187 terminal SUCCESS, 280/280. Home refactor is waiting for #190. |
+| EXTERNAL OPERATION | Validation Only #190 — run 45971370824 / job 140412351124; exact source SHA ffcdfd6b48aa28786867291ae01556ca7023afba. |
+| EXTERNAL OPERATION STATUS | IN_PROGRESS (GitHub Actions reports job active; Flutter setup is running). |
+| Result / evidence | #189 terminal FAILURE: dependencies PASS, formatter 42/0 PASS, tests 280/280 PASS; analyzer failed only the unused local now removed in #190 input. |
 | Blocker / remaining evidence | Local Flutter/Dart/Gradle/ADB unavailable. Android/Kotlin, screenshots/OEM/device, SQLite runtime migration, performance soak and whole-App visual acceptance remain NOT RUN / NOT VERIFIED. |
-| Next action | Commit the one-line scoped cleanup and status; run Validation Only #190 on the exact SHA; reconcile the Home refactor to #190 terminal evidence. |
+| Next action | Inspect #190 formatter, analyzer and full test outcomes at terminal state; then reconcile the WP5 Home refactor and active checkpoint to the observed exact-SHA result. |
 
 ## Status model
 
