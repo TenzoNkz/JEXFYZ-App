@@ -5532,10 +5532,7 @@ class _DashboardScreenState extends State<DashboardScreen>
           ),
           _temperatureButton(
             icon: PhosphorIconsRegular.minus,
-            semanticLabel: JexText.phrase(
-              'Decrease $title',
-              'Kurangi $title',
-            ),
+            semanticLabel: JexText.phrase('Decrease $title', 'Kurangi $title'),
             enabled: enabled && value > min,
             onPressed: () => onChanged(value - 1),
           ),
@@ -5562,10 +5559,7 @@ class _DashboardScreenState extends State<DashboardScreen>
           const SizedBox(width: 5),
           _temperatureButton(
             icon: PhosphorIconsRegular.plus,
-            semanticLabel: JexText.phrase(
-              'Increase $title',
-              'Tambah $title',
-            ),
+            semanticLabel: JexText.phrase('Increase $title', 'Tambah $title'),
             enabled: enabled && value < max,
             onPressed: () => onChanged(value + 1),
           ),

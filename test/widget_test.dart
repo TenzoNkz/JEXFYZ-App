@@ -4224,10 +4224,7 @@ void main() {
     expect(temperatureButton, contains('enabled: enabled'));
     expect(temperatureButton, contains('width: 34'));
     expect(temperatureButton, contains('height: 34'));
-    expect(
-      temperatureButton,
-      contains('required String semanticLabel'),
-    );
+    expect(temperatureButton, contains('required String semanticLabel'));
   });
   test(
     'Connection device row preserves the advertised JE X FYZ Bluetooth name',

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/semantics.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:jexfyz_cooler/app_settings.dart';
 import 'package:jexfyz_cooler/main.dart';
@@ -27,9 +28,7 @@ void main() {
       );
       await tester.pump();
 
-      final dynamic dashboardState = tester.state(
-        find.byType(DashboardScreen),
-      );
+      final dynamic dashboardState = tester.state(find.byType(DashboardScreen));
       dashboardState.setState(() {
         dashboardState.connected = true;
         dashboardState.tabIndex = 4;
