@@ -74,7 +74,11 @@ void main() {
     test('discards oversized noise when no recoverable SYNC start exists', () {
       final decoder = P1FrameDecoder();
 
-      expect(decoder.addChunk('x' * (P1FrameDecoder.maxBufferLength + 1)), isEmpty);
+      final oversizedNoise = List<String>.filled(
+        P1FrameDecoder.maxBufferLength + 1,
+        'x',
+      ).join();
+      expect(decoder.addChunk(oversizedNoise), isEmpty);
       expect(decoder.pendingCharacters, 0);
       expect(decoder.addChunk('VOLTAGE:12V\n'), <P1FrameEvent>[
         const P1LineFrame('VOLTAGE:12V'),
@@ -84,10 +88,13 @@ void main() {
     test('retains the newest SYNC frame candidate after an oversized buffer', () {
       final decoder = P1FrameDecoder();
 
+      final oversizedPrefix = List<String>.filled(
+        P1FrameDecoder.maxBufferLength + 1,
+        'x',
+      ).join();
       expect(
         decoder.addChunk(
-          'x' * (P1FrameDecoder.maxBufferLength + 1) +
-              '<SYNC_START>PROTOCOL:P1<SYNC_END>',
+          '$oversizedPrefix<SYNC_START>PROTOCOL:P1<SYNC_END>',
         ),
         <P1FrameEvent>[const P1SyncFrame('PROTOCOL:P1')],
       );

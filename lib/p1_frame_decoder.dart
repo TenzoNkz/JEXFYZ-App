@@ -12,6 +12,12 @@ final class P1LineFrame extends P1FrameEvent {
   const P1LineFrame(this.line);
 
   final String line;
+
+  @override
+  bool operator ==(Object other) => other is P1LineFrame && other.line == line;
+
+  @override
+  int get hashCode => line.hashCode;
 }
 
 /// The raw payload between a complete <SYNC_START> / <SYNC_END> pair.
@@ -19,6 +25,13 @@ final class P1SyncFrame extends P1FrameEvent {
   const P1SyncFrame(this.payload);
 
   final String payload;
+
+  @override
+  bool operator ==(Object other) =>
+      other is P1SyncFrame && other.payload == payload;
+
+  @override
+  int get hashCode => payload.hashCode;
 }
 
 class P1FrameDecoder {
