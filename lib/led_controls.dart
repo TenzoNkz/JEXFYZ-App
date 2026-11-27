@@ -480,7 +480,9 @@ class _JexLedStripPreviewState extends State<JexLedStripPreview>
           color: enabled
               ? scheme.jexSurface
               : scheme.jexElevatedSurface.withValues(alpha: .45),
-          borderRadius: BorderRadius.circular(JexShapeTokens.compactControlRadius),
+          borderRadius: BorderRadius.circular(
+            JexShapeTokens.compactControlRadius,
+          ),
           border: Border.all(color: scheme.jexOutline),
         ),
         child: Icon(
