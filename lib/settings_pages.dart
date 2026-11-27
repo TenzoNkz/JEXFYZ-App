@@ -263,7 +263,7 @@ class SettingsPage extends StatelessWidget {
             height: 34,
             decoration: BoxDecoration(
               color: semantic.elevatedSurface.withValues(alpha: .72),
-              borderRadius: BorderRadius.circular(11),
+              borderRadius: BorderRadius.circular(JexShapeTokens.compactControlRadius),
             ),
             child: Icon(
               PhosphorIconsRegular.lock,

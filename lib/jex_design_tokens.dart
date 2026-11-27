@@ -102,5 +102,6 @@ abstract final class JexTypographyTokens {
 /// Shape and focus metrics retained from the existing App theme.
 abstract final class JexShapeTokens {
   static const double inputBorderRadius = 14.0;
+  static const double compactControlRadius = 11.0;
   static const double focusedInputBorderWidth = 1.5;
 }
