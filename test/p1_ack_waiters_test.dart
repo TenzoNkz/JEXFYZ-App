@@ -83,18 +83,15 @@ void main() {
       },
     );
 
-    test(
-      'dispose resolves remaining waiters with CANCELLED',
-      () async {
-        final coordinator = P1AckWaiterCoordinator();
-        final first = coordinator.register('SYNC_READY');
-        final second = coordinator.register('FAN');
+    test('dispose resolves remaining waiters with CANCELLED', () async {
+      final coordinator = P1AckWaiterCoordinator();
+      final first = coordinator.register('SYNC_READY');
+      final second = coordinator.register('FAN');
 
-        expect(coordinator.completeAll('CANCELLED'), 2);
-        expect(await first.future, 'CANCELLED');
-        expect(await second.future, 'CANCELLED');
-        expect(coordinator.completeAll('CANCELLED'), 0);
-      },
-    );
+      expect(coordinator.completeAll('CANCELLED'), 2);
+      expect(await first.future, 'CANCELLED');
+      expect(await second.future, 'CANCELLED');
+      expect(coordinator.completeAll('CANCELLED'), 0);
+    });
   });
 }
