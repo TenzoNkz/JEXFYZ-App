@@ -226,4 +226,3 @@ void _expectTemperatureAction(
     reason: 'Temperature action must retain its 48 × 48 dp hitbox: $label',
   );
 }
-Formatted 1 file (1 changed) in 0.01 seconds.
