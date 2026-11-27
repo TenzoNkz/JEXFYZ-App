@@ -3,6 +3,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:jexfyz_cooler/app_settings.dart';
+import 'package:jexfyz_cooler/jex_design_tokens.dart';
 import 'package:jexfyz_cooler/main.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
 
@@ -44,6 +45,34 @@ void main() {
         expect(data.flagsCollection.isEnabled, ui.Tristate.isFalse);
         expect(data.hasAction(ui.SemanticsAction.tap), isFalse);
         expect(find.text('OFF'), findsOneWidget);
+
+        // The stale ON cache must not color the row, icon, or OFF label as active
+        // while runtime telemetry is unknown.
+        final row = find.byType(JexDashboardSwitchRow);
+        final scheme = Theme.of(tester.element(row)).colorScheme;
+        final containers = tester
+            .widgetList<AnimatedContainer>(find.byType(AnimatedContainer))
+            .toList();
+        final rowDecoration = containers.first.decoration as BoxDecoration;
+        final iconDecoration = containers[1].decoration as BoxDecoration;
+        expect(
+          rowDecoration.color,
+          scheme.jexElevatedSurface.withValues(alpha: .34),
+        );
+        expect(
+          (rowDecoration.border! as Border).top.color,
+          scheme.jexOutline.withValues(alpha: .72),
+        );
+        expect(
+          iconDecoration.color,
+          scheme.jexElevatedSurface.withValues(alpha: .72),
+        );
+        final fanIcon = tester.widget<Icon>(
+          find.byIcon(PhosphorIconsRegular.fan),
+        );
+        expect(fanIcon.color, scheme.jexMutedForeground);
+        final offLabel = tester.widget<Text>(find.text('OFF'));
+        expect(offLabel.style?.color, scheme.jexMutedForeground);
 
         await tester.tap(target);
         await tester.pump();

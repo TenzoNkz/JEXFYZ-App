@@ -105,11 +105,14 @@ class JexDashboardSwitchRow extends StatelessWidget {
     final scheme = Theme.of(context).colorScheme;
     final accent = scheme.jexAccent;
     final lightTheme = Theme.of(context).brightness == Brightness.light;
+    // A cached ON boolean is not physical state until output telemetry is known.
+    // Keep row accents, icon, label and toggle on the same confirmed display value.
+    final displayedValue = stateKnown && value;
     final rowFill = lightTheme
         ? const Color(0xFFF5F6F8)
         : (neutralRow
               ? scheme.jexElevatedSurface.withValues(alpha: .26)
-              : (value
+              : (displayedValue
                     ? accent.withValues(alpha: .075)
                     : scheme.jexElevatedSurface.withValues(alpha: .34)));
     final rowBorder = lightTheme
@@ -160,7 +163,7 @@ class JexDashboardSwitchRow extends StatelessWidget {
                   ? Icon(
                       icon,
                       size: 21,
-                      color: value ? accent : scheme.jexMutedForeground,
+                      color: displayedValue ? accent : scheme.jexMutedForeground,
                     )
                   : JexAnimatedIcon(
                       kind: animatedKind!,
@@ -170,7 +173,7 @@ class JexDashboardSwitchRow extends StatelessWidget {
                       active: jexIconAnimationPermitted(
                         connected: connected,
                         kind: animatedKind!,
-                        stateActive: stateKnown && value,
+                        stateActive: displayedValue,
                       ),
                       level: animationLevel,
                       voltageLevel: voltageLevel,
@@ -217,13 +220,11 @@ class JexDashboardSwitchRow extends StatelessWidget {
             const SizedBox(width: JexSpacingTokens.dashboardSwitchRowStateGap),
             ExcludeSemantics(
               child: Text(
-                stateKnown
-                    ? JexText.of(value ? 'on' : 'off', language)
-                    : JexText.of('off', language),
+                JexText.of(displayedValue ? 'on' : 'off', language),
                 style: TextStyle(
                   fontSize: JexTypographyTokens.dashboardSwitchRowState,
                   fontWeight: FontWeight.w900,
-                  color: value ? accent : scheme.jexMutedForeground,
+                  color: displayedValue ? accent : scheme.jexMutedForeground,
                 ),
               ),
             ),
