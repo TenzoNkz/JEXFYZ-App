@@ -1,4 +1,4 @@
-| Last updated | 2026-11-27T16:02:40+07:00 (Asia/Jakarta) |
+| Last updated | 2026-11-27T16:04:35+07:00 (Asia/Jakarta) |
 
 > Event-driven project marker. It is not a live heartbeat or a GitHub lock.
 
@@ -8,20 +8,20 @@
 |---|---|
 | **STATUS** | **IN_PROGRESS** |
 | SESSION STATUS | IN_PROGRESS — this conversation is the active Eksekusi Code workspace. |
-| WORK STATUS | IN_PROGRESS — owner-approved App-only WP0–WP10 full rework + premium UI redesign; REPO_FULL follows after CODE_FULL closes. |
+| WORK STATUS | IN_PROGRESS — owner-approved App-only WP0–WP10 full rework + premium UI redesign; REPO_FULL follows only after CODE_FULL closes. |
 | WORKSPACE | CODE_FULL |
 | Mode | Flutter/Dart App source, tests, docs, App config and static audit; direct commits to main. No Build App/APK/sign/release, Firmware/BIN/P1 wire or behavior, BLE identity/security, OTA transport/trust/recovery, Firebase production, signing material, flashing or device operations. |
-| Request / work item | Continue approved App rework in this conversation. Group related changes; verify and commit coherently. |
+| Request / work item | Continue approved App rework in this conversation. Group related edits; validate coherently; avoid repeated formatter/test cycles. |
 | Started | 2026-11-27T15:24:50+07:00 (Asia/Jakarta) |
-| Last updated | 2026-11-27T16:02:40+07:00 (Asia/Jakarta) |
-| Current phase | WP5 Home presentation ownership — correct three source-contract tests to read Home helpers from dashboard_home_tab.dart and apply canonical formatter output from Validation Only #188. |
-| Last completed milestone | Commit b5f7eb2c388a81dbf92370b9c22f8c5fab9a5959 moved _homeMetric, _homeStateChip and _homeFanSpeed into the Home part. #188 confirms dependencies/analyzer PASS but formatter reported one changed Home part and three tests failed because they still read moved helpers from main.dart. |
-| Last verified source checkpoint | 1b6b38bddf902a251a385f48f921dad523ae036b — #187 terminal SUCCESS, 280/280 tests. |
-| EXTERNAL OPERATION | Validation Only #188 — run 45970039687 / job 140407971251; exact SHA b5f7eb2c388a81dbf92370b9c22f8c5fab9a5959; terminal FAILURE. |
-| EXTERNAL OPERATION STATUS | FAILED / TERMINAL. No Actions run is active or queued at this checkpoint. |
-| Result / evidence | #188: dependency resolution PASS; analyzer PASS; formatter failed because canonical output changed lib/dashboard_home_tab.dart; Flutter tests 277/280 PASS, with three source tests still looking at moved Home helpers in main.dart. |
+| Last updated | 2026-11-27T16:04:35+07:00 (Asia/Jakarta) |
+| Current phase | WP5 Home presentation ownership — moved three Home builders, aligned tests and formatter output; exact-SHA Validation Only #189 is running. |
+| Last completed milestone | Commit 874624556c1c6abd056aebeb38296288d8c2ef84 applies exact Dart formatter output to dashboard_home_tab.dart and redirects three remaining Home source-contract checks. #188 had dependencies/analyzer PASS but failed formatter and three tests because test assertions still referenced main.dart. |
+| Last verified source checkpoint | 1b6b38bddf902a251a385f48f921dad523ae036b — Validation Only #187 terminal SUCCESS, 280/280. |
+| EXTERNAL OPERATION | Validation Only #189 — run 45970664166 / job 140410021354; exact source SHA 874624556c1c6abd056aebeb38296288d8c2ef84. |
+| EXTERNAL OPERATION STATUS | IN_PROGRESS (GitHub Actions confirms the runner active). |
+| Result / evidence | #188 terminal FAILURE: dependencies PASS, analyzer PASS, formatter failed (one file changed), tests 277/280 PASS. The three failing source-contract tests have now been redirected to the correct Home presentation source. |
 | Blocker / remaining evidence | Local Flutter/Dart/Gradle/ADB unavailable. Android/Kotlin, actual screenshots/OEM/device behavior, SQLite runtime migration, performance soak and whole-App visual acceptance remain NOT RUN / NOT VERIFIED. |
-| Next action | Commit exact formatter output plus source-contract test redirects as one correction; run Validation Only once at the exact new SHA. |
+| Next action | Inspect #189 terminal formatter, analyzer and full-suite outcomes for exact SHA 8746245; then update register/checkpoint once with observed results. |
 
 ## Status model
 
