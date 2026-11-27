@@ -4297,15 +4297,18 @@ void main() {
     );
 
     expect(source, contains("part 'dashboard_temperature_tab.dart';"));
-    final temperatureSource =
-        File('lib/dashboard_temperature_tab.dart').readAsStringSync();
+    final temperatureSource = File('lib/dashboard_temperature_tab.dart')
+        .readAsStringSync();
     expect(temperatureSource, contains("part of 'main.dart';"));
     expect(
       source,
-      contains("this._buildTemperatureTab(key: const ValueKey('temperature-tab'))"),
+      contains(
+        "this._buildTemperatureTab(key: const ValueKey('temperature-tab'))",
+      ),
     );
-    final temperatureStart =
-        temperatureSource.indexOf('Widget _temperatureButton(');
+    final temperatureStart = temperatureSource.indexOf(
+      'Widget _temperatureButton(',
+    );
     final temperatureEnd = temperatureSource.indexOf(
       'Widget _lockedZoneRow(',
       temperatureStart,
