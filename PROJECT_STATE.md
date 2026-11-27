@@ -9,6 +9,10 @@ Last reconciled: 2026-11-27 (Asia/Jakarta). Authority: MASTER_PROMPT.md.
 - Included: Flutter/Dart App source/tests/docs/configuration/static audit and non-publishing Validation Only CI.
 - Excluded: Build App/APK/sign/release until a fresh Eksekusi Build App!; Firmware/BIN/P1 wire/behavior, BLE identity/security, OTA transport/trust/recovery, Firebase production, signing material, flashing and device operations.
 
+## Clarification of rework scope
+
+“Full Rework” is the name of the owner-approved WP0–WP10 App modernization scope, not a claim that the application was rewritten from zero. Comparing Build #167 source `0dd96228d33b08c66e736ae91a8a6c3e5c3ddb81` with validated source `d0ab20533c2bf27be18dbb25c3ad9c762663d7e0` shows 603 descendant repository commits and 77 changed paths, including 21 App source files and 18 test files. The App-source delta is +11,377/-10,489 lines, much of it code extraction/reorganization: `main.dart` 11,434→4,831 lines; `usage_statistics.dart` 3,650→3,651; `floating_monitor.dart` 1,959→1,209 with Settings subpages in `settings_pages.dart`. Dashboard remains the sole BLE/GATT/P1/session/telemetry/command owner. The 603 commits are the aggregate repository history since Build #167, not 603 source rewrites or work performed in a single interaction.
+
 ## Current source and validation
 
 - Validated source: `d0ab20533c2bf27be18dbb25c3ad9c762663d7e0`; recursive tree 166 entries / 120 blobs / 46 trees, `truncated=false`.
