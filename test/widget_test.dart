@@ -4948,7 +4948,8 @@ void main() {
     expect(
       RegExp(r'onTap: selectTab').allMatches(tab).length,
       2,
-      reason: 'Semantics and InkWell must share the same tab selection callback.',
+      reason:
+          'Semantics and InkWell must share the same tab selection callback.',
     );
     expect(tab, contains('button: true,'));
     expect(tab, contains('selected: selected,'));
