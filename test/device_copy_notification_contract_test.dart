@@ -12,9 +12,17 @@ void main() {
     final copy = File('lib/app_settings.dart').readAsStringSync();
 
     expect(main, contains("const String headerName = 'JE X FYZ';"));
-    expect(main, contains('CONNECT YOUR DEVICE FIRST'));
-    expect(main, contains('Connect your device to use this menu.'));
-    expect(main, contains('Hubungkan perangkat untuk menggunakan menu ini.'));
+    final displayMenu = File(
+      'lib/dashboard_display_menu.dart',
+    ).readAsStringSync();
+
+    expect(main, contains('JexDashboardLockedMenu('));
+    expect(displayMenu, contains('CONNECT YOUR DEVICE FIRST'));
+    expect(displayMenu, contains('Connect your device to use this menu.'));
+    expect(
+      displayMenu,
+      contains('Hubungkan perangkat untuk menggunakan menu ini.'),
+    );
     expect(main, isNot(contains('CONNECT TO JE X FYZ FIRST')));
     expect(copy, contains("AppLanguage.english: 'Device connected.'"));
     expect(copy, contains("AppLanguage.indonesia: 'Perangkat terputus.'"));

@@ -1003,35 +1003,32 @@ void main() {
     );
   });
 
-  test(
-    'Dashboard derives lock policy before delegating to the keyed tab presentation',
-    () {
-      final source = File('lib/main.dart').readAsStringSync();
-      final tabsStart = source.indexOf('Widget _buildTabContent()');
-      final tabsEnd = source.indexOf(
-        'Widget _tab(String title, int index)',
-        tabsStart,
-      );
-      expect(tabsStart, isNonNegative);
-      expect(tabsEnd, greaterThan(tabsStart));
-      final composition = source.substring(tabsStart, tabsEnd);
-      expect(composition, contains('displayMenuLockReason('));
-      expect(composition, contains('JexDashboardLockedMenu('));
-      expect(composition, contains('reason: lockReason'));
-      expect(composition, contains('onConnect: _showBluetoothMenu'));
-      expect(composition, contains('return JexDashboardTabTransition('));
+  test('Dashboard derives lock policy before delegating to the keyed tab presentation', () {
+    final source = File('lib/main.dart').readAsStringSync();
+    final tabsStart = source.indexOf('Widget _buildTabContent()');
+    final tabsEnd = source.indexOf(
+      'Widget _tab(String title, int index)',
+      tabsStart,
+    );
+    expect(tabsStart, isNonNegative);
+    expect(tabsEnd, greaterThan(tabsStart));
+    final composition = source.substring(tabsStart, tabsEnd);
+    expect(composition, contains('displayMenuLockReason('));
+    expect(composition, contains('JexDashboardLockedMenu('));
+    expect(composition, contains('reason: lockReason'));
+    expect(composition, contains('onConnect: _showBluetoothMenu'));
+    expect(composition, contains('return JexDashboardTabTransition('));
 
-      final buildStart = source.indexOf(
-        'Widget build(BuildContext context) {',
-        source.indexOf('class _DashboardScreenState'),
-      );
-      final dashboardBuild = source.substring(buildStart);
-      expect(
-        dashboardBuild.indexOf('_tab(JexText.of'),
-        lessThan(dashboardBuild.indexOf('_buildTabContent()')),
-      );
-    },
-  );
+    final buildStart = source.indexOf(
+      'Widget build(BuildContext context) {',
+      source.indexOf('class _DashboardScreenState'),
+    );
+    final dashboardBuild = source.substring(buildStart);
+    expect(
+      dashboardBuild.indexOf('_tab(JexText.of'),
+      lessThan(dashboardBuild.indexOf('_buildTabContent()')),
+    );
+  });
 
   test('Peltier Adaptive and LED switches mirror manual Voltage without labels or checkmarks', () {
     final source = File('lib/main.dart').readAsStringSync();
@@ -4844,3 +4841,4 @@ void main() {
     expect(sheet, isNot(contains('Duration(milliseconds: 650)')));
   });
 }
+Formatted 1 file (1 changed) in 0.13 seconds.

@@ -62,7 +62,12 @@ void main() {
       );
       expect(find.byType(ClipRect), findsOneWidget);
       expect(find.byType(ImageFiltered), findsOneWidget);
-      expect(find.byType(IgnorePointer), findsOneWidget);
+      final blockedContent = find.widgetWithText(
+        IgnorePointer,
+        'Submenu content',
+      );
+      expect(blockedContent, findsOneWidget);
+      expect(tester.widget<IgnorePointer>(blockedContent).ignoring, isTrue);
 
       final connectButton = find.ancestor(
         of: find.text('Connect'),
@@ -97,94 +102,89 @@ void main() {
     },
   );
 
-  testWidgets(
-    'Lock Voltage copy reports 5V only after matching telemetry',
-    (tester) async {
-      await tester.pumpWidget(
-        host(
-          menu(
-            reason: DisplayMenuLockReason.voltageLocked,
-            tabIndex: 0,
-            voltage: '5V',
-          ),
+  testWidgets('Lock Voltage copy reports 5V only after matching telemetry', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      host(
+        menu(
+          reason: DisplayMenuLockReason.voltageLocked,
+          tabIndex: 0,
+          voltage: '5V',
         ),
-      );
+      ),
+    );
 
-      expect(find.text('VOLTAGE LOCKED AT 5V'), findsOneWidget);
-      expect(
-        find.text(
-          'The device confirms the 5V rail. Higher voltage selections are locked.',
+    expect(find.text('VOLTAGE LOCKED AT 5V'), findsOneWidget);
+    expect(
+      find.text(
+        'The device confirms the 5V rail. Higher voltage selections are locked.',
+      ),
+      findsOneWidget,
+    );
+
+    await tester.pumpWidget(
+      host(
+        menu(
+          reason: DisplayMenuLockReason.voltageLocked,
+          tabIndex: 0,
+          voltage: '9V',
         ),
-        findsOneWidget,
-      );
+      ),
+    );
 
-      await tester.pumpWidget(
-        host(
-          menu(
-            reason: DisplayMenuLockReason.voltageLocked,
-            tabIndex: 0,
-            voltage: '9V',
-          ),
+    expect(find.text('RETURNING TO 5V'), findsOneWidget);
+    expect(
+      find.text(
+        'The voltage lock is active. The device is safely returning from 9V to 5V.',
+      ),
+      findsOneWidget,
+    );
+    expect(find.text('VOLTAGE LOCKED AT 5V'), findsNothing);
+  });
+
+  testWidgets('Lock Voltage on Adaptive tab keeps the Adaptive-disabled copy', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      host(
+        menu(
+          reason: DisplayMenuLockReason.voltageLocked,
+          tabIndex: 2,
+          voltage: '5V',
         ),
-      );
+      ),
+    );
 
-      expect(find.text('RETURNING TO 5V'), findsOneWidget);
-      expect(
-        find.text(
-          'The voltage lock is active. The device is safely returning from 9V to 5V.',
+    expect(find.text('ADAPTIVE MODE DISABLED'), findsOneWidget);
+    expect(
+      find.text('Adaptive Mode is forced OFF while Lock Voltage is active.'),
+      findsOneWidget,
+    );
+    expect(find.byType(TextButton), findsNothing);
+  });
+
+  testWidgets('Disconnected lock copy and Connect action are Indonesian', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      host(
+        menu(
+          reason: DisplayMenuLockReason.bluetoothDisconnected,
+          language: AppLanguage.indonesia,
         ),
-        findsOneWidget,
-      );
-      expect(find.text('VOLTAGE LOCKED AT 5V'), findsNothing);
-    },
-  );
+      ),
+    );
 
-  testWidgets(
-    'Lock Voltage on Adaptive tab keeps the Adaptive-disabled copy',
-    (tester) async {
-      await tester.pumpWidget(
-        host(
-          menu(
-            reason: DisplayMenuLockReason.voltageLocked,
-            tabIndex: 2,
-            voltage: '5V',
-          ),
-        ),
-      );
-
-      expect(find.text('ADAPTIVE MODE DISABLED'), findsOneWidget);
-      expect(
-        find.text('Adaptive Mode is forced OFF while Lock Voltage is active.'),
-        findsOneWidget,
-      );
-      expect(find.byType(TextButton), findsNothing);
-    },
-  );
-
-  testWidgets(
-    'Disconnected lock copy and Connect action are Indonesian',
-    (tester) async {
-      await tester.pumpWidget(
-        host(
-          menu(
-            reason: DisplayMenuLockReason.bluetoothDisconnected,
-            language: AppLanguage.indonesia,
-          ),
-        ),
-      );
-
-      expect(
-        find.text('HUBUNGKAN PERANGKAT TERLEBIH DAHULU'),
-        findsOneWidget,
-      );
-      expect(
-        find.text('Hubungkan perangkat untuk menggunakan menu ini.'),
-        findsOneWidget,
-      );
-      expect(find.text('Hubungkan'), findsOneWidget);
-      expect(find.text('Connect'), findsNothing);
-    },
-  );
+    expect(find.text('HUBUNGKAN PERANGKAT TERLEBIH DAHULU'), findsOneWidget);
+    expect(
+      find.text('Hubungkan perangkat untuk menggunakan menu ini.'),
+      findsOneWidget,
+    );
+    expect(find.text('Hubungkan'), findsOneWidget);
+    expect(find.text('Connect'), findsNothing);
+  });
 }
 
 void _noConnect() {}
+Formatted 1 file (1 changed) in 0.01 seconds.
