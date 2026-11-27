@@ -313,7 +313,7 @@ class TamperScreen extends StatelessWidget {
     final language = appLanguageNotifier.value;
     final scheme = Theme.of(context).colorScheme;
     return Scaffold(
-      backgroundColor: scheme.surface,
+      backgroundColor: scheme.jexSurface,
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
@@ -327,7 +327,7 @@ class TamperScreen extends StatelessWidget {
                   Center(
                     child: Icon(
                       PhosphorIconsBold.warning,
-                      color: scheme.error,
+                      color: scheme.jexError,
                       size: 46,
                     ),
                   ),
@@ -351,7 +351,7 @@ class TamperScreen extends StatelessWidget {
                     ),
                     textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.bodyMedium
-                        ?.copyWith(color: scheme.onSurfaceVariant, height: 1.4),
+                        ?.copyWith(color: scheme.jexMutedForeground, height: 1.4),
                   ),
                   const SizedBox(height: 24),
                   SizedBox(
@@ -2623,7 +2623,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                           horizontal: 6,
                         ),
                         decoration: BoxDecoration(
-                          color: scheme.surfaceContainerHighest.withValues(
+                          color: scheme.jexElevatedSurface.withValues(
                             alpha: .42,
                           ),
                           borderRadius: BorderRadius.circular(12),
@@ -2634,14 +2634,14 @@ class _DashboardScreenState extends State<DashboardScreen>
                             Icon(
                               icon,
                               size: 18,
-                              color: scheme.onSurfaceVariant,
+                              color: scheme.jexMutedForeground,
                             ),
                             const SizedBox(height: 3),
                             Text(
                               label,
                               textAlign: TextAlign.center,
                               style: TextStyle(
-                                color: scheme.onSurface,
+                                color: scheme.jexForeground,
                                 fontFamily: fontFamily,
                                 decoration: TextDecoration.none,
                                 fontSize: 10.5,
@@ -2671,10 +2671,10 @@ class _DashboardScreenState extends State<DashboardScreen>
                               verticalPadding - 2,
                             ),
                             decoration: BoxDecoration(
-                              color: scheme.surface,
+                              color: scheme.jexSurface,
                               borderRadius: BorderRadius.circular(20),
                               border: Border.all(
-                                color: scheme.outlineVariant.withValues(
+                                color: scheme.jexOutline.withValues(
                                   alpha: .82,
                                 ),
                               ),
@@ -2723,7 +2723,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                                             appLanguageNotifier.value,
                                           ),
                                           style: TextStyle(
-                                            color: scheme.onSurface,
+                                            color: scheme.jexForeground,
                                             fontFamily: fontFamily,
                                             decoration: TextDecoration.none,
                                             fontSize: compactHeight ? 15 : 15.5,
@@ -2741,7 +2741,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                                       appLanguageNotifier.value,
                                     ),
                                     style: TextStyle(
-                                      color: scheme.onSurfaceVariant,
+                                      color: scheme.jexMutedForeground,
                                       fontFamily: fontFamily,
                                       decoration: TextDecoration.none,
                                       fontSize: compactHeight ? 11.5 : 12.5,
@@ -2766,7 +2766,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                                         child: Icon(
                                           PhosphorIconsRegular.arrowRight,
                                           size: 15,
-                                          color: scheme.onSurfaceVariant,
+                                          color: scheme.jexMutedForeground,
                                         ),
                                       ),
                                       step(
@@ -3846,7 +3846,7 @@ class _DashboardScreenState extends State<DashboardScreen>
             ? indicatorColor
             : lightThemeAccentText(
                 indicatorColor,
-                background: theme.colorScheme.surface,
+                background: theme.colorScheme.jexSurface,
               );
         final indicatorFill = homeDark
             ? indicatorColor.withValues(alpha: .12)
@@ -3892,9 +3892,9 @@ class _DashboardScreenState extends State<DashboardScreen>
                                 size: 26,
                                 color: indicatorColor,
                                 lightTheme: !homeDark,
-                                lightSurfaceColor: theme.colorScheme.surface,
+                                lightSurfaceColor: theme.colorScheme.jexSurface,
                                 lightOutlineColor:
-                                    theme.colorScheme.onSurfaceVariant,
+                                    theme.colorScheme.jexMutedForeground,
                                 connected: connected,
                                 continuousLoop: continuousLoop,
                                 // Keep the painter's real sensor/output state separate
@@ -4313,9 +4313,9 @@ class _DashboardScreenState extends State<DashboardScreen>
       margin: const EdgeInsets.symmetric(vertical: 4),
       padding: padding ?? const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: scheme.surface,
+        color: scheme.jexSurface,
         borderRadius: BorderRadius.circular(19),
-        border: Border.all(color: scheme.outlineVariant.withValues(alpha: .78)),
+        border: Border.all(color: scheme.jexOutline.withValues(alpha: .78)),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: dark ? .24 : .07),
@@ -4341,7 +4341,7 @@ class _DashboardScreenState extends State<DashboardScreen>
               fontSize: 16,
               fontWeight: FontWeight.w900,
               letterSpacing: .60,
-              color: scheme.onSurface,
+              color: scheme.jexForeground,
             ),
           ),
           if (subtitle != null && subtitle.trim().isNotEmpty) ...[
@@ -4349,7 +4349,7 @@ class _DashboardScreenState extends State<DashboardScreen>
             Text(
               subtitle,
               style: TextStyle(
-                color: scheme.onSurfaceVariant,
+                color: scheme.jexMutedForeground,
                 fontSize: 11,
                 fontWeight: FontWeight.w600,
               ),
@@ -4379,23 +4379,23 @@ class _DashboardScreenState extends State<DashboardScreen>
     bool neutralRow = false,
   }) {
     final scheme = Theme.of(context).colorScheme;
-    final accent = scheme.primary;
+    final accent = scheme.jexAccent;
     final lang = appLanguageNotifier.value;
     final lightTheme = Theme.of(context).brightness == Brightness.light;
     final rowFill = lightTheme
         ? const Color(0xFFF5F6F8)
         : (neutralRow
-              ? scheme.surfaceContainerHighest.withValues(alpha: .26)
+              ? scheme.jexElevatedSurface.withValues(alpha: .26)
               : (value
                     ? accent.withValues(alpha: .075)
-                    : scheme.surfaceContainerHighest.withValues(alpha: .34)));
+                    : scheme.jexElevatedSurface.withValues(alpha: .34)));
     final rowBorder = lightTheme
         ? const Color(0xFFDDE1E7)
         : (neutralRow
-              ? scheme.outlineVariant.withValues(alpha: .68)
+              ? scheme.jexOutline.withValues(alpha: .68)
               : (value
                     ? accent.withValues(alpha: .28)
-                    : scheme.outlineVariant.withValues(alpha: .72)));
+                    : scheme.jexOutline.withValues(alpha: .72)));
     return AnimatedContainer(
       duration: const Duration(milliseconds: 180),
       curve: Curves.easeOutCubic,
@@ -4416,10 +4416,10 @@ class _DashboardScreenState extends State<DashboardScreen>
               color: lightTheme
                   ? const Color(0xFFE9EBEF)
                   : (neutralRow
-                        ? scheme.surfaceContainerHighest.withValues(alpha: .72)
+                        ? scheme.jexElevatedSurface.withValues(alpha: .72)
                         : (value
                               ? accent.withValues(alpha: .12)
-                              : scheme.surfaceContainerHighest.withValues(
+                              : scheme.jexElevatedSurface.withValues(
                                   alpha: .72,
                                 ))),
               borderRadius: BorderRadius.circular(14),
@@ -4429,7 +4429,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                   ? Icon(
                       icon,
                       size: 21,
-                      color: value ? accent : scheme.onSurfaceVariant,
+                      color: value ? accent : scheme.jexMutedForeground,
                     )
                   : JexAnimatedIcon(
                       kind: animatedKind,
@@ -4457,7 +4457,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                     fontSize: 13,
                     letterSpacing: .35,
                     fontWeight: FontWeight.w900,
-                    color: scheme.onSurface,
+                    color: scheme.jexForeground,
                   ),
                 ),
                 if (subtitle.trim().isNotEmpty)
@@ -4468,7 +4468,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                       style: TextStyle(
                         fontSize: 10.5,
                         fontWeight: FontWeight.w600,
-                        color: scheme.onSurfaceVariant,
+                        color: scheme.jexMutedForeground,
                       ),
                     ),
                   ),
@@ -4484,7 +4484,7 @@ class _DashboardScreenState extends State<DashboardScreen>
               style: TextStyle(
                 fontSize: 10,
                 fontWeight: FontWeight.w900,
-                color: value ? accent : scheme.onSurfaceVariant,
+                color: value ? accent : scheme.jexMutedForeground,
               ),
             ),
             const SizedBox(width: 8),
@@ -4525,12 +4525,12 @@ class _DashboardScreenState extends State<DashboardScreen>
         decoration: BoxDecoration(
           color: displayedValue
               ? accent.withValues(alpha: .24)
-              : scheme.surfaceContainerHighest,
+              : scheme.jexElevatedSurface,
           borderRadius: BorderRadius.circular(18),
           border: Border.all(
             color: displayedValue
                 ? accent.withValues(alpha: .52)
-                : scheme.outlineVariant,
+                : scheme.jexOutline,
             width: 1.2,
           ),
         ),
@@ -4547,8 +4547,8 @@ class _DashboardScreenState extends State<DashboardScreen>
               color: displayedValue
                   ? accent
                   : (enabled
-                        ? scheme.onSurfaceVariant
-                        : scheme.onSurfaceVariant.withValues(alpha: .32)),
+                        ? scheme.jexMutedForeground
+                        : scheme.jexMutedForeground.withValues(alpha: .32)),
               shape: BoxShape.circle,
               boxShadow: [
                 if (displayedValue)
@@ -4616,7 +4616,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                 children: [
                   Icon(
                     PhosphorIconsRegular.lock,
-                    color: Theme.of(context).colorScheme.primary,
+                    color: Theme.of(context).colorScheme.jexAccent,
                     size: 18,
                   ),
                   const SizedBox(width: 8),
@@ -4632,7 +4632,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                               'Kunci aktif — perangkat sedang kembali ke 5V dengan aman. Nilai di bawah tetap mengikuti telemetri aktual.',
                             ),
                       style: TextStyle(
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        color: Theme.of(context).colorScheme.jexMutedForeground,
                         fontSize: 10.5,
                         fontWeight: FontWeight.w700,
                       ),
@@ -4676,10 +4676,10 @@ class _DashboardScreenState extends State<DashboardScreen>
         decoration: BoxDecoration(
           // Geometry intentionally mirrors CONTROL/_switchRow. The row stays neutral;
           // selection is represented only by the shared toggle on the right.
-          color: scheme.surfaceContainerHighest.withValues(alpha: .26),
+          color: scheme.jexElevatedSurface.withValues(alpha: .26),
           borderRadius: BorderRadius.circular(18),
           border: Border.all(
-            color: scheme.outlineVariant.withValues(alpha: .68),
+            color: scheme.jexOutline.withValues(alpha: .68),
           ),
         ),
         child: Row(
@@ -4688,7 +4688,7 @@ class _DashboardScreenState extends State<DashboardScreen>
               width: 42,
               height: 42,
               decoration: BoxDecoration(
-                color: scheme.surfaceContainerHighest.withValues(alpha: .72),
+                color: scheme.jexElevatedSurface.withValues(alpha: .72),
                 borderRadius: BorderRadius.circular(14),
               ),
               alignment: Alignment.center,
@@ -4706,7 +4706,7 @@ class _DashboardScreenState extends State<DashboardScreen>
               child: Text(
                 mode,
                 style: TextStyle(
-                  color: scheme.onSurfaceVariant,
+                  color: scheme.jexMutedForeground,
                   fontSize: 12,
                   fontWeight: FontWeight.w700,
                 ),
@@ -4716,7 +4716,7 @@ class _DashboardScreenState extends State<DashboardScreen>
             _jexToggle(
               value: active,
               enabled: !locked,
-              accent: scheme.primary,
+              accent: scheme.jexAccent,
               showCheck: false,
               onChanged: (_) async => _requestVoltage(target),
             ),
@@ -4790,12 +4790,12 @@ class _DashboardScreenState extends State<DashboardScreen>
                   duration: const Duration(milliseconds: 180),
                   padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
                   decoration: BoxDecoration(
-                    color: scheme.surfaceContainerHighest.withValues(
+                    color: scheme.jexElevatedSurface.withValues(
                       alpha: .25,
                     ),
                     borderRadius: BorderRadius.circular(18),
                     border: Border.all(
-                      color: scheme.outlineVariant.withValues(alpha: .70),
+                      color: scheme.jexOutline.withValues(alpha: .70),
                     ),
                   ),
                   child: Column(
@@ -4819,7 +4819,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                             child: Text(
                               JexText.of('fanSpeedLabel', lang),
                               style: TextStyle(
-                                color: scheme.onSurface,
+                                color: scheme.jexForeground,
                                 fontSize: 13,
                                 fontWeight: FontWeight.w900,
                               ),
@@ -4831,8 +4831,8 @@ class _DashboardScreenState extends State<DashboardScreen>
                                 : '$fanSpeed%',
                             style: TextStyle(
                               color: fanOn
-                                  ? scheme.primary
-                                  : scheme.onSurfaceVariant,
+                                  ? scheme.jexAccent
+                                  : scheme.jexMutedForeground,
                               fontSize: 12,
                               fontWeight: FontWeight.w900,
                             ),
@@ -4846,8 +4846,8 @@ class _DashboardScreenState extends State<DashboardScreen>
                           max: 100,
                           divisions: 5,
                           value: fanSpeedDraft.clamp(50, 100).toDouble(),
-                          activeColor: scheme.primary,
-                          inactiveColor: scheme.onSurface.withValues(
+                          activeColor: scheme.jexAccent,
+                          inactiveColor: scheme.jexForeground.withValues(
                             alpha: .10,
                           ),
                           onChanged: speedEnabled
@@ -4920,7 +4920,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                 children: [
                   Icon(
                     PhosphorIconsRegular.lock,
-                    color: Theme.of(context).colorScheme.primary,
+                    color: Theme.of(context).colorScheme.jexAccent,
                     size: 18,
                   ),
                   const SizedBox(width: 8),
@@ -4931,7 +4931,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                         'Mode Adaptif dipaksa MATI selama Kunci Tegangan aktif.',
                       ),
                       style: TextStyle(
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        color: Theme.of(context).colorScheme.jexMutedForeground,
                         fontSize: 10.5,
                         fontWeight: FontWeight.w700,
                       ),
@@ -4978,7 +4978,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                     child: Text(
                       JexText.of('lockedAdaptive', lang),
                       style: TextStyle(
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        color: Theme.of(context).colorScheme.jexMutedForeground,
                         fontSize: 10.5,
                         fontWeight: FontWeight.w800,
                       ),
@@ -5000,7 +5000,7 @@ class _DashboardScreenState extends State<DashboardScreen>
     required bool locked,
   }) {
     final scheme = Theme.of(context).colorScheme;
-    final accent = scheme.primary;
+    final accent = scheme.jexAccent;
     return InkWell(
       onTap: locked ? null : () => unawaited(_setAdaptiveProfile(value)),
       borderRadius: BorderRadius.circular(17),
@@ -5011,12 +5011,12 @@ class _DashboardScreenState extends State<DashboardScreen>
         decoration: BoxDecoration(
           color: selected
               ? accent.withValues(alpha: .07)
-              : scheme.surfaceContainerHighest.withValues(alpha: .24),
+              : scheme.jexElevatedSurface.withValues(alpha: .24),
           borderRadius: BorderRadius.circular(17),
           border: Border.all(
             color: selected
                 ? accent.withValues(alpha: .30)
-                : scheme.outlineVariant.withValues(alpha: .68),
+                : scheme.jexOutline.withValues(alpha: .68),
           ),
         ),
         child: Row(
@@ -5027,15 +5027,15 @@ class _DashboardScreenState extends State<DashboardScreen>
               decoration: BoxDecoration(
                 color: selected
                     ? accent.withValues(alpha: .11)
-                    : scheme.surfaceContainerHighest.withValues(alpha: .62),
+                    : scheme.jexElevatedSurface.withValues(alpha: .62),
                 borderRadius: BorderRadius.circular(13),
               ),
               child: Icon(
                 icon,
                 size: 21,
                 color: locked
-                    ? scheme.onSurfaceVariant.withValues(alpha: .35)
-                    : (selected ? accent : scheme.onSurfaceVariant),
+                    ? scheme.jexMutedForeground.withValues(alpha: .35)
+                    : (selected ? accent : scheme.jexMutedForeground),
               ),
             ),
             const SizedBox(width: 11),
@@ -5044,8 +5044,8 @@ class _DashboardScreenState extends State<DashboardScreen>
                 title,
                 style: TextStyle(
                   color: locked
-                      ? scheme.onSurfaceVariant.withValues(alpha: .45)
-                      : scheme.onSurface,
+                      ? scheme.jexMutedForeground.withValues(alpha: .45)
+                      : scheme.jexForeground,
                   fontSize: 12.5,
                   fontWeight: FontWeight.w900,
                 ),
@@ -5059,9 +5059,9 @@ class _DashboardScreenState extends State<DashboardScreen>
                 shape: BoxShape.circle,
                 color: selected
                     ? accent.withValues(alpha: .14)
-                    : scheme.surfaceContainerHighest,
+                    : scheme.jexElevatedSurface,
                 border: Border.all(
-                  color: selected ? accent : scheme.outlineVariant,
+                  color: selected ? accent : scheme.jexOutline,
                   width: selected ? 2 : 1,
                 ),
               ),
@@ -5125,12 +5125,12 @@ class _DashboardScreenState extends State<DashboardScreen>
                 Container(
                   padding: const EdgeInsets.fromLTRB(10, 9, 10, 10),
                   decoration: BoxDecoration(
-                    color: scheme.surfaceContainerHighest.withValues(
+                    color: scheme.jexElevatedSurface.withValues(
                       alpha: .22,
                     ),
                     borderRadius: BorderRadius.circular(18),
                     border: Border.all(
-                      color: scheme.outlineVariant.withValues(alpha: .68),
+                      color: scheme.jexOutline.withValues(alpha: .68),
                     ),
                   ),
                   child: Column(
@@ -5161,12 +5161,12 @@ class _DashboardScreenState extends State<DashboardScreen>
                 Container(
                   padding: const EdgeInsets.fromLTRB(11, 8, 11, 7),
                   decoration: BoxDecoration(
-                    color: scheme.surfaceContainerHighest.withValues(
+                    color: scheme.jexElevatedSurface.withValues(
                       alpha: .20,
                     ),
                     borderRadius: BorderRadius.circular(16),
                     border: Border.all(
-                      color: scheme.outlineVariant.withValues(alpha: .60),
+                      color: scheme.jexOutline.withValues(alpha: .60),
                     ),
                   ),
                   child: Row(
@@ -5174,7 +5174,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                       Icon(
                         PhosphorIconsRegular.sun,
                         size: 19,
-                        color: scheme.onSurfaceVariant,
+                        color: scheme.jexMutedForeground,
                       ),
                       const SizedBox(width: 8),
                       Expanded(
@@ -5183,8 +5183,8 @@ class _DashboardScreenState extends State<DashboardScreen>
                           max: 100,
                           divisions: 99,
                           value: brightness.clamp(1, 100).toDouble(),
-                          activeColor: scheme.primary,
-                          inactiveColor: scheme.onSurface.withValues(
+                          activeColor: scheme.jexAccent,
+                          inactiveColor: scheme.jexForeground.withValues(
                             alpha: .10,
                           ),
                           onChanged: connected
@@ -5199,7 +5199,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                           '$brightness%',
                           textAlign: TextAlign.right,
                           style: TextStyle(
-                            color: scheme.onSurface,
+                            color: scheme.jexForeground,
                             fontSize: 11,
                             fontWeight: FontWeight.w900,
                           ),
@@ -5231,7 +5231,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                         decoration: BoxDecoration(
                           color: colorEnabled
                               ? ledPaletteColor(rgbColor.toUpperCase())
-                              : scheme.surfaceContainerHighest,
+                              : scheme.jexElevatedSurface,
                           borderRadius: BorderRadius.circular(11),
                           border: Border.all(
                             color: rgbColor.toUpperCase() == '#FFFFFF'
@@ -5248,7 +5248,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                             Text(
                               JexText.of('color', lang),
                               style: TextStyle(
-                                color: scheme.onSurface,
+                                color: scheme.jexForeground,
                                 fontSize: 13,
                                 fontWeight: FontWeight.w900,
                               ),
@@ -5257,7 +5257,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                             Text(
                               ledColorDisplayName(rgbColor, lang),
                               style: TextStyle(
-                                color: scheme.onSurfaceVariant,
+                                color: scheme.jexMutedForeground,
                                 fontSize: 11,
                                 fontWeight: FontWeight.w700,
                               ),
@@ -5267,7 +5267,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                       ),
                       Icon(
                         PhosphorIconsRegular.caretRight,
-                        color: scheme.onSurfaceVariant,
+                        color: scheme.jexMutedForeground,
                         size: 22,
                       ),
                     ],
@@ -5362,7 +5362,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                     child: Text(
                       JexText.of('lockedAdaptive', lang),
                       style: TextStyle(
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        color: Theme.of(context).colorScheme.jexMutedForeground,
                         fontSize: 10.5,
                         fontWeight: FontWeight.w800,
                       ),
@@ -5385,7 +5385,7 @@ class _DashboardScreenState extends State<DashboardScreen>
     required ValueChanged<int> onChanged,
   }) {
     final scheme = Theme.of(context).colorScheme;
-    final accent = scheme.primary;
+    final accent = scheme.jexAccent;
     return AnimatedOpacity(
       duration: const Duration(milliseconds: 150),
       opacity: enabled ? 1 : .48,
@@ -5398,7 +5398,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                 Text(
                   title.toUpperCase(),
                   style: TextStyle(
-                    color: scheme.onSurface,
+                    color: scheme.jexForeground,
                     fontSize: 12,
                     fontWeight: FontWeight.w900,
                     letterSpacing: .35,
@@ -5413,7 +5413,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                       max.toString() +
                       '°C',
                   style: TextStyle(
-                    color: scheme.onSurfaceVariant,
+                    color: scheme.jexMutedForeground,
                     fontSize: 9.5,
                     fontWeight: FontWeight.w700,
                   ),
@@ -5433,9 +5433,9 @@ class _DashboardScreenState extends State<DashboardScreen>
             width: 72,
             padding: const EdgeInsets.symmetric(vertical: 9),
             decoration: BoxDecoration(
-              color: scheme.surfaceContainerHighest.withValues(alpha: .55),
+              color: scheme.jexElevatedSurface.withValues(alpha: .55),
               borderRadius: BorderRadius.circular(13),
-              border: Border.all(color: scheme.outlineVariant),
+              border: Border.all(color: scheme.jexOutline),
             ),
             child: Text(
               value.toString() + '°C',
@@ -5485,17 +5485,17 @@ class _DashboardScreenState extends State<DashboardScreen>
                   height: 34,
                   decoration: BoxDecoration(
                     color: enabled
-                        ? scheme.surfaceContainerHighest
-                        : scheme.surfaceContainerHighest.withValues(alpha: .48),
+                        ? scheme.jexElevatedSurface
+                        : scheme.jexElevatedSurface.withValues(alpha: .48),
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: scheme.outlineVariant),
+                    border: Border.all(color: scheme.jexOutline),
                   ),
                   child: Icon(
                     icon,
                     size: 19,
                     color: enabled
-                        ? scheme.onSurfaceVariant
-                        : scheme.onSurfaceVariant.withValues(alpha: .28),
+                        ? scheme.jexMutedForeground
+                        : scheme.jexMutedForeground.withValues(alpha: .28),
                   ),
                 ),
               ),
@@ -5511,23 +5511,23 @@ class _DashboardScreenState extends State<DashboardScreen>
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       decoration: BoxDecoration(
-        color: scheme.surfaceContainerHighest.withValues(alpha: .24),
+        color: scheme.jexElevatedSurface.withValues(alpha: .24),
         borderRadius: BorderRadius.circular(17),
-        border: Border.all(color: scheme.outlineVariant.withValues(alpha: .68)),
+        border: Border.all(color: scheme.jexOutline.withValues(alpha: .68)),
       ),
       child: Row(
         children: [
           Icon(
             PhosphorIconsRegular.lock,
             size: 18,
-            color: scheme.onSurfaceVariant.withValues(alpha: .55),
+            color: scheme.jexMutedForeground.withValues(alpha: .55),
           ),
           const SizedBox(width: 10),
           Expanded(
             child: Text(
               title.toUpperCase(),
               style: TextStyle(
-                color: scheme.onSurfaceVariant,
+                color: scheme.jexMutedForeground,
                 fontSize: 11.5,
                 fontWeight: FontWeight.w900,
               ),
@@ -5536,7 +5536,7 @@ class _DashboardScreenState extends State<DashboardScreen>
           Text(
             value,
             style: TextStyle(
-              color: scheme.onSurface,
+              color: scheme.jexForeground,
               fontSize: 13,
               fontWeight: FontWeight.w900,
             ),
@@ -5639,7 +5639,7 @@ class _DashboardScreenState extends State<DashboardScreen>
             child: IgnorePointer(child: content),
           ),
           Positioned.fill(
-            child: ColoredBox(color: scheme.surface.withValues(alpha: .46)),
+            child: ColoredBox(color: scheme.jexSurface.withValues(alpha: .46)),
           ),
           Positioned.fill(
             child: Center(
@@ -5649,10 +5649,10 @@ class _DashboardScreenState extends State<DashboardScreen>
                   margin: const EdgeInsets.symmetric(horizontal: 14),
                   padding: const EdgeInsets.fromLTRB(18, 20, 18, 18),
                   decoration: BoxDecoration(
-                    color: scheme.surface.withValues(alpha: .96),
+                    color: scheme.jexSurface.withValues(alpha: .96),
                     borderRadius: BorderRadius.circular(22),
                     border: Border.all(
-                      color: scheme.outlineVariant.withValues(alpha: .92),
+                      color: scheme.jexOutline.withValues(alpha: .92),
                       width: 1.1,
                     ),
                     boxShadow: <BoxShadow>[
@@ -5672,7 +5672,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                         title,
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                          color: scheme.onSurface,
+                          color: scheme.jexForeground,
                           fontSize: 14,
                           height: 1.2,
                           fontWeight: FontWeight.w900,
@@ -5684,7 +5684,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                         detail,
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                          color: scheme.onSurfaceVariant,
+                          color: scheme.jexMutedForeground,
                           fontSize: 11.5,
                           height: 1.3,
                           fontWeight: FontWeight.w600,
@@ -6465,7 +6465,7 @@ class _FirmwareUpdateDialogState extends State<FirmwareUpdateDialog> {
                   labelText: JexText.of('ssid', appLanguageNotifier.value),
                   prefixIcon: JexAnimatedGlyph(
                     icon: PhosphorIconsRegular.wifiHigh,
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    color: Theme.of(context).colorScheme.jexMutedForeground,
                     size: 20,
                   ),
                 ),
@@ -6478,7 +6478,7 @@ class _FirmwareUpdateDialogState extends State<FirmwareUpdateDialog> {
                   labelText: JexText.of('password', appLanguageNotifier.value),
                   prefixIcon: JexAnimatedGlyph(
                     icon: PhosphorIconsBold.lock,
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    color: Theme.of(context).colorScheme.jexMutedForeground,
                     size: 20,
                   ),
                   suffixIcon: IconButton(

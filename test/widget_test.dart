@@ -857,11 +857,19 @@ void main() {
       metric,
       contains('jexHomeHeaderUsesDarkPalette(appThemeNotifier.value)'),
     );
-    expect(metric, contains('lightSurfaceColor: theme.colorScheme.surface'));
+    expect(metric, contains('lightSurfaceColor: theme.colorScheme.jexSurface'));
+    expect(source, contains('scheme.jexSurface'));
+    expect(source, contains('scheme.jexMutedForeground'));
+    expect(source, contains('scheme.jexElevatedSurface'));
+    expect(source, contains('scheme.jexOutline'));
+    expect(source, contains('scheme.jexAccent'));
+    expect(source, isNot(contains('scheme.surfaceContainerHighest')));
+    expect(source, isNot(contains('scheme.onSurfaceVariant')));
+    expect(source, isNot(contains('scheme.outlineVariant')));
     expect(
       containsDartFragment(
         metric,
-        'lightOutlineColor: theme.colorScheme.onSurfaceVariant',
+        'lightOutlineColor: theme.colorScheme.jexMutedForeground',
       ),
       isTrue,
     );
