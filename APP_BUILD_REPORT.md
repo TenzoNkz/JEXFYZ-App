@@ -3441,3 +3441,12 @@
 - **Step15** `Build latest release APK` is now IN_PROGRESS. Steps16–21 (V1/V2/V3 enforcement, APK signature/pinned cert verification, APK filename, matching source ZIP, Release publish and fresh downloaded asset verification) are still PENDING; cleanup39–42 pending.
 - **Evidence limitation:** active job logs still returned GitHub `BlobNotFound` while the job continues. Exact Android Gradle task outcome/duration/task counts and Flutter analyzer/test counts for this Build must be read from complete logs when available; do not infer from Validation Only #255.
 - **Disposition:** IN_PROGRESS — continue only run `46062114759` / job `140718609861`; no duplicate issue/retry.
+
+
+### BUILD #169 progress — obfuscated release APK build passed; V1/V2/V3 gate active — 2026-11-28 03:19 (Asia/Jakarta)
+
+- **Run/job/source:** run #170 / `46062114759` / job `140718609861` / exact source `67ff49fdb566a2fa7748e32e5207217c8e4b98b7`.
+- **Step15 `Build latest release APK` observed SUCCESS.** The guarded obfuscated release APK build step completed.
+- **Step16 `Enforce V1/V2/V3 APK signing` is IN_PROGRESS.** Step17 APK signature/pinned certificate, step18 stable filename, step19 corresponding source archive, step20 Release publication and step21 fresh download identity/integrity verification remain PENDING.
+- **Evidence boundary:** successful APK build step does not itself prove the required signature schemes/certificate, asset identity/checksum or Release parity. Active job logs still unavailable until GitHub finishes/log blob becomes accessible; exact package size, SHA and signing evidence remain pending terminal logs and subsequent gates.
+- **Disposition:** IN_PROGRESS — continue only run `46062114759` / job `140718609861`; no duplicate trigger/retry.
