@@ -3215,7 +3215,7 @@ class _UsageLinePainter extends CustomPainter {
     final gridPaint = Paint()
       ..color = gridColor
       ..strokeWidth = 0.7;
-    final textStyle = TextStyle(color: labelColor, fontSize: 10);
+    final textStyle = TextStyle(color: labelColor, fontSize: JexStatisticsTypographyTokens.axisLabel);
     const tickStep = 1.0;
     final tickIntervals = axisTicks.length - 1;
     for (var index = 0; index < axisTicks.length; index++) {
@@ -3321,14 +3321,14 @@ class _UsageLinePainter extends CustomPainter {
     final startText = TextPainter(
       text: TextSpan(
         text: _axisTime(fromMs, fromMs),
-        style: TextStyle(color: labelColor, fontSize: 10),
+        style: TextStyle(color: labelColor, fontSize: JexStatisticsTypographyTokens.axisLabel),
       ),
       textDirection: TextDirection.ltr,
     )..layout();
     final endText = TextPainter(
       text: TextSpan(
         text: _axisTime(toMs, fromMs),
-        style: TextStyle(color: labelColor, fontSize: 10),
+        style: TextStyle(color: labelColor, fontSize: JexStatisticsTypographyTokens.axisLabel),
       ),
       textDirection: TextDirection.ltr,
     )..layout();

@@ -99,6 +99,11 @@ abstract final class JexTypographyTokens {
   static const double compactListTileSubtitle = 11.0;
 }
 
+/// Typography shared by the Usage Statistics chart axes.
+abstract final class JexStatisticsTypographyTokens {
+  static const double axisLabel = 10.0;
+}
+
 /// Shape and focus metrics retained from the existing App theme.
 abstract final class JexShapeTokens {
   static const double inputBorderRadius = 14.0;
