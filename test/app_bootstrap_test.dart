@@ -13,7 +13,7 @@ void main() {
         Widget? launchedApp;
         final tamperApp = SizedBox(key: const ValueKey<String>('tamper'));
         final officialApp = SizedBox(key: const ValueKey<String>('official'));
-  
+
         final bootstrap = AppBootstrap(
           verifyOfficialBuild: () async {
             events.add('verify');
@@ -31,7 +31,7 @@ void main() {
           },
           logError: (phase, error) => events.add('error:$phase'),
         );
-  
+
         await bootstrap.start(
           createOfficialApp: () {
             events.add('build-official');
@@ -42,7 +42,7 @@ void main() {
             return tamperApp;
           },
         );
-  
+
         expect(events, <String>[
           'verify',
           'portrait',
