@@ -2077,6 +2077,23 @@ void main() {
                     'Missing Home label "$key" at $width dp / $language / $theme.',
               );
             }
+            for (final key in ['bluetooth', 'settings']) {
+              final label = JexText.of(key, language);
+              final target = find.byTooltip(label);
+              expect(
+                target,
+                findsOneWidget,
+                reason:
+                    'Home action "$key" must expose its localized tooltip at $width dp / $language / $theme.',
+              );
+              // Assert the target inside the protected 360-dp design canvas.
+              // The outer single DPI transform still requires device-level review.
+              expect(
+                tester.getSize(target),
+                const Size(48, 48),
+                reason: 'Home action "$key" must retain its 48-dp canvas target.',
+              );
+            }
             expect(
               tester.takeException(),
               isNull,
