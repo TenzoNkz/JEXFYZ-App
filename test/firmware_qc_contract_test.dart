@@ -896,7 +896,7 @@ void main() {
 
   test('App treats Lock Voltage as synchronized Firmware state, not Android preference', () {
     final source = File('lib/main.dart').readAsStringSync();
-    final settings = File('lib/floating_monitor.dart').readAsStringSync();
+    final settings = File('lib/settings_pages.dart').readAsStringSync();
     expect(
       source,
       contains("if (c.startsWith('VOLTAGE_LOCK:')) return 'VOLTAGE_LOCK';"),
