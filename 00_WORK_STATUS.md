@@ -1,4 +1,4 @@
-| Last updated | 2026-11-27T23:49:10+07:00 (Asia/Jakarta) |
+| Last updated | 2026-11-27T23:51:33+07:00 (Asia/Jakarta) |
 
 > Event-driven project marker. It is not a live heartbeat or a GitHub lock.
 
@@ -6,20 +6,21 @@
 
 | Field | Value |
 |---|---|
-| **STATUS** | **IN_PROGRESS** |
-| SESSION STATUS | IN_PROGRESS — CODE_FULL; new owner command: “@Thinking Eksekusi Code!”; resume latest blocked Copilot handoff without recap or duplicate side effects. |
-| WORK STATUS | IN_PROGRESS — owner-approved App-only WP0–WP10 full rework + premium UI redesign remains active. |
+| **STATUS** | **BLOCKED** |
+| SESSION STATUS | BLOCKED — CODE_FULL; created and read-back verified WP1 issue #45, but GitHub API rejected Copilot bot assignment (HTTP 422: “assignees copilot cannot be assigned to this issue”). The connector does not expose the optional `agent_assignment` payload or a verified user-to-server token for a custom Issue assignment. |
+| WORK STATUS | IN_PROGRESS — owner-approved App-only WP0–WP10 full rework + premium UI redesign remains active; no source work started and no external agent is running. |
 | WORKSPACE | CODE_FULL |
-| Mode | App-only source/test/docs/config/static-audit execution via Copilot `copilot/*` branches and PRs. No Build App/APK/release, Firmware/BIN, P1 wire/security changes, OTA, Firebase production, signing, flashing or device operation. |
-| Request / work item | Continue the standing-authorized CODE_FULL App rework from the last durable checkpoint; first confirm whether the owner created the prepared WP1 Copilot Issue/assignment after the prior turn. |
+| Mode | App-only source/test/docs/config/static-audit through Copilot `copilot/*` branches and PRs. No Build App/APK/release, Firmware/BIN, P1 wire/security changes, OTA, Firebase production, signing, flashing or device operation. |
+| Request / work item | Exact owner command: “@Thinking Eksekusi Code!” — continue the standing-authorized CODE_FULL work from the blocked checkpoint; re-check live GitHub agent state and proceed with the supported Copilot handoff. |
 | Started | 2026-11-27T23:49:10+07:00 (Asia/Jakarta) |
-| Last updated | 2026-11-27T23:49:10+07:00 (Asia/Jakarta) |
-| Current phase | G0 RECOVERY / PREFLIGHT — re-read prior BLOCKED status, live main, Copilot branches, open PRs and open Issues; no agent launch evidence found yet. |
-| Last completed milestone | Prior verified commit `6d1c42e734a5aae987a58fc93220ce3c319a57f6` remains live main at preflight. Copilot branch query returned no `copilot/*` branches, open PR query returned none, and open Issues contain only historical guarded Build App trigger Issues (#44 and older); no WP1 issue/session is present. |
-| App source / CI checkpoint | Validated App source `d0ab20533c2bf27be18dbb25c3ad9c762663d7e0`; Validation Only #213 / run 46012060878 / job 140549796007 is terminal SUCCESS on that exact SHA with locked dependencies PASS, formatter 44 files / 0 changes, analyzer PASS and 285/285 Flutter tests PASS. Current main since then is documentation/status only. |
-| Repository / automation state | Public repo; connected identity has admin/push permission; allow_auto_merge=false. No Copilot branches, no open work PR, no new WP1 issue. No repository rulesets returned; classic branch protection remains UNKNOWN. Validation Only workflow triggers on push to main only, not pull_request. Guarded Build App workflow untouched. |
-| EXTERNAL OPERATION | Validation Only #213 — run 46012060878 / job 140549796007; exact source SHA d0ab20533c2bf27be18dbb25c3ad9c762663d7e0. No new operation started. |
-| EXTERNAL OPERATION STATUS | COMPLETED — SUCCESS (#213). |
-| Work-order checkpoint | Prepared WP1 task targets `lib/app_settings.dart` and `test/app_settings_store_test.dart` only. Existing tests cover seven normal-path scenarios; read/write/delete failure injection remains absent. Preserve storage keys/defaults/schema/notifier semantics and retain KnownCooler save only after GATT discovery + SYNC + SYNC_READY. Work Order is in the prior chat response. |
-| Blocker / remaining evidence | Connected GitHub integration does not expose Agent Tasks start or the Issue `agent_assignment` field, and no user-to-server token is available. The built-in Copilot issue assignment must not be simulated with a normal issue assignee. No Issue, assignment, Copilot session, branch or PR has been created. Do not claim an agent started. Copilot entitlement remains unverified. |
-| Next action | Verify the exact supported GitHub UI handoff for the prepared WP1 Work Order and provide the owner the concrete issue URL/instructions; once GitHub shows active Copilot execution, follow its branch/PR and continue review. Do not modify App source directly on main. |
+| Last updated | 2026-11-27T23:51:33+07:00 (Asia/Jakarta) |
+| Current phase | G3 WP1 HANDOFF PREPARED / COPILOT ASSIGNMENT BLOCKED — WP1 Issue #45 created and read-back verified; assignment remains an owner UI step. |
+| Last completed milestone | Re-read prior BLOCKED checkpoint and main HEAD; confirmed no Copilot branch, active work PR or WP1 Issue existed. Fetched current official GitHub docs: Copilot Issue assignment UI supports choosing target repo/base branch/custom instructions; user-token Issue REST/GraphQL APIs support optional agent_assignment. Verified connector identity TenzoNkz and repository permission admin. A direct Create Issue request with `copilot-swe-agent[bot]` assignee returned HTTP 422; no partial issue was created. Created unassigned Issue #45 and verified it. |
+| Verified repository / issue | Repo `TenzoNkz/JEXFYZ-App`, public; base branch `main`; main HEAD at WP1 issue creation `d3924ddd2b2bfb591ba3632f268eb2ce19ce7e2d`. Issue #45 `[CODE_FULL WP1] Characterize secure-storage failure behavior` — open, unassigned, full bounded work order and protected invariants in body. |
+| Work order scope | Permitted modifications: `lib/app_settings.dart` and `test/app_settings_store_test.dart` only. Failure-injection characterization required for secure-storage read/write/delete in AppSettingsStore/KnownCoolerStore. Preserve storage keys/defaults/schema/notifier semantics and only save KnownCooler after GATT discovery + SYNC + SYNC_READY. No new dependency. |
+| App source / CI checkpoint | Last validated source `d0ab20533c2bf27be18dbb25c3ad9c762663d7e0`; Validation Only #213 / run 46012060878 / job 140549796007 SUCCESS on exact SHA, 285/285 Flutter tests PASS, formatter 44/0, analyzer PASS. Current main changes since that source are documentation/status only. |
+| Repository / automation state | Public repo; connected identity has admin permission; `allow_auto_merge=false`; no Copilot branches or PRs; Issue #45 has no assignee; no repository rulesets returned; classic branch protection UNKNOWN. Validation Only currently triggers only on push to main, not PRs. Guarded Build App workflow untouched. |
+| EXTERNAL OPERATION | Validation Only #213 — run 46012060878 / job 140549796007; exact source d0ab20533c2bf27be18dbb25c3ad9c762663d7e0. No new external process started. |
+| EXTERNAL OPERATION STATUS | COMPLETED — SUCCESS (#213); no Copilot task or other current external operation is active. |
+| Blocker / remaining evidence | Copilot entitlement/agent availability for this GitHub account/repository is not proven. Standard API assignment rejected the Copilot assignee. Connected GitHub tools do not expose GraphQL `suggestedActors`, the `agent_assignment` payload, or an explicitly verified OAuth/user-to-server token scope. No Copilot session, branch, PR, or test run began. Local Flutter/Dart/Gradle/ADB remain unavailable. |
+| Next action | Open Issue #45 on GitHub; in the right sidebar choose Assignees → Copilot. In the assignment dialog, verify target repository `TenzoNkz/JEXFYZ-App` and starting branch `main`; the issue body already contains the full Agent Work Order. Once GitHub confirms assignment and a Copilot session / `copilot/*` branch or draft PR appears, return to CODE_FULL and continue live PR tracking/review. If Copilot is absent from the assignee options, Copilot plan entitlement or repository policy must be enabled by the account owner/administrator. Do not treat this issue creation as a started agent session. |
