@@ -3432,3 +3432,12 @@
 - **Step 14:** `Run Android unit-test gate` is IN_PROGRESS. This is the exact Gradle gate that failed in the previous attempt; the repair now limits missing-signing rejection to Release task graphs while this command is Debug-only. The live Jobs API shows no failure so far. Active job-log retrieval returned GitHub `BlobNotFound`; this is an availability limit, not an observed failure. Retrieve complete logs at/after terminal status.
 - **Steps 15–21:** obfuscated APK, V1/V2/V3 enforcement, signature/certificate validation, APK filename, source archive, Release publication and fresh downloaded-asset verification remain PENDING. Cleanup39–42 pending.
 - **Disposition:** IN_PROGRESS — continue only run `46062114759` / job `140718609861`; no duplicate trigger/retry.
+
+
+### BUILD #169 progress — Android unit-test gate PASSED; release APK build active — 2026-11-28 03:17 (Asia/Jakarta)
+
+- **Run/job/source:** run #170 / `46062114759` / job `140718609861` / SHA `67ff49fdb566a2fa7748e32e5207217c8e4b98b7`.
+- **Steps 1–14 now observed SUCCESS.** This includes step14 `Run Android unit-test gate`, which is the exact gate that failed in first attempt #168. The task-graph signing fix has therefore allowed Debug-only Android Gradle gate to complete without exposing production password/alias to this step.
+- **Step15** `Build latest release APK` is now IN_PROGRESS. Steps16–21 (V1/V2/V3 enforcement, APK signature/pinned cert verification, APK filename, matching source ZIP, Release publish and fresh downloaded asset verification) are still PENDING; cleanup39–42 pending.
+- **Evidence limitation:** active job logs still returned GitHub `BlobNotFound` while the job continues. Exact Android Gradle task outcome/duration/task counts and Flutter analyzer/test counts for this Build must be read from complete logs when available; do not infer from Validation Only #255.
+- **Disposition:** IN_PROGRESS — continue only run `46062114759` / job `140718609861`; no duplicate issue/retry.
