@@ -2,19 +2,17 @@
 
 Last reconciled: 2026-11-28 (Asia/Jakarta). Authority: MASTER_PROMPT.md.
 
-## Immediate next action — continue the Dashboard source ownership audit
+## Immediate next action — continue Dashboard ownership/content audit
 
-- Owner decision 2026-11-27: CODE_FULL is ChatGPT/Codex-only. ChatGPT/Codex authors and reviews scoped App changes directly on main using the connected GitHub integration. No Copilot assignments, external agents, feature branches or PR handoffs.
-- WP1 secure-storage failure characterization is complete. test/app_settings_store_test.dart adds seven test-only read/write/delete failure-injection tests alongside seven original normal-path tests. lib/app_settings.dart, production keys/defaults/schema, bootstrap and BLE/P1 sources remained unchanged. Issue #45 is closed with the exact-SHA result.
-- Validation Only #217 / run 46039843488 / job 140644469587 passed on WP1 SHA c11800e867bee2e8fb1426f865a28f2fb00cabf4: formatter 44/0, analyzer pass, 292/292 tests.
-- Floating Monitor persistence tests: test/floating_monitor_store_test.dart adds four schema-v2 load/save/read/write failure cases. Validation Only #220 / run 46041661617 / job 140650620968 passed on exact SHA 975ec00f06ed69563985e3bbb81b0cd02cebba23: formatter 45/0, analyzer pass, 296/296 tests.
-- Floating Bridge tests: test/floating_monitor_bridge_test.dart adds ten MethodChannel tests for overlay permission, permission settings, start/stop, config/telemetry payloads, runtime state and channel errors. Validation Only #223 / run 46042517291 / job 140653549455 passed on exact SHA 1cd1843a5fe0b635601b895276e15286919075fa: dependency resolution pass; formatter 46 files / 0 changed; analyzer pass (--no-fatal-infos, 129 info-level diagnostics, zero warnings/errors); full suite 306/306 PASS. https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/46042517291
-- Floating Monitor test coverage spans Flutter persistence and MethodChannel contracts. No production Flutter, Kotlin, MainActivity or FloatingMonitorService code changed for these tests. Actual Android keystore behavior, overlay permission UI, WindowManager/Canvas rendering, OEM background restrictions and service restart behavior remain unverified.
-- FloatingMonitorService uses the current non-sticky lifecycle; same-session automatic restart after unexpected service death remains a product decision in APP_PREBUILD_AUDIT.md. Do not invent retries/backoff/re-attach semantics until that decision is made.
-- WP0 file audit: lib/connection_scan_coordinator.dart and lib/connection_scan_state.dart reviewed KEEP / VERIFIED. lib/floating_monitor.dart remains UPGRADE APPROVED for safe modularization; existing Settings subpages are already separated. Continue complete lib/main.dart Dashboard ownership/content review.
-- Local Flutter/Dart/Gradle/ADB remain unavailable in this ChatGPT runtime; hosted Validation Only supplied Flutter test evidence. Android/Kotlin compilation, actual screenshots/OEM/device behavior, SQLite v1→v2 runtime fixture and 1h/6h/24h performance profile remain unverified. Whole-App visual status remains VISUAL NOT VERIFIED.
-- Latest published package remains Build #167 on immutable source 0dd96228d33b08c66e736ae91a8a6c3e5c3ddb81; current main is not packaged.
+- Workspace CODE_FULL. Owner-approved App-only WP0–WP10 rework and premium UI redesign; ChatGPT/Codex only, direct commits to main. No Copilot, external agents, feature branches or PR handoffs.
+- Last tested App source: `828c42c8c6d7ac17bab0e168ac6fbf063d5abcae`; Validation Only #247 / run `46056210434` / job `140699207905`, exact-SHA terminal SUCCESS: dependencies PASS, formatter 49/0, analyzer PASS (135 info diagnostics), **317/317 tests PASS**. https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/46056210434
+- Code tree at tested SHA: `dfacea99e0d04b38f6f8ebfd2b1ced63c50a95fd`; 171 entries / 125 blobs / 46 trees; `truncated=false`. File register now covers 125/125 unique paths.
+- WP5 lock menu extracted in commits `900740e1ad85ed71dd6e18780c5153799c12d37a`, `4e7e66b8bf1a78faff9dbfe1ecc92fbbd33a913a`, `2239405b9c616abdbc61d0aa27bc88fd6572c715`, `828c42c8c6d7ac17bab0e168ac6fbf063d5abcae`. New `dashboard_display_menu.dart` is stateless presentation and consumes Dashboard's guarded Connect callback. Dashboard retains sole BLE/GATT/P1/session/ACK/telemetry/command ownership.
+- Test failures #244–#246 were classified and corrected; no CI quality gate was weakened. #247 green on final exact source SHA.
+- WP1: `app_settings.dart` has prior full-file WP0 review and 353 EN/ID localization/placeholder audit; 14 AppSettings/KnownCoolerStore mock tests validated #217. Existing keys/defaults/schema unchanged. Real Android keystore remains unverified.
+- Next work: complete full `lib/main.dart` Dashboard state ownership, callers, side effects and test map; only then identify next bounded extraction. WP4 token classification, screen redesign, WP6–WP10 and actual visual/platform evidence remain open.
+- Local Flutter/Dart/Gradle/ADB unavailable. Android/Kotlin compilation, physical secure storage, overlay/OEM, actual screenshots, SQLite runtime migration and 1h/6h/24h profile NOT RUN. Whole-App visual status **VISUAL NOT VERIFIED**. Build #167 remains latest published App package; current main is not packaged.
 
 ## Protected scope
 
-No Build App/APK/sign/release, Firmware/BIN, BLE/P1 wire/security changes, OTA transport/trust/recovery, Firebase production, signing secrets, flashing or device operations.
+No Build App/APK/sign/release, Firmware/BIN, BLE/P1 wire/security, OTA transport/trust/recovery, Firebase production, signing secrets, flashing or physical device operation.

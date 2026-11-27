@@ -1,3 +1,15 @@
+## Current App source checkpoint — WP5 Dashboard lock-menu extraction / Validation Only #247 — 2026-11-28
+
+- Tested App source SHA `828c42c8c6d7ac17bab0e168ac6fbf063d5abcae`; source tree `dfacea99e0d04b38f6f8ebfd2b1ced63c50a95fd`; 171 entries /125 blobs /46 trees, `truncated=false`.
+- Validation Only #247 / run `46056210434` / job `140699207905`, exact SHA above, terminal SUCCESS: dependencies PASS; formatter **49 files / 0 changed**; analyzer PASS (135 info diagnostics under `--no-fatal-infos`); **317/317 Flutter tests PASS**.
+- `lib/dashboard_display_menu.dart` owns `DisplayMenuLockReason`, `displayMenuLockReason()` and the stateless submenu lock panel. `main.dart` supplies Dashboard-owned state, current language and its guarded `_showBluetoothMenu` callback. The icon module no longer owns lock policy.
+- Five new widget tests exercise disconnected input blocking/Connect callback/48-dp height, Adaptive lock copy, telemetry-confirmed 5V vs return copy, Lock Voltage’s Adaptive-disabled copy and Indonesian disconnected copy. Existing Dashboard/device-copy source contracts were migrated to the extracted presentation boundary.
+- Dashboard remains sole BLE/GATT/P1/session/ACK/telemetry/command owner. No UUID/framing/commands/SYNC, scanner, storage identity/schema, OTA, Firebase production, native service or release behavior changed.
+- Widget CI verifies Flutter presentation and callback semantics only; no Android/OEM screenshots, physical device, Kotlin service/WindowManager or visual acceptance was performed. Whole-App result remains **VISUAL NOT VERIFIED**.
+- Next: continue full Dashboard `main.dart` responsibility/caller/test audit and dependency-ordered WP0–WP10.
+
+---
+
 ## Current App source checkpoint — WP5 Dashboard tab transition / Validation Only #205 — 2026-11-27
 
 - **Current main:** `a2f4c4f467ece3bfd37981f8e9176a71d7419c28`; recursive tree 166 entries / 120 blobs / 46 trees, `truncated=false`.

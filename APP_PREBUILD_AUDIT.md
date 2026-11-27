@@ -1,4 +1,51 @@
-## Latest CODE_FULL checkpoint — WP8 Floating Monitor store/bridge tests; Validation Only #223 green — 2026-11-28
+## Latest CODE_FULL checkpoint — WP5 Dashboard lock menu / Validation Only #247 SUCCESS — 2026-11-28
+
+- Live App source SHA: `828c42c8c6d7ac17bab0e168ac6fbf063d5abcae`; validated by Validation Only #247 / run `46056210434` / job `140699207905`: locked dependencies PASS; formatter 49 files / 0 changed; analyzer PASS (135 info-level diagnostics under `--no-fatal-infos`); **317/317 Flutter tests PASS**; summary SUCCESS.
+- Code tree at tested SHA: `dfacea99e0d04b38f6f8ebfd2b1ced63c50a95fd`; 171 entries / 125 blobs / 46 trees, `truncated=false`. The register now contains 125/125 unique live path rows.
+- WP5: lock reason policy and stateless renderer moved from Dashboard/icon code into `lib/dashboard_display_menu.dart`. Dashboard still supplies current status and existing guarded Connect callback and remains the one BLE/GATT/P1/session/ACK/telemetry/command owner.
+- Commits: `900740e1ad85ed71dd6e18780c5153799c12d37a` (extraction), `4e7e66b8bf1a78faff9dbfe1ecc92fbbd33a913a` (integration-test migration/formatting), `2239405b9c616abdbc61d0aa27bc88fd6572c715` (remove formatter transcript artifact), `828c42c8c6d7ac17bab0e168ac6fbf063d5abcae` (pointer-block test correction).
+- Visual acceptance remains **VISUAL NOT VERIFIED**. Android/Kotlin, APK/App Build, Android/OEM screenshots, device behavior, SQLite runtime migration and 1h/6h/24h profiling were NOT RUN. No protected operation occurred.
+
+
+## Owner-requested full App rework + premium UI redesign — 2026-11-26
+
+**Authorization and execution mode.** The owner authorizes incremental App-only source, test, documentation, configuration and static-audit work in CODE_FULL through WP0–WP10. ChatGPT/Codex is the sole author and reviewer; changes are committed directly to `main` after exact HEAD/blob preflight and complete diff review. Each package requires appropriate focused/full checks and Validation Only evidence on the exact SHA before dependent work proceeds. This is not a big-bang rewrite and is not Build App authorization.
+
+### Architecture and ownership invariants
+
+- Progress from the oversized Dashboard/entry source toward explicit App bootstrap/root, shared semantic design system, pure device-session/P1 contracts, feature-screen presentation and persistence boundaries. Move one coherent responsibility at a time after inspecting all callers, state mutation, side effects and tests.
+- `DashboardScreen` remains the single BLE/GATT/P1/session/ACK/telemetry/command authority. Preserve P1 UUIDs, frame boundaries, command vocabulary, SYNC/SYNC_READY gates, serialized writes, scanner ownership/generation invalidation, reconnect/disposal and the distinction between command ACK and telemetry-confirmed physical state.
+- Extracted presentation receives immutable values and existing guarded callbacks. It must not initiate radio work, send P1 writes, infer hardware state from ACK, persist device state or create a second BLE owner.
+- Native `FloatingMonitorService` Canvas/WindowManager is a separate renderer, not a Flutter widget tree or BLE owner. Same-session recovery after unexpected native service death remains a product decision; do not add retries/backoff/reattach policy before the owner decides.
+
+### WP0–WP10 dependency order
+
+1. **WP0 — Live baseline and file disposition.** Reconcile status, current main HEAD, full recursive tree and `truncated`; compare every tracked path with the register; record current behavior/test baseline; independently review formatter-touched Dart files; distinguish source review, test execution and visual evidence.
+2. **WP1 — App preferences and persistence.** Preserve AppSettings/KnownCooler/FloatingStore keys, defaults, JSON/schema and error semantics. Add failure-injection tests only to characterize existing behavior. No app/storage identity or schema migration without an explicit migration decision.
+3. **WP2 — Bootstrap, app root and Settings presentation.** Preserve official-build gate, ordered startup, Firebase best-effort/App Check sequencing, orientation and root launch. Settings extraction is presentation/navigation only; preference writes continue through canonical stores.
+4. **WP3 — Device-session and P1 boundaries.** Keep BLE radio/GATT/session in Dashboard. Pure frame decoder, command classification and ACK-waiter lifecycle must remain transport-free. ACK is never physical-state proof.
+5. **WP4 — Semantic design system.** Build on existing JE X FYZ brand, approved artwork/assets, Phosphor family, palette and typography. Define semantic surface/foreground/outline/accent/status roles, type, spacing, shape and control geometry. Share tokens by proven component role, not similar numeric sizes.
+6. **WP5 — Dashboard feature presentation.** Refine Home, Voltage, Control, Adaptive, LED and Temperature independently while preserving each task identity, seven Home metric rows, approved cooler hero/artwork, 360-dp composition and DPI/fixed-canvas scaling. Extract presentation-only widgets only when geometry, semantics and callback ownership are genuinely common.
+7. **WP6 — Connection, Settings and transient UI.** Refine Bluetooth Connection, Settings/subpages, dialogs/sheets and Floating Monitor configuration. Preserve permission/state/error precedence, scan ownership, focus and screen-reader semantics. New/changed controls target 48×48 dp; documented Connection controls remain at 40–42 dp and must not shrink.
+8. **WP7 — Usage Statistics.** Preserve schema v2 and v1→v2 migration, 30-day retention, raw 1-Hz samples, session/timestamp semantics, HOT-only freshness, explicit null gaps, gap-safe decimation and bounded 64+8+1 queue. Profile 1h/6h/24h before optimization; no raw history to Firebase.
+9. **WP8 — Floating Monitor boundary.** Separate configuration/persistence, Dart bridge/state projection and stateless Flutter presentation from native Canvas/WindowManager through value/method contracts. Native service lifecycle recovery remains frozen pending a product decision.
+10. **WP9 — Visual/regression evidence.** Exercise relevant 350/420-dp widths and narrow supported widths, portrait/constrained height, EN/ID, Light/Dark, connected/disconnected/error/locked, enlarged text/accessibility and reduced motion. Widget/golden/CI evidence is not Android/OEM screenshot evidence. No VISUAL PASS without real rendered evidence.
+11. **WP10 — Final closure.** Reconcile all live file dispositions, comments, formatter deltas, tests, full diffs, commits, exact-SHA Validation Only, residual risks, platform evidence and durable handoff.
+
+### Design direction and protected scope
+
+- **Quiet Luxury / Precision Instrument:** hierarchy, typography, proportion, spacing, tactile controls and restrained purposeful motion; no generic dashboard/card templates, decorative glow/gradient stacks or default visual effects.
+- Preserve brand, fonts, assets, palette semantics, approved Home composition, seven metric rows, 360-dp canvas and scaling formula. Composition/token change requires recorded evidence, alternatives and accessibility/localization impact.
+- Preserve English/Indonesian, semantic Light/Dark behavior, meaningful contrast, focus and screen-reader semantics. No new state-management/navigation/animation package without a separate compatibility/value case.
+- Excluded: Build App/APK/sign/release/tag/asset operation, Firmware/BIN, P1 wire change, BLE identity/security implementation, OTA transport/certificate/image-authentication/recovery, Firebase production/backend mutation, signing secrets/keystores, flashing and physical device operation. Firmware Update UI is presentation-only. Functional Firmware editing requires a separate explicit Firmware-source scope and safety skill.
+
+### Current checkpoint
+
+WP5 Dashboard lock-menu presentation is extracted and verified by Validation Only #247 on exact SHA `828c42c8c6d7ac17bab0e168ac6fbf063d5abcae`. Full Dashboard `main.dart` content/ownership audit, remaining WPs, screenshot evidence and final closure remain open. `DESIGN_NOTES.md` → “Full App visual redesign brief — owner request 2026-11-26” is the detailed screen-design authority.
+
+---
+
+## HISTORICAL — CODE_FULL checkpoint after Validation Only #223 (superseded by #247)
 
 - Latest validated App test source: `1cd1843a5fe0b635601b895276e15286919075fa`; recursive main tree 168 entries / 122 blobs / 46 trees, `truncated=false`; path inventory completeness remains distinct from content/architecture review.
 - Validation Only #223: run `46042517291` / job `140653549455`, exact test source SHA `1cd1843a5fe0b635601b895276e15286919075fa`, terminal SUCCESS — dependencies PASS; formatter **46 files / 0 changed**; analyzer PASS (`--no-fatal-infos`, 129 info-level diagnostics, zero warnings/errors); full Flutter suite **306/306 PASS**. FloatingStore storage-only tests were previously green on #220 / run `46041661617`, exact SHA `975ec00f06ed69563985e3bbb81b0cd02cebba23`.
