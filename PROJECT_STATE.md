@@ -1,23 +1,25 @@
 # JE X FYZ / JE Cooler — Current Project State
 
-Last reconciled: 2026-11-28 (Asia/Jakarta). Authority: MASTER_PROMPT.md.
+Last reconciled: 2026-11-28T06:13:22+07:00 (Asia/Jakarta). Authority: MASTER_PROMPT.md.
 
 ## Active workspace — CODE_FULL / IN_PROGRESS
 
 - Owner command: “@Thinking Eksekusi Code!” — continue owner-approved App-only WP0–WP10 full rework and premium UI redesign; ChatGPT/Codex alone authors/reviews, direct main commits only. No branch, PR, Copilot or external agent.
-- Canonical repository TenzoNkz/JEXFYZ-App / main. Current source/test commit f322b675aec6c46170d9be9f9dcb8e7f82460418; WP5 production source fix 8b882350d6a3f0af480145110cbb72ef6a81eef5; test recovery commits 1f073f1d3eae067d91b4dc6611a0e3d445892997, 0cf3050b7152f3c4c8720a9290d36217301b2f1c, f322b675aec6c46170d9be9f9dcb8e7f82460418. Validation Only #279 / run 46078817188 / job 140772751134 terminal SUCCESS: dependencies PASS; formatter 55/0; analyzer 140 info, 0 warnings/errors; 349/349 tests PASS.
+- Canonical repository TenzoNkz/JEXFYZ-App / main. Current validated source/test commit 8aa5ee52ea18457571dfa6e3f20490cb57e387f5. Validation Only #287 / run 46080960310 / job 140779569426 terminal SUCCESS on this exact SHA: dependencies PASS; formatter 55/0; analyzer 143 info, zero warnings/errors; 353/353 tests PASS.
 - Live tree: 177 recursive entries / 131 tracked blobs, truncated=false; REPOSITORY_UPGRADE_PLAN.md has 131 unique dispositions covering every live tracked path exactly once.
 - WP0 lib/main.dart full static ownership audit completed at blob c2821452079e798bfaaac99acb82af1f6e127c86 (4,567 lines). Dashboard remains sole BLE/GATT/P1/frame/SYNC/SYNC_READY/ACK/telemetry/session/serialized-command owner; scanner generations, manual/passive arbitration, reconnect/disposal, atomic sync and ACK vs telemetry-confirmed state reviewed. OTA/Firebase source protected and unchanged; architectural decomposition remains open.
 - WP4 shared switch-row slice accepted and CI-verified: JexDashboardSwitchRow is value/callback-only; Dashboard continues to own state and command routing. Eleven component-specific tokens preserve rendered values. Widget test covers actual/min row geometry, icon/type, Tristate semantics, accessible action and callback. Validation Only #274 includes 347/347.
 - WP5 Temperature affordance fix: 5V increase and 12V decrease controls match the existing 2°C setter guard. Three widget tests cover six EN/ID labels, 48-dp targets, 360/420-dp viewports, Light/Dark, hard endpoints and the 29/31°C cross-zone boundary; the harness settles the 210-ms transition before viewport changes. #279 verifies 349/349.
-- Recovery history #270–#273 and root causes are in the bounded CHAT_TRANSFER.md checkpoint; all repaired, and final #274 run passes.
-- Existing test/widget_test.dart source fragments are lexical, not AST/comment-aware; broader brittleness review remains open. Usage Statistics static review covers schema v2/migration, retention, session/HOT/null/gap/decimation/queue contracts; SQLite runtime migration fixture and 1h/6h/24h profiles NOT RUN.
+- Validation recovery history #275–#286 is retained in CHAT_TRANSFER.md and APP_PREBUILD_AUDIT.md; formatter-only failures and the one stale callback assertion were repaired without weakening tests. Final #287 validates the exact canonical formatted source/test SHA.
+- WP5 Home/Navigation: Home's 350/420-dp × EN/ID × Light/Default/Dark matrix, metric/header labels and 48-dp header targets pass; Home state motion now uses shared 210-ms normal / 90-ms reduced-motion tokens. Five Dashboard tabs expose localized selected-button semantics and pass EN 350-dp Light / ID 420-dp Dark runtime state/tap tests. Validation Only #287 passes 353/353.
 - Local Flutter/Dart/Gradle/ADB unavailable: local checks BLOCKED / NOT RUN. Hosted CI only; no Android/Kotlin build, device or Android/OEM screenshot. Whole-App visual status VISUAL NOT VERIFIED.
 - Protected exclusions remain: no App Build/APK/release/signing, Firmware/BIN, P1 wire/security, OTA transport/recovery, Firebase production, flashing or device operation.
 
 ## Next action
 
-Start a bounded WP5 Home presentation/static-layout review; inspect the current Home layout/copy contract and existing tests before any code change.
+- Continue WP5 with bounded Control/Adaptive/LED screen-level accessibility and regression work. Preserve Dashboard command/session ownership and supported LED mode/phase semantics.
+- Keep actual Android/OEM visual acceptance marked VISUAL NOT VERIFIED until rendered screenshot evidence exists.
+- Finish WP0–WP10 subject audits and final repository/test/static closure only after every required gate is evidenced.
 ## Historical operation — Build App #170 / COMPLETED SUCCESS
 
 - Workspace: BUILD_APP. Explicit owner command “@Thinking Eksekusi Build App!” has been completed.
