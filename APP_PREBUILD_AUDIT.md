@@ -1,12 +1,12 @@
-## Latest CODE_FULL checkpoint — WP3 P1 pre-session write gate / Validation Only #258 SUCCESS — 2026-11-28
+## Latest CODE_FULL checkpoint — WP3 P1 command + telemetry contracts / Validation Only #261 SUCCESS — 2026-11-28
 
-- Current live `main` HEAD: `437e8cab350f98d8b3693aa4e53430e01e24aa2b`. The latest App source/test commit is `29fff74a9f95658be47369ce0c86013ab40fddbc`; the current HEAD advancement changes only `00_WORK_STATUS.md`. Recursive tree: 172 entries / 126 blobs / 46 trees, `truncated=false`.
-- Validation Only #258 / run `46066693702` / job `140733610643`, exact App source SHA `29fff74a9f95658be47369ce0c86013ab40fddbc`, terminal SUCCESS. Locked dependencies PASS; Dart formatter 50 files / 0 changed; analyzer 139 info-level diagnostics, zero warnings/errors; Flutter suite **330/330 PASS**; summary SUCCESS.
-- WP3 batch: commit `3c49ceb86cfa168aca1444cd1c9e5a218891955d` moved the existing pre-session write eligibility rule to a pure `P1CommandContract.canSendCommand` helper. It requires the existing BLE-ready and RX-characteristic facts; before session-ready only normalized `SYNC` / `SYNC_READY` pass. After session-ready, the old permissive command acceptance remains unchanged. Dashboard retains all GATT, queue, ACK, telemetry and session ownership. No protocol/UUID/framing/command-wire change.
-- Formatter follow-up: `d0b1e63b28d073c720d7860fda6c7a5aa8c7bd65` still failed the read-only formatter gate; commit `29fff74a` applied the runner's exact canonical formatting. #258 then passed with 330/330 tests.
-- WP0 source review now covers Dashboard Home/Temperature/Control/Adaptive/LED/shared controls/lock menu, Settings pages, App bootstrap/preferences, Floating Monitor Flutter config/bridge/runtime, selected Usage Statistics data/queue/freshness logic, and selected regression tests. The file register has a missing live path `test/home_notify_ota_copy_test.dart`; add it to bring coverage to 126/126.
-- Still open: complete Dashboard `main.dart` owner/content audit; full `test/widget_test.dart` body review; complete Usage Statistics content and 1h/6h/24h profiles; cross-route token role classification; remaining WP5/WP6/WP8/WP9 visual/integration evidence; WP10 final file/diff/governance closure.
-- Evidence boundary: local Flutter/Dart/Gradle/ADB unavailable, so local checks are BLOCKED / NOT RUN. Hosted Flutter validation above is executed CI. No Android/Kotlin build, APK/App Build, real Android/OEM screenshot, device/BLE operation, SQLite v1→v2 runtime fixture or 1h/6h/24h profile. Whole-App visual status **VISUAL NOT VERIFIED**. No protected operation occurred.
+- Live `main` HEAD: `8e52584c5cdabbd3df52cadb2f6da137e6098e9b` (docs-only status update). Latest App source/test SHA: `fa2dcb976395fade0eb0034db5a83b0f12fe4ed6`; recursive tree 174 entries / 128 blobs / 46 trees, `truncated=false`.
+- Validation Only #261 / run `46068234248` / job `140738636516`, exact source SHA `fa2dcb976395fade0eb0034db5a83b0f12fe4ed6`, terminal SUCCESS: dependencies PASS; formatter 52 files / 0 changed; analyzer 139 info-level diagnostics, zero warnings/errors; Flutter tests **336/336 PASS**; summary SUCCESS.
+- #260 failed only the read-only formatter on the new P1 telemetry test; dependency resolution, analyzer and all 336 tests succeeded. The owner applied canonical formatting in `fa2dcb9` without changing assertions; #261 then passed.
+- WP3 command gate: battery heartbeat now waits for BLE ready, RX present and P1 session ready. WP3 telemetry parser: pure first-colon key/value extraction preserves existing trimming/case/delimiter semantics; ACK routing and SYNC/live telemetry commit remain Dashboard-owned. No UUID, frame-boundary, command-payload, ACK or Firmware behavior changed.
+- WP0 register correction: 128 live blobs are covered by 128 unique dispositions in `REPOSITORY_UPGRADE_PLAN.md`; new telemetry parser source/test rows were added. Home OTA/reset copy suite is nine tests.
+- `lib/usage_statistics.dart` static audit now covers schema-v2/v1→v2 migration structure, retention, session, HOT freshness, null gaps, decimation, bounded queue and charts. Runtime fixture and 1h/6h/24h profiles remain NOT RUN. `test/widget_test.dart` has 117 cases (14 widget + 103 regular), 84 file reads over 45 test bodies; broader source-contract brittleness review remains open.
+- Evidence limits: Flutter/Dart/Gradle/ADB unavailable locally, so local checks BLOCKED / NOT RUN. No Android/Kotlin build, screenshots, OEM/device tests or visual pass. Whole-App visual status **VISUAL NOT VERIFIED**. No Build App/APK/release or protected Firmware/BIN/P1 wire/OTA/Firebase/signing/device operation.
 
 ## Owner-requested full App rework + premium UI redesign — 2026-11-26
 
@@ -42,7 +42,7 @@
 
 ### Current checkpoint
 
-WP5 Dashboard lock-menu presentation is extracted and verified by Validation Only #247 on exact SHA `828c42c8c6d7ac17bab0e168ac6fbf063d5abcae`. Full Dashboard `main.dart` content/ownership audit, remaining WPs, screenshot evidence and final closure remain open. `DESIGN_NOTES.md` → “Full App visual redesign brief — owner request 2026-11-26” is the detailed screen-design authority.
+The Dashboard lock-menu extraction remains verified by its historical exact-SHA Validation Only #247. Current WP3 source adds the session-ready heartbeat gate and pure telemetry-line parser, verified together by Validation Only #261 on `fa2dcb976395fade0eb0034db5a83b0f12fe4ed6` (336/336 tests). Dashboard remains the sole BLE/GATT/P1/session/ACK/telemetry/command owner. The live register now covers 128/128 blobs with unique dispositions. Usage Statistics static source review is complete; 1h/6h/24h profiles, migration runtime fixture, screen screenshots, Android/OEM/device evidence and whole-App visual acceptance remain NOT RUN / VISUAL NOT VERIFIED. `DESIGN_NOTES.md` → “Full App visual redesign brief — owner request 2026-11-26” remains the design authority.
 
 ---
 
