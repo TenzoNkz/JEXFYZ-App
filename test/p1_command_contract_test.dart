@@ -145,46 +145,43 @@ void main() {
       },
     );
 
-    test(
-      'uses no-response only when supported and allowed by the command contract',
-      () {
-        expect(
-          P1CommandContract.usesWriteWithoutResponse(
-            'PHONE:BT=35',
-            supportsWriteWithoutResponse: true,
-          ),
-          isFalse,
-        );
-        expect(
-          P1CommandContract.usesWriteWithoutResponse(
-            'SYNC',
-            supportsWriteWithoutResponse: true,
-          ),
-          isFalse,
-        );
-        expect(
-          P1CommandContract.usesWriteWithoutResponse(
-            'FAN:ON',
-            supportsWriteWithoutResponse: true,
-          ),
-          isFalse,
-        );
-        expect(
-          P1CommandContract.usesWriteWithoutResponse(
-            'MODE:2',
-            supportsWriteWithoutResponse: true,
-          ),
-          isTrue,
-        );
-        expect(
-          P1CommandContract.usesWriteWithoutResponse(
-            'MODE:2',
-            supportsWriteWithoutResponse: false,
-          ),
-          isFalse,
-        );
-      },
-    );
+    test('uses no-response only when supported and allowed by the command contract', () {
+      expect(
+        P1CommandContract.usesWriteWithoutResponse(
+          'PHONE:BT=35',
+          supportsWriteWithoutResponse: true,
+        ),
+        isFalse,
+      );
+      expect(
+        P1CommandContract.usesWriteWithoutResponse(
+          'SYNC',
+          supportsWriteWithoutResponse: true,
+        ),
+        isFalse,
+      );
+      expect(
+        P1CommandContract.usesWriteWithoutResponse(
+          'FAN:ON',
+          supportsWriteWithoutResponse: true,
+        ),
+        isFalse,
+      );
+      expect(
+        P1CommandContract.usesWriteWithoutResponse(
+          'MODE:2',
+          supportsWriteWithoutResponse: true,
+        ),
+        isTrue,
+      );
+      expect(
+        P1CommandContract.usesWriteWithoutResponse(
+          'MODE:2',
+          supportsWriteWithoutResponse: false,
+        ),
+        isFalse,
+      );
+    });
 
     test('Dashboard and heartbeat writes use the shared GATT write policy', () {
       final mainSource = File('lib/main.dart').readAsStringSync();
@@ -192,7 +189,7 @@ void main() {
         containsDartFragment(
           mainSource,
           'P1CommandContract.usesWriteWithoutResponse(command, '
-          'supportsWriteWithoutResponse: rx!.properties.writeWithoutResponse)',
+          'supportsWriteWithoutResponse: rx!.properties.writeWithoutResponse,)',
         ),
         isTrue,
       );
@@ -200,7 +197,7 @@ void main() {
         containsDartFragment(
           mainSource,
           'P1CommandContract.usesWriteWithoutResponse(pending, '
-          'supportsWriteWithoutResponse: rx!.properties.writeWithoutResponse)',
+          'supportsWriteWithoutResponse: rx!.properties.writeWithoutResponse,)',
         ),
         isTrue,
       );

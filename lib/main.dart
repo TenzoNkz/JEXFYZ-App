@@ -1956,9 +1956,6 @@ class _DashboardScreenState extends State<DashboardScreen>
     return predicate();
   }
 
-  bool _requiresResponse(String command) =>
-      P1CommandContract.requiresResponse(command);
-
   // AI-METHOD: _parseIncoming — Dispatch decoded P1 frames to Dashboard-owned ACK and telemetry state.
   void _parseIncoming(String incoming) {
     for (final event in _p1FrameDecoder.addChunk(incoming)) {

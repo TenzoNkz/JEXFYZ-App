@@ -94,8 +94,7 @@ abstract final class P1CommandContract {
   static bool usesWriteWithoutResponse(
     String command, {
     required bool supportsWriteWithoutResponse,
-  }) =>
-      supportsWriteWithoutResponse && !requiresResponse(command);
+  }) => supportsWriteWithoutResponse && !requiresResponse(command);
 
   /// Success vocabulary is compared against the normalized reason parsed by Dashboard.
   static bool isAckSuccessReason(String reason) =>
