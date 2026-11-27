@@ -1,23 +1,21 @@
 # JE X FYZ / JE Cooler — Documentation Map & Retention Policy
 
-## Reconciliation — 2026-11-28 — WP3 command gate + telemetry parser / Validation Only #261
+## Reconciliation — 2026-11-28 — WP4 semantic canvas / Validation Only #267 SUCCESS
 
-- Live `main` HEAD: `7b618eff062914c83f5566791263f2be89de3965` (documentation-only handover update). Exact App source/test SHA `fa2dcb976395fade0eb0034db5a83b0f12fe4ed6`; tree 174 entries / 128 blobs / 46 trees, `truncated=false`.
-- Validation Only #261 / run `46068234248` / job `140738636516`, exact source SHA above, terminal SUCCESS: dependencies PASS; formatter 52 files / 0 changed; analyzer 139 info-level diagnostics and zero warnings/errors; **336/336 Flutter tests PASS**. #260 failed only the read-only formatter on one test file; owner commit `fa2dcb9` applied canonical formatting without assertion changes; #261 passed.
-- WP3 command gate commit `fa8a74a` ensures queued battery heartbeat waits for BLE/RX/P1 session readiness. Pure telemetry parser commit `9e74fe9` extracts existing first-colon key/value parsing; ACK routing and telemetry/session mutation remain Dashboard-owned.
-- `REPOSITORY_UPGRADE_PLAN.md` now reconciles 128 unique dispositions to 128 live blob paths. Added separate rows for `lib/p1_telemetry_contract.dart` and `test/p1_telemetry_contract_test.dart`; Home OTA/reset presentation suite corrected to nine tests.
-- `lib/usage_statistics.dart` static source audit covers schema-v2/v1→v2 migration structure, retention, session semantics, HOT-only freshness, null gaps, decimation, bounded queue and chart code. Runtime SQLite fixture and 1h/6h/24h profiles remain NOT RUN. `test/widget_test.dart`: 117 tests, 84 source reads in 45 test bodies; architectural assertion brittleness review remains open.
-- Local Flutter/Dart/Gradle/ADB unavailable; local checks BLOCKED / NOT RUN. No Android build/screenshot/device evidence; whole-App visual status VISUAL NOT VERIFIED. Build App and protected scopes remain excluded.
+- Canonical repository TenzoNkz/JEXFYZ-App / main; tested App source/test SHA f69bc4915f946c7e1dfca1c545ded6e102eea3e7. Latest verified path inventory: 175 recursive entries / 129 blobs / 46 tree nodes, truncated=false; register covers 129/129 tracked blob paths. Twelve skill metadata rows are not repository paths.
+- Validation Only #267 / run 46070875101 / job 140747239194, exact SHA above, terminal SUCCESS: locked dependencies PASS; formatter 53 files / 0 changed; analyzer 139 info-level diagnostics, zero warnings/errors; Flutter suite 340/340 PASS.
+- WP4 fix commit 1a004c08fee6d39ec2d7e0eca9534277e39d67fc maps jexCanvas to ThemeData.scaffoldBackgroundColor, makes JexSemanticColors.from accept ThemeData, migrates the compact theme and Settings factory callsites, and tests distinct canvas/surface with custom ThemeData and Default/Light/Dark presets. Formatter-only follow-up f69bc4915f946c7e1dfca1c545ded6e102eea3e7 applies the exact CI canonical format.
+- No palette HEX, Home composition, 360×420 geometry, touch dimensions, status colors, preference/storage schema, BLE/P1 ownership/wire or native Floating Monitor renderer changed. No production semantic.canvas consumer was found; no pixel change is claimed.
+- WP3: battery heartbeat uses BLE/RX/P1-session eligibility; pure telemetry-row parser is extracted. Dashboard retains BLE/GATT/P1/frame/SYNC/SYNC_READY/ACK/session/telemetry/command authority.
+- Test review: widget_test.dart contains 117 top-level test bodies (14 widget +103 regular), 84 source reads across 45 bodies and 10 whitespace-only containsDartFragment calls. These are structural checks, not AST-aware behavioral proofs; broader false-positive review remains open.
+- Usage Statistics static audit covers schema v2, v1→v2 migration design, 30-day retention, timestamp/session semantics, HOT-only freshness, explicit null gaps, gap-safe decimation and 64+8+1 bounded queue. Runtime SQLite migration fixture and 1h/6h/24h profile NOT RUN.
+- Local Flutter/Dart/Gradle/ADB are absent; local formatter/analyzer/test/Gradle checks BLOCKED / NOT RUN. No Android/Kotlin build, screenshots, OEM/device validation, runtime DB fixture or performance profile. Whole-App visual remains VISUAL NOT VERIFIED. Protected App Build/Firmware/BIN/P1-wire/security/OTA/Firebase-production/signing/device scopes remain excluded.
+- Next: complete WP4 role-based typography/spacing/shape classification, then continue bounded WP5–WP9 presentation work and WP10 closure.
 
-## Reconciliation — 2026-11-28 — WP5 Dashboard lock menu / Validation Only #247
+## Historical checkpoint — WP3 command gate + telemetry parser / Validation Only #261 SUCCESS
 
-- Last tested App source SHA: `828c42c8c6d7ac17bab0e168ac6fbf063d5abcae`; code root tree `dfacea99e0d04b38f6f8ebfd2b1ced63c50a95fd`; 171 entries / 125 blobs / 46 trees; `truncated=false`. `REPOSITORY_UPGRADE_PLAN.md` now covers 125/125 unique live blobs.
-- Validation Only #247 / run `46056210434` / job `140699207905`, exact SHA `828c42c8c6d7ac17bab0e168ac6fbf063d5abcae`, terminal SUCCESS: locked dependencies PASS; formatter 49/0; analyzer PASS (135 info diagnostics); **317/317 Flutter tests PASS**.
-- WP5 added `lib/dashboard_display_menu.dart`, stateless lock policy and overlay presentation. Dashboard supplies current values and its guarded Connect callback and remains the sole BLE/GATT/P1/session/ACK/telemetry/command authority. Five widget tests cover disconnected/Adaptive/Lock Voltage copy, pointer blocking, callback/48-dp target and Indonesian copy.
-- Implementation sequence: `900740e1ad85ed71dd6e18780c5153799c12d37a`, `4e7e66b8bf1a78faff9dbfe1ecc92fbbd33a913a`, `2239405b9c616abdbc61d0aa27bc88fd6572c715`, `828c42c8c6d7ac17bab0e168ac6fbf063d5abcae`. All changed files were read back and the complete diff reviewed.
-- `lib/app_settings.dart` WP0 full-file review, 353 EN/ID locale keys and placeholder parity are already recorded KEEP/VERIFIED; 14 AppSettings/KnownCoolerStore mock tests pass (#217). Preference/identity keys/defaults/schema unchanged; actual Android keystore unverified.
-- Open: full Dashboard/main.dart ownership/content review; WP4 token role classification; screen-by-screen refinement/actual screenshot acceptance; WP6 Connection/Settings/dialogs; WP7 Usage Statistics; WP8 Floating Monitor/native lifecycle; WP9 visual/integration/platform evidence; WP10 final closure.
-- Evidence boundaries: no local Flutter/Dart/Gradle/ADB; Android/Kotlin build, secure storage/device, native overlay/WindowManager, Android/OEM screenshots, SQLite runtime migration, 1h/6h/24h profile NOT RUN. Whole-App visual result VISUAL NOT VERIFIED; Build #167 remains latest published package on immutable source `0dd96228d33b08c66e736ae91a8a6c3e5c3ddb81`. Build App and protected Firmware/BIN/P1 wire/security/OTA/Firebase/signing/device scopes remain excluded.
+- Validation Only #261 / run 46068234248 / exact source SHA fa2dcb976395fade0eb0034db5a83b0f12fe4ed6, terminal SUCCESS: dependencies PASS; analyzer 139 info, zero warnings/errors; 336/336 tests PASS.
+- WP3 heartbeat readiness gate and pure telemetry parser are detailed below in the archived per-session context.
 
 ## Authority order
 
