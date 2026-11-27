@@ -606,9 +606,8 @@ void main() {
     'App waits for voltage telemetry and marks disconnected outputs unknown',
     () {
       final source = File('lib/main.dart').readAsStringSync();
-      final componentSource = File(
-        'lib/dashboard_control_components.dart',
-      ).readAsStringSync();
+      final componentSource = File('lib/dashboard_control_components.dart')
+          .readAsStringSync();
       final commandContract = File('lib/p1_command_contract.dart')
           .readAsStringSync();
       expect(
