@@ -3,8 +3,8 @@ import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import '../lib/app_settings.dart';
-import '../lib/floating_monitor.dart';
+import 'package:jexfyz_cooler/app_settings.dart';
+import 'package:jexfyz_cooler/floating_monitor.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -59,52 +59,50 @@ void main() {
   test(
     'start forwards config and the latest localized telemetry snapshot',
     () async {
-    appLanguageNotifier.value = AppLanguage.indonesia;
-    const config = FloatingConfig(
-      enabled: true,
-      order: <String>['F', 'B', 'H', 'V', 'A', 'P'],
-      selected: <String>{'F', 'B'},
-      size: 0.75,
-      opacity: 0.65,
-      horizontal: false,
-    );
-    const telemetry = FloatingTelemetry(
-      battery: '45.8',
-      hotside: '52.0',
-      voltage: '12.0',
-      fanOn: true,
-      speed: 80,
-      adaptiveOn: true,
-      peltierOn: true,
-      connected: true,
-    );
-    messenger.setMockMethodCallHandler(channel, (call) async {
-      expect(call.method, 'startFloatingMonitor');
-      final payload = jsonDecode(call.arguments as String) as Map;
-      expect(payload['enabled'], isTrue);
-      expect(payload['metricSchemaVersion'], FloatingMetric.schemaVersion);
-      expect(payload['order'], config.order);
-      expect((payload['selected'] as List).toSet(), config.selected);
-      expect(payload['size'], 0.75);
-      expect(payload['opacity'], 0.65);
-      expect(payload['horizontal'], isFalse);
-      expect(payload['battery'], '45.8');
-      expect(payload['hotside'], '52.0');
-      expect(payload['voltage'], '12.0');
-      expect(payload['fanOn'], isTrue);
-      expect(payload['speed'], 80);
-      expect(payload['adaptiveOn'], isTrue);
-      expect(payload['peltierOn'], isTrue);
-      expect(payload['connected'], isTrue);
-      expect(payload['language'], 'indonesia');
-      return true;
-    });
+      appLanguageNotifier.value = AppLanguage.indonesia;
+      const config = FloatingConfig(
+        enabled: true,
+        order: <String>['F', 'B', 'H', 'V', 'A', 'P'],
+        selected: <String>{'F', 'B'},
+        size: 0.75,
+        opacity: 0.65,
+        horizontal: false,
+      );
+      const telemetry = FloatingTelemetry(
+        battery: '45.8',
+        hotside: '52.0',
+        voltage: '12.0',
+        fanOn: true,
+        speed: 80,
+        adaptiveOn: true,
+        peltierOn: true,
+        connected: true,
+      );
+      messenger.setMockMethodCallHandler(channel, (call) async {
+        expect(call.method, 'startFloatingMonitor');
+        final payload = jsonDecode(call.arguments as String) as Map;
+        expect(payload['enabled'], isTrue);
+        expect(payload['metricSchemaVersion'], FloatingMetric.schemaVersion);
+        expect(payload['order'], config.order);
+        expect((payload['selected'] as List).toSet(), config.selected);
+        expect(payload['size'], 0.75);
+        expect(payload['opacity'], 0.65);
+        expect(payload['horizontal'], isFalse);
+        expect(payload['battery'], '45.8');
+        expect(payload['hotside'], '52.0');
+        expect(payload['voltage'], '12.0');
+        expect(payload['fanOn'], isTrue);
+        expect(payload['speed'], 80);
+        expect(payload['adaptiveOn'], isTrue);
+        expect(payload['peltierOn'], isTrue);
+        expect(payload['connected'], isTrue);
+        expect(payload['language'], 'indonesia');
+        return true;
+      });
 
-    expect(
-      await FloatingBridge.start(config, telemetry: telemetry),
-      isTrue,
-    );
-  });
+      expect(await FloatingBridge.start(config, telemetry: telemetry), isTrue);
+    },
+  );
 
   test('start reports false when the native method channel fails', () async {
     messenger.setMockMethodCallHandler(channel, (call) async {
@@ -117,67 +115,72 @@ void main() {
   test(
     'stop invokes the native service stop command and contains errors',
     () async {
-    var calls = 0;
-    messenger.setMockMethodCallHandler(channel, (call) async {
-      expect(call.method, 'stopFloatingMonitor');
-      calls++;
-      if (calls == 2) throw PlatformException(code: 'stop_failed');
-      return true;
-    });
+      var calls = 0;
+      messenger.setMockMethodCallHandler(channel, (call) async {
+        expect(call.method, 'stopFloatingMonitor');
+        calls++;
+        if (calls == 2) throw PlatformException(code: 'stop_failed');
+        return true;
+      });
 
-    await expectLater(FloatingBridge.stop(), completes);
-    await expectLater(FloatingBridge.stop(), completes);
-    expect(calls, 2);
-  });
+      await expectLater(FloatingBridge.stop(), completes);
+      await expectLater(FloatingBridge.stop(), completes);
+      expect(calls, 2);
+    },
+  );
 
   test(
     'updateConfig forwards the versioned presentation configuration',
     () async {
-    const config = FloatingConfig(
-      enabled: true,
-      selected: <String>{'B', 'F'},
-      size: 0.85,
-      backgroundColor: FloatingBackgroundColor.white,
-    );
-    messenger.setMockMethodCallHandler(channel, (call) async {
-      expect(call.method, 'updateFloatingConfig');
-      final payload = jsonDecode(call.arguments as String) as Map;
-      expect(payload['metricSchemaVersion'], FloatingMetric.schemaVersion);
-      expect(payload['enabled'], isTrue);
-      expect(payload['size'], 0.85);
-      expect(payload['backgroundColor'], 'white');
-      expect((payload['selected'] as List).toSet(), config.selected);
-    });
+      const config = FloatingConfig(
+        enabled: true,
+        selected: <String>{'B', 'F'},
+        size: 0.85,
+        backgroundColor: FloatingBackgroundColor.white,
+      );
+      messenger.setMockMethodCallHandler(channel, (call) async {
+        expect(call.method, 'updateFloatingConfig');
+        final payload = jsonDecode(call.arguments as String) as Map;
+        expect(payload['metricSchemaVersion'], FloatingMetric.schemaVersion);
+        expect(payload['enabled'], isTrue);
+        expect(payload['size'], 0.85);
+        expect(payload['backgroundColor'], 'white');
+        expect((payload['selected'] as List).toSet(), config.selected);
+        return null;
+      });
 
-    await expectLater(FloatingBridge.updateConfig(config), completes);
-  });
+      await expectLater(FloatingBridge.updateConfig(config), completes);
+    },
+  );
 
   test(
     'updateData forwards the latest telemetry and selected app language',
     () async {
-    appLanguageNotifier.value = AppLanguage.indonesia;
-    const telemetry = FloatingTelemetry(
-      battery: '40.2',
-      hotside: '51.4',
-      voltage: '9.0',
-      fanOn: false,
-      speed: 0,
-      connected: true,
-    );
-    messenger.setMockMethodCallHandler(channel, (call) async {
-      expect(call.method, 'updateFloatingData');
-      final payload = jsonDecode(call.arguments as String) as Map;
-      expect(payload['battery'], '40.2');
-      expect(payload['hotside'], '51.4');
-      expect(payload['voltage'], '9.0');
-      expect(payload['fanOn'], isFalse);
-      expect(payload['speed'], 0);
-      expect(payload['connected'], isTrue);
-      expect(payload['language'], 'indonesia');
-    });
+      appLanguageNotifier.value = AppLanguage.indonesia;
+      const telemetry = FloatingTelemetry(
+        battery: '40.2',
+        hotside: '51.4',
+        voltage: '9.0',
+        fanOn: false,
+        speed: 0,
+        connected: true,
+      );
+      messenger.setMockMethodCallHandler(channel, (call) async {
+        expect(call.method, 'updateFloatingData');
+        final payload = jsonDecode(call.arguments as String) as Map;
+        expect(payload['battery'], '40.2');
+        expect(payload['hotside'], '51.4');
+        expect(payload['voltage'], '9.0');
+        expect(payload['fanOn'], isFalse);
+        expect(payload['speed'], 0);
+        expect(payload['connected'], isTrue);
+        expect(payload['language'], 'indonesia');
+        return null;
+      });
 
-    await expectLater(FloatingBridge.updateData(telemetry), completes);
-  });
+      await expectLater(FloatingBridge.updateData(telemetry), completes);
+    },
+  );
 
   test('updateConfig and updateData contain native channel failures', () async {
     messenger.setMockMethodCallHandler(channel, (call) async {
@@ -197,25 +200,26 @@ void main() {
   test(
     'runtimeState returns diagnostics and fails closed for invalid results',
     () async {
-    const state = <String, dynamic>{
-      'service_running': true,
-      'view_attached_to_window': true,
-      'horizontal': false,
-      'size': 0.8,
-    };
-    messenger.setMockMethodCallHandler(channel, (call) async {
-      expect(call.method, 'getFloatingRuntimeState');
-      return state;
-    });
+      const state = <String, dynamic>{
+        'service_running': true,
+        'view_attached_to_window': true,
+        'horizontal': false,
+        'size': 0.8,
+      };
+      messenger.setMockMethodCallHandler(channel, (call) async {
+        expect(call.method, 'getFloatingRuntimeState');
+        return state;
+      });
 
-    expect(await FloatingBridge.runtimeState(), state);
+      expect(await FloatingBridge.runtimeState(), state);
 
-    messenger.setMockMethodCallHandler(channel, (call) async => 'not-a-map');
-    expect(await FloatingBridge.runtimeState(), isNull);
+      messenger.setMockMethodCallHandler(channel, (call) async => 'not-a-map');
+      expect(await FloatingBridge.runtimeState(), isNull);
 
-    messenger.setMockMethodCallHandler(channel, (call) async {
-      throw PlatformException(code: 'runtime_state_unavailable');
-    });
-    expect(await FloatingBridge.runtimeState(), isNull);
-  });
+      messenger.setMockMethodCallHandler(channel, (call) async {
+        throw PlatformException(code: 'runtime_state_unavailable');
+      });
+      expect(await FloatingBridge.runtimeState(), isNull);
+    },
+  );
 }
