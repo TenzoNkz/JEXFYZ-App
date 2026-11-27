@@ -1823,15 +1823,14 @@ class _DashboardScreenState extends State<DashboardScreen>
           }
 
           final payload = utf8.encode('$command\n');
-          final canNoResponse = rx!.properties.writeWithoutResponse;
-          final requiresResponse = _requiresResponse(command);
+          final withoutResponse = P1CommandContract.usesWriteWithoutResponse(
+            command,
+            supportsWriteWithoutResponse: rx!.properties.writeWithoutResponse,
+          );
 
           try {
             await rx!
-                .write(
-                  payload,
-                  withoutResponse: !requiresResponse && canNoResponse,
-                )
+                .write(payload, withoutResponse: withoutResponse)
                 .timeout(const Duration(seconds: 4));
             if (!completer.isCompleted) completer.complete(true);
           } catch (e) {
@@ -2423,9 +2422,12 @@ class _DashboardScreenState extends State<DashboardScreen>
           try {
             if (pending == null || !_bleReady || rx == null) return;
             final payload = utf8.encode('$pending\n');
-            final canNoResponse = rx!.properties.writeWithoutResponse;
+            final withoutResponse = P1CommandContract.usesWriteWithoutResponse(
+              pending,
+              supportsWriteWithoutResponse: rx!.properties.writeWithoutResponse,
+            );
             await rx!
-                .write(payload, withoutResponse: canNoResponse)
+                .write(payload, withoutResponse: withoutResponse)
                 .timeout(const Duration(seconds: 4));
           } catch (e) {
             debugPrint('BLE heartbeat $pending: $e');

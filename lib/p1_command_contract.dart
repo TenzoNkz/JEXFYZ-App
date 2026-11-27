@@ -89,6 +89,14 @@ abstract final class P1CommandContract {
         c.startsWith('PHONE:BT=');
   }
 
+  /// Selects no-response writes only when the characteristic supports them
+  /// and the existing command contract does not require a write response.
+  static bool usesWriteWithoutResponse(
+    String command, {
+    required bool supportsWriteWithoutResponse,
+  }) =>
+      supportsWriteWithoutResponse && !requiresResponse(command);
+
   /// Success vocabulary is compared against the normalized reason parsed by Dashboard.
   static bool isAckSuccessReason(String reason) =>
       reason == 'OK' ||

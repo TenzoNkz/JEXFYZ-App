@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:jexfyz_cooler/p1_command_contract.dart';
+import 'support/source_contract_helpers.dart';
 
 void main() {
   group('P1CommandContract', () {
@@ -141,6 +144,67 @@ void main() {
         }
       },
     );
+
+    test(
+      'uses no-response only when supported and allowed by the command contract',
+      () {
+        expect(
+          P1CommandContract.usesWriteWithoutResponse(
+            'PHONE:BT=35',
+            supportsWriteWithoutResponse: true,
+          ),
+          isFalse,
+        );
+        expect(
+          P1CommandContract.usesWriteWithoutResponse(
+            'SYNC',
+            supportsWriteWithoutResponse: true,
+          ),
+          isFalse,
+        );
+        expect(
+          P1CommandContract.usesWriteWithoutResponse(
+            'FAN:ON',
+            supportsWriteWithoutResponse: true,
+          ),
+          isFalse,
+        );
+        expect(
+          P1CommandContract.usesWriteWithoutResponse(
+            'MODE:2',
+            supportsWriteWithoutResponse: true,
+          ),
+          isTrue,
+        );
+        expect(
+          P1CommandContract.usesWriteWithoutResponse(
+            'MODE:2',
+            supportsWriteWithoutResponse: false,
+          ),
+          isFalse,
+        );
+      },
+    );
+
+    test('Dashboard and heartbeat writes use the shared GATT write policy', () {
+      final mainSource = File('lib/main.dart').readAsStringSync();
+      expect(
+        containsDartFragment(
+          mainSource,
+          'P1CommandContract.usesWriteWithoutResponse(command, '
+          'supportsWriteWithoutResponse: rx!.properties.writeWithoutResponse)',
+        ),
+        isTrue,
+      );
+      expect(
+        containsDartFragment(
+          mainSource,
+          'P1CommandContract.usesWriteWithoutResponse(pending, '
+          'supportsWriteWithoutResponse: rx!.properties.writeWithoutResponse)',
+        ),
+        isTrue,
+      );
+    });
 
     test('accepts only the established ACK success vocabulary', () {
       for (final reason in [
