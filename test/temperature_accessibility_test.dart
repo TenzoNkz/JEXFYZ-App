@@ -18,36 +18,38 @@ void main() {
       appLanguageNotifier.value = AppLanguage.english;
 
       final semantics = tester.ensureSemantics();
-      addTearDown(semantics.dispose);
+      try {
+        await tester.pumpWidget(
+          MaterialApp(
+            theme: ThemeData.dark(useMaterial3: true),
+            home: const DashboardScreen(),
+          ),
+        );
+        await tester.pump();
 
-      await tester.pumpWidget(
-        MaterialApp(
-          theme: ThemeData.dark(useMaterial3: true),
-          home: const DashboardScreen(),
-        ),
-      );
-      await tester.pump();
+        final dynamic dashboardState = tester.state(find.byType(DashboardScreen));
+        dashboardState.setState(() {
+          dashboardState.connected = true;
+          dashboardState.tabIndex = 4;
+        });
+        await tester.pump(const Duration(milliseconds: 200));
 
-      final dynamic dashboardState = tester.state(find.byType(DashboardScreen));
-      dashboardState.setState(() {
-        dashboardState.connected = true;
-        dashboardState.tabIndex = 4;
-      });
-      await tester.pump(const Duration(milliseconds: 200));
+        final decrease = find.bySemanticsLabel('Decrease Hotside Limit');
+        final increase = find.bySemanticsLabel('Increase Hotside Limit');
+        expect(decrease, findsOneWidget);
+        expect(increase, findsOneWidget);
 
-      final decrease = find.bySemanticsLabel('Decrease Hotside Limit');
-      final increase = find.bySemanticsLabel('Increase Hotside Limit');
-      expect(decrease, findsOneWidget);
-      expect(increase, findsOneWidget);
-
-      for (final finder in [decrease, increase]) {
-        final node = tester.getSemantics(finder);
-        final data = node.getSemanticsData();
-        expect(data.label, isNotEmpty);
-        expect(data.hasAction(SemanticsAction.tap), isTrue);
-        expect(tester.getSize(finder), const Size(48, 48));
+        for (final finder in [decrease, increase]) {
+          final node = tester.getSemantics(finder);
+          final data = node.getSemanticsData();
+          expect(data.label, isNotEmpty);
+          expect(data.hasAction(SemanticsAction.tap), isTrue);
+          expect(tester.getSize(finder), const Size(48, 48));
+        }
+        expect(tester.takeException(), isNull);
+      } finally {
+        semantics.dispose();
       }
-      expect(tester.takeException(), isNull);
     },
   );
 }
