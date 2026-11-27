@@ -39,6 +39,19 @@ def productionSigningReady = releaseStoreFile &&
         releaseKeyPassword &&
         file(releaseStoreFile).exists()
 
+// Debug/test tasks must not require production signing credentials.
+// Any :app release-variant task remains fail-closed without the official signer.
+gradle.taskGraph.whenReady { taskGraph ->
+    def releaseVariantRequested = taskGraph.allTasks.any { task ->
+        task.project.path == ':app' &&
+                task.name.toLowerCase().contains('release')
+    }
+
+    if (releaseVariantRequested && !productionSigningReady) {
+        throw new GradleException('Production release signing is not configured. Set ANDROID_KEYSTORE_FILE, ANDROID_KEYSTORE_PASSWORD, ANDROID_KEY_ALIAS and ANDROID_KEY_PASSWORD.')
+    }
+}
+
 def officialSigningCertBase64 = ''
 if (productionSigningReady) {
     Exception lastError = null
@@ -124,15 +137,19 @@ android {
         }
 
         release {
-            if (!productionSigningReady) {
-                throw new GradleException('Production release signing is not configured. Set ANDROID_KEYSTORE_FILE, ANDROID_KEYSTORE_PASSWORD, ANDROID_KEY_ALIAS and ANDROID_KEY_PASSWORD.')
+            if (productionSigningReady) {
+                signingConfig signingConfigs.release
+                buildConfigField 'String', 'OFFICIAL_SIGNING_CERT_B64', "\"${officialSigningCertBase64}\""
+            } else {
+                // Non-release tasks may configure this variant without signing secrets.
+                // The task-graph guard above rejects every :app release task before execution.
+                // No debug signing configuration is ever assigned to the release variant.
+                buildConfigField 'String', 'OFFICIAL_SIGNING_CERT_B64', '""'
             }
 
-            signingConfig signingConfigs.release
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            buildConfigField 'String', 'OFFICIAL_SIGNING_CERT_B64', "\"${officialSigningCertBase64}\""
         }
     }
 }
