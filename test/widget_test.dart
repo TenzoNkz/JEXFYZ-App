@@ -2091,7 +2091,8 @@ void main() {
               expect(
                 tester.getSize(target),
                 const Size(48, 48),
-                reason: 'Home action "$key" must retain its 48-dp canvas target.',
+                reason:
+                    'Home action "$key" must retain its 48-dp canvas target.',
               );
             }
             expect(
