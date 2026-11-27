@@ -3000,18 +3000,8 @@ void main() {
         equals(ledPreviewLevels(mode: 3, phaseMs: 0)),
       );
       expect(
-        ledPreviewColors(
-          mode: 1,
-          phaseMs: 0,
-          baseColor: '#FF1744',
-        ),
-        equals(
-          ledPreviewColors(
-            mode: 3,
-            phaseMs: 0,
-            baseColor: '#FF1744',
-          ),
-        ),
+        ledPreviewColors(mode: 1, phaseMs: 0, baseColor: '#FF1744'),
+        equals(ledPreviewColors(mode: 3, phaseMs: 0, baseColor: '#FF1744')),
       );
 
       await tester.pumpWidget(surface(3));
@@ -3021,7 +3011,8 @@ void main() {
         expect(
           newPainters[index].shouldRepaint(oldPainters[index]),
           isTrue,
-          reason: 'Both LED strips must repaint after their render mode changes.',
+          reason:
+              'Both LED strips must repaint after their render mode changes.',
         );
       }
     },
