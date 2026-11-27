@@ -1,4 +1,4 @@
-| Last updated | 2026-11-27T15:58:00+07:00 (Asia/Jakarta) |
+| Last updated | 2026-11-27T16:00:20+07:00 (Asia/Jakarta) |
 
 > Event-driven project marker. It is not a live heartbeat or a GitHub lock.
 
@@ -7,21 +7,21 @@
 | Field | Value |
 |---|---|
 | **STATUS** | **IN_PROGRESS** |
-| SESSION STATUS | IN_PROGRESS — this conversation is the active Eksekusi Code workspace, adopted at the owner's explicit request. |
+| SESSION STATUS | IN_PROGRESS — this conversation is the active Eksekusi Code workspace. |
 | WORK STATUS | IN_PROGRESS — owner-approved App-only WP0–WP10 full rework + premium UI redesign; REPO_FULL follows only after CODE_FULL closes. |
 | WORKSPACE | CODE_FULL |
 | Mode | Flutter/Dart App source, tests, docs, App config and static audit; direct commits to main. No Build App/APK/sign/release, Firmware/BIN/P1 wire or behavior, BLE identity/security, OTA transport/trust/recovery, Firebase production, signing material, flashing or device operations. |
 | Request / work item | Continue approved App rework in this conversation. Group related edits, verify before commit, avoid repeated source/formatter cycles. |
 | Started | 2026-11-27T15:24:50+07:00 (Asia/Jakarta) |
-| Last updated | 2026-11-27T15:58:00+07:00 (Asia/Jakarta) |
-| Current phase | WP5 Home presentation ownership — move three Home metric builders from main.dart into dashboard_home_tab.dart; redirect four regression source checks. No BLE/session/telemetry/command/persistence behavior changes. |
-| Last completed milestone | Validation Only #187 / run 45968056100 / job 140401426317, exact SHA 1b6b38bddf902a251a385f48f921dad523ae036b, terminal SUCCESS (dependencies, formatter 42/0, analyzer, 280/280 tests). Docs and 118/118 file inventory reconciled. |
-| Last verified source checkpoint | 1b6b38bddf902a251a385f48f921dad523ae036b; tree 75dd8dcc790d34f7fb479f46c8307a2490d17ed9; 164 entries / 118 blobs / 46 trees, truncated=false. |
-| EXTERNAL OPERATION | None. Latest Actions check shows no queued or active runs. |
-| EXTERNAL OPERATION STATUS | NOT_APPLICABLE / IDLE |
-| Result / evidence | Live main is 1829f9e7fb5452544a5b614376d98cb1ea9ae357 after inventory-heading correction; register is 118 rows / 118 unique paths. The source batch moves only Home presentation helpers and updates four tests. |
+| Last updated | 2026-11-27T16:00:20+07:00 (Asia/Jakarta) |
+| Current phase | WP5 Home presentation ownership — three Home metric helpers moved into dashboard_home_tab.dart; four widget source-contract checks redirected. Validation Only #188 is active on exact commit b5f7eb2c388a81dbf92370b9c22f8c5fab9a5959. |
+| Last completed milestone | Commit b5f7eb2c388a81dbf92370b9c22f8c5fab9a5959 moves _homeMetric, _homeStateChip and _homeFanSpeed (8,468 characters) from main.dart into the Home part. main.dart decreases 8,468 bytes; dashboard_home_tab.dart gains the same helpers. No device, session or persistence behavior changed. |
+| Last verified source checkpoint | 1b6b38bddf902a251a385f48f921dad523ae036b; Validation Only #187 / run 45968056100 terminal SUCCESS, 280/280 tests. |
+| EXTERNAL OPERATION | Validation Only #188 — run 45970039687 / job 140407971251; exact source SHA b5f7eb2c388a81dbf92370b9c22f8c5fab9a5959. |
+| EXTERNAL OPERATION STATUS | IN_PROGRESS (GitHub Actions reports the job active; Flutter setup running). |
+| Result / evidence | Static read-back confirms all three helper definitions are absent from main.dart and present in dashboard_home_tab.dart. The four relevant tests now inspect the Home part. #188 has checked out exact commit b5f7eb2 and is setting up Flutter. |
 | Blocker / remaining evidence | Local Flutter/Dart/Gradle/ADB unavailable. Android/Kotlin, actual screenshots/OEM/device behavior, SQLite v1→v2 runtime, long-session profiling and whole-App visual acceptance remain NOT RUN / NOT VERIFIED. |
-| Next action | Commit the Home presentation boundary and regression test updates as one change; validate exact SHA; update the register/checkpoint once after terminal result. |
+| Next action | Inspect exact-SHA #188 formatter, analyzer and full Flutter tests; if any fail, use observed logs and repair once. If success, update 118-file register and active notes to the new source and test checkpoint. |
 
 ## Status model
 
