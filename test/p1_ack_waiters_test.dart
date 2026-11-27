@@ -28,10 +28,7 @@ void main() {
         final third = coordinator.register('VOLTAGE');
         final failedFuture = coordinator.waitFor(failedWrite);
 
-        expect(
-          coordinator.cancel(failedWrite, reason: 'WRITE_FAILED'),
-          isTrue,
-        );
+        expect(coordinator.cancel(failedWrite, reason: 'WRITE_FAILED'), isTrue);
         expect(
           coordinator.cancel(failedWrite, reason: 'WRITE_FAILED'),
           isFalse,

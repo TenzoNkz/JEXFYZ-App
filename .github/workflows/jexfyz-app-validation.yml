@@ -64,14 +64,6 @@ jobs:
           set -euo pipefail
           dart format --output=none --set-exit-if-changed lib test
 
-      # TEMPORARY: print the pinned CI formatter's canonical rendering for the ACK waiter test.
-      - name: Diagnose ACK waiter formatter output (temporary)
-        if: ${{ !cancelled() && steps.dependencies.outcome == 'success' }}
-        shell: bash
-        run: |
-          set -euo pipefail
-          dart format --output=show test/p1_ack_waiters_test.dart
-
       - name: Analyze Flutter and Dart source
         id: analyzer
         if: ${{ !cancelled() && steps.dependencies.outcome == 'success' }}
