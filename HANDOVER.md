@@ -5,14 +5,15 @@ Last reconciled: 2026-11-28 (Asia/Jakarta). Authority: MASTER_PROMPT.md.
 ## Active CODE_FULL work item — IN_PROGRESS
 
 - Owner command: “@Thinking Eksekusi Code!”; approved scope remains App-only WP0–WP10 source/tests/docs/config/static audit, direct commits on main by ChatGPT/Codex alone.
-- Current main / App source-test SHA: cc25bd259339d23597cb28fe5636929dc8664176. Validation Only #274 / run 46076998762 / job 140766970296, exact-SHA terminal SUCCESS: dependencies PASS; formatter PASS (55 files / 0 changed); analyzer PASS (139 info, zero warnings/errors); Flutter tests 347/347 PASS; summary SUCCESS.
+- Current App source/test commit 1f073f1d3eae067d91b4dc6611a0e3d445892997; WP5 production source fix 8b882350d6a3f0af480145110cbb72ef6a81eef5. Validation Only #276 / run 46078113776 / job 140770527587 is IN_PROGRESS on exact SHA 1f073f1d3eae067d91b4dc6611a0e3d445892997; dependencies and formatter completed, analyzer running, full Flutter suite pending. Prior #274 remains last terminal SUCCESS (347/347).
 - WP0 lib/main.dart audit completed at blob c2821452079e798bfaaac99acb82af1f6e127c86; Dashboard remains sole BLE/GATT/P1/session/ACK/telemetry/command owner. Protected OTA/Firebase code untouched.
 - WP4 shared Dashboard switch-row/token slice closed with rendered widget and token tests. Value-only widget; no protocol/session/command changes; preserved 62-dp minimum, observed 64-dp natural height, 42-dp icon, existing type/radii/spacing, Tristate semantics and 54×48-dp touch target. Full suite #274 green.
+- WP5 Temperature: 5V increase and 12V decrease enabled states now match the existing 2°C setter guard; range/command/session ownership is unchanged. Tests cover EN/ID semantics, 48-dp targets, Light/Dark, 360/420-dp viewports and endpoint/cross-zone states. #275 recovery is documented; #276 pending.
 - Failures #270–#273 and actual root causes are retained in the active CHAT_TRANSFER checkpoint; all repaired before #274.
 - Inventory is 131 blobs / 131 unique dispositions, truncated=false. widget_test.dart source fragments are lexical static assertions, not AST guarantees; broader brittleness review OPEN.
 - Local toolchain BLOCKED / NOT RUN; no Android/Kotlin build, screenshots or physical device tests. Whole-App visual NOT VERIFIED.
 - No Build App/APK/sign/release, Firmware/BIN, BLE/P1 wire/security, OTA transport/recovery, Firebase production, flashing or device operation.
-- Next bounded slice: WP5 Temperature presentation using lib/dashboard_temperature_tab.dart and test/temperature_accessibility_test.dart; preserve thermal limits, battery-zone constraints, Adaptive/transition and connectivity locks, EN/ID semantics and 48×48-dp touch target; expand applicable screen matrix. Exact HEAD/blob preflight and exact-SHA Validation Only required before advancing.
+- Next: inspect #276 terminal validation on exact SHA 1f073f1d3eae067d91b4dc6611a0e3d445892997; then continue the next bounded WP5 App presentation task.
 
 
 ## Historical Build App work item — COMPLETED SUCCESS
