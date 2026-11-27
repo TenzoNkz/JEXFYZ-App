@@ -35,11 +35,7 @@ void main() {
 
     test('rejects empty, keyless and delimiter-free rows', () {
       for (final line in ['', 'FAN', ':ON', '   : ON']) {
-        expect(
-          P1TelemetryContract.parseLine(line),
-          isNull,
-          reason: line,
-        );
+        expect(P1TelemetryContract.parseLine(line), isNull, reason: line);
       }
     });
 
@@ -47,27 +43,30 @@ void main() {
       expect(P1TelemetryContract.parseLine('ACK:FAN;REASON=ON'), isNull);
     });
 
-    test('Dashboard uses the same pure parser for SYNC and live telemetry rows', () {
-      final source = File('lib/main.dart').readAsStringSync();
+    test(
+      'Dashboard uses the same pure parser for SYNC and live telemetry rows',
+      () {
+        final source = File('lib/main.dart').readAsStringSync();
 
-      expect(
-        countDartFragments(source, 'P1TelemetryContract.parseLine(line)'),
-        2,
-      );
-      expect(
-        containsDartFragment(
-          source,
-          '_syncSnapshot[entry.key] = entry.value;',
-        ),
-        isTrue,
-      );
-      expect(
-        containsDartFragment(
-          source,
-          '_commitTelemetry(<String, String>{entry.key: entry.value});',
-        ),
-        isTrue,
-      );
-    });
+        expect(
+          countDartFragments(source, 'P1TelemetryContract.parseLine(line)'),
+          2,
+        );
+        expect(
+          containsDartFragment(
+            source,
+            '_syncSnapshot[entry.key] = entry.value;',
+          ),
+          isTrue,
+        );
+        expect(
+          containsDartFragment(
+            source,
+            '_commitTelemetry(<String, String>{entry.key: entry.value});',
+          ),
+          isTrue,
+        );
+      },
+    );
   });
 }
