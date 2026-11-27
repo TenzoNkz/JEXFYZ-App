@@ -62,12 +62,15 @@ void main() {
       );
       expect(find.byType(ClipRect), findsOneWidget);
       expect(find.byType(ImageFiltered), findsOneWidget);
-      final blockedContent = find.widgetWithText(
-        IgnorePointer,
-        'Submenu content',
-      );
-      expect(blockedContent, findsOneWidget);
-      expect(tester.widget<IgnorePointer>(blockedContent).ignoring, isTrue);
+      final blockingAncestors = find
+          .ancestor(
+            of: find.text('Submenu content'),
+            matching: find.byType(IgnorePointer),
+          )
+          .evaluate()
+          .where((element) => (element.widget as IgnorePointer).ignoring)
+          .toList();
+      expect(blockingAncestors, hasLength(1));
 
       final connectButton = find.ancestor(
         of: find.text('Connect'),
