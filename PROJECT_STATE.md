@@ -12,8 +12,8 @@ Last reconciled: 2026-11-27 (Asia/Jakarta). Authority: MASTER_PROMPT.md.
 
 ## Current execution state
 
-- GitHub connected identity has repository admin permission. Latest read-back of `main` branch: `e59da84a10978c6babb2d22a939e93475760c2e3` (status-only commit before this policy refresh); branch API says `protected=false`; repo metadata says `allow_auto_merge=false`. Re-check live status before writes.
-- Issue #45 is retained as WP1 tracker; it was created unassigned for the former Copilot workflow and must be updated to describe ChatGPT/Codex direct-main execution.
+- GitHub connected identity has repository admin permission. The active execution model is ChatGPT/Codex direct-to-main; latest branch, protection and run state must be re-fetched before further writes. The branch API last reported `protected=false`; repo metadata reported `allow_auto_merge=false`.
+- Issue #45 was rewritten to ChatGPT/Codex-only direct-main WP1 instructions and closed as completed after the exact-SHA Validation Only #217 result.
 - Validation Only workflow: `.github/workflows/jexfyz-app-validation.yml`; push-to-main only, path-filtered to App source/tests/config/assets/workflow paths, least-privilege `contents: read`, checkout credential persistence disabled. Inspect the live workflow and Actions run for each exact changed SHA. Build App remains a separately guarded issue/title/token release workflow.
 - The connected GitHub integration supports repository reads/writes, commits, Actions inspection and issue operations. Do not create redundant integrations or hand work to Copilot.
 
@@ -23,9 +23,9 @@ Last reconciled: 2026-11-27 (Asia/Jakarta). Authority: MASTER_PROMPT.md.
 
 ## Current source and validation
 
-- Last validated source: `d0ab20533c2bf27be18dbb25c3ad9c762663d7e0`; recursive tree 166 entries / 120 blobs / 46 trees, `truncated=false`.
-- Validation Only #213 / run `46012060878` / job `140549796007`, exact source SHA above, terminal SUCCESS — locked dependencies PASS; formatter 44 files / 0 changed; analyzer PASS; **285/285 Flutter tests PASS**. This is historical validation for that source only.
-- WP1 storage: seven normal-path tests cover AppSettingsStore/KnownCoolerStore; failure injection and real Android secure-storage behavior remain open. Production keys/defaults/schema unchanged.
+- Last historically validated source checkpoint: `d0ab20533c2bf27be18dbb25c3ad9c762663d7e0`. Latest WP1 test source: `c11800e867bee2e8fb1426f865a28f2fb00cabf4`; repository tree last measured 166 entries / 120 blobs / 46 trees, `truncated=false`.
+- Validation Only #217 / run `46039843488` / job `140644469587`, exact WP1 test source SHA `c11800e867bee2e8fb1426f865a28f2fb00cabf4`, terminal SUCCESS — dependencies PASS; formatter 44 files / 0 changed; analyzer gate PASS (`--no-fatal-infos`, 127 info-level diagnostics, zero warnings/errors); **292/292 Flutter tests PASS**.
+- WP1 storage: seven original normal-path plus seven new test-only read/write/delete failure-injection tests cover AppSettingsStore/KnownCoolerStore; all 292 Flutter tests pass on #217. Production keys/defaults/schema and `lib/app_settings.dart` remain unchanged. Real Android secure-storage behavior remains unverified.
 - WP2/WP3: ordered bootstrap, App root, Settings presentation, pure P1 frame decoder, pure command contract and FIFO ACK-waiter lifecycle are separated. Dashboard remains the only BLE/GATT/P1/session/telemetry/command authority.
 - WP4: shared layout/semantic color/typography/shape tokens exist. Compact-control radius and Statistics axis-label typography are covered; cross-route role classification remains open. Preserve screen-specific density and measured plot geometry. Visual acceptance remains open.
 - WP5: shared dashboard card/section components, state-bound control presentation helpers, and reduced-motion-aware tab transitions are in place. No BLE/GATT/P1/session/command ownership moved. Screen-level visual refinement and screenshot acceptance remain open.
@@ -41,4 +41,4 @@ Build #167 remains the latest published App package on immutable source `0dd9622
 
 ## Next action
 
-Finish WP1 secure-storage failure injection tests in `test/app_settings_store_test.dart` (and only modify `lib/app_settings.dart` if a demonstrated defect requires it); commit the bounded change directly to `main`, then inspect the exact-SHA Validation Only run. Continue the WP0–WP10 sequence without per-task owner prompts.
+Resume the dependency-ordered WP0 file audit at `lib/connection_scan_coordinator.dart`, the next live inventory path. Continue the WP0–WP10 App workstream with bounded direct-main ChatGPT/Codex commits and exact-SHA Validation Only checks. No Build App, Firmware/BIN, OTA, Firebase production, signing, flash or device operation is authorized by CODE_FULL.
