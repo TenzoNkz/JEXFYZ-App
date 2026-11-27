@@ -1,3 +1,13 @@
+## Latest CODE_FULL checkpoint — exact main validation + Home NOTIFY extraction — 2026-11-27
+
+- **Live source:** `main` `c97a2fdc2698b16339d3f03ff04d992f2a0e7848`; recursive tree 147 entries / 101 blobs / 46 trees; `truncated=false`. GitHub has only branch `main`, zero rulesets.
+- **Validation Only:** run `45884911511` / job `140133094930`, exact source/test SHA above, terminal SUCCESS: locked dependencies, read-only formatter, analyzer and 233/233 Flutter tests PASS.
+- **Home NOTIFY:** `HomeNotifyCard` extracted to `lib/home_notify.dart`, stateless with fixed 44-dp height. Dashboard retains state, message, localization, foreground contrast, error/warning and HOT safety-limit decisions. Render tests cover disconnected and warning states.
+- **Connection sheet:** `lib/connection_sheet.dart` keeps scan/connect orchestration injected; scanner/GATT/P1/session ownership remains with Dashboard/coordinator.
+- **Repository governance:** main-only direct commits; no branch/PR workflow, empty rulesets; Validation Only is read-only with no formatter bot commit. Guarded Build App workflow remains unchanged.
+- **Current source is not packaged.** Build #167 remains the latest published App package. No Build App/APK/sign/release, Firmware/BIN, Firebase production, OTA, flashing or device operation.
+- **Open evidence:** local Flutter/Dart/Gradle/ADB unavailable; hosted validation does not compile Kotlin/Android or prove screenshots/OEM/device behavior. Whole-App visual acceptance, SQLite v1→v2 runtime fixture and 1h/6h/24h performance soak remain NOT VERIFIED/NOT RUN. Dashboard architecture and WP0–WP10 review remain IN PROGRESS.
+
 ## Direct-main CI / repository policy update — 2026-11-27
 
 - **Owner decision:** all ordinary changes commit directly to `main`; only `main` remains, no active repository rulesets remain, and the owner confirms this CODE_FULL subchat is the only active execution chat. Do not create feature branches or PRs.
@@ -5,7 +15,7 @@
 - **Retired workflow:** `.github/workflows/jexfyz-app-pr-validation.yml` is removed because branch/PR development is no longer the operating model. Its history remains in Git; older references below describe the previous workflow only.
 - **Release boundary:** `.github/workflows/jexfyz-app-build-trigger.yml` stays unchanged. Its issue-open/reopen owner/title/body-token guard, serialized non-cancelling queue, immutable action SHAs, signing/provenance/download checks and release gates remain intact. Only a fresh `Eksekusi Build App!` command authorizes it.
 - **Direct-main safety:** every source/documentation commit re-fetches live `main`, target file SHAs and the full base tree, then advances the ref with an expected-HEAD check. No force-push, branch, PR or auto-merge is used.
-- **Validation Only #96:** formatter/analyzer/test steps succeeded on an earlier SHA, but its overall run failed at the summary because `main` advanced before the formatter-only commit. It does not validate the final Connection extraction.
+- **Historical Validation Only #96:** its earlier run failed at summary after `main` advanced before the formatter-only commit. It is superseded as current acceptance by run `45884911511`, which validates the exact live `main` source including Connection and Home NOTIFY extractions.
 
 # CURRENT LIVE MAIN — BUILD #167 RELEASED / APP VALIDATION + RELEASE VERIFIED — 2026-11-24
 

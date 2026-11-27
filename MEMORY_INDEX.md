@@ -1,10 +1,10 @@
 # JE X FYZ / JE Cooler — Documentation Map & Retention Policy
 
-## Reconciliation — 2026-11-26 — repository-wide file-by-file workflow
+## Reconciliation — 2026-11-27 — direct-main recovery and exact-SHA validation
 
 - Owner-directed workflow refresh introduces `Eksekusi Code!` as the canonical implementation command. `Eksekusi Code Full!` and `Eksekusi Full!` remain legacy aliases for compatibility; new prompts/handoffs use only `Eksekusi Code!`. Internal `WORKSPACE=CODE_FULL` remains unchanged to avoid a needless status-schema migration.
-- `REPOSITORY_UPGRADE_PLAN.md` is the single file-level register. Latest verified code/test checkpoint contains 98 tracked blobs / 144 total tree entries / 46 trees, `truncated=false`; all 98 paths have explicit dispositions. This does not mean all source audits or WP0–WP10 are complete: `lib/main.dart` full content/architecture audit remains open, binary artwork review has stated evidence limits, and BLE App-only authorization is blocked pending separate Firmware/backend work. Archives remain immutable; APP_BUILD_REPORT and CHANGELOG remain append-only; Firmware, Firebase/OTA, signing, release and device operations retain separate authorization boundaries.
-- The three workspaces retain separate permissions and handoff: Diskusi produces a decision packet, Eksekusi Code implements the approved file set and regression coverage, and Eksekusi Build App packages/releases only with fresh explicit authorization. One shared writer at a time; all handoffs are validated against live main.
+- `REPOSITORY_UPGRADE_PLAN.md` is the single file-level register. Current `main` is `c97a2fdc2698b16339d3f03ff04d992f2a0e7848`; its recursive tree has 147 entries / 101 blobs / 46 trees, not truncated. The inventory has 101 unique path dispositions with no omissions/duplicates. This does not mean WP0–WP10 or the full `lib/main.dart` architecture audit is complete; binary artwork review and Whole-App visual evidence remain open, and BLE App-only authorization remains separately blocked. Archives are immutable; APP_BUILD_REPORT and CHANGELOG remain append-only; Firmware, Firebase/OTA, signing, release and device boundaries remain separate.
+- The three workspaces retain separate authorization: Diskusi produces a decision packet, Eksekusi Code implements the approved scope, and Eksekusi Build App packages/releases only with fresh explicit authorization. Owner decision (2026-11-27): direct-main-only, no secondary branches or PRs; this CODE_FULL chat is the only active execution writer. Every commit re-fetches live main and uses expected-HEAD protection.
 
 ---
 
@@ -12,7 +12,7 @@
 - **Latest full Flutter validation:** Validation Only #87 / run `45865736407` / job `140067960188`, tested source/test SHA `59fb624120b01ba505d23691df0928e55eefed3b`, terminal SUCCESS; 230/230 tests, analyzer, formatter/post-format and locked dependencies passed. Current code/test HEAD is `16b9f78f384011ca59def5e0ac32bb6bc33e4178` after formatter-only persistence.
 - **Current AppSecurity files:** `lib/app_security.dart` owns the existing official-build native channel and fail-closed App-side decision; `test/app_security_test.dart` covers non-Android/true/false/null/exception outcomes. Validation Only #87 includes the complete 230/230 suite.\n- **Usage Statistics correction:** Clear History no longer writes cached Battery/Hotside values as fresh samples or advances HOT P1 receipt time. No verified coverage accrues until a new HOT telemetry frame. See `APP_NOTES.md` and the dated top entry in `CHANGELOG.md`.
 
-Last reconciled: 2026-11-26 (Asia/Jakarta). This file is the navigation and retention index, not an alternate operating ruleset or current-state ledger. Read MASTER_PROMPT.md for all operating instructions. Verify current implementation against live main/source/tests and current Actions/Release evidence.
+Last reconciled: 2026-11-27 (Asia/Jakarta). This file is the navigation and retention index, not an alternate operating ruleset or current-state ledger. Read MASTER_PROMPT.md for all operating instructions. Verify current implementation against live main/source/tests and current Actions/Release evidence.
 
 ## Authority order
 
