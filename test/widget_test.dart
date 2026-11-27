@@ -1001,6 +1001,8 @@ void main() {
 
   test('Thermal icons use oval ember bursts, Voltage uses edge pulses, and other icons keep their signatures', () {
     final source = File('lib/main.dart').readAsStringSync();
+    final controlSource =
+        File('lib/dashboard_control_tabs.dart').readAsStringSync();
     final animationSource = File('lib/jex_animated_icon.dart')
         .readAsStringSync();
     final shellStart = animationSource.indexOf(
@@ -1309,7 +1311,7 @@ void main() {
       );
     }
     expect(
-      source,
+      controlSource,
       contains('active: connected && runtimeOutputsKnown && fanOn'),
     );
   });
@@ -3023,12 +3025,12 @@ void main() {
     expect(controlSource, contains('ledColorDisplayName(rgbColor, lang)'));
     expect(
       containsDartFragment(
-        controlSource,
+        source,
         "stateKnown ? JexText.of(value ? 'on' : 'off', lang) : JexText.of('off', lang)",
       ),
       isTrue,
     );
-    expect(controlSource, contains('final displayedValue = stateKnown && value;'));
+    expect(source, contains('final displayedValue = stateKnown && value;'));
     final colorDialogStart = source.indexOf(
       'Future<void> _showLedColorPicker() async {',
     );
