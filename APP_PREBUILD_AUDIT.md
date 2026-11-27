@@ -1,4 +1,15 @@
-## Latest CODE_FULL checkpoint — WP5 shared Dashboard components and control helpers; Validation Only #198 green — 2026-11-27
+## Latest CODE_FULL checkpoint — WP5 Batch 3 Dashboard tab transition; Validation Only #205 green — 2026-11-27
+
+- Validated App source: `a2f4c4f467ece3bfd37981f8e9176a71d7419c28`; recursive tree 166 entries / 120 blobs / 46 trees, `truncated=false`; current file inventory covers 120 unique tracked blobs, but path completeness is not complete content review.
+- Validation Only #205: run `45994605388` / job `140490735361`, exact source SHA above, terminal SUCCESS — locked dependencies PASS; formatter 44 files / 0 changed; analyzer PASS; Flutter tests **285/285 PASS**.
+- WP5 Batch 3: Dashboard tab content is wrapped by `JexDashboardTabTransition` in `dashboard_shared_components.dart`; 210-ms fade/short slide, 90-ms fade-only under reduced motion, outgoing pointer/semantics exclusion, and incoming semantics at the first frame. The `JexDashboardToggle` public key is owned once at the widget root. No BLE/GATT/P1/session/command ownership moved.
+- WP4 static audit: shared layout, semantic color, typography and shape tokens exist. Semantic color consumers appear across Dashboard, Settings, Statistics, LED and Floating Monitor. Many inline values remain in screen parts; classify by repeated semantic role before promoting to global tokens. Preserve chart plot geometry, 360-dp canvas/DPI compensation, device thresholds and status colors as domain-specific contracts.
+- Next bounded work: continue WP4 consumer classification and make one appearance-neutral tokenization change only where a repeated value has a single proven semantic role; add contract tests and run exact-SHA Validation Only.
+- Still open: whole Dashboard `main.dart` owner/content audit; WP5 complete screen review and screenshot matrix; WP6 Connection/Settings/dialogs; WP7 Usage Statistics; WP8 Floating Monitor Flutter/native split; WP9 screenshots/goldens/integration/platform evidence; WP10 final file/diff/governance closure.
+- Evidence boundary: local Flutter/Dart/Gradle/ADB unavailable. Android/Kotlin compile, actual screenshots/OEM/device behavior, SQLite v1→v2 runtime fixture and 1h/6h/24h profile NOT RUN. Whole-App visual outcome **VISUAL NOT VERIFIED**. Build #167 remains latest published package on immutable source `0dd96228d33b08c66e736ae91a8a6c3e5c3ddb81`; current main is not packaged. No Build App/APK/sign/release or Firmware/BIN/OTA/Firebase production/device operation occurred.
+---
+
+## HISTORICAL — CODE_FULL checkpoint after Validation Only #198 (superseded by #205)
 
 - Validated App source: 727f30a0f0cb6bbb14921b4a9ded77b668cc0183; source root tree 2408f2e0c1f0a430ec6d548081fd209c86452a3c; 166 entries / 120 blobs / 46 trees, truncated=false; canonical file register now covers 120/120 unique tracked paths with no duplicate rows.
 - Validation Only #198: run 45986589466 / job 140463697552, exact SHA above, terminal SUCCESS — locked dependencies PASS; read-only formatter PASS (44 files / 0 changed); analyzer PASS (121 information-level diagnostics, zero warnings/errors under --no-fatal-infos); full Flutter tests 281/281 PASS.
