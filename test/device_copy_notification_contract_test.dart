@@ -143,20 +143,19 @@ void main() {
 
   test('Deferred OTA result is translated only when it is shown', () {
     final main = File('lib/main.dart').readAsStringSync();
-    expect(main, contains('pendingOtaResult = otaResult;'));
-    expect(
-      main,
-      contains(
-        'final syncedOtaNotice = isTransientOtaResultEvent(resultEvent)',
-      ),
+    final deferredWrite = main.indexOf('pendingOtaResult = otaResult;');
+    final syncFormatter = main.indexOf(
+      'final syncedOtaNotice = isTransientOtaResultEvent(resultEvent)',
     );
-    expect(main, contains('pendingOtaResult = otaResult;'));
-    expect(
-      main,
-      contains(
-        'final syncedOtaNotice = isTransientOtaResultEvent(resultEvent)\\n        ? localizedOtaResultNotice(resultEvent, appLanguageNotifier.value)',
-      ),
+    final localizedFormatter = main.indexOf(
+      'localizedOtaResultNotice(resultEvent, appLanguageNotifier.value)',
+      syncFormatter,
     );
+
+    // Retain the raw event across the SYNC gate; translate only its displayed copy.
+    expect(deferredWrite, greaterThanOrEqualTo(0));
+    expect(syncFormatter, greaterThan(deferredWrite));
+    expect(localizedFormatter, greaterThan(syncFormatter));
     expect(
       main,
       isNot(contains('pendingOtaResult = localizedOtaResultNotice(otaResult')),
