@@ -1736,7 +1736,7 @@ class _DashboardScreenState extends State<DashboardScreen>
         : syncedOtaResult;
     // Format only when displayed so a language change during synchronization uses the current locale.
     final syncedOtaNotice = isTransientOtaResultEvent(resultEvent)
-        ? _friendlyOtaResult(resultEvent)
+        ? localizedOtaResultNotice(resultEvent, appLanguageNotifier.value)
         : '';
     pendingOtaResult = '';
 
@@ -1786,7 +1786,7 @@ class _DashboardScreenState extends State<DashboardScreen>
     unawaited(_setBackgroundService(true));
 
     if (isUserVisibleResetReason(resetReason)) {
-      _showSnackBar(_friendlyReset(resetReason), color: Colors.orangeAccent);
+      _showSnackBar(localizedResetReason(resetReason, appLanguageNotifier.value), color: Colors.orangeAccent);
     }
   }
 
@@ -2027,7 +2027,7 @@ class _DashboardScreenState extends State<DashboardScreen>
         _lastPeltierAckFailureReason = reason;
       }
       if (!hadWaiter) {
-        _showSnackBar(_friendlyReason(reason), color: Colors.orangeAccent);
+        _showSnackBar(localizedNotifyReason(reason, hotLimit: hotLimit, language: appLanguageNotifier.value), color: Colors.orangeAccent);
       }
       return;
     }
@@ -2149,7 +2149,7 @@ class _DashboardScreenState extends State<DashboardScreen>
         }
       } else if (isActiveHomeSafetyReason(safetyReason)) {
         if (latestTelemetryNotice != null || latestSafetyReason != null) {
-          notice = _friendlyReason(safetyReason);
+          notice = localizedNotifyReason(safetyReason, hotLimit: hotLimit, language: appLanguageNotifier.value);
           _homeNotifyRevision++;
         }
       } else if (latestTelemetryNotice != null) {
@@ -2164,7 +2164,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                 'Kondisi keselamatan kembali normal.',
                 appLanguageNotifier.value,
               )
-            : _friendlyReason(safetyReason);
+            : localizedNotifyReason(safetyReason, hotLimit: hotLimit, language: appLanguageNotifier.value);
         _homeNotifyRevision++;
       }
     });
@@ -2364,7 +2364,7 @@ class _DashboardScreenState extends State<DashboardScreen>
       case 'LAST_OTA_RESULT':
         // LAST_OTA_RESULT is event-only. Baseline/history values never replace Home NOTIFY.
         if (isTransientOtaResultEvent(value)) {
-          notice = _friendlyOtaResult(value);
+          notice = localizedOtaResultNotice(value, appLanguageNotifier.value);
           if (value.trim().toUpperCase().startsWith('OTA_UP_TO_DATE|')) {
             otaExpectedDisconnect = false;
             otaRecoveryActive = false;
@@ -2520,7 +2520,7 @@ class _DashboardScreenState extends State<DashboardScreen>
     if (voltageLockKnown && voltageLockActive && target != '5V') {
       if (mounted)
         _showSnackBar(
-          _friendlyReason('VOLTAGE_LOCKED'),
+          localizedNotifyReason('VOLTAGE_LOCKED', hotLimit: hotLimit, language: appLanguageNotifier.value),
           color: Colors.orangeAccent,
         );
       return;
@@ -2958,7 +2958,7 @@ class _DashboardScreenState extends State<DashboardScreen>
     if (!connected) return;
     if (enabled && voltageLockKnown && voltageLockActive) {
       _showSnackBar(
-        _friendlyReason('VOLTAGE_LOCKED'),
+        localizedNotifyReason('VOLTAGE_LOCKED', hotLimit: hotLimit, language: appLanguageNotifier.value),
         color: Colors.orangeAccent,
       );
       return;
@@ -3270,7 +3270,7 @@ class _DashboardScreenState extends State<DashboardScreen>
       );
       if (!accepted && mounted) {
         final reason = _lastCommandAckReason;
-        _showSnackBar(_friendlyReason(reason), color: Colors.orangeAccent);
+        _showSnackBar(localizedNotifyReason(reason, hotLimit: hotLimit, language: appLanguageNotifier.value), color: Colors.orangeAccent);
       }
     } finally {
       if (mounted) {
@@ -3525,174 +3525,6 @@ class _DashboardScreenState extends State<DashboardScreen>
     });
   }
 
-  Map<String, String> _otaDiagnosticFields(String raw) {
-    final fields = <String, String>{};
-    for (final part in raw.split('|')) {
-      final index = part.indexOf('=');
-      if (index <= 0) continue;
-      fields[part.substring(0, index).trim().toUpperCase()] = part
-          .substring(index + 1)
-          .trim();
-    }
-    return fields;
-  }
-
-  // AI-METHOD: _friendlyOtaStage — Translate frozen OTA stage tokens into localized presentation text.
-  String _friendlyOtaStage(String stage) {
-    final specialKey = otaStageLocalizationKey(stage);
-    if (specialKey.isNotEmpty) {
-      return JexText.of(specialKey, appLanguageNotifier.value);
-    }
-    const keyByStage = <String, String>{
-      'LOCAL_FILE_CHECK': 'otaStageLocalFileCheck',
-      'LOCAL_SIZE_CHECK': 'otaStageLocalSizeCheck',
-      'LOCAL_UPDATE_BEGIN': 'otaStageLocalUpdateBegin',
-      'LOCAL_RECEIVE': 'otaStageLocalReceive',
-      'LOCAL_FLASH_WRITE': 'otaStageLocalFlashWrite',
-      'LOCAL_SIZE_VERIFY': 'otaStageLocalSizeVerify',
-      'LOCAL_IMAGE_VERIFY': 'otaStageLocalImageVerify',
-      'LOCAL_BOOT_PARTITION': 'otaStageLocalBootPartition',
-      'ONLINE_REQUEST': 'otaStageOnlineRequest',
-      'ONLINE_VERSION_CHECK': 'otaStageOnlineVersionCheck',
-      'ONLINE_UP_TO_DATE': 'otaStageOnlineUpToDate',
-      'ONLINE_WIFI_CONNECT': 'otaStageOnlineWifiConnect',
-      'ONLINE_WIFI_CONNECTED': 'otaStageOnlineWifiConnected',
-      'ONLINE_WIFI_RETRY_2': 'otaStageOnlineWifiRetry2',
-      'ONLINE_WIFI_RETRY_3': 'otaStageOnlineWifiRetry3',
-      'ONLINE_WIFI_FAILED': 'otaStageOnlineWifiFailed',
-      'ONLINE_GITHUB_CONNECT': 'otaStageOnlineGithubConnect',
-      'ONLINE_GITHUB_CONNECTED': 'otaStageOnlineGithubConnected',
-      'ONLINE_DOWNLOAD': 'otaStageOnlineDownload',
-      'ONLINE_DOWNLOAD_COMPLETE': 'otaStageOnlineDownloadComplete',
-      'ONLINE_IMAGE_VALIDATE': 'otaStageOnlineImageValidate',
-      'ONLINE_FLASH_PREPARE': 'otaStageOnlineFlashPrepare',
-      'ONLINE_FLASH_FINALIZE': 'otaStageOnlineFlashFinalize',
-      'ONLINE_FLASH_SUCCESS': 'otaStageOnlineFlashSuccess',
-    };
-    final key = keyByStage[stage.trim().toUpperCase()] ?? 'unknownOtaStage';
-    return JexText.of(key, appLanguageNotifier.value);
-  }
-
-  // AI-METHOD: _friendlyOtaResult — Translate one-shot OTA result events into Home NOTIFY text.
-  String _friendlyOtaMode(String mode) {
-    switch (mode.trim().toUpperCase()) {
-      case 'LOCAL':
-        return JexText.of('otaModeLocal', appLanguageNotifier.value);
-      case 'ONLINE':
-        return JexText.of('otaModeOnline', appLanguageNotifier.value);
-      default:
-        return 'OTA';
-    }
-  }
-
-  // User-facing OTA summaries never expose raw ERROR/CODE values or event tokens.
-  String _friendlyOtaResult(String value) {
-    final raw = value.trim();
-    if (raw.isEmpty || raw.toUpperCase() == 'NONE') return '';
-    final upper = raw.toUpperCase();
-    final language = appLanguageNotifier.value;
-
-    if (upper.startsWith('OTA_FAILED|')) {
-      final fields = _otaDiagnosticFields(raw);
-      return localizedOtaFailureSummary(
-        language,
-        mode: _friendlyOtaMode(fields['MODE'] ?? 'OTA'),
-        stage: _friendlyOtaStage(fields['STAGE'] ?? 'UNKNOWN'),
-      );
-    }
-
-    if (upper.startsWith('OTA_UP_TO_DATE|')) {
-      final fields = _otaDiagnosticFields(raw);
-      final mode = _friendlyOtaMode(fields['MODE'] ?? 'OTA');
-      final version = fields['VERSION'] ?? '';
-      final details = <String>[JexText.of('otaUpToDate', language)];
-      if (mode.toUpperCase() != 'OTA') details.add(mode);
-      if (RegExp(r'^[A-Za-z0-9][A-Za-z0-9._+\-]{0,31}$').hasMatch(version)) {
-        details.add(version);
-      }
-      return details.join(' • ');
-    }
-
-    if (upper.startsWith('OTA_SUCCESS|')) {
-      final fields = _otaDiagnosticFields(raw);
-      return localizedOtaSuccessSummary(
-        language,
-        mode: _friendlyOtaMode(fields['MODE'] ?? 'OTA'),
-        version: fields['VERSION'] ?? '',
-      );
-    }
-
-    if (upper.startsWith('IN_PROGRESS|')) {
-      final fields = _otaDiagnosticFields(raw);
-      final mode = _friendlyOtaMode(fields['MODE'] ?? 'OTA');
-      final stage = _friendlyOtaStage(fields['STAGE'] ?? 'UNKNOWN');
-      final progress = int.tryParse(fields['PROGRESS'] ?? '')?.clamp(0, 100);
-      final details = <String>[
-        JexText.of('otaProgress', language).replaceAll(RegExp(r'\s*•\s*$'), ''),
-      ];
-      if (mode.toUpperCase() != 'OTA') details.add(mode);
-      if (stage != JexText.of('unknownOtaStage', language)) details.add(stage);
-      if (progress != null) details.add('$progress%');
-      return details.join(' • ');
-    }
-
-    if (upper == 'IN_PROGRESS') return JexText.of('otaInProgress', language);
-    if (upper == 'LOCAL_SUCCESS') {
-      return localizedOtaSuccessSummary(
-        language,
-        mode: JexText.of('otaModeLocal', language),
-      );
-    }
-    if (upper.startsWith('SUCCESS_')) {
-      // The suffix is an internal event identifier, not user-facing copy.
-      return localizedOtaSuccessSummary(language);
-    }
-    if (upper.startsWith('UPLOAD_SIZE_MISMATCH_')) {
-      return formatOtaUploadSizeMismatch(raw, language) ??
-          JexText.of('otaSizeMismatch', language);
-    }
-    if (upper.startsWith('OTA_END_ERROR_')) {
-      // Detailed suffixes belong in internal diagnostics, not the Home status card.
-      return localizedOtaFailureSummary(language);
-    }
-    if (upper.contains('FAILED') || upper.contains('ERROR')) {
-      return localizedOtaFailureSummary(language);
-    }
-    return raw.contains('_') ? JexText.of('deviceStatusUpdate', language) : raw;
-  }
-
-  String _friendlyReset(String value) {
-    switch (value) {
-      case 'BROWNOUT':
-        return JexText.of('resetBrownout', appLanguageNotifier.value);
-      case 'PANIC':
-        return JexText.of('resetPanic', appLanguageNotifier.value);
-      case 'SOFTWARE':
-        return JexText.of('resetSoftware', appLanguageNotifier.value);
-      case 'WDT':
-      case 'INT_WDT':
-      case 'TASK_WDT':
-        return JexText.of('resetWatchdog', appLanguageNotifier.value);
-      case 'EXTERNAL':
-        return JexText.of('resetExternal', appLanguageNotifier.value);
-      case 'DEEPSLEEP':
-        return JexText.of('resetDeepSleep', appLanguageNotifier.value);
-      case 'POWER_ON':
-      case 'POWERON':
-        return JexText.of('resetPowerOn', appLanguageNotifier.value);
-      default:
-        return JexText.of('deviceStatusUpdate', appLanguageNotifier.value);
-    }
-  }
-
-  String _friendlyReason(String reason) {
-    return localizedNotifyReason(
-      reason,
-      hotLimit: hotLimit,
-      language: appLanguageNotifier.value,
-    );
-  }
-
   void _showSnackBar(String message, {Color color = Colors.blueAccent}) {
     if (!mounted || message.trim().isEmpty) return;
     setState(() => notice = _compactNotifyMessage(message));
@@ -3833,7 +3665,7 @@ class _DashboardScreenState extends State<DashboardScreen>
         upper.startsWith('SUCCESS_') ||
         upper.startsWith('UPLOAD_SIZE_MISMATCH_') ||
         upper.startsWith('OTA_END_ERROR_')) {
-      return _friendlyOtaResult(trimmed);
+      return localizedOtaResultNotice(trimmed, appLanguageNotifier.value);
     }
 
     final storedOtaSummary = RegExp(
@@ -3884,7 +3716,7 @@ class _DashboardScreenState extends State<DashboardScreen>
     }
     if (lower.startsWith('reset:')) {
       final reset = raw.substring(raw.indexOf(':') + 1).trim();
-      return _friendlyReset(reset);
+      return localizedResetReason(reset, appLanguageNotifier.value);
     }
     if (lower.startsWith('ota could not start:')) {
       return JexText.of('otaStartRejected');
@@ -3950,7 +3782,7 @@ class _DashboardScreenState extends State<DashboardScreen>
             safetyReason.trim().toUpperCase() == 'WAITING_FOR_NTC' ||
             safetyReason.trim().toUpperCase() ==
                 'WAITING_FOR_SENSOR_VALIDATION')) {
-      return _friendlyReason(safetyReason);
+      return localizedNotifyReason(safetyReason, hotLimit: hotLimit, language: appLanguageNotifier.value);
     }
 
     if (custom.isNotEmpty) return custom;
@@ -3960,7 +3792,7 @@ class _DashboardScreenState extends State<DashboardScreen>
     if (syncing && !dashboardReady)
       return JexText.of('synchronizingDevice', appLanguageNotifier.value);
 
-    return _friendlyReason(safetyReason);
+    return localizedNotifyReason(safetyReason, hotLimit: hotLimit, language: appLanguageNotifier.value);
   }
 
   void _notifyCommandAccepted(

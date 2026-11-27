@@ -150,9 +150,16 @@ void main() {
         'final syncedOtaNotice = isTransientOtaResultEvent(resultEvent)',
       ),
     );
+    expect(main, contains('pendingOtaResult = otaResult;'));
     expect(
       main,
-      isNot(contains('pendingOtaResult = _friendlyOtaResult(otaResult);')),
+      contains(
+        'final syncedOtaNotice = isTransientOtaResultEvent(resultEvent)\\n        ? localizedOtaResultNotice(resultEvent, appLanguageNotifier.value)',
+      ),
+    );
+    expect(
+      main,
+      isNot(contains('pendingOtaResult = localizedOtaResultNotice(otaResult')),
     );
   });
 

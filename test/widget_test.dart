@@ -2545,19 +2545,19 @@ void main() {
       );
 
       final source = File('lib/main.dart').readAsStringSync();
-      final start = source.indexOf('String _friendlyOtaResult(String value)');
-      final end = source.indexOf('String _friendlyReset(String value)', start);
-      expect(start, isNonNegative);
-      expect(end, greaterThan(start));
-      final formatter = source.substring(start, end);
-      expect(formatter, contains('localizedOtaFailureSummary('));
-      expect(formatter, contains('localizedOtaSuccessSummary('));
-      expect(formatter, isNot(contains("fields['ERROR']")));
-      expect(formatter, isNot(contains('code \$code')));
+      final copy = File('lib/home_notify.dart').readAsStringSync();
+      expect(copy, contains('String localizedOtaResultNotice('));
+      expect(copy, contains('String localizedResetReason('));
+      expect(copy, contains('localizedOtaFailureSummary('));
+      expect(copy, contains('localizedOtaSuccessSummary('));
+      expect(copy, isNot(contains("fields['ERROR']")));
+      expect(copy, isNot(contains('code \$code')));
       expect(
-        formatter,
+        copy,
         isNot(contains("raw.replaceAll('_', ' ').toLowerCase()")),
       );
+      expect(source, isNot(contains('String _friendlyOtaResult(')));
+      expect(source, isNot(contains('String _friendlyReset(')));
 
       final compactStart = source.indexOf(
         'String _compactNotifyMessage(String message)',
@@ -2567,7 +2567,7 @@ void main() {
         compactStart,
       );
       final otaFormatterIndex = source.indexOf(
-        'return _friendlyOtaResult(trimmed);',
+        'return localizedOtaResultNotice(trimmed, appLanguageNotifier.value);',
         compactStart,
       );
       expect(compactStart, isNonNegative);
