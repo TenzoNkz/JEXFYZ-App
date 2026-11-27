@@ -847,16 +847,13 @@ void main() {
       expect(usage, contains('latest_hotside'));
       expect(usage, contains('UNION'));
       expect(
-        containsDartFragment(
-          usage,
-          '''
+        containsDartFragment(usage, '''
 _usageSampleRetentionDeleteSql, [
   cutoff,
   cutoff,
   cutoff,
 ]
-''',
-        ),
+'''),
         isTrue,
       );
       expect(
