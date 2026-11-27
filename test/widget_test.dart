@@ -1431,9 +1431,7 @@ void main() {
     final priorLanguage = appLanguageNotifier.value;
     appLanguageNotifier.value = AppLanguage.english;
     addTearDown(() => appLanguageNotifier.value = priorLanguage);
-    await tester.pumpWidget(
-      const JeCoolerApp(dashboard: DashboardScreen()),
-    );
+    await tester.pumpWidget(const JeCoolerApp(dashboard: DashboardScreen()));
     await tester.pump();
 
     expect(find.text('JE X FYZ'), findsOneWidget);
