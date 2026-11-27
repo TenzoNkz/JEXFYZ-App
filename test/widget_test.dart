@@ -3438,13 +3438,15 @@ void main() {
     expect(source, isNot(contains("JexText.of('resetTemperature'")));
     expect(settings, isNot(contains("'resetTemperature'")));
 
-    // Keep protocol acknowledgement classification independent of the removed UI action.
+    // Command ACK classification is separate from the removed Temperature UI action.
+    final commandContract = File(
+      'lib/p1_command_contract.dart',
+    ).readAsStringSync();
     expect(
-      source,
+      commandContract,
       contains("if (c == 'RESET:TEMPERATURE') return 'RESET_TEMPERATURE';"),
     );
   });
-
   test('Peltier safety action keeps a reachable Cancel and a full-width primary target', () {
     final source = File('lib/main.dart').readAsStringSync();
     final methodStart = source.indexOf(

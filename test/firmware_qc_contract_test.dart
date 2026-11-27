@@ -606,8 +606,11 @@ void main() {
     'App waits for voltage telemetry and marks disconnected outputs unknown',
     () {
       final source = File('lib/main.dart').readAsStringSync();
+      final commandContract = File(
+        'lib/p1_command_contract.dart',
+      ).readAsStringSync();
       expect(
-        source,
+        commandContract,
         contains(
           "if (c.startsWith('VOLTAGE:')) return MapEntry('VOLTAGE', c.substring(8));",
         ),
@@ -635,7 +638,6 @@ void main() {
       );
     },
   );
-
   test('manual Peltier lock cannot be bypassed by one threshold sample', () {
     final source = File('firmware/JEXFYZ-V7.2.ino').readAsStringSync();
     final start = source.indexOf(
@@ -896,9 +898,12 @@ void main() {
 
   test('App treats Lock Voltage as synchronized Firmware state, not Android preference', () {
     final source = File('lib/main.dart').readAsStringSync();
+    final commandContract = File(
+      'lib/p1_command_contract.dart',
+    ).readAsStringSync();
     final settings = File('lib/settings_pages.dart').readAsStringSync();
     expect(
-      source,
+      commandContract,
       contains("if (c.startsWith('VOLTAGE_LOCK:')) return 'VOLTAGE_LOCK';"),
     );
     expect(source, contains("case 'VOLTAGE_LOCK':"));

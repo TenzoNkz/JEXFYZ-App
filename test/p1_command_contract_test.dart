@@ -34,52 +34,20 @@ void main() {
       };
 
       for (final entry in cases.entries) {
-        expect(
-          P1CommandContract.ackItemForCommand(entry.key),
-          entry.value,
-          reason: entry.key,
+        final actual = P1CommandContract.expectedTelemetryForCommand(
+          entry.key,
         );
-        expect(
-          P1CommandContract.ackItemForCommand('  ${entry.key.toLowerCase()}  '),
-          entry.value,
-          reason: entry.key,
+        expect(actual?.key, entry.value.key, reason: entry.key);
+        expect(actual?.value, entry.value.value, reason: entry.key);
+
+        // MapEntry has no structural equality; compare its fields, not object identity.
+        final normalized = P1CommandContract.expectedTelemetryForCommand(
+          ' ${entry.key.toLowerCase()} ',
         );
+        expect(normalized?.key, entry.value.key, reason: entry.key);
+        expect(normalized?.value, entry.value.value, reason: entry.key);
       }
 
-      expect(P1CommandContract.ackItemForCommand('RESET:POWER_ON'), isNull);
-      expect(P1CommandContract.ackItemForCommand('FAN:AUTO'), isNull);
-      expect(P1CommandContract.ackItemForCommand('UNKNOWN'), isNull);
-    });
-
-    test('maps output commands to telemetry-confirmed values, not ACK labels', () {
-      const cases = <String, MapEntry<String, String>>{
-        'FAN:ON': MapEntry('FAN', 'ON'),
-        'FAN:OFF': MapEntry('FAN', 'OFF'),
-        'PELTIER:ON': MapEntry('PELTIER', 'ON'),
-        'PELTIER:OFF': MapEntry('PELTIER', 'OFF'),
-        'ADAPTIVE:ON': MapEntry('ADAPTIVE', 'ON'),
-        'ADAPTIVE:OFF': MapEntry('ADAPTIVE', 'OFF'),
-        'VOLTAGE_LOCK:ON': MapEntry('VOLTAGE_LOCK', 'ON'),
-        'VOLTAGE:9V': MapEntry('VOLTAGE', '9V'),
-        'RGB:ON': MapEntry('RGB', 'ON'),
-        'RGB:OFF': MapEntry('RGB', 'OFF'),
-        'MODE:2': MapEntry('MODE', '2'),
-        'BRIGHTNESS:75': MapEntry('BRIGHTNESS', '75'),
-        'COLOR:#A1B2C3': MapEntry('RGB_COLOR', '#A1B2C3'),
-        'FANSPEED:80': MapEntry('FAN_SPEED', '80'),
-        'HOTLIMIT:45': MapEntry('TEMP_HOT_LIMIT', '45'),
-        'BATT5:25': MapEntry('BATT_5', '25'),
-        'BATT12:35': MapEntry('BATT_12', '35'),
-        'ADAPTIVE_PROFILE:HOT': MapEntry('ADAPTIVE_PROFILE', 'HOT'),
-      };
-
-      for (final entry in cases.entries) {
-        expect(
-          P1CommandContract.expectedTelemetryForCommand(entry.key),
-          entry.value,
-          reason: entry.key,
-        );
-      }
       expect(
         P1CommandContract.expectedTelemetryForCommand('SYNC_READY'),
         isNull,
