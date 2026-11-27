@@ -4,15 +4,16 @@ Last reconciled: 2026-11-28 (Asia/Jakarta). Authority: MASTER_PROMPT.md.
 
 ## Active CODE_FULL work item — IN_PROGRESS
 
-- Owner command: “@Thinking Eksekusi Code!”; approved scope is App-only source/tests/docs/static audit WP0–WP10, direct commits on main.
-- Current source/test SHA: f69bc4915f946c7e1dfca1c545ded6e102eea3e7. Validation Only #267 / run 46070875101 / job 140747239194, exact-SHA terminal SUCCESS: dependencies PASS; formatter 53/0; analyzer 139 info with zero warnings/errors; Flutter tests 340/340 PASS.
-- Live path inventory at latest reconciliation: 175 tree entries / 129 tracked blobs / 46 tree nodes, truncated=false; REPOSITORY_UPGRADE_PLAN.md covers 129/129 tracked paths exactly once.
-- WP4 semantic canvas: jexCanvas maps to ThemeData.scaffoldBackgroundColor, distinct from ColorScheme.surface. JexSemanticColors.from(ThemeData) derives canvas from theme and remaining roles from ColorScheme. Five source/test paths changed; canonical formatter follow-up is separately committed. No palette, screen composition, layout geometry or touch dimension changed.
-- WP3: queued heartbeat session gate and pure telemetry parser verified by #261; Dashboard retains sole BLE/GATT/P1/session/ACK/telemetry/command authority. No wire change.
-- WP0: Dashboard/major routes, Settings/bootstrap/preferences, Floating Monitor boundary and Usage Statistics source reviewed. widget_test.dart has 117 tests, 84 source reads across 45 test bodies and 10 whitespace-only fragment checks; source-contract assertion brittleness remains open.
-- Open: role-based type/spacing/shape token classification; remaining Dashboard decomposition; WP5–WP9 screen presentation; EN/ID, Light/Dark, viewport/accessibility rendered matrix; Android/OEM screenshots; SQLite migration runtime fixture; Usage Statistics 1h/6h/24h profiles; WP10 closure.
-- Local Flutter/Dart/Gradle/ADB checks BLOCKED / NOT RUN. No Android/Kotlin build, device/screenshot evidence; whole-App visual **VISUAL NOT VERIFIED**. No App package build or protected Firmware/BIN/P1-wire/security/OTA/Firebase/signing/device operation.
-- Next: complete WP4 semantic role classification and proceed with a bounded WP5 feature-screen slice, with exact-head/blob preflight and exact-SHA Validation Only evidence.
+- Owner command: “@Thinking Eksekusi Code!”; approved scope remains App-only WP0–WP10 source/tests/docs/config/static audit, direct commits on main by ChatGPT/Codex alone.
+- Current main / App source-test SHA: cc25bd259339d23597cb28fe5636929dc8664176. Validation Only #274 / run 46076998762 / job 140766970296, exact-SHA terminal SUCCESS: dependencies PASS; formatter PASS (55 files / 0 changed); analyzer PASS (139 info, zero warnings/errors); Flutter tests 347/347 PASS; summary SUCCESS.
+- WP0 lib/main.dart audit completed at blob c2821452079e798bfaaac99acb82af1f6e127c86; Dashboard remains sole BLE/GATT/P1/session/ACK/telemetry/command owner. Protected OTA/Firebase code untouched.
+- WP4 shared Dashboard switch-row/token slice closed with rendered widget and token tests. Value-only widget; no protocol/session/command changes; preserved 62-dp minimum, observed 64-dp natural height, 42-dp icon, existing type/radii/spacing, Tristate semantics and 54×48-dp touch target. Full suite #274 green.
+- Failures #270–#273 and actual root causes are retained in the active CHAT_TRANSFER checkpoint; all repaired before #274.
+- Inventory is 131 blobs / 131 unique dispositions, truncated=false. widget_test.dart source fragments are lexical static assertions, not AST guarantees; broader brittleness review OPEN.
+- Local toolchain BLOCKED / NOT RUN; no Android/Kotlin build, screenshots or physical device tests. Whole-App visual NOT VERIFIED.
+- No Build App/APK/sign/release, Firmware/BIN, BLE/P1 wire/security, OTA transport/recovery, Firebase production, flashing or device operation.
+- Next bounded slice: WP5 Temperature presentation using lib/dashboard_temperature_tab.dart and test/temperature_accessibility_test.dart; preserve thermal limits, battery-zone constraints, Adaptive/transition and connectivity locks, EN/ID semantics and 48×48-dp touch target; expand applicable screen matrix. Exact HEAD/blob preflight and exact-SHA Validation Only required before advancing.
+
 
 ## Historical Build App work item — COMPLETED SUCCESS
 
