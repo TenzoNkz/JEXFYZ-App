@@ -4312,7 +4312,7 @@ void main() {
     );
     expect(temperatureStart, isNonNegative);
     expect(temperatureEnd, greaterThan(temperatureStart));
-    final temperatureButton = source.substring(
+    final temperatureButton = temperatureSource.substring(
       temperatureStart,
       temperatureEnd,
     );
