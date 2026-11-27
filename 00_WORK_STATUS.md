@@ -14,11 +14,11 @@
 | Request / work item | Continue approved App-only rework incrementally, one coherent batch at a time, with exact-SHA validation and a durable checkpoint after each milestone. |
 | Started | 2026-11-27T20:56:00+07:00 (Asia/Jakarta) |
 | Last updated | 2026-11-27 (Asia/Jakarta) |
-| Current phase | WP4 Batch 2 — inspect Statistics chart axis labels and typography role; then implement the smallest justified token/test batch and exact-SHA validation. |
-| Last completed milestone | WP4 Batch 1 — added JexShapeTokens.compactControlRadius = 11.0 for the Lock Voltage Settings icon and two LED mode-navigation surfaces. Per-screen sizing and padding were preserved; a contract test checks one Settings and two LED references. Validation Only #209 passed on source 213ec7c7ad109b953d1242a003e2010f2ee5205e (285/285, dependencies/formatter/analyzer PASS). WP5 Batch 3 remains verified. |
-| Last verified App source checkpoint | 213ec7c7ad109b953d1242a003e2010f2ee5205e — Validation Only #209 terminal SUCCESS (WP4 Batch 1); WP5 Batch 3 terminal success #205. |
-| EXTERNAL OPERATION | Validation Only #209 — run 45997065529 / job 140499007628; exact source SHA 213ec7c7ad109b953d1242a003e2010f2ee5205e. |
-| EXTERNAL OPERATION STATUS | SUCCESS. |
-| Result / evidence | #209: locked dependencies PASS; Dart formatter 44 files / 0 changed; analyzer PASS; Flutter tests 285/285 PASS; all summary outcomes success. |
+| Current phase | WP4 Batch 2 — Statistics axis token and source-contract coverage are present; formatter-only contract correction committed as d0ab205; Validation Only #213 is running on the exact source SHA. |
+| Last completed milestone | WP4 Batch 2 — confirmed existing JexStatisticsTypographyTokens.axisLabel = 10.0 is used by the Statistics Y-axis tick labels and both X-axis endpoint labels. Existing source-contract coverage verifies three call sites and the token value. Fixed the only current Validation Only #212 issue: canonical Dart formatter wanted a one-line assertion in test/usage_statistics_test.dart. Direct-main commit d0ab20533c2bf27be18dbb25c3ad9c762663d7e0 was read back; no functional/chart/data behavior changed. |
+| Last verified App source checkpoint | d0ab20533c2bf27be18dbb25c3ad9c762663d7e0 — WP4 Batch 2 formatter correction; Validation Only #213 in progress. |
+| EXTERNAL OPERATION | Validation Only #213 — run 46012060878 / job 140549796007; exact source SHA d0ab20533c2bf27be18dbb25c3ad9c762663d7e0. |
+| EXTERNAL OPERATION STATUS | IN_PROGRESS. |
+| Result / evidence | #212 had locked dependencies PASS, analyzer PASS and Flutter tests 285/285 PASS, but its formatter gate failed on one assertion layout. The canonical formatter output was applied in d0ab205; #213 is currently running. |
 | Blocker / remaining evidence | Local Flutter/Dart/Gradle/ADB unavailable. Android/Kotlin, screenshots/OEM/device, SQLite runtime migration, performance soak and whole-App visual acceptance remain NOT RUN / NOT VERIFIED. |
-| Next action | Verify active checkpoint and current main; inspect Statistics chart source/test consumers; complete one WP4 Batch 2 increment only where the typography role is consistent, then run exact-SHA Validation Only. |
+| Next action | Observe Validation Only #213 terminal state on d0ab205. If green, checkpoint WP4 Batch 2 and continue to the next dependency-ready App work package; if not, inspect the exact failing step/log and repair only the underlying cause. |
