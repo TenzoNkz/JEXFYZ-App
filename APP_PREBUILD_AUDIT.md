@@ -1,3 +1,18 @@
+## Latest CODE_FULL checkpoint — P1 frame + command contracts; Validation Only #148 green — 2026-11-27
+
+- **Live main:** `b265ea111bcd03e230af9e13413cee7bc23c00b8` is a docs-only descendant of source/test SHA `0448d03c39536c57ad7e8c2d36718d525d2d60fb`; tree `5bf70519bd284a5481e9cdf63e9f1efa1892c8b8`, 157 entries / 111 blobs / 46 trees, `truncated=false`. Register coverage: 111/111 unique tracked paths.
+- **Validation Only #148:** run `45943879592` / job `140324041087`, exact source/test SHA `0448d03c39536c57ad7e8c2d36718d525d2d60fb`, terminal SUCCESS — locked dependencies PASS; read-only formatter PASS (35 files / 0 changed); analyzer PASS; **253/253 Flutter tests PASS**. The temporary format-capture probe used by #145/#147 is absent.
+- **WP2:** `app_bootstrap.dart` and five startup tests, `settings_pages.dart` presentation part, and injected `app_root.dart` are in validated source; official-build verification, persistence identity/defaults and Floating Monitor bridge/native renderer remain unchanged.
+- **WP4 foundation:** `jex_design_tokens.dart` centralizes approved geometry and semantic ColorScheme roles; screen-wide adoption and visual matrix acceptance remain open.
+- **WP3 framing:** `p1_frame_decoder.dart` extracts bounded stream buffering/frame boundaries. Dashboard still parses ACKs, commits snapshots, owns SYNC/SYNC_READY and BLE readiness.
+- **WP3 commands:** `p1_command_contract.dart` extracts pure command classification only. Dashboard retains GATT write/transaction queues, ACK waiters, reconnect, session and telemetry truth. No P1 wire or Firmware change was made.
+- **Regression lineage:** #143/#144 caught stale source-test references and wrong test-table typing; #145/#147 passed analyzer and 254 tests but failed formatter. Their count included the temporary probe. After exact formatter output was applied and the probe removed, #148 passed all gates with 253/253 tests.
+- **Still open:** whole-file `main.dart` audit and seven formatter-touched whole-file reviews; WP3 ACK-waiter/session-state extraction; WP4–WP10 screen, statistics, native bridge, visual and repository closure work.
+- **Evidence limits:** no local Flutter/Dart/Gradle/ADB. Android/Kotlin build, screenshots/OEM/device validation, SQLite v1→v2 runtime fixture and 1h/6h/24h profile NOT RUN. Whole-App visual acceptance remains **VISUAL NOT VERIFIED**.
+- **Release/scope:** Build #167 remains latest published package on `0dd96228d33b08c66e736ae91a8a6c3e5c3ddb81`. Current main is not packaged; no Build App/APK/sign/Release, Firmware/BIN, Firebase production, OTA, flashing or physical device operation occurred.
+
+---
+
 ## Latest CODE_FULL checkpoint — exact main validation + Home NOTIFY extraction — 2026-11-27
 
 - **Live source:** `main` `c97a2fdc2698b16339d3f03ff04d992f2a0e7848`; recursive tree 147 entries / 101 blobs / 46 trees; `truncated=false`. GitHub has only branch `main`, zero rulesets.
