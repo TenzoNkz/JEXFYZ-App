@@ -122,7 +122,7 @@ RECOVERY
 Chat Stuck! in this chat inherits only the most recent valid CODE_FULL authorization. Check live branch/status and unfinished external operations before resuming. Do not repeat commits or side effects.
 
 STATUS + MEMORY
-Follow MASTER_PROMPT.md Sections 2A and 5 for every message. Record WORKSPACE = CODE_FULL. App source/test changes must flow through Copilot `copilot/*` branches and PRs into `main`; Diskusi-only checkpoint/status documentation may be committed directly to `main`. Re-fetch the verified base/main SHA and the current PR head before every review or merge. Keep independent Actions states separate. Update CHAT_TRANSFER.md and the relevant subject note with durable findings/results/blockers, then verify every write and final main HEAD.
+Follow MASTER_PROMPT.md Sections 2A and 5 for every message. Record WORKSPACE = CODE_FULL. App source/test changes are authored and committed by ChatGPT/Codex directly to `main`; no Copilot, external agent, feature branch or PR handoff. Re-fetch the verified main HEAD and target file blob SHAs before every write. Keep independent Actions states separate. Update CHAT_TRANSFER.md and the relevant subject note with durable findings/results/blockers, then verify every write and final main HEAD.
 
 REPORT
 List changed files, commit, exact tests/checks actually run or BLOCKED / NOT RUN, residual risks and one next action. Never imply an App package was built. End with Arah berikutnya: Lanjut Diskusi!, Lanjut Eksekusi Code! or Siap Eksekusi Build App! as appropriate; a recommendation is not authorization.
