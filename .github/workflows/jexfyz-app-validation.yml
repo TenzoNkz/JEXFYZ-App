@@ -64,16 +64,6 @@ jobs:
           set -euo pipefail
           dart format --output=none --set-exit-if-changed lib test
 
-      # TEMPORARY: capture canonical formatter output for the Home/Dashboard source.
-      - name: Diagnose Home formatter output (temporary)
-        if: ${{ !cancelled() && steps.dependencies.outcome == 'success' }}
-        shell: bash
-        run: |
-          set -euo pipefail
-          echo "<<<BEGIN:lib/main.dart>>>"
-          dart format --output=show lib/main.dart
-          echo "<<<END:lib/main.dart>>>"
-
       - name: Analyze Flutter and Dart source
         id: analyzer
         if: ${{ !cancelled() && steps.dependencies.outcome == 'success' }}

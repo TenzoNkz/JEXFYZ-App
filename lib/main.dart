@@ -350,8 +350,10 @@ class TamperScreen extends StatelessWidget {
                       language,
                     ),
                     textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.bodyMedium
-                        ?.copyWith(color: scheme.jexMutedForeground, height: 1.4),
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: scheme.jexMutedForeground,
+                      height: 1.4,
+                    ),
                   ),
                   const SizedBox(height: 24),
                   SizedBox(
@@ -2674,9 +2676,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                               color: scheme.jexSurface,
                               borderRadius: BorderRadius.circular(20),
                               border: Border.all(
-                                color: scheme.jexOutline.withValues(
-                                  alpha: .82,
-                                ),
+                                color: scheme.jexOutline.withValues(alpha: .82),
                               ),
                               boxShadow: [
                                 BoxShadow(
@@ -4678,9 +4678,7 @@ class _DashboardScreenState extends State<DashboardScreen>
           // selection is represented only by the shared toggle on the right.
           color: scheme.jexElevatedSurface.withValues(alpha: .26),
           borderRadius: BorderRadius.circular(18),
-          border: Border.all(
-            color: scheme.jexOutline.withValues(alpha: .68),
-          ),
+          border: Border.all(color: scheme.jexOutline.withValues(alpha: .68)),
         ),
         child: Row(
           children: [
@@ -4790,9 +4788,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                   duration: const Duration(milliseconds: 180),
                   padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
                   decoration: BoxDecoration(
-                    color: scheme.jexElevatedSurface.withValues(
-                      alpha: .25,
-                    ),
+                    color: scheme.jexElevatedSurface.withValues(alpha: .25),
                     borderRadius: BorderRadius.circular(18),
                     border: Border.all(
                       color: scheme.jexOutline.withValues(alpha: .70),
@@ -5125,9 +5121,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                 Container(
                   padding: const EdgeInsets.fromLTRB(10, 9, 10, 10),
                   decoration: BoxDecoration(
-                    color: scheme.jexElevatedSurface.withValues(
-                      alpha: .22,
-                    ),
+                    color: scheme.jexElevatedSurface.withValues(alpha: .22),
                     borderRadius: BorderRadius.circular(18),
                     border: Border.all(
                       color: scheme.jexOutline.withValues(alpha: .68),
@@ -5161,9 +5155,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                 Container(
                   padding: const EdgeInsets.fromLTRB(11, 8, 11, 7),
                   decoration: BoxDecoration(
-                    color: scheme.jexElevatedSurface.withValues(
-                      alpha: .20,
-                    ),
+                    color: scheme.jexElevatedSurface.withValues(alpha: .20),
                     borderRadius: BorderRadius.circular(16),
                     border: Border.all(
                       color: scheme.jexOutline.withValues(alpha: .60),
@@ -6536,3 +6528,4 @@ class _FirmwareUpdateDialogState extends State<FirmwareUpdateDialog> {
     );
   }
 }
+Formatted 1 file (1 changed) in 0.13 seconds.
