@@ -25,9 +25,86 @@ import 'package:jexfyz_cooler/main.dart';
 import 'package:jexfyz_cooler/app_settings.dart';
 import 'package:jexfyz_cooler/floating_monitor.dart';
 import 'package:jexfyz_cooler/home_notify.dart';
+import 'package:jexfyz_cooler/dashboard_shared_components.dart';
 import 'package:jexfyz_cooler/led_controls.dart';
 
 void main() {
+  testWidgets(
+    'Dashboard shared presentation components preserve their established visual contract',
+    (tester) async {
+      final theme = buildJexTheme(AppThemePreset.dark);
+      const defaultChildKey = ValueKey<String>('dashboard-card-default-child');
+      const customChildKey = ValueKey<String>('dashboard-card-custom-child');
+
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: theme,
+          home: Scaffold(
+            body: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: const [
+                  JexDashboardSectionTitle(
+                    title: 'Voltage',
+                    subtitle: 'Select a level',
+                  ),
+                  JexDashboardCard(
+                    child: SizedBox(
+                      key: defaultChildKey,
+                      width: 12,
+                      height: 12,
+                    ),
+                  ),
+                  JexDashboardCard(
+                    padding: EdgeInsets.all(11),
+                    child: SizedBox(
+                      key: customChildKey,
+                      width: 12,
+                      height: 12,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+
+      Container cardContainer(Key childKey) => tester.widget<Container>(
+        find
+            .ancestor(of: find.byKey(childKey), matching: find.byType(Container))
+            .first,
+      );
+
+      final defaultCard = cardContainer(defaultChildKey);
+      expect(defaultCard.width, double.infinity);
+      expect(defaultCard.margin, const EdgeInsets.symmetric(vertical: 4));
+      expect(defaultCard.padding, const EdgeInsets.all(14));
+
+      final decoration = defaultCard.decoration! as BoxDecoration;
+      expect(decoration.color, theme.colorScheme.surface);
+      expect(decoration.borderRadius, BorderRadius.circular(19));
+      final border = decoration.border! as Border;
+      expect(
+        border.top.color,
+        theme.colorScheme.outlineVariant.withValues(alpha: .78),
+      );
+      expect(decoration.boxShadow, hasLength(1));
+      expect(decoration.boxShadow!.single.blurRadius, 16.0);
+      expect(decoration.boxShadow!.single.offset, const Offset(0, 6));
+      expect(cardContainer(customChildKey).padding, const EdgeInsets.all(11));
+
+      expect(find.text('VOLTAGE'), findsOneWidget);
+      expect(find.text('Select a level'), findsOneWidget);
+      final heading = tester.widget<Text>(find.text('VOLTAGE'));
+      expect(heading.style?.fontSize, 16.0);
+      expect(heading.style?.fontWeight, FontWeight.w900);
+      final subtitle = tester.widget<Text>(find.text('Select a level'));
+      expect(subtitle.style?.fontSize, 11.0);
+      expect(subtitle.style?.fontWeight, FontWeight.w600);
+    },
+  );
+
   test('Theme typography and input geometry use shared design tokens', () {
     final theme = buildJexTheme(AppThemePreset.dark);
     expect(
@@ -2254,7 +2331,7 @@ void main() {
     expect(cardStart, isNonNegative);
     final card = notifySource.substring(cardStart);
     final adapterStart = source.indexOf('Widget _homeNotify() {');
-    final adapterEnd = source.indexOf('Widget _card(', adapterStart);
+    final adapterEnd = source.indexOf('Widget _switchRow(', adapterStart);
     expect(adapterStart, isNonNegative);
     expect(adapterEnd, greaterThan(adapterStart));
     final adapter = source.substring(adapterStart, adapterEnd);

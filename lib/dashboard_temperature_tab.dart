@@ -19,8 +19,8 @@ extension _DashboardTemperatureTabBuilder on _DashboardScreenState {
         storageKey: 'temperature',
         padding: const EdgeInsets.fromLTRB(2, 0, 2, 18),
         children: [
-          _sectionTitle(JexText.of('thermal', lang)),
-          _card(
+          JexDashboardSectionTitle(JexText.of('thermal', lang)),
+          JexDashboardCard(
             padding: const EdgeInsets.all(11),
             child: _temperatureAdjuster(
               title: JexText.of('hotsideLimit'),
@@ -31,8 +31,8 @@ extension _DashboardTemperatureTabBuilder on _DashboardScreenState {
               onChanged: _setHotLimit,
             ),
           ),
-          _sectionTitle(JexText.of('batteryZones', lang)),
-          _card(
+          JexDashboardSectionTitle(JexText.of('batteryZones', lang)),
+          JexDashboardCard(
             padding: const EdgeInsets.all(9),
             child: Column(
               children: [
@@ -72,7 +72,7 @@ extension _DashboardTemperatureTabBuilder on _DashboardScreenState {
             ),
           ),
           if (locked)
-            _card(
+            JexDashboardCard(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
               child: Row(
                 children: [

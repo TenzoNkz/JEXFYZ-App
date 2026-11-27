@@ -82,6 +82,7 @@ import 'app_security.dart';
 import 'app_settings.dart';
 import 'connection_scan_coordinator.dart';
 import 'connection_sheet.dart';
+import 'dashboard_shared_components.dart';
 import 'floating_monitor.dart';
 import 'home_notify.dart';
 import 'led_controls.dart';
@@ -4095,61 +4096,6 @@ class _DashboardScreenState extends State<DashboardScreen>
       foregroundColor: foregroundColor,
       label: _notifyStateLabel(),
       message: _professionalNotice(),
-    );
-  }
-
-  Widget _card({required Widget child, EdgeInsetsGeometry? padding}) {
-    final scheme = Theme.of(context).colorScheme;
-    final dark = Theme.of(context).brightness == Brightness.dark;
-    return Container(
-      width: double.infinity,
-      margin: const EdgeInsets.symmetric(vertical: 4),
-      padding: padding ?? const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: scheme.jexSurface,
-        borderRadius: BorderRadius.circular(19),
-        border: Border.all(color: scheme.jexOutline.withValues(alpha: .78)),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: dark ? .24 : .07),
-            blurRadius: 16,
-            offset: const Offset(0, 6),
-          ),
-        ],
-      ),
-      child: child,
-    );
-  }
-
-  Widget _sectionTitle(String title, {String? subtitle}) {
-    final scheme = Theme.of(context).colorScheme;
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(4, 6, 4, 5),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            title.toUpperCase(),
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w900,
-              letterSpacing: .60,
-              color: scheme.jexForeground,
-            ),
-          ),
-          if (subtitle != null && subtitle.trim().isNotEmpty) ...[
-            const SizedBox(height: 3),
-            Text(
-              subtitle,
-              style: TextStyle(
-                color: scheme.jexMutedForeground,
-                fontSize: 11,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ],
-        ],
-      ),
     );
   }
 

@@ -23,9 +23,9 @@ extension _DashboardControlTabsBuilder on _DashboardScreenState {
         storageKey: 'voltage',
         padding: const EdgeInsets.fromLTRB(2, 0, 2, 18),
         children: [
-          _sectionTitle(JexText.of('voltage', lang)),
+          JexDashboardSectionTitle(JexText.of('voltage', lang)),
           if (voltageLockKnown && voltageLockActive)
-            _card(
+            JexDashboardCard(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
               child: Row(
                 children: [
@@ -56,7 +56,7 @@ extension _DashboardControlTabsBuilder on _DashboardScreenState {
                 ],
               ),
             ),
-          _card(
+          JexDashboardCard(
             padding: const EdgeInsets.all(9),
             child: Column(
               children: [
@@ -156,8 +156,8 @@ extension _DashboardControlTabsBuilder on _DashboardScreenState {
         storageKey: 'control',
         padding: const EdgeInsets.fromLTRB(2, 0, 2, 18),
         children: [
-          _sectionTitle(JexText.of('control', lang)),
-          _card(
+          JexDashboardSectionTitle(JexText.of('control', lang)),
+          JexDashboardCard(
             padding: const EdgeInsets.all(9),
             child: Column(
               children: [
@@ -301,8 +301,8 @@ extension _DashboardControlTabsBuilder on _DashboardScreenState {
         storageKey: 'adaptive',
         padding: const EdgeInsets.fromLTRB(2, 0, 2, 18),
         children: [
-          _sectionTitle(JexText.of('adaptive', lang)),
-          _card(
+          JexDashboardSectionTitle(JexText.of('adaptive', lang)),
+          JexDashboardCard(
             padding: const EdgeInsets.all(9),
             child: _switchRow(
               title: JexText.of('adaptiveSwitch', lang),
@@ -325,7 +325,7 @@ extension _DashboardControlTabsBuilder on _DashboardScreenState {
             ),
           ),
           if (voltageLockKnown && voltageLockActive)
-            _card(
+            JexDashboardCard(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
               child: Row(
                 children: [
@@ -351,8 +351,8 @@ extension _DashboardControlTabsBuilder on _DashboardScreenState {
                 ],
               ),
             ),
-          _sectionTitle(JexText.of('adaptiveProfile', lang)),
-          _card(
+          JexDashboardSectionTitle(JexText.of('adaptiveProfile', lang)),
+          JexDashboardCard(
             padding: const EdgeInsets.all(9),
             child: Column(
               children: [
@@ -375,7 +375,7 @@ extension _DashboardControlTabsBuilder on _DashboardScreenState {
             ),
           ),
           if (locked)
-            _card(
+            JexDashboardCard(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
               child: Row(
                 children: [
@@ -514,8 +514,8 @@ extension _DashboardControlTabsBuilder on _DashboardScreenState {
         storageKey: 'led',
         padding: const EdgeInsets.fromLTRB(2, 0, 2, 18),
         children: [
-          _sectionTitle(JexText.of('led', lang)),
-          _card(
+          JexDashboardSectionTitle(JexText.of('led', lang)),
+          JexDashboardCard(
             padding: const EdgeInsets.all(9),
             child: Column(
               children: [
@@ -627,7 +627,7 @@ extension _DashboardControlTabsBuilder on _DashboardScreenState {
               onTap: colorEnabled ? _showLedColorPicker : null,
               borderRadius: BorderRadius.circular(18),
               child: Container(
-                child: _card(
+                child: JexDashboardCard(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 14,
                     vertical: 11,
