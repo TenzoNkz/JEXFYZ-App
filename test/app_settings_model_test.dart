@@ -134,7 +134,9 @@ void main() {
   });
 
   group('Dashboard palette semantics', () {
-    test('default preset keeps the dark Home header and light Dashboard body', () {
+    test(
+      'default preset keeps the dark Home header and light Dashboard body',
+      () {
       expect(jexHomeHeaderUsesDarkPalette(AppThemePreset.defaultTheme), isTrue);
       expect(
         jexDashboardContentUsesDarkPalette(AppThemePreset.defaultTheme),
