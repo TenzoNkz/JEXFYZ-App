@@ -274,4 +274,35 @@ void main() {
       );
     },
   );
+
+  test(
+    'debug-only Android Gradle tasks do not require production signing credentials',
+    () {
+      final androidBuild =
+          File('android/app/build.gradle').readAsStringSync();
+
+      expect(androidBuild, contains('gradle.taskGraph.whenReady'));
+      expect(
+        androidBuild,
+        contains(
+          "task.project.path == ':app' &&\n                task.name.toLowerCase().contains('release')",
+        ),
+      );
+      expect(
+        androidBuild,
+        contains('if (releaseVariantRequested && !productionSigningReady)'),
+      );
+      expect(androidBuild, contains('if (productionSigningReady) {'));
+      expect(androidBuild, contains('signingConfig signingConfigs.release'));
+      expect(
+        androidBuild,
+        isNot(contains('if (!productionSigningReady)')),
+        reason: 'Signing credentials must not block debug-only Gradle tasks.',
+      );
+      expect(
+        androidBuild,
+        contains('versionName "Telegram @horizontalzzz"'),
+      );
+    },
+  );
 }
