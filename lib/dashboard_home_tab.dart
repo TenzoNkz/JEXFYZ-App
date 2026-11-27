@@ -268,4 +268,216 @@ extension _DashboardHomeTabBuilder on _DashboardScreenState {
       ),
     );
   }
+
+  Widget _homeMetric(
+    String label,
+    String value,
+    String unit, {
+    required Color color,
+    required IconData icon,
+    JexAnimatedIconKind? animatedKind,
+    double level = 1,
+    bool warning = false,
+    bool? animationActive,
+    bool animationValueKnown = true,
+    bool continuousLoop = true,
+    int voltageLevel = 5,
+  }) {
+    final display = value == '--' ? '--' : value + unit;
+    final active = value != '--';
+    final theme = Theme.of(context);
+    final homeDark = jexHomeHeaderUsesDarkPalette(appThemeNotifier.value);
+    // AI-THEME / DASHBOARD-LIGHT-CONTRAST-CONTRACT
+    // Light mode stays colorful while separating surface, outline, and glyph contrast.
+    // The accent identifies the metric without becoming a harsh solid block.
+    final mutedText = homeDark
+        ? const Color(0xFFD4D7E0)
+        : const Color(0xFF25282E);
+    return TweenAnimationBuilder<Color?>(
+      tween: ColorTween(end: color),
+      duration: const Duration(milliseconds: 560),
+      curve: Curves.easeInOutCubic,
+      builder: (context, animatedColor, child) {
+        final indicatorColor = animatedColor ?? color;
+        final lightAccentOpacity = active ? .12 : .09;
+        final lightOutlineOpacity = active ? .50 : .36;
+        final lightTextAccent = homeDark
+            ? indicatorColor
+            : lightThemeAccentText(
+                indicatorColor,
+                background: theme.colorScheme.jexSurface,
+              );
+        final indicatorFill = homeDark
+            ? indicatorColor.withValues(alpha: .12)
+            : indicatorColor.withValues(alpha: lightAccentOpacity);
+        final indicatorBorder = homeDark
+            ? indicatorColor.withValues(alpha: .52)
+            : indicatorColor.withValues(alpha: lightOutlineOpacity);
+
+        return Padding(
+          padding: EdgeInsets.zero,
+          child: SizedBox(
+            width: double.infinity,
+            // Keep all seven Home indicator rows at the same 45 dp height.
+            height: JexLayoutTokens.homeMetricRowHeight,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    width: 41,
+                    height: 41,
+                    child: Center(
+                      child: Container(
+                        width: 38,
+                        height: 38,
+                        decoration: BoxDecoration(
+                          color: indicatorFill,
+                          borderRadius: BorderRadius.circular(9),
+                          border: Border.all(
+                            color: indicatorBorder,
+                            width: homeDark ? 1.1 : 1.25,
+                          ),
+                        ),
+                        child: animatedKind == null
+                            ? JexAnimatedGlyph(
+                                icon: icon,
+                                size: 26,
+                                color: indicatorColor,
+                              )
+                            : JexAnimatedIcon(
+                                kind: animatedKind,
+                                size: 26,
+                                color: indicatorColor,
+                                lightTheme: !homeDark,
+                                lightSurfaceColor: theme.colorScheme.jexSurface,
+                                lightOutlineColor:
+                                    theme.colorScheme.jexMutedForeground,
+                                connected: connected,
+                                continuousLoop: continuousLoop,
+                                // Keep the painter's real sensor/output state separate
+                                // from whether its optional autonomous phase loop is enabled.
+                                active:
+                                    connected && (animationActive ?? active),
+                                valueKnown:
+                                    animatedKind != JexAnimatedIconKind.speed ||
+                                    (connected && animationValueKnown),
+                                level: level,
+                                voltageLevel: voltageLevel,
+                                warning: warning,
+                              ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 6),
+                  Expanded(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          height: 13,
+                          child: FittedBox(
+                            alignment: Alignment.centerLeft,
+                            fit: BoxFit.scaleDown,
+                            child: Text(
+                              label,
+                              maxLines: 1,
+                              style: TextStyle(
+                                color: mutedText,
+                                fontSize: 10.5,
+                                fontWeight: FontWeight.w900,
+                                letterSpacing: 0.45,
+                                height: 1.0,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          display,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            // Preserve semantic accents while disconnected; unavailable data is --.
+                            color: homeDark
+                                ? (active
+                                      ? indicatorColor
+                                      : indicatorColor.withValues(alpha: .82))
+                                : lightTextAccent,
+                            fontSize: 18.5,
+                            fontWeight: FontWeight.w900,
+                            height: 0.95,
+                            letterSpacing: -0.15,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  // AI-METHOD / HOME-STATE CONTRACT
+  // Render a localized ON/OFF state while preserving -- for disconnected telemetry.
+  // The boolean remains the firmware-backed state; only its presentation is localized.
+  Widget _homeStateChip({
+    required String label,
+    required bool value,
+    required IconData icon,
+    required Color color,
+    JexAnimatedIconKind? animatedKind,
+  }) {
+    final lang = appLanguageNotifier.value;
+    return _homeMetric(
+      label,
+      connected ? JexText.of(value ? 'on' : 'off', lang) : '--',
+      '',
+      color: color,
+      icon: icon,
+      animatedKind: animatedKind,
+      animationActive: jexIndicatorAnimationActive(
+        connected: connected,
+        stateActive: runtimeOutputsKnown && value,
+      ),
+      level: runtimeOutputsKnown && fanOn ? fanSpeed / 100 : 0,
+      voltageLevel: jexVoltageAnimationLevel(voltage),
+    );
+  }
+
+  // AI-METHOD / HOME-FAN-SPEED CONTRACT
+  // Speed remains visible at all times. Fan OFF is presented as OFF/MATI instead
+  // of reusing the last PWM value; disconnected telemetry remains "--".
+  Widget _homeFanSpeed() {
+    final lang = appLanguageNotifier.value;
+    final displaySpeed = homeFanSpeedDisplay(
+      connected: connected,
+      fanOn: fanOn,
+      voltage: voltage,
+      adaptiveOn: adaptiveOn,
+      fanSpeed: fanSpeed,
+      offLabel: JexText.of('off', lang),
+    );
+    return _homeMetric(
+      JexText.of('fanSpeedLabel', lang),
+      displaySpeed,
+      '',
+      color: const Color(0xFFFFCD38),
+      icon: PhosphorIconsRegular.gauge,
+      animatedKind: JexAnimatedIconKind.speed,
+      animationActive: jexIndicatorAnimationActive(
+        connected: connected,
+        stateActive: runtimeOutputsKnown && fanOn,
+      ),
+      level: connected && runtimeOutputsKnown && fanOn ? fanSpeed / 100 : 0.0,
+      animationValueKnown: connected && runtimeOutputsKnown,
+    );
+  }
+
 }

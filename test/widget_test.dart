@@ -842,6 +842,7 @@ void main() {
 
   test('Home indicator painter receives Light Mode theme tokens and repaints on changes', () {
     final source = File('lib/main.dart').readAsStringSync();
+    final homeSource = File('lib/dashboard_home_tab.dart').readAsStringSync();
     final animationSource = File('lib/jex_animated_icon.dart')
         .readAsStringSync();
     final widgetStart = animationSource.indexOf(
@@ -858,9 +859,9 @@ void main() {
     expect(widget, contains('final Color lightSurfaceColor;'));
     expect(widget, contains('final Color lightOutlineColor;'));
 
-    final metricStart = source.indexOf('Widget _homeMetric(');
-    final metricEnd = source.indexOf('Widget _homeStateChip(', metricStart);
-    final metric = source.substring(metricStart, metricEnd);
+    final metricStart = homeSource.indexOf('Widget _homeMetric(');
+    final metricEnd = homeSource.indexOf('Widget _homeStateChip(', metricStart);
+    final metric = homeSource.substring(metricStart, metricEnd);
     expect(metric, contains('lightTheme: !homeDark'));
     expect(
       metric,
@@ -1698,16 +1699,11 @@ void main() {
   });
 
   test('Fan speed control uses the complete localized label while the Floating Monitor stays compact', () {
-    final mainSource = File('lib/main.dart').readAsStringSync();
+    final homeSource = File('lib/dashboard_home_tab.dart').readAsStringSync();
     final floatingSource = File('lib/floating_monitor.dart').readAsStringSync();
-    final fanSpeedStart = mainSource.indexOf('Widget _homeFanSpeed()');
-    final fanSpeedEnd = mainSource.indexOf(
-      'String _compactNotifyMessage(',
-      fanSpeedStart,
-    );
+    final fanSpeedStart = homeSource.indexOf('Widget _homeFanSpeed()');
     expect(fanSpeedStart, isNonNegative);
-    expect(fanSpeedEnd, greaterThan(fanSpeedStart));
-    final fanSpeedSource = mainSource.substring(fanSpeedStart, fanSpeedEnd);
+    final fanSpeedSource = homeSource.substring(fanSpeedStart);
     expect(fanSpeedSource, contains("JexText.of('fanSpeedLabel', lang)"));
     expect(fanSpeedSource, contains('animatedKind: JexAnimatedIconKind.speed'));
     expect(
@@ -2401,12 +2397,12 @@ void main() {
   );
 
   test('All seven Home indicator rows use uniform 45 dp vertical spacing', () {
-    final source = File('lib/main.dart').readAsStringSync();
-    final metricStart = source.indexOf('Widget _homeMetric(');
-    final metricEnd = source.indexOf('Widget _homeStateChip(', metricStart);
+    final homeSource = File('lib/dashboard_home_tab.dart').readAsStringSync();
+    final metricStart = homeSource.indexOf('Widget _homeMetric(');
+    final metricEnd = homeSource.indexOf('Widget _homeStateChip(', metricStart);
     expect(metricStart, isNonNegative);
     expect(metricEnd, greaterThan(metricStart));
-    final metric = source.substring(metricStart, metricEnd);
+    final metric = homeSource.substring(metricStart, metricEnd);
 
     expect(JexLayoutTokens.homeMetricRowHeight, 45.0);
     expect(metric, contains('height: JexLayoutTokens.homeMetricRowHeight,'));
@@ -2778,12 +2774,12 @@ void main() {
   });
 
   test('Home indicator glyph fits a larger drawable area without changing tile layout', () {
-    final source = File('lib/main.dart').readAsStringSync();
-    final homeStart = source.indexOf('Widget _homeMetric(');
-    final homeEnd = source.indexOf('\n  Widget ', homeStart + 20);
+    final homeSource = File('lib/dashboard_home_tab.dart').readAsStringSync();
+    final homeStart = homeSource.indexOf('Widget _homeMetric(');
+    final homeEnd = homeSource.indexOf('\n  Widget ', homeStart + 20);
     expect(homeStart, isNonNegative);
     expect(homeEnd, greaterThan(homeStart));
-    final homeMetric = source.substring(homeStart, homeEnd);
+    final homeMetric = homeSource.substring(homeStart, homeEnd);
     expect(homeMetric, contains('width: 38,'));
     expect(homeMetric, contains('height: 38,'));
     expect(homeMetric, contains('size: 26,'));
