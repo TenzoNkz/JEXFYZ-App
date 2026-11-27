@@ -48,7 +48,7 @@ void main() {
         await tester.tap(target);
         await tester.pump();
         expect(attemptedValues, isEmpty);
-      expect(tester.takeException(), isNull);
+        expect(tester.takeException(), isNull);
       } finally {
         semantics.dispose();
       }
@@ -113,7 +113,7 @@ void main() {
         await tester.pump();
         expect(lockedCalls, 0);
         expect(enabledCalls, 1);
-      expect(tester.takeException(), isNull);
+        expect(tester.takeException(), isNull);
       } finally {
         semantics.dispose();
       }

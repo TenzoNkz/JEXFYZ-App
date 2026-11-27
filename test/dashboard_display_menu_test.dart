@@ -107,7 +107,7 @@ void main() {
 
         await tester.tap(find.text('Connect'));
         await tester.pump();
-      expect(connectCalls, 1);
+        expect(connectCalls, 1);
       } finally {
         semantics.dispose();
       }
