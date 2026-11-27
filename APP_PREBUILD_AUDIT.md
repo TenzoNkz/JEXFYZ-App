@@ -1,6 +1,6 @@
 ## Latest CODE_FULL checkpoint — WP5 shared Dashboard components and control helpers; Validation Only #198 green — 2026-11-27
 
-- Validated App source: 727f30a0f0cb6bbb14921b4a9ded77b668cc0183; source root tree 2408f2e0c1f0a430ec6d548081fd209c86452a3c; 166 entries / 120 blobs / 46 trees, truncated=false; canonical file register is being reconciled to 120/120 unique tracked paths.
+- Validated App source: 727f30a0f0cb6bbb14921b4a9ded77b668cc0183; source root tree 2408f2e0c1f0a430ec6d548081fd209c86452a3c; 166 entries / 120 blobs / 46 trees, truncated=false; canonical file register now covers 120/120 unique tracked paths with no duplicate rows.
 - Validation Only #198: run 45986589466 / job 140463697552, exact SHA above, terminal SUCCESS — locked dependencies PASS; read-only formatter PASS (44 files / 0 changed); analyzer PASS (121 information-level diagnostics, zero warnings/errors under --no-fatal-infos); full Flutter tests 281/281 PASS.
 - WP1 storage regression: seven plugin-mock tests for AppSettingsStore and KnownCoolerStore remain passing; production persistence keys/defaults/schema unchanged. Plugin failure injection and real Android secure-storage behavior remain open.
 - WP2/WP3: ordered bootstrap, App root and Settings presentation remain separated. P1 frame decoding, pure command classification and per-item FIFO ACK waiters remain separate pure modules. Dashboard remains the sole BLE/GATT/P1/session/telemetry/command authority.

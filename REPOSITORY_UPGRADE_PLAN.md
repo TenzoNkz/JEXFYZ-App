@@ -19,7 +19,7 @@ This is the single file-level inventory and rolling review register for the cano
 ## Latest live inventory — Validation Only #198 green; WP5 shared Dashboard presentation components and controls extracted (2026-11-27)
 
 - Validated App source: 727f30a0f0cb6bbb14921b4a9ded77b668cc0183; source root tree 2408f2e0c1f0a430ec6d548081fd209c86452a3c; recursive tree 166 entries / 120 blobs / 46 trees, truncated=false.
-- Register reconciliation: the File inventory below is being extended to 120 unique rows for 120 tracked blobs. Path coverage is not proof of a full content/architecture review or WP0–WP10 completion.
+- Register reconciliation: the File inventory below contains 120 unique rows for 120 tracked blobs, with no duplicate paths. Path coverage is not proof of a full content/architecture review or WP0–WP10 completion.
 - Validation Only #198: run 45986589466 / job 140463697552, exact source SHA above, terminal SUCCESS — locked dependencies PASS; Dart formatter 44 files / 0 changed; analyzer PASS (121 information-level diagnostics, zero warnings/errors under --no-fatal-infos); full Flutter tests 281/281 PASS.
 - WP1 storage coverage: test/app_settings_store_test.dart adds seven plugin-mock behavior tests for AppSettingsStore load/defaults/save/firmware-notice gating and KnownCoolerStore trim/blank/save/clear. Production storage keys/defaults/schema were not changed. Secure-storage error/failure injection remains open.
 - WP2/WP3: ordered bootstrap, App root, Settings presentation, P1 frame decoder, pure command contract and FIFO ACK-waiter lifecycle remain separated. Dashboard remains the only BLE/GATT/P1/session and authoritative telemetry/command owner.
@@ -202,7 +202,7 @@ A failed gate blocks dependent work. Retry only after classifying root cause (so
 | `android/settings.gradle` | Android plugin/bootstrap configuration | BUILD CONFIG — COMPATIBILITY GATED | KEEP / VERIFIED (same blob as Build #167; KGP matrix caveat recorded; 2026-11-26) |
 | `APP_BUILD_REPORT.md` | Append-only evidence ledger | APPEND-ONLY / NO REWRITE | APPEND-ONLY / READ-ONLY / REVIEWED (2026-11-26) |
 | `APP_NOTES.md` | App behavior and UI contract reference | APP NOTES — CURRENT + HISTORICAL SNAPSHOTS | UPGRADE / CURRENT — MAIN 1b6b38b; WP1 STORAGE TESTS AND WP5 PRESENTATION PARTS |
-| `APP_PREBUILD_AUDIT.md` | Current App rework and acceptance plan | APP PREBUILD AUDIT — WP0–WP10 AUTHORITY | UPGRADE / CURRENT — SOURCE 727f30a; #198 GREEN; WP0/WP4/WP5–WP10 OPEN |
+| `APP_PREBUILD_AUDIT.md` | Current App rework and acceptance plan | APP PREBUILD AUDIT — WP0–WP10 AUTHORITY | UPGRADE / CURRENT — SOURCE 727f30a; #198 GREEN; 120/120 PATHS; WP0/WP4/WP5–WP10 OPEN |
 | `archive/ARTIFACT_REPO_NOTES_PRE_BIN_ONLY_2026-10-14.md` | Immutable archive | IMMUTABLE / HISTORICAL | IMMUTABLE / HISTORICAL / REVIEWED (2026-11-26) |
 | `archive/CHAT_TRANSFER_PRE_COMPACTION_2026-11-15.md` | Immutable archive | IMMUTABLE / HISTORICAL | IMMUTABLE / HISTORICAL / REVIEWED (2026-11-26; superseded) |
 | `archive/LEGACY_NOTES_SNAPSHOT_2026-10-14.md` | Immutable archive | IMMUTABLE / HISTORICAL | IMMUTABLE / HISTORICAL / REVIEWED (2026-11-26; never current truth) |

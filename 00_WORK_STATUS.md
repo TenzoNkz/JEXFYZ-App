@@ -21,4 +21,4 @@
 | EXTERNAL OPERATION STATUS | COMPLETED / SUCCESS. |
 | Result / evidence | Locked dependencies PASS; Dart formatter 44 files / 0 changed; analyzer PASS (121 information-level diagnostics, zero warnings/errors); full Flutter tests PASS (281/281). |
 | Blocker / remaining evidence | Local Flutter/Dart/Gradle/ADB unavailable. Android/Kotlin, screenshots/OEM/device, SQLite runtime migration, performance soak and whole-App visual acceptance remain NOT RUN / NOT VERIFIED. |
-| Next action | Reconcile repository register and handover docs to Batch 2/#198; then inspect the next smallest WP5 screen-refinement or WP0 ownership-review item before a new source batch. |
+| Next action | Inspect the next smallest WP5 screen-refinement or WP0 Dashboard-ownership item; preserve the one-batch/one-validation cycle. |

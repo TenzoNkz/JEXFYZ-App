@@ -4,7 +4,7 @@
 
 - Owner scope: App-only WP0–WP10 full rework + premium UI redesign; REPO_FULL follows only after CODE_FULL closes. Build App requires fresh explicit Eksekusi Build App!.
 - Repository: TenzoNkz/JEXFYZ-App, direct main only; no branches/PRs. Re-fetch HEAD/tree/target blobs before each write and use expected-HEAD updates.
-- Validated App source: 727f30a0f0cb6bbb14921b4a9ded77b668cc0183; source tree 2408f2e0c1f0a430ec6d548081fd209c86452a3c; 166 entries / 120 blobs / 46 trees, truncated=false. The full register is being reconciled to 120/120 unique tracked paths; path coverage is not a complete content review.
+- Validated App source: 727f30a0f0cb6bbb14921b4a9ded77b668cc0183; source tree 2408f2e0c1f0a430ec6d548081fd209c86452a3c; 166 entries / 120 blobs / 46 trees, truncated=false. The File inventory covers 120 unique rows for 120 tracked blobs; path coverage is not a complete content review.
 - Latest exact-SHA validation: Validation Only #198 / run 45986589466 / job 140463697552, exact source SHA above, terminal SUCCESS — locked dependencies PASS; formatter 44 files / 0 changed; analyzer PASS (121 information-level diagnostics, zero warnings/errors under --no-fatal-infos); 281/281 Flutter tests PASS.
 - WP1: seven mock-storage tests for AppSettingsStore/KnownCoolerStore are verified in #187; production keys/defaults/schema unchanged. Plugin failure injection remains open.
 - WP2/WP3: bootstrap/root/Settings presentation and pure P1 framing/command/ACK-waiter parts are separated. Dashboard remains sole BLE/GATT/P1/session/telemetry/command owner.
