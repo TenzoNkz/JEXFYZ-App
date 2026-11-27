@@ -4,13 +4,14 @@ Last reconciled: 2026-11-28 (Asia/Jakarta). Authority: MASTER_PROMPT.md.
 
 ## Active CODE_FULL work item — IN_PROGRESS
 
-- Owner command: “@Thinking Eksekusi Code!”; authorized scope is App-only source/tests/docs/static audit for WP0–WP10, direct commits on `main`.
-- Live main HEAD: `437e8cab350f98d8b3693aa4e53430e01e24aa2b`. Latest tested App source SHA: `29fff74a9f95658be47369ce0c86013ab40fddbc`; subsequent main commit only updates `00_WORK_STATUS.md`.
-- Validation Only #258 / run `46066693702` / job `140733610643` / exact source SHA `29fff74a9f95658be47369ce0c86013ab40fddbc` terminal SUCCESS: deps PASS; formatter 50/0 changed; analyzer 139 info, 0 warnings/errors; Flutter tests **330/330 PASS**; summary PASS.
-- WP3 source change: pure P1 pre-session write eligibility gate; Dashboard still owns the BLE/GATT session, RX characteristic, serialized writes, ACK, telemetry and commands. No P1 wire/protocol change.
-- WP0 remains in progress. Screen source reviews are not visual acceptance. Full `main.dart` audit, test-by-test review and live inventory register reconciliation remain open. `test/home_notify_ota_copy_test.dart` (8 safe bilingual presentation-copy tests) is being added to the register.
-- Local Flutter/Dart/Gradle/ADB checks BLOCKED / NOT RUN. No Android/OEM screenshot/device test, no 1h/6h/24h Usage Statistics profile, and whole-App result remains **VISUAL NOT VERIFIED**.
-- No Build App/APK/release/signing, Firmware/BIN, BLE/P1 security/wire, OTA, Firebase production, flashing or device operation is authorized or performed by this work item.
+- Owner command: “Eksekusi Code!”; authorized scope is App-only source/tests/docs/static audit for WP0–WP10, direct commits on `main`.
+- Live main HEAD: `7f69be593f00aa9704d62cf4307701dae2fd1715` (docs-only state update). Latest tested App source SHA: `fa2dcb976395fade0eb0034db5a83b0f12fe4ed6`.
+- Validation Only #261 / run `46068234248` / job `140738636516` / exact source SHA above terminal SUCCESS: deps PASS; formatter 52/0 changed; analyzer 139 info, 0 warnings/errors; Flutter tests **336/336 PASS**; summary PASS. #260 was formatter-only failure, corrected by the owner's canonical-format commit.
+- WP3: P1 heartbeat gate respects session readiness; pure telemetry-line parser extracted; Dashboard retains BLE/GATT/P1/session/ACK/telemetry/command ownership. No protocol/wire changes.
+- WP0: tree has 128 blobs and register now contains 128 unique dispositions. New parser source/test recorded separately; Home OTA/reset presentation suite has nine tests.
+- Source reviews: Dashboard major ownership/routes and Usage Statistics source contracts reviewed. `widget_test.dart` has 117 tests with 84 source reads in 45 test bodies; source-assertion brittleness review remains open. Usage Statistics 1h/6h/24h profiles and SQLite runtime migration fixture NOT RUN.
+- Local Flutter/Dart/Gradle/ADB checks BLOCKED / NOT RUN. No Android/OEM screenshot/device test; whole-App result **VISUAL NOT VERIFIED**. No App package build or protected Firmware/P1 wire/OTA/Firebase/signing/device operations.
+- Next: continue WP4 semantic design-token role/consumer audit, then move into screen refinements only after semantic roles and affected-route coverage are explicit.
 
 ## Historical Build App work item — COMPLETED SUCCESS
 
@@ -31,4 +32,4 @@ Last reconciled: 2026-11-28 (Asia/Jakarta). Authority: MASTER_PROMPT.md.
 
 ## Next recommendation
 
-Arah berikutnya: Lanjut Diskusi!
+Arah berikutnya: Lanjut Eksekusi Code!
