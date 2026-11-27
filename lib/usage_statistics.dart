@@ -3030,8 +3030,9 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
         Text(
           label,
           textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.labelSmall
-              ?.copyWith(color: Theme.of(context).colorScheme.jexMutedForeground),
+          style: Theme.of(context).textTheme.labelSmall?.copyWith(
+            color: Theme.of(context).colorScheme.jexMutedForeground,
+          ),
         ),
         const SizedBox(height: 2),
         Text(

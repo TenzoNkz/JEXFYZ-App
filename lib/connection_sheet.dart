@@ -446,7 +446,9 @@ class _ConnectionSheetContentState extends State<ConnectionSheetContent>
                                   : _requestScan,
                               icon: JexAnimatedGlyph(
                                 icon: PhosphorIconsRegular.arrowClockwise,
-                                color: Theme.of(context).colorScheme.jexAccentForeground,
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .jexAccentForeground,
                                 size: 16,
                               ),
                               label: Text(JexText.of('scan', lang)),

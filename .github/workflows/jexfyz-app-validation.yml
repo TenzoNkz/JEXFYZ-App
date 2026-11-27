@@ -64,18 +64,6 @@ jobs:
           set -euo pipefail
           dart format --output=none --set-exit-if-changed lib test
 
-      # TEMPORARY: capture canonical Dart 3.47.2 formatter output for changed files.
-      - name: Diagnose canonical formatting output (temporary)
-        if: ${{ !cancelled() && steps.dependencies.outcome == 'success' }}
-        shell: bash
-        run: |
-          set -euo pipefail
-          for path in lib/connection_sheet.dart lib/usage_statistics.dart; do
-            echo "<<<BEGIN:$path>>>"
-            dart format --output=show "$path"
-            echo "<<<END:$path>>>"
-          done
-
       - name: Analyze Flutter and Dart source
         id: analyzer
         if: ${{ !cancelled() && steps.dependencies.outcome == 'success' }}
