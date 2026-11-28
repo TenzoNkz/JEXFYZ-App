@@ -5,9 +5,9 @@ import 'package:jexfyz_cooler/app_settings.dart';
 import 'package:jexfyz_cooler/dashboard_display_menu.dart';
 
 void main() {
-  Widget host(JexDashboardLockedMenu child) {
+  Widget host(JexDashboardLockedMenu child, {ThemeData? theme}) {
     return MaterialApp(
-      theme: ThemeData.light(),
+      theme: theme ?? ThemeData.light(),
       home: Scaffold(body: child),
     );
   }
@@ -197,6 +197,73 @@ void main() {
     );
     expect(find.byType(TextButton), findsNothing);
   });
+
+  testWidgets(
+    'Disconnected lock remains action-free across width, locale and theme',
+    (tester) async {
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      final semantics = tester.ensureSemantics();
+
+      try {
+        for (final width in [350.0, 420.0]) {
+          for (final language in AppLanguage.values) {
+            for (final preset in [
+              AppThemePreset.light,
+              AppThemePreset.dark,
+            ]) {
+              tester.view.physicalSize = Size(width * 3, 2400);
+              tester.view.devicePixelRatio = 3;
+
+              await tester.pumpWidget(
+                host(
+                  menu(
+                    reason: DisplayMenuLockReason.bluetoothDisconnected,
+                    language: language,
+                  ),
+                  theme: buildJexTheme(preset),
+                ),
+              );
+              await tester.pumpAndSettle();
+
+              final title = language == AppLanguage.english
+                  ? 'CONNECT YOUR DEVICE FIRST'
+                  : 'HUBUNGKAN PERANGKAT TERLEBIH DAHULU';
+              final detail = language == AppLanguage.english
+                  ? 'Connect your device to use this menu.'
+                  : 'Hubungkan perangkat untuk menggunakan menu ini.';
+              final contextLabel = '$width dp / $language / $preset';
+
+              expect(find.text(title), findsOneWidget, reason: contextLabel);
+              expect(find.text(detail), findsOneWidget, reason: contextLabel);
+              expect(find.bySemanticsLabel(title), findsOneWidget);
+              expect(
+                find.bySemanticsLabel('Submenu content'),
+                findsNothing,
+                reason: contextLabel,
+              );
+              expect(find.text('Connect'), findsNothing, reason: contextLabel);
+              expect(find.text('Hubungkan'), findsNothing, reason: contextLabel);
+              expect(find.byType(TextButton), findsNothing);
+              expect(find.byType(IconButton), findsNothing);
+
+              final titleRect = tester.getRect(find.text(title));
+              final detailRect = tester.getRect(find.text(detail));
+              expect(titleRect.left, greaterThanOrEqualTo(0));
+              expect(titleRect.right, lessThanOrEqualTo(width));
+              expect(detailRect.left, greaterThanOrEqualTo(0));
+              expect(detailRect.right, lessThanOrEqualTo(width));
+              expect(titleRect.bottom, lessThan(detailRect.top));
+              expect(detailRect.bottom, lessThanOrEqualTo(800));
+              expect(tester.takeException(), isNull, reason: contextLabel);
+            }
+          }
+        }
+      } finally {
+        semantics.dispose();
+      }
+    },
+  );
 
   testWidgets('Disconnected lock remains informational in Indonesian', (
     tester,
