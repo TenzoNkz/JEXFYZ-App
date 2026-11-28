@@ -1,3 +1,14 @@
+## BUILD #173 — APK BUILD SUCCESS / V1-V2-V3 SIGNATURE ENFORCEMENT ACTIVE — 2026-11-28
+
+- **Step 14 Android unit-test gate:** SUCCESS.
+- **Step 15 Build latest release APK:** SUCCESS (step number 15; source SHA 478bdfdc5ee18379e07baad5e4dfd8ab598dc2db). Build step log is not yet available while job continues, so APK size/checksum are not asserted here.
+- **Step 16 Enforce V1/V2/V3 APK signing:** IN_PROGRESS.
+- **Steps 1–15:** SUCCESS, including security/architecture audit, locked dependencies, analyzer, Flutter tests, Android Gradle test gate and APK build.
+- **Steps 17–21:** pending; pinned-certificate verification, corresponding source archive, Release publication, and fresh downloaded-asset verification are not yet confirmed.
+- **Next action:** continue this exact run through steps 16–21. Capture APK/source asset IDs, sizes and SHA-256 only from completed signing/Release log and fresh-download verification.
+
+---
+
 ## BUILD #173 — ANDROID GRADLE GATE PASSED / APK BUILD ACTIVE — 2026-11-28
 
 - **Observed transition:** Build #173 / run 46121055519 / job 140905430951 / source SHA 478bdfdc5ee18379e07baad5e4dfd8ab598dc2db.
