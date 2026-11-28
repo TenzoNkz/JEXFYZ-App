@@ -1,3 +1,14 @@
+## Latest WP9 checkpoint — Visual/regression evidence BLOCKED / VISUAL NOT VERIFIED — 2026-11-28
+
+- The fresh `@Thinking Eksekusi Code!` command authorized exactly WP9. WP8 remains COMPLETED; WP9 is BLOCKED, not COMPLETED; WP10 has not started.
+- App source/test SHA `048c22ba4722848b962dc58d5b3e9dc7fe994961` is verified by Validation Only #327 / run 46113283625 / job 140881362489 terminal SUCCESS: locked dependencies PASS, formatter 62 files / 0 changed, analyzer 159 info / 0 warnings/errors, Flutter suite 359/359 PASS. Ten subsequent commits to main are documentation-only; there are no source/test changes in this WP9 attempt.
+- Partial existing widget coverage: Home 350/420-dp × EN/ID × theme; Temperature 360/420-dp accessibility × EN/ID × Light/Dark; LED controls 350-dp Light/EN + 420-dp Dark/ID; Floating Monitor settings 350/420-dp × EN/ID × Light/Dark. Flutter widgets/semantics are not Android/OEM screenshots.
+- No screenshot/golden files are tracked; image files are only cooler/logo/icon artwork. Build #167's old Home-only screenshot has incomplete metadata. Current `jexfyz-latest` Release uses older source `67ff49fdb566a2fa7748e32e5207217c8e4b98b7` and cannot qualify as current evidence.
+- Local Flutter/Dart/Gradle/ADB/emulator and Android SDK are unavailable; Validation Only is Flutter-only. Actual Android/OEM screenshots and native Floating Monitor Canvas/WindowManager capture remain NOT RUN. Outcome is **VISUAL NOT VERIFIED**.
+- No source/test/inventory paths changed; recursive tree remains 184 entries / 138 blobs / 46 trees, `truncated=false`; the per-file register remains 138 unique live-blob dispositions. Do not add a fabricated visual disposition or claim the WP9 matrix passed. Unblock requires the exact-SHA screenshot matrix and metadata recorded in `CHAT_TRANSFER.md` and `DESIGN_NOTES.md`, followed by a fresh owner command to resume WP9.
+
+---
+
 ## Latest WP8 checkpoint — Floating Monitor boundary COMPLETED / Validation Only #327 exact source/test SHA — 2026-11-28
 
 - Fresh `@Thinking Eksekusi Code!` authorized exactly WP8. The validated source/test SHA is `048c22ba4722848b962dc58d5b3e9dc7fe994961`; Validation Only #327 / run 46113283625 / job 140881362489 terminal SUCCESS.

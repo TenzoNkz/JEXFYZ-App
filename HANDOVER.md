@@ -2,16 +2,15 @@
 
 Last reconciled: 2026-11-28 (Asia/Jakarta). Authority: MASTER_PROMPT.md.
 
-## CODE_FULL handoff — WAITING_OWNER (WP9 pending)
+## CODE_FULL handoff — BLOCKED (WP9 visual evidence) — 2026-11-28
 
-- **WP8 — Floating Monitor boundary: COMPLETED (2026-11-28).** The fresh `@Thinking Eksekusi Code!` command authorized this single WP. Configuration/model, state, secure persistence, MethodChannel bridge and stateless Flutter Settings boundaries are extracted; controller retains permission/lifecycle/native-runtime orchestration.
-- Exact tested source/test SHA `048c22ba4722848b962dc58d5b3e9dc7fe994961`; Validation Only #327 / run 46113283625 / job 140881362489 terminal SUCCESS. Dependencies PASS, formatter 62/0, analyzer 159 info / 0 warnings / 0 errors, full suite 359/359 PASS.
-- Five new modules: `floating_monitor_models.dart`, `floating_monitor_state.dart`, `floating_monitor_store.dart`, `floating_monitor_bridge.dart`, `floating_monitor_settings_view.dart`. `floating_monitor.dart` remains the permission/lifecycle controller; AppBootstrap explicitly publishes restored config; Dashboard captures language into its authoritative telemetry snapshot and remains the sole BLE/GATT/P1/session/telemetry/command owner.
-- Schema v2/v1 metric migration, Flutter secure-storage key, native preference key, B/H/V/A/P/F IDs, size/opacity values, MethodChannel and native JSON contract preserved. Native Kotlin/Manifest blobs unchanged. No native service retry/reattach/recovery policy changed.
-- Regression coverage: pure store side-effect/failure tests; typed bridge/runtime aliases and explicit locale; stateless view EN/ID × Light/Dark × 350/420-dp accessibility; ownership/source contracts. Earlier CI #324–#326 failures were repaired without weakening any gate; #327 validates the final source/test revision.
-- Exact code SHA tree: 184 entries / 138 blobs / 46 trees, truncated=false; register updated to 138 unique tracked paths. Native runtime/Android-Kotlin build, Android/OEM screenshots and physical-device behavior NOT RUN; local Flutter/Dart/Gradle/ADB BLOCKED / NOT RUN. Whole-App visual remains VISUAL NOT VERIFIED. No App package built.
-- No source changes to Firmware/BIN, P1 wire/security, OTA, Firebase production, signing, release or device operations.
-- **Next pending WP9 — Visual/regression evidence — WAITING_OWNER.** Real Android/OEM screenshots and the full viewport/state/accessibility acceptance matrix remain separate from Flutter widget/golden/hosted CI evidence. Do not start until a fresh explicit `@Thinking Eksekusi Code!` command.
+- **WP8 — Floating Monitor boundary: COMPLETED.** Its validated source/test SHA is `048c22ba4722848b962dc58d5b3e9dc7fe994961`; Validation Only #327 / run 46113283625 / job 140881362489 terminal SUCCESS (locked dependencies PASS; formatter 62/0; analyzer 159 info / 0 warnings/errors; 359/359 Flutter tests PASS).
+- **WP9 — Visual/regression evidence: BLOCKED / VISUAL NOT VERIFIED.** The source/test baseline and existing partial Flutter widget matrix were reviewed. No current-SHA actual Android/OEM screenshots or golden baselines were available. The only recorded screenshot is the older Build #167 Home / EN / Light / disconnected view with missing SHA/dp/density metadata; it does not meet acceptance.
+- Existing widget coverage: Home 350/420 dp × EN/ID × theme presets; Temperature 360/420 dp × EN/ID × Light/Dark; LED controls 350-dp Light/EN and 420-dp Dark/ID; Floating Monitor 350/420 dp × EN/ID × Light/Dark. These tests do not validate Android/OEM rendering or native Canvas/WindowManager.
+- Toolchain blocker: Flutter, Dart, Gradle, ADB and emulator are absent; Android SDK variables are unset. Validation Only is a Flutter-only workflow. The current Release's source SHA `67ff49fdb566a2fa7748e32e5207217c8e4b98b7` predates the WP8 source/test baseline and is not a valid substitute.
+- To unblock WP9, supply actual screenshots from source/test SHA `048c22ba4722848b962dc58d5b3e9dc7fe994961` for Home, all five tabs, Connection, Settings/subpages, Usage Statistics, applicable dialogs/sheets and Floating Monitor. Include device/Android, source SHA, logical/physical viewport and density, locale/theme, text scale/reduced motion and device state. Inspect the native overlay separately.
+- No App source/tests changed in this WP9 attempt. No Build App/APK/Release, Android device operation, Firmware, P1 wire/security, OTA or Firebase production action occurred. No Actions run is active; #327 remains the last exact-SHA code/test CI result. **WP10 has not started.**
+- A fresh `@Thinking Eksekusi Code!` command is required to resume WP9 after the missing evidence is available.
 
 ## Historical Build App work item — COMPLETED SUCCESS
 
