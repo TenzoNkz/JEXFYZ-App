@@ -1,3 +1,14 @@
+## 2026-11-28 — WP9 locked submenu CTA removal / Validation Only #339
+
+- Removed the Connect/Hubungkan action and injected callback from the disconnected Dashboard locked submenu. Home top-left Bluetooth remains the sole Home entry point to the existing guarded manual Connection flow. BLE/session ownership and Connection sheet implementation are unchanged.
+- Added a disconnected-card widget matrix at 350/420 dp × EN/ID × Light/Dark, including no-action, localization, semantics, pointer blocking and viewport bounds. Strengthened the source-contract test to verify Home callback → _showBluetoothMenu → guarded manual coordinator → modal → ConnectionSheetContent → existing scan/connect callbacks and cleanup.
+- Exact source/test SHA c6206989cb0e30c94578c95b4d9c13bde5d36d71; implementation 62a89aa3602575062f268c4823a186f034faf9ec, matrix 80fb686609ce60112e0e67d185a23488a71bb0df, Home flow contract 49bc706986600b52f21666abd57ab71bdb1ca9f2, formatter-only follow-up c6206989cb0e30c94578c95b4d9c13bde5d36d71.
+- Validation Only #339 / run 46127470525 / job 140925152695, terminal SUCCESS: dependencies PASS, formatter 63 files / 0 changed, analyzer 157 info / 0 warnings/errors, Flutter 362/362 PASS.
+- Validation Only #337 and #338 each failed only formatter gates while 362 tests passed. Canonical formatter output was applied without assertion changes; #339 verifies the final files.
+- Build #173 package and its five accepted screenshots predate this patch. No APK/package was built in CODE_FULL because Build App is postponed. Updated Home lock-card screenshot remains pending; physical BLE/cooler validation remains deferred; WP10 has not started.
+
+---
+
 ## 2026-11-28 — WP9 locked submenu Connect CTA removal / Validation Only #336
 
 - Removed the Connect/Hubungkan button and `onConnect` callback from the disconnected Dashboard locked submenu card. The card remains informational; existing lock precedence, blur/dim, pointer blocking and semantics exclusion are preserved.

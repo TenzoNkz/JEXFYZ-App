@@ -1,3 +1,16 @@
+## WP9 locked-card implementation and regression — VERIFIED CI #339 / package screenshot WAITING_OWNER — 2026-11-28
+
+- **Owner-approved visual behavior:** a disconnected Dashboard submenu presents one informational lock card (lock icon, heading, explanation) without Connect/Hubungkan. Keep the dedicated Home top-left Bluetooth control as the single Home entry point to the existing guarded manual Connection sheet. Preserve BLE/session/scan ownership and the locked submenu's pointer/semantics protection.
+- **Source:** commit 62a89aa3602575062f268c4823a186f034faf9ec deletes the disconnected-state Connect button and injected callback from JexDashboardLockedMenu and removes the Dashboard argument. Existing lock priority and overlay remain. Home's top-left callback was not changed.
+- **Regression:** test/dashboard_display_menu_test.dart covers EN/ID no-CTA, pointer blocking, semantics exclusion and 350/420 dp × EN/ID × Light/Dark matrix with viewport bounds. test/widget_test.dart confirms the Home action continues to call _showBluetoothMenu and verifies its guarded modal/manual-sheet/ConnectionSheetContent/scan/connect/cleanup contract.
+- **Commits:** matrix 80fb686609ce60112e0e67d185a23488a71bb0df; Home flow source contract 49bc706986600b52f21666abd57ab71bdb1ca9f2; canonical formatter-only c6206989cb0e30c94578c95b4d9c13bde5d36d71.
+- **Validation Only #339:** run 46127470525 / job 140925152695, exact SHA c6206989cb0e30c94578c95b4d9c13bde5d36d71, terminal SUCCESS: dependencies PASS; formatter 63 files / 0 changed; analyzer 157 info / 0 warnings/errors; Flutter 362/362 PASS.
+- **Validation recovery:** #337 and #338 failed only formatter gates while dependencies/analyzer and 362/362 tests passed. Exact runner outputs were applied to the two tests without changing assertions; #339 confirms final formatting.
+- **Visual boundary:** Build #173 captures from source 478bdfdc5ee18379e07baad5e4dfd8ab598dc2db were accepted for the previous stage only and predate this patch. Updated Home lock card is NOT YET SCREENSHOT REVIEWED. Build App is postponed by the owner; no current package or new Android screenshot exists.
+- **Residual limits:** other Dashboard tabs, Settings subpages, Usage Statistics, additional dialogs/sheets and Floating Monitor/native overlay remain outside the five previously accepted captures. Real cooler BLE, commands, telemetry, Firmware and thermal/electrical behavior remain DEFERRED / NOT TESTED. WP9 overall WAITING_OWNER; WP10 NOT STARTED.
+
+---
+
 ## Current package baseline — Build #167 — 2026-11-24
 
 - The Home cooler enlargement (right image column flex 14; uniform 1.08× scale anchored right; `BoxFit.contain`; seven left metrics unchanged at 45 dp) is now included in the published Build #167 package.

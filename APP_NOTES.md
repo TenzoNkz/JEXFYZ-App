@@ -1,3 +1,11 @@
+## WP9 — Locked submenu CTA removal — SOURCE/REGRESSION VERIFIED CI #339 — 2026-11-28
+
+- The disconnected Dashboard submenu lock card is informational only; there is no Connect/Hubungkan action on the card. Home's top-left Bluetooth button remains the only Home entry point to the existing guarded manual Connection flow. The Connection sheet, Settings > Bluetooth and BLE/session ownership remain unchanged.
+- JexDashboardLockedMenu no longer accepts or renders a Connect callback/action. Existing state-derived lock precedence, blur/dim overlay, pointer blocking and semantics exclusion remain.
+- Tests cover the disconnected card at 350/420 dp × EN/ID × Light/Dark and verify the existing Home callback still routes through the guarded modal/manual-sheet coordinator to ConnectionSheetContent with existing scan/connect callbacks.
+- Exact validated SHA c6206989cb0e30c94578c95b4d9c13bde5d36d71; Validation Only #339 / run 46127470525 / job 140925152695, terminal SUCCESS: dependencies PASS; formatter 63 files / 0 changed; analyzer 157 info / 0 warnings/errors; Flutter tests 362/362 PASS.
+- The latest owner-accepted Build #173 screenshots predate this code change. The changed Home locked card still needs a screenshot from a package containing the current SHA. Build App is postponed by the owner; no APK was built in CODE_FULL. Physical BLE/cooler validation remains DEFERRED / NOT TESTED.
+
 ## WP8 — Floating Monitor boundary refactor — COMPLETED — 2026-11-28
 
 **Disposition: COMPLETED — Dart/App architecture extraction, regression updates and exact-SHA hosted validation.** The fresh 2026-11-28 `@Thinking Eksekusi Code!` command authorized this single WP8 only. WP9 was not started.

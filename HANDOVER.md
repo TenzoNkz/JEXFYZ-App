@@ -4,23 +4,23 @@ Last reconciled: 2026-11-28 (Asia/Jakarta). Authority: MASTER_PROMPT.md.
 
 - **Language policy (owner decision 2026-11-28):** ChatGPT-facing explanations and reports in all three workspaces use clear standard Bahasa Indonesia, with English technical terms where precise. All explanatory and narrative text authored or revised in GitHub uses English only. Preserve required Indonesian App localization, protocol strings and verbatim evidence. See MASTER_PROMPT.md Section 2B.
 
-## CODE_FULL / WP9 handoff — SOURCE + FLUTTER REGRESSION VERIFIED / PACKAGE SCREENSHOT WAITING_OWNER — 2026-11-28
+## CODE_FULL / WP9 handoff — SOURCE + REGRESSION VERIFIED CI #339 / UPDATED HOME SCREENSHOT WAITING_OWNER — 2026-11-28
 
-- **WP8 — Floating Monitor architecture boundary: COMPLETED.** Source/test SHA `048c22ba4722848b962dc58d5b3e9dc7fe994961`; Validation Only #327 / run `46113283625` / job `140881362489` SUCCESS (dependencies PASS; formatter 62/0; analyzer 159 info / 0 warnings/errors; 359/359 tests PASS).
-- **WP9 — locked-card CTA source/test slice: VERIFIED CI.** The disconnected locked submenu card is informational with no Connect/Hubungkan CTA. Home's top-left Bluetooth icon/button remains the single Home entry point to the existing Connection flow; the Connection sheet, Settings > Bluetooth and BLE ownership remain. Lock state, blur/dim, pointer blocking and semantics exclusion are preserved.
-- **Implementation commits:** `62a89aa3602575062f268c4823a186f034faf9ec` (source + regression changes), followed by formatting-only commit `3d21cf5eac31eee76f5e8ef784bce10886a7584d`.
-- **Changed paths:** `lib/dashboard_display_menu.dart`, `lib/main.dart`, `test/dashboard_display_menu_test.dart`, and `test/widget_test.dart`. Tests prove no Connect/Hubungkan or action button in EN/ID, submenu pointer blocking and semantics exclusion, and preservation of Home's Bluetooth callback.
-- **Validation Only #336:** run `46123591878` / job `140913176417`, terminal SUCCESS on exact source/test SHA `3d21cf5eac31eee76f5e8ef784bce10886a7584d`: locked dependencies PASS; formatter 63/0 changed; analyzer 157 info / 0 warnings/errors; full suite 361/361 PASS. [Actions run](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/46123591878).
-- **Validation recovery:** #335 / run `46123335620` was terminal FAILURE only on formatter drift in two test files; dependencies/analyzer passed and the full 361/361 tests passed. #336 verifies the exact runner-formatted files. No assertion or behavior was modified in the repair.
-- **Latest App package:** Build App #173 / run `46121055519` / job `140905430951`, SUCCESS on source `478bdfdc5ee18379e07baad5e4dfd8ab598dc2db`. Its five owner-confirmed captures are accepted for the previous stage, but the package predates the current locked-card patch. No APK/package was built in CODE_FULL.
-- **Visual coverage boundary:** Home EN/Dark, Home ID/Dark, Home EN/Light, Settings root EN/Dark and Connection sheet EN/Dark were owner-confirmed from Build #173. The changed Home lock card has not yet been captured from a package containing SHA `3d21cf5eac31eee76f5e8ef784bce10886a7584d`. Unshown Dashboard tabs, Settings subpages, Usage Statistics, additional dialogs/sheets and Floating Monitor configuration/native overlay remain unverified.
+- **WP8 — Floating Monitor architecture boundary: COMPLETED.** Source/test SHA 048c22ba4722848b962dc58d5b3e9dc7fe994961; Validation Only #327 / run 46113283625 / job 140881362489 SUCCESS (dependencies PASS; formatter 62/0; analyzer 159 info / 0 warnings/errors; 359/359 tests PASS).
+- **WP9 — locked-card source/test scope: COMPLETED / VERIFIED CI.** The disconnected locked submenu card is informational with no Connect/Hubungkan CTA. Home's top-left Bluetooth icon/button remains the single Home entry point to the existing guarded Connection flow. The Connection sheet, Settings > Bluetooth and BLE/session ownership remain unchanged.
+- **Implementation:** 62a89aa3602575062f268c4823a186f034faf9ec removes the locked-card callback/button. Expanded matrix commit 80fb686609ce60112e0e67d185a23488a71bb0df covers 350/420 dp × EN/ID × Light/Dark. Home-to-Connection source contract 49bc706986600b52f21666abd57ab71bdb1ca9f2 confirms the Home callback reaches the guarded modal/manual-sheet/ConnectionSheetContent and existing scan/connect callbacks. Formatter-only follow-up c6206989cb0e30c94578c95b4d9c13bde5d36d71.
+- **Changed paths:** lib/dashboard_display_menu.dart, lib/main.dart, test/dashboard_display_menu_test.dart and test/widget_test.dart. Production source changed only in the implementation commit; later commits update tests and formatting.
+- **Validation Only #339:** run 46127470525 / job 140925152695, terminal SUCCESS on exact SHA c6206989cb0e30c94578c95b4d9c13bde5d36d71: locked dependencies PASS; formatter 63/0 changed; analyzer 157 info / 0 warnings/errors; full suite 362/362 PASS. [Actions run](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/46127470525).
+- **Validation recovery:** #337 and #338 failed only formatter gates while dependencies/analyzer and all 362 tests passed. Exact runner formatter output was applied; #339 verifies final formatted files.
+- **Latest App package:** Build App #173 / run 46121055519 / job 140905430951, SUCCESS on source 478bdfdc5ee18379e07baad5e4dfd8ab598dc2db. Its five owner-confirmed captures are accepted for the previous stage but predate this locked-card patch. No APK/package was built in CODE_FULL.
+- **Visual boundary:** Home EN/Dark, Home ID/Dark, Home EN/Light, Settings root EN/Dark and Connection sheet EN/Dark were owner-confirmed from Build #173. The changed Home lock card has not yet been captured from a package containing c6206989cb0e30c94578c95b4d9c13bde5d36d71. Unshown Dashboard tabs, Settings subpages, Usage Statistics, additional dialogs/sheets and Floating Monitor configuration/native overlay remain unverified.
 - **Deferred physical acceptance:** cooler BLE discovery/session, commands, telemetry, Firmware interaction, thermal/electrical behavior and physical cooler operation are DEFERRED / NOT TESTED.
 - **Local checks:** Flutter/Dart/Gradle/ADB/emulator and Android SDK are unavailable; no local test, Android build or device capture was run. Validation Only is Flutter-only.
-- **WP9 disposition:** source/test slice COMPLETED and VERIFIED CI; overall WP9 WAITING_OWNER for a separately authorized package and affected-Home screenshot. WP10 has not started.
+- **WP9 disposition:** source/test Code scope COMPLETED and VERIFIED CI; overall WP9 WAITING_OWNER for a later package and affected-Home screenshot. Build App is postponed at the owner's direction. WP10 has not started.
 
 ## Next authorized mode
 
-The next recommendation is a fresh explicit `@Thinking Eksekusi Build App!` command in the separate Build App workspace, followed by a screenshot review of the changed Home lock card. This recommendation does not itself authorize a build.
+Wait for a fresh explicit @Thinking Eksekusi Build App! command in the separate Build App workspace when the owner is ready, then review the updated Home lock card. This recommendation does not itself authorize a build.
 
 ## Historical Build App work item — COMPLETED SUCCESS
 
@@ -41,4 +41,4 @@ The next recommendation is a fresh explicit `@Thinking Eksekusi Build App!` comm
 
 ## Next recommendation
 
-Arah berikutnya: Menunggu owner — Eksekusi Build App! A new explicit Build App command is required to package the current source and verify the updated Home locked card; no build was authorized in CODE_FULL.
+Arah berikutnya: Menunggu owner — Build App ditunda sesuai instruksi. Source dan tes WP9 telah tervalidasi; screenshot kartu Home dari paket terbaru masih diperlukan sebelum WP9 dapat ditutup sepenuhnya. Tidak ada build yang diotorisasi pada workspace Code.
