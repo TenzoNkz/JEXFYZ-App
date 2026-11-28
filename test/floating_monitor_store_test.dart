@@ -4,7 +4,6 @@ import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import '../lib/app_settings.dart';
 import '../lib/floating_monitor.dart';
 
 class _FailureInjectingStorageMap extends MapBase<String, String> {
@@ -52,16 +51,15 @@ class _FailureInjectingStorageMap extends MapBase<String, String> {
 }
 
 void main() {
-  const storageKey = 'jexfyz_floating_v1';
+  const storageKey = FloatingStore.key;
 
   setUp(() {
-    appLanguageNotifier.value = AppLanguage.english;
     floatingConfigNotifier.value = const FloatingConfig();
     FlutterSecureStorage.setMockInitialValues(<String, String>{});
   });
 
   test(
-    'FloatingStore.load reads and publishes the persisted schema-v2 config',
+    'FloatingStore.load returns persisted schema-v2 config without owning UI state',
     () async {
       const config = FloatingConfig(
         enabled: true,
@@ -72,6 +70,12 @@ void main() {
         backgroundColor: FloatingBackgroundColor.white,
         horizontal: false,
       );
+      const uiState = FloatingConfig(
+        enabled: false,
+        size: 0.45,
+        backgroundColor: FloatingBackgroundColor.black,
+      );
+      floatingConfigNotifier.value = uiState;
       final storage = _FailureInjectingStorageMap(
         initialValues: <String, String>{storageKey: config.toJson()},
       );
@@ -80,35 +84,33 @@ void main() {
       final loaded = await FloatingStore.load();
 
       expect(loaded.toMap(), config.toMap());
-      expect(floatingConfigNotifier.value.toMap(), config.toMap());
+      expect(floatingConfigNotifier.value.toMap(), uiState.toMap());
       expect(storage.readAttempts, 1);
     },
   );
 
   test(
-    'FloatingStore.load restores defaults and notifier after a read failure',
+    'FloatingStore.load returns defaults after read failure without publishing them',
     () async {
-      floatingConfigNotifier.value = const FloatingConfig(
+      const uiState = FloatingConfig(
         enabled: true,
         size: 1.0,
         backgroundColor: FloatingBackgroundColor.white,
       );
+      floatingConfigNotifier.value = uiState;
       final storage = _FailureInjectingStorageMap(failReads: true);
       FlutterSecureStorage.setMockInitialValues(storage);
 
       final loaded = await FloatingStore.load();
 
       expect(loaded.toMap(), const FloatingConfig().toMap());
-      expect(
-        floatingConfigNotifier.value.toMap(),
-        const FloatingConfig().toMap(),
-      );
+      expect(floatingConfigNotifier.value.toMap(), uiState.toMap());
       expect(storage.readAttempts, 1);
     },
   );
 
   test(
-    'FloatingStore.save persists schema-v2 config and updates its notifier',
+    'FloatingStore.save persists schema-v2 config without mutating UI state',
     () async {
       const config = FloatingConfig(
         enabled: true,
@@ -118,12 +120,14 @@ void main() {
         opacity: 0.4,
         horizontal: false,
       );
+      const uiState = FloatingConfig(enabled: false, size: 0.4);
+      floatingConfigNotifier.value = uiState;
       final storage = _FailureInjectingStorageMap();
       FlutterSecureStorage.setMockInitialValues(storage);
 
       await FloatingStore.save(config);
 
-      expect(floatingConfigNotifier.value.toMap(), config.toMap());
+      expect(floatingConfigNotifier.value.toMap(), uiState.toMap());
       expect(storage.writeAttempts, 1);
       final stored =
           jsonDecode(storage.valueWithoutFailure(storageKey)!) as Map;
@@ -135,7 +139,7 @@ void main() {
   );
 
   test(
-    'FloatingStore.save keeps the notifier update when storage write fails',
+    'FloatingStore.save contains storage failure and does not publish UI state',
     () async {
       const config = FloatingConfig(
         enabled: true,
@@ -143,6 +147,8 @@ void main() {
         opacity: 0.55,
         backgroundColor: FloatingBackgroundColor.white,
       );
+      const uiState = FloatingConfig(enabled: false, size: 0.35);
+      floatingConfigNotifier.value = uiState;
       final storage = _FailureInjectingStorageMap(failWrites: true);
       FlutterSecureStorage.setMockInitialValues(storage);
 
@@ -150,7 +156,7 @@ void main() {
 
       expect(storage.writeAttempts, 1);
       expect(storage.valueWithoutFailure(storageKey), isNull);
-      expect(floatingConfigNotifier.value.toMap(), config.toMap());
+      expect(floatingConfigNotifier.value.toMap(), uiState.toMap());
     },
   );
 }
