@@ -59,7 +59,6 @@ void main() {
   test(
     'start forwards config and the latest localized telemetry snapshot',
     () async {
-      appLanguageNotifier.value = AppLanguage.indonesia;
       const config = FloatingConfig(
         enabled: true,
         order: <String>['F', 'B', 'H', 'V', 'A', 'P'],
@@ -77,6 +76,7 @@ void main() {
         adaptiveOn: true,
         peltierOn: true,
         connected: true,
+        language: 'indonesia',
       );
       messenger.setMockMethodCallHandler(channel, (call) async {
         expect(call.method, 'startFloatingMonitor');
@@ -156,7 +156,6 @@ void main() {
   test(
     'updateData forwards the latest telemetry and selected app language',
     () async {
-      appLanguageNotifier.value = AppLanguage.indonesia;
       const telemetry = FloatingTelemetry(
         battery: '40.2',
         hotside: '51.4',
@@ -164,6 +163,7 @@ void main() {
         fanOn: false,
         speed: 0,
         connected: true,
+        language: 'indonesia',
       );
       messenger.setMockMethodCallHandler(channel, (call) async {
         expect(call.method, 'updateFloatingData');
@@ -211,7 +211,28 @@ void main() {
         return state;
       });
 
-      expect(await FloatingBridge.runtimeState(), state);
+      final runtime = await FloatingBridge.runtimeState();
+      expect(runtime?.running, isTrue);
+      expect(runtime?.serviceRunning, isTrue);
+      expect(runtime?.overlay, isTrue);
+      expect(runtime?.viewAttachedToWindow, isTrue);
+      expect(runtime?.horizontal, isFalse);
+      expect(runtime?.size, 0.8);
+      expect(runtime?.x, 16);
+      expect(runtime?.y, 120);
+
+      messenger.setMockMethodCallHandler(channel, (call) async {
+        return const <String, dynamic>{
+          'running': true,
+          'overlay': true,
+          'horizontal': true,
+          'size': 0.7,
+        };
+      });
+      final legacyRuntime = await FloatingBridge.runtimeState();
+      expect(legacyRuntime?.serviceRunning, isTrue);
+      expect(legacyRuntime?.viewAttachedToWindow, isTrue);
+      expect(legacyRuntime?.size, 0.7);
 
       messenger.setMockMethodCallHandler(channel, (call) async => 'not-a-map');
       expect(await FloatingBridge.runtimeState(), isNull);
