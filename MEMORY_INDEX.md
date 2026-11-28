@@ -1,3 +1,16 @@
+## Reconciliation — 2026-11-28 — WP8 Floating Monitor boundary COMPLETED
+
+- Fresh `@Thinking Eksekusi Code!` authorized exactly WP8. WP8 is COMPLETED; next pending WP9 is WAITING_OWNER for a fresh explicit command. This CODE_FULL workspace retains one-WP-per-command cadence; do not begin WP9 in the WP8 session.
+- Exact validated source/test SHA: `048c22ba4722848b962dc58d5b3e9dc7fe994961`. Validation Only #327 / run 46113283625 / job 140881362489, terminal SUCCESS: locked dependencies PASS; Dart formatter 62 files / 0 changed; analyzer 159 info / 0 warnings / 0 errors; full Flutter suite 359/359 PASS.
+- WP8 source boundaries: immutable models/runtime DTO (`floating_monitor_models.dart`); process-local notifiers (`floating_monitor_state.dart`); secure configuration storage (`floating_monitor_store.dart`); existing typed MethodChannel adapter (`floating_monitor_bridge.dart`); stateless Settings renderer (`floating_monitor_settings_view.dart`); permission/lifecycle/native-runtime controller (`floating_monitor.dart`). AppBootstrap explicitly publishes restored config, Dashboard captures App language in the authoritative telemetry value and retains the only BLE/GATT/P1/session/command ownership.
+- Compatibility retained: schema v2/v1 metric migration, storage keys, six metric IDs, size/opacity ranges/defaults, native channel/method/JSON contract and service lifecycle. Native FloatingMonitorService.kt, MainActivity.kt and Manifest remain byte-identical to pre-WP8 baseline. Native Canvas/WindowManager stays a distinct renderer; no automatic recovery behavior added.
+- Tests include pure store/notifier boundary and failure cases, typed bridge/current+legacy runtime key compatibility, explicit locale, 350/420-dp × EN/ID × Light/Dark slider semantics and layout/ownership source contracts. CI repair history #324–#326 is retained in APP_NOTES/APP_PREBUILD_AUDIT; #327 is final green exact-SHA result.
+- Current tree at validated code SHA: 184 recursive entries / 138 tracked blobs / 46 trees, `truncated=false`. REPOSITORY_UPGRADE_PLAN reconciled to 138 unique live blob dispositions, no missing/stale/duplicate paths.
+- Local Flutter/Dart/Gradle/ADB BLOCKED / NOT RUN. Android/Kotlin compilation, native overlay runtime, device/OEM screenshots and physical-device behavior NOT RUN; Flutter widget/hosted CI evidence is not native-renderer or screenshot proof. Whole-App visual remains VISUAL NOT VERIFIED. No App package built; no Firmware/BIN, P1 wire/security, OTA, Firebase production, Build App, signing, Release, flashing or device operation.
+- **Next pending WP9:** Visual/regression evidence. Obtain actual Android/OEM rendered evidence separately from widget/golden/CI and execute only after a new owner command.
+
+---
+
 ## Reconciliation — 2026-11-28 — WP7 Usage Statistics audit COMPLETED
 
 - Fresh `@Thinking Eksekusi Code!` authorized exactly WP7. The current Usage Statistics source/test and Dashboard recording boundary were reviewed; no code/test/schema/workflow change was necessary.
