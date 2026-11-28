@@ -1,3 +1,17 @@
+## BUILD #173 — ACTIVE / JAVA 17 SETUP — 2026-11-28
+
+- **Authorization / trigger:** explicit owner command `@Thinking Eksekusi Build App!`; one owner-authored Issue #50 at 2026-11-28T07:24:16Z (14:24:16 +07), exact required title and body token. No prior trigger issue reused.
+- **Run / workflow / attempt:** Build #173 / workflow `374946166` / run `46121055519` / attempt 1 / issue event / actor TenzoNkz. [Actions run](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/46121055519).
+- **Exact source SHA:** `478bdfdc5ee18379e07baad5e4dfd8ab598dc2db`, live main HEAD at issue creation.
+- **Validated source parent:** Validation Only #334 / run `46120803848` / job `140904657293` / source `5d9f0b8bb5b75f52c466004159a78fcbaa9a2181`, terminal SUCCESS. Dependencies PASS; formatter 63 files / 0 changed; analyzer 159 info-level / zero warnings/errors; Flutter tests 361/361 PASS.
+- **Main/source parity:** six commits after validation source changed only `00_WORK_STATUS.md`, `APP_BUILD_REPORT.md` and `CHAT_TRANSFER.md`; App source, test, workflow and build config remained unchanged.
+- **Repair history:** Build #171 exposed a stale channel path; Build #172 exposed stale metric migration path. Current audit loads the correct `floating_monitor_bridge.dart` and `floating_monitor_models.dart`, retains all channel/migration checks and has regression tests; Validation #334 passed.
+- **Assigned job:** `build` / ID `140905430951`; currently `in_progress`. Step 1 Set up job SUCCESS; step 2 Checkout repository SUCCESS; step 3 Set up Java 17 IN_PROGRESS; steps 4–21 pending.
+- **Release baseline:** Release `403010611` / tag `jexfyz-latest` still targets Build #170 source `67ff49fdb566a2fa7748e32e5207217c8e4b98b7` until #173 fully passes publication and verification.
+- **Next action:** continue only this run. Record all gate outcomes and warnings, then verify tag/Release/source SHA and fresh APK/source ZIP asset identity, sizes, SHA-256 and signatures. No duplicate trigger or blind retry.
+
+---
+
 ## VALIDATION ONLY #334 — TERMINAL SUCCESS / SECOND FLOATING AUDIT REPAIR VERIFIED — 2026-11-28
 
 - **Run/job/source:** Validation Only #334 / workflow `417906156` / run `46120803848` / job `140904657293` / source SHA `5d9f0b8bb5b75f52c466004159a78fcbaa9a2181`; terminal `completed / success`.
