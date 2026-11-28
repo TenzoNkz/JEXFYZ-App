@@ -1,3 +1,17 @@
+## BUILD #171 — QUEUED — 2026-11-28
+
+- **Disposition:** ACTIVE / QUEUED. The explicit owner command `@Thinking Eksekusi Build App!` authorized one guarded App Build/QC/release attempt. No gate was weakened and no Firmware/device or unrelated operation was authorized.
+- **Authorization / trigger:** one new owner-authored Issue #48, created by `TenzoNkz` at 2026-11-28 14:02 +07:00, exact title `JE X FYZ — EKSEKUSI BUILD APP TRIGGER` and exact body token `JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1`. Previous Issues #47 and #46 were not reopened or reused.
+- **Run / workflow / attempt:** Build #171 / Actions workflow `374946166` / run `46119313904` / attempt 1 / event `issues`; run state QUEUED at 2026-11-28 14:02:03Z. [Actions run](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/46119313904).
+- **Immutable intended source SHA:** `16ccd9ee58df423ddfefc927553fc686350c739f`, the live `main` HEAD captured at issue creation. Validation Only #329 / run `46116428334` / job `140891199755` passed on exact App/test SHA `1488577fcb97099bc32a069560cfb373760c2e41`: locked dependencies PASS, formatter 63 Dart files / 0 changed, analyzer 159 info / 0 warnings / 0 errors, Flutter tests 360/360 PASS. Nine commits between the validated source and this build SHA change documentation/status files only; App source, tests, workflow and build configuration are unchanged.
+- **Preceding release baseline:** Build #170 / run `46062114759` / job `140718609861` / source `67ff49fdb566a2fa7748e32e5207217c8e4b98b7` terminal SUCCESS. Release `403010611` / tag `jexfyz-latest` still target that prior SHA. #170's APK and source ZIP were fresh-downloaded and verified; #171 must supersede them only after every current gate passes.
+- **Preceding failure/repair:** Build #169 / run `46060632706` / job `140713746680` failed Android Gradle step 14 because Debug task configuration required production Release signing credentials. The fail-closed App source repair `55d08c29c427caf89d1b8fa54f1b998870903158` and regression contract test `d40fdd3de10f6c1cace2b8468761cd7a58e6bbd4` were included in #170, which passed the Debug Gradle gate without assigning a debug signer to Release.
+- **Release requirements:** keep all live workflow gates unchanged, including security/architecture audit, dependency install, analyzer, Flutter tests, Android Gradle, obfuscated production APK, explicit V1/V2/V3 signing, pinned certificate identity, matching source archive, Release/tag/source parity, exactly one APK plus one source ZIP, fresh asset re-download, SHA-256, ZIP integrity and downloaded signature verification. Preserve Android Gradle `versionName "Telegram @horizontalzzz"`.
+- **Observed job state:** job ID and step status have not yet been returned at this queued checkpoint. Do not infer runner allocation, gate execution or artifact availability.
+- **Scope / next action:** App Build/QC/release only. Inspect the exact run and assigned job. No Firmware compilation/BIN, Firebase/production metadata, OTA, flash, physical-device operation or unrelated release work.
+
+---
+
 ## BUILD #167 — TERMINAL SUCCESS / RELEASE + DOWNLOADED ASSETS VERIFIED — 2026-11-19
 
 - **Disposition:** COMPLETED / SUCCESS. This entry supersedes the immediately following historical in-progress snapshot; that snapshot is retained unchanged as an audit trail.
