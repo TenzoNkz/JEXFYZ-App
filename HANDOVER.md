@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — Current Handover
 
-Last reconciled: 2026-11-28T23:40:00+07:00 (Asia/Jakarta). Authority: MASTER_PROMPT.md.
+Last reconciled: 2026-11-29T12:00:00+07:00 (Asia/Jakarta). Authority: MASTER_PROMPT.md.
 
 ## BUILD_APP — Build #174 COMPLETED SUCCESS — 2026-11-28
 
@@ -19,9 +19,13 @@ Last reconciled: 2026-11-28T23:40:00+07:00 (Asia/Jakarta). Authority: MASTER_PRO
 - **Status:** EXTERNAL OPERATION COMPLETED_SUCCESS. No further operation is pending.
 - **Next:** Arah berikutnya: Lanjut Diskusi!
 
-## WP9 device-visual boundary — separate from hosted build
+## WP9 disposition and WP10 readiness — separate from physical cooler validation
 
-WP9 source/test is VERIFIED CI and the owner-provided Home locked-card screenshot is now REVIEWED: no Connect CTA is visible and the top-left Bluetooth entry point remains present. The owner labels it as the latest App; the image does not include embedded Build #174 source identity. Broader unshown visual surfaces remain outside this screenshot. Real BLE/cooler behavior, Firmware, telemetry, thermal/electrical performance and OTA remain deferred/not tested.
+- **WP9 implementation/regression:** the lock card is informational only; no Connect/Hubungkan CTA or callback remains. Home top-left Bluetooth stays the sole Home entry point to the existing guarded manual Connection flow. Validation Only #339 / run 46127470525 / job 140925152695 passed on `c6206989cb0e30c94578c95b4d9c13bde5d36d71`: dependencies PASS, formatter 63 files / 0 changed, analyzer 157 info / 0 warnings/errors, Flutter 362/362 PASS.
+- **WP9 visual review:** the owner-provided latest Home screenshot (691 × 1536 px, English / Light / disconnected) is REVIEWED; no Connect/Hubungkan CTA is visible and the top-left Bluetooth entry point remains. The owner identifies it as the latest App. The latest repository package is Build #174 / source `c1408fff0fae10bf6b98237c4485c2c5fb77c368`; exact screenshot-to-package identity is owner-attributed, not embedded in image metadata. The owner accepts the present stage with broader unshown visual surfaces recorded as limitations.
+- **Physical cooler:** BLE discovery/session, commands, telemetry, Firmware interaction, thermal/electrical behavior and OTA remain DEFERRED / NOT TESTED until the cooler is available. These results must not be inferred from Flutter CI, hosted APK checks or screenshots.
+- **Next roadmap item: WP10 — Final closure.** Reconcile all live file dispositions, comments, formatter deltas, test and exact-SHA CI evidence, full diffs/commits, residual risks, platform evidence and durable handoff. WP10 can close the App code/repository workstream while physical cooler/BLE acceptance stays explicitly deferred/not tested. Do not represent the overall physical product as hardware-verified.
+- **Authorization:** WP10 has not started. This is the recommended next WP only. A fresh explicit `@Thinking Eksekusi Code!` command in the dedicated Code workspace is required; one command authorizes WP10 only. Build App is not authorized by this Diskusi recommendation.
 
 ## Historical Build App work item — COMPLETED SUCCESS
 
