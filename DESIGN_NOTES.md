@@ -346,3 +346,12 @@ The latest published App package is Build #167 / Actions run `44510421466` / job
 **Accessibility/localization/evidence.** The token test exercises existing theme presets but introduces no new text or interaction. The broader EN/ID, 350/420-dp, narrow/constrained, enlarged-text, reduced-motion and screen-reader matrix remains open. There is no Android/OEM screenshot or device evidence; whole-App visual acceptance remains **VISUAL NOT VERIFIED**.
 
 **Next design-system work.** Continue role-based typography, spacing, shape and control geometry inventory. Promote values only when callers share an actual semantic component role; repeated numeric sizes alone do not justify a common token.
+
+
+## WP6 Floating Monitor configuration accessibility — 2026-11-28
+
+**Semantics contract:** Size and Opacity are each one named Slider node. The localized field label is merged with the Slider's adjustable semantics; decorative value badges and repeated visible labels are excluded from the semantics tree to avoid duplicate announcements. Slider value semantics use the same locale-aware formatter as the visible value (0.60× / 0,60× and 90%).
+
+**Geometry and protected scope:** Do not alter native Floating Monitor Canvas/WindowManager geometry, fixed renderer, size/opacity ranges, defaults, configuration schema v2, v1 migration, storage identity, bridge channel or native service lifecycle. Visible label/value treatment remains visually unchanged. The widget test covers 350/420-dp widths, EN/ID and Light/Dark, slider role, enabled state, increase/decrease actions, localized values and minimum 48-dp height.
+
+**Evidence:** Validation Only #303 / run 46107526220 / source/test SHA 6bdb6cc6d712120bb7afa1bd3d4ba4f31e733a0; full suite 358/358 PASS, formatter 57 files/0 changed, analyzer 159 info-level diagnostics with zero warnings/errors. Test stores a disabled config and exposes controls through widget state after async load; native service start/stop is not invoked. Android/OEM screenshots and actual native overlay rendering remain NOT VERIFIED.
