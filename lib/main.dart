@@ -4013,7 +4013,6 @@ class _DashboardScreenState extends State<DashboardScreen>
             tabIndex: tabIndex,
             voltage: voltage,
             language: appLanguageNotifier.value,
-            onConnect: _showBluetoothMenu,
           );
     return JexDashboardTabTransition(tabId: tabIndex, child: tabContent);
   }

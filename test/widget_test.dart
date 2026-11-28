@@ -1021,8 +1021,17 @@ void main() {
     expect(composition, contains('displayMenuLockReason('));
     expect(composition, contains('JexDashboardLockedMenu('));
     expect(composition, contains('reason: lockReason'));
-    expect(composition, contains('onConnect: _showBluetoothMenu'));
+    expect(composition, isNot(contains('onConnect:')));
+    expect(composition, isNot(contains('_showBluetoothMenu')));
     expect(composition, contains('return JexDashboardTabTransition('));
+
+    final homeSource = File('lib/dashboard_home_tab.dart').readAsStringSync();
+    expect(
+      homeSource,
+      contains('onPressed: connected ? _disconnect : _showBluetoothMenu'),
+      reason:
+          'Home top-left Bluetooth remains the sole manual connection entry point.',
+    );
 
     final buildStart = source.indexOf(
       'Widget build(BuildContext context) {',

@@ -1,7 +1,8 @@
 // AI-MEMORY / FILE CONTRACT
 // Owns the Dashboard submenu lock policy and its presentation-only overlay.
-// Dashboard supplies synchronized device facts and the existing Connect action;
-// this module never owns BLE/GATT, P1, session state, commands or persistence.
+// The Home Bluetooth control owns the manual connection entry point; this module
+// only presents synchronized device facts and never owns BLE/GATT, P1, session
+// state, commands or persistence.
 
 import 'dart:ui' show ImageFilter;
 
@@ -49,8 +50,9 @@ DisplayMenuLockReason displayMenuLockReason({
 
 /// Renders a non-interactive submenu beneath the existing state-derived lock panel.
 ///
-/// Dashboard passes its content and guarded Connect callback. This widget does not
-/// initiate BLE operations and the covered submenu never receives pointer input.
+/// The Home Bluetooth control remains the manual connection entry point. This
+/// presentation widget does not initiate BLE operations or receive submenu input
+/// while the lock panel is active.
 class JexDashboardLockedMenu extends StatelessWidget {
   const JexDashboardLockedMenu({
     super.key,
@@ -59,7 +61,6 @@ class JexDashboardLockedMenu extends StatelessWidget {
     required this.tabIndex,
     required this.voltage,
     required this.language,
-    required this.onConnect,
   });
 
   final Widget content;
@@ -67,7 +68,6 @@ class JexDashboardLockedMenu extends StatelessWidget {
   final int tabIndex;
   final String voltage;
   final AppLanguage language;
-  final VoidCallback onConnect;
 
   @override
   Widget build(BuildContext context) {
@@ -201,31 +201,6 @@ class JexDashboardLockedMenu extends StatelessWidget {
                           fontWeight: FontWeight.w600,
                         ),
                       ),
-                      if (disconnected) ...[
-                        const SizedBox(height: 14),
-                        SizedBox(
-                          width: double.infinity,
-                          child: TextButton.icon(
-                            // Dashboard retains the actual Bluetooth connection flow.
-                            onPressed: onConnect,
-                            icon: const Icon(
-                              PhosphorIconsRegular.bluetooth,
-                              size: 18,
-                            ),
-                            label: Text(
-                              JexText.phrase('Connect', 'Hubungkan', language),
-                            ),
-                            style: TextButton.styleFrom(
-                              minimumSize: const Size.fromHeight(48),
-                              foregroundColor: accent,
-                              backgroundColor: accent.withValues(alpha: .10),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(14),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
                     ],
                   ),
                 ),

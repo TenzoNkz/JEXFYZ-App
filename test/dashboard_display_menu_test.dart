@@ -1,5 +1,3 @@
-import 'dart:ui' as ui;
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -23,7 +21,6 @@ void main() {
       alignment: Alignment.topLeft,
       child: Text('Submenu content'),
     ),
-    VoidCallback onConnect = _noConnect,
   }) {
     return JexDashboardLockedMenu(
       content: content,
@@ -31,15 +28,13 @@ void main() {
       tabIndex: tabIndex,
       voltage: voltage,
       language: language,
-      onConnect: onConnect,
     );
   }
 
   testWidgets(
-    'Disconnected lock blocks submenu input and uses the Dashboard Connect action',
+    'Disconnected lock keeps its card informational and blocks submenu input',
     (tester) async {
       final semantics = tester.ensureSemantics();
-      var connectCalls = 0;
       var contentTapCalls = 0;
 
       try {
@@ -54,7 +49,6 @@ void main() {
                   child: const Text('Submenu content'),
                 ),
               ),
-              onConnect: () => connectCalls++,
             ),
           ),
         );
@@ -66,23 +60,16 @@ void main() {
         );
         expect(find.byType(ClipRect), findsOneWidget);
         expect(find.byType(ImageFiltered), findsOneWidget);
-        // The blurred submenu must remain visible but disappear from the
-        // accessibility tree; only the active lock panel and Connect action
-        // are announced while the submenu is unavailable.
         expect(find.text('Submenu content'), findsOneWidget);
         expect(find.bySemanticsLabel('Submenu content'), findsNothing);
         expect(
           find.bySemanticsLabel('CONNECT YOUR DEVICE FIRST'),
           findsOneWidget,
         );
-        final connectSemantics = find.bySemanticsLabel('Connect');
-        expect(connectSemantics, findsOneWidget);
-        final connectData = tester
-            .getSemantics(connectSemantics)
-            .getSemanticsData();
-        expect(connectData.hasFlag(ui.SemanticsFlag.isButton), isTrue);
-        expect(connectData.hasFlag(ui.SemanticsFlag.isEnabled), isTrue);
-        expect(connectData.hasAction(ui.SemanticsAction.tap), isTrue);
+        expect(find.text('Connect'), findsNothing);
+        expect(find.text('Hubungkan'), findsNothing);
+        expect(find.byType(TextButton), findsNothing);
+        expect(find.byType(IconButton), findsNothing);
 
         final blockingAncestors = find
             .ancestor(
@@ -94,20 +81,9 @@ void main() {
             .toList();
         expect(blockingAncestors, hasLength(1));
 
-        final connectButton = find.ancestor(
-          of: find.text('Connect'),
-          matching: find.byType(TextButton),
-        );
-        expect(connectButton, findsOneWidget);
-        expect(tester.getSize(connectButton).height, greaterThanOrEqualTo(48));
-
         await tester.tap(find.text('Submenu content'), warnIfMissed: false);
         await tester.pump();
         expect(contentTapCalls, 0);
-
-        await tester.tap(find.text('Connect'));
-        await tester.pump();
-        expect(connectCalls, 1);
       } finally {
         semantics.dispose();
       }
@@ -222,7 +198,7 @@ void main() {
     expect(find.byType(TextButton), findsNothing);
   });
 
-  testWidgets('Disconnected lock copy and Connect action are Indonesian', (
+  testWidgets('Disconnected lock remains informational in Indonesian', (
     tester,
   ) async {
     await tester.pumpWidget(
@@ -239,9 +215,10 @@ void main() {
       find.text('Hubungkan perangkat untuk menggunakan menu ini.'),
       findsOneWidget,
     );
-    expect(find.text('Hubungkan'), findsOneWidget);
+    expect(find.text('Hubungkan'), findsNothing);
     expect(find.text('Connect'), findsNothing);
+    expect(find.byType(TextButton), findsNothing);
+    expect(find.byType(IconButton), findsNothing);
   });
 }
 
-void _noConnect() {}
