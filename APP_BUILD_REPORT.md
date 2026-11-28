@@ -1,3 +1,11 @@
+## VALIDATION ONLY #333 — ACTIVE / CLEANED DART TEST SOURCE — 2026-11-28
+
+- **Preceding #332 root cause:** run `46120074025` / job `140902434947` / SHA `b1ebaa99e953cb421b740084c310b335138529a3` failed after a copied formatter output artifact (`Formatted 1 file (1 changed) in 0.01 seconds.`) was accidentally included as line 336 of `test/github_actions_workflow_contract_test.dart`. The resulting parse errors caused formatter, analyzer and test gate failures; 350 tests passed and one failed to load. This was a tooling-output copy error, not an App runtime or workflow audit defect.
+- **Cleanup:** commit `3779ad7096c0505c0c9edbbff650b4ad70b71a97`, `fix(test): remove formatter diagnostic from Dart source`, removes only that exact trailing non-code line. Read-back confirms the Dart source ends at its closing brace and the diagnostic text is absent.
+- **Active Validation Only #333:** workflow `417906156` / run `46120263409` / attempt 1 / event `push` / exact source SHA `3779ad7096c0505c0c9edbbff650b4ad70b71a97`; job `140903017183`; step 1 SUCCESS and step 2 checkout IN_PROGRESS. This is non-publishing and does not mutate Release/tag.
+- **Next action:** inspect #333 through dependency, formatter, analyzer, full Flutter suite and terminal summary. Do not issue a new Build trigger until all validation gates pass.
+
+---
 ## VALIDATION ONLY #332 — ACTIVE / POST-FORMAT REVALIDATION — 2026-11-28
 
 - **Reason:** Validation Only #331 verified the regression assertion and all 361 tests but failed the formatter gate because one test file needed canonical formatting.
