@@ -1,3 +1,13 @@
+## VALIDATION ONLY #334 — ACTIVE / FLOATING MIGRATION MODEL AUDIT REPAIR — 2026-11-28
+
+- **Repair commit:** `5d9f0b8bb5b75f52c466004159a78fcbaa9a2181`, parent `f843cfe1915001d42b60254255a3142f8b0e6b2d`. Workflow blob `948fd78f0fe7463130ca15769d369b017344c8f0`; workflow now reads `lib/floating_monitor_models.dart`, includes `floating_models` in the combined source material, and checks `metricSchemaVersion` plus `fromStored` against the model module. Regression test blob `8090238cd190cee72748653324b8405760378a10` asserts the new module path and predicate and rejects the obsolete controller predicate.
+- **Build #172 trigger failure:** run `46120511205` / job `140903764214` / SHA `cf9ead72a0afec7674a6019c1b5cec6dcf3da745` failed Step 10 with `JE X FYZ audit failed; legacy Floating Monitor metric migration is missing`. Steps 1–9 passed; 11–21 skipped; cleanup 39–43 passed; no APK/ZIP/Release mutation. Migration code was found in `floating_monitor_models.dart`; audit incorrectly read `floating_monitor.dart`.
+- **Validation baseline:** #333 / run `46120263409` / job `140903017183` passed exact App/test SHA `3779ad7096c0505c0c9edbbff650b4ad70b71a97`: deps PASS; format 63 files / 0 changed; analyzer 159 info / zero warnings/errors; tests 361/361.
+- **Current read-only validation:** Validation Only #334 / workflow `417906156` / run `46120803848` / job `140904657293` / exact source SHA `5d9f0b8bb5b75f52c466004159a78fcbaa9a2181`. At checkpoint, steps 1–2 SUCCESS, step 3 Set up Flutter IN_PROGRESS, later steps pending. No Build trigger has been created for this repair yet.
+- **Next action:** inspect #334 through locked deps, read-only Dart formatter, analyzer and entire Flutter test suite; proceed only if all pass.
+
+---
+
 ## BUILD #172 — TERMINAL FAILURE / STALE MIGRATION MODEL AUDIT PATH — 2026-11-28
 
 - **Disposition:** terminal FAILURE at the static security/architecture audit; no retry or rerun was attempted. This is an evidence-backed stale audit file-path failure, not a runner transient.
