@@ -30,6 +30,12 @@ Last reconciled: 2026-11-28T23:40:00+07:00 (Asia/Jakarta). Authority: MASTER_PRO
 
 The updated Home locked card has now been captured and reviewed in the owner-provided latest-App screenshot (English / Light / disconnected, 691 × 1536 px): no Connect/Hubungkan CTA is visible and the top-left Bluetooth control remains available. The current repository Release is Build #174 on source `c1408fff0fae10bf6b98237c4485c2c5fb77c368`; the screenshot is owner-attributed to the latest package but contains no embedded source/build identifier. Other Dashboard tabs, Settings subpages, Usage Statistics, additional dialogs/sheets and Floating Monitor configuration/native overlay are not individually established by this new image. Cooler BLE discovery/session, command behavior, telemetry, Firmware interaction, thermal/electrical performance and OTA remain DEFERRED / NOT TESTED until physical cooler access. Hosted Build/CI and this screenshot do not prove those areas. No device or Firmware operation was performed in BUILD_APP.
 
+## Next recommended App work package — WP10 final closure
+
+WP9's owner-approved current-stage Home/UI evidence is now recorded, including the post-CTA-removal screenshot. WP10 is the next roadmap item: reconcile the live repository inventory and per-file dispositions, comments, formatter deltas, test and CI evidence, full diffs/commits, exact-SHA Validation Only records, residual risks, platform evidence and durable handoff.
+
+**Cooler access is not required to perform the repository/App-code closure.** WP10 can proceed while physical cooler validation remains explicitly DEFERRED / NOT TESTED. The final record must not claim BLE discovery/session, command/telemetry correctness, Firmware operation, thermal/electrical performance, OTA, or unshown native Android/OEM surfaces passed. This is a recommendation only; WP10 has not started and requires a fresh explicit `@Thinking Eksekusi Code!` command in the dedicated Code workspace. One command authorizes WP10 only.
+
 ## Current disposition
 
 BUILD_APP work item #174 is COMPLETED_SUCCESS. There is no active Actions run, retry or pending Release publication. Any new Build requires a fresh explicit owner command.
