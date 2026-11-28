@@ -1,3 +1,14 @@
+## BUILD #171 REPAIR VALIDATION — VALIDATION ONLY #330 ACTIVE — 2026-11-28
+
+- **Repair commit:** `a6bfd70078f51a5b4505ab5f94e7d51233ac6937`, `fix(build): align Floating Monitor audit with bridge module`. One atomic Git commit updates the guarded Build workflow and its Flutter workflow-contract regression test.
+- **Workflow delta:** load `lib/floating_monitor_bridge.dart`; confirm exactly one dedicated `MethodChannel('je_x_fyz/floating')`; verify all seven bridge method names also appear in native `MainActivity.kt`; retain the native channel declaration and existing uniqueness checks. The static security/architecture audit is not removed or skipped.
+- **Regression delta:** `test/github_actions_workflow_contract_test.dart` asserts the audit follows bridge-module ownership, rejects the obsolete controller-path check, and keeps the full Dart/native method contract.
+- **Immutable repair source:** commit `a6bfd70078f51a5b4505ab5f94e7d51233ac6937`; workflow blob `0963ac5523180f4471a2e061ec48c931880b8da0`; test blob `c448ba388c53578c24ee06b28df5dfa838392c2c`. The Git ref was updated with an expected-HEAD lease from `2f9c64f39bf3b81f7cee1ea5fffd5679e07b87b8`; immediate read-back confirmed the new main HEAD and both blobs.
+- **Read-only validation:** Validation Only #330 / run `46119611019` / workflow `417906156` / job `140900993367`, source SHA `a6bfd70078f51a5b4505ab5f94e7d51233ac6937`. At this checkpoint run/job is `in_progress`; steps 1–2 SUCCESS, step 3 Set up Flutter IN_PROGRESS, steps 4–10 pending. This workflow does not publish an APK or mutate Release/tag.
+- **Next action:** continue only Validation Only run `46119611019`; record formatter, analyzer and full Flutter test terminal results before authorizing one new guarded Build App issue. No Build #171 rerun or duplicate trigger.
+
+---
+
 ## BUILD #171 — TERMINAL FAILURE / STALE FLOATING BRIDGE AUDIT PATH — 2026-11-28
 
 - **Disposition:** FAILED at the App security/architecture audit. This was not a transient runner failure. No retry has been made yet.
