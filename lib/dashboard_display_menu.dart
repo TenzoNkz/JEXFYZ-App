@@ -18,6 +18,13 @@ enum DisplayMenuLockReason {
   voltageLocked,
 }
 
+/// Describes the logical Adaptive mode lock, not a physical output state.
+String adaptiveVoltageLockDescription(AppLanguage language) => JexText.phrase(
+  'Adaptive Mode is forced inactive while Lock Voltage is active.',
+  'Mode Adaptif dipaksa nonaktif selama Kunci Tegangan aktif.',
+  language,
+);
+
 /// Applies one lock reason to the selected Dashboard submenu.
 /// Disconnection has highest priority, followed by the existing Adaptive gate.
 DisplayMenuLockReason displayMenuLockReason({
@@ -125,11 +132,7 @@ class JexDashboardLockedMenu extends StatelessWidget {
                       : 'Kunci tegangan aktif. Perangkat sedang kembali dengan aman dari $voltage ke 5V.',
                   language,
                 ))
-        : JexText.phrase(
-            'Adaptive Mode is forced OFF while Lock Voltage is active.',
-            'Mode Adaptif dipaksa MATI selama Kunci Tegangan aktif.',
-            language,
-          );
+        : adaptiveVoltageLockDescription(language);
     final accent = disconnected
         ? const Color(0xFF4D8CFF)
         : adaptiveLocked

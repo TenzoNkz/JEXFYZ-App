@@ -171,7 +171,7 @@ void main() {
     expect(find.text('VOLTAGE LOCKED AT 5V'), findsNothing);
   });
 
-  testWidgets('Lock Voltage on Adaptive tab keeps the Adaptive-disabled copy', (
+  testWidgets('Lock Voltage on Adaptive tab uses logical inactive copy', (
     tester,
   ) async {
     await tester.pumpWidget(
@@ -180,14 +180,40 @@ void main() {
           reason: DisplayMenuLockReason.voltageLocked,
           tabIndex: 2,
           voltage: '5V',
+          language: AppLanguage.english,
         ),
       ),
     );
 
     expect(find.text('ADAPTIVE MODE DISABLED'), findsOneWidget);
     expect(
-      find.text('Adaptive Mode is forced OFF while Lock Voltage is active.'),
+      find.text('Adaptive Mode is forced inactive while Lock Voltage is active.'),
       findsOneWidget,
+    );
+    expect(
+      find.text('Mode Adaptif dipaksa nonaktif selama Kunci Tegangan aktif.'),
+      findsNothing,
+    );
+
+    await tester.pumpWidget(
+      host(
+        menu(
+          reason: DisplayMenuLockReason.voltageLocked,
+          tabIndex: 2,
+          voltage: '5V',
+          language: AppLanguage.indonesia,
+        ),
+      ),
+    );
+
+    expect(find.text('MODE ADAPTIF DINONAKTIFKAN'), findsOneWidget);
+    expect(
+      find.text('Mode Adaptif dipaksa nonaktif selama Kunci Tegangan aktif.'),
+      findsOneWidget,
+    );
+    expect(
+      find.text('Adaptive Mode is forced inactive while Lock Voltage is active.'),
+      findsNothing,
     );
     expect(find.byType(TextButton), findsNothing);
   });

@@ -352,10 +352,7 @@ extension _DashboardControlTabsBuilder on _DashboardScreenState {
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
-                      JexText.phrase(
-                        'Adaptive Mode is forced OFF while Lock Voltage is active.',
-                        'Mode Adaptif dipaksa MATI selama Kunci Tegangan aktif.',
-                      ),
+                      adaptiveVoltageLockDescription(lang),
                       style: TextStyle(
                         color: Theme.of(context).colorScheme.jexMutedForeground,
                         fontSize: 10.5,
