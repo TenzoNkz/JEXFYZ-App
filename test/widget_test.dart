@@ -1029,8 +1029,7 @@ void main() {
     expect(
       homeSource,
       contains('onPressed: connected ? _disconnect : _showBluetoothMenu'),
-      reason:
-          'Home top-left Bluetooth remains the sole manual connection entry point.',
+      reason: 'Home top-left Bluetooth remains the sole manual connection entry point.',
     );
 
     final buildStart = source.indexOf(
