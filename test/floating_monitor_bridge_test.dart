@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:jexfyz_cooler/app_settings.dart';
 import 'package:jexfyz_cooler/floating_monitor.dart';
 
 void main() {
@@ -14,7 +13,6 @@ void main() {
       TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger;
 
   setUp(() {
-    appLanguageNotifier.value = AppLanguage.english;
     floatingConfigNotifier.value = const FloatingConfig();
     floatingTelemetryNotifier.value = const FloatingTelemetry();
   });
