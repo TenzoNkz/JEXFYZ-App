@@ -1,4 +1,4 @@
-| Last updated | 2026-11-28T14:38:00+07:00 (Asia/Jakarta) |
+| Last updated | 2026-11-28T14:39:00+07:00 (Asia/Jakarta) |
 
 > Event-driven project marker. It is not a live heartbeat or a GitHub lock.
 
@@ -6,18 +6,18 @@
 
 | Field | Value |
 |---|---|
-| **STATUS** | **COMPLETE** |
-| SESSION STATUS | COMPLETE — Diskusi review of the five owner-provided Android screenshots and documentation of the revised locked-menu UI decision. |
-| WORK STATUS | COMPLETE — visual findings and limitations recorded; the owner’s Connect-CTA removal decision is documented. WP9 remains BLOCKED / VISUAL NOT VERIFIED; this interaction did not authorize implementation. |
+| **STATUS** | **IN_PROGRESS** |
+| SESSION STATUS | IN_PROGRESS — Diskusi records the owner's acceptance of the latest Build #173 App/screenshots for the current stage and defers cooler-connected physical BLE validation to a future update. |
+| WORK STATUS | IN_PROGRESS — Reconcile owner acceptance, explicitly preserve the boundary that physical cooler/BLE behavior was not tested, and retain the pending locked-card CTA implementation decision. |
 | WORKSPACE | DISKUSI |
-| Mode | Read-only technical discussion and documentation-only project-memory updates. |
-| Request | 2026-11-28 — assess five App screenshots and record the request to remove the duplicate Connect CTA from the locked menu card while retaining the dedicated Bluetooth entry point at Home top-left. |
-| Started / completed | 2026-11-28T14:37:00+07:00 / 2026-11-28T14:38:00+07:00 (Asia/Jakarta) |
-| Last verified checkpoint | Build App #173 terminal SUCCESS on source SHA 478bdfdc5ee18379e07baad5e4dfd8ab598dc2db; Release tag jexfyz-latest. Five screenshots reviewed; screenshot-to-APK/device metadata remains unconfirmed. |
-| Evidence under review | Five images, each 691 × 1536 px: Home EN/Dark, Settings root EN/Dark, Connection sheet EN/Dark, Home ID/Dark, Home EN/Light. This is partial visual evidence only. |
-| Documentation commits | DESIGN_NOTES.md 25b333a57f59b333f3cb97fc36725ed120cff67e; PROJECT_STATE.md 00dec6fffcbc5d3d4f698cd8b9951d5e90fccbca; HANDOVER.md b9b503af3ac750511010ddafe9963adac81a22b7; CHAT_TRANSFER.md 8c194e40ff798488b304a1f91957546cdc83fba6. |
+| Mode | Technical discussion and documentation-only project-memory updates. No executable source, tests, configuration, workflow, Actions, build, release or device operation is authorized. |
+| Request | 2026-11-28 — owner confirms screenshots are from the latest APK, asks to treat current results as passed for now, and defers cooler connection demonstration because the physical cooler is unavailable. |
+| Started / updated | 2026-11-28T14:39:00+07:00 / 2026-11-28T14:39:00+07:00 (Asia/Jakarta) |
+| Last verified checkpoint | Build App #173 terminal SUCCESS on source SHA 478bdfdc5ee18379e07baad5e4dfd8ab598dc2db; Release tag jexfyz-latest. Five screenshots were reviewed in the previous interaction. |
+| Owner acceptance | Build #173 latest APK and currently supplied visual state accepted for the present stage. Physical cooler connection/BLE validation is explicitly deferred to a future update when the cooler is available. |
+| Pending UI change | Remove Connect/Hubungkan CTA from the locked submenu card; keep the Home top-left Bluetooth entry point. Implementation awaits a fresh explicit Code command in the dedicated Code workspace. |
 | External operation | Build App #173 / run 46121055519 / job 140905430951 — terminal SUCCESS (previous operation); no active operation. No new operation started in this Diskusi session. |
-| Next action | Confirm screenshot provenance against Build #173 and provide device/Android, logical dp/density and accessibility metadata; complete the remaining WP9 visual matrix. Then use a fresh explicit Code command in the dedicated Code workspace to resume WP9 and implement the locked-card CTA removal. |
+| Next action | Record the owner's scoped acceptance/deferred-test decision in canonical design/state/handover notes; close this Diskusi interaction. |
 
 ## Historical workspace context
 
