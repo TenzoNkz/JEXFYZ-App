@@ -1,4 +1,16 @@
-## Latest WP9 checkpoint — Visual/regression evidence BLOCKED / VISUAL NOT VERIFIED — 2026-11-28
+## Latest WP9 checkpoint — Flutter regression VERIFIED CI #329 / Android visual evidence BLOCKED — 2026-11-28
+
+- WP9 remains BLOCKED / VISUAL NOT VERIFIED; WP10 has not started.
+- App implementation baseline is `048c22ba4722848b962dc58d5b3e9dc7fe994961`; no production App source changed in this WP9 command. New test-only path: `test/settings_pages_accessibility_test.dart`, final blob `607c82158b78b0c6978f0edaa09a66bd57b028c9`.
+- The new test covers Settings root, About, Language, Appearance, Notifications and Bluetooth across 350/420 dp × EN/ID × Light/Dark, with localized labels, layout exception checks and >=48-dp Settings row targets.
+- Validation Only #328 / run 46116082048 on the initial test commit failed only the formatter gate; locked dependencies, analyzer and 360/360 tests passed. The exact canonical formatting was applied without changing assertions. Validation Only #329 / run 46116428334 / job 140891199755 terminal SUCCESS on exact source/test SHA `1488577fcb97099bc32a069560cfb373760c2e41`: dependencies PASS, formatter 63 files / 0 changed, analyzer 159 info / 0 warnings/errors, Flutter suite 360/360 PASS, summary SUCCESS.
+- Live validated tree: 185 entries / 139 blobs / 46 trees, `truncated=false`; the inventory below includes 139 unique live blob dispositions.
+- Actual Android/OEM screenshots and native Floating Monitor Canvas/WindowManager evidence remain NOT RUN. Current Release source `67ff49fdb566a2fa7748e32e5207217c8e4b98b7` and the historical Build #167 screenshot do not qualify as current exact-SHA visual evidence. Outcome remains **VISUAL NOT VERIFIED**.
+- No App UI source, native code, workflow, Firmware, OTA, Firebase, signing, APK, Release or device operation changed. Do not start WP10 until actual screenshot acceptance is complete under a fresh explicit owner command.
+
+---
+
+## Previous WP9 evidence-only checkpoint — VISUAL NOT VERIFIED (superseded by Validation Only #329) — 2026-11-28
 
 - The fresh `@Thinking Eksekusi Code!` command authorized exactly WP9. WP8 remains COMPLETED; WP9 is BLOCKED, not COMPLETED; WP10 has not started.
 - App source/test SHA `048c22ba4722848b962dc58d5b3e9dc7fe994961` is verified by Validation Only #327 / run 46113283625 / job 140881362489 terminal SUCCESS: locked dependencies PASS, formatter 62 files / 0 changed, analyzer 159 info / 0 warnings/errors, Flutter suite 359/359 PASS. Ten subsequent commits to main are documentation-only; there are no source/test changes in this WP9 attempt.
@@ -381,6 +393,7 @@ A failed gate blocks dependent work. Retry only after classifying root cause (so
 | `test/p1_command_contract_test.dart` | Pure P1 command/ACK/telemetry/write-policy and pre-session eligibility tests | TEST / WP3 P1 REGRESSION | VERIFIED CI #258 — previous classification/ACK contracts retained; three new pure send-gate cases cover BLE/RX readiness, SYNC-only bootstrap and unchanged post-ready acceptance; 330/330 suite PASS |
 | `test/p1_frame_decoder_test.dart` | Dart unit tests for pure P1 stream framing | TEST / WP3 P1 REGRESSION | UPGRADE / VERIFIED CI #142 — SPLIT/ATOMIC FRAMES, ORDER, OVERFLOW AND CLEAR |
 | `test/p1_telemetry_contract_test.dart` | Unit and Dashboard wiring tests for pure P1 telemetry-line parsing | TEST / WP3 PARSER REGRESSION; NO TRANSPORT OWNER | KEEP / VERIFIED CI #261 — six tests: five pure parse behaviors and one Dashboard SYNC/live-path wiring check; 336/336 full suite PASS |
+| `test/settings_pages_accessibility_test.dart` | Flutter widget regression matrix for Settings root and preference subpages | TEST / WP9 SETTINGS ACCESSIBILITY REGRESSION | NEW 2026-11-28 — 350/420-dp × EN/ID × Light/Dark across Settings, About, Language, Appearance, Notifications and Bluetooth; checks localized labels, layout exceptions and >=48-dp root row hit height; Validation Only #329 exact SHA 1488577f PASS, full suite 360/360; actual Android/OEM screenshots remain NOT RUN |
 | `test/support/source_contract_helpers.dart` | Dart test | TEST / REGRESSION | KEEP / VERIFIED — SOURCE ASSERTION NORMALIZATION |
 | `test/temperature_accessibility_test.dart` | Flutter semantics/widget test for Temperature limit action labels and handles | TEST / ACCESSIBILITY REGRESSION | UPDATED 2026-11-28 — 3 rendered widget tests cover six EN/ID labels, 48×48-dp semantics, 360/420-dp widths, Light/Dark, hard endpoints, 2°C gap and settled transition; test commit f322b675aec6c46170d9be9f9dcb8e7f82460418; Validation Only #279 PASS (349/349) |
 | `test/usage_statistics_test.dart` | Usage Statistics unit, widget and source-contract coverage | TEST / WP7 REGRESSION — STATIC REVIEW COMPLETED | REVIEWED AT LIVE BLOB `ca3ba978d750bd9c33fe5584e9ae2d24f981640f` (1,285 lines / 29 cases) — pure analytics, queue, source-contract and widget coverage. Schema/migration/retention assertions are not SQLite runtime fixtures. Exact source/test blobs passed full Validation Only #303 (358/358); migration fixture and 1h/6h/24h profiles NOT RUN |

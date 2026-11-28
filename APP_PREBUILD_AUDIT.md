@@ -1,3 +1,17 @@
+## Latest CODE_FULL checkpoint — WP9 Flutter regression VERIFIED CI #329 / Android visual evidence BLOCKED — 2026-11-28
+
+**Disposition: WP9 remains BLOCKED / VISUAL NOT VERIFIED.** The Flutter regression extension is validated, but the package's visual acceptance still requires actual Android/OEM screenshots. This command is limited to WP9; WP10 has not started.
+
+- **App implementation baseline:** `048c22ba4722848b962dc58d5b3e9dc7fe994961` (the only WP9 code addition is a test; no production App source changed).
+- **New regression test:** `test/settings_pages_accessibility_test.dart`, final blob `607c82158b78b0c6978f0edaa09a66bd57b028c9`. It checks Settings root plus About, Language, Appearance, Notifications and Bluetooth subpages at 350/420-dp × EN/ID × Light/Dark; verifies localized labels, no layout exceptions and Settings root InkWell hit height >=48 dp. No persistence mutation, permission request, BLE, native method or device operation is invoked.
+- **Validated source/test SHA:** `1488577fcb97099bc32a069560cfb373760c2e41`. Validation Only #329 / run 46116428334 / job 140891199755, terminal SUCCESS on exact source/test SHA 1488577fcb97099bc32a069560cfb373760c2e41: locked dependencies PASS; formatter 63 Dart files / 0 changed; analyzer 159 info diagnostics / 0 warnings / 0 errors; full Flutter suite 360/360 PASS; final summary SUCCESS.
+- **CI repair:** Validation Only #328 failed only on formatter drift in this new file while dependency resolution, analyzer and 360/360 tests passed. The exact canonical formatter output was applied as a formatting-only commit `1488577fcb97099bc32a069560cfb373760c2e41`; #329 is the successful exact-SHA validation. No assertion was weakened or changed to force green.
+- **Tree/register:** 185 recursive entries / 139 blobs / 46 trees, `truncated=false`; REPOSITORY_UPGRADE_PLAN now includes 139 unique live blob paths.
+- **Visual boundary:** no actual current-SHA screenshot/golden matrix is available. Existing Build #167 Home capture is historical and incomplete; current Release source `67ff49fdb566a2fa7748e32e5207217c8e4b98b7` predates the validated App source/test SHA. Flutter widget tests and Validation Only are not Android/OEM/native Canvas/WindowManager evidence. Whole-App outcome remains **VISUAL NOT VERIFIED**.
+- **Unblock:** actual Android/OEM captures must cover Home, five Dashboard tabs, Connection, Settings/subpages, Usage Statistics, applicable dialogs/sheets and Floating Monitor at applicable viewport/locale/theme/state/accessibility/reduced-motion cases, with exact source SHA and device/density metadata. Native overlay evidence is separate. No WP10 activity is authorized by this command.
+
+---
+
 ## Latest CODE_FULL checkpoint — WP9 Visual/regression evidence BLOCKED / VISUAL NOT VERIFIED — 2026-11-28
 
 **Disposition: BLOCKED. WP9 is not COMPLETED.** This `@Thinking Eksekusi Code!` command selected WP9 only. The package's mandatory acceptance is rendered Android App evidence; the connected repository/CI environment cannot capture or inspect the required device/OEM screenshots, and no such screenshot set was supplied in this execution. No visual PASS or source defect is inferred.

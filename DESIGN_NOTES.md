@@ -58,6 +58,13 @@ Capture actual App screenshots and review Home, each control tab, Connection, Se
 - Flutter/Dart/Gradle/ADB/emulator are unavailable in this execution environment; Android SDK environment variables are unset. Validation Only is a Flutter-only workflow and is not an Android screenshot or native Canvas/WindowManager test.
 - **Outcome: VISUAL NOT VERIFIED; WP9 BLOCKED.** Do not mark PASS or infer Android/OEM/native-overlay quality from widget tests or hosted CI. Resume only after actual captures of Home, all five Dashboard tabs, Connection, Settings/subpages, Usage Statistics, applicable dialogs/sheets and Floating Monitor are available with source SHA, device/Android version, dp and physical dimensions/density, locale, theme, state, text-scale and reduced-motion metadata. Review the native overlay separately. No design contract or composition was changed during this evidence review.
 
+### WP9 Settings widget regression update — VERIFIED CI / VISUAL NOT VERIFIED — 2026-11-28
+
+- Added `test/settings_pages_accessibility_test.dart` (final blob `607c82158b78b0c6978f0edaa09a66bd57b028c9`) to cover Settings root, About, Language, Appearance, Notifications and Bluetooth subpages across 350/420 dp × EN/ID × Light/Dark. The test checks localized labels, absence of layout exceptions and Settings root action hit height >=48 dp.
+- Validation Only #328 initially failed only because this new file was not yet Dart-formatted; dependency resolution, analyzer and 360/360 full-suite tests passed. After applying the runner's exact formatter output, Validation Only #329 / run `46116428334` terminal SUCCESS on exact source/test SHA `1488577fcb97099bc32a069560cfb373760c2e41`: dependencies PASS; formatter 63 files / 0 changed; analyzer 159 info / 0 warnings/errors; Flutter suite 360/360 PASS.
+- This is Flutter widget/semantics regression evidence only. It does not establish Android/OEM rendering or native Floating Monitor Canvas/WindowManager appearance. **WP9 remains VISUAL NOT VERIFIED** until the full actual screenshot matrix and metadata are inspected.
+
+
 ## Whole-App visual and motion audit — owner direction — 2026-11-25
 
 **Status: DISCUSSION PROPOSAL / STATIC SOURCE REVIEW ONLY.** The owner requested a whole-App UI refinement that avoids generic AI-generated styling and feels smoother with purposeful animation. This review does not change App source, tests, dependencies, native UI, workflow or release. Implementation requires a fresh explicit command in the separate Eksekusi Code! workspace; package delivery still requires Eksekusi Build App.
