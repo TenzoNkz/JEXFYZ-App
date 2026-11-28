@@ -2665,6 +2665,7 @@ void main() {
 
   test('Floating Monitor replays telemetry after service startup and resizes for live values', () {
     final floating = File('lib/floating_monitor.dart').readAsStringSync();
+    final dashboard = File('lib/main.dart').readAsStringSync();
     final nativeService = File(
       'android/app/src/main/kotlin/com/horizontalzzz/jexfyz/FloatingMonitorService.kt',
     ).readAsStringSync();
@@ -2675,7 +2676,8 @@ void main() {
         'await FloatingBridge.updateData(floatingTelemetryNotifier.value)',
       ),
     );
-    expect(floating, contains('language: appLanguageNotifier.value.name'));
+    // Dashboard owns the authoritative telemetry snapshot and captures locale before bridge projection.
+    expect(dashboard, contains('language: appLanguageNotifier.value.name'));
     expect(
       nativeService,
       contains('data.connected = obj.optBoolean("connected", false)'),
