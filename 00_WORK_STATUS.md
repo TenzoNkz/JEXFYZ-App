@@ -1,4 +1,4 @@
-| Last updated | 2026-11-28T12:17:57+07:00 (Asia/Jakarta) |
+| Last updated | 2026-11-28T12:20:51+07:00 (Asia/Jakarta) |
 
 > Event-driven project marker. It is not a live heartbeat or a GitHub lock.
 
@@ -7,19 +7,18 @@
 | Field | Value |
 |---|---|
 | **STATUS** | **IN_PROGRESS** |
-| SESSION STATUS | IN_PROGRESS — received the fresh exact owner command `@Thinking Eksekusi Code!` to continue the JE X FYZ CODE_FULL workspace for exactly one WP. |
-| WORK STATUS | IN_PROGRESS — startup/preflight for WP8 Floating Monitor boundary. WP7 is already COMPLETED. This command authorizes WP8 only; WP9 must wait for a new explicit command. |
+| SESSION STATUS | IN_PROGRESS — fresh `@Thinking Eksekusi Code!` command; WP8 only. |
+| WORK STATUS | IN_PROGRESS — WP8 Floating Monitor boundary: scoped extraction of Dart value models, storage, MethodChannel/runtime projection and stateless Flutter configuration view; preserve native renderer/lifecycle contracts. |
 | WORKSPACE | CODE_FULL |
-| Mode | One-WP-per-command; ChatGPT/Codex sole author/reviewer, direct commits on `main`, no Copilot/external agents/branches/PRs. No Build App/APK/release/signing, Firmware/BIN, BLE/P1 wire/security, OTA, Firebase production, signing secrets, flashing or device operation. |
-| Request / work item | 2026-11-28 — exact owner message `@Thinking Eksekusi Code!`. Active checkpoint next pending WP is WP8 — Floating Monitor boundary. Execute only WP8's approved source/test/docs/static-audit scope and stop. |
+| Request / work item | 2026-11-28 — exact owner command `@Thinking Eksekusi Code!`; active checkpoint authorizes next pending WP8 only. |
 | Started | 2026-11-28T12:17:57+07:00 (Asia/Jakarta) |
-| Current phase | Mandatory load: reconcile checkpoint and WP8 scope; verify live `main`, tree and Actions/external operations; read MASTER_PROMPT and bounded CHAT_TRANSFER; load required project instructions/skills and design constraints; map Flutter configuration/persistence/Dart bridge and native Canvas/WindowManager boundary before any implementation. |
-| Last verified checkpoint | Previous WP7 closure main HEAD `03d5cb3dca35f377796a92d9e81f7fc1b4f41881`; tree 179 entries / 133 blobs / 46 trees, `truncated=false`. WP7 COMPLETED; WP8 next pending / WAITING_OWNER, now authorized by this fresh command. |
-| Prior source validation | Validation Only #303 / run `46107526220` / job `140863506688` SUCCESS on source/test SHA `6bdb6cc6d712120bb7afa1bd3d4ba4f31e733a0`; formatter 57 files / 0 changed, analyzer 159 infos / 0 warnings/errors, Flutter tests 358/358. This is prior evidence only and not validation of WP8 changes. |
-| EXTERNAL OPERATION STATUS | Most recent observed Actions are terminal; no active run in current recent-runs snapshot. Recheck current HEAD and any active operation before writes or external side effects. |
-| Blockers / caveats | WP8 detailed approved scope/DoD and source hashes not yet re-fetched this session. Native WindowManager/Canvas behavior, persisted schema/lifecycle and tests must be inspected live. No source write before preflight. |
-| Next action | Read MASTER_PROMPT.md fully, only bounded active checkpoint from CHAT_TRANSFER.md, APP_PREBUILD_AUDIT.md WP8/owner brief, DESIGN_NOTES.md WP8 brief, required repo rules and relevant skills; inspect live source callers/tests/native bridge and define exact scoped acceptance. |
-
-## Historical workspace context
-
-WP7 Usage Statistics audit was completed in the immediately preceding command. One explicit command authorizes one WP only; WP8 must close and stop before WP9 can start.
+| Current phase | G3 passed — preflight and bounded architecture plan complete. Begin exact-SHA implementation of the Dart-only Floating Monitor boundary; update behavioral/source-contract tests and durable docs. |
+| Verified base main | `b4bb16251d0cec18b5fd22f40e963867a16e4396`; recursive tree 179 entries / 133 blobs / 46 trees / `truncated=false`; WP8 target source/test blobs fetched live. |
+| Included source paths | `lib/floating_monitor.dart` (controller/composition), new `lib/floating_monitor_models.dart`, `lib/floating_monitor_store.dart`, `lib/floating_monitor_bridge.dart`, `lib/floating_monitor_state.dart`, `lib/floating_monitor_settings_view.dart`; `lib/main.dart` (explicit authoritative telemetry/language projection), `lib/app_bootstrap.dart` (startup restore/state publication). |
+| Included regression paths | `test/floating_monitor_store_test.dart`, `test/floating_monitor_bridge_test.dart`, `test/floating_monitor_accessibility_test.dart`, `test/floating_monitor_layout_contract_test.dart`; add focused view/model tests only if required by the extracted contracts. Review existing source contracts in `test/widget_test.dart` and bootstrap tests. |
+| Native and protected invariants | Read-only native references `MainActivity.kt`, `FloatingMonitorService.kt`, AndroidManifest; no edits planned. Preserve channel `je_x_fyz/floating`, existing method names and JSON keys, config schema v2 and legacy v1 metric migration, FlutterSecureStorage key `jexfyz_floating_v1`, native SharedPreferences key `jexfyz_floating_native_v1`, size 0.30–1.00/0.05 steps/default 0.60, opacity 0–100%/5%/default 90%, six metric IDs B/H/V/A/P/F, selected language mapping, permission gate, service START_NOT_STICKY and no new same-session retry/reattach/recovery policy. Dashboard remains sole BLE/GATT/P1/session/telemetry owner; bridge is value/method only. |
+| Architecture acceptance | Models are immutable and independent of global state; store only loads/saves config and no longer publishes notifiers; app/state composition publishes loaded/updated config; bridge exposes typed runtime snapshot while preserving native key/alias compatibility; Settings visual is a StatelessWidget with values/callbacks only and no storage/channel/lifecycle owner. Existing view geometry, EN/ID copy, theme, slider semantics and controls remain unchanged. |
+| Validation requirement | Focused store/bridge/view/layout tests, formatter, analyzer, full Flutter suite and push-triggered Validation Only on the exact final source/test SHA; inspect every diff/read-back. Android/Kotlin runtime/device/screenshot evidence is separate and unavailable here. |
+| EXTERNAL OPERATION STATUS | No active Actions run observed during startup. Validation Only must be checked for the exact source/test commit after implementation. |
+| Blockers / stop conditions | If extraction requires a storage-schema/key change, bridge method/channel/JSON contract change, native service lifecycle/recovery change, BLE owner movement, or an unapproved visual/layout change, stop and record blocker. No native, Firmware, OTA, Build App, signing or device action. |
+| Next action | Re-fetch exact `main` HEAD and target blob SHAs before first implementation write; split value/store/bridge/state/presentation files in bounded direct-main commits and update only in-scope tests/docs. |
