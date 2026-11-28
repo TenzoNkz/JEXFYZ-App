@@ -1,3 +1,17 @@
+## VALIDATION ONLY #334 — TERMINAL SUCCESS / SECOND FLOATING AUDIT REPAIR VERIFIED — 2026-11-28
+
+- **Run/job/source:** Validation Only #334 / workflow `417906156` / run `46120803848` / job `140904657293` / source SHA `5d9f0b8bb5b75f52c466004159a78fcbaa9a2181`; terminal `completed / success`.
+- **Locked dependencies:** PASS (`Got dependencies!`).
+- **Dart formatter:** PASS; `Formatted 63 files (0 changed) in 0.49 seconds.` Diagnostic formatter step SKIPPED.
+- **Flutter analyzer:** PASS; 159 info-level diagnostics, zero warnings and zero errors.
+- **Flutter tests:** PASS; `361 tests passed.`
+- **Summary, cleanup and completion:** validation summary SUCCESS; post-setup/checkout cleanup SUCCESS; job completion SUCCESS.
+- **Audit repair verified by this run:** commit `5d9f0b8bb5b75f52c466004159a78fcbaa9a2181` updates the guarded Build workflow to load `lib/floating_monitor_models.dart`, include it in the source audit bundle, and enforce `metricSchemaVersion` / `fromStored` ownership there. The regression test asserts the correct model path and exact condition and rejects the obsolete controller condition. Existing bridge checks and other security/release gates remain active.
+- **Previous Build #172 terminal failure:** run `46120511205` / job `140903764214` failed Step 10 on the stale model source path. Steps 1–9 passed; steps 11–21 skipped; cleanup 39–43 passed. No APK/ZIP/Release mutation.
+- **Next action:** final pre-trigger verification on latest main / run queues, then one new guarded Build trigger for exact current HEAD. Do not rerun #172.
+
+---
+
 ## VALIDATION ONLY #334 — ACTIVE / FLOATING MIGRATION MODEL AUDIT REPAIR — 2026-11-28
 
 - **Repair commit:** `5d9f0b8bb5b75f52c466004159a78fcbaa9a2181`, parent `f843cfe1915001d42b60254255a3142f8b0e6b2d`. Workflow blob `948fd78f0fe7463130ca15769d369b017344c8f0`; workflow now reads `lib/floating_monitor_models.dart`, includes `floating_models` in the combined source material, and checks `metricSchemaVersion` plus `fromStored` against the model module. Regression test blob `8090238cd190cee72748653324b8405760378a10` asserts the new module path and predicate and rejects the obsolete controller predicate.
