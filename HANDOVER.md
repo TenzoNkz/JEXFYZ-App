@@ -14,13 +14,14 @@ Last reconciled: 2026-11-28T16:20:17+07:00 (Asia/Jakarta). Authority: MASTER_PRO
   - ZIP ID 803959641 / 3,340,231 bytes / SHA-256 5ed5e3dd18e6fc7bf42aae3b5c5dbe9ddaaad6fa0602a7889efdf85c66805968.
 - **Version invariant:** Android versionName exactly "Telegram @horizontalzzz"; Flutter 1.0.0+3.
 - **Warnings:** 157 info-only analyzer findings; 31 packages newer outside constraints; Android/Kotlin/Gradle deprecations; three ELF DWARF warnings; JAR timestamp/META-INF signature-view warnings; one transient watcher diagnostic. No gate failed or was weakened; no retry/repair.
-- **Acceptance boundary:** WP9 changed Home locked-card screenshot remains NOT CAPTURED / NOT REVIEWED. Physical install, OEM visual, cooler BLE, Firmware, telemetry, thermal/electrical performance and OTA remain NOT TESTED / NOT VERIFIED.
+- **WP9 Home locked-card visual:** owner supplied a new 691 × 1536 px Home screenshot labelled as the latest App (English / Light / disconnected). It shows the informational lock card without the Connect/Hubungkan CTA while retaining the top-left Bluetooth control. The changed Home state is **SCREENSHOT REVIEWED**. Current published package is Build #174 / source `c1408fff0fae10bf6b98237c4485c2c5fb77c368`; exact screenshot-to-APK identity is owner-confirmed but not encoded in image metadata.
+- **Remaining acceptance boundary:** this one screenshot does not cover all Dashboard tabs, Settings subpages, Usage Statistics, all dialogs/sheets, or the Floating Monitor configuration/native overlay. Cooler BLE discovery/session, commands, telemetry, Firmware interaction, thermal/electrical behavior and OTA remain DEFERRED / NOT TESTED until the cooler is available. Do not infer these results from visual evidence.
 - **Status:** EXTERNAL OPERATION COMPLETED_SUCCESS. No further operation is pending.
 - **Next:** Arah berikutnya: Lanjut Diskusi!
 
 ## WP9 device-visual boundary — separate from hosted build
 
-WP9 source/test is VERIFIED CI, but the updated Home lock-card screenshot remains NOT CAPTURED / NOT REVIEWED. Build #173 screenshots predate the change. Real BLE/cooler behavior, Firmware, telemetry, thermal/electrical performance, installation and OTA remain untested and outside BUILD_APP.
+WP9 source/test is VERIFIED CI and the owner-provided Home locked-card screenshot is now REVIEWED: no Connect CTA is visible and the top-left Bluetooth entry point remains present. The owner labels it as the latest App; the image does not include embedded Build #174 source identity. Broader unshown visual surfaces remain outside this screenshot. Real BLE/cooler behavior, Firmware, telemetry, thermal/electrical performance and OTA remain deferred/not tested.
 
 ## Historical Build App work item — COMPLETED SUCCESS
 
