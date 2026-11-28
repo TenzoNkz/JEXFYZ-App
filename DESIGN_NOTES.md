@@ -67,7 +67,7 @@ Capture actual App screenshots and review Home, each control tab, Connection, Se
 
 ### Owner screenshot review and locked-menu CTA decision — 2026-11-28
 
-**Evidence received:** five owner-provided Android screenshots, each 691 × 1536 physical pixels:
+**Evidence received and provenance owner-confirmed:** the owner confirms these five Android screenshots, each 691 × 1536 physical pixels, were captured from the latest APK (Build App #173 / source `478bdfdc5ee18379e07baad5e4dfd8ab598dc2db`):
 - Home — English / Dark / disconnected.
 - Settings root — English / Dark.
 - Connection sheet — English / Dark; Bluetooth OFF, Location ON, no discovered devices, an unavailable-to-connect message and disabled Scan action.
@@ -80,7 +80,11 @@ Capture actual App screenshots and review Home, each control tab, Connection, Se
 
 **Implementation and regression requirements:** no source or test changes were made in this Diskusi review. A future owner-authorized Code WP should remove only the locked-card CTA, confirm the top-left Bluetooth action still opens the existing manual Connection flow, retain pointer/semantics blocking of the locked submenu, and add/update assertions that the locked card contains no Connect action in EN and ID. Do not create a second BLE client or connection owner.
 
-**Evidence limitations / WP9 remains BLOCKED:** the captures do not include APK/source SHA, device model, Android version, logical dp viewport, display density, text scale or reduced-motion setting. Build App #173 published a signed APK from source `478bdfdc5ee18379e07baad5e4dfd8ab598dc2db`, but these images are not yet confirmed as captures from that exact package. They cover only Home (EN/ID × Dark/Light), Settings root and the Connection sheet, all in a disconnected scenario. Still required: all five Dashboard tabs, Settings subpages, Usage Statistics, applicable dialogs/sheets, Floating Monitor configuration and the separate native Floating Monitor overlay; the applicable viewport, theme, locale, state, text-scale and reduced-motion matrix; and capture metadata. Do not mark WP9 visually accepted from this partial set.
+**Owner acceptance for the current stage — 2026-11-28:** the owner explicitly confirms that all five supplied screenshots were captured from the latest APK (Build App #173, source SHA `478bdfdc5ee18379e07baad5e4dfd8ab598dc2db`) and directs that the current build and the visuals shown be treated as accepted for now. Record this as **OWNER-ACCEPTED FOR CURRENT STAGE**, based on owner confirmation and the five reviewed captures; it is not a claim that every planned screen/state or physical hardware path has been independently tested. The owner cannot currently connect to the cooler because it is not in their possession and will provide a connection demonstration in a future update. Actual cooler connection, successful BLE discovery/session, commands, telemetry and hardware behavior are therefore explicitly **DEFERRED / NOT TESTED**, not passed. The owner accepts the current-stage review with this limitation.
+
+**Coverage boundary:** the supplied images cover Home (EN/ID × Dark/Light), Settings root and the Connection sheet in a disconnected scenario. They do not show all five Dashboard tabs, Settings subpages, Usage Statistics, every applicable dialog/sheet, Floating Monitor configuration or the separate native Floating Monitor overlay; nor do they establish the full viewport, enlarged-text and reduced-motion matrix. These unshown surfaces and states remain unverified and may be revisited in a later update. The screenshots do not contain device model, Android version, logical dp viewport, display density, text scale or reduced-motion metadata; screenshot-to-Build #173 provenance is owner-confirmed, not embedded/cryptographically established.
+
+**WP9 disposition:** do not treat the unavailable cooler as a blocker to the owner's acceptance of the current visual/build stage. Keep the physical BLE/hardware acceptance deferred. The separate owner-requested locked-card Connect CTA removal is still pending implementation and regression verification under a fresh explicit Code authorization. No source or test changes were made in this Diskusi review.
 
 
 ## Whole-App visual and motion audit — owner direction — 2026-11-25
