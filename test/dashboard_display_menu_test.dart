@@ -187,7 +187,9 @@ void main() {
 
     expect(find.text('ADAPTIVE MODE DISABLED'), findsOneWidget);
     expect(
-      find.text('Adaptive Mode is forced inactive while Lock Voltage is active.'),
+      find.text(
+        'Adaptive Mode is forced inactive while Lock Voltage is active.',
+      ),
       findsOneWidget,
     );
     expect(
@@ -212,7 +214,9 @@ void main() {
       findsOneWidget,
     );
     expect(
-      find.text('Adaptive Mode is forced inactive while Lock Voltage is active.'),
+      find.text(
+        'Adaptive Mode is forced inactive while Lock Voltage is active.',
+      ),
       findsNothing,
     );
     expect(find.byType(TextButton), findsNothing);
