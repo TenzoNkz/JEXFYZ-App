@@ -2,16 +2,16 @@
 
 Last reconciled: 2026-11-28 (Asia/Jakarta). Authority: MASTER_PROMPT.md.
 
-## CODE_FULL handoff — WAITING_OWNER (WP8 pending)
+## CODE_FULL handoff — WAITING_OWNER (WP9 pending)
 
-- **WP7 — Usage Statistics static audit: COMPLETED (2026-11-28).** The fresh `@Thinking Eksekusi Code!` command authorized this one WP. Full source/test review completed without production changes; no migration/optimization claim is made without runtime evidence.
-- Exact source/test blobs: `lib/usage_statistics.dart` `3ec69d21305226bf06983b86dc4ef6b330dd4163`; `test/usage_statistics_test.dart` `ca3ba978d750bd9c33fe5584e9ae2d24f981640f`; Dashboard caller `lib/main.dart` `68c3d2b0dc5307ea5c9496d67a9c8851a49846f3`. They are unchanged from Validation Only #303's exact source/test SHA `6bdb6cc6d712120bb7afa1bd3d4ba4f31e733a0`.
-- #303 / run 46107526220 / job 140863506688 terminal SUCCESS: dependencies PASS, formatter 57/0, analyzer 159 infos / 0 warnings/errors, full Flutter suite 358/358 PASS. This is hosted Flutter validation, not Android/Kotlin/device validation.
-- WP7 review confirms schema v2 and v1→v2 migration shape; 30-day retention; raw 1-Hz samples; cooler/session/timestamp semantics; HOT-only freshness; explicit null gaps; gap-safe 1,600-point decimation; 64+8+1 serialized queue. Reviewed 29 Usage Statistics test cases. Migration/retention tests are source contracts, not a live SQLite upgrade fixture.
-- Outstanding evidence: SQLite v1→v2 runtime fixture and 1h/6h/24h profile NOT RUN; sustained writer-pressure/long-session profile NOT RUN; local Flutter/Dart/Gradle/ADB BLOCKED / NOT RUN; no Android/OEM screenshots or physical-device test. Whole-App visual remains VISUAL NOT VERIFIED. No App package was built.
-- Source-level timing caveat for a future measured follow-up: state-event timestamps are assigned inside the serial write callback, unlike temperature receipt timestamps captured before enqueue. No timestamp drift has been measured; do not treat this as a confirmed defect or optimize without profiling.
-- Current recursive tree before documentation close: 179 entries / 133 blobs / 46 trees, truncated=false; register has 133 unique tracked-path dispositions. No Firmware/BIN, P1 wire/security, OTA, Firebase production, Build App/release/signing, flash or device operation.
-- **Next pending WP8 — Floating Monitor boundary:** configuration/persistence, Dart bridge/state projection and stateless Flutter presentation vs native Canvas/WindowManager. Recovery behavior remains frozen. **WAITING_OWNER** for a fresh explicit `@Thinking Eksekusi Code!` command; do not begin it in this session.
+- **WP8 — Floating Monitor boundary: COMPLETED (2026-11-28).** The fresh `@Thinking Eksekusi Code!` command authorized this single WP. Configuration/model, state, secure persistence, MethodChannel bridge and stateless Flutter Settings boundaries are extracted; controller retains permission/lifecycle/native-runtime orchestration.
+- Exact tested source/test SHA `048c22ba4722848b962dc58d5b3e9dc7fe994961`; Validation Only #327 / run 46113283625 / job 140881362489 terminal SUCCESS. Dependencies PASS, formatter 62/0, analyzer 159 info / 0 warnings / 0 errors, full suite 359/359 PASS.
+- Five new modules: `floating_monitor_models.dart`, `floating_monitor_state.dart`, `floating_monitor_store.dart`, `floating_monitor_bridge.dart`, `floating_monitor_settings_view.dart`. `floating_monitor.dart` remains the permission/lifecycle controller; AppBootstrap explicitly publishes restored config; Dashboard captures language into its authoritative telemetry snapshot and remains the sole BLE/GATT/P1/session/telemetry/command owner.
+- Schema v2/v1 metric migration, Flutter secure-storage key, native preference key, B/H/V/A/P/F IDs, size/opacity values, MethodChannel and native JSON contract preserved. Native Kotlin/Manifest blobs unchanged. No native service retry/reattach/recovery policy changed.
+- Regression coverage: pure store side-effect/failure tests; typed bridge/runtime aliases and explicit locale; stateless view EN/ID × Light/Dark × 350/420-dp accessibility; ownership/source contracts. Earlier CI #324–#326 failures were repaired without weakening any gate; #327 validates the final source/test revision.
+- Exact code SHA tree: 184 entries / 138 blobs / 46 trees, truncated=false; register updated to 138 unique tracked paths. Native runtime/Android-Kotlin build, Android/OEM screenshots and physical-device behavior NOT RUN; local Flutter/Dart/Gradle/ADB BLOCKED / NOT RUN. Whole-App visual remains VISUAL NOT VERIFIED. No App package built.
+- No source changes to Firmware/BIN, P1 wire/security, OTA, Firebase production, signing, release or device operations.
+- **Next pending WP9 — Visual/regression evidence — WAITING_OWNER.** Real Android/OEM screenshots and the full viewport/state/accessibility acceptance matrix remain separate from Flutter widget/golden/hosted CI evidence. Do not start until a fresh explicit `@Thinking Eksekusi Code!` command.
 
 ## Historical Build App work item — COMPLETED SUCCESS
 
