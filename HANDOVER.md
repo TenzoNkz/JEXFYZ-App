@@ -1,18 +1,18 @@
 # JE X FYZ / JE Cooler — Current Handover
 
-Last reconciled: 2026-11-28T16:08:45+07:00 (Asia/Jakarta). Authority: MASTER_PROMPT.md.
+Last reconciled: 2026-11-28T16:09:59+07:00 (Asia/Jakarta). Authority: MASTER_PROMPT.md.
 
-## BUILD_APP — Build #174 IN_PROGRESS — 2026-11-28
+## BUILD_APP — Build #174 IN_PROGRESS — Flutter tests active
 
-- **Owner command:** "Eksekusi Build App!" — explicit authorization for one guarded App Build/QC/release attempt.
-- **Trigger:** Issue #51 / ID 6662377983; exact owner/title/body-token guard matched. Existing open prior trigger issues were not reused or reopened.
-- **Run:** Build #174 / workflow 374946166 / Actions run 46128979174 / attempt 1 / event issues / job build 140929762652. Run and job are IN_PROGRESS. Initial step 1 succeeded; step 2 Checkout repository is IN_PROGRESS; later gates are pending. [Actions run](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/46128979174).
-- **Exact source SHA:** c1408fff0fae10bf6b98237c4485c2c5fb77c368. Issue body, run head_sha and main at trigger creation match.
-- **App/test evidence:** Validation Only #339 / run 46127470525 / job 140925152695 terminal SUCCESS on c6206989cb0e30c94578c95b4d9c13bde5d36d71 (locked dependencies; formatter 63/0; analyzer 157 info / zero warnings/errors; Flutter tests 362/362). Commits after that SHA are documentation-only.
-- **Previous package:** Build #173 / run 46121055519 / job 140905430951 terminal SUCCESS on source 478bdfdc5ee18379e07baad5e4dfd8ab598dc2db. Release403010611/tag jexfyz-latest and both assets remain on that earlier source until #174 passes all Release gates.
-- **Protected version:** Android Gradle versionName exactly "Telegram @horizontalzzz"; Flutter version1.0.0+3.
-- **Scope:** App Build/QC/release only, with justified App-source repair solely if a real failure requires it. No Firmware/BIN, Firebase production, OTA, flashing, physical-device operation or unrelated release work.
-- **Next action:** continue only run 46128979174 / job 140929762652; inspect live steps and logs, record all actual gate results, and do not trigger/retry blindly.
+- **Owner command:** "Eksekusi Build App!" — current explicit authorization for one guarded App Build/QC/release attempt.
+- **Trigger:** Issue #51 / ID6662377983; exact owner/title/body token verified.
+- **Run:** Build #174 / workflow374946166 / run46128979174 / attempt1 / event issues / job build140929762652. Run/job remain IN_PROGRESS. Steps1–12 SUCCESS; step13 Flutter tests IN_PROGRESS; later steps pending.
+- **Exact source SHA:** c1408fff0fae10bf6b98237c4485c2c5fb77c368. Issue body and run head_sha match.
+- **Validated App source:** Validation Only #339 / run46127470525 / job140925152695 SUCCESS on c6206989cb0e30c94578c95b4d9c13bde5d36d71 (locked deps, formatter63/0, analyzer157 info/no warnings/errors, Flutter362/362). Intervening changes are docs-only.
+- **Previous package:** Build #173 / run46121055519 / job140905430951 SUCCESS on 478bdfdc5ee18379e07baad5e4dfd8ab598dc2db. Release403010611/tag jexfyz-latest and both assets remain on that source until #174 passes all Release gates.
+- **Protected setting:** Android Gradle versionName "Telegram @horizontalzzz"; Flutter version1.0.0+3.
+- **Scope:** guarded App Build/QC/release only. No Firmware/BIN, Firebase production changes, OTA, flashing, device operation or unrelated release work.
+- **Next action:** continue run46128979174/job140929762652; capture real test, Gradle, APK/signing, ZIP, Release and fresh download evidence. No duplicate trigger or blind retry.
 
 ## WP9 device-visual boundary — separate from hosted build
 
