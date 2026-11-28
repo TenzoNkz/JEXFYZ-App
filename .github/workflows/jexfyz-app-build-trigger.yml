@@ -142,6 +142,7 @@ jobs:
           manifest = Path("android/app/src/main/AndroidManifest.xml").read_text(encoding="utf-8")
           activity = Path("android/app/src/main/kotlin/com/horizontalzzz/jexfyz/MainActivity.kt").read_text(encoding="utf-8")
           floating = Path("lib/floating_monitor.dart").read_text(encoding="utf-8")
+          floating_bridge = Path("lib/floating_monitor_bridge.dart").read_text(encoding="utf-8")
           gradle = Path("android/app/build.gradle").read_text(encoding="utf-8")
 
           required = [
@@ -159,7 +160,7 @@ jobs:
               "TamperScreen",
               "je_x_fyz/security",
           ]
-          combined = source + pubspec + activity + floating
+          combined = source + pubspec + activity + floating + floating_bridge
           missing = [token for token in required if token not in combined]
           if missing:
               raise SystemExit("JE X FYZ audit failed; missing: " + ", ".join(missing))
@@ -192,8 +193,25 @@ jobs:
 
 
           # Floating Monitor must use its dedicated MethodChannel end-to-end.
-          if "MethodChannel('je_x_fyz/floating')" not in floating:
-              raise SystemExit("JE X FYZ audit failed; Flutter Floating Monitor channel contract is missing")
+          # The controller delegates the stable Dart/native channel to floating_monitor_bridge.dart.
+          floating_methods = [
+              "hasOverlayPermission",
+              "openOverlaySettings",
+              "startFloatingMonitor",
+              "stopFloatingMonitor",
+              "updateFloatingConfig",
+              "updateFloatingData",
+              "getFloatingRuntimeState",
+          ]
+          if floating_bridge.count("MethodChannel('je_x_fyz/floating')") != 1:
+              raise SystemExit("JE X FYZ audit failed; Flutter Floating Monitor bridge channel is missing or duplicated")
+          missing_floating_methods = [
+              method
+              for method in floating_methods
+              if f"'{method}'" not in floating_bridge or f'"{method}"' not in activity
+          ]
+          if missing_floating_methods:
+              raise SystemExit("JE X FYZ audit failed; Floating Monitor Dart/native method mismatch: " + ", ".join(missing_floating_methods))
           if 'private val FLOATING_CHANNEL = "je_x_fyz/floating"' not in activity:
               raise SystemExit("JE X FYZ audit failed; native Floating Monitor channel contract is missing")
           if activity.count('"startFloatingMonitor"') != 1 or activity.count('"getFloatingRuntimeState"') != 1:

@@ -275,6 +275,32 @@ void main() {
     },
   );
 
+  test('Floating Monitor audit follows the dedicated bridge module and native method contract', () {
+    final audit = _namedStep(workflow, 'JE X FYZ security and architecture audit');
+
+    expect(
+      audit,
+      contains(
+        'floating_bridge = Path("lib/floating_monitor_bridge.dart").read_text(encoding="utf-8")',
+      ),
+    );
+    expect(audit, contains("MethodChannel('je_x_fyz/floating')"));
+    expect(audit, contains('missing_floating_methods'));
+    expect(audit, isNot(contains('not in floating:')));
+
+    for (final method in [
+      'hasOverlayPermission',
+      'openOverlaySettings',
+      'startFloatingMonitor',
+      'stopFloatingMonitor',
+      'updateFloatingConfig',
+      'updateFloatingData',
+      'getFloatingRuntimeState',
+    ]) {
+      expect(audit, contains(method));
+    }
+  });
+
   test('debug-only Android Gradle tasks do not require production signing credentials', () {
     final androidBuild = File('android/app/build.gradle').readAsStringSync();
 
