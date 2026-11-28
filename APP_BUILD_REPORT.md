@@ -1,3 +1,13 @@
+## BUILD #174 — APK, SIGNING AND SOURCE ZIP PASSED / RELEASE PUBLISHING ACTIVE — 2026-11-28
+
+- **Observed transition at 2026-11-28T16:15:09+07:00:** run 46128979174 / job 140929762652 / source c1408fff0fae10bf6b98237c4485c2c5fb77c368 remains IN_PROGRESS.
+- **Steps 1–19:** SUCCESS. Step 13 Flutter tests; step 14 Android unit-test gate; step 15 release APK build; step 16 V1/V2/V3 signing enforcement; step 17 APK signature/pinned-certificate verification; step 18 stable APK filename; step 19 corresponding source ZIP packaging.
+- **Step 20:** Publish APK and corresponding source to GitHub Release IN_PROGRESS. Step 21 fresh downloaded-asset verification PENDING. Cleanup steps39–42 pending.
+- **Evidence limit:** the step API confirms step17 SUCCESS but exact signer count, certificate DN/digest, archive markers, APK/source sizes and SHA-256 are not yet available from the job log endpoint (404 BlobNotFound while active). Do not assert those details until log/release/download evidence is retrieved.
+- **Disposition:** no failure observed. Release mutation may be in progress within step20; do not report the new Release/tag as complete until step20 and step21 pass. Continue the same run/job.
+
+---
+
 ## BUILD #174 — ANDROID GRADLE PASSED / APK BUILD ACTIVE — 2026-11-28
 
 - **Observed transition at 2026-11-28T16:12:37+07:00:** run 46128979174 / job 140929762652 / immutable source c1408fff0fae10bf6b98237c4485c2c5fb77c368 remains IN_PROGRESS.
