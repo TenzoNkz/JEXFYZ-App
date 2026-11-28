@@ -485,39 +485,35 @@ class _JexLedStripPreviewState extends State<JexLedStripPreview>
       enabled: enabled,
       onTap: onTap,
       child: ExcludeSemantics(
-        child: Tooltip(
-          message: label,
-          excludeFromSemantics: true,
-          child: InkWell(
-            onTap: onTap,
-            borderRadius: BorderRadius.circular(
-              JexShapeTokens.compactControlRadius,
-            ),
-            child: SizedBox(
-              width: JexLayoutTokens.minimumTouchTarget,
-              height: JexLayoutTokens.minimumTouchTarget,
-              child: Center(
-                child: Container(
-                  width: 29,
-                  height: 34,
-                  decoration: BoxDecoration(
-                    color: enabled
-                        ? scheme.jexSurface
-                        : scheme.jexElevatedSurface.withValues(alpha: .45),
-                    borderRadius: BorderRadius.circular(
-                      JexShapeTokens.compactControlRadius,
-                    ),
-                    border: Border.all(color: scheme.jexOutline),
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(
+            JexShapeTokens.compactControlRadius,
+          ),
+          child: SizedBox(
+            width: JexLayoutTokens.minimumTouchTarget,
+            height: JexLayoutTokens.minimumTouchTarget,
+            child: Center(
+              child: Container(
+                width: 29,
+                height: 34,
+                decoration: BoxDecoration(
+                  color: enabled
+                      ? scheme.jexSurface
+                      : scheme.jexElevatedSurface.withValues(alpha: .45),
+                  borderRadius: BorderRadius.circular(
+                    JexShapeTokens.compactControlRadius,
                   ),
-                  child: Icon(
-                    left
-                        ? PhosphorIconsBold.caretLeft
-                        : PhosphorIconsBold.caretRight,
-                    size: 18,
-                    color: enabled
-                        ? scheme.jexForeground
-                        : scheme.jexMutedForeground.withValues(alpha: .30),
-                  ),
+                  border: Border.all(color: scheme.jexOutline),
+                ),
+                child: Icon(
+                  left
+                      ? PhosphorIconsBold.caretLeft
+                      : PhosphorIconsBold.caretRight,
+                  size: 18,
+                  color: enabled
+                      ? scheme.jexForeground
+                      : scheme.jexMutedForeground.withValues(alpha: .30),
                 ),
               ),
             ),
