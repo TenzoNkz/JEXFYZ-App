@@ -1,3 +1,14 @@
+## VALIDATION ONLY #331 — QUEUED / REGRESSION ASSERTION REPAIR — 2026-11-28
+
+- **Purpose:** verify the narrow test-only correction after Validation Only #330 found the negative assertion too broad.
+- **Test correction commit:** `027ba75de4c997d2bb862675887d0d8cc55af445`, `fix(test): narrow Floating Monitor audit assertion`. It replaces the broad check `not in floating:` with an exact negative check for the obsolete predicate that looked for `MethodChannel('je_x_fyz/floating')` in the controller file. Existing migration assertions remain.
+- **Workflow repair remains:** `a6bfd70078f51a5b4505ab5f94e7d51233ac6937` reads `lib/floating_monitor_bridge.dart`, verifies the exact Dart channel and all seven Dart/native method names; it does not remove or skip the audit.
+- **Validation run:** Validation Only #331 / workflow `417906156` / run `46119890739` / attempt 1 / event `push` / source SHA `027ba75de4c997d2bb862675887d0d8cc55af445`. API state at 2026-11-28 14:09:41 +07 is QUEUED. Job ID/steps pending allocation.
+- **Previous attempt:** Validation Only #330 / run `46119611019` / job `140900993367` / SHA `a6bfd70078f51a5b4505ab5f94e7d51233ac6937` terminal FAILURE; deps, formatter and analyzer passed (159 info, no warnings/errors), 360 tests passed / 1 failed due only to the broad assertion at test line 289.
+- **Next action:** inspect #331 through terminal dependencies, formatter, analyzer and full test results. Do not create a Build trigger until #331 passes.
+ 
+---
+
 ## BUILD #171 REPAIR VALIDATION — VALIDATION ONLY #330 ACTIVE — 2026-11-28
 
 - **Repair commit:** `a6bfd70078f51a5b4505ab5f94e7d51233ac6937`, `fix(build): align Floating Monitor audit with bridge module`. One atomic Git commit updates the guarded Build workflow and its Flutter workflow-contract regression test.
