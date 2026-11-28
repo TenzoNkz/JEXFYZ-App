@@ -18,21 +18,20 @@ import 'package:flutter/foundation.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
 
 import 'app_settings.dart';
-import 'jex_animated_glyph.dart';
-import 'usage_statistics.dart';
-
+import 'floating_monitor_bridge.dart';
 import 'floating_monitor_models.dart';
+import 'floating_monitor_settings_view.dart';
 import 'floating_monitor_state.dart';
 import 'floating_monitor_store.dart';
-import 'floating_monitor_bridge.dart';
-import 'floating_monitor_settings_view.dart';
+import 'jex_animated_glyph.dart';
 import 'jex_design_tokens.dart';
+import 'usage_statistics.dart';
 
+export 'floating_monitor_bridge.dart';
 export 'floating_monitor_models.dart';
+export 'floating_monitor_settings_view.dart';
 export 'floating_monitor_state.dart';
 export 'floating_monitor_store.dart';
-export 'floating_monitor_bridge.dart';
-export 'floating_monitor_settings_view.dart';
 
 part 'settings_pages.dart';
 
