@@ -470,27 +470,58 @@ class _JexLedStripPreviewState extends State<JexLedStripPreview>
     required bool enabled,
   }) {
     final scheme = Theme.of(context).colorScheme;
-    return InkWell(
-      onTap: enabled ? (left ? widget.onPrevious : widget.onNext) : null,
-      borderRadius: BorderRadius.circular(JexShapeTokens.compactControlRadius),
-      child: Container(
-        width: 29,
-        height: 34,
-        decoration: BoxDecoration(
-          color: enabled
-              ? scheme.jexSurface
-              : scheme.jexElevatedSurface.withValues(alpha: .45),
-          borderRadius: BorderRadius.circular(
-            JexShapeTokens.compactControlRadius,
+    final callback = left ? widget.onPrevious : widget.onNext;
+    final label = left
+        ? JexText.phrase('Previous LED mode', 'Mode LED sebelumnya')
+        : JexText.phrase('Next LED mode', 'Mode LED berikutnya');
+    final VoidCallback? onTap = enabled ? callback : null;
+
+    // Keep the visible chevron plate compact while giving the action a full
+    // 48-dp hit target and one localized, explicit screen-reader label.
+    return Semantics(
+      container: true,
+      label: label,
+      button: true,
+      enabled: enabled,
+      onTap: onTap,
+      child: ExcludeSemantics(
+        child: Tooltip(
+          message: label,
+          excludeFromSemantics: true,
+          child: InkWell(
+            onTap: onTap,
+            borderRadius: BorderRadius.circular(
+              JexShapeTokens.compactControlRadius,
+            ),
+            child: SizedBox(
+              width: JexLayoutTokens.minimumTouchTarget,
+              height: JexLayoutTokens.minimumTouchTarget,
+              child: Center(
+                child: Container(
+                  width: 29,
+                  height: 34,
+                  decoration: BoxDecoration(
+                    color: enabled
+                        ? scheme.jexSurface
+                        : scheme.jexElevatedSurface.withValues(alpha: .45),
+                    borderRadius: BorderRadius.circular(
+                      JexShapeTokens.compactControlRadius,
+                    ),
+                    border: Border.all(color: scheme.jexOutline),
+                  ),
+                  child: Icon(
+                    left
+                        ? PhosphorIconsBold.caretLeft
+                        : PhosphorIconsBold.caretRight,
+                    size: 18,
+                    color: enabled
+                        ? scheme.jexForeground
+                        : scheme.jexMutedForeground.withValues(alpha: .30),
+                  ),
+                ),
+              ),
+            ),
           ),
-          border: Border.all(color: scheme.jexOutline),
-        ),
-        child: Icon(
-          left ? PhosphorIconsBold.caretLeft : PhosphorIconsBold.caretRight,
-          size: 18,
-          color: enabled
-              ? scheme.jexForeground
-              : scheme.jexMutedForeground.withValues(alpha: .30),
         ),
       ),
     );
