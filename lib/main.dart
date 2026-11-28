@@ -669,6 +669,7 @@ class _DashboardScreenState extends State<DashboardScreen>
       adaptiveOn: connected && adaptiveOn,
       peltierOn: connected && peltierOn,
       connected: connected,
+      language: appLanguageNotifier.value.name,
     );
     floatingTelemetryNotifier.value = telemetry;
     if (!telemetry.connected) {
@@ -711,7 +712,7 @@ class _DashboardScreenState extends State<DashboardScreen>
       var ready = false;
       while (DateTime.now().isBefore(deadline) && mounted && connected) {
         final state = await FloatingBridge.runtimeState();
-        if (state?['running'] == true && state?['overlay'] == true) {
+        if (state?.running == true && state?.overlay == true) {
           ready = true;
           break;
         }
