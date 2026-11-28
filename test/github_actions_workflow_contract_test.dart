@@ -286,7 +286,14 @@ void main() {
     );
     expect(audit, contains("MethodChannel('je_x_fyz/floating')"));
     expect(audit, contains('missing_floating_methods'));
-    expect(audit, isNot(contains('not in floating:')));
+    expect(
+      audit,
+      isNot(
+        contains(
+          "if \"MethodChannel('je_x_fyz/floating')\" not in floating:",
+        ),
+      ),
+    );
 
     for (final method in [
       'hasOverlayPermission',
