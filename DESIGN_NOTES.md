@@ -1,3 +1,15 @@
+## Current visual evidence status — 2026-11-29 — WP10 Final Closure
+
+- The changed Home locked-card presentation is **SCREENSHOT REVIEWED** from the owner-provided 691 × 1536 px capture (English / Light / disconnected). The lock card is informational, with no Connect/Hubungkan CTA, and the Home top-left Bluetooth entry point remains visible. The owner identifies the capture as the latest App; no embedded source/APK identifier is present, so exact package provenance remains owner-attributed.
+- The repository's latest Release remains Build App #174 on immutable source c1408fff0fae10bf6b98237c4485c2c5fb77c368. This package/source association does not independently authenticate the screenshot bytes.
+- The owner accepts the present stage with the shown views and limitations. The supplied image does not establish the other Dashboard tabs, Settings subpages, Usage Statistics, additional dialogs/sheets, Floating Monitor configuration or the separate native Canvas/WindowManager overlay.
+- **Whole-App visual disposition remains VISUAL NOT VERIFIED.** Widget tests and hosted Flutter CI do not substitute for actual Android/OEM captures or native overlay evidence. Preserve the complete screen/state/viewport/locale/theme/accessibility/reduced-motion acceptance matrix below.
+- Physical cooler BLE discovery/session, commands, telemetry, Firmware interaction, thermal/electrical behavior and OTA remain DEFERRED / NOT TESTED. No visual claim may imply hardware acceptance.
+- WP10 Final Closure is COMPLETED; this note records evidence boundaries only and does not authorize a new visual or source change.
+
+---
+
+
 ## WP9 locked-card implementation and regression — VERIFIED CI #339 / HOME SCREENSHOT REVIEWED — 2026-11-28
 
 - **Owner-approved visual behavior:** a disconnected Dashboard submenu presents one informational lock card (lock icon, heading, explanation) without Connect/Hubungkan. Keep the dedicated Home top-left Bluetooth control as the single Home entry point to the existing guarded manual Connection sheet. Preserve BLE/session/scan ownership and the locked submenu's pointer/semantics protection.
@@ -8,7 +20,7 @@
 - **Validation recovery:** #337 and #338 failed only formatter gates while dependencies/analyzer and 362/362 tests passed. Exact runner outputs were applied to the two tests without changing assertions; #339 confirms final formatting.
 - **Visual boundary — HOME SCREENSHOT REVIEWED:** the owner supplied a new Home capture on 2026-11-28 (691 × 1536 px, English / Light / disconnected) and described it as the latest App. It shows the lock card without a Connect/Hubungkan CTA and retains the top-left Bluetooth entry point. The repository's latest Release is Build #174 on source `c1408fff0fae10bf6b98237c4485c2c5fb77c368`; the screenshot has no EXIF or embedded source identity, so attribution to the latest package is owner-confirmed rather than independently established from the image.
 - **Current-stage acceptance / residual limits:** owner accepted the current App stage with this Home screenshot reviewed. Other Dashboard tabs, Settings subpages, Usage Statistics, additional dialogs/sheets and Floating Monitor/native overlay are not individually demonstrated in this latest capture; retain them as outside the current screenshot evidence and revisit only as needed. Real cooler BLE, commands, telemetry, Firmware and thermal/electrical behavior remain DEFERRED / NOT TESTED until the cooler is available.
-- **Next roadmap step:** WP10 is the defined final-closure work package: reconcile live file dispositions, comments, formatter deltas, tests, full diffs, commits, exact-SHA Validation Only, residual risks, platform evidence and durable handoff. It can proceed without physical cooler access if the final closure clearly records hardware/BLE as deferred/not tested and does not claim product-level physical acceptance. This is a recommendation only; WP10 has not started and requires a fresh explicit `@Thinking Eksekusi Code!` command in the dedicated Code workspace.
+**Roadmap status:** WP10 Final Closure was completed in CODE_FULL on 2026-11-29. The complete 139/139 live blob inventory, formatter-touch review, exact-SHA Validation Only history, residual platform limits and durable handover are recorded in the current repository checkpoint. This does not change any visual requirement or turn the incomplete whole-App screenshot matrix into a PASS.
 
 ---
 
