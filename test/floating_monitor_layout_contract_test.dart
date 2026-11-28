@@ -153,7 +153,8 @@ void main() {
         floatingModels,
         isNot(contains('_normalizeFloatingSize')),
       );
-      expect(floatingModels, contains('normalizeFloatingSize(value)'));
+      expect(floatingModels, contains('normalizeFloatingSize(size ?? this.size)'));
+      expect(floatingModels, contains('normalizeFloatingOpacity(opacity ?? this.opacity)'));
       expect(
         floating,
         contains('class JexFixedScalePage extends StatelessWidget'),
@@ -236,11 +237,11 @@ void main() {
         isTrue,
       );
       expect(floating, contains('telemetry: floatingTelemetryNotifier.value'));
-      expect(floatingView, contains('size.toDouble().clamp(0.3, 1.0)'));
+      expect(floatingModels, contains('normalizeFloatingSize(size ?? this.size)'));
       expect(
         RegExp(
           r"maxLabel:\s*'\$\{JexText\.formatNumber\(1\.00, lang, decimalDigits: 2, groupThousands: false\)\}×'",
-        ).hasMatch(floating),
+        ).hasMatch(floatingView),
         isTrue,
       );
       expect(floatingView, contains('(config.opacity * 100).round()'));
@@ -250,7 +251,7 @@ void main() {
       expect(floatingView, contains('divisions: 20'));
       expect(floatingView, isNot(contains("JexText.of('displayStyle', lang)")));
       expect(
-        floating,
+        floatingView,
         isNot(contains('SegmentedButton<FloatingDisplayStyle>')),
       );
       expect(floatingView, contains('SegmentedButton<FloatingBackgroundColor>'));
