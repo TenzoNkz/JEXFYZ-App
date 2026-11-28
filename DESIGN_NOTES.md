@@ -355,3 +355,14 @@ The latest published App package is Build #167 / Actions run `44510421466` / job
 **Geometry and protected scope:** Do not alter native Floating Monitor Canvas/WindowManager geometry, fixed renderer, size/opacity ranges, defaults, configuration schema v2, v1 migration, storage identity, bridge channel or native service lifecycle. Visible label/value treatment remains visually unchanged. The widget test covers 350/420-dp widths, EN/ID and Light/Dark, slider role, enabled state, increase/decrease actions, localized values and minimum 48-dp height.
 
 **Evidence:** Validation Only #303 / run 46107526220 / source/test SHA 6bdb6cc6d712120bb7afa1bd3d4ba4f31e733a0; full suite 358/358 PASS, formatter 57 files/0 changed, analyzer 159 info-level diagnostics with zero warnings/errors. Test stores a disabled config and exposes controls through widget state after async load; native service start/stop is not invoked. Android/OEM screenshots and actual native overlay rendering remain NOT VERIFIED.
+
+
+## WP8 Floating Monitor architecture boundary — 2026-11-28
+
+**Ownership boundary.** The Flutter side is split into immutable configuration/telemetry/runtime values, process-local App state, secure configuration persistence, a typed MethodChannel adapter, and a stateless value/callback Settings renderer. The stateful Flutter controller remains responsible for overlay permission flow, App lifecycle, native start/stop confirmation, and bounded runtime reconciliation. Dashboard continues to create the authoritative telemetry value and now captures the current App language before it reaches the native bridge.
+
+**Renderer and safety boundary.** Android FloatingMonitorService Canvas/WindowManager remains a distinct renderer. No Kotlin, Manifest, native geometry, service start mode or lifecycle/recovery behavior changed. No BLE/GATT/P1 ownership moved into the overlay; it receives values and cannot issue device commands. The existing native channel, method names, payload fields, secure/native storage keys, schema v2 and v1 metric migration remain unchanged.
+
+**Visual contract.** The Settings renderer was moved without an approved composition, palette, typography, spacing, control-size or native overlay appearance change. The existing Size/Opacity Slider semantic labels and locale-formatted values are retained. The tested Flutter matrix covers 350/420-dp widths, EN/ID and Light/Dark; this is widget evidence only, not actual Android/OEM rendering. Whole-App visual acceptance remains **VISUAL NOT VERIFIED**.
+
+**Validation evidence.** Validation Only #327 / run 46113283625 / job 140881362489, exact source/test SHA 048c22ba4722848b962dc58d5b3e9dc7fe994961, terminal SUCCESS: locked dependencies PASS; formatter 62 files / 0 changed; analyzer 159 info diagnostics, zero warnings/errors; 359/359 Flutter tests PASS. No native service start is performed by the Flutter widget tests.
