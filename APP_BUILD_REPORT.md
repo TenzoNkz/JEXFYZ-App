@@ -1,3 +1,13 @@
+## BUILD #174 — FLUTTER TESTS PASSED / ANDROID GRADLE ACTIVE — 2026-11-28
+
+- **Observed transition at 2026-11-28T16:11:21+07:00:** run 46128979174 / job 140929762652 / immutable source c1408fff0fae10bf6b98237c4485c2c5fb77c368 remains IN_PROGRESS.
+- **Steps 1–13:** SUCCESS, including setup, checkout, Java 17, Flutter, Gradle, toolchain, local.properties, production signing preparation, wrapper restoration, App security/architecture audit, locked dependencies, Dart analyzer and the full Flutter test gate.
+- **Step 14:** Run Android unit-test gate IN_PROGRESS. Steps 15–21 remain PENDING; cleanup steps 39–42 remain PENDING.
+- **Exact counts:** the workflow job step API confirms success/failure states but does not expose analyzer diagnostic or Flutter test counts. The job-log endpoint still returns 404 BlobNotFound while the job is active. Do not copy counts from Validation Only #339 or an earlier package into this Build attempt.
+- **Disposition:** no failure observed. Android Gradle, APK creation, signing, source archive, Release/tag parity and fresh downloaded asset verification are not yet confirmed. Continue the same run/job; do not retry.
+
+---
+
 ## BUILD #174 — STEPS 1–12 SUCCESS / FLUTTER TESTS ACTIVE — 2026-11-28
 
 - **Observed transition at 2026-11-28T16:09:59+07:00:** Build #174 / run 46128979174 / job 140929762652 / source SHA c1408fff0fae10bf6b98237c4485c2c5fb77c368 remains IN_PROGRESS.

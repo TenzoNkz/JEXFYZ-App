@@ -1,12 +1,12 @@
 # JE X FYZ / JE Cooler — Current Project State
 
-Last reconciled: 2026-11-28T16:09:59+07:00 (Asia/Jakarta). Authority: MASTER_PROMPT.md.
+Last reconciled: 2026-11-28T16:11:21+07:00 (Asia/Jakarta). Authority: MASTER_PROMPT.md.
 
 ## App source and validation
 
 - **Latest validated App/test SHA:** c6206989cb0e30c94578c95b4d9c13bde5d36d71. Validation Only #339 / run 46127470525 / job 140925152695 terminal SUCCESS: locked dependency resolution PASS; formatter 63 files / 0 changed; analyzer 157 info / 0 warnings / 0 errors; Flutter tests 362/362 PASS.
 - **Build #174 source SHA:** c1408fff0fae10bf6b98237c4485c2c5fb77c368. Four commits after the validated source change only documentation/status/handover files; no App source, tests, workflow or Gradle configuration changed.
-- **WP9 contract:** disconnected Home locked submenu card is informational without Connect/Hubungkan. Home top-left Bluetooth remains the entry point to existing manual Connection flow. The Connection sheet, Settings > Bluetooth and BLE/session ownership remain preserved.
+- **WP9 contract:** disconnected Home locked submenu card is informational and has no Connect/Hubungkan CTA. Home top-left Bluetooth remains the entry point to existing manual Connection flow. The Connection sheet, Settings > Bluetooth and BLE/session ownership remain preserved.
 - **Visual boundary:** current Home locked-card screenshot is NOT CAPTURED / NOT REVIEWED. Build #173 screenshots predate WP9.
 
 ## Published App package before Build #174
@@ -19,7 +19,7 @@ Last reconciled: 2026-11-28T16:09:59+07:00 (Asia/Jakarta). Authority: MASTER_PRO
 - **Owner authorization:** explicit "Eksekusi Build App!".
 - **Trigger:** Issue #51 / ID6662377983; exact title and token verified.
 - **Actions:** workflow374946166 / run46128979174 / attempt1 / job140929762652 / event issues; run/job IN_PROGRESS; source SHA c1408fff0fae10bf6b98237c4485c2c5fb77c368.
-- **Gate status:** steps1–12 SUCCESS, including security/architecture audit, dependencies and analyzer. Step13 Flutter tests IN_PROGRESS. Steps14–21 and cleanup pending. Job log endpoint has not yet supplied a log blob while job is active; exact diagnostic/test counts are pending.
+- **Gate status:** steps1–13 SUCCESS, including security/architecture audit, dependencies and analyzer. Step14 Android unit-test gate IN_PROGRESS. Steps15–21 and cleanup pending. Job log endpoint has not yet supplied a log blob while job is active; exact diagnostic/test counts are pending.
 - **Workflow protections:** issue-only owner/title/token guard, serialized non-cancelling queue, no push/PR release trigger. All Android Gradle, obfuscation, V1/V2/V3, pinned certificate, source ZIP, Release/tag and fresh-download verification gates remain intact.
 - **Protected version:** Android Gradle versionName exactly "Telegram @horizontalzzz"; Flutter version1.0.0+3.
 - **Next:** continue the exact run/job and update evidence from live steps/logs.
