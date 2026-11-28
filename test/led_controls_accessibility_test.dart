@@ -104,9 +104,7 @@ void main() {
             theme: ThemeData.dark(),
           ),
         );
-        final previousIndonesian = find.bySemanticsLabel(
-          'Mode LED sebelumnya',
-        );
+        final previousIndonesian = find.bySemanticsLabel('Mode LED sebelumnya');
         final nextIndonesian = find.bySemanticsLabel('Mode LED berikutnya');
         expect(previousIndonesian, findsOneWidget);
         expect(nextIndonesian, findsOneWidget);
@@ -123,9 +121,7 @@ void main() {
             theme: ThemeData.dark(),
           ),
         );
-        final previousDisabled = find.bySemanticsLabel(
-          'Mode LED sebelumnya',
-        );
+        final previousDisabled = find.bySemanticsLabel('Mode LED sebelumnya');
         final nextDisabled = find.bySemanticsLabel('Mode LED berikutnya');
         for (final target in [previousDisabled, nextDisabled]) {
           expect(target, findsOneWidget);
