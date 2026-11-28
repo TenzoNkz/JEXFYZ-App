@@ -1,4 +1,4 @@
-| Last updated | 2026-11-28T15:50:08+07:00 (Asia/Jakarta) |
+| Last updated | 2026-11-28T16:00:00+07:00 (Asia/Jakarta) |
 
 > Event-driven project marker. It is not a live heartbeat or a GitHub lock.
 
@@ -6,24 +6,25 @@
 
 | Field | Value |
 |---|---|
-| **STATUS** | **WAITING_OWNER** |
-| SESSION STATUS | COMPLETED — this CODE_FULL interaction completed the WP9 locked-card implementation, expanded Flutter regression coverage, exact-SHA Validation Only and durable checkpoint/read-back. |
-| WORK STATUS | WAITING_OWNER — WP9 source/test implementation is COMPLETED / VERIFIED CI. The changed Home locked card still needs a fresh screenshot from a package containing the current source SHA. Build App is explicitly postponed by the owner; no package/build is authorized here. |
-| WORKSPACE | CODE_FULL |
-| Mode | ChatGPT/Codex-only App source/test work directly on main; one WP per fresh owner command. Build App/APK/Release, Firmware/BIN, OTA, production Firebase, signing, flashing and physical-device operations remain outside this workspace. |
-| Request | 2026-11-28 — owner directed that Build App wait and Code work continue first. This interaction completed the WP9 Code-only source/test scope without packaging. |
-| Active work package | WP9 — locked-card Connect CTA removal and regression coverage: source/test implementation COMPLETED and VERIFIED CI. Overall WP9 remains WAITING_OWNER for package-level screenshot review of the changed Home card. WP10 remains NOT STARTED. |
-| Owner decision | Keep the locked submenu card informational without Connect/Hubungkan. Preserve Home's top-left Bluetooth control as the only Home entry point to the existing manual Connection flow. Do not remove the Connection sheet, Settings > Bluetooth, BLE/session ownership or its handlers. Defer Build App until the owner explicitly requests it. |
-| Current exact source/test SHA | c6206989cb0e30c94578c95b4d9c13bde5d36d71 on main. Implementation 62a89aa3602575062f268c4823a186f034faf9ec; expanded viewport/theme/locale matrix 80fb686609ce60112e0e67d185a23488a71bb0df; Home-to-Connection contract 49bc706986600b52f21666abd57ab71bdb1ca9f2; canonical formatter-only follow-up c6206989cb0e30c94578c95b4d9c13bde5d36d71. |
-| Validation Only #339 | Run 46127470525 / job 140925152695, terminal SUCCESS on exact SHA c6206989cb0e30c94578c95b4d9c13bde5d36d71: locked dependencies PASS; Dart formatter 63 files / 0 changed; analyzer 157 info / 0 warnings / 0 errors; Flutter tests 362/362 PASS; workflow summary SUCCESS. [Actions run](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/46127470525). |
-| Validation recovery | #337 / run 46126865168 (362/362 tests pass) and #338 / run 46127149091 (362/362 tests pass) failed only the formatter gate on new tests. Exact runner formatter output was applied in c6206989cb0e30c94578c95b4d9c13bde5d36d71; no assertion or behavior was weakened. #339 verifies the exact formatted files. |
-| Latest package | Build App #173 / run 46121055519 remains the latest published package, built from source 478bdfdc5ee18379e07baad5e4dfd8ab598dc2db. Its five owner-accepted screenshots predate the current locked-card change and do not visually verify this source. No package was built in this Code session. |
-| Local validation | Flutter, Dart, Gradle, ADB and emulator are unavailable; Android SDK environment variables are unset. Local format/analyze/test/Android build and device capture were NOT RUN. Hosted Validation Only is Flutter-only. |
-| Visual boundary | Updated Home locked-card screenshot: NOT YET CAPTURED / NOT YET REVIEWED. Owner-accepted Build #173 screenshots cover the previous stage only. Other unshown surfaces and the native Floating Monitor renderer remain outside that accepted capture set. |
-| Deferred hardware | Cooler discovery/session, real BLE, commands, telemetry, Firmware interaction, thermal/electrical behavior and physical cooler operation remain DEFERRED / NOT TESTED pending owner demonstration. |
-| External operation | No active Actions run. Validation Only #339 is terminal SUCCESS. No Build App, APK, signing, Release, Firmware, OTA, Firebase production, flash or device action was started. |
-| Next action | Wait for the owner to authorize a Build App in the separate workspace at a later time; then inspect the updated Home/disconnected locked card from that package. Do not start WP10 or describe #173 screenshots as evidence of the updated card. |
+| **STATUS** | **IN_PROGRESS** |
+| SESSION STATUS | IN_PROGRESS — new BUILD_APP session opened by the owner's explicit command "Eksekusi Build App!" on 2026-11-28T16:00:00+07:00 (Asia/Jakarta). |
+| WORK STATUS | IN_PROGRESS — guarded Android App Build/QC/release preflight. No Build trigger, retry, signing, package publication or Release mutation has been performed in this session. |
+| WORKSPACE | BUILD_APP |
+| Mode | Owner-authorized guarded Android App Build/QC/release workflow only, plus narrowly justified App-source repair if required by the Build procedure. No Firmware/BIN, OTA, production Firebase, flashing, physical-device operation or unrelated release work. |
+| Request | Exact current owner request: "Eksekusi Build App!" using "MASTER PROMPT LOAD + CONTINUE — JE X FYZ GUARDED APP BUILD WORKSPACE" for TenzoNkz/JEXFYZ-App on main. This new explicit authorization supersedes the prior Code-workspace instruction to postpone Build App. |
+| Active work package | Build App — intake and authorization/status verification. Build source SHA and intended Actions run are not yet revalidated in this session. |
+| Owner decision | Execute the guarded Android App Build/QC/release workstream only. Preserve Android Gradle versionName exactly: Telegram @horizontalzzz. Keep hosted CI evidence separate from visual/device and hardware acceptance. |
+| Last verified source/test checkpoint | Validation Only #339 / run 46127470525 / job 140925152695, terminal SUCCESS on SHA c6206989cb0e30c94578c95b4d9c13bde5d36d71. This is the previously recorded source checkpoint, not yet confirmed as current main HEAD for this Build session. |
+| Prior package | Build App #173 / run 46121055519, recorded as built from SHA 478bdfdc5ee18379e07baad5e4dfd8ab598dc2db. Its screenshots predate WP9 and do not verify the current locked-card change. |
+| Verified checkpoint for this session | Read 00_WORK_STATUS.md first. Its prior marker showed CODE_FULL / WAITING_OWNER, no active Actions run, and Validation Only #339 SUCCESS. All other repository metadata, Build authorization details, current run, release and asset state remain to be fetched and verified. |
+| External operation | PREFLIGHT — not yet checked against live Actions API in this session. No external Build operation has been started. |
+| Current phase | INTAKE + DURABLE SESSION MARKER; next verify MASTER_PROMPT.md in full, then follow the bounded Build-only loading and live Actions preflight. |
+| Next action | Read MASTER_PROMPT.md fully and follow its Build-only authorization, state lifecycle and mandatory procedures before any trigger, retry, signing or Release action. |
 
-## Historical workspace context
+## Previous CODE_FULL checkpoint (historical; not the active workspace)
 
-WP8 Floating Monitor boundary remains COMPLETED. The owner accepted the five Build #173 screenshots for the previous current stage only. The present WP9 code/test change is source/test validated but has no screenshot from a package containing its SHA. WP9 overall remains WAITING_OWNER; WP10 remains NOT STARTED.
+The previous session completed WP9 source/test implementation and Validation Only #339. WP9 remains package-visual-review pending; WP10 was not started. Its owner decision to defer Build App is superseded by the explicit Build App authorization recorded above. The prior exact source/test SHA was c6206989cb0e30c94578c95b4d9c13bde5d36d71. Run 46127470525 / job 140925152695 passed: locked dependencies, formatter (63 files / 0 changed), analyzer (157 info / 0 warnings / 0 errors), Flutter tests (362/362), and workflow summary. No package was built in that Code session.
+
+Local Flutter/Dart/Gradle/ADB/emulator tooling was recorded unavailable; local Android build and physical-device capture were not run. The WP9 Home locked-card screenshot had not been captured/reviewed. BLE, cooler discovery/session, Firmware interaction, telemetry, thermal/electrical performance and OTA remain untested and outside this Build workspace.
+
+Prior Build App #173 / run 46121055519 produced a package from SHA 478bdfdc5ee18379e07baad5e4dfd8ab598dc2db. Its screenshots cover the earlier stage only.
