@@ -7,7 +7,7 @@ Last reconciled: 2026-11-28T16:20:17+07:00 (Asia/Jakarta). Authority: MASTER_PRO
 - **Latest validated App/test SHA:** c6206989cb0e30c94578c95b4d9c13bde5d36d71. Validation Only #339 / run 46127470525 / job 140925152695 terminal SUCCESS: locked dependencies PASS; formatter 63 files / 0 changed; analyzer 157 info / 0 warnings / 0 errors; Flutter 362/362 PASS.
 - **Built release source SHA:** c1408fff0fae10bf6b98237c4485c2c5fb77c368. Commits from the validated SHA through this Build source were documentation/status only. No App source, tests, workflow or Gradle configuration changed after #339.
 - **WP9 UI contract:** disconnected Home locked submenu card is informational without a Connect/Hubungkan CTA. Home's top-left Bluetooth control remains the existing manual Connection entry point; Connection sheet, Settings > Bluetooth and BLE/session ownership are preserved.
-- **Visual boundary:** the current WP9 Home locked-card screenshot remains NOT CAPTURED / NOT REVIEWED. Previous Build #173 screenshots predate that UI change.
+- **WP9 Home locked-card screenshot — REVIEWED (2026-11-28):** owner supplied a 691 × 1536 px Home capture labelled as the latest App (English / Light / disconnected). It visibly shows the lock icon, heading and supporting copy without a Connect/Hubungkan CTA; the dedicated top-left Bluetooth entry point remains visible. This visually covers the post-change locked-card state. Current latest published package is Build #174 on source `c1408fff0fae10bf6b98237c4485c2c5fb77c368`; the owner labels the image as the latest App, but the image contains no EXIF or embedded source marker, so exact package provenance is owner-confirmed rather than cryptographically established.
 
 ## Build App #174 — COMPLETED / SUCCESS
 
