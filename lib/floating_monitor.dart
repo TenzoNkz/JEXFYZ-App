@@ -1043,11 +1043,13 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage>
           Row(
             children: [
               Expanded(
-                child: Text(
-                  label,
-                  style: const TextStyle(
-                    fontSize: 10,
-                    fontWeight: FontWeight.w800,
+                child: ExcludeSemantics(
+                  child: Text(
+                    label,
+                    style: const TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.w800,
+                    ),
                   ),
                 ),
               ),
@@ -1061,23 +1063,33 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage>
                     horizontal: 8,
                     vertical: 3,
                   ),
-                  child: Text(
-                    valueLabel,
-                    style: const TextStyle(
-                      fontSize: 10,
-                      fontWeight: FontWeight.w900,
+                  child: ExcludeSemantics(
+                    child: Text(
+                      valueLabel,
+                      style: const TextStyle(
+                        fontSize: 10,
+                        fontWeight: FontWeight.w900,
+                      ),
                     ),
                   ),
                 ),
               ),
             ],
           ),
-          Slider(
-            min: min,
-            max: max,
-            divisions: divisions,
-            value: value.clamp(min, max).toDouble(),
-            onChanged: onChanged,
+          // Merge the visible field label with the Slider's own adjustment
+          // actions so assistive technology announces one named, localized control.
+          MergeSemantics(
+            child: Semantics(
+              label: label,
+              child: Slider(
+                min: min,
+                max: max,
+                divisions: divisions,
+                value: value.clamp(min, max).toDouble(),
+                semanticFormatterCallback: (_) => valueLabel,
+                onChanged: onChanged,
+              ),
+            ),
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
