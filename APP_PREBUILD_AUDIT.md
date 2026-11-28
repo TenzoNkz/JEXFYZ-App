@@ -10,7 +10,9 @@ WP6 Floating Monitor configuration now merges the localized Size/Opacity label i
 
 Current recursive inventory is 133 blobs / 179 entries / 46 trees, truncated=false; REPOSITORY_UPGRADE_PLAN.md is reconciled to 133 unique dispositions. Local Flutter/Dart/Gradle/ADB are BLOCKED / NOT RUN. Hosted CI validates Flutter only, not App build. No Android/Kotlin/native-service build or device test; Android/OEM screenshot evidence is absent, so Whole-App status is VISUAL NOT VERIFIED. SQLite runtime migration fixtures and Usage Statistics 1h/6h/24h profiling NOT RUN.
 
-Next: WP7 read-only Usage Statistics audit—schema v2/v1→v2 migration, 30-day retention, raw 1-Hz samples, timestamp/session semantics, HOT-only freshness, explicit null gaps, gap-safe decimation and bounded 64+8+1 queue. No optimization without profiling evidence.
+**Execution cadence (owner decision 2026-11-28):** each explicit `@Thinking Eksekusi Code!` command authorizes one WP only. The WP5/WP6 evidence above is closed at #303. WP7 is the next pending package but is **WAITING_OWNER** until a fresh command is received; this Discussion decision does not authorize starting WP7. After WP7's DoD is met, mark it COMPLETED and stop; WP8 requires another fresh command.
+
+Next pending WP: WP7 — read-only Usage Statistics audit of schema v2/v1→v2 migration, 30-day retention, raw 1-Hz samples, timestamp/session semantics, HOT-only freshness, explicit null gaps, gap-safe decimation and bounded 64+8+1 queue. No optimization without profiling evidence.
 
 ## Latest CODE_FULL checkpoint — WP4 shared Dashboard switch row accepted / Validation Only #274 SUCCESS — 2026-11-28
 
