@@ -26,13 +26,13 @@ import 'floating_monitor_state.dart';
 import 'floating_monitor_store.dart';
 import 'floating_monitor_bridge.dart';
 import 'floating_monitor_settings_view.dart';
+import 'jex_design_tokens.dart';
 
 export 'floating_monitor_models.dart';
 export 'floating_monitor_state.dart';
 export 'floating_monitor_store.dart';
 export 'floating_monitor_bridge.dart';
 export 'floating_monitor_settings_view.dart';
-import 'jex_design_tokens.dart';
 
 part 'settings_pages.dart';
 
@@ -184,6 +184,7 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage>
             !await FloatingBridge.hasPermission())
           return;
         config = config.copyWith(enabled: false);
+        floatingConfigNotifier.value = config;
         await FloatingStore.save(config);
       } else {
         await FloatingBridge.updateConfig(config);
@@ -384,6 +385,7 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage>
         runtimeTimer?.cancel();
         runtimeTimer = null;
         config = config.copyWith(enabled: false);
+        floatingConfigNotifier.value = config;
         await FloatingStore.save(config);
         if (mounted) setState(() {});
         return;
