@@ -2,6 +2,10 @@
 
 Last reconciled: 2026-11-28 (Asia/Jakarta). Authority: MASTER_PROMPT.md.
 
+## Language policy
+
+- **Language policy (owner decision 2026-11-28):** ChatGPT-facing explanations and reports in all three workspaces use clear standard Bahasa Indonesia, with English technical terms where precise. All explanatory and narrative text authored or revised in GitHub uses English only. Preserve required Indonesian App localization, protocol strings and verbatim evidence. See MASTER_PROMPT.md Section 2B.
+
 ## Code workstream — WP9 BLOCKED / VISUAL NOT VERIFIED
 
 - Owner cadence: each fresh `@Thinking Eksekusi Code!` command authorizes exactly one WP. WP8 Floating Monitor boundary is COMPLETED. The current 2026-11-28 command selected WP9 Visual/regression evidence only; WP9 is BLOCKED because required actual Android/OEM screen evidence is unavailable. WP10 has not started. ChatGPT/Codex remains sole author/reviewer; scoped changes go directly to `main`.
