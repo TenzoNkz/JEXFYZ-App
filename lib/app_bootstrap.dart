@@ -10,7 +10,8 @@ import 'package:flutter/services.dart';
 
 import 'app_security.dart';
 import 'app_settings.dart' show AppSettingsStore, KnownCoolerStore;
-import 'floating_monitor.dart' show FloatingStore;
+import 'floating_monitor_store.dart' show FloatingStore;
+import 'floating_monitor_state.dart' show floatingConfigNotifier;
 
 typedef AppBootstrapStep = Future<void> Function();
 typedef AppBootstrapVerifier = Future<bool> Function();
@@ -50,7 +51,7 @@ class AppBootstrap {
     loadAppSettings: AppSettingsStore.load,
     loadKnownCooler: KnownCoolerStore.load,
     loadFloatingMonitor: () async {
-      await FloatingStore.load();
+      floatingConfigNotifier.value = await FloatingStore.load();
     },
     initializeFirebase: () async {
       await Firebase.initializeApp();
