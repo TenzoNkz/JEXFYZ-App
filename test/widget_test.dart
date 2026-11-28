@@ -1032,6 +1032,27 @@ void main() {
       reason: 'Home top-left Bluetooth remains the sole manual connection entry point.',
     );
 
+    final manualFlowStart = source.indexOf('void _showBluetoothMenu() {');
+    final manualFlowEnd = source.indexOf(
+      'Future<void> _prepareManualConnectionSheet()',
+      manualFlowStart,
+    );
+    expect(manualFlowStart, isNonNegative);
+    expect(manualFlowEnd, greaterThan(manualFlowStart));
+    final manualFlow = source.substring(manualFlowStart, manualFlowEnd);
+    expect(
+      manualFlow,
+      contains('_connectionScanCoordinator.openManualSheet()'),
+    );
+    expect(manualFlow, contains('showModalBottomSheet<void>('));
+    expect(manualFlow, contains('ConnectionSheetContent('));
+    expect(manualFlow, contains('onScan: _startScanFromSheet'));
+    expect(manualFlow, contains('onConnect: _connect'));
+    expect(
+      manualFlow,
+      contains('.whenComplete(_finishManualConnectionSheet)'),
+    );
+
     final buildStart = source.indexOf(
       'Widget build(BuildContext context) {',
       source.indexOf('class _DashboardScreenState'),

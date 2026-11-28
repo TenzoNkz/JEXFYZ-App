@@ -208,10 +208,7 @@ void main() {
       try {
         for (final width in [350.0, 420.0]) {
           for (final language in AppLanguage.values) {
-            for (final preset in [
-              AppThemePreset.light,
-              AppThemePreset.dark,
-            ]) {
+            for (final preset in [AppThemePreset.light, AppThemePreset.dark]) {
               tester.view.physicalSize = Size(width * 3, 2400);
               tester.view.devicePixelRatio = 3;
 
@@ -243,7 +240,11 @@ void main() {
                 reason: contextLabel,
               );
               expect(find.text('Connect'), findsNothing, reason: contextLabel);
-              expect(find.text('Hubungkan'), findsNothing, reason: contextLabel);
+              expect(
+                find.text('Hubungkan'),
+                findsNothing,
+                reason: contextLabel,
+              );
               expect(find.byType(TextButton), findsNothing);
               expect(find.byType(IconButton), findsNothing);
 
