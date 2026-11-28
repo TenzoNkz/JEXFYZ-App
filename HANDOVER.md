@@ -2,15 +2,16 @@
 
 Last reconciled: 2026-11-28 (Asia/Jakarta). Authority: MASTER_PROMPT.md.
 
-## CODE_FULL handoff — WAITING_OWNER (WP7 pending)
+## CODE_FULL handoff — WAITING_OWNER (WP8 pending)
 
-- Owner execution-cadence decision (2026-11-28): every fresh `@Thinking Eksekusi Code!` command authorizes exactly one WP. Execute only the next pending WP (or one explicitly named WP), complete its DoD, mark it COMPLETED and stop. A new command is required before the next WP. ChatGPT/Codex alone authors/reviews and commits scoped changes directly to `main`; no branch, PR, Copilot or external agent.
-- Latest validated source/test SHA `6bdb6cc6d712120bb7afa1bd3d4ba4f31e733a0`; Validation Only #303 / run 46107526220 / job 140863506688 SUCCESS: dependencies PASS, formatter 57/0, analyzer 159 info / 0 warnings/errors, 358/358 Flutter tests PASS.
-- WP5 LED arrow semantics #296, Adaptive logical-inactive bilingual Lock Voltage copy #298, and Temperature accessibility matrix #301 are accepted. WP6 Connection is KEEP / REVIEWED; Floating Monitor Size/Opacity Slider semantics #303 are accepted without native service start or schema, persistence, channel, lifecycle or native renderer changes.
-- Live inventory remains 133 blobs / 179 recursive entries / 46 trees, truncated=false. REPOSITORY_UPGRADE_PLAN.md has 133 unique file dispositions.
-- Local Flutter/Dart/Gradle/ADB BLOCKED / NOT RUN; no Android/Kotlin build, App build, screenshots, OEM or physical-device validation. Whole-App visual NOT VERIFIED. SQLite migration runtime fixture and Usage Statistics profile NOT RUN.
-- Protected scope: no Build App/APK/sign/release, Firmware/BIN, BLE/P1 wire/security, OTA transport/recovery, Firebase production, flashing or device operations.
-- Next: **wait for a fresh `@Thinking Eksekusi Code!` command**. When received, execute WP7 Usage Statistics audit only, preserving schema, sampling, time/session, freshness, null-gap, decimation and queue contracts. Mark WP7 COMPLETED and stop; WP8 must wait for another new command. No optimization until 1h/6h/24h profiling is available.
+- **WP7 — Usage Statistics static audit: COMPLETED (2026-11-28).** The fresh `@Thinking Eksekusi Code!` command authorized this one WP. Full source/test review completed without production changes; no migration/optimization claim is made without runtime evidence.
+- Exact source/test blobs: `lib/usage_statistics.dart` `3ec69d21305226bf06983b86dc4ef6b330dd4163`; `test/usage_statistics_test.dart` `ca3ba978d750bd9c33fe5584e9ae2d24f981640f`; Dashboard caller `lib/main.dart` `68c3d2b0dc5307ea5c9496d67a9c8851a49846f3`. They are unchanged from Validation Only #303's exact source/test SHA `6bdb6cc6d712120bb7afa1bd3d4ba4f31e733a0`.
+- #303 / run 46107526220 / job 140863506688 terminal SUCCESS: dependencies PASS, formatter 57/0, analyzer 159 infos / 0 warnings/errors, full Flutter suite 358/358 PASS. This is hosted Flutter validation, not Android/Kotlin/device validation.
+- WP7 review confirms schema v2 and v1→v2 migration shape; 30-day retention; raw 1-Hz samples; cooler/session/timestamp semantics; HOT-only freshness; explicit null gaps; gap-safe 1,600-point decimation; 64+8+1 serialized queue. Reviewed 29 Usage Statistics test cases. Migration/retention tests are source contracts, not a live SQLite upgrade fixture.
+- Outstanding evidence: SQLite v1→v2 runtime fixture and 1h/6h/24h profile NOT RUN; sustained writer-pressure/long-session profile NOT RUN; local Flutter/Dart/Gradle/ADB BLOCKED / NOT RUN; no Android/OEM screenshots or physical-device test. Whole-App visual remains VISUAL NOT VERIFIED. No App package was built.
+- Source-level timing caveat for a future measured follow-up: state-event timestamps are assigned inside the serial write callback, unlike temperature receipt timestamps captured before enqueue. No timestamp drift has been measured; do not treat this as a confirmed defect or optimize without profiling.
+- Current recursive tree before documentation close: 179 entries / 133 blobs / 46 trees, truncated=false; register has 133 unique tracked-path dispositions. No Firmware/BIN, P1 wire/security, OTA, Firebase production, Build App/release/signing, flash or device operation.
+- **Next pending WP8 — Floating Monitor boundary:** configuration/persistence, Dart bridge/state projection and stateless Flutter presentation vs native Canvas/WindowManager. Recovery behavior remains frozen. **WAITING_OWNER** for a fresh explicit `@Thinking Eksekusi Code!` command; do not begin it in this session.
 
 ## Historical Build App work item — COMPLETED SUCCESS
 
