@@ -1048,10 +1048,7 @@ void main() {
     expect(manualFlow, contains('ConnectionSheetContent('));
     expect(manualFlow, contains('onScan: _startScanFromSheet'));
     expect(manualFlow, contains('onConnect: _connect'));
-    expect(
-      manualFlow,
-      contains('.whenComplete(_finishManualConnectionSheet)'),
-    );
+    expect(manualFlow, contains('.whenComplete(_finishManualConnectionSheet)'));
 
     final buildStart = source.indexOf(
       'Widget build(BuildContext context) {',
