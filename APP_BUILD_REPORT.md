@@ -1,3 +1,15 @@
+## BUILD #172 — ACTIVE / JAVA 17 SETUP — 2026-11-28
+
+- **Authorization / trigger:** exact owner command `@Thinking Eksekusi Build App!`; one owner-authored Issue #49 created at 2026-11-28T07:17:22Z / 14:17:22 +07 with required title and body token. Issue #48/#47/#46 not reopened or reused.
+- **Run / workflow / attempt:** Build #172 / workflow `374946166` / run `46120511205` / attempt 1 / issue event / actor TenzoNkz. [Actions run](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/46120511205).
+- **Exact intended source:** `cf9ead72a0afec7674a6019c1b5cec6dcf3da745`, live main HEAD at trigger creation. Validation Only #333 passed exact App/test SHA `3779ad7096c0505c0c9edbbff650b4ad70b71a97`; six commits from that SHA to the trigger SHA changed only documentation/status files.
+- **Validation #333 evidence:** run `46120263409` / job `140903017183`, terminal SUCCESS. Locked dependencies PASS; Dart formatter 63 files / 0 changed; analyzer 159 info-level, zero warnings/errors; Flutter tests 361/361 PASS; summary, cleanup and job completion SUCCESS.
+- **Repair chain included in trigger source:** `a6bfd70078f51a5b4505ab5f94e7d51233ac6937` workflow audit bridge module correction; `027ba75de4c997d2bb862675887d0d8cc55af445` exact regression assertion; `b1ebaa99e953cb421b740084c310b335138529a3` formatter extraction attempt with a CLI summary accidentally appended; `3779ad7096c0505c0c9edbbff650b4ad70b71a97` removes only that line. Validation #333 proves final source is formatted and tested.
+- **Assigned job:** `build` / ID `140903764214`; current status `in_progress`. Step 1 Set up job SUCCESS; step 2 Checkout repository SUCCESS; step 3 Set up Java 17 IN_PROGRESS; steps 4–21 pending at this record.
+- **Release baseline:** Release `403010611` and tag `jexfyz-latest` remain on Build #170 source `67ff49fdb566a2fa7748e32e5207217c8e4b98b7` until #172 succeeds.
+- **Scope / next action:** App Build/QC/release only. Continue run `46120511205` without duplicate trigger/retry, inspect all gates, then verify Release/tag source parity and fresh downloaded APK/source ZIP identity/checksums/signature. No Firmware/BIN, Firebase production changes, OTA, flashing or device operation.
+
+---
 ## VALIDATION ONLY #333 — TERMINAL SUCCESS / APP SOURCE READY FOR BUILD — 2026-11-28
 
 - **Run/job/source:** Validation Only #333 / workflow `417906156` / run `46120263409` / job `140903017183` / exact source `3779ad7096c0505c0c9edbbff650b4ad70b71a97`; terminal `completed / success`.
