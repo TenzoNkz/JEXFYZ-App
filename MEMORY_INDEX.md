@@ -1,3 +1,15 @@
+## Reconciliation — 2026-11-28 — WP7 Usage Statistics audit COMPLETED
+
+- Fresh `@Thinking Eksekusi Code!` authorized exactly WP7. The current Usage Statistics source/test and Dashboard recording boundary were reviewed; no code/test/schema/workflow change was necessary.
+- Live blobs: source `lib/usage_statistics.dart` `3ec69d21305226bf06983b86dc4ef6b330dd4163`; tests `test/usage_statistics_test.dart` `ca3ba978d750bd9c33fe5584e9ae2d24f981640f`; Dashboard caller `lib/main.dart` `68c3d2b0dc5307ea5c9496d67a9c8851a49846f3`. These blobs equal the source/test blobs tested in Validation Only #303 on `6bdb6cc6d712120bb7afa1bd3d4ba4f31e733a0`.
+- Static audit covers SQLite schema v2/v1→v2 migration shape, 30-day retention, raw 1-Hz samples, cooler/session/timestamp boundary, HOT-only freshness, explicit null gaps, gap-safe 1,600-point decimation and the 64+8+1 bounded FIFO writer. Twenty-nine Usage Statistics tests were reviewed.
+- Migration/retention source-contract tests do not execute SQLite upgrade/prune behavior. Runtime v1→v2 fixture, 1h/6h/24h profiling, writer-pressure/long-session soak and Android/OEM screenshot/device evidence remain NOT RUN. Local Flutter/Dart/Gradle/ADB unavailable. Whole-App visual remains VISUAL NOT VERIFIED.
+- Validation Only #303 / run 46107526220 / job 140863506688 SUCCESS on the exact source/test SHA: dependencies PASS; formatter 57/0; analyzer 159 infos / 0 warnings/errors; 358/358 Flutter tests PASS. Subsequent current-main commits are documentation-only and do not trigger the Validation Only path filter.
+- WP7 left production state unchanged. A possible queued state-event timestamp drift under backlog remains unmeasured, not a confirmed defect; profile before any optimization. Next pending WP8 is the Floating Monitor boundary, WAITING_OWNER for a fresh command.
+- Current recursive inventory before documentation close: 179 entries / 133 tracked blobs / 46 trees, truncated=false; REPOSITORY_UPGRADE_PLAN has 133 unique current-path dispositions.
+
+---
+
 # JE X FYZ / JE Cooler — Documentation Map & Retention Policy
 
 ## Reconciliation — 2026-11-28 — WP4 semantic canvas / Validation Only #267 SUCCESS
