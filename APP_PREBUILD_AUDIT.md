@@ -1,6 +1,24 @@
-## Latest CODE_FULL checkpoint — WP9 source/test COMPLETED / Validation Only #339 SUCCESS / screenshot WAITING_OWNER — 2026-11-28
+## Latest CODE_FULL checkpoint — WP10 FINAL CLOSURE COMPLETED — 2026-11-29
 
-**Disposition: WP9 Code-only implementation and Flutter regression COMPLETED / VERIFIED CI. Overall WP9 remains WAITING_OWNER for a package containing the updated Home locked card and a fresh screenshot.** Build App is postponed at the owner's direction; WP10 has not started.
+**Disposition: WP10 COMPLETED.** The owner issued a fresh explicit @Thinking Eksekusi Code! command authorizing exactly this final work package. No next package was started.
+
+- **Canonical live baseline:** TenzoNkz/JEXFYZ-App, branch main; preflight HEAD 98c4273e688aa4902c9e11a0a1815c5c451826c7; recursive tree SHA 251e88b0251efbe90850aea2763591106a520349; 185 entries / 139 blobs / 46 tree entries; truncated=false.
+- **Register:** REPOSITORY_UPGRADE_PLAN.md was reconciled to 139 unique rows for 139 live blob paths, with no missing, stale or duplicate paths. All 12 Dart paths touched by the historical formatter patch were independently re-read at current blob SHAs, classified and checked for relevant comments/caller/test contracts.
+- **Source/test validation:** Validation Only #339 / run 46127470525 / job 140925152695, exact source/test SHA c6206989cb0e30c94578c95b4d9c13bde5d36d71, terminal SUCCESS — locked dependencies PASS; formatter 63 files / 0 changed; analyzer 157 info / zero warnings/errors; Flutter suite 362/362 PASS. The live WP10 preflight tree compared against #339 differs only in 11 Markdown paths; all App source/test/config/workflow/Gradle/asset blobs are identical. #339 is therefore still exact-source/test evidence for current main.
+- **Test review:** test/widget_test.dart is 5,097 lines with 120 test declarations (17 widget + 103 regular), 89 source reads across 45 test bodies and 10 whitespace-normalized containsDartFragment assertions. Those source-fragment checks are lexical structural contracts, not AST-aware or independent runtime behavior proofs; their false-positive limitation remains explicit. No assertion was weakened or removed.
+- **Comments and compatibility:** the 12 formatter-touched files were inspected for stale version names, incorrect units/timing, obsolete assumptions and claims that overstate CI/device behavior. No material correction was justified. P1 V3.1/V3.2 handshake and V6.6+ LED_SYNC comments are protocol compatibility milestones; current Firmware reference records V7.2. No Firmware source or compile was performed.
+- **Historical validation failures:** Validation Only #337/#338 were formatter-only failures on two WP9 tests; dependency, analyzer and 362/362 tests passed. Exact canonical runner output was applied without assertion changes, then #339 passed all gates on the final SHA. These failed runs remain part of the evidence history.
+- **Build App separation:** Build App #174 remains terminal SUCCESS on immutable source c1408fff0fae10bf6b98237c4485c2c5fb77c368; it predates this WP10 closure. No Build App, APK, signing, Release/tag/asset operation was performed during WP10.
+- **Residual gates:** local Flutter/Dart/Gradle/ADB/emulator are unavailable, so local checks are BLOCKED / NOT RUN. Android/Kotlin current-main runtime, native Floating Monitor Canvas/WindowManager behavior, whole-App screenshot matrix, SQLite v1→v2 fixture and Usage Statistics 1h/6h/24h profiles remain NOT RUN. Whole-App VISUAL NOT VERIFIED; the Home locked-card capture is reviewed only for that surface.
+- **Protected/deferred scope:** BLE identity/security remains blocked/protected. Launcher icon alpha/transparency discrepancy and cooler-art binary not inspected remain protected for owner review. Cooler BLE discovery/session, commands, telemetry, Firmware interaction, thermal/electrical behavior and OTA remain DEFERRED / NOT TESTED. No protected asset or executable source was changed.
+- **WP10 scope outcome:** documentation/status/register/handover only. No App source/test/config/workflow, Firmware/BIN, P1 wire/security, OTA, Firebase production, signing material, APK/Release, flashing or device operations changed. Because only Markdown documentation changed and the Validation Only path filter excludes these paths, no new Validation Only run was expected; #339 remains applicable to the identical source/test tree.
+- **Next step:** WP0–WP10 sequence has no pending package; WP10 is the final package and is COMPLETED. Any new work requires a fresh owner command in its proper workspace.
+
+---
+
+## Previous CODE_FULL checkpoint — WP9 source/test COMPLETED / Validation Only #339 SUCCESS / Home screenshot subsequently reviewed — 2026-11-28
+
+**Disposition: WP9 source/test implementation and the current-stage Home locked-card screenshot review are COMPLETED.** The owner later accepted Build App #174 and supplied a new Home/Light/disconnected locked-card capture. That evidence closes only the changed Home card screenshot item; it does not constitute the whole-App visual matrix. WP10 is now COMPLETED in the latest checkpoint at the top of this file.
 
 - **Exact validated source/test SHA:** c6206989cb0e30c94578c95b4d9c13bde5d36d71, on main. Production implementation commit 62a89aa3602575062f268c4823a186f034faf9ec; matrix commit 80fb686609ce60112e0e67d185a23488a71bb0df; Home-to-Connection source-contract commit 49bc706986600b52f21666abd57ab71bdb1ca9f2; formatting-only commit c6206989cb0e30c94578c95b4d9c13bde5d36d71.
 - **Implementation:** disconnected Dashboard lock card has no Connect/Hubungkan CTA or callback. Home top-left Bluetooth remains the single Home entry point to the existing guarded manual Connection flow. Pointer blocking, semantics exclusion, lock precedence, blur/dim and existing BLE/session ownership are preserved.
@@ -8,13 +26,12 @@
 - **Changed paths:** lib/dashboard_display_menu.dart, lib/main.dart, test/dashboard_display_menu_test.dart and test/widget_test.dart. No P1 wire, BLE transport, native renderer, Firmware, OTA, Firebase production, signing or workflow code changed.
 - **Validation Only #339:** run 46127470525 / job 140925152695, exact SHA c6206989cb0e30c94578c95b4d9c13bde5d36d71, terminal SUCCESS: locked dependencies PASS; formatter 63 files / 0 changed; analyzer 157 info / 0 warnings / 0 errors; Flutter 362/362 PASS; workflow summary SUCCESS.
 - **Validation recovery:** #337 / run 46126865168 and #338 / run 46127149091 failed only formatter checks; dependencies/analyzer and 362/362 tests passed. Exact runner output was applied; #339 verifies final formatted files.
-- **Package/visual boundary:** latest package remains Build #173 on source 478bdfdc5ee18379e07baad5e4dfd8ab598dc2db. Its five owner-accepted 691 × 1536 screenshots predate the CTA change. Updated lock card is NOT YET SCREENSHOT REVIEWED. No APK, Android build or device capture was produced in CODE_FULL because Build App is postponed by the owner.
+- **Package/visual boundary:** Build App #174 later completed successfully on immutable source c1408fff0fae10bf6b98237c4485c2c5fb77c368. The owner subsequently supplied a 691 × 1536 px Home/Light/disconnected screenshot showing the updated informational lock card without Connect/Hubungkan; the owner labels it as the latest App, but image metadata does not independently identify the APK/source. That changed Home item is SCREENSHOT REVIEWED. No package was built during WP10.
 - **Remaining visual limits:** unshown Dashboard tabs, Settings subpages, Usage Statistics, additional dialogs/sheets and Floating Monitor configuration/native overlay remain outside the accepted screenshot set. Do not infer an overall Android/OEM visual PASS from hosted Flutter CI.
 - **Deferred hardware:** cooler BLE discovery/session, commands, telemetry, Firmware interaction, thermal/electrical behavior and physical cooler operation remain DEFERRED / NOT TESTED.
-- **Next action:** await a future fresh Build App authorization, then inspect the updated Home/disconnected card. WP9 overall remains WAITING_OWNER for that screenshot evidence; WP10 has not started.
+- **Disposition follow-up:** the later owner-provided Home locked-card screenshot is recorded in DESIGN_NOTES.md, PROJECT_STATE.md and HANDOVER.md. Unshown surfaces and physical cooler/BLE remain unverified/deferred; WP10 Final Closure is now COMPLETED.
 
 ---
-
 
 ## Previous WP9 Settings accessibility checkpoint — Validation Only #329 (before Build #173 owner acceptance) — 2026-11-28
 
@@ -122,7 +139,7 @@
 
 ### Current checkpoint
 
-The Dashboard lock-menu extraction remains verified by its historical exact-SHA Validation Only #247. Current WP3 source adds the session-ready heartbeat gate and pure telemetry-line parser, verified together by Validation Only #261 on `fa2dcb976395fade0eb0034db5a83b0f12fe4ed6` (336/336 tests). Dashboard remains the sole BLE/GATT/P1/session/ACK/telemetry/command owner. The live register now covers 128/128 blobs with unique dispositions. Usage Statistics static source review is complete; 1h/6h/24h profiles, migration runtime fixture, screen screenshots, Android/OEM/device evidence and whole-App visual acceptance remain NOT RUN / VISUAL NOT VERIFIED. `DESIGN_NOTES.md` → “Full App visual redesign brief — owner request 2026-11-26” remains the design authority.
+The Dashboard remains the sole BLE/GATT/P1/session/ACK/telemetry/command owner; the single BLE/session authority and protected P1 contracts remain unchanged. WP10 Final Closure is COMPLETED against the live 139/139-path register. The latest exact App source/test result remains Validation Only #339 on c6206989cb0e30c94578c95b4d9c13bde5d36d71 (362/362); the subsequent WP10 preflight tree differs only in Markdown docs. The 12 formatter-touched Dart files were independently re-reviewed. Whole-App visual status remains VISUAL NOT VERIFIED; Usage Statistics SQLite migration fixture and 1h/6h/24h profiles, Android/OEM/native overlay runtime and physical cooler/BLE behavior remain NOT RUN / DEFERRED / NOT TESTED. DESIGN_NOTES.md → “Full App visual redesign brief — owner request 2026-11-26” remains the visual design authority.
 
 ---
 
