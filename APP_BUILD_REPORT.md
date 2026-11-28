@@ -1,3 +1,16 @@
+## BUILD #173 — ANALYZER AND FLUTTER TESTS PASSED / ANDROID GRADLE ACTIVE — 2026-11-28
+
+- **Observed transition:** Build #173 / run 46121055519 / job 140905430951 / exact source SHA 478bdfdc5ee18379e07baad5e4dfd8ab598dc2db.
+- **Steps 1–13:** SUCCESS — setup, checkout, Java 17, Flutter, Gradle, toolchain, local.properties, signing preparation, wrapper restoration, security/architecture audit, locked dependency installation, Dart analyzer, full Flutter tests.
+- **Step 10 static security audit:** SUCCESS; both the bridge channel ownership and Floating Monitor model migration ownership paths were accepted.
+- **Step 12 analyzer:** SUCCESS.
+- **Step 13 Flutter tests:** SUCCESS.
+- **Step 14 Android unit-test gate:** IN_PROGRESS, started 2026-11-28T07:26:01Z. The job log endpoint returned no downloadable logs while the step is active. No failure recorded.
+- **Steps 15–21:** not started; APK, signing, source archive and Release publication remain unconfirmed.
+- **Next action:** continue this same run. Capture Android Gradle output at completion, then verify APK signing V1/V2/V3 and pinned certificate, corresponding source ZIP, exact Release/tag/source SHA parity, exactly two assets and fresh downloaded asset identity/checksum/signature.
+
+---
+
 ## BUILD #173 — AUDIT AND DEPENDENCIES PASSED / ANALYZER ACTIVE — 2026-11-28
 
 - **Observed gate transition:** Run 46121055519 / job 140905430951 / source 478bdfdc5ee18379e07baad5e4dfd8ab598dc2db.
