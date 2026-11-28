@@ -2357,13 +2357,14 @@ void main() {
   test('Fan speed control uses the complete localized label while the Floating Monitor stays compact', () {
     final homeSource = File('lib/dashboard_home_tab.dart').readAsStringSync();
     final floatingSource = File('lib/floating_monitor.dart').readAsStringSync();
+    final floatingView = File('lib/floating_monitor_settings_view.dart').readAsStringSync();
     final fanSpeedStart = homeSource.indexOf('Widget _homeFanSpeed()');
     expect(fanSpeedStart, isNonNegative);
     final fanSpeedSource = homeSource.substring(fanSpeedStart);
     expect(fanSpeedSource, contains("JexText.of('fanSpeedLabel', lang)"));
     expect(fanSpeedSource, contains('animatedKind: JexAnimatedIconKind.speed'));
     expect(
-      floatingSource,
+      floatingView,
       contains("case 'F':\n        return JexText.of('speed', lang);"),
     );
     expect(JexText.of('fanSpeedLabel', AppLanguage.english), 'Fan Speed');
@@ -2636,19 +2637,20 @@ void main() {
   );
 
   test('Floating Monitor settings keeps overlay controls and removes FPS and Shizuku UI', () {
-    final floating = File('lib/floating_monitor.dart').readAsStringSync();
+    final controller = File('lib/floating_monitor.dart').readAsStringSync();
+    final floatingView = File('lib/floating_monitor_settings_view.dart').readAsStringSync();
     final native = File(
       'android/app/src/main/kotlin/com/horizontalzzz/jexfyz/FloatingMonitorService.kt',
     ).readAsStringSync();
 
-    expect(floating, isNot(contains('Widget _livePreview(')));
-    expect(floating, isNot(contains('_livePreview(telemetry)')));
-    expect(floating, contains("JexText.of('orientation', lang)"));
-    expect(floating, contains('SegmentedButton<bool>('));
-    expect(floating, isNot(contains('Shizuku')));
-    expect(floating, isNot(contains('fpsAccessStatus')));
+    expect(floatingView, isNot(contains('Widget _livePreview(')));
+    expect(floatingView, isNot(contains('_livePreview(telemetry)')));
+    expect(floatingView, contains("JexText.of('orientation', lang)"));
+    expect(floatingView, contains('SegmentedButton<bool>('));
+    expect(controller, isNot(contains('Shizuku')));
+    expect(floatingView, isNot(contains('fpsAccessStatus')));
     expect(
-      floating,
+      floatingView,
       contains("case 'F':\n        return JexText.of('speed', lang);"),
     );
     expect(
@@ -2671,6 +2673,10 @@ void main() {
       contains(
         'await FloatingBridge.updateData(floatingTelemetryNotifier.value)',
       ),
+    );
+    expect(
+      floating,
+      contains('language: appLanguageNotifier.value.name'),
     );
     expect(
       nativeService,
