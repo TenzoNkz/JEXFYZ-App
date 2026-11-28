@@ -21,11 +21,3 @@ Last reconciled: 2026-11-28 (Asia/Jakarta). Authority: MASTER_PROMPT.md.
 ## Next action — AWAITING OWNER CODE COMMAND
 
 Issue a fresh explicit `@Thinking Eksekusi Code!` command in the dedicated Code workspace to resume the single authorized WP9, implement the locked-card CTA removal, preserve the top-left Bluetooth entry point and add regression coverage. Keep physical cooler/BLE validation deferred until the cooler is available. Do not start WP10 before WP9's remaining authorized implementation and evidence gates are reconciled.
-
-
-## Next action — BLOCKED
-
-Confirm whether the supplied screenshots were captured from Build #173's exact APK and provide the missing device/Android, dp/density and accessibility metadata; complete the outstanding WP9 capture matrix, including the native overlay. Resume WP9 only with a fresh explicit `@Thinking Eksekusi Code!` command. Incorporate the locked-card CTA removal within that authorized WP scope. Do not start WP10 before WP9 visual acceptance.
-
-
-Wait for the current-SHA Android screenshot matrix and metadata. Do not start WP10 before WP9 is accepted. Resume only with a fresh explicit `@Thinking Eksekusi Code!` command after evidence is available.
