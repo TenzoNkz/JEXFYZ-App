@@ -70,6 +70,82 @@ void main() {
   });
 
   testWidgets(
+    'Temperature labels and 48 dp actions fit supported viewport, locale and theme combinations',
+    (tester) async {
+      _resetViewAfterTest(tester);
+      final previousLanguage = appLanguageNotifier.value;
+      addTearDown(() => appLanguageNotifier.value = previousLanguage);
+
+      for (final width in [350.0, 420.0]) {
+        for (final language in [AppLanguage.english, AppLanguage.indonesia]) {
+          for (final brightness in [Brightness.light, Brightness.dark]) {
+            await _pumpTemperatureTab(
+              tester,
+              language: language,
+              brightness: brightness,
+              logicalWidth: width,
+            );
+
+            final semantics = tester.ensureSemantics();
+            try {
+              final headings = language == AppLanguage.indonesia
+                  ? [
+                      'TERMAL',
+                      'ZONA SUHU BATERAI',
+                      'BATAS ATAS SUHU BATERAI PADA 5 V',
+                      'BATAS BAWAH SUHU BATERAI PADA 12 V',
+                    ]
+                  : [
+                      'THERMAL',
+                      'BATTERY TEMPERATURE ZONES',
+                      '5 V BATTERY TEMPERATURE CEILING',
+                      '12 V BATTERY TEMPERATURE FLOOR',
+                    ];
+              for (final heading in headings) {
+                expect(
+                  find.text(heading),
+                  findsOneWidget,
+                  reason: 'Missing Temperature heading "$heading" at ${width} dp',
+                );
+              }
+
+              final actionLabels = language == AppLanguage.indonesia
+                  ? [
+                      'Kurangi Batas Suhu Sisi Panas',
+                      'Tambah Batas Suhu Sisi Panas',
+                      'Kurangi Batas atas suhu baterai pada 5 V',
+                      'Tambah Batas atas suhu baterai pada 5 V',
+                      'Kurangi Batas bawah suhu baterai pada 12 V',
+                      'Tambah Batas bawah suhu baterai pada 12 V',
+                    ]
+                  : [
+                      'Decrease Hotside Limit',
+                      'Increase Hotside Limit',
+                      'Decrease 5 V Battery Temperature Ceiling',
+                      'Increase 5 V Battery Temperature Ceiling',
+                      'Decrease 12 V Battery Temperature Floor',
+                      'Increase 12 V Battery Temperature Floor',
+                    ];
+              for (final label in actionLabels) {
+                _expectTemperatureAction(tester, label, enabled: true);
+              }
+              expect(
+                tester.takeException(),
+                isNull,
+                reason: 'Temperature layout failed at ${width} dp, $language, $brightness',
+              );
+            } finally {
+              semantics.dispose();
+            }
+
+            await tester.pumpWidget(const SizedBox.shrink());
+          }
+        }
+      }
+    },
+  );
+
+  testWidgets(
     'Temperature actions disable at range endpoints and the 2 degree zone gap',
     (tester) async {
       _resetViewAfterTest(tester);
