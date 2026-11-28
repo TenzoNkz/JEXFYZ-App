@@ -1,3 +1,35 @@
+## BUILD #173 — TERMINAL SUCCESS / RELEASE AND FRESH-ASSET VERIFICATION COMPLETE — 2026-11-28
+
+- **Disposition:** COMPLETE / SUCCESS. Every required main gate and cleanup step passed. No retry was required.
+- **Owner authorization / trigger:** exact owner command `@Thinking Eksekusi Build App!`; one owner-authored Issue #50 using exact title `JE X FYZ — EKSEKUSI BUILD APP TRIGGER` and token `JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1`. No duplicate issue or reused trigger.
+- **Run / workflow / attempt / job:** Build #173 / workflow `374946166` / Actions run `46121055519` / attempt 1 / event `issues` / job `build` `140905430951`. Terminal run and job `completed / success`; steps 1–21 all SUCCESS; cleanup steps 39–43 SUCCESS. [Actions run](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/46121055519).
+- **Immutable source SHA:** `478bdfdc5ee18379e07baad5e4dfd8ab598dc2db`. This is the Build run `head_sha`; Release target and tag object match exactly.
+- **Read-only source validation:** Validation Only #334 / workflow `417906156` / run `46120803848` / job `140904657293` / validated SHA `5d9f0b8bb5b75f52c466004159a78fcbaa9a2181`, terminal SUCCESS. Locked dependencies PASS; Dart formatter read-only PASS (`63 files / 0 changed)); analyzer PASS (`159 info-level diagnostics / 0 warnings / 0 errors`); Flutter tests PASS (`361/361`).
+- **Build step results:**
+  - Step 10 security/architecture audit SUCCESS — checks the Floating Monitor Dart MethodChannel in `lib/floating_monitor_bridge.dart`, verifies the native method parity and reads `metricSchemaVersion` / `fromStored` from `lib/floating_monitor_models.dart`.
+  - Step 11 locked dependency installation SUCCESS.
+  - Step 12 Dart analyzer SUCCESS.
+  - Step 13 Flutter test suite SUCCESS — `361 tests passed`.
+  - Step 14 Android Gradle unit-test gate SUCCESS.
+  - Step 15 release APK build SUCCESS; executed `flutter build apk --release --obfuscate --split-debug-info=build/symbols`.
+  - Step 16 explicit V1/V2/V3 signing enforcement SUCCESS.
+  - Step 17 APK signature verification SUCCESS; one signer; V1=true, V2=true, V3=true. Official pinned certificate verification passed.
+  - Step 18 release APK filename preparation SUCCESS.
+  - Step 19 corresponding source ZIP packaging SUCCESS; ZIP integrity check reported no errors in compressed data.
+  - Step 20 GitHub Release asset publication SUCCESS.
+  - Step 21 fresh download verification SUCCESS — Release asset IDs/names/identity were checked, APK and source ZIP were downloaded again, SHA-256 values were checked, source ZIP integrity was checked, and downloaded APK V1/V2/V3 signature plus pinned certificate were verified again.
+- **APK Release asset:** ID `803673610`; name `JEXFYZ-release.apk`; size `56,279,131` bytes; GitHub Release API digest and freshly downloaded APK SHA-256 both equal `5495fe52239e93d49b66c41b0d6da1ac6338c37a393b57dc77eb7e9c022e3076`. [Download APK](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-release.apk).
+- **Corresponding source Release asset:** ID `803673623`; name `JEXFYZ-corresponding-source.zip`; size `3,340,010` bytes; GitHub Release API digest and source archive SHA-256 both equal `d8029b887df3e3579966211878c893e30bdb25f2ea32e2a3dce2efe29430e60f`. [Download source ZIP](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-corresponding-source.zip).
+- **Release/tag parity:** Release ID `403010611`, tag `jexfyz-latest`, Release `target_commitish`, tag object SHA and run source SHA all equal `478bdfdc5ee18379e07baad5e4dfd8ab598dc2db`. Release is non-draft/non-prerelease and contains exactly two assets: one APK and one matching source ZIP. [GitHub Release](https://github.com/TenzoNkz/JEXFYZ-App/releases/tag/jexfyz-latest).
+- **Certificate identity:** one signer. V1, V2 and V3 each verified `true` on original and re-downloaded APK. Certificate digest `dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0` matches the official pinned certificate fingerprint embedded in the Build workflow.
+- **Version compatibility:** Android Gradle `versionName "Telegram @horizontalzzz"` is preserved exactly. Flutter package version is `1.0.0+3`.
+- **Warnings retained (not failures):** release tooling reported that generated ELF libraries contain unobfuscated DWARF debugging information. JAR verification reported dependency JAR signer chains that are self-signed/untrusted by the CI runner, missing timestamps (validation may be affected after certificate expiry as early as 2054-02-05), and some `META-INF` entries not protected by the JAR signature. These do not negate the independent APK V1/V2/V3 verification or the exact official pinned certificate match; nevertheless, retain them as release hardening warnings.
+- **Earlier failures/repair record:** Build #171 / run `46119313904` failed the static audit because the Floating Monitor bridge channel had moved to `floating_monitor_bridge.dart`; Build #172 / run `46120511205` found the migration model had moved to `floating_monitor_models.dart`. Corrections and regression tests were committed (bridge audit: `a6bfd70078f51a5b4505ab5f94e7d51233ac6937`; narrow test: `027ba75de4c997d2bb862675887d0d8cc55af445`; format: `b1ebaa99e953cb421b740084c310b335138529a3`; cleanup: `3779ad7096c0505c0c9edbbff650b4ad70b71a97`; migration audit: `5d9f0b8bb5b75f52c466004159a78fcbaa9a2181`). Validation #334 passed and Build #173 Step 10 passed.
+- **Workspace boundary:** App Build/QC/release workstream complete. WP9 remains BLOCKED / VISUAL NOT VERIFIED pending Android/OEM screenshot and physical-device acceptance. CI does not prove installation, BLE, Firmware, thermal/electrical behavior or OTA. WP10 remains unstarted.
+- **Next action:** no pending Build App operation. Any new Build requires a new explicit owner command. Keep the device/OEM visual acceptance work separate.
+
+---
+
 ## BUILD #173 — APK BUILD SUCCESS / V1-V2-V3 SIGNATURE ENFORCEMENT ACTIVE — 2026-11-28
 
 - **Step 14 Android unit-test gate:** SUCCESS.
