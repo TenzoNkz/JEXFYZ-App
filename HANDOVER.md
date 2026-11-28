@@ -1,19 +1,18 @@
 # JE X FYZ / JE Cooler — Current Handover
 
-Last reconciled: 2026-11-28T16:06:38+07:00 (Asia/Jakarta). Authority: MASTER_PROMPT.md.
+Last reconciled: 2026-11-28T16:08:45+07:00 (Asia/Jakarta). Authority: MASTER_PROMPT.md.
 
-## BUILD_APP — Build #174 PRE-TRIGGER READY — 2026-11-28
+## BUILD_APP — Build #174 IN_PROGRESS — 2026-11-28
 
-- **Owner command:** "Eksekusi Build App!" — current, explicit authorization for one guarded App Build/QC/release attempt. This supersedes the older CODE_FULL handover instruction to defer Build App.
-- **Scope:** Android App Build/QC/release only, plus narrowly justified App-source repair if a real gate fails. No Firmware compilation/BIN, Firebase production metadata, OTA, flashing, physical-device operation or unrelated release activity.
-- **Current source/test evidence:** Validation Only #339 / run 46127470525 / job 140925152695 passed on exact SHA c6206989cb0e30c94578c95b4d9c13bde5d36d71 (locked deps; formatter 63/0; analyzer 157 info, zero warnings/errors; Flutter tests 362/362).
-- **Source delta:** main before this handover commit was b69138795ccb35fc1ae5a5b9733e51e2dace41a2; the three commits after c620 were docs/status/memory only. No App source/tests/build workflow/Gradle config changed after #339.
-- **Latest package:** Build #173 / run 46121055519 / job 140905430951, terminal SUCCESS on source 478bdfdc5ee18379e07baad5e4dfd8ab598dc2db. Its APK/source ZIP remain the current Release assets and predate the WP9 Home locked-card change.
-- **Release baseline:** Release 403010611 / tag jexfyz-latest / source 478bdfdc5ee18379e07baad5e4dfd8ab598dc2db; APK asset 803673610 / 56,279,131 bytes / SHA-256 5495fe52239e93d49b66c41b0d6da1ac6338c37a393b57dc77eb7e9c022e3076; source ZIP asset 803673623 / 3,340,010 bytes / SHA-256 d8029b887df3e3579966211878c893e30bdb25f2ea32e2a3dce2efe29430e60f. Tag object equals Release target.
-- **Trigger control:** full live workflow confirmed issue-only opened/reopened, repository owner + exact title + body-token guard, serialized non-cancelling queue, no push/PR release trigger. Existing Issue #50 is still open and belongs to #173; never reuse/reopen it. Create exactly one fresh unique issue for this request, then inspect the corresponding run before any further action.
-- **Protected setting:** Android Gradle versionName remains exactly "Telegram @horizontalzzz"; Flutter package version 1.0.0+3.
-- **External operation:** NOT_STARTED. No current Build App run is active. The trigger and target source SHA for the new attempt will be written after the documentation checkpoint is committed and read back.
-- **Next action:** verify final main SHA/tree and unchanged source delta, create one guarded issue, then verify the issue-triggered run's exact head SHA and jobs. Continue the same run; no blind retry or duplicate trigger.
+- **Owner command:** "Eksekusi Build App!" — explicit authorization for one guarded App Build/QC/release attempt.
+- **Trigger:** Issue #51 / ID 6662377983; exact owner/title/body-token guard matched. Existing open prior trigger issues were not reused or reopened.
+- **Run:** Build #174 / workflow 374946166 / Actions run 46128979174 / attempt 1 / event issues / job build 140929762652. Run and job are IN_PROGRESS. Initial step 1 succeeded; step 2 Checkout repository is IN_PROGRESS; later gates are pending. [Actions run](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/46128979174).
+- **Exact source SHA:** c1408fff0fae10bf6b98237c4485c2c5fb77c368. Issue body, run head_sha and main at trigger creation match.
+- **App/test evidence:** Validation Only #339 / run 46127470525 / job 140925152695 terminal SUCCESS on c6206989cb0e30c94578c95b4d9c13bde5d36d71 (locked dependencies; formatter 63/0; analyzer 157 info / zero warnings/errors; Flutter tests 362/362). Commits after that SHA are documentation-only.
+- **Previous package:** Build #173 / run 46121055519 / job 140905430951 terminal SUCCESS on source 478bdfdc5ee18379e07baad5e4dfd8ab598dc2db. Release403010611/tag jexfyz-latest and both assets remain on that earlier source until #174 passes all Release gates.
+- **Protected version:** Android Gradle versionName exactly "Telegram @horizontalzzz"; Flutter version1.0.0+3.
+- **Scope:** App Build/QC/release only, with justified App-source repair solely if a real failure requires it. No Firmware/BIN, Firebase production, OTA, flashing, physical-device operation or unrelated release work.
+- **Next action:** continue only run 46128979174 / job 140929762652; inspect live steps and logs, record all actual gate results, and do not trigger/retry blindly.
 
 ## WP9 device-visual boundary — separate from hosted build
 

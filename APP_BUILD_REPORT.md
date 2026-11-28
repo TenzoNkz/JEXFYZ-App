@@ -1,3 +1,19 @@
+## BUILD #174 — ACTIVE / CHECKOUT IN PROGRESS — 2026-11-28
+
+- **Disposition:** IN_PROGRESS. A single new guarded Build App trigger was created and the matching Actions run has started. No retry or duplicate trigger has been created.
+- **Owner authorization / trigger:** exact owner command "Eksekusi Build App!" in the dedicated BUILD_APP workspace. New owner-authored Issue #51 / ID 6662377983, exact title "JE X FYZ — EKSEKUSI BUILD APP TRIGGER", exact body token "JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1". Existing open issues from earlier attempts were not reused or reopened. [Trigger issue](https://github.com/TenzoNkz/JEXFYZ-App/issues/51).
+- **Run / workflow / attempt / job:** Build #174 / workflow 374946166 / Actions run 46128979174 / attempt 1 / event issues / actor TenzoNkz / job build ID 140929762652. Run and job were observed as IN_PROGRESS. [Actions run](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/46128979174).
+- **Immutable source SHA:** c1408fff0fae10bf6b98237c4485c2c5fb77c368. The issue body, run head_sha and live main HEAD at trigger creation match exactly.
+- **Source validation:** Validation Only #339 / workflow 417906156 / run 46127470525 / job 140925152695, terminal SUCCESS on exact App/test SHA c6206989cb0e30c94578c95b4d9c13bde5d36d71. Locked dependencies PASS; Dart formatter 63 files / 0 changed; analyzer 157 info diagnostics / 0 warnings / 0 errors; Flutter tests 362/362 PASS.
+- **Source delta:** four documentation/status commits between the validated App/test SHA and Build #174 source SHA. GitHub comparison shows only documentation, changelog, status, project-state, handover and repository-plan paths changed; no App source, test, Build workflow or Gradle build configuration changed after Validation Only #339.
+- **Initial gate observation at 2026-11-28T16:08:45+07:00:** run status IN_PROGRESS; job build status IN_PROGRESS. Step 1 Set up job SUCCESS; step 2 Checkout repository IN_PROGRESS; steps 3–21 PENDING. Post-checkout cleanup step 42 PENDING. No analyzer/test/Android Gradle/APK/signing/source archive/Release gate result is claimed at this point.
+- **Previous release baseline:** Build #173 / run 46121055519 / job 140905430951 / source 478bdfdc5ee18379e07baad5e4dfd8ab598dc2db, terminal SUCCESS. Release 403010611 / tag jexfyz-latest target the same SHA, with exactly one APK and one corresponding source ZIP. Build #173 predates WP9.
+- **Protected version:** Android Gradle versionName remains exactly "Telegram @horizontalzzz"; Flutter version remains 1.0.0+3.
+- **Warnings / blockers:** none established for #174 at this initial checkout state. All later gates are unverified/pending. WP9 updated Home locked-card screenshot remains unreviewed; device/OEM/BLE/thermal/electrical/Firmware/OTA acceptance is separate and outside this workspace.
+- **Next action:** continue only run 46128979174 / job 140929762652. Inspect its actual steps/logs as they advance; record every gate and only repair/retry after concrete evidence. Do not create another issue or repeat the trigger.
+
+---
+
 ## BUILD #173 — TERMINAL SUCCESS / RELEASE AND FRESH-ASSET VERIFICATION COMPLETE — 2026-11-28
 
 - **Disposition:** COMPLETE / SUCCESS. Every required main gate and cleanup step passed. No retry was required.
