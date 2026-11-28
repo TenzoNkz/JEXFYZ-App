@@ -1,8 +1,9 @@
 <!-- ACTIVE_CHECKPOINT_START -->
 
-## Active checkpoint — CODE_FULL — IN_PROGRESS — 2026-11-28
+## Active checkpoint — CODE_FULL — WAITING_OWNER (WP7 pending) — 2026-11-28
 
 - Owner authorization remains the 2026-11-26 App-only WP0–WP10 rework + premium UI redesign, reaffirmed by current “@Thinking Eksekusi Code!” command. ChatGPT/Codex only; direct commits on main; no branches, PRs, Copilot or external agents. No Build App/APK/signing/release, Firmware/BIN, BLE/P1 identity/security/wire change, OTA transport/recovery, Firebase production, signing secrets, flashing or device operations.
+- **Owner execution-cadence decision (2026-11-28):** each fresh `@Thinking Eksekusi Code!` command authorizes exactly one pending WP. A command with no WP name uses the next pending WP in this checkpoint; a named command may select one other WP. Complete that WP's full DoD, required validation and documentation, mark that WP/work item `COMPLETED`, record the following WP as pending, then stop. Do not start the following WP until another explicit command. This supersedes the former continuous WP0–WP10 authorization wording. The WP5/WP6 package evidenced below is closed; **WP7 is pending and is not authorized by this checkpoint alone**.
 - Canonical repository TenzoNkz/JEXFYZ-App / main. Latest validated source/test SHA `6bdb6cc6d712120bb7afa1bd3d4ba4f31e733a0`. Validation Only #303 / run 46107526220 / job 140863506688 terminal SUCCESS: dependencies PASS; formatter 57 files / 0 changed; analyzer 159 info / 0 warnings/errors; full Flutter suite 358/358 PASS; summary SUCCESS. The current main may have later documentation-only commits; re-fetch exact HEAD before any write.
 - WP5 LED: localized enabled/disabled Semantics buttons for Previous/Next arrows, 48×48-dp targets and 29×34-dp visual plates; Dashboard owns callbacks/commands. #296 SUCCESS (356/356).
 - WP5 Adaptive Lock Voltage: shared bilingual copy says logical Adaptive mode is forced inactive/nonaktif, never physical-output OFF/MATI. Overlay + Adaptive tab share helper. #298 SUCCESS (356/356).
@@ -11,6 +12,6 @@
 - WP6 Floating Monitor configuration: Size/Opacity Slider semantics merge localized names and formatted values without duplicate static announcements. Eight viewport/locale/theme combinations; disabled persisted config/disconnected telemetry; no native service start. Schema, migration, storage, channel, lifecycle and native renderer untouched. #303 SUCCESS (358/358).
 - Live tree: 179 recursive entries / 133 blobs / 46 trees, truncated=false. REPOSITORY_UPGRADE_PLAN.md now contains 133 unique dispositions matching all live blobs.
 - Local Flutter/Dart/Gradle/ADB BLOCKED / NOT RUN. Hosted Validation Only is Flutter quality validation, not App build. No Android/Kotlin build, device run or Android/OEM screenshot. Whole-App visual remains VISUAL NOT VERIFIED. SQLite runtime migration fixture and Usage Statistics 1h/6h/24h profiles NOT RUN.
-- Next: WP7 read-only Usage Statistics audit—schema v2/v1→v2 migration, retention, raw 1-Hz samples, session/timestamp semantics, HOT-only freshness, null gaps, gap-safe decimation and bounded 64+8+1 queue. Do not optimize without profile evidence.
+- Next pending WP: WP7 — read-only Usage Statistics audit covering schema v2/v1→v2 migration, retention, raw 1-Hz samples, session/timestamp semantics, HOT-only freshness, null gaps, gap-safe decimation and bounded 64+8+1 queue. **WAITING_OWNER:** do not begin WP7 until a fresh explicit `@Thinking Eksekusi Code!` command. Once WP7 DoD is met, mark WP7 COMPLETED and stop; WP8 requires another fresh command. Do not optimize without profile evidence.
 
 <!-- ACTIVE_CHECKPOINT_END -->
