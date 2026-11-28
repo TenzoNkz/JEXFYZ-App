@@ -291,6 +291,26 @@ void main() {
     expect(audit, contains('missing_floating_methods'));
     expect(
       audit,
+      contains(
+        'floating_models = Path("lib/floating_monitor_models.dart").read_text(encoding="utf-8")',
+      ),
+    );
+    expect(
+      audit,
+      contains(
+        'if "metricSchemaVersion" not in floating_models or "fromStored" not in floating_models:',
+      ),
+    );
+    expect(
+      audit,
+      isNot(
+        contains(
+          'if "metricSchemaVersion" not in floating or "fromStored" not in floating:',
+        ),
+      ),
+    );
+    expect(
+      audit,
       isNot(
         contains("if \"MethodChannel('je_x_fyz/floating')\" not in floating:"),
       ),

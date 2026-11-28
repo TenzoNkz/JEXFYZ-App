@@ -143,6 +143,7 @@ jobs:
           activity = Path("android/app/src/main/kotlin/com/horizontalzzz/jexfyz/MainActivity.kt").read_text(encoding="utf-8")
           floating = Path("lib/floating_monitor.dart").read_text(encoding="utf-8")
           floating_bridge = Path("lib/floating_monitor_bridge.dart").read_text(encoding="utf-8")
+          floating_models = Path("lib/floating_monitor_models.dart").read_text(encoding="utf-8")
           gradle = Path("android/app/build.gradle").read_text(encoding="utf-8")
 
           required = [
@@ -160,7 +161,7 @@ jobs:
               "TamperScreen",
               "je_x_fyz/security",
           ]
-          combined = source + pubspec + activity + floating + floating_bridge
+          combined = source + pubspec + activity + floating + floating_bridge + floating_models
           missing = [token for token in required if token not in combined]
           if missing:
               raise SystemExit("JE X FYZ audit failed; missing: " + ", ".join(missing))
@@ -239,7 +240,7 @@ jobs:
               raise SystemExit("JE X FYZ audit failed; retired FPS permission bridge remains")
           if '"F" -> "F:" + if (!data.connected) "--" else if (data.fanOn) "${data.speed}%" else offText' not in Path("android/app/src/main/kotlin/com/horizontalzzz/jexfyz/FloatingMonitorService.kt").read_text(encoding="utf-8"):
               raise SystemExit("JE X FYZ audit failed; Floating metric F must display Fan Speed")
-          if "metricSchemaVersion" not in floating or "fromStored" not in floating:
+          if "metricSchemaVersion" not in floating_models or "fromStored" not in floating_models:
               raise SystemExit("JE X FYZ audit failed; legacy Floating Monitor metric migration is missing")
 
           # Firmware .ino source is intentionally stored in this App repository.
