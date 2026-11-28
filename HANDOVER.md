@@ -1,20 +1,20 @@
 # JE X FYZ / JE Cooler — Current Handover
 
-Last reconciled: 2026-11-28T16:11:21+07:00 (Asia/Jakarta). Authority: MASTER_PROMPT.md.
+Last reconciled: 2026-11-28T16:12:37+07:00 (Asia/Jakarta). Authority: MASTER_PROMPT.md.
 
-## BUILD_APP — Build #174 IN_PROGRESS — Android Gradle active
+## BUILD_APP — Build #174 IN_PROGRESS — APK build active
 
 - **Owner command:** "Eksekusi Build App!".
 - **Trigger:** Issue #51 / ID6662377983; exact owner/title/body token verified.
-- **Run:** workflow374946166 / Build #174 / run46128979174 / attempt1 / job build140929762652. Run/job IN_PROGRESS.
+- **Run:** workflow374946166 / Build #174 / run46128979174 / attempt1 / job140929762652. Run/job IN_PROGRESS.
 - **Exact source SHA:** c1408fff0fae10bf6b98237c4485c2c5fb77c368, matching issue body and run head_sha.
-- **Steps1–13:** SUCCESS, including security/architecture audit, dependencies, analyzer and Flutter tests. Step14 Android unit-test gate IN_PROGRESS; steps15–21 and cleanup pending.
-- **Logs:** live step API is available; job logs are not yet downloadable during execution. Exact analyzer/test counts await completed logs.
-- **Validation base:** Validation Only #339 / run46127470525 / job140925152695 SUCCESS on c6206989cb0e30c94578c95b4d9c13bde5d36d71; current build's App source/test delta from that SHA is documentation-only.
-- **Latest package:** Build #173 / run46121055519 / job140905430951 SUCCESS on 478bdfdc5ee18379e07baad5e4dfd8ab598dc2db. Release403010611/tag jexfyz-latest remains on that source until #174 passes every gate.
+- **Steps1–14:** SUCCESS, including Flutter tests and Android unit-test gate. Step15 obfuscated APK build IN_PROGRESS; steps16–21 and cleanup pending.
+- **Logs:** live step API verifies statuses; numeric analysis/test totals and Gradle duration/task details await job-log availability.
+- **Validation base:** Validation Only #339 / run46127470525 / job140925152695 SUCCESS on c6206989cb0e30c94578c95b4d9c13bde5d36d71; App source/test delta after that SHA is documentation-only.
+- **Prior package:** Build #173 / run46121055519 / job140905430951 SUCCESS on source478bdfdc5ee18379e07baad5e4dfd8ab598dc2db. Release403010611/tag jexfyz-latest remains there until #174 passes all gates.
 - **Protected version:** Android versionName "Telegram @horizontalzzz"; Flutter1.0.0+3.
-- **Scope:** App Build/QC/release only; no Firmware/BIN, Firebase production, OTA, flashing, physical-device operations or unrelated releases.
-- **Next action:** continue only run46128979174/job140929762652 through Android Gradle and later signing/Release gates. Do not trigger/retry again.
+- **Scope:** App Build/QC/release only; no Firmware/BIN, Firebase production, OTA, flashing, device operations or unrelated releases.
+- **Next action:** continue run46128979174/job140929762652 through APK build, signing/certificate, source ZIP, Release/tag and fresh asset verification.
 
 ## WP9 device-visual boundary — separate from hosted build
 

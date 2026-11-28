@@ -1,3 +1,13 @@
+## BUILD #174 — ANDROID GRADLE PASSED / APK BUILD ACTIVE — 2026-11-28
+
+- **Observed transition at 2026-11-28T16:12:37+07:00:** run 46128979174 / job 140929762652 / immutable source c1408fff0fae10bf6b98237c4485c2c5fb77c368 remains IN_PROGRESS.
+- **Steps 1–14:** SUCCESS, including the full Flutter test gate (step 13) and Android unit-test gate (step 14).
+- **Step 15:** Build latest release APK IN_PROGRESS. Steps 16–21 remain PENDING; cleanup steps 39–42 remain PENDING.
+- **Exact metrics:** step API confirms each gate's status but exposes no analyzer/test counts, Gradle duration/task totals or native JUnit NO-SOURCE detail. The job-log endpoint is still unavailable while active. Do not infer these values from earlier runs or Validation Only #339.
+- **Disposition:** no failure observed. The obfuscated APK build is running; signing/certificate, archive, Release/tag parity and fresh downloaded asset verification remain unconfirmed. Continue this exact run/job.
+
+---
+
 ## BUILD #174 — FLUTTER TESTS PASSED / ANDROID GRADLE ACTIVE — 2026-11-28
 
 - **Observed transition at 2026-11-28T16:11:21+07:00:** run 46128979174 / job 140929762652 / immutable source c1408fff0fae10bf6b98237c4485c2c5fb77c368 remains IN_PROGRESS.
