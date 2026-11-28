@@ -113,14 +113,14 @@ class FloatingSettingsView extends StatelessWidget {
                           contentPadding: EdgeInsets.zero,
                           leading: JexAnimatedGlyph(
                             icon: PhosphorIconsRegular.dotsSixVertical,
-                            color: Theme.of(context).colorScheme.onSurfaceVariant,
+                            color: Theme.of(context)
+                                .colorScheme
+                                .onSurfaceVariant,
                             size: 20,
                           ),
                           title: Text(
                             _metricLabel(metric, lang),
-                            style: const TextStyle(
-                              fontWeight: FontWeight.w800,
-                            ),
+                            style: const TextStyle(fontWeight: FontWeight.w800),
                           ),
                           trailing: Checkbox(
                             value: checked,
@@ -184,7 +184,8 @@ class FloatingSettingsView extends StatelessWidget {
                     ],
                     selected: <FloatingBackgroundColor>{config.backgroundColor},
                     onSelectionChanged: (value) {
-                      if (value.isNotEmpty) onBackgroundColorChanged(value.first);
+                      if (value.isNotEmpty)
+                        onBackgroundColorChanged(value.first);
                     },
                   ),
                   const SizedBox(height: 12),
@@ -344,3 +345,4 @@ class FloatingSettingsView extends StatelessWidget {
     );
   }
 }
+Formatted 1 file (1 changed) in 0.02 seconds.

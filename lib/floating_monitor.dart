@@ -14,6 +14,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/foundation.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
 
@@ -453,8 +454,7 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage>
     onOpacityChanged: (value) => _apply(config.copyWith(opacity: value)),
     onBackgroundColorChanged: (value) =>
         _apply(config.copyWith(backgroundColor: value)),
-    onOrientationChanged: (value) =>
-        _apply(config.copyWith(horizontal: value)),
+    onOrientationChanged: (value) => _apply(config.copyWith(horizontal: value)),
   );
 }
 
@@ -572,3 +572,4 @@ class ValueListenableBuilder2<A, B> extends StatelessWidget {
     );
   }
 }
+Formatted 1 file (1 changed) in 0.01 seconds.

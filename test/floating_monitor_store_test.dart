@@ -58,56 +58,50 @@ void main() {
     FlutterSecureStorage.setMockInitialValues(<String, String>{});
   });
 
-  test(
-    'FloatingStore.load returns persisted schema-v2 config without owning UI state',
-    () async {
-      const config = FloatingConfig(
-        enabled: true,
-        order: <String>['F', 'B', 'H', 'V', 'A', 'P'],
-        selected: <String>{'F', 'B', 'P'},
-        size: 0.75,
-        opacity: 0.65,
-        backgroundColor: FloatingBackgroundColor.white,
-        horizontal: false,
-      );
-      const uiState = FloatingConfig(
-        enabled: false,
-        size: 0.45,
-        backgroundColor: FloatingBackgroundColor.black,
-      );
-      floatingConfigNotifier.value = uiState;
-      final storage = _FailureInjectingStorageMap(
-        initialValues: <String, String>{storageKey: config.toJson()},
-      );
-      FlutterSecureStorage.setMockInitialValues(storage);
+  test('FloatingStore.load returns persisted schema-v2 config without owning UI state', () async {
+    const config = FloatingConfig(
+      enabled: true,
+      order: <String>['F', 'B', 'H', 'V', 'A', 'P'],
+      selected: <String>{'F', 'B', 'P'},
+      size: 0.75,
+      opacity: 0.65,
+      backgroundColor: FloatingBackgroundColor.white,
+      horizontal: false,
+    );
+    const uiState = FloatingConfig(
+      enabled: false,
+      size: 0.45,
+      backgroundColor: FloatingBackgroundColor.black,
+    );
+    floatingConfigNotifier.value = uiState;
+    final storage = _FailureInjectingStorageMap(
+      initialValues: <String, String>{storageKey: config.toJson()},
+    );
+    FlutterSecureStorage.setMockInitialValues(storage);
 
-      final loaded = await FloatingStore.load();
+    final loaded = await FloatingStore.load();
 
-      expect(loaded.toMap(), config.toMap());
-      expect(floatingConfigNotifier.value.toMap(), uiState.toMap());
-      expect(storage.readAttempts, 1);
-    },
-  );
+    expect(loaded.toMap(), config.toMap());
+    expect(floatingConfigNotifier.value.toMap(), uiState.toMap());
+    expect(storage.readAttempts, 1);
+  });
 
-  test(
-    'FloatingStore.load returns defaults after read failure without publishing them',
-    () async {
-      const uiState = FloatingConfig(
-        enabled: true,
-        size: 1.0,
-        backgroundColor: FloatingBackgroundColor.white,
-      );
-      floatingConfigNotifier.value = uiState;
-      final storage = _FailureInjectingStorageMap(failReads: true);
-      FlutterSecureStorage.setMockInitialValues(storage);
+  test('FloatingStore.load returns defaults after read failure without publishing them', () async {
+    const uiState = FloatingConfig(
+      enabled: true,
+      size: 1.0,
+      backgroundColor: FloatingBackgroundColor.white,
+    );
+    floatingConfigNotifier.value = uiState;
+    final storage = _FailureInjectingStorageMap(failReads: true);
+    FlutterSecureStorage.setMockInitialValues(storage);
 
-      final loaded = await FloatingStore.load();
+    final loaded = await FloatingStore.load();
 
-      expect(loaded.toMap(), const FloatingConfig().toMap());
-      expect(floatingConfigNotifier.value.toMap(), uiState.toMap());
-      expect(storage.readAttempts, 1);
-    },
-  );
+    expect(loaded.toMap(), const FloatingConfig().toMap());
+    expect(floatingConfigNotifier.value.toMap(), uiState.toMap());
+    expect(storage.readAttempts, 1);
+  });
 
   test(
     'FloatingStore.save persists schema-v2 config without mutating UI state',
@@ -160,3 +154,4 @@ void main() {
     },
   );
 }
+Formatted 1 file (1 changed) in 0.01 seconds.

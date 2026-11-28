@@ -19,7 +19,8 @@ void main() {
     final store = File('lib/floating_monitor_store.dart').readAsStringSync();
     final state = File('lib/floating_monitor_state.dart').readAsStringSync();
     final bridge = File('lib/floating_monitor_bridge.dart').readAsStringSync();
-    final view = File('lib/floating_monitor_settings_view.dart').readAsStringSync();
+    final view = File('lib/floating_monitor_settings_view.dart')
+        .readAsStringSync();
     final controller = File('lib/floating_monitor.dart').readAsStringSync();
     final bootstrap = File('lib/app_bootstrap.dart').readAsStringSync();
 
@@ -31,8 +32,14 @@ void main() {
     expect(store, contains('Future<FloatingConfig> load()'));
     expect(store, isNot(contains('floatingConfigNotifier')));
     expect(store, isNot(contains('floatingTelemetryNotifier')));
-    expect(state, contains('ValueNotifier<FloatingConfig> floatingConfigNotifier'));
-    expect(state, contains('ValueNotifier<FloatingTelemetry> floatingTelemetryNotifier'));
+    expect(
+      state,
+      contains('ValueNotifier<FloatingConfig> floatingConfigNotifier'),
+    );
+    expect(
+      state,
+      contains('ValueNotifier<FloatingTelemetry> floatingTelemetryNotifier'),
+    );
     expect(state, isNot(contains('FloatingStore')));
     expect(state, isNot(contains('FloatingBridge')));
     expect(bridge, contains("MethodChannel('je_x_fyz/floating')"));
@@ -40,15 +47,24 @@ void main() {
     expect(bridge, contains('FloatingRuntimeState.fromMap'));
     expect(bridge, isNot(contains('FlutterBluePlus')));
     expect(bridge, isNot(contains('BluetoothGatt')));
-    expect(view, contains('class FloatingSettingsView extends StatelessWidget'));
+    expect(
+      view,
+      contains('class FloatingSettingsView extends StatelessWidget'),
+    );
     expect(view, isNot(contains('WidgetsBindingObserver')));
     expect(view, isNot(contains('FloatingStore')));
     expect(view, isNot(contains('FloatingBridge')));
     expect(view, isNot(contains('floatingConfigNotifier')));
-    expect(controller, contains('class FloatingSettingsPage extends StatefulWidget'));
+    expect(
+      controller,
+      contains('class FloatingSettingsPage extends StatefulWidget'),
+    );
     expect(controller, contains('FloatingSettingsView('));
     expect(controller, contains('WidgetsBindingObserver'));
-    expect(bootstrap, contains('floatingConfigNotifier.value = await FloatingStore.load();'));
+    expect(
+      bootstrap,
+      contains('floatingConfigNotifier.value = await FloatingStore.load();'),
+    );
   });
 
   test('Floating Monitor normalizes and persists compact size, opacity and background', () {
@@ -131,8 +147,10 @@ void main() {
     'Floating Monitor settings show live numeric values and opacity marks',
     () {
       final floating = File('lib/floating_monitor.dart').readAsStringSync();
-      final floatingView = File('lib/floating_monitor_settings_view.dart').readAsStringSync();
-      final floatingModels = File('lib/floating_monitor_models.dart').readAsStringSync();
+      final floatingView = File('lib/floating_monitor_settings_view.dart')
+          .readAsStringSync();
+      final floatingModels = File('lib/floating_monitor_models.dart')
+          .readAsStringSync();
       final designTokens = File('lib/jex_design_tokens.dart')
           .readAsStringSync();
       final settingsPages = File('lib/settings_pages.dart').readAsStringSync();
@@ -149,12 +167,15 @@ void main() {
       expect(floating, isNot(contains('size.toDouble().clamp(0.3, 0.8)')));
       expect(floating, contains('nativeState.size'));
       expect(floatingModels, contains('normalizeFloatingSize'));
+      expect(floatingModels, isNot(contains('_normalizeFloatingSize')));
       expect(
         floatingModels,
-        isNot(contains('_normalizeFloatingSize')),
+        contains('normalizeFloatingSize(size ?? this.size)'),
       );
-      expect(floatingModels, contains('normalizeFloatingSize(size ?? this.size)'));
-      expect(floatingModels, contains('normalizeFloatingOpacity(opacity ?? this.opacity)'));
+      expect(
+        floatingModels,
+        contains('normalizeFloatingOpacity(opacity ?? this.opacity)'),
+      );
       expect(
         floating,
         contains('class JexFixedScalePage extends StatelessWidget'),
@@ -237,7 +258,10 @@ void main() {
         isTrue,
       );
       expect(floating, contains('telemetry: floatingTelemetryNotifier.value'));
-      expect(floatingModels, contains('normalizeFloatingSize(size ?? this.size)'));
+      expect(
+        floatingModels,
+        contains('normalizeFloatingSize(size ?? this.size)'),
+      );
       expect(
         RegExp(
           r"maxLabel:\s*'\$\{JexText\.formatNumber\(1\.00, lang, decimalDigits: 2, groupThousands: false\)\}×'",
@@ -254,7 +278,10 @@ void main() {
         floatingView,
         isNot(contains('SegmentedButton<FloatingDisplayStyle>')),
       );
-      expect(floatingView, contains('SegmentedButton<FloatingBackgroundColor>'));
+      expect(
+        floatingView,
+        contains('SegmentedButton<FloatingBackgroundColor>'),
+      );
       expect(floatingView, contains("JexText.of('backgroundColor', lang)"));
       expect(settings, contains("'backgroundColor':"));
       expect(settings, contains("'black':"));
@@ -290,9 +317,8 @@ void main() {
     expect(settings, contains('size: 19'));
     expect(settings, contains('size: 16'));
 
-    final floatingSettings = File(
-      'lib/floating_monitor_settings_view.dart',
-    ).readAsStringSync();
+    final floatingSettings = File('lib/floating_monitor_settings_view.dart')
+        .readAsStringSync();
     expect(floatingSettings, contains("JexText.of('functions', lang)"));
     expect(floatingSettings, contains("JexText.of('backgroundColor', lang)"));
     expect(floatingSettings, contains("JexText.of('orientation', lang)"));
@@ -711,7 +737,8 @@ void main() {
     final activity = File(
       'android/app/src/main/kotlin/com/horizontalzzz/jexfyz/MainActivity.kt',
     ).readAsStringSync();
-    final floatingBridge = File('lib/floating_monitor_bridge.dart').readAsStringSync();
+    final floatingBridge = File('lib/floating_monitor_bridge.dart')
+        .readAsStringSync();
 
     expect(native, contains('class FloatingMonitorService : Service()'));
     expect(native, isNot(contains('BluetoothGatt')));
@@ -1145,3 +1172,4 @@ void main() {
     },
   );
 }
+Formatted 1 file (1 changed) in 0.03 seconds.

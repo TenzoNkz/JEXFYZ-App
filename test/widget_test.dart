@@ -2356,7 +2356,8 @@ void main() {
 
   test('Fan speed control uses the complete localized label while the Floating Monitor stays compact', () {
     final homeSource = File('lib/dashboard_home_tab.dart').readAsStringSync();
-    final floatingView = File('lib/floating_monitor_settings_view.dart').readAsStringSync();
+    final floatingView = File('lib/floating_monitor_settings_view.dart')
+        .readAsStringSync();
     final fanSpeedStart = homeSource.indexOf('Widget _homeFanSpeed()');
     expect(fanSpeedStart, isNonNegative);
     final fanSpeedSource = homeSource.substring(fanSpeedStart);
@@ -2637,7 +2638,8 @@ void main() {
 
   test('Floating Monitor settings keeps overlay controls and removes FPS and Shizuku UI', () {
     final controller = File('lib/floating_monitor.dart').readAsStringSync();
-    final floatingView = File('lib/floating_monitor_settings_view.dart').readAsStringSync();
+    final floatingView = File('lib/floating_monitor_settings_view.dart')
+        .readAsStringSync();
     final native = File(
       'android/app/src/main/kotlin/com/horizontalzzz/jexfyz/FloatingMonitorService.kt',
     ).readAsStringSync();
@@ -2673,10 +2675,7 @@ void main() {
         'await FloatingBridge.updateData(floatingTelemetryNotifier.value)',
       ),
     );
-    expect(
-      floating,
-      contains('language: appLanguageNotifier.value.name'),
-    );
+    expect(floating, contains('language: appLanguageNotifier.value.name'));
     expect(
       nativeService,
       contains('data.connected = obj.optBoolean("connected", false)'),
@@ -5067,3 +5066,4 @@ void main() {
     expect(sheet, isNot(contains('Duration(milliseconds: 650)')));
   });
 }
+Formatted 1 file (1 changed) in 0.12 seconds.
