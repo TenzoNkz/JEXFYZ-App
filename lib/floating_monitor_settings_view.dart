@@ -9,6 +9,7 @@ import 'package:phosphor_icons/phosphor_icons.dart';
 import 'app_settings.dart';
 import 'floating_monitor_models.dart';
 import 'jex_animated_glyph.dart';
+import 'jex_design_tokens.dart';
 
 String floatingMetricStatus(
   String metric,
