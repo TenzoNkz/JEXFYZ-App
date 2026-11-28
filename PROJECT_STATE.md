@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — Current Project State
 
-Last reconciled: 2026-11-28T23:40:00+07:00 (Asia/Jakarta). Authority: MASTER_PROMPT.md.
+Last reconciled: 2026-11-29T00:45:16+07:00 (Asia/Jakarta). Authority: MASTER_PROMPT.md.
 
 ## Current App source and validation
 
@@ -30,12 +30,16 @@ Last reconciled: 2026-11-28T23:40:00+07:00 (Asia/Jakarta). Authority: MASTER_PRO
 
 The updated Home locked card has now been captured and reviewed in the owner-provided latest-App screenshot (English / Light / disconnected, 691 × 1536 px): no Connect/Hubungkan CTA is visible and the top-left Bluetooth control remains available. The current repository Release is Build #174 on source `c1408fff0fae10bf6b98237c4485c2c5fb77c368`; the screenshot is owner-attributed to the latest package but contains no embedded source/build identifier. Other Dashboard tabs, Settings subpages, Usage Statistics, additional dialogs/sheets and Floating Monitor configuration/native overlay are not individually established by this new image. Cooler BLE discovery/session, command behavior, telemetry, Firmware interaction, thermal/electrical performance and OTA remain DEFERRED / NOT TESTED until physical cooler access. Hosted Build/CI and this screenshot do not prove those areas. No device or Firmware operation was performed in BUILD_APP.
 
-## Next recommended App work package — WP10 final closure
+## WP0–WP10 App rework status — COMPLETED
 
-WP9's owner-approved current-stage Home/UI evidence is now recorded, including the post-CTA-removal screenshot. WP10 is the next roadmap item: reconcile the live repository inventory and per-file dispositions, comments, formatter deltas, test and CI evidence, full diffs/commits, exact-SHA Validation Only records, residual risks, platform evidence and durable handoff.
-
-**Cooler access is not required to perform the repository/App-code closure.** WP10 can proceed while physical cooler validation remains explicitly DEFERRED / NOT TESTED. The final record must not claim BLE discovery/session, command/telemetry correctness, Firmware operation, thermal/electrical performance, OTA, or unshown native Android/OEM surfaces passed. This is a recommendation only; WP10 has not started and requires a fresh explicit `@Thinking Eksekusi Code!` command in the dedicated Code workspace. One command authorizes WP10 only.
+- **WP10 final closure:** COMPLETED on 2026-11-29 after a fresh explicit owner command. The closure scope reconciled live main, all tracked-path dispositions, all 12 formatter-touched files, relevant comments, widget/source-contract limitations, exact-SHA test evidence, release boundary, residual platform evidence and durable handover. WP10 changed project documentation only; no App source/test/config/workflow or protected scope changed.
+- **Live inventory:** preflight main HEAD 98c4273e688aa4902c9e11a0a1815c5c451826c7; recursive tree 251e88b0251efbe90850aea2763591106a520349; 185 entries / 139 tracked blobs / 46 tree entries; truncated=false. REPOSITORY_UPGRADE_PLAN has 139 unique path rows for all 139 blobs, with no missing, stale or duplicate path.
+- **Latest App source/test validation:** Validation Only #339 / run 46127470525 / job 140925152695, exact source/test SHA c6206989cb0e30c94578c95b4d9c13bde5d36d71, terminal SUCCESS: locked dependencies PASS; formatter 63 files / 0 changed; analyzer 157 info / 0 warnings / 0 errors; Flutter 362/362 PASS. The code/test/config/workflow tree at WP10 preflight is identical to the tree tested by #339; only 11 Markdown paths differ.
+- **Test review:** test/widget_test.dart contains 120 declarations (17 widget and 103 regular), 89 source reads across 45 bodies and 10 whitespace-normalized source-fragment checks. These are lexical structural assertions, not AST-aware runtime proofs. No test was weakened or removed; the limitation is retained.
+- **Current package:** Build App #174 / run 46128979174 / job 140929762652 remains terminal SUCCESS on immutable source c1408fff0fae10bf6b98237c4485c2c5fb77c368; tag jexfyz-latest targets that commit. This Build predates WP10 and is not a WP10 action.
+- **Remaining limitations:** Whole-App visual status is VISUAL NOT VERIFIED; only the updated Home locked-card screenshot and earlier owner-accepted individual views are reviewed. Android/OEM/native Floating Monitor runtime, SQLite v1→v2 fixture and Usage Statistics 1h/6h/24h profiles were not run. Local Flutter/Dart/Gradle/ADB/emulator checks are BLOCKED / NOT RUN. Cooler BLE, commands, telemetry, Firmware interaction, thermal/electrical behavior and OTA remain DEFERRED / NOT TESTED. Protected BLE App identity/security and owner-review assets remain unchanged.
+- **Next App work package:** NONE within WP0–WP10. WP10 is the final planned package and is COMPLETED. Any new work requires a new explicit owner command in the correct workspace.
 
 ## Current disposition
 
-BUILD_APP work item #174 is COMPLETED_SUCCESS. There is no active Actions run, retry or pending Release publication. Any new Build requires a fresh explicit owner command.
+BUILD_APP work item #174 is COMPLETED_SUCCESS. Live Actions reconciliation found no active run, retry or pending Release publication. WP0–WP10 App rework is COMPLETED; no next WP is pending in this sequence. Any new Build requires a fresh explicit owner command.
