@@ -105,7 +105,8 @@ void main() {
                 expect(
                   find.text(heading),
                   findsOneWidget,
-                  reason: 'Missing Temperature heading "$heading" at ${width} dp',
+                  reason:
+                      'Missing Temperature heading "$heading" at ${width} dp',
                 );
               }
 
@@ -132,7 +133,8 @@ void main() {
               expect(
                 tester.takeException(),
                 isNull,
-                reason: 'Temperature layout failed at ${width} dp, $language, $brightness',
+                reason:
+                    'Temperature layout failed at ${width} dp, $language, $brightness',
               );
             } finally {
               semantics.dispose();
@@ -306,3 +308,4 @@ void _expectTemperatureAction(
     reason: 'Temperature action must retain its 48 × 48 dp hitbox: $label',
   );
 }
+Formatted 1 file (1 changed) in 0.01 seconds.
