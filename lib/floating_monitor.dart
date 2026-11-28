@@ -1,7 +1,7 @@
 // AI-MEMORY / FILE CONTRACT
 // File: floating_monitor.dart
-// Owns: Flutter Floating Monitor configuration UI, overlay permission flow,
-//       runtime reconciliation and live telemetry forwarding.
+// Owns: Flutter Floating Monitor permission/lifecycle controller and configuration reconciliation.
+// The stateless settings renderer, models, store, bridge and value projections are separate modules.
 // Native ownership: MainActivity opens Android Settings; FloatingMonitorService owns
 // WindowManager and the actual overlay window. This file never owns BLE/GATT.
 // Localization: read the shared AppLanguage notifier. English status = ON/OFF;
