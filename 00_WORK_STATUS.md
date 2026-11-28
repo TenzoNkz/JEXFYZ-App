@@ -1,4 +1,4 @@
-| Last updated | 2026-11-28T12:02:27+07:00 (Asia/Jakarta) |
+| Last updated | 2026-11-28T12:05:00+07:00 (Asia/Jakarta) |
 
 > Event-driven project marker. It is not a live heartbeat or a GitHub lock.
 
@@ -6,22 +6,22 @@
 
 | Field | Value |
 |---|---|
-| **STATUS** | **COMPLETED** |
-| SESSION STATUS | COMPLETED — provided a bounded progress estimate from the active WP0–WP10 checkpoint and clearly separated formal WP closure from partial implementation. |
-| WORK STATUS | COMPLETED — estimated overall App rework execution at approximately 40% (35–45% range); strictly closed packages are WP5 and WP6, or 2/11. |
-| WORKSPACE | DISKUSI |
-| Mode | Read-only status review. No source/test/config/workflow changes, build/test, Actions trigger, release, Firmware/BIN, Firebase, OTA, flashing or device operation. |
-| Request / work item | 2026-11-28 — estimate current Eksekusi Code progress. |
-| Started | 2026-11-28T12:02:04+07:00 (Asia/Jakarta) |
-| Completed / last updated | COMPLETED — 2026-11-28T12:02:27+07:00 (Asia/Jakarta) |
-| Current phase | Progress estimate delivered with assumptions and evidence boundary. |
-| Last verified checkpoint | WP5/WP6 closed through Validation Only #303 / run 46107526220 / job 140863506688 SUCCESS on exact source/test SHA 6bdb6cc6d712120bb7afa1bd3d4ba4f31e733a0; full Flutter suite 358/358 PASS. Active checkpoint still records WP7 as WAITING_OWNER. |
-| Current source validation | No new source validation was required or started for this Discussion estimate. |
-| Owner authorization | Discussion only. No implementation WP was authorized by this request. |
-| EXTERNAL OPERATION | No new external operation. Validation Only #303 remains the latest observed completed source validation. |
-| Blockers / caveats | Estimate is directional, not a canonical percentage metric: WP0–WP4 contain partial deliverables not yet formally closed; WP7 pending; WP8–WP10 remain open. App Build, Android/OEM screenshots, physical-device behavior and Usage Statistics 1h/6h/24h profiling remain unverified. |
-| Next action | Await a fresh explicit @Thinking Eksekusi Code! command in the dedicated Code chat to authorize WP7 only, or a different single named WP. |
+| **STATUS** | **IN_PROGRESS** |
+| SESSION STATUS | IN_PROGRESS — received exact owner command `@Thinking Eksekusi Code!` with the full supplied “MASTER PROMPT LOAD + CONTINUE — JE X FYZ CODE IMPLEMENTATION WORKSPACE” instruction. |
+| WORK STATUS | IN_PROGRESS — startup/pre-flight for exactly one authorized App Work Package; active checkpoint last reported WP7 as WAITING_OWNER, pending live checkpoint verification. |
+| WORKSPACE | CODE_FULL |
+| Mode | One-WP-per-command App source/test/docs/static-audit execution. ChatGPT/Codex authors and reviews scoped changes directly on `main`; no Copilot, external coding agent, feature branch or PR. No Build App, Firmware/BIN, P1 wire/security, OTA, Firebase production, signing, flashing or device operation. |
+| Request / work item | 2026-11-28 — exact incoming command: `@Thinking Eksekusi Code!` plus full owner-provided MASTER PROMPT LOAD + CONTINUE. Execute the first live pending WP from the active WP0–WP10 checkpoint (expected WP7; confirm before implementation), complete its DoD and stop. |
+| Started | 2026-11-28T12:05:00+07:00 (Asia/Jakarta) |
+| Completed / last updated | IN_PROGRESS — 2026-11-28T12:05:00+07:00 (Asia/Jakarta) |
+| Current phase | Mandatory startup: confirm current `main` HEAD, recursive tree, Actions/external operation, full master instructions, bounded active checkpoint, mandatory project instructions and target WP authority. |
+| Last verified checkpoint | Prior completed marker recorded WP5 and WP6 closed; WP7 WAITING_OWNER; WP8–WP10 remain open. Prior Validation Only #303 / run 46107526220 / job 140863506688 SUCCESS was on SHA `6bdb6cc6d712120bb7afa1bd3d4ba4f31e733a0`. Current live `main` ref observed at `e14f6a2fbad370d93c200b244726ff0131378876`; that difference is under reconciliation. |
+| Current source validation | No validation initiated for this new command. Latest observed run #303 is a historical successful run on `6bdb6cc`, not validation evidence for current HEAD `e14f6a2`. |
+| Owner authorization | Explicit fresh `@Thinking Eksekusi Code!` authorizes exactly one App WP. Select only the active checkpoint's first pending WP unless a different single WP is explicitly named. |
+| EXTERNAL OPERATION | Latest recent Actions snapshot shows Validation Only #303 terminal SUCCESS on `6bdb6cc` and #302 terminal FAILURE on `2ea610f`; neither is on current observed HEAD `e14f6a2`. Current-HEAD run / any other active external operation must be checked directly. |
+| Blockers / caveats | Target WP and exact scope are not yet confirmed from the live active checkpoint. Do not edit until source SHAs, tree, WP requirements and execution tool availability are verified. |
+| Next action | Read `MASTER_PROMPT.md` fully; then read only the bounded active checkpoint in `CHAT_TRANSFER.md`; complete required repository and WP pre-flight. |
 
 ## Historical workspace context
 
-Per-WP cadence remains in force: one new command, one WP, close it and stop. The 40% estimate does not authorize implementation or Build App.
+Per-WP cadence remains in force: one fresh owner command authorizes one WP only. After that WP is completed, record the next WP as pending and stop. This session is permanently the CODE_FULL workspace.
