@@ -12,17 +12,26 @@
 // Floating metric contract: F (Fan Speed) is the only fan-related metric; no separate Fan toggle exists.
 
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
 
 import 'app_settings.dart';
 import 'jex_animated_glyph.dart';
 import 'usage_statistics.dart';
+
+import 'floating_monitor_models.dart';
+import 'floating_monitor_state.dart';
+import 'floating_monitor_store.dart';
+import 'floating_monitor_bridge.dart';
+import 'floating_monitor_settings_view.dart';
+
+export 'floating_monitor_models.dart';
+export 'floating_monitor_state.dart';
+export 'floating_monitor_store.dart';
+export 'floating_monitor_bridge.dart';
+export 'floating_monitor_settings_view.dart';
 import 'jex_design_tokens.dart';
 
 part 'settings_pages.dart';
@@ -46,373 +55,6 @@ class VoltageLockSettingsState {
 
 final ValueNotifier<VoltageLockSettingsState> voltageLockSettingsNotifier =
     ValueNotifier<VoltageLockSettingsState>(const VoltageLockSettingsState());
-
-enum FloatingDisplayStyle { letters, icons }
-
-enum FloatingBackgroundColor { black, white }
-
-// Size is persisted in 0.05x increments for a predictable native overlay scale.
-double _normalizeFloatingSize(double value) {
-  final safe = value.isFinite ? value.clamp(0.30, 1.00).toDouble() : 0.60;
-  return (0.30 + ((safe - 0.30) / 0.05).round() * 0.05)
-      .clamp(0.30, 1.00)
-      .toDouble();
-}
-
-double _normalizeFloatingOpacity(double value) {
-  final safe = value.isFinite ? value.clamp(0.0, 1.0).toDouble() : 0.9;
-  return ((safe * 20).round() / 20).clamp(0.0, 1.0).toDouble();
-}
-
-// AI-MEMORY / CONFIG MODEL
-// Persisted overlay presentation/settings only. Device state never belongs in this model.
-class FloatingConfig {
-  final bool enabled;
-  final FloatingDisplayStyle style;
-  final List<String> order;
-  final Set<String> selected;
-  final double size;
-  final double opacity;
-  final FloatingBackgroundColor backgroundColor;
-  final bool horizontal;
-
-  const FloatingConfig({
-    this.enabled = false,
-    this.style = FloatingDisplayStyle.letters,
-    this.order = const <String>['B', 'H', 'V', 'A', 'P', 'F'],
-    this.selected = const <String>{'B', 'H', 'V', 'A', 'P', 'F'},
-    this.size = 0.6,
-    this.opacity = 0.9,
-    this.backgroundColor = FloatingBackgroundColor.black,
-    this.horizontal = true,
-  });
-
-  // AI-METHOD / CONFIG-COPY-CONTRACT
-  // Clone configuration with only the supplied presentation fields changed.
-  FloatingConfig copyWith({
-    bool? enabled,
-    List<String>? order,
-    Set<String>? selected,
-    double? size,
-    double? opacity,
-    FloatingBackgroundColor? backgroundColor,
-    bool? horizontal,
-  }) {
-    return FloatingConfig(
-      enabled: enabled ?? this.enabled,
-      style: FloatingDisplayStyle.letters,
-      order: order ?? List<String>.from(this.order),
-      selected: selected ?? Set<String>.from(this.selected),
-      size: _normalizeFloatingSize(size ?? this.size),
-      opacity: _normalizeFloatingOpacity(opacity ?? this.opacity),
-      backgroundColor: backgroundColor ?? this.backgroundColor,
-      horizontal: horizontal ?? this.horizontal,
-    );
-  }
-
-  // AI-METHOD / CONFIG-SERIALIZATION-CONTRACT
-  // Serialize only native overlay configuration fields; no device state is persisted.
-  // AI-METHOD / TELEMETRY-SERIALIZATION-CONTRACT
-  // Serialize live telemetry plus the App-selected language for native rendering.
-  Map<String, dynamic> toMap() => <String, dynamic>{
-    'enabled': enabled,
-    'style': style.name,
-    'metricSchemaVersion': FloatingMetric.schemaVersion,
-    'order': order,
-    'selected': selected.toList(),
-    'size': size,
-    'opacity': opacity,
-    'backgroundColor': backgroundColor.name,
-    'horizontal': horizontal,
-  };
-
-  String toJson() => jsonEncode(toMap());
-
-  // AI-METHOD / CONFIG-DESERIALIZATION-CONTRACT
-  // Normalize legacy/invalid persisted values into the supported Floating Monitor model.
-  static FloatingConfig fromJson(String raw) {
-    try {
-      final decoded = jsonDecode(raw);
-      if (decoded is! Map) return const FloatingConfig();
-      final storedSchema =
-          (decoded['metricSchemaVersion'] as num?)?.toInt() ?? 1;
-      final legacyMetrics = storedSchema < FloatingMetric.schemaVersion;
-      final rawOrder = decoded['order'];
-      final rawSelected = decoded['selected'];
-      final order = rawOrder is List
-          ? rawOrder
-                .map(
-                  (e) => FloatingMetric.fromStored(
-                    e.toString(),
-                    legacy: legacyMetrics,
-                  ),
-                )
-                .whereType<String>()
-                .toSet()
-                .toList()
-          : List<String>.from(FloatingMetric.defaultOrder);
-      final selected = rawSelected is List
-          ? rawSelected
-                .map(
-                  (e) => FloatingMetric.fromStored(
-                    e.toString(),
-                    legacy: legacyMetrics,
-                  ),
-                )
-                .whereType<String>()
-                .toSet()
-          : FloatingMetric.defaultOrder.toSet();
-      for (final metric in FloatingMetric.defaultOrder) {
-        if (!order.contains(metric)) order.add(metric);
-      }
-      final backgroundColor = decoded['backgroundColor']?.toString() == 'white'
-          ? FloatingBackgroundColor.white
-          : FloatingBackgroundColor.black;
-      return FloatingConfig(
-        enabled: decoded['enabled'] is bool
-            ? decoded['enabled'] as bool
-            : false,
-        style: FloatingDisplayStyle.letters,
-        order: order,
-        selected: selected,
-        size: _normalizeFloatingSize(
-          (decoded['size'] as num?)?.toDouble() ?? 0.6,
-        ),
-        opacity: _normalizeFloatingOpacity(
-          (decoded['opacity'] as num?)?.toDouble() ?? 0.9,
-        ),
-        backgroundColor: backgroundColor,
-        horizontal: decoded['horizontal'] is bool
-            ? decoded['horizontal'] as bool
-            : true,
-      );
-    } catch (_) {
-      return const FloatingConfig();
-    }
-  }
-}
-
-class FloatingMetric {
-  static const int schemaVersion = 2;
-  static const List<String> defaultOrder = <String>[
-    'B',
-    'H',
-    'V',
-    'A',
-    'P',
-    'F',
-  ];
-
-  // Legacy schema v1 used F for FPS and S for Fan Speed. Drop old FPS
-  // selections and migrate the old Speed identifier to the new F identifier.
-  static String? fromStored(String value, {required bool legacy}) {
-    if (legacy) {
-      if (value == 'F') return null;
-      if (value == 'S') return 'F';
-    }
-    return isValid(value) ? value : null;
-  }
-
-  // Accept only the six supported floating metric identifiers.
-  static bool isValid(String value) => defaultOrder.contains(value);
-}
-
-// AI-MEMORY / TELEMETRY MODEL
-// Snapshot of Dashboard telemetry forwarded to the native overlay.
-// The language field is intentionally derived at serialization time so native overlay
-// presentation follows the App-selected language rather than the phone locale.
-class FloatingTelemetry {
-  final String battery;
-  final String hotside;
-  final String voltage;
-  final bool fanOn;
-  final int speed;
-  final bool adaptiveOn;
-  final bool peltierOn;
-  final bool connected;
-
-  const FloatingTelemetry({
-    this.battery = '--',
-    this.hotside = '--',
-    this.voltage = '--',
-    this.fanOn = false,
-    this.speed = 100,
-    this.adaptiveOn = false,
-    this.peltierOn = false,
-    this.connected = false,
-  });
-
-  Map<String, dynamic> toMap() => <String, dynamic>{
-    'battery': battery,
-    'hotside': hotside,
-    'voltage': voltage,
-    'fanOn': fanOn,
-    'speed': speed,
-    'adaptiveOn': adaptiveOn,
-    'peltierOn': peltierOn,
-    'connected': connected,
-    'language': appLanguageNotifier.value.name,
-  };
-}
-
-// AI-METHOD / METRIC-VISIBILITY-CONTRACT
-// Preserve the stable metric visibility policy for the native HUD and regression tests.
-// This pure helper is not a settings-page live preview; the middle preview UI was removed.
-bool floatingMetricVisible(String metric, FloatingTelemetry telemetry) {
-  return FloatingMetric.isValid(metric);
-}
-
-// AI-METHOD / METRIC-STATUS-CONTRACT
-// Adaptive is a logical mode; Peltier is a physical output. Fan Speed stays numeric while on.
-String floatingMetricStatus(
-  String metric,
-  FloatingTelemetry telemetry,
-  AppLanguage language,
-) {
-  // Output flags are authoritative only while the shared BLE session is connected.
-  if (!telemetry.connected) return '--';
-  return switch (metric) {
-    'A' => JexText.phrase(
-      telemetry.adaptiveOn ? 'ACTIVE' : 'INACTIVE',
-      telemetry.adaptiveOn ? 'AKTIF' : 'NONAKTIF',
-      language,
-    ),
-    'P' => JexText.of(telemetry.peltierOn ? 'on' : 'off', language),
-    'F' =>
-      telemetry.fanOn
-          ? telemetry.speed.toString()
-          : JexText.of('off', language),
-    _ => '--',
-  };
-}
-
-final ValueNotifier<FloatingConfig> floatingConfigNotifier =
-    ValueNotifier<FloatingConfig>(const FloatingConfig());
-final ValueNotifier<FloatingTelemetry> floatingTelemetryNotifier =
-    ValueNotifier<FloatingTelemetry>(const FloatingTelemetry());
-
-// AI-MEMORY / STORE CONTRACT
-// Securely persists only Floating Monitor configuration. Runtime telemetry is never stored here.
-class FloatingStore {
-  static const FlutterSecureStorage _storage = FlutterSecureStorage();
-  static const String _key = 'jexfyz_floating_v1';
-
-  // AI-METHOD / LOAD CONTRACT
-  // Load persisted Floating Monitor configuration and publish it to the shared notifier.
-  static Future<FloatingConfig> load() async {
-    try {
-      final raw = await _storage.read(key: _key);
-      final value = raw == null
-          ? const FloatingConfig()
-          : FloatingConfig.fromJson(raw);
-      floatingConfigNotifier.value = value;
-      return value;
-    } catch (_) {
-      const value = FloatingConfig();
-      floatingConfigNotifier.value = value;
-      return value;
-    }
-  }
-
-  // AI-METHOD / SAVE CONTRACT
-  // Publish configuration immediately and persist the same normalized model securely.
-  static Future<void> save(FloatingConfig config) async {
-    floatingConfigNotifier.value = config;
-    try {
-      await _storage.write(key: _key, value: config.toJson());
-    } catch (_) {}
-  }
-}
-
-// AI-MEMORY / NATIVE BRIDGE CONTRACT
-// MethodChannel names and method names are native contracts. Keep them synchronized with
-// MainActivity.kt and FloatingMonitorService.kt; do not introduce a second overlay channel.
-class FloatingBridge {
-  static const MethodChannel _channel = MethodChannel('je_x_fyz/floating');
-
-  // AI-METHOD / PERMISSION CONTRACT
-  // Read the public Android SYSTEM_ALERT_WINDOW state through MainActivity.
-  static Future<bool> hasPermission() async {
-    try {
-      return await _channel.invokeMethod<bool>('hasOverlayPermission') ?? false;
-    } catch (_) {
-      return false;
-    }
-  }
-
-  // AI-METHOD / SETTINGS CONTRACT
-  // Ask MainActivity to open the public overlay-permission fallback ladder.
-  static Future<bool> openPermissionSettings() async {
-    try {
-      return await _channel.invokeMethod<bool>('openOverlaySettings') ?? false;
-    } catch (_) {
-      return false;
-    }
-  }
-
-  // AI-METHOD / START CONTRACT
-  // Start the native service only after the Android permission gate is satisfied.
-  static Future<bool> start(
-    FloatingConfig config, {
-    FloatingTelemetry? telemetry,
-  }) async {
-    try {
-      final payload = <String, dynamic>{
-        ...config.toMap(),
-        if (telemetry != null) ...telemetry.toMap(),
-      };
-      return await _channel.invokeMethod<bool>(
-            'startFloatingMonitor',
-            jsonEncode(payload),
-          ) ??
-          false;
-    } catch (_) {
-      return false;
-    }
-  }
-
-  // AI-METHOD / STOP CONTRACT
-  // Request native overlay/service teardown; this never touches BLE.
-  static Future<void> stop() async {
-    try {
-      await _channel.invokeMethod<void>('stopFloatingMonitor');
-    } catch (_) {}
-  }
-
-  // AI-METHOD / CONFIG CONTRACT
-  // Forward the latest Flutter overlay configuration to the already-running native service.
-  static Future<void> updateConfig(FloatingConfig config) async {
-    try {
-      await _channel.invokeMethod<void>(
-        'updateFloatingConfig',
-        config.toJson(),
-      );
-    } catch (_) {}
-  }
-
-  // AI-METHOD / TELEMETRY CONTRACT
-  // Forward live telemetry and the selected UI language to the native overlay.
-  static Future<void> updateData(FloatingTelemetry telemetry) async {
-    try {
-      await _channel.invokeMethod<void>(
-        'updateFloatingData',
-        jsonEncode(telemetry.toMap()),
-      );
-    } catch (_) {}
-  }
-
-  // AI-METHOD / RUNTIME CONTRACT
-  // Read native service/window diagnostics for startup confirmation and runtime reconciliation.
-  static Future<Map<String, dynamic>?> runtimeState() async {
-    try {
-      final value = await _channel.invokeMethod<dynamic>(
-        'getFloatingRuntimeState',
-      );
-      if (value is Map) return Map<String, dynamic>.from(value);
-    } catch (_) {}
-    return null;
-  }
-}
 
 // AI-MEMORY / SETTINGS-PAGE-CONTRACT
 // User configuration screen for Floating Monitor; native overlay execution stays outside Flutter.
@@ -511,22 +153,15 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage>
   // runtime overlay attachment are both confirmed.
   Future<void> _load() async {
     config = await _normalizeSelection(await FloatingStore.load());
+    floatingConfigNotifier.value = config;
     if (config.enabled) {
       final nativeState = await FloatingBridge.runtimeState();
       if (nativeState != null) {
-        final nativeHorizontal = nativeState['horizontal'];
-        final nativeSize = nativeState['size'];
-        var next = config;
-        if (nativeHorizontal is bool) {
-          next = next.copyWith(horizontal: nativeHorizontal);
-        }
-        if (nativeSize is num) {
-          next = next.copyWith(
-            size: nativeSize.toDouble().clamp(0.3, 1.0).toDouble(),
-          );
-        }
+        var next = config.copyWith(horizontal: nativeState.horizontal);
+        next = next.copyWith(size: nativeState.size);
         if (next.horizontal != config.horizontal || next.size != config.size) {
           config = next;
+          floatingConfigNotifier.value = config;
           await FloatingStore.save(config);
         }
       }
@@ -562,6 +197,7 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage>
   // Persist a UI configuration change and forward it only when Floating Monitor is enabled.
   Future<void> _apply(FloatingConfig next) async {
     config = next;
+    floatingConfigNotifier.value = config;
     await FloatingStore.save(config);
     if (config.enabled) await FloatingBridge.updateConfig(config);
     if (config.enabled && runtimeTimer == null) _startRuntimeSync();
@@ -577,7 +213,7 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage>
     final deadline = DateTime.now().add(timeout);
     while (DateTime.now().isBefore(deadline)) {
       final state = await FloatingBridge.runtimeState();
-      if (state?['running'] == true && state?['overlay'] == true) return true;
+      if (state?.running == true && state?.overlay == true) return true;
       await Future<void>.delayed(const Duration(milliseconds: 120));
     }
     return false;
@@ -590,6 +226,7 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage>
     final normalized = value.copyWith(
       selected: FloatingMetric.defaultOrder.toSet(),
     );
+    floatingConfigNotifier.value = normalized;
     await FloatingStore.save(normalized);
     return normalized;
   }
@@ -599,6 +236,7 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage>
   Future<void> _toggleEnabled(bool value) async {
     if (!value) {
       config = config.copyWith(enabled: false);
+      floatingConfigNotifier.value = config;
       runtimeTimer?.cancel();
       runtimeTimer = null;
       await FloatingStore.save(config);
@@ -609,6 +247,7 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage>
 
     if (!floatingTelemetryNotifier.value.connected) {
       config = config.copyWith(enabled: true);
+      floatingConfigNotifier.value = config;
       await FloatingStore.save(config);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -687,6 +326,7 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage>
     if (!running) {
       await FloatingBridge.stop();
       config = config.copyWith(enabled: false);
+      floatingConfigNotifier.value = config;
       await FloatingStore.save(config);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -700,6 +340,7 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage>
       }
       return;
     }
+    floatingConfigNotifier.value = next;
     await FloatingStore.save(next);
     // A snapshot may have been published before the service was attached and therefore
     // dropped by the native bridge. Always seed newly-started overlay with live state.
@@ -739,10 +380,7 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage>
           !floatingTelemetryNotifier.value.connected)
         return;
 
-      final serviceRunning = state['service_running'] ?? state['running'];
-      final overlayAttached =
-          state['view_attached_to_window'] ?? state['overlay'];
-      if (serviceRunning != true || overlayAttached != true) {
+      if (!state.serviceRunning || !state.viewAttachedToWindow) {
         runtimeTimer?.cancel();
         runtimeTimer = null;
         config = config.copyWith(enabled: false);
@@ -751,17 +389,18 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage>
         return;
       }
 
-      final horizontal = state['horizontal'];
-      final size = state['size'];
+      final horizontal = state.horizontal;
+      final size = state.size;
       var next = config;
-      if (horizontal is bool && horizontal != config.horizontal) {
+      if (horizontal != config.horizontal) {
         next = next.copyWith(horizontal: horizontal);
       }
-      if (size is num && (size.toDouble() - config.size).abs() > 0.005) {
-        next = next.copyWith(size: size.toDouble().clamp(0.3, 1.0).toDouble());
+      if ((size - config.size).abs() > 0.005) {
+        next = next.copyWith(size: size);
       }
       if (next.horizontal != config.horizontal || next.size != config.size) {
         config = next;
+        floatingConfigNotifier.value = next;
         await FloatingStore.save(next);
         if (mounted) setState(() {});
       }
@@ -802,308 +441,22 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage>
   }
 
   @override
-  Widget build(BuildContext context) {
-    final lang = appLanguageNotifier.value;
-    if (loading) {
-      return Scaffold(
-        appBar: AppBar(title: Text(JexText.of('floatingMonitor', lang))),
-        body: const Center(child: CircularProgressIndicator()),
-      );
-    }
-
-    return Scaffold(
-      appBar: AppBar(title: Text(JexText.of('floatingMonitor', lang))),
-      body: ValueListenableBuilder<FloatingTelemetry>(
-        valueListenable: floatingTelemetryNotifier,
-        builder: (context, telemetry, _) {
-          return ListView(
-            padding: const EdgeInsets.fromLTRB(16, 12, 16, 28),
-            children: [
-              SwitchListTile(
-                contentPadding: EdgeInsets.zero,
-                title: Text(JexText.of('floatingMonitor', lang)),
-                value: config.enabled,
-                onChanged: _toggleEnabled,
-              ),
-              const SizedBox(height: 8),
-              IgnorePointer(
-                ignoring: !config.enabled,
-                child: Opacity(
-                  opacity: config.enabled ? 1 : 0.42,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        JexText.of('functions', lang),
-                        style: const TextStyle(
-                          fontSize: 11,
-                          fontWeight: FontWeight.w900,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      ReorderableListView.builder(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: config.order.length,
-                        onReorder: _reorder,
-                        itemBuilder: (context, index) {
-                          final metric = config.order[index];
-                          // All six metrics remain selectable; Fan Speed uses F.
-                          final checked = config.selected.contains(metric);
-                          return KeyedSubtree(
-                            key: ValueKey<String>('floating-$metric'),
-                            child: ListTile(
-                              contentPadding: EdgeInsets.zero,
-                              leading: JexAnimatedGlyph(
-                                icon: PhosphorIconsRegular.dotsSixVertical,
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .onSurfaceVariant,
-                                size: 20,
-                              ),
-                              title: Text(
-                                _metricLabel(metric, lang),
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.w800,
-                                ),
-                              ),
-                              trailing: Checkbox(
-                                value: checked,
-                                onChanged: (value) =>
-                                    _toggleMetric(metric, value == true),
-                              ),
-                              dense: true,
-                            ),
-                          );
-                        },
-                      ),
-                      const SizedBox(height: 10),
-                      _sliderRow(
-                        label: JexText.of('size', lang),
-                        value: config.size,
-                        valueLabel:
-                            '${JexText.formatNumber(config.size, lang, decimalDigits: 2, groupThousands: false)}×',
-                        min: 0.30,
-                        max: 1.00,
-                        divisions: 14,
-                        minLabel:
-                            '${JexText.formatNumber(0.30, lang, decimalDigits: 2, groupThousands: false)}×',
-                        maxLabel:
-                            '${JexText.formatNumber(1.00, lang, decimalDigits: 2, groupThousands: false)}×',
-                        onChanged: (value) =>
-                            _apply(config.copyWith(size: value)),
-                      ),
-                      _sliderRow(
-                        label: JexText.of('opacity', lang),
-                        value: config.opacity,
-                        valueLabel: '${(config.opacity * 100).round()}%',
-                        min: 0.0,
-                        max: 1.0,
-                        divisions: 20,
-                        minLabel: '0%',
-                        maxLabel: '100%',
-                        onChanged: (value) =>
-                            _apply(config.copyWith(opacity: value)),
-                      ),
-                      const SizedBox(height: 10),
-                      Text(
-                        JexText.of('backgroundColor', lang),
-                        style: const TextStyle(
-                          fontSize: 11,
-                          fontWeight: FontWeight.w900,
-                        ),
-                      ),
-                      const SizedBox(height: 7),
-                      SegmentedButton<FloatingBackgroundColor>(
-                        segments: [
-                          ButtonSegment<FloatingBackgroundColor>(
-                            value: FloatingBackgroundColor.black,
-                            label: Text(JexText.of('black', lang)),
-                            icon: const Icon(PhosphorIconsRegular.moon),
-                          ),
-                          ButtonSegment<FloatingBackgroundColor>(
-                            value: FloatingBackgroundColor.white,
-                            label: Text(JexText.of('white', lang)),
-                            icon: const Icon(PhosphorIconsRegular.sun),
-                          ),
-                        ],
-                        selected: <FloatingBackgroundColor>{
-                          config.backgroundColor,
-                        },
-                        onSelectionChanged: (value) {
-                          if (value.isNotEmpty) {
-                            _apply(
-                              config.copyWith(backgroundColor: value.first),
-                            );
-                          }
-                        },
-                      ),
-                      const SizedBox(height: 12),
-                      Text(
-                        JexText.of('orientation', lang),
-                        style: const TextStyle(
-                          fontSize: 11,
-                          fontWeight: FontWeight.w900,
-                        ),
-                      ),
-                      const SizedBox(height: 7),
-                      SegmentedButton<bool>(
-                        segments: [
-                          ButtonSegment<bool>(
-                            value: true,
-                            label: Text(JexText.of('horizontal', lang)),
-                          ),
-                          ButtonSegment<bool>(
-                            value: false,
-                            label: Text(JexText.of('vertical', lang)),
-                          ),
-                        ],
-                        selected: <bool>{config.horizontal},
-                        onSelectionChanged: (value) {
-                          if (value.isNotEmpty) {
-                            _apply(config.copyWith(horizontal: value.first));
-                          }
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          );
-        },
-      ),
-    );
-  }
-
-  // AI-METHOD / METRIC-LABEL-CONTRACT
-  // Resolve user-facing metric names from the shared JexText localization table.
-  String _metricLabel(String metric, AppLanguage lang) {
-    switch (metric) {
-      case 'F':
-        return JexText.of('speed', lang);
-      case 'B':
-        return JexText.of('battery', lang);
-      case 'H':
-        return JexText.of('hotside', lang);
-      case 'V':
-        return JexText.of('volt', lang);
-      case 'A':
-        return JexText.of('adaptive', lang);
-      case 'P':
-        return JexText.of('peltier', lang);
-      default:
-        return metric;
-    }
-  }
-
-  // AI-METHOD / SLIDER-CONTRACT
-  // Display the active numeric value and stable scale marks above/below each presentation slider.
-  Widget _sliderRow({
-    required String label,
-    required double value,
-    required String valueLabel,
-    required double min,
-    required double max,
-    required String minLabel,
-    String? midLabel,
-    required String maxLabel,
-    int? divisions,
-    required ValueChanged<double> onChanged,
-  }) {
-    final scaleLabels = <Widget>[
-      Text(
-        minLabel,
-        style: TextStyle(
-          fontSize: 10,
-          color: Theme.of(context).colorScheme.jexMutedForeground,
-        ),
-      ),
-      if (midLabel != null)
-        Text(
-          midLabel,
-          style: TextStyle(
-            fontSize: 10,
-            color: Theme.of(context).colorScheme.jexMutedForeground,
-          ),
-        ),
-      Text(
-        maxLabel,
-        style: TextStyle(
-          fontSize: 10,
-          color: Theme.of(context).colorScheme.jexMutedForeground,
-        ),
-      ),
-    ];
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 3),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Row(
-            children: [
-              Expanded(
-                child: ExcludeSemantics(
-                  child: Text(
-                    label,
-                    style: const TextStyle(
-                      fontSize: 10,
-                      fontWeight: FontWeight.w800,
-                    ),
-                  ),
-                ),
-              ),
-              DecoratedBox(
-                decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.jexElevatedSurface,
-                  borderRadius: BorderRadius.circular(7),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 3,
-                  ),
-                  child: ExcludeSemantics(
-                    child: Text(
-                      valueLabel,
-                      style: const TextStyle(
-                        fontSize: 10,
-                        fontWeight: FontWeight.w900,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          // Merge the visible field label with the Slider's own adjustment
-          // actions so assistive technology announces one named, localized control.
-          MergeSemantics(
-            child: Semantics(
-              label: label,
-              child: Slider(
-                min: min,
-                max: max,
-                divisions: divisions,
-                value: value.clamp(min, max).toDouble(),
-                semanticFormatterCallback: (_) => valueLabel,
-                onChanged: onChanged,
-              ),
-            ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: scaleLabels,
-          ),
-        ],
-      ),
-    );
-  }
+  Widget build(BuildContext context) => FloatingSettingsView(
+    config: config,
+    language: appLanguageNotifier.value,
+    loading: loading,
+    onEnabledChanged: _toggleEnabled,
+    onMetricChanged: _toggleMetric,
+    onReorder: _reorder,
+    onSizeChanged: (value) => _apply(config.copyWith(size: value)),
+    onOpacityChanged: (value) => _apply(config.copyWith(opacity: value)),
+    onBackgroundColorChanged: (value) =>
+        _apply(config.copyWith(backgroundColor: value)),
+    onOrientationChanged: (value) =>
+        _apply(config.copyWith(horizontal: value)),
+  );
 }
 
-// AI-MEMORY / HOME-MASTER-CANVAS-CONTRACT
-// Keeps a 360-dp logical canvas and matches Home's uniform DPI-compensating scale.
-// System text scaling is disabled and media insets are converted to canvas units.
 class JexFixedScalePage extends StatelessWidget {
   final Widget child;
   final bool compactUi;
