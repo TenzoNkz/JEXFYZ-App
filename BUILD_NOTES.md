@@ -1,12 +1,15 @@
-## Current package baseline — Build #167 RELEASED / VERIFIED — 2026-11-24
+## Current package baseline — Build #174 RELEASED / VERIFIED — 2026-11-28
 
-- Current published package: Build #167 / Actions run `44510421466` / job `135512909555` / source SHA `0dd96228d33b08c66e736ae91a8a6c3e5c3ddb81`; terminal SUCCESS.
-- Release ID `403010611` / tag `jexfyz-latest`; Release target, Git tag and embedded source marker match the immutable package source. Exactly one APK and one matching source ZIP; step 21 fresh-download checks passed.
-- Analyzer 107 info-level findings / zero warnings-errors; Flutter tests 205/205; Android Gradle `BUILD SUCCESSFUL` in 2m59s. Native App JUnit tasks are `NO-SOURCE`.
-- APK SHA-256 `d7c461478e033b4598d1744e2ea7ec969eea8046bf5e4a3d6caaf511bc461691`; corresponding source ZIP SHA-256 `58711342358639695624bbe05cc598220c9f20710bb04deaa785b93b85ca1546`. Full attempt detail remains in `APP_BUILD_REPORT.md`.
-- The Build #167 Home cooler enlargement is packaged. Actual Android visual acceptance remains NOT VERIFIED; follow `DESIGN_NOTES.md` and `VISUAL_QUALITY_GATE.md`.
-- No new build is indicated merely to repeat successful gates. Use the guarded Build App flow only after a new, explicit owner `Eksekusi Build App!` command.
+- Current published package: Build #174 / Actions run 46128979174 / job 140929762652 / source SHA c1408fff0fae10bf6b98237c4485c2c5fb77c368; terminal SUCCESS. Owner trigger Issue #51; all workflow steps 1–21 and cleanup 39–43 passed.
+- Release ID 403010611 / tag jexfyz-latest; Release body, Release target, direct Git tag ref and corresponding-source marker all match the immutable package SHA. Exactly one APK and one matching source ZIP; step 21 fresh-download checks passed.
+- Analyzer 157 info-level diagnostics / zero warnings-errors; Flutter tests 362/362; Android Gradle BUILD SUCCESSFUL in 2m41s (162 actionable tasks: 161 executed, 1 up-to-date). Native :app:testDebugUnitTest is NO-SOURCE; no native JUnit source tests ran.
+- APK asset ID 803959642, 56,213,595 bytes, SHA-256 dc5576c0018175878ef708721ebcb77098cd1ab03c742be7a0cbe616d5c58288. Corresponding source ZIP asset ID 803959641, 3,340,231 bytes, SHA-256 5ed5e3dd18e6fc7bf42aae3b5c5dbe9ddaaad6fa0602a7889efdf85c66805968.
+- One RSA-4096 production signer; DN CN=JE X FYZ, OU=JE X FYZ, O=JE X FYZ, L=Indonesia, ST=Central Java, C=ID; pinned certificate SHA-256 dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0. V1/V2/V3 verify on original and freshly downloaded APK.
+- Android Gradle versionName remains exactly Telegram @horizontalzzz; Flutter version 1.0.0+3. Full attempt details, checksums and warnings are in APP_BUILD_REPORT.md.
+- Non-blocking warnings: 157 analyzer info findings; 31 packages have newer versions outside constraints; Android/Kotlin/Gradle deprecations; three ELF libraries contain unobfuscated DWARF; JAR verifier notes missing timestamp and META-INF entries outside its JarInputStream signature view; one transient runner "Already watching path" diagnostic. No gate failed or was weakened.
+- WP9 updated Home locked-card screenshot remains NOT CAPTURED / NOT REVIEWED. Physical installation, OEM visual acceptance, BLE/cooler, Firmware, telemetry, thermal/electrical performance and OTA are not established by hosted CI. Any new Build requires a fresh explicit owner command.
 
+---
 
 ## Guarded App Build workflow security baseline — 2026-11-24 (source-only; no package built)
 

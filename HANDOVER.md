@@ -1,20 +1,22 @@
 # JE X FYZ / JE Cooler — Current Handover
 
-Last reconciled: 2026-11-28T16:15:09+07:00 (Asia/Jakarta). Authority: MASTER_PROMPT.md.
+Last reconciled: 2026-11-28T16:20:17+07:00 (Asia/Jakarta). Authority: MASTER_PROMPT.md.
 
-## BUILD_APP — Build #174 IN_PROGRESS — Release publishing active
+## BUILD_APP — Build #174 COMPLETED SUCCESS — 2026-11-28
 
-- **Owner command:** "Eksekusi Build App!".
-- **Trigger:** Issue #51 / ID6662377983; exact title/token guard verified.
-- **Run:** Build #174 / workflow374946166 / run46128979174 / attempt1 / job build140929762652; run/job IN_PROGRESS.
-- **Source SHA:** c1408fff0fae10bf6b98237c4485c2c5fb77c368; matches issue and run.
-- **Steps1–19:** SUCCESS: setup/audit/deps/analyzer/tests/Android Gradle, APK build, V1/V2/V3 signing enforcement, signature gate, APK filename and source ZIP packaging. Step20 Release publication IN_PROGRESS; step21 downloaded asset verification pending.
-- **Logs:** active job logs are not yet downloadable, so exact test counts, signer certificate, APK/ZIP sizes and SHA-256 await final evidence.
-- **Validated App source:** Validation Only #339 / run46127470525 / job140925152695 SUCCESS on c6206989cb0e30c94578c95b4d9c13bde5d36d71; intervening source delta is docs-only.
-- **Previous package:** Build #173 / run46121055519 / source478bdfdc5ee18379e07baad5e4dfd8ab598dc2db. Release403010611/tag jexfyz-latest remains baseline until #174 step21 passes.
-- **Protected version:** Android versionName "Telegram @horizontalzzz"; Flutter1.0.0+3.
-- **Scope:** App Build/QC/release only; no Firmware/BIN, Firebase production, OTA, flashing, physical-device work or unrelated releases.
-- **Next action:** continue the exact run/job, confirm Release/tag/asset parity and step21 fresh download checks. No duplicate trigger/retry.
+- **Owner authorization:** explicit "Eksekusi Build App!" request. Issue #51 / ID 6662377983; exact owner/title/body-token guard verified; one new trigger only.
+- **Actions:** workflow 374946166 / Build #174 / run 46128979174 / attempt 1 / job 140929762652. Terminal SUCCESS; all steps 1–21 and cleanup 39–43 SUCCESS. [Actions run](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/46128979174).
+- **Immutable source SHA:** c1408fff0fae10bf6b98237c4485c2c5fb77c368. Issue body, run head_sha, main at trigger time, Release target, direct Git tag and source ZIP marker match.
+- **QC:** Flutter 3.47.2 / Dart 3.13.2; analyzer 157 info / 0 warnings / 0 errors; Flutter 362/362; Android Gradle BUILD SUCCESSFUL in 2m41s (162 tasks, 161 executed, 1 up-to-date). Native :app:testDebugUnitTest is NO-SOURCE.
+- **Signing:** one RSA-4096 signer; V1/V2/V3 true. Certificate DN CN=JE X FYZ, OU=JE X FYZ, O=JE X FYZ, L=Indonesia, ST=Central Java, C=ID; pinned SHA-256 dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0. Downloaded APK repeated these checks.
+- **Release:** ID 403010611 / tag jexfyz-latest / exact target c1408fff0fae10bf6b98237c4485c2c5fb77c368. Exactly two assets, both fresh-downloaded and checked:
+  - APK ID 803959642 / 56,213,595 bytes / SHA-256 dc5576c0018175878ef708721ebcb77098cd1ab03c742be7a0cbe616d5c58288.
+  - ZIP ID 803959641 / 3,340,231 bytes / SHA-256 5ed5e3dd18e6fc7bf42aae3b5c5dbe9ddaaad6fa0602a7889efdf85c66805968.
+- **Version invariant:** Android versionName exactly "Telegram @horizontalzzz"; Flutter 1.0.0+3.
+- **Warnings:** 157 info-only analyzer findings; 31 packages newer outside constraints; Android/Kotlin/Gradle deprecations; three ELF DWARF warnings; JAR timestamp/META-INF signature-view warnings; one transient watcher diagnostic. No gate failed or was weakened; no retry/repair.
+- **Acceptance boundary:** WP9 changed Home locked-card screenshot remains NOT CAPTURED / NOT REVIEWED. Physical install, OEM visual, cooler BLE, Firmware, telemetry, thermal/electrical performance and OTA remain NOT TESTED / NOT VERIFIED.
+- **Status:** EXTERNAL OPERATION COMPLETED_SUCCESS. No further operation is pending.
+- **Next:** Arah berikutnya: Lanjut Diskusi!
 
 ## WP9 device-visual boundary — separate from hosted build
 
