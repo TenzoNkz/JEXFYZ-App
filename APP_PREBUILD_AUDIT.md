@@ -1,3 +1,17 @@
+## Latest CODE_FULL checkpoint — WP8 Floating Monitor boundary COMPLETED / Validation Only #327 SUCCESS — 2026-11-28
+
+**WP8 is COMPLETED.** The fresh 2026-11-28 `@Thinking Eksekusi Code!` command authorized only this boundary extraction. No WP9 work was started.
+
+- Extracted immutable config/telemetry/runtime models, process-local notifier state, secure persistence, typed native MethodChannel bridge and stateless Flutter Settings renderer into `floating_monitor_models.dart`, `floating_monitor_state.dart`, `floating_monitor_store.dart`, `floating_monitor_bridge.dart` and `floating_monitor_settings_view.dart`. The original `floating_monitor.dart` remains the permission/lifecycle controller. AppBootstrap explicitly publishes restored config; Dashboard captures selected language in authoritative telemetry snapshots and remains sole BLE/GATT/P1/session/telemetry/command owner.
+- Preserved config schema v2 and v1 metric migration, secure/native storage identities, six metric IDs, size/opacity ranges/defaults, channel/method names and native JSON compatibility. Runtime diagnostics are projected through a typed DTO accepting both current and legacy key names. Store no longer owns UI notifiers; bridge does not own BLE or persistence; stateless view does not own storage/channel/lifecycle.
+- Native `FloatingMonitorService.kt`, `MainActivity.kt` and AndroidManifest are unchanged. Native Canvas/WindowManager is still a separate renderer. No service restart/reattach/recovery behavior changed.
+- **Validation Only #327** / run `46113283625` / job `140881362489`, exact source/test SHA `048c22ba4722848b962dc58d5b3e9dc7fe994961`, terminal SUCCESS: dependencies PASS; formatter 62 files / 0 changed; analyzer PASS (159 info, zero warning/error); full Flutter suite 359/359 PASS; summary SUCCESS.
+- Earlier CI failures #324–#326 were repaired without weakening gates: restored the parent library services import needed by a Notifications part; removed accidentally captured formatter diagnostic footer lines; migrated a locale source-contract assertion to Dashboard's actual owner. Final #327 validates the repaired state.
+- Live tree at validation: 184 recursive entries / 138 blobs / 46 trees, `truncated=false`; the register is being closed to 138 unique tracked paths. Local Flutter/Dart/Gradle/ADB BLOCKED / NOT RUN. No Android/Kotlin build, native overlay runtime, physical device or Android/OEM screenshot; Whole-App visual remains **VISUAL NOT VERIFIED**. No App package was built.
+- **Next pending WP9 — visual/regression evidence — WAITING_OWNER:** screen/state/accessibility visual evidence only after a new explicit owner command; no WP9 scope is started here.
+
+---
+
 ## Latest CODE_FULL checkpoint — WP7 Usage Statistics static audit COMPLETED — 2026-11-28
 
 **WP7 is COMPLETED as a read-only source/test audit.** The fresh 2026-11-28 `@Thinking Eksekusi Code!` command authorized this one WP. No App source, test, schema, workflow, Firmware or runtime behavior was changed.
