@@ -1,3 +1,12 @@
+## VALIDATION ONLY #332 — ACTIVE / POST-FORMAT REVALIDATION — 2026-11-28
+
+- **Reason:** Validation Only #331 verified the regression assertion and all 361 tests but failed the formatter gate because one test file needed canonical formatting.
+- **Formatting correction:** commit `b1ebaa99e953cb421b740084c310b335138529a3`, `style(test): apply canonical workflow contract formatting`, replaces only `test/github_actions_workflow_contract_test.dart` with the exact source emitted by Validation Only #331 formatter diagnostics. Read-back confirms file blob `e5accc215fd064a2db7a7851648230e9dc0d1f59` and the narrow exact assertion remains present.
+- **Validation #331 terminal evidence:** run `46119890739` / job `140901870759` / SHA `027ba75de4c997d2bb862675887d0d8cc55af445` completed FAILURE. Dependency resolution PASS; formatter FAIL (`Formatted 63 files (1 changed)` — only `test/github_actions_workflow_contract_test.dart`); analyzer PASS with 159 info diagnostics and zero warnings/errors; Flutter suite PASS 361/361. Summary reported `FORMATTER_OUTCOME: failure`, with all other outcomes success.
+- **Active Validation Only #332:** workflow `417906156` / run `46120074025` / attempt 1 / exact source `b1ebaa99e953cb421b740084c310b335138529a3`. Job `140902434947` is active; steps 1–2 SUCCESS, step 3 Flutter setup IN_PROGRESS, remaining steps pending at the time of this record.
+- **Next action:** inspect #332 through formatter, analyzer, all tests and terminal summary. No new Build trigger until all checks pass.
+
+---
 ## VALIDATION ONLY #331 — ACTIVE / LOCKED DEPENDENCY RESOLUTION — 2026-11-28
 
 - **Run / job / source:** Validation Only #331 / workflow `417906156` / run `46119890739` / job `140901870759`; attempt 1; exact source SHA `027ba75de4c997d2bb862675887d0d8cc55af445`.
