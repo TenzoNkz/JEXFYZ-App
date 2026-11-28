@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:jexfyz_cooler/app_settings.dart';
@@ -8,53 +7,32 @@ import 'package:jexfyz_cooler/floating_monitor.dart';
 
 void main() {
   testWidgets(
-    'Floating Monitor sliders expose localized names and formatted values',
+    'stateless Floating Monitor sliders expose localized values across viewport and theme',
     (tester) async {
-      final previousLanguage = appLanguageNotifier.value;
-      final previousConfig = floatingConfigNotifier.value;
-      final previousTelemetry = floatingTelemetryNotifier.value;
-      addTearDown(() {
-        appLanguageNotifier.value = previousLanguage;
-        floatingConfigNotifier.value = previousConfig;
-        floatingTelemetryNotifier.value = previousTelemetry;
-        FlutterSecureStorage.setMockInitialValues(<String, String>{});
-        tester.view.resetPhysicalSize();
-        tester.view.resetDevicePixelRatio();
-      });
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
 
       for (final width in [350.0, 420.0]) {
         for (final language in [AppLanguage.english, AppLanguage.indonesia]) {
           for (final brightness in [Brightness.light, Brightness.dark]) {
-            appLanguageNotifier.value = language;
-            floatingTelemetryNotifier.value = const FloatingTelemetry();
-            FlutterSecureStorage.setMockInitialValues(<String, String>{});
-            // Load a disabled preference so no native runtime call can be made.
-            // Expose the controls through widget state only after loading completes.
-            await FloatingStore.save(const FloatingConfig());
-
             tester.view.physicalSize = Size(width * 3, 2400);
             tester.view.devicePixelRatio = 3;
             await tester.pumpWidget(
               MaterialApp(
                 theme: ThemeData(brightness: brightness, useMaterial3: true),
-                home: const FloatingSettingsPage(),
+                home: FloatingSettingsView(
+                  config: const FloatingConfig(enabled: true),
+                  language: language,
+                  onEnabledChanged: (_) {},
+                  onMetricChanged: (_, _) {},
+                  onReorder: (_, _) {},
+                  onSizeChanged: (_) {},
+                  onOpacityChanged: (_) {},
+                  onBackgroundColorChanged: (_) {},
+                  onOrientationChanged: (_) {},
+                ),
               ),
             );
-            // Advance bounded frames: the settings route is not required to settle.
-            for (var frame = 0; frame < 6; frame++) {
-              await tester.pump(const Duration(milliseconds: 100));
-            }
-            expect(find.byType(CircularProgressIndicator), findsNothing);
-
-            final dynamic settingsState = tester.state(
-              find.byType(FloatingSettingsPage),
-            );
-            settingsState.setState(() {
-              settingsState.config = settingsState.config.copyWith(
-                enabled: true,
-              );
-            });
-            await tester.pump();
 
             final semantics = tester.ensureSemantics();
             try {
