@@ -32,10 +32,7 @@ void main() {
 
       for (final width in [350.0, 420.0]) {
         for (final language in AppLanguage.values) {
-          for (final preset in [
-            AppThemePreset.light,
-            AppThemePreset.dark,
-          ]) {
+          for (final preset in [AppThemePreset.light, AppThemePreset.dark]) {
             tester.view.physicalSize = Size(width * 3, 2400);
             tester.view.devicePixelRatio = 3;
             appLanguageNotifier.value = language;
@@ -52,10 +49,7 @@ void main() {
               await tester.pumpWidget(
                 MaterialApp(
                   theme: buildJexTheme(preset),
-                  home: JexFixedScalePage(
-                    compactUi: true,
-                    child: page,
-                  ),
+                  home: JexFixedScalePage(compactUi: true, child: page),
                 ),
               );
               await tester.pumpAndSettle();
@@ -116,10 +110,7 @@ void main() {
             );
 
             await pumpSettingsPage(const AboutSettingsPage());
-            expect(
-              find.text(JexText.of('about', language)),
-              findsOneWidget,
-            );
+            expect(find.text(JexText.of('about', language)), findsOneWidget);
             expect(
               find.text(
                 JexText.phrase(
@@ -135,10 +126,7 @@ void main() {
             expect(find.text('Logos'), findsOneWidget);
 
             await pumpSettingsPage(const LanguageSettingsPage());
-            expect(
-              find.text(JexText.of('language', language)),
-              findsOneWidget,
-            );
+            expect(find.text(JexText.of('language', language)), findsOneWidget);
             expect(
               find.text(JexText.of('languageEnglish', language)),
               findsOneWidget,
