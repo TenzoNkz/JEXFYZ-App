@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
-import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 import 'package:jexfyz_cooler/app_settings.dart';
 import 'package:jexfyz_cooler/floating_monitor.dart';
@@ -23,30 +23,38 @@ void main() {
       });
 
       for (final width in [350.0, 420.0]) {
-        for (final language in [
-          AppLanguage.english,
-          AppLanguage.indonesia,
-        ]) {
+        for (final language in [AppLanguage.english, AppLanguage.indonesia]) {
           for (final brightness in [Brightness.light, Brightness.dark]) {
             appLanguageNotifier.value = language;
             floatingTelemetryNotifier.value = const FloatingTelemetry();
             FlutterSecureStorage.setMockInitialValues(<String, String>{});
-            // A saved enabled preference keeps controls exposed for semantics
-            // inspection; disconnected telemetry prevents any native service start.
-            await FloatingStore.save(const FloatingConfig(enabled: true));
+            // Load a disabled preference so no native runtime call can be made.
+            // Expose the controls through widget state only after loading completes.
+            await FloatingStore.save(const FloatingConfig());
 
             tester.view.physicalSize = Size(width * 3, 2400);
             tester.view.devicePixelRatio = 3;
             await tester.pumpWidget(
               MaterialApp(
-                theme: ThemeData(
-                  brightness: brightness,
-                  useMaterial3: true,
-                ),
+                theme: ThemeData(brightness: brightness, useMaterial3: true),
                 home: const FloatingSettingsPage(),
               ),
             );
-            await tester.pumpAndSettle();
+            // Advance bounded frames: the settings route is not required to settle.
+            for (var frame = 0; frame < 6; frame++) {
+              await tester.pump(const Duration(milliseconds: 100));
+            }
+            expect(find.byType(CircularProgressIndicator), findsNothing);
+
+            final dynamic settingsState = tester.state(
+              find.byType(FloatingSettingsPage),
+            );
+            settingsState.setState(() {
+              settingsState.config = settingsState.config.copyWith(
+                enabled: true,
+              );
+            });
+            await tester.pump();
 
             final semantics = tester.ensureSemantics();
             try {
@@ -83,7 +91,10 @@ void main() {
               }
               expect(sizeData.value, sizeValue);
               expect(opacityData.value, '90%');
-              expect(tester.getSize(sizeFinder).height, greaterThanOrEqualTo(48));
+              expect(
+                tester.getSize(sizeFinder).height,
+                greaterThanOrEqualTo(48),
+              );
               expect(
                 tester.getSize(opacityFinder).height,
                 greaterThanOrEqualTo(48),
