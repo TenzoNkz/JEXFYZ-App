@@ -1,4 +1,4 @@
-| Last updated | 2026-11-28T13:14:42+07:00 (Asia/Jakarta) |
+| Last updated | 2026-11-28T13:16:29+07:00 (Asia/Jakarta) |
 
 > Event-driven project marker. It is not a live heartbeat or a GitHub lock.
 
@@ -6,23 +6,22 @@
 
 | Field | Value |
 |---|---|
-| **STATUS** | **COMPLETED** |
-| SESSION STATUS | COMPLETED — owner language preference has been recorded as a permanent cross-workspace policy: ChatGPT communicates in clear standard Bahasa Indonesia; all GitHub repository explanations and narrative text are English-only. |
-| WORK STATUS | COMPLETED — canonical language policy added and verified across the Master Prompt, all three copy-ready workspace prompts, agent entry instructions, README, active checkpoint, project state and handover. |
-| WORKSPACE | DISKUSI |
-| Mode | Discussion plus documentation-only project-memory changes. No App/Firmware source, tests, assets, configuration or workflow behavior changed. No build, test, Actions trigger, release, Firebase, OTA, flashing or device operation occurred. |
-| Request / work item | 2026-11-28 — fix inconsistent ChatGPT response language and permanently separate Indonesian conversational output from English-only GitHub explanations. |
-| Started | 2026-11-28T13:12:08+07:00 (Asia/Jakarta) |
-| Completed / last updated | COMPLETED — 2026-11-28T13:14:42+07:00 (Asia/Jakarta) |
-| Current phase | Language policy recorded, propagated and read-back verified. Eight documentation/status commits were made in this Discussion update; all commit messages and repository narrative additions are English. |
-| Verified documentation commits | Master Prompt 2eed4d33bff8c015c915476d39111130e7db22ff; workspace prompts f78c4033010aa2bfdc51db79022e21e8c11bab8a; agent instructions ace2ad1cda757179b3f343259040f22727ffe1a2; README 0f70739baa839a7c723891f21ea115f54c8fb47c; active checkpoint c0572ef1feeae25fb72ad4ec504ce0b6a414170b; Project State 058994849d8135a96b206d6b8614c859da027adc; Handover bba99e9dc8eb2c791ee41439e63ce277755e51b5. |
-| Last verified main before status close | bba99e9dc8eb2c791ee41439e63ce277755e51b5 |
-| Validation | Exact content and diffs verified for all seven policy-bearing files. No source/test validation was applicable because this was documentation-only. |
-| Prior CODE_FULL work item | Preserved as BLOCKED — WP9 Visual/regression evidence still requires current-source Android/OEM screenshots. This Diskusi task did not resume WP9 or start WP10. |
-| External operation | No new external operation. Previous Validation Only #327 remains a completed success on exact source/test SHA 048c22ba4722848b962dc58d5b3e9dc7fe994961 (359/359 Flutter tests). |
-| Blockers / caveats | Legacy immutable archives and verbatim historical evidence remain unchanged. Required Indonesian App UI localization is explicitly exempt from the English-only repository explanation rule. |
-| Next action | Continue all ChatGPT conversations in Indonesian. Write all future GitHub explanations, documentation, status/checkpoint/handover text, commit messages, code comments and developer-facing summaries in English. |
+| **STATUS** | **IN_PROGRESS** |
+| SESSION STATUS | IN_PROGRESS — fresh exact owner command `@Thinking Eksekusi Code!` received 2026-11-28T13:16:29+07:00 (Asia/Jakarta). This chat remains the dedicated CODE_FULL workspace. |
+| WORK STATUS | IN_PROGRESS — resume exactly the blocked WP9 Visual/regression evidence package. Recheck whether required exact-source Android/OEM evidence or a new owner-approved evidence route has appeared since its prior blocked checkpoint. Do not begin WP10. |
+| WORKSPACE | CODE_FULL |
+| Mode | One-WP-per-command. ChatGPT/Codex sole author/reviewer; direct scoped commits to `main`; no Copilot, external agent, feature branch or PR. No Build App/APK/release/signing, Firmware/BIN, P1 wire/security, OTA, Firebase production, signing secrets, flashing or device operation. |
+| Request / work item | 2026-11-28 — exact command `@Thinking Eksekusi Code!`; continue only WP9 from the active CODE_FULL checkpoint. |
+| Started | 2026-11-28T13:16:29+07:00 (Asia/Jakarta) |
+| Completed | — |
+| Current phase | PREFLIGHT — latest status file read first; live `main` HEAD discovered as `df4322d154d85563a54408c625ec491096bfaaf1`. Reconcile latest Master Prompt, active checkpoint, changed files, evidence uploads, recursive tree and active external operation before any WP9 work. |
+| Last verified WP9 source/test checkpoint | `048c22ba4722848b962dc58d5b3e9dc7fe994961`; Validation Only #327 / run `46113283625` / job `140881362489` SUCCESS (359/359 Flutter tests). Prior WP9 disposition was BLOCKED / VISUAL NOT VERIFIED because exact-SHA rendered Android/OEM screenshots were unavailable. |
+| Prior WP9 documentation checkpoint | `b761282527a3b28aa25e3f84cee66fe690b64405`. A later Diskusi session recorded a language policy across seven documents and has since advanced `main`; inspect the new commits and preserve that decision. |
+| Current source scope | None yet. WP9's required evidence and any narrow test/documentation scope must be reconfirmed against live records. Do not create substitute screenshots or treat widget/CI evidence as Android/OEM rendering. |
+| EXTERNAL OPERATION STATUS | PREFLIGHT — re-query live Actions/release state; prior recorded #327 was terminal SUCCESS, but it is not evidence of any current operation. |
+| Blockers / evidence limits | Prior blocker remains until exact-source Android/OEM screenshot matrix is available or a valid evidence path is confirmed. Local Flutter/Dart/Gradle/ADB/emulator were previously absent; recheck only if environment materially differs. |
+| Next action | Read current active CHAT_TRANSFER checkpoint and MASTER_PROMPT; compare current `main` delta to prior blocker commit; check new files/attachments and Actions; then complete or accurately re-record WP9 blocker and stop. |
 
 ## Historical workspace context
 
-The language policy applies across Diskusi, Eksekusi Code and Eksekusi Build App. WP9 remains BLOCKED pending actual Android/OEM rendered evidence and a fresh explicit Eksekusi Code command.
+WP8 Floating Monitor boundary is COMPLETED. WP9 is the only selected work item for this fresh command. WP10 remains unstarted.
