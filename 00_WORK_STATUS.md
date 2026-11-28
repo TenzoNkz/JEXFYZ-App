@@ -1,4 +1,4 @@
-| Last updated | 2026-11-28T13:49:40+07:00 (Asia/Jakarta) |
+| Last updated | 2026-11-28T13:52:03+07:00 (Asia/Jakarta) |
 
 > Event-driven project marker. It is not a live heartbeat or a GitHub lock.
 
@@ -6,20 +6,19 @@
 
 | Field | Value |
 |---|---|
-| **STATUS** | **COMPLETED** |
-| SESSION STATUS | COMPLETED — explained the owner-side evidence required to unblock WP9 Android/OEM visual acceptance. |
-| WORK STATUS | COMPLETED — identified the exact App build/source checkpoint, required screenshot inventory and capture metadata. WP9 remains BLOCKED pending evidence; this is not a WP implementation or acceptance closure. |
+| **STATUS** | **IN_PROGRESS** |
+| SESSION STATUS | IN_PROGRESS — owner asks whether Build App must be executed before collecting Android screenshots to unblock WP9. |
+| WORK STATUS | IN_PROGRESS — explain that the dedicated guarded Build App workflow is required for the current evidence path, and clearly disclose its release-publication behavior before the owner authorizes it. |
 | WORKSPACE | DISKUSI |
-| Mode | Read-only checkpoint review and owner guidance. No source/test/config/workflow changes, builds, tests, Actions triggers, release, Firmware/BIN, Firebase, OTA, flashing or device operations. |
-| Request / work item | 2026-11-28 — tell the owner what is needed to unblock WP9. |
-| Started | 2026-11-28T13:49:20+07:00 (Asia/Jakarta) |
-| Completed / last updated | COMPLETED — 2026-11-28T13:49:40+07:00 (Asia/Jakarta) |
-| Verified Code checkpoint | Source/test SHA 1488577fcb97099bc32a069560cfb373760c2e41; Validation Only #329 / run 46116428334 / job 140891199755 terminal SUCCESS; formatter 63 Dart files / 0 changed; analyzer 159 info / 0 warnings / 0 errors; full Flutter suite 360/360 PASS. App implementation baseline 048c22ba4722848b962dc58d5b3e9dc7fe994961; subsequent WP9 change is test-only. |
-| WP9 blocker | Actual Android/OEM captures are missing. Historical Build #167 Home capture and older Release source 67ff49fdb566a2fa7748e32e5207217c8e4b98b7 do not meet the exact-source evidence requirement. |
-| Owner input required | Provide an APK executed from the validated source/test checkpoint (or the exact implementation baseline with its SHA recorded), actual screenshots for the requested screen inventory, and per-capture device/Android/viewport/density/locale/theme/text-scale/reduced-motion/device-state metadata. Native Floating Monitor rendering must be captured separately. |
-| External operation | No new operation. Validation Only #329 remains terminal SUCCESS. No App package build was initiated by this Diskusi interaction. |
-| Next action | Owner supplies the capture set and metadata. A fresh explicit @Thinking Eksekusi Code! command is then required to resume WP9 only; WP10 must remain unstarted until WP9 is accepted. |
+| Mode | Read-only guidance. No build, release, source/test/config/workflow change, Actions trigger, Firmware/BIN, Firebase, OTA, flashing or device operation. |
+| Request / work item | 2026-11-28 — clarify the Build App prerequisite and its publication boundary. |
+| Started | 2026-11-28T13:52:03+07:00 (Asia/Jakarta) |
+| Completed / last updated | IN_PROGRESS — 2026-11-28T13:52:03+07:00 (Asia/Jakarta) |
+| Current evidence | WP9 blocked pending actual Android/OEM screenshot matrix. Validated source/test SHA 1488577fcb97099bc32a069560cfb373760c2e41; Validation Only #329 SUCCESS, 360/360 Flutter tests. |
+| Owner authorization | Discussion only. The question is not a Build App command and does not authorize a build or release. |
+| External operation | No Build App or other external operation started. |
+| Next action | Explain the separate Build App chat, guarded trigger, and release-publication implication; await the owner's explicit command. |
 
 ## Historical workspace context
 
-WP8 remains COMPLETED. WP9 remains BLOCKED / VISUAL NOT VERIFIED until the actual Android/OEM screenshot evidence is reviewed. The per-command policy remains one WP per fresh explicit command.
+WP9 remains BLOCKED / VISUAL NOT VERIFIED. No WP9 implementation is resumed from this Diskusi interaction.
