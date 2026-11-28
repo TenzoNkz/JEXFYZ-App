@@ -1,3 +1,13 @@
+## 2026-11-28 — WP9 locked submenu Connect CTA removal / Validation Only #336
+
+- Removed the Connect/Hubungkan button and `onConnect` callback from the disconnected Dashboard locked submenu card. The card remains informational; existing lock precedence, blur/dim, pointer blocking and semantics exclusion are preserved.
+- Kept the Home top-left Bluetooth control as the only Home entry point to the existing Connection flow. Connection sheet, Settings > Bluetooth and BLE/session ownership are unchanged.
+- Updated `test/dashboard_display_menu_test.dart` for no-CTA EN/ID, pointer blocking and semantics behavior, and `test/widget_test.dart` to guard the Home callback. Validation Only #336 / run `46123591878` / job `140913176417`, exact SHA `3d21cf5eac31eee76f5e8ef784bce10886a7584d`, terminal SUCCESS: dependencies PASS, formatter 63 files / 0 changed, analyzer 157 info / 0 warnings/errors, Flutter 361/361 PASS.
+- Validation Only #335 failed only the formatter gate on two tests; all 361 tests passed. Canonical formatter output was applied in a pure formatting commit; no assertion was weakened.
+- The latest Build #173 package predates this patch. No App package/release was created in CODE_FULL. A fresh screenshot of the changed Home locked card from a package built at the current source SHA is still pending owner authorization. Physical BLE/cooler validation remains deferred/not tested; WP10 has not started.
+
+---
+
 ## Latest CODE_FULL checkpoint — WP5 Home + Dashboard tab accessibility / Validation Only #287 SUCCESS — 2026-11-28
 
 - **Exact source/test SHA:** `8aa5ee52ea18457571dfa6e3f20490cb57e387f5`. Validation Only #287 / run `46080960310` / job `140779569426`, terminal SUCCESS on this exact SHA. Locked dependencies PASS; Dart formatter **55 files / 0 changed**; Flutter analyzer **143 info-level diagnostics, 0 warnings, 0 errors**; full Flutter suite **353/353 PASS**; workflow summary SUCCESS.

@@ -1,4 +1,20 @@
-## Latest CODE_FULL checkpoint — WP9 Flutter regression VERIFIED CI #329 / Android visual evidence BLOCKED — 2026-11-28
+## Latest CODE_FULL checkpoint — WP9 locked-card CTA removal VERIFIED CI #336 / package screenshot WAITING_OWNER — 2026-11-28
+
+**Disposition: source and Flutter regression slice VERIFIED CI; overall WP9 WAITING_OWNER for a package containing the changed Home locked card and a fresh screenshot.** WP10 has not started.
+
+- **Exact current source/test SHA:** `3d21cf5eac31eee76f5e8ef784bce10886a7584d`, on main. Implementation commit `62a89aa3602575062f268c4823a186f034faf9ec`; canonical formatter-only follow-up `3d21cf5eac31eee76f5e8ef784bce10886a7584d`.
+- **Changed paths:** `lib/dashboard_display_menu.dart`, `lib/main.dart`, `test/dashboard_display_menu_test.dart`, `test/widget_test.dart`. The locked card no longer has a Connect/Hubungkan CTA or callback; Home's top-left Bluetooth action still owns the existing manual Connection entry point. The lock overlay continues to blur/dim the submenu, block pointer input and exclude its covered contents from accessibility semantics.
+- **Validation Only #336:** run `46123591878` / job `140913176417`, exact SHA above, terminal SUCCESS: locked dependencies PASS; formatter 63 files / 0 changed; analyzer 157 info diagnostics / 0 warnings / 0 errors; Flutter suite 361/361 PASS; workflow summary SUCCESS.
+- **Validation repair:** #335 / run `46123335620` failed only the formatter on the two test files; dependencies and analyzer passed and all 361/361 tests passed. The exact runner formatter output was applied by a formatting-only commit; no test assertion was weakened or changed.
+- **Current package/evidence:** Build App #173 is still the latest published package and uses source `478bdfdc5ee18379e07baad5e4dfd8ab598dc2db`. The five owner-confirmed 691 × 1536 screenshots were accepted for that previous stage only. They do not show the current post-patch lock card. No new APK, source archive or Release was created in CODE_FULL; a fresh Home/disconnected lock-card screenshot from a package built at the exact current SHA is still required for the changed visual.
+- **Execution environment:** local Flutter/Dart/Gradle/ADB/emulator and Android SDK are unavailable. Hosted Validation Only checks Flutter dependencies, formatting, analysis and Dart/Flutter tests; it does not run an Android/OEM screenshot or native Canvas/WindowManager test.
+- **Unshown surfaces:** all five Dashboard feature tabs, Settings subpages, Usage Statistics, further dialogs/sheets and Floating Monitor configuration/native overlay remain outside the owner-accepted screenshot set and unverified. The owner accepted the previous stage with that limitation; do not describe the full matrix as independently verified.
+- **Deferred hardware:** physical cooler BLE discovery/session, commands, telemetry, Firmware interaction, thermal/electrical behavior and cooler operation remain DEFERRED / NOT TESTED until owner demonstration.
+- **Next action:** wait for a fresh explicit Build App command in the separate Build App workspace, then review the updated Home/disconnected lock card from that package. WP9 overall remains WAITING_OWNER; WP10 has not started.
+
+---
+
+## Previous WP9 Settings accessibility checkpoint — Validation Only #329 (before Build #173 owner acceptance) — 2026-11-28
 
 **Disposition: WP9 remains BLOCKED / VISUAL NOT VERIFIED.** The Flutter regression extension is validated, but the package's visual acceptance still requires actual Android/OEM screenshots. This command is limited to WP9; WP10 has not started.
 
@@ -12,7 +28,7 @@
 
 ---
 
-## Latest CODE_FULL checkpoint — WP9 Visual/regression evidence BLOCKED / VISUAL NOT VERIFIED — 2026-11-28
+## Initial WP9 screenshot-matrix blocker — HISTORICAL BEFORE BUILD #173 OWNER ACCEPTANCE — 2026-11-28
 
 **Disposition: BLOCKED. WP9 is not COMPLETED.** This `@Thinking Eksekusi Code!` command selected WP9 only. The package's mandatory acceptance is rendered Android App evidence; the connected repository/CI environment cannot capture or inspect the required device/OEM screenshots, and no such screenshot set was supplied in this execution. No visual PASS or source defect is inferred.
 

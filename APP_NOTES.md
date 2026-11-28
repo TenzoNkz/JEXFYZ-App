@@ -233,7 +233,7 @@ Purpose: canonical current App/UI/BLE/telemetry contract. Current source defines
 - Battery/Hotside warning visual effects are presentation only; they never replace Firmware safety. Battery warning red/flames begin at the configured visual 40°C contract. Hotside warning/flames follow the configured Hotside limit.
 - Default Voltage colour map: 5 V red, 9 V green, 12 V blue. Keep manual voltage rows neutral and use the theme primary colour for active toggles, without a checkmark inside the toggle or an extra ON/OFF label next to the switch.
 - Peltier, Adaptive, Fan and LED switch rows follow the same neutral row/icon plus primary-toggle convention. Preserve controls' existing BLE gating and safety enablement.
-- When Bluetooth is disconnected, blur/dim the active display submenu with one centered lock overlay; keep the top-level tab strip and Home Bluetooth control usable. When connected but Adaptive is ON/transitioning, lock Voltage, Control and Temperature only; keep Adaptive and LED reachable. Underlying controls remain independently gated.
+- When Bluetooth is disconnected, blur/dim the active display submenu with one centered informational lock card (lock icon, heading and supporting explanation) and no Connect/Hubungkan CTA. The dedicated Home top-left Bluetooth control is the sole Home entry point to the existing Connection flow; keep it usable along with the top-level tab strip. Preserve pointer/semantics blocking of the locked submenu. When connected but Adaptive is ON/transitioning, lock Voltage, Control and Temperature only; keep Adaptive and LED reachable. Underlying controls remain independently gated.
 
 ### Home indicators and NOTIFY — Light Mode contrast repair (2026-11-09)
 
