@@ -2356,7 +2356,6 @@ void main() {
 
   test('Fan speed control uses the complete localized label while the Floating Monitor stays compact', () {
     final homeSource = File('lib/dashboard_home_tab.dart').readAsStringSync();
-    final floatingSource = File('lib/floating_monitor.dart').readAsStringSync();
     final floatingView = File('lib/floating_monitor_settings_view.dart').readAsStringSync();
     final fanSpeedStart = homeSource.indexOf('Widget _homeFanSpeed()');
     expect(fanSpeedStart, isNonNegative);
