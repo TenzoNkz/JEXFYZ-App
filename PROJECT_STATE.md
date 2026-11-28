@@ -28,7 +28,7 @@ Last reconciled: 2026-11-28T16:20:17+07:00 (Asia/Jakarta). Authority: MASTER_PRO
 
 ## Remaining visual/device acceptance — NOT INCLUDED IN HOSTED BUILD
 
-The WP9 changed Home locked card has not yet been captured/reviewed on an installed package. Cooler BLE discovery/session, command behavior, telemetry, Firmware interaction, thermal/electrical performance, physical install, OEM rendering and OTA are not tested or verified. A successful hosted Build does not prove these. No device or Firmware operation was performed in BUILD_APP.
+The updated Home locked card has now been captured and reviewed in the owner-provided latest-App screenshot (English / Light / disconnected, 691 × 1536 px): no Connect/Hubungkan CTA is visible and the top-left Bluetooth control remains available. The current repository Release is Build #174 on source `c1408fff0fae10bf6b98237c4485c2c5fb77c368`; the screenshot is owner-attributed to the latest package but contains no embedded source/build identifier. Other Dashboard tabs, Settings subpages, Usage Statistics, additional dialogs/sheets and Floating Monitor configuration/native overlay are not individually established by this new image. Cooler BLE discovery/session, command behavior, telemetry, Firmware interaction, thermal/electrical performance and OTA remain DEFERRED / NOT TESTED until physical cooler access. Hosted Build/CI and this screenshot do not prove those areas. No device or Firmware operation was performed in BUILD_APP.
 
 ## Current disposition
 
