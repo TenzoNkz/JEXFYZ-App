@@ -1,3 +1,13 @@
+## BUILD #173 — ANDROID GRADLE GATE PASSED / APK BUILD ACTIVE — 2026-11-28
+
+- **Observed transition:** Build #173 / run 46121055519 / job 140905430951 / source SHA 478bdfdc5ee18379e07baad5e4dfd8ab598dc2db.
+- **Step 14 Android unit-test gate:** SUCCESS.
+- **Steps 1–14:** all SUCCESS, including both static audit ownership contracts, locked dependency installation, Dart analyzer, full Flutter test suite and Android Gradle test gate.
+- **Step 15 Build latest release APK:** IN_PROGRESS. Steps 16–21 remain pending; do not infer APK, signing, source ZIP or Release output before actual logs.
+- **Next action:** continue same run; inspect APK build output, V1/V2/V3 signing, pinned certificate, source ZIP, exact tag/Release/source SHA parity and fresh downloaded asset verification.
+
+---
+
 ## BUILD #173 — ANALYZER AND FLUTTER TESTS PASSED / ANDROID GRADLE ACTIVE — 2026-11-28
 
 - **Observed transition:** Build #173 / run 46121055519 / job 140905430951 / exact source SHA 478bdfdc5ee18379e07baad5e4dfd8ab598dc2db.
