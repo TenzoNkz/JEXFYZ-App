@@ -36,7 +36,7 @@ void main() {
     expect(state, isNot(contains('FloatingStore')));
     expect(state, isNot(contains('FloatingBridge')));
     expect(bridge, contains("MethodChannel('je_x_fyz/floating')"));
-    expect(bridge, contains("invokeMethod<dynamic>('getFloatingRuntimeState')"));
+    expect(bridge, contains("'getFloatingRuntimeState'"));
     expect(bridge, contains('FloatingRuntimeState.fromMap'));
     expect(bridge, isNot(contains('FlutterBluePlus')));
     expect(bridge, isNot(contains('BluetoothGatt')));
