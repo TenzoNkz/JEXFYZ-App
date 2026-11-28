@@ -2,6 +2,8 @@
 
 Last reconciled: 2026-11-28 (Asia/Jakarta). Authority: MASTER_PROMPT.md.
 
+- **Language policy (owner decision 2026-11-28):** ChatGPT-facing explanations and reports in all three workspaces use clear standard Bahasa Indonesia, with English technical terms where precise. All explanatory and narrative text authored or revised in GitHub uses English only. Preserve required Indonesian App localization, protocol strings and verbatim evidence. See MASTER_PROMPT.md Section 2B.
+
 ## CODE_FULL handoff — BLOCKED (WP9 visual evidence) — 2026-11-28
 
 - **WP8 — Floating Monitor boundary: COMPLETED.** Its validated source/test SHA is `048c22ba4722848b962dc58d5b3e9dc7fe994961`; Validation Only #327 / run 46113283625 / job 140881362489 terminal SUCCESS (locked dependencies PASS; formatter 62/0; analyzer 159 info / 0 warnings/errors; 359/359 Flutter tests PASS).
