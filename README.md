@@ -40,6 +40,12 @@ Create three separate ChatGPT conversations and paste the matching block from CH
 
 The Master Prompt is authoritative; chat-transfer blocks select a mode but do not widen it. The status lifecycle is governed by Section 2A of MASTER_PROMPT.md: update at each project-interaction start, real milestone/state transition and terminal close. It is event-driven, not a background heartbeat.
 
+## Language policy
+
+ChatGPT communicates with the owner in clear, standard Bahasa Indonesia across Diskusi, Eksekusi Code and Eksekusi Build App. Standard English technical terms may remain in English when they are the precise terminology; avoid other languages and unclear mixed-language wording.
+
+All explanatory and narrative content stored in this GitHub repository must be written in English, including documentation, status/checkpoint files, commit messages, code comments, docstrings and developer-facing summaries. Preserve Indonesian App localization and exact protocol/device strings where required by the product. The complete rule is defined in [MASTER_PROMPT.md](MASTER_PROMPT.md), Section 2B.
+
 ## Reusable engineering skills
 
 Twelve project-specific skill workflows are available for repository forensics, code review, product design/visual quality, Flutter engineering/testing, BLE P1, ESP32-C3 safety, OTA/release integrity, GitHub Actions triage, electronics/power/thermal analysis, technical research/Gemini and documentation governance. Read [SKILLS_INDEX.md](SKILLS_INDEX.md) for triggers and locations. Codex-compatible canonical skills are under `.agents/skills/`; GitHub Copilot mirrors are under `.github/skills/`.
