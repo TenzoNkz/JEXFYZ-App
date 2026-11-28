@@ -1,6 +1,6 @@
 <!-- ACTIVE_CHECKPOINT_START -->
 
-## Active checkpoint — BUILD_APP — RUN #171 FAILED / AUDIT REPAIR — 2026-11-28
+## Active checkpoint — BUILD_APP — AUDIT REPAIR COMMITTED / VALIDATION #330 ACTIVE — 2026-11-28
 
 - **Workspace / authorization:** BUILD_APP. Owner issued the exact command `@Thinking Eksekusi Build App!` at 2026-11-28T13:56:00+07:00 (Asia/Jakarta). Scope is one guarded Android App Build/QC/release attempt, with only evidence-justified App-scope repairs if a required gate fails. No Firmware/BIN, Firebase/production metadata, OTA, flashing, physical-device or unrelated release work.
 - **Language policy (owner decision 2026-11-28):** ChatGPT-facing explanations/reports use clear standard Bahasa Indonesia. Repository narrative text is clear English only. Preserve App localization, protocol strings and verbatim evidence. See MASTER_PROMPT.md Section 2B.
