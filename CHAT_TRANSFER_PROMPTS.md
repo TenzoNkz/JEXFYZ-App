@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — Three Dedicated Chat Workspaces
 
-This file contains **exactly three** copy-ready LOAD + CONTINUE payloads. Each payload belongs in its own ChatGPT conversation. The complete operating authority remains `MASTER_PROMPT.md`; these payloads select a workspace and load the right checkpoint without forking the rules.
+This file contains **exactly three** copy-ready LOAD + CONTINUE payloads. Each payload belongs in its own ChatGPT conversation. The complete operating authority remains `MASTER_PROMPT.md`; these payloads select a workspace and load the right checkpoint without forking the rules. ChatGPT responses in all three workspaces must be in clear Indonesian; all GitHub explanations and repository narrative text must be in English. Each prompt repeats this rule so it remains in force when copied independently.
 
 ## Create the three chats
 
@@ -29,6 +29,9 @@ WORKSPACE: DISKUSI
 
 PURPOSE
 Load current durable project context and continue technical discussion, planning, risk analysis or read-only source review. This chat is permanently the Diskusi workspace. Do not switch it to a coding or Build App workspace. Do not return only a recap.
+
+LANGUAGE POLICY
+Clear standard Bahasa Indonesia is mandatory for all ChatGPT-facing updates, explanations, analysis and final responses in every workspace. English technical terms, identifiers, paths, exact errors and commands may remain in English where precise; do not switch to any other language or use unclear mixed-language wording. All explanatory/narrative text written to GitHub must be clear, grammatical English, including docs, status/checkpoint/handover files, commit messages, comments, docstrings, test descriptions and developer-facing summaries. Preserve required Indonesian App localization, exact protocol strings and verbatim evidence as exceptions; explain them in English. MASTER_PROMPT.md Section 2B is authoritative.
 
 MANDATORY LOAD
 1. Read 00_WORK_STATUS.md first; inspect SESSION STATUS, WORK STATUS, WORKSPACE and EXTERNAL OPERATION status.
@@ -71,6 +74,9 @@ WORKSPACE: CODE_FULL
 
 PURPOSE
 Execute exactly one owner-authorized App Work Package (WP) per `Eksekusi Code!` command. Use the active checkpoint's next pending WP unless the owner explicitly names another single WP in the new command; if the target is ambiguous, stop and resolve it in Diskusi. Complete that WP's full DoD, including its required source/tests/docs, repairs, regression checks, exact-SHA validation evidence and durable checkpoint. ChatGPT/Codex is the sole implementation author and reviewer; use the connected GitHub integration to commit scoped changes directly to `main`, inspect every diff and verify the required Validation Only result on the exact source/test SHA. Do not use Copilot, external coding agents, feature branches or PR handoffs. No per-file authorization is needed within the chosen WP, but no standing authorization carries into another WP. **When the one WP is complete, mark it `COMPLETED`, record the next WP as pending, and stop. Do not start the next WP until the owner sends a fresh explicit `@Thinking Eksekusi Code!` command.** If the chosen WP is blocked or validation fails without an in-scope repair, record the true blocker/failure and stop; do not switch to another WP. This mode never authorizes Build App, Firmware/BIN, BLE/P1 security/wire changes, OTA, Firebase production, signing, flashing or device operations. This chat is permanently the Eksekusi Code workspace. Legacy `Eksekusi Code Full!` and `Eksekusi Full!` mean this same one-WP-per-command mode; use `Eksekusi Code!` in all new requests. Do not switch this chat into Discussion-only or Build App execution.
+
+LANGUAGE POLICY
+Clear standard Bahasa Indonesia is mandatory for all ChatGPT-facing updates, explanations, analysis and final responses in every workspace. English technical terms, identifiers, paths, exact errors and commands may remain in English where precise; do not switch to any other language or use unclear mixed-language wording. All explanatory/narrative text written to GitHub must be clear, grammatical English, including docs, status/checkpoint/handover files, commit messages, comments, docstrings, test descriptions and developer-facing summaries. Preserve required Indonesian App localization, exact protocol strings and verbatim evidence as exceptions; explain them in English. MASTER_PROMPT.md Section 2B is authoritative.
 
 MANDATORY LOAD
 1. Read 00_WORK_STATUS.md first; inspect SESSION STATUS, WORK STATUS, WORKSPACE and EXTERNAL OPERATION state.
@@ -143,6 +149,9 @@ WORKSPACE: BUILD_APP
 
 PURPOSE
 Resume or execute only the explicitly authorized guarded Android App Build/QC/release workstream. This chat is permanently the Build App workspace. Do not use it for general source implementation, Discussion-only work or Firmware/device operations.
+
+LANGUAGE POLICY
+Clear standard Bahasa Indonesia is mandatory for all ChatGPT-facing updates, explanations, analysis and final responses in every workspace. English technical terms, identifiers, paths, exact errors and commands may remain in English where precise; do not switch to any other language or use unclear mixed-language wording. All explanatory/narrative text written to GitHub must be clear, grammatical English, including docs, status/checkpoint/handover files, commit messages, comments, docstrings, test descriptions and developer-facing summaries. Preserve required Indonesian App localization, exact protocol strings and verbatim evidence as exceptions; explain them in English. MASTER_PROMPT.md Section 2B is authoritative.
 
 MANDATORY LOAD
 1. Read 00_WORK_STATUS.md first; inspect SESSION STATUS, WORK STATUS, WORKSPACE and EXTERNAL OPERATION state.
