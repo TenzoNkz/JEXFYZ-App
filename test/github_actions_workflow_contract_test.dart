@@ -276,7 +276,10 @@ void main() {
   );
 
   test('Floating Monitor audit follows the dedicated bridge module and native method contract', () {
-    final audit = _namedStep(workflow, 'JE X FYZ security and architecture audit');
+    final audit = _namedStep(
+      workflow,
+      'JE X FYZ security and architecture audit',
+    );
 
     expect(
       audit,
@@ -289,9 +292,7 @@ void main() {
     expect(
       audit,
       isNot(
-        contains(
-          "if \"MethodChannel('je_x_fyz/floating')\" not in floating:",
-        ),
+        contains("if \"MethodChannel('je_x_fyz/floating')\" not in floating:"),
       ),
     );
 
@@ -332,3 +333,4 @@ void main() {
     expect(androidBuild, contains('versionName "Telegram @horizontalzzz"'));
   });
 }
+Formatted 1 file (1 changed) in 0.01 seconds.
