@@ -1,3 +1,11 @@
+## VALIDATION ONLY #331 — ACTIVE / LOCKED DEPENDENCY RESOLUTION — 2026-11-28
+
+- **Run / job / source:** Validation Only #331 / workflow `417906156` / run `46119890739` / job `140901870759`; attempt 1; exact source SHA `027ba75de4c997d2bb862675887d0d8cc55af445`.
+- **Observed steps:** 1 Set up job SUCCESS; 2 Checkout selected main revision SUCCESS; 3 Set up Flutter SUCCESS; 4 Verify Flutter and Dart toolchain SUCCESS; 5 Resolve locked dependencies IN_PROGRESS; steps 6–10 pending. No failure observed. Logs are not yet available through the job-log endpoint while the runner remains active.
+- **Disposition:** continue this same read-only/non-publishing validation run. Do not trigger Build App until all gates pass.
+
+---
+
 ## VALIDATION ONLY #331 — QUEUED / REGRESSION ASSERTION REPAIR — 2026-11-28
 
 - **Purpose:** verify the narrow test-only correction after Validation Only #330 found the negative assertion too broad.
