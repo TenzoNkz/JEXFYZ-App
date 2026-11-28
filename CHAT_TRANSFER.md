@@ -2,6 +2,8 @@
 
 ## Active checkpoint — CODE_FULL — BLOCKED (WP9 visual evidence) — 2026-11-28
 
+- **Language policy (owner decision 2026-11-28):** ChatGPT-facing explanations and reports in all three workspaces use clear standard Bahasa Indonesia, with English technical terms where precise. All explanatory and narrative text authored or revised in GitHub uses English only. Preserve required Indonesian App localization, protocol strings and verbatim evidence. See MASTER_PROMPT.md Section 2B.
+
 - Owner authorization: the 2026-11-26 App-only WP0–WP10 rework + premium UI redesign. The fresh 2026-11-28 `@Thinking Eksekusi Code!` command authorized exactly WP9, the next pending package. ChatGPT/Codex remains sole author/reviewer; direct `main` commits only; no Copilot, external agent, feature branch or PR. No Build App/APK/release/signing, Firmware/BIN, P1 wire/security, OTA, Firebase production, signing secrets, flashing or device operations.
 - **WP8 — COMPLETED:** exact validated App code/test SHA `048c22ba4722848b962dc58d5b3e9dc7fe994961`; Validation Only #327 / run `46113283625` / job `140881362489` SUCCESS: locked dependencies PASS; formatter 62 files / 0 changed; analyzer 159 info / 0 warnings/errors; full Flutter suite 359/359 PASS.
 - **WP9 — BLOCKED / VISUAL NOT VERIFIED:** no new visual implementation was justified by source inspection; mandatory actual Android/OEM screen evidence is missing. The active main documentation checkpoint before this close was `c0fe886c93d3f0de03689a5f922e5fdb181908a4`, 10 commits after the validated code/test SHA, all documentation-only. Tree: 184 entries / 138 blobs / 46 trees, `truncated=false`; register has 138 unique live-path dispositions.
