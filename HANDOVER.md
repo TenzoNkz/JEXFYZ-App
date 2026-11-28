@@ -4,17 +4,13 @@ Last reconciled: 2026-11-28 (Asia/Jakarta). Authority: MASTER_PROMPT.md.
 
 ## Active CODE_FULL work item — IN_PROGRESS
 
-- Owner command: “@Thinking Eksekusi Code!”; approved scope remains App-only WP0–WP10 source/tests/docs/config/static audit, direct commits on main by ChatGPT/Codex alone.
-- Current App source/test commit f322b675aec6c46170d9be9f9dcb8e7f82460418; WP5 production source fix 8b882350d6a3f0af480145110cbb72ef6a81eef5; test recovery commits 1f073f1d3eae067d91b4dc6611a0e3d445892997, 0cf3050b7152f3c4c8720a9290d36217301b2f1c, f322b675aec6c46170d9be9f9dcb8e7f82460418. Validation Only #279 / run 46078817188 / job 140772751134 terminal SUCCESS on exact SHA f322b675aec6c46170d9be9f9dcb8e7f82460418: dependencies PASS, formatter 55/0, analyzer 140 info / 0 warnings/errors, 349/349 tests PASS.
-- WP0 lib/main.dart audit completed at blob c2821452079e798bfaaac99acb82af1f6e127c86; Dashboard remains sole BLE/GATT/P1/session/ACK/telemetry/command owner. Protected OTA/Firebase code untouched.
-- WP4 shared Dashboard switch-row/token slice closed with rendered widget and token tests. Value-only widget; no protocol/session/command changes; preserved 62-dp minimum, observed 64-dp natural height, 42-dp icon, existing type/radii/spacing, Tristate semantics and 54×48-dp touch target. Full suite #274 green.
-- WP5 Temperature: 5V increase and 12V decrease enabled states match the existing 2°C setter guard; tests cover EN/ID semantics, 48-dp targets, Light/Dark, 360/420-dp viewports, endpoints and cross-zone gap. The test settles the outgoing 210-ms tab transition before viewport changes. #279 accepted (349/349).
-- Failures #270–#273 and actual root causes are retained in the active CHAT_TRANSFER checkpoint; all repaired before #274.
-- Inventory is 131 blobs / 131 unique dispositions, truncated=false. widget_test.dart source fragments are lexical static assertions, not AST guarantees; broader brittleness review OPEN.
-- Local toolchain BLOCKED / NOT RUN; no Android/Kotlin build, screenshots or physical device tests. Whole-App visual NOT VERIFIED.
-- No Build App/APK/sign/release, Firmware/BIN, BLE/P1 wire/security, OTA transport/recovery, Firebase production, flashing or device operation.
-- Next: begin a bounded WP5 Home presentation/static-layout review; preserve Dashboard state/command ownership and require hosted validation for code/test changes.
-
+- Owner authorization is the 2026-11-26 App-only WP0–WP10 rework + premium UI redesign, reaffirmed by the current “@Thinking Eksekusi Code!” command. ChatGPT/Codex alone authors/reviews and commits scoped changes directly to `main`; no branch, PR, Copilot or external agent.
+- Latest validated source/test SHA `6bdb6cc6d712120bb7afa1bd3d4ba4f31e733a0`; Validation Only #303 / run 46107526220 / job 140863506688 SUCCESS: dependencies PASS, formatter 57/0, analyzer 159 info / 0 warnings/errors, 358/358 Flutter tests PASS.
+- WP5 LED arrow semantics #296, Adaptive logical-inactive bilingual Lock Voltage copy #298, and Temperature accessibility matrix #301 are accepted. WP6 Connection is KEEP / REVIEWED; Floating Monitor Size/Opacity Slider semantics #303 are accepted without native service start or schema, persistence, channel, lifecycle or native renderer changes.
+- Live inventory remains 133 blobs / 179 recursive entries / 46 trees, truncated=false. REPOSITORY_UPGRADE_PLAN.md has 133 unique file dispositions.
+- Local Flutter/Dart/Gradle/ADB BLOCKED / NOT RUN; no Android/Kotlin build, App build, screenshots, OEM or physical-device validation. Whole-App visual NOT VERIFIED. SQLite migration runtime fixture and Usage Statistics profile NOT RUN.
+- Protected scope: no Build App/APK/sign/release, Firmware/BIN, BLE/P1 wire/security, OTA transport/recovery, Firebase production, flashing or device operations.
+- Next: WP7 read-only Usage Statistics audit, preserving schema, sampling, time/session, freshness, null-gap, decimation and queue contracts. No optimization until 1h/6h/24h profiling is available.
 
 ## Historical Build App work item — COMPLETED SUCCESS
 
