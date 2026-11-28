@@ -2,6 +2,13 @@
 
 This file is a small interoperability entrypoint for repository-aware coding agents. The authoritative project policy is [MASTER_PROMPT.md](MASTER_PROMPT.md); the skill catalogue is [SKILLS_INDEX.md](SKILLS_INDEX.md). Do not maintain a second ruleset here.
 
+## Language policy
+
+- Write every ChatGPT-facing update, explanation, analysis and final response in clear, standard Bahasa Indonesia. Standard English technical terms and exact code/error material may remain in English when precise. Do not switch to another language or produce unclear mixed-language sentences.
+- Write all new or revised repository explanations in English only, including Markdown, status/checkpoint/handover content, commit messages, source comments, docstrings, test descriptions and developer-facing summaries/logs.
+- Preserve required Indonesian App localization, locale resources, exact protocol/device strings and verbatim evidence. The English-only rule applies to repository explanations, not localized product content.
+- Follow MASTER_PROMPT.md Section 2B as the authoritative language contract.
+
 ## Before work
 
 1. Read MASTER_PROMPT.md completely and follow the command mode selected by the owner. The mode is a strict permission boundary.
