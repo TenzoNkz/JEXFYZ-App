@@ -1,3 +1,17 @@
+## Reconciliation — 2026-11-29 — WP10 Final Closure COMPLETED
+
+- A fresh explicit owner command authorized exactly WP10 in CODE_FULL. WP10 is COMPLETED; no subsequent package was started.
+- Canonical preflight main HEAD: 98c4273e688aa4902c9e11a0a1815c5c451826c7. Recursive tree: 185 entries / 139 tracked blobs / 46 trees, truncated=false. REPOSITORY_UPGRADE_PLAN has 139 unique live path dispositions, with no missing, stale or duplicate rows.
+- Latest exact App source/test evidence remains Validation Only #339 / run 46127470525 / job 140925152695 on c6206989cb0e30c94578c95b4d9c13bde5d36d71: dependencies PASS, formatter 63 files / 0 changed, analyzer 157 info / zero warnings/errors, Flutter 362/362 PASS. Current WP10 preflight differs from the #339 tree only in 11 Markdown files; source/test/config/workflow/Gradle/asset blobs are identical.
+- All 12 Dart files touched by the earlier formatter diagnostic were re-opened at current live blob SHAs and individually reviewed. No semantic source change was needed. Version comments for P1 V3.1/V3.2 handshake and V6.6+ LED_SYNC describe compatibility milestones; Firmware notes record current source FW_VERSION V7.2.
+- Current widget_test.dart coverage map: 120 declarations (17 widget + 103 regular), 89 source reads across 45 test bodies and 10 whitespace-normalized source-fragment assertions. Those checks are lexical structural contracts, not AST-aware independent behavior proofs; this limitation is now explicitly classified rather than left as an unreviewed brittleness item. No assertion was weakened or removed.
+- Build App #174 remains terminal SUCCESS on immutable source c1408fff0fae10bf6b98237c4485c2c5fb77c368; it predates WP10. WP10 changed documentation/status/register/handover only and did not start a Build or Validation Only run.
+- Whole-App VISUAL NOT VERIFIED. The owner-provided Home locked-card screenshot is reviewed for that state only; additional screens and native Canvas/WindowManager overlay remain without full visual evidence. SQLite v1→v2 runtime fixture and Usage Statistics 1h/6h/24h profiles are NOT RUN; local Flutter/Dart/Gradle/ADB/emulator checks BLOCKED / NOT RUN.
+- Cooler BLE discovery/session, commands, telemetry, Firmware interaction, thermal/electrical behavior and OTA remain DEFERRED / NOT TESTED. BLE identity/security and owner-review assets remain protected.
+- The WP0–WP10 App rework sequence is complete through WP10. No next WP is pending; a new scope requires a fresh owner command in its appropriate workspace.
+
+---
+
 ## Reconciliation — 2026-11-28 — WP8 Floating Monitor boundary COMPLETED
 
 - Fresh `@Thinking Eksekusi Code!` authorized exactly WP8. WP8 is COMPLETED; next pending WP9 is WAITING_OWNER for a fresh explicit command. This CODE_FULL workspace retains one-WP-per-command cadence; do not begin WP9 in the WP8 session.
@@ -32,7 +46,7 @@
 - WP4 fix commit 1a004c08fee6d39ec2d7e0eca9534277e39d67fc maps jexCanvas to ThemeData.scaffoldBackgroundColor, makes JexSemanticColors.from accept ThemeData, migrates the compact theme and Settings factory callsites, and tests distinct canvas/surface with custom ThemeData and Default/Light/Dark presets. Formatter-only follow-up f69bc4915f946c7e1dfca1c545ded6e102eea3e7 applies the exact CI canonical format.
 - No palette HEX, Home composition, 360×420 geometry, touch dimensions, status colors, preference/storage schema, BLE/P1 ownership/wire or native Floating Monitor renderer changed. No production semantic.canvas consumer was found; no pixel change is claimed.
 - WP3: battery heartbeat uses BLE/RX/P1-session eligibility; pure telemetry-row parser is extracted. Dashboard retains BLE/GATT/P1/frame/SYNC/SYNC_READY/ACK/session/telemetry/command authority.
-- Test review: widget_test.dart contains 117 top-level test bodies (14 widget +103 regular), 84 source reads across 45 bodies and 10 whitespace-only containsDartFragment calls. These are structural checks, not AST-aware behavioral proofs; broader false-positive review remains open.
+- Historical WP4 test-map counts at that checkpoint were 117 test bodies (14 widget + 103 regular) and 84 source reads across 45 bodies. WP10 re-counted the current live widget_test.dart blob: 120 declarations (17 widget + 103 regular), 89 source reads across 45 test bodies and 10 whitespace-only containsDartFragment assertions. The source-fragment checks are lexical structural contracts, not AST-aware behavior proofs; their false-positive limitation is reviewed and documented, not an open unreviewed disposition.
 - Usage Statistics static audit covers schema v2, v1→v2 migration design, 30-day retention, timestamp/session semantics, HOT-only freshness, explicit null gaps, gap-safe decimation and 64+8+1 bounded queue. Runtime SQLite migration fixture and 1h/6h/24h profile NOT RUN.
 - Local Flutter/Dart/Gradle/ADB are absent; local formatter/analyzer/test/Gradle checks BLOCKED / NOT RUN. No Android/Kotlin build, screenshots, OEM/device validation, runtime DB fixture or performance profile. Whole-App visual remains VISUAL NOT VERIFIED. Protected App Build/Firmware/BIN/P1-wire/security/OTA/Firebase-production/signing/device scopes remain excluded.
 - Next: complete WP4 role-based typography/spacing/shape classification, then continue bounded WP5–WP9 presentation work and WP10 closure.
