@@ -1,26 +1,23 @@
 # JE X FYZ / JE Cooler — Current Handover
 
-Last reconciled: 2026-11-28 (Asia/Jakarta). Authority: MASTER_PROMPT.md.
+Last reconciled: 2026-11-28T16:06:38+07:00 (Asia/Jakarta). Authority: MASTER_PROMPT.md.
 
-- **Language policy (owner decision 2026-11-28):** ChatGPT-facing explanations and reports in all three workspaces use clear standard Bahasa Indonesia, with English technical terms where precise. All explanatory and narrative text authored or revised in GitHub uses English only. Preserve required Indonesian App localization, protocol strings and verbatim evidence. See MASTER_PROMPT.md Section 2B.
+## BUILD_APP — Build #174 PRE-TRIGGER READY — 2026-11-28
 
-## CODE_FULL / WP9 handoff — SOURCE + REGRESSION VERIFIED CI #339 / UPDATED HOME SCREENSHOT WAITING_OWNER — 2026-11-28
+- **Owner command:** "Eksekusi Build App!" — current, explicit authorization for one guarded App Build/QC/release attempt. This supersedes the older CODE_FULL handover instruction to defer Build App.
+- **Scope:** Android App Build/QC/release only, plus narrowly justified App-source repair if a real gate fails. No Firmware compilation/BIN, Firebase production metadata, OTA, flashing, physical-device operation or unrelated release activity.
+- **Current source/test evidence:** Validation Only #339 / run 46127470525 / job 140925152695 passed on exact SHA c6206989cb0e30c94578c95b4d9c13bde5d36d71 (locked deps; formatter 63/0; analyzer 157 info, zero warnings/errors; Flutter tests 362/362).
+- **Source delta:** main before this handover commit was b69138795ccb35fc1ae5a5b9733e51e2dace41a2; the three commits after c620 were docs/status/memory only. No App source/tests/build workflow/Gradle config changed after #339.
+- **Latest package:** Build #173 / run 46121055519 / job 140905430951, terminal SUCCESS on source 478bdfdc5ee18379e07baad5e4dfd8ab598dc2db. Its APK/source ZIP remain the current Release assets and predate the WP9 Home locked-card change.
+- **Release baseline:** Release 403010611 / tag jexfyz-latest / source 478bdfdc5ee18379e07baad5e4dfd8ab598dc2db; APK asset 803673610 / 56,279,131 bytes / SHA-256 5495fe52239e93d49b66c41b0d6da1ac6338c37a393b57dc77eb7e9c022e3076; source ZIP asset 803673623 / 3,340,010 bytes / SHA-256 d8029b887df3e3579966211878c893e30bdb25f2ea32e2a3dce2efe29430e60f. Tag object equals Release target.
+- **Trigger control:** full live workflow confirmed issue-only opened/reopened, repository owner + exact title + body-token guard, serialized non-cancelling queue, no push/PR release trigger. Existing Issue #50 is still open and belongs to #173; never reuse/reopen it. Create exactly one fresh unique issue for this request, then inspect the corresponding run before any further action.
+- **Protected setting:** Android Gradle versionName remains exactly "Telegram @horizontalzzz"; Flutter package version 1.0.0+3.
+- **External operation:** NOT_STARTED. No current Build App run is active. The trigger and target source SHA for the new attempt will be written after the documentation checkpoint is committed and read back.
+- **Next action:** verify final main SHA/tree and unchanged source delta, create one guarded issue, then verify the issue-triggered run's exact head SHA and jobs. Continue the same run; no blind retry or duplicate trigger.
 
-- **WP8 — Floating Monitor architecture boundary: COMPLETED.** Source/test SHA 048c22ba4722848b962dc58d5b3e9dc7fe994961; Validation Only #327 / run 46113283625 / job 140881362489 SUCCESS (dependencies PASS; formatter 62/0; analyzer 159 info / 0 warnings/errors; 359/359 tests PASS).
-- **WP9 — locked-card source/test scope: COMPLETED / VERIFIED CI.** The disconnected locked submenu card is informational with no Connect/Hubungkan CTA. Home's top-left Bluetooth icon/button remains the single Home entry point to the existing guarded Connection flow. The Connection sheet, Settings > Bluetooth and BLE/session ownership remain unchanged.
-- **Implementation:** 62a89aa3602575062f268c4823a186f034faf9ec removes the locked-card callback/button. Expanded matrix commit 80fb686609ce60112e0e67d185a23488a71bb0df covers 350/420 dp × EN/ID × Light/Dark. Home-to-Connection source contract 49bc706986600b52f21666abd57ab71bdb1ca9f2 confirms the Home callback reaches the guarded modal/manual-sheet/ConnectionSheetContent and existing scan/connect callbacks. Formatter-only follow-up c6206989cb0e30c94578c95b4d9c13bde5d36d71.
-- **Changed paths:** lib/dashboard_display_menu.dart, lib/main.dart, test/dashboard_display_menu_test.dart and test/widget_test.dart. Production source changed only in the implementation commit; later commits update tests and formatting.
-- **Validation Only #339:** run 46127470525 / job 140925152695, terminal SUCCESS on exact SHA c6206989cb0e30c94578c95b4d9c13bde5d36d71: locked dependencies PASS; formatter 63/0 changed; analyzer 157 info / 0 warnings/errors; full suite 362/362 PASS. [Actions run](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/46127470525).
-- **Validation recovery:** #337 and #338 failed only formatter gates while dependencies/analyzer and all 362 tests passed. Exact runner formatter output was applied; #339 verifies final formatted files.
-- **Latest App package:** Build App #173 / run 46121055519 / job 140905430951, SUCCESS on source 478bdfdc5ee18379e07baad5e4dfd8ab598dc2db. Its five owner-confirmed captures are accepted for the previous stage but predate this locked-card patch. No APK/package was built in CODE_FULL.
-- **Visual boundary:** Home EN/Dark, Home ID/Dark, Home EN/Light, Settings root EN/Dark and Connection sheet EN/Dark were owner-confirmed from Build #173. The changed Home lock card has not yet been captured from a package containing c6206989cb0e30c94578c95b4d9c13bde5d36d71. Unshown Dashboard tabs, Settings subpages, Usage Statistics, additional dialogs/sheets and Floating Monitor configuration/native overlay remain unverified.
-- **Deferred physical acceptance:** cooler BLE discovery/session, commands, telemetry, Firmware interaction, thermal/electrical behavior and physical cooler operation are DEFERRED / NOT TESTED.
-- **Local checks:** Flutter/Dart/Gradle/ADB/emulator and Android SDK are unavailable; no local test, Android build or device capture was run. Validation Only is Flutter-only.
-- **WP9 disposition:** source/test Code scope COMPLETED and VERIFIED CI; overall WP9 WAITING_OWNER for a later package and affected-Home screenshot. Build App is postponed at the owner's direction. WP10 has not started.
+## WP9 device-visual boundary — separate from hosted build
 
-## Next authorized mode
-
-Wait for a fresh explicit @Thinking Eksekusi Build App! command in the separate Build App workspace when the owner is ready, then review the updated Home lock card. This recommendation does not itself authorize a build.
+WP9 source/test is VERIFIED CI, but the updated Home lock-card screenshot remains NOT CAPTURED / NOT REVIEWED. Build #173 screenshots predate the change. Real BLE/cooler behavior, Firmware, telemetry, thermal/electrical performance, installation and OTA remain untested and outside BUILD_APP.
 
 ## Historical Build App work item — COMPLETED SUCCESS
 
