@@ -1,3 +1,13 @@
+## BUILD #173 — AUDIT AND DEPENDENCIES PASSED / ANALYZER ACTIVE — 2026-11-28
+
+- **Observed gate transition:** Run 46121055519 / job 140905430951 / source 478bdfdc5ee18379e07baad5e4dfd8ab598dc2db.
+- **Steps 1–11:** SUCCESS — Set up job, checkout, Java 17, Flutter, Gradle, toolchain, Flutter local.properties, production signing prep, Gradle wrapper restoration, JE X FYZ security/architecture audit, locked dependency install.
+- **Critical static audit:** Step 10 SUCCESS. This confirms both corrected ownership paths on the immutable build source: floating_monitor_bridge.dart has the Dart MethodChannel contract, and floating_monitor_models.dart owns metric-schema migration (metricSchemaVersion / fromStored). Native method parity and remaining static audit passed.
+- **Current:** Step 12 Analyze Dart code IN_PROGRESS; steps 13–21 pending. No failure observed at this transition.
+- **Next:** continue only the same run; check analyzer, Flutter tests, Android Gradle, APK signing/certificate, source archive, Release/tag/source SHA parity and Step 21 fresh asset download verification.
+
+---
+
 ## BUILD #173 — ACTIVE / JAVA 17 SETUP — 2026-11-28
 
 - **Authorization / trigger:** explicit owner command `@Thinking Eksekusi Build App!`; one owner-authored Issue #50 at 2026-11-28T07:24:16Z (14:24:16 +07), exact required title and body token. No prior trigger issue reused.
