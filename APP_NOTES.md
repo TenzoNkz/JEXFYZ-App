@@ -297,6 +297,7 @@ Purpose: canonical current App/UI/BLE/telemetry contract. Current source defines
 - Persisted metric schema v2 migrates old configurations: retired old F (FPS) selections are discarded; old S (Speed) selections migrate to F. The display style is Letters-only; saved Icons mode migrates to Letters.
 - Size range 0.30×–1.00× in 0.05× steps, default 0.60×. Background opacity is 0–100% in 5% increments and only affects background, not text. Existing drag position and free-drag behavior stay compatible.
 - No Shizuku permission card or privileged FPS sampler. Flutter remains the single BLE/GATT client and streams authoritative telemetry to the native overlay. Native attachment does not itself prove that current device telemetry is connected.
+- **Configuration accessibility (2026-11-28):** the Size and Opacity sliders expose a single localized screen-reader control each. The visible labels are merged into the Slider semantics node; decorative value badges are excluded from duplicate announcements. Slider values use the locale-aware formatter (for example, 0.60× / 0,60× and 90%). Eight 350/420-dp × EN/ID × Light/Dark combinations pass Validation Only #303 (358/358). The test uses disabled persisted configuration and disconnected telemetry, does not start native service, and does not alter schema-v2/v1 migration, storage identity, bridge channel, service lifecycle or native WindowManager/Canvas renderer.
 
 ## BLE session and protocol invariants
 
