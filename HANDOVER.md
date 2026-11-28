@@ -2,15 +2,15 @@
 
 Last reconciled: 2026-11-28 (Asia/Jakarta). Authority: MASTER_PROMPT.md.
 
-## Active CODE_FULL work item — IN_PROGRESS
+## CODE_FULL handoff — WAITING_OWNER (WP7 pending)
 
-- Owner authorization is the 2026-11-26 App-only WP0–WP10 rework + premium UI redesign, reaffirmed by the current “@Thinking Eksekusi Code!” command. ChatGPT/Codex alone authors/reviews and commits scoped changes directly to `main`; no branch, PR, Copilot or external agent.
+- Owner execution-cadence decision (2026-11-28): every fresh `@Thinking Eksekusi Code!` command authorizes exactly one WP. Execute only the next pending WP (or one explicitly named WP), complete its DoD, mark it COMPLETED and stop. A new command is required before the next WP. ChatGPT/Codex alone authors/reviews and commits scoped changes directly to `main`; no branch, PR, Copilot or external agent.
 - Latest validated source/test SHA `6bdb6cc6d712120bb7afa1bd3d4ba4f31e733a0`; Validation Only #303 / run 46107526220 / job 140863506688 SUCCESS: dependencies PASS, formatter 57/0, analyzer 159 info / 0 warnings/errors, 358/358 Flutter tests PASS.
 - WP5 LED arrow semantics #296, Adaptive logical-inactive bilingual Lock Voltage copy #298, and Temperature accessibility matrix #301 are accepted. WP6 Connection is KEEP / REVIEWED; Floating Monitor Size/Opacity Slider semantics #303 are accepted without native service start or schema, persistence, channel, lifecycle or native renderer changes.
 - Live inventory remains 133 blobs / 179 recursive entries / 46 trees, truncated=false. REPOSITORY_UPGRADE_PLAN.md has 133 unique file dispositions.
 - Local Flutter/Dart/Gradle/ADB BLOCKED / NOT RUN; no Android/Kotlin build, App build, screenshots, OEM or physical-device validation. Whole-App visual NOT VERIFIED. SQLite migration runtime fixture and Usage Statistics profile NOT RUN.
 - Protected scope: no Build App/APK/sign/release, Firmware/BIN, BLE/P1 wire/security, OTA transport/recovery, Firebase production, flashing or device operations.
-- Next: WP7 read-only Usage Statistics audit, preserving schema, sampling, time/session, freshness, null-gap, decimation and queue contracts. No optimization until 1h/6h/24h profiling is available.
+- Next: **wait for a fresh `@Thinking Eksekusi Code!` command**. When received, execute WP7 Usage Statistics audit only, preserving schema, sampling, time/session, freshness, null-gap, decimation and queue contracts. Mark WP7 COMPLETED and stop; WP8 must wait for another new command. No optimization until 1h/6h/24h profiling is available.
 
 ## Historical Build App work item — COMPLETED SUCCESS
 
